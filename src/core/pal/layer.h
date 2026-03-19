@@ -31,7 +31,6 @@
 #define PAL_LAYER_H_
 
 
-
 #include <fstream>
 
 #include "pal.h"
@@ -70,7 +69,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-
       /**
        * \brief Create a new layer
        *
@@ -350,7 +348,6 @@ namespace pal
 
       //! Add newly created obstacle part into r tree and to the list
       void addObstaclePart( FeaturePart *fpart );
-
   };
 
 } // end namespace pal

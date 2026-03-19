@@ -517,8 +517,7 @@ void QgsNurbsCurve::scroll( int firstVertexIndex )
   clearCache();
 }
 
-std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>>
-    QgsNurbsCurve::splitCurveAtVertex( int index ) const
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>> QgsNurbsCurve::splitCurveAtVertex( int index ) const
 {
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( !line )
@@ -1322,9 +1321,8 @@ bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
 
   for ( int i = 1; i < mControlPoints.size(); ++i )
   {
-    const double dist = ( useZValues && mControlPoints[i].is3D() && mControlPoints[i - 1].is3D() )
-                        ? mControlPoints[i].distance3D( mControlPoints[i - 1] )
-                        : mControlPoints[i].distance( mControlPoints[i - 1] );
+    const double dist = ( useZValues && mControlPoints[i].is3D() && mControlPoints[i - 1].is3D() ) ? mControlPoints[i].distance3D( mControlPoints[i - 1] )
+                                                                                                   : mControlPoints[i].distance( mControlPoints[i - 1] );
 
     if ( dist >= epsilon )
     {

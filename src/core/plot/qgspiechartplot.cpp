@@ -445,3 +445,17 @@ void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type )
 {
   mLabelType = type;
 }
+
+void QgsPieChartPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+  {
+    return;
+  }
+
+  // pie charts do not have axis, so we transfer only settings related to the chart area
+  if ( const Qgs2DPlot *plot2D = dynamic_cast<const Qgs2DPlot *>( plot ) )
+  {
+    Qgs2DPlot::copyCommonProperties( plot2D );
+  }
+}

@@ -45,7 +45,8 @@ using namespace Qt::StringLiterals;
 
 constexpr int TOOLBAR_ROW = 4;
 
-const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
+const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir
+  = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
 
 #define ACTIONPATHS_MIMEDATA_NAME "application/qgis.customization.actionpaths"
 
@@ -152,8 +153,7 @@ Qt::ItemFlags QgsCustomizationDialog::QgsCustomizationModel::flags( const QModel
 
 QVariant QgsCustomizationDialog::QgsCustomizationModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  return role == Qt::DisplayRole && orientation == Qt::Horizontal ? ( section == 0 ? tr( "Object name" ) : tr( "Label" ) )
-                                                                  : QVariant {};
+  return role == Qt::DisplayRole && orientation == Qt::Horizontal ? ( section == 0 ? tr( "Object name" ) : tr( "Label" ) ) : QVariant {};
 }
 
 QModelIndex QgsCustomizationDialog::QgsCustomizationModel::index( int row, int column, const QModelIndex &parent ) const
@@ -224,17 +224,12 @@ void QgsCustomizationDialog::QgsCustomizationModel::init()
   switch ( mMode )
   {
     case Mode::ActionSelector:
-      mRootItems << mCustomization->menusItem()
-                 << mCustomization->toolBarsItem();
+      mRootItems << mCustomization->menusItem() << mCustomization->toolBarsItem();
       break;
 
     case Mode::ItemVisibility:
       // If you change this, don't forget to update TOOLBAR_COLUMN value
-      mRootItems << mCustomization->browserElementsItem()
-                 << mCustomization->docksItem()
-                 << mCustomization->menusItem()
-                 << mCustomization->statusBarWidgetsItem()
-                 << mCustomization->toolBarsItem();
+      mRootItems << mCustomization->browserElementsItem() << mCustomization->docksItem() << mCustomization->menusItem() << mCustomization->statusBarWidgetsItem() << mCustomization->toolBarsItem();
       break;
   }
 }
@@ -394,7 +389,8 @@ bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMime
          // Try to see if we can workaround thin in dragEnterEvent
          // uncomment the following lines when fixed
          /* && item && item->hasCapability( QgsCustomization::Item::ItemCapability::UserMenuChild ) */
-         && data && data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) );
+         && data
+         && data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent )
@@ -633,7 +629,8 @@ void QgsCustomizationDialog::currentItemChanged()
   const QModelIndex index = treeViewModel()->mapToSource( mTreeView->currentIndex() );
   QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
 
-  const bool isEnabled = item && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) );
+  const bool isEnabled = item
+                         && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) );
   mAddAction->setEnabled( isEnabled );
 
   QString tooltip = tr( "Add a user defined menu or toolbar" );
@@ -736,13 +733,7 @@ bool QgsCustomizationDialog::selectWidget( QWidget *widget )
     widgetName = action->objectName();
   }
 
-  QModelIndexList items = mItemsVisibilityModel->match(
-    mItemsVisibilityModel->index( TOOLBAR_ROW, 0 ),
-    Qt::DisplayRole,
-    widgetName,
-    2,
-    Qt::MatchRecursive
-  );
+  QModelIndexList items = mItemsVisibilityModel->match( mItemsVisibilityModel->index( TOOLBAR_ROW, 0 ), Qt::DisplayRole, widgetName, 2, Qt::MatchRecursive );
 
   if ( items.isEmpty() )
     return false;

@@ -118,7 +118,11 @@ namespace QgsRayCastingUtils
       QgsDebugError( QString( "Unsupported primitive type for intersection: " ).arg( geometryRenderer->primitiveType() ) );
       return false;
     }
-    if ( geometryRenderer->instanceCount() != 1 || geometryRenderer->indexOffset() != 0 || geometryRenderer->indexBufferByteOffset() != 0 || geometryRenderer->firstVertex() != 0 || geometryRenderer->firstInstance() != 0 )
+    if ( geometryRenderer->instanceCount() != 1
+         || geometryRenderer->indexOffset() != 0
+         || geometryRenderer->indexBufferByteOffset() != 0
+         || geometryRenderer->firstVertex() != 0
+         || geometryRenderer->firstInstance() != 0 )
     {
       QgsDebugError( QString( "Unsupported geometry renderer for intersection." ) );
       return false;

@@ -35,11 +35,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsHanaConnectionItem::QgsHanaConnectionItem(
-  QgsDataItem *parent,
-  const QString &name,
-  const QString &path
-)
+QgsHanaConnectionItem::QgsHanaConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path, u"SAP HANA"_s )
 {
   mIconName = u"mIconConnect.svg"_s;
@@ -142,13 +138,7 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
 }
 
 // ---------------------------------------------------------------------------
-QgsHanaLayerItem::QgsHanaLayerItem(
-  QgsDataItem *parent,
-  const QString &name,
-  const QString &path,
-  Qgis::BrowserLayerType layerType,
-  const QgsHanaLayerProperty &layerProperty
-)
+QgsHanaLayerItem::QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsHanaLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, u"hana"_s )
   , mLayerProperty( layerProperty )
 {
@@ -207,12 +197,7 @@ QString QgsHanaLayerItem::comments() const
 }
 
 // ---------------------------------------------------------------------------
-QgsHanaSchemaItem::QgsHanaSchemaItem(
-  QgsDataItem *parent,
-  const QString &connectionName,
-  const QString &name,
-  const QString &path
-)
+QgsHanaSchemaItem::QgsHanaSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
   : QgsDatabaseSchemaItem( parent, name, path, u"SAP HANA"_s )
   , mConnectionName( connectionName )
 {
@@ -329,9 +314,7 @@ void QgsHanaRootItem::onConnectionsChanged()
   refresh();
 }
 
-QgsDataItem *QgsHanaDataItemProvider::createDataItem(
-  const QString &pathIn, QgsDataItem *parentItem
-)
+QgsDataItem *QgsHanaDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )
   return new QgsHanaRootItem( parentItem, u"SAP HANA"_s, u"hana:"_s );

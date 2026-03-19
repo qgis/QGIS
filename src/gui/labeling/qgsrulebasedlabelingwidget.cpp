@@ -47,10 +47,11 @@ QgsExpressionContext QgsLabelingRulePropsWidget::createExpressionContext( QgsMap
   }
   else
   {
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::atlasScope( nullptr )
-            << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   context << QgsExpressionContextUtils::layerScope( layer );
   return context;
@@ -306,8 +307,7 @@ void QgsLabelingRulePropsDialog::showHelp()
 QgsRuleBasedLabelingModel::QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule *rootRule, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootRule( rootRule )
-{
-}
+{}
 
 Qt::ItemFlags QgsRuleBasedLabelingModel::flags( const QModelIndex &index ) const
 {
@@ -714,7 +714,10 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( u"ELSE"_s ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
+    if ( toggled )
+      editFilter->setText( u"ELSE"_s );
+  } );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()

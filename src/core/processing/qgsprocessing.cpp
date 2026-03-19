@@ -23,13 +23,16 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsProcessing::settingsPreferFilenameAsLayerName = new QgsSettingsEntryBool( u"prefer-filename-as-layer-name"_s, sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
+const QgsSettingsEntryBool *QgsProcessing::settingsPreferFilenameAsLayerName
+  = new QgsSettingsEntryBool( u"prefer-filename-as-layer-name"_s, sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
 
 const QgsSettingsEntryString *QgsProcessing::settingsTempPath = new QgsSettingsEntryString( u"temp-path"_s, sTreeConfiguration, QString(), QObject::tr( "Override temporary output folder path" ) );
 
-const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputVectorLayerExt = new QgsSettingsEntryString( u"default-output-vector-ext"_s, sTreeConfiguration, QString(), QObject::tr( "Default output vector layer extension" ) );
+const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputVectorLayerExt
+  = new QgsSettingsEntryString( u"default-output-vector-ext"_s, sTreeConfiguration, QString(), QObject::tr( "Default output vector layer extension" ) );
 
-const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerFormat = new QgsSettingsEntryString( u"default-output-raster-format"_s, sTreeConfiguration, QString(), QObject::tr( "Default output raster layer format" ) );
+const QgsSettingsEntryString *QgsProcessing::settingsDefaultOutputRasterLayerFormat
+  = new QgsSettingsEntryString( u"default-output-raster-format"_s, sTreeConfiguration, QString(), QObject::tr( "Default output raster layer format" ) );
 
 const QString QgsProcessing::TEMPORARY_OUTPUT = u"TEMPORARY_OUTPUT"_s;
 

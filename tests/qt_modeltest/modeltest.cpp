@@ -38,7 +38,8 @@ using namespace Qt::StringLiterals;
     recheck everything.
 */
 ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent )
-  : QObject( parent ), model( _model )
+  : QObject( parent )
+  , model( _model )
 {
   Q_ASSERT( model );
 

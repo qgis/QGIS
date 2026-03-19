@@ -58,7 +58,17 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs
-    QgsVirtualPointCloudEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *layer, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+    QgsVirtualPointCloudEntity(
+      Qgs3DMapSettings *map,
+      QgsPointCloudLayer *layer,
+      const QgsCoordinateTransform &coordinateTransform,
+      QgsPointCloud3DSymbol *symbol,
+      float maxScreenError,
+      bool showBoundingBoxes,
+      double zValueScale,
+      double zValueOffset,
+      int pointBudget
+    );
 
     //! Destructs
     ~QgsVirtualPointCloudEntity() override;

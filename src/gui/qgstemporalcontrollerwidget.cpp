@@ -86,8 +86,14 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mAnimationController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
   connect( mMovieController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
 
-  connect( mAnimationLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) { mNavigationObject->setLooping( state ); mMovieLoopingCheckBox->setChecked( state ); } );
-  connect( mMovieLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) { mNavigationObject->setLooping( state );  mAnimationLoopingCheckBox->setChecked( state ); } );
+  connect( mAnimationLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) {
+    mNavigationObject->setLooping( state );
+    mMovieLoopingCheckBox->setChecked( state );
+  } );
+  connect( mMovieLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) {
+    mNavigationObject->setLooping( state );
+    mAnimationLoopingCheckBox->setChecked( state );
+  } );
 
   setWidgetStateFromNavigationMode( mNavigationObject->navigationMode() );
   connect( mNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsTemporalControllerWidget::setWidgetStateFromNavigationMode );
@@ -119,9 +125,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mAnimationSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
   connect( mMovieSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
 
-  connect( mTotalFramesSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int frames ) {
-    mNavigationObject->setTotalMovieFrames( frames );
-  } );
+  connect( mTotalFramesSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int frames ) { mNavigationObject->setTotalMovieFrames( frames ); } );
 
   mStepSpinBox->setClearValue( 1 );
 
@@ -173,8 +177,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
     whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
   }
 
-  for ( const Qgis::TemporalUnit u :
-        {
+  for ( const Qgis::TemporalUnit u : {
           Qgis::TemporalUnit::Milliseconds,
           Qgis::TemporalUnit::Seconds,
           Qgis::TemporalUnit::Minutes,
@@ -282,9 +285,7 @@ void QgsTemporalControllerWidget::updateFrameDuration()
 
   if ( !mBlockFrameDurationUpdates )
   {
-    mNavigationObject->setFrameDuration(
-      QgsInterval( QgsProject::instance()->timeSettings()->timeStep(), QgsProject::instance()->timeSettings()->timeStepUnit() )
-    );
+    mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(), QgsProject::instance()->timeSettings()->timeStepUnit() ) );
     mAnimationSlider->setValue( mNavigationObject->currentFrameNumber() );
   }
   mAnimationSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );

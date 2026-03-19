@@ -52,20 +52,40 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Selection attribute" ), QVariant(), u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterEnum( u"OPERATOR"_s, QObject::tr( "Operator" ), QStringList() << QObject::tr( "=" ) << QObject::tr( "≠" ) << QObject::tr( ">" ) << QObject::tr( "≥" ) << QObject::tr( "<" ) << QObject::tr( "≤" ) << QObject::tr( "begins with" ) << QObject::tr( "contains" ) << QObject::tr( "is null" ) << QObject::tr( "is not null" ) << QObject::tr( "does not contain" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum(
+    u"OPERATOR"_s,
+    QObject::tr( "Operator" ),
+    QStringList()
+      << QObject::tr( "=" )
+      << QObject::tr( "≠" )
+      << QObject::tr( ">" )
+      << QObject::tr( "≥" )
+      << QObject::tr( "<" )
+      << QObject::tr( "≤" )
+      << QObject::tr( "begins with" )
+      << QObject::tr( "contains" )
+      << QObject::tr( "is null" )
+      << QObject::tr( "is not null" )
+      << QObject::tr( "does not contain" ),
+    false,
+    0
+  ) );
   addParameter( new QgsProcessingParameterString( u"VALUE"_s, QObject::tr( "Value" ), QVariant(), false, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (attribute)" ) ) );
-  QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( u"FAIL_OUTPUT"_s, QObject::tr( "Extracted (non-matching)" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
+  QgsProcessingParameterFeatureSink *failOutput
+    = new QgsProcessingParameterFeatureSink( u"FAIL_OUTPUT"_s, QObject::tr( "Extracted (non-matching)" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   failOutput->setCreateByDefault( false );
   addParameter( failOutput );
 }
 
 QString QgsExtractByAttributeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an input layer. "
-                      "The criteria for adding features to the resulting layer is defined based on the values "
-                      "of an attribute from the input layer." );
+  return QObject::tr(
+    "This algorithm creates a new vector layer that only contains matching features from an input layer. "
+    "The criteria for adding features to the resulting layer is defined based on the values "
+    "of an attribute from the input layer."
+  );
 }
 
 QString QgsExtractByAttributeAlgorithm::shortDescription() const

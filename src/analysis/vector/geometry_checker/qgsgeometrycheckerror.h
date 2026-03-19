@@ -61,7 +61,14 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      * specified via \a vixd and a \a value with its \a value Type for
      * additional information.
      */
-    QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
+    QgsGeometryCheckError(
+      const QgsGeometryCheck *check,
+      const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+      const QgsPointXY &errorLocation,
+      QgsVertexId vidx = QgsVertexId(),
+      const QVariant &value = QVariant(),
+      ValueType valueType = ValueOther
+    );
 
     virtual ~QgsGeometryCheckError() = default;
 
@@ -207,7 +214,16 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      * Optionally the vertex can be specified via \a vixd and a \a value with
      * its \a value Type for additional information.
      */
-    QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
+    QgsGeometryCheckError(
+      const QgsGeometryCheck *check,
+      const QString &layerId,
+      QgsFeatureId featureId,
+      const QgsGeometry &geometry,
+      const QgsPointXY &errorLocation,
+      QgsVertexId vidx = QgsVertexId(),
+      const QVariant &value = QVariant(),
+      ValueType valueType = ValueOther
+    );
 
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;

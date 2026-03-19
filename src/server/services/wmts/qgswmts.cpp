@@ -25,8 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-#define QSTR_COMPARE( str, lit ) \
-  ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
+#define QSTR_COMPARE( str, lit ) ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 
 namespace QgsWmts
 {

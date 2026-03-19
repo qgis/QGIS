@@ -341,6 +341,12 @@ class _3D_EXPORT QgsCameraController : public QObject
     QgsCameraController( const QgsCameraController &other );
 #endif
 
+    /**
+     * Updates orthographic projection plane size based on distance from
+     * view center when orthographic projection is being used.
+     */
+    void updateOrthographicProjectionPlane();
+    //! Sets mCamera parameters based on mCameraPose
     void updateCameraFromPose();
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
@@ -359,11 +365,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     // This list gathers all the rotation and translation operations.
     // It is used to update the appropriate parameters when successive
     // translation and rotation happen.
+    // clang-format off
     const QList<MouseOperation> mTranslateOrRotate = {
       MouseOperation::Translation,
       MouseOperation::RotationCamera,
       MouseOperation::RotationCenter
     };
+    // clang-format on
 
     // check that current sequence (current operation and new operation) is a rotation or translation
     bool isATranslationRotationSequence( MouseOperation newOperation ) const;

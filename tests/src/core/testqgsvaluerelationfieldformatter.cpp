@@ -136,7 +136,8 @@ void TestQgsValueRelationFieldFormatter::testDependencies()
 {
   // Test dependencies
 
-  const QgsEditorWidgetSetup setup { u"ValueRelation"_s, { { u"LayerSource"_s, mLayer2->publicSource() }, { u"LayerProviderName"_s, mLayer2->providerType() }, { u"LayerName"_s, mLayer2->name() }, { u"Layer"_s, mLayer2->id() } } };
+  const QgsEditorWidgetSetup
+    setup { u"ValueRelation"_s, { { u"LayerSource"_s, mLayer2->publicSource() }, { u"LayerProviderName"_s, mLayer2->providerType() }, { u"LayerName"_s, mLayer2->name() }, { u"Layer"_s, mLayer2->id() } } };
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   const QList<QgsVectorLayerRef> dependencies = fieldFormatter->layerDependencies( setup.config() );
   QVERIFY( dependencies.count() == 1 );

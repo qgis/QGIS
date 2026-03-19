@@ -66,8 +66,7 @@ void TestQgsField::initTestCase()
 }
 
 void TestQgsField::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsField::init()
 {

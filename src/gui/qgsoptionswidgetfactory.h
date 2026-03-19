@@ -55,10 +55,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * Returns the registered highlight widgets used to search and highlight text in
      * options dialogs.
      */
-    QHash<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() SIP_SKIP
-    {
-      return mHighlightWidgets;
-    }
+    QHash<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() SIP_SKIP { return mHighlightWidgets; }
 
     /**
      * Validates the current state of the widget.
@@ -91,10 +88,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * options dialogs. This can be used to provide a custom implementation of
      * QgsOptionsDialogHighlightWidget.
      */
-    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget )
-    {
-      mHighlightWidgets.insert( highlightWidget->widget(), highlightWidget );
-    }
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget ) { mHighlightWidgets.insert( highlightWidget->widget(), highlightWidget ); }
 
   private:
     QHash<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlightWidgets;

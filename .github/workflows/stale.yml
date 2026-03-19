@@ -55,7 +55,7 @@ jobs:
 
 
         stale-pr-label: 'stale'
-        exempt-pr-labels: 'Merge After Thaw,Frozen'
+        exempt-pr-labels: 'Merge After Thaw,Frozen,Slop!⚠️⚠️'
         days-before-pr-stale: 14
         days-before-pr-close: 7
 

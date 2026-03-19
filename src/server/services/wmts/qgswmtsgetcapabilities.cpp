@@ -368,11 +368,19 @@ namespace QgsWmts
         const int wgs84precision = 6;
         QDomElement wgs84BBoxElement = doc.createElement( u"ows:WGS84BoundingBox"_s );
         QDomElement wgs84LowerCornerElement = doc.createElement( u"ows:LowerCorner"_s );
-        const QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
+        const QDomText wgs84LowerCornerText = doc.createTextNode(
+          qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision )
+          + ' '
+          + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision )
+        );
         wgs84LowerCornerElement.appendChild( wgs84LowerCornerText );
         wgs84BBoxElement.appendChild( wgs84LowerCornerElement );
         QDomElement wgs84UpperCornerElement = doc.createElement( u"ows:UpperCorner"_s );
-        const QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
+        const QDomText wgs84UpperCornerText = doc.createTextNode(
+          qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision )
+          + ' '
+          + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision )
+        );
         wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
         wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
         layerElem.appendChild( wgs84BBoxElement );
@@ -576,12 +584,20 @@ namespace QgsWmts
           QDomElement tmTopLeftCornerElem = doc.createElement( u"TopLeftCorner"_s );
           if ( tms.hasAxisInverted )
           {
-            const QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) );
+            const QDomText tmTopLeftCornerText = doc.createTextNode(
+              qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision )
+              + ' '
+              + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision )
+            );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           else
           {
-            const QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) );
+            const QDomText tmTopLeftCornerText = doc.createTextNode(
+              qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision )
+              + ' '
+              + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision )
+            );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           tmElement.appendChild( tmTopLeftCornerElem );

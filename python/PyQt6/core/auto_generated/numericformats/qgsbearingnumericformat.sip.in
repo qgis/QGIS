@@ -20,7 +20,6 @@ direction/bearing.
 #include "qgsbearingnumericformat.h"
 %End
   public:
-
     enum FormatDirectionOption /BaseType=IntEnum/
     {
       UseRange0To180WithEWDirectionalSuffix,

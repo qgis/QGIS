@@ -32,7 +32,6 @@ is not supported or cannot be performed without errors.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class TableFlag /BaseType=IntFlag/
     {
       Aspatial,
@@ -49,7 +48,6 @@ is not supported or cannot be performed without errors.
 
     struct QueryResult
     {
-
         QStringList columns() const;
 %Docstring
 Returns the column names.
@@ -85,14 +83,14 @@ Returns the next result row or an empty row if there are no rows left.
 .. seealso:: :py:func:`rewind`
 %End
 
-        long long fetchedRowCount( ) const;
+        long long fetchedRowCount() const;
 %Docstring
 Returns the number of fetched rows.
 
 .. seealso:: :py:func:`rowCount`
 %End
 
-        long long rowCount( ) const;
+        long long rowCount() const;
 %Docstring
 Returns the number of rows returned by a SELECT query or
 :py:class:`Qgis`.FeatureCountState.UnknownCount if unknown.
@@ -112,8 +110,7 @@ Returns the number of rows returned by a SELECT query or
         QList<QVariant> result;
         Py_BEGIN_ALLOW_THREADS
         result = sipCpp->nextRow( );
-        Py_END_ALLOW_THREADS
-        if ( ! result.isEmpty() )
+        Py_END_ALLOW_THREADS if ( ! result.isEmpty() )
         {
           const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
           sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
@@ -129,7 +126,7 @@ Returns the number of rows returned by a SELECT query or
 
 
 
-        double queryExecutionTime( ) const;
+        double queryExecutionTime() const;
 %Docstring
 Returns the query execution time in milliseconds.
 %End
@@ -146,39 +143,36 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
 
     struct SqlVectorLayerOptions
     {
-      QString sql;
-      QString filter;
-      QString layerName;
-      QStringList primaryKeyColumns;
-      QString geometryColumn;
-      bool disableSelectAtId;
-
+        QString sql;
+        QString filter;
+        QString layerName;
+        QStringList primaryKeyColumns;
+        QString geometryColumn;
+        bool disableSelectAtId;
     };
 
     struct TableProperty
     {
-
         SIP_PYOBJECT __repr__();
 %MethodCode
         QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        struct GeometryColumnType
+          struct GeometryColumnType
         {
           SIP_PYOBJECT __repr__();
 %MethodCode
           QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
           sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-          Qgis::WkbType wkbType;
-          QgsCoordinateReferenceSystem crs;
+                Qgis::WkbType wkbType;
+            QgsCoordinateReferenceSystem crs;
 
-          bool operator==( const GeometryColumnType &other ) const;
+            bool operator==( const GeometryColumnType &other ) const;
         };
 
       public:
-
         QString tableName() const;
 %Docstring
 Returns the table name.
@@ -333,7 +327,7 @@ This information is calculated from the geometry columns types.
 
     struct SpatialIndexOptions
     {
-      QString geometryColumnName;
+        QString geometryColumnName;
     };
 
     enum Capability /BaseType=IntEnum/
@@ -458,7 +452,9 @@ Returns the URI string for the given ``table`` and ``schema``.
 .. versionadded:: 3.12
 %End
 
-    virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const;
+    virtual void createVectorTable(
+      const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+    ) const;
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is
 ignored if not supported by the backend).
@@ -468,16 +464,15 @@ ignored if not supported by the backend).
 
     struct VectorLayerExporterOptions
     {
-      QString layerName;
+        QString layerName;
 
-      QString schema;
+        QString schema;
 
-      Qgis::WkbType wkbType;
+        Qgis::WkbType wkbType;
 
-      QStringList primaryKeyColumns;
+        QStringList primaryKeyColumns;
 
-      QString geometryColumn;
-
+        QString geometryColumn;
     };
 
     virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const;
@@ -727,7 +722,9 @@ ignored if not supported by the backend).
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
-    virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const;
+    virtual void createSpatialIndex(
+      const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions()
+    ) const;
 %Docstring
 Creates a spatial index for the database table with given ``schema`` and
 ``name`` (schema is ignored if not supported by the backend).
@@ -1200,7 +1197,9 @@ The caller takes ownership of the returned object.
 .. versionadded:: 3.28
 %End
 
-    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const;
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata(
+      const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0
+    ) const;
 %Docstring
 Search the stored layer metadata in the connection, optionally limiting
 the search to the metadata identifier, title, abstract, keywords and
@@ -1231,7 +1230,6 @@ functionality.
 
   protected:
 
-
     void checkCapability( Capability capability ) const;
 %Docstring
 Checks if ``capability`` is supported.
@@ -1247,7 +1245,6 @@ Checks if ``capability`` is supported.
 :raises QgsProviderConnectionException: if the capability is not
                                         supported
 %End
-
 
 
 

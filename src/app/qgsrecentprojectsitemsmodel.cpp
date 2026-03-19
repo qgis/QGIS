@@ -42,8 +42,7 @@ using namespace Qt::StringLiterals;
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
-{
-}
+{}
 
 void QgsRecentProjectItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
 {
@@ -66,7 +65,8 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case Qt::DisplayRole:
     case static_cast< int >( CustomRole::TitleRole ):
     {
-      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
+      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title
+                                                                                               : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     }
 
     case static_cast< int >( CustomRole::PathRole ):
@@ -262,12 +262,7 @@ void QgsRecentProjectItemsModel::clear( bool clearPinned )
   else
   {
     mRecentProjects.erase(
-      std::remove_if(
-        mRecentProjects.begin(),
-        mRecentProjects.end(),
-        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; }
-      ),
-      mRecentProjects.end()
+      std::remove_if( mRecentProjects.begin(), mRecentProjects.end(), []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; } ), mRecentProjects.end()
     );
   }
   endResetModel();

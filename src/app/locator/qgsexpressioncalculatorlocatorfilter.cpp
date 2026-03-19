@@ -40,9 +40,7 @@ QgsExpressionCalculatorLocatorFilter *QgsExpressionCalculatorLocatorFilter::clon
 void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::layerScope( QgisApp::instance()->activeLayer() );
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::layerScope( QgisApp::instance()->activeLayer() );
 
   QString error;
   if ( QgsExpression::checkExpression( string, &context, error ) )

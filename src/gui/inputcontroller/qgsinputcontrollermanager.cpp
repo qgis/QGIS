@@ -39,8 +39,7 @@ using namespace Qt::StringLiterals;
 
 QgsInputControllerManager::QgsInputControllerManager( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsInputControllerManager::~QgsInputControllerManager()
 {

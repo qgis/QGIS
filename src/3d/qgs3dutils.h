@@ -115,7 +115,16 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.8
      */
-    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback = nullptr );
+    static bool exportAnimation(
+      const Qgs3DAnimationSettings &animationSettings,
+      Qgs3DMapSettings &mapSettings,
+      int framesPerSecond,
+      const QString &outputDirectory,
+      const QString &fileNameTemplate,
+      const QSize &outputSize,
+      QString &error,
+      QgsFeedback *feedback = nullptr
+    );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -151,7 +160,14 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions(
+      const QgsFeature &f,
+      const Qgs3DRenderContext &context,
+      const QgsVector3D &chunkOrigin,
+      Qgis::AltitudeClamping altClamp,
+      QVector<QVector3D> &positions,
+      const QgsVector3D &translation = QgsVector3D( 0, 0, 0 )
+    );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -168,13 +184,23 @@ class _3D_EXPORT Qgs3DUtils
      * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
      * \since QGIS 3.12
      */
-    static QgsAABB layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+    static QgsAABB layerToWorldExtent(
+      const QgsRectangle &extent,
+      double zMin,
+      double zMax,
+      const QgsCoordinateReferenceSystem &layerCrs,
+      const QgsVector3D &mapOrigin,
+      const QgsCoordinateReferenceSystem &mapCrs,
+      const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
      * \since QGIS 3.12
      */
-    static QgsRectangle worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+    static QgsRectangle worldToLayerExtent(
+      const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Converts map extent to axis aligned bounding box in 3D world coordinates
@@ -195,7 +221,14 @@ class _3D_EXPORT Qgs3DUtils
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
-    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
+    static QgsVector3D transformWorldCoordinates(
+      const QgsVector3D &worldPoint1,
+      const QgsVector3D &origin1,
+      const QgsCoordinateReferenceSystem &crs1,
+      const QgsVector3D &origin2,
+      const QgsCoordinateReferenceSystem &crs2,
+      const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
@@ -250,10 +283,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.24
      */
-    static double decodeDepth( const QRgb &pixel )
-    {
-      return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
-    }
+    static double decodeDepth( const QRgb &pixel ) { return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0; }
 
     /**
      * Creates a QgsPointCloudLayer3DRenderer matching the symbol settings of a given QgsPointCloudRenderer

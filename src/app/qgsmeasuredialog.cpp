@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
 #include "qgsunittypes.h"
 
@@ -39,11 +40,14 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( u"clipboard-header"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader
+  = new QgsSettingsEntryBool( u"clipboard-header"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
 
-const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( u"clipboard-separator"_s, QgsSettingsTree::sTreeMeasure, u"\t"_s, QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
+const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator
+  = new QgsSettingsEntryString( u"clipboard-separator"_s, QgsSettingsTree::sTreeMeasure, u"\t"_s, QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
 
-const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint = new QgsSettingsEntryBool( u"clipboard-use-decimal-point"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether to use the locale decimal separator or always use the decimal point. Needed to export data as csv with a locale that uses a comma as its decimal separator." ) );
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint
+  = new QgsSettingsEntryBool( u"clipboard-use-decimal-point"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether to use the locale decimal separator or always use the decimal point. Needed to export data as csv with a locale that uses a comma as its decimal separator." ) );
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -158,7 +162,7 @@ void QgsMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  mDecimalPlaces = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   mCanvasUnits = mCanvas->mapUnits();
 
   // Configure QgsDistanceArea
@@ -171,7 +175,9 @@ void QgsMeasureDialog::updateSettings()
   // Calling projChanged() will set the ellipsoid and clear then re-populate the table
   projChanged();
 
-  if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() || ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees && mDistanceUnits == Qgis::DistanceUnit::Degrees ) )
+  if ( mCartesian->isChecked()
+       || !mCanvas->mapSettings().destinationCrs().isValid()
+       || ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees && mDistanceUnits == Qgis::DistanceUnit::Degrees ) )
   {
     mDa.setEllipsoid( Qgis::geoNone() );
   }
@@ -440,7 +446,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
@@ -513,11 +519,12 @@ void QgsMeasureDialog::updateUi()
       }
       mDa.setEllipsoid( Qgis::geoNone() );
     }
-    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees
-              && ( mAreaUnits == Qgis::AreaUnit::SquareDegrees || mAreaUnits == Qgis::AreaUnit::Unknown ) )
+    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees && ( mAreaUnits == Qgis::AreaUnit::SquareDegrees || mAreaUnits == Qgis::AreaUnit::Unknown ) )
     {
       //both source and destination units are degrees
-      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
+      toolTip += "<br> * "
+                 + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." )
+                     .arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       mDa.setEllipsoid( Qgis::geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -528,7 +535,8 @@ void QgsMeasureDialog::updateUi()
       {
         resultUnit = Qgis::AreaUnit::SquareMeters;
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
-        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( getEllipsoidFriendlyName(), QgsUnitTypes::toString( resultUnit ) );
+        toolTip += "<br> * "
+                   + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( getEllipsoidFriendlyName(), QgsUnitTypes::toString( resultUnit ) );
       }
       else
       {
@@ -584,11 +592,12 @@ void QgsMeasureDialog::updateUi()
       }
       mDa.setEllipsoid( Qgis::geoNone() );
     }
-    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees
-              && mDistanceUnits == Qgis::DistanceUnit::Degrees )
+    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == Qgis::DistanceUnit::Degrees && mDistanceUnits == Qgis::DistanceUnit::Degrees )
     {
       //both source and destination units are degrees
-      toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
+      toolTip += "<br> * "
+                 + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." )
+                     .arg( mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       mDa.setEllipsoid( Qgis::geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -599,7 +608,8 @@ void QgsMeasureDialog::updateUi()
       {
         resultUnit = Qgis::DistanceUnit::Meters;
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
-        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( getEllipsoidFriendlyName(), QgsUnitTypes::toString( resultUnit ) );
+        toolTip += "<br> * "
+                   + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( getEllipsoidFriendlyName(), QgsUnitTypes::toString( resultUnit ) );
       }
       else
       {
@@ -770,8 +780,7 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   mUnitsCombo->clear();
   if ( isArea )
   {
-    for ( const Qgis::AreaUnit unit :
-          {
+    for ( const Qgis::AreaUnit unit : {
             Qgis::AreaUnit::SquareMeters,
             Qgis::AreaUnit::SquareKilometers,
             Qgis::AreaUnit::SquareFeet,
@@ -793,8 +802,7 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
   else
   {
     for ( const Qgis::DistanceUnit unit :
-          {
-            Qgis::DistanceUnit::Meters,
+          { Qgis::DistanceUnit::Meters,
             Qgis::DistanceUnit::Kilometers,
             Qgis::DistanceUnit::Feet,
             Qgis::DistanceUnit::Yards,
@@ -804,8 +812,7 @@ void QgsMeasureDialog::repopulateComboBoxUnits( bool isArea )
             Qgis::DistanceUnit::Millimeters,
             Qgis::DistanceUnit::Inches,
             Qgis::DistanceUnit::Degrees,
-            Qgis::DistanceUnit::ChainsInternational
-          } )
+            Qgis::DistanceUnit::ChainsInternational } )
     {
       mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast<int>( unit ) );
     }

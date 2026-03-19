@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayer3DRendererMetadata::QgsTiledSceneLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"tiledscene"_s )
-{
-}
+{}
 
 QgsAbstract3DRenderer *QgsTiledSceneLayer3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -40,8 +39,7 @@ QgsAbstract3DRenderer *QgsTiledSceneLayer3DRendererMetadata::createRenderer( QDo
 ///
 
 QgsTiledSceneLayer3DRenderer::QgsTiledSceneLayer3DRenderer()
-{
-}
+{}
 
 void QgsTiledSceneLayer3DRenderer::setLayer( QgsTiledSceneLayer *layer )
 {
@@ -68,7 +66,16 @@ Qt3DCore::QEntity *QgsTiledSceneLayer3DRenderer::createEntity( Qgs3DMapSettings 
 
   QgsTiledSceneIndex index = tsl->dataProvider()->index();
 
-  return new QgsTiledSceneLayerChunkedEntity( map, index, tsl->dataProvider()->sceneCrs(), tsl->dataProvider()->crs(), maximumScreenError(), showBoundingBoxes(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zScale(), qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zOffset() );
+  return new QgsTiledSceneLayerChunkedEntity(
+    map,
+    index,
+    tsl->dataProvider()->sceneCrs(),
+    tsl->dataProvider()->crs(),
+    maximumScreenError(),
+    showBoundingBoxes(),
+    qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zScale(),
+    qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( tsl->elevationProperties() )->zOffset()
+  );
 }
 
 void QgsTiledSceneLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

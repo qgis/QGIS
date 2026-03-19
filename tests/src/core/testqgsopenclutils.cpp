@@ -80,8 +80,7 @@ void TestQgsOpenClUtils::init()
 }
 
 void TestQgsOpenClUtils::cleanup()
-{
-}
+{}
 
 void TestQgsOpenClUtils::initTestCase()
 {
@@ -151,10 +150,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
 
   const cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
 
-  auto kernel = cl::KernelFunctor<
-    cl::Buffer &,
-    cl::Buffer &,
-    cl::Buffer &>( program, "vectorAdd" );
+  auto kernel = cl::KernelFunctor< cl::Buffer &, cl::Buffer &, cl::Buffer &>( program, "vectorAdd" );
 
   kernel( cl::EnqueueArgs( queue, cl::NDRange( 3 ) ), a_buf, b_buf, c_buf );
 

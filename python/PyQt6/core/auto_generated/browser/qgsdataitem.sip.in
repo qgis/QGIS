@@ -49,7 +49,6 @@ Parent/children hierarchy is not based on QObject.
       sipType = 0;
 %End
   public:
-
     QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
 %Docstring
 Constructor for QgsDataItem, with the specified ``parent`` item.
@@ -74,7 +73,7 @@ this item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool hasChildren() const;
+      bool hasChildren() const;
 %Docstring
 Returns whether this item has children.
 %End
@@ -616,7 +615,6 @@ A browser item that can be used to report problems (e.g. network error).
 #include "qgsdataitem.h"
 %End
   public:
-
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
     SIP_PYOBJECT __repr__();
@@ -624,10 +622,7 @@ A browser item that can be used to report problems (e.g. network error).
     QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

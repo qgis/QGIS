@@ -152,8 +152,7 @@ QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
 
 bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
 {
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
-         || ( mSymbol && mSymbol->usesMapUnits() );
+  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
 void QgsMaskMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )

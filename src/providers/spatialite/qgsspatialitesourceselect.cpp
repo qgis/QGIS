@@ -113,9 +113,11 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
   if ( idx > 0 )
     subKey.truncate( idx );
 
-  const QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
-                          "This could take a long time (depending on the DB size), "
-                          "but implies better performance thereafter." )
+  const QString msg = tr(
+                        "Are you sure you want to update the internal statistics for DB: %1?\n\n"
+                        "This could take a long time (depending on the DB size), "
+                        "but implies better performance thereafter."
+  )
                         .arg( subKey );
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result != QMessageBox::Yes )
@@ -182,7 +184,8 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"UI/lastSpatiaLiteDir"_s, QDir::homePath() ).toString();
 
-  const QString myFile = QFileDialog::getOpenFileName( parent, tr( "Choose a SpatiaLite/SQLite DB to open" ), lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;" + tr( "All files" ) + " (*)" );
+  const QString myFile
+    = QFileDialog::getOpenFileName( parent, tr( "Choose a SpatiaLite/SQLite DB to open" ), lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;" + tr( "All files" ) + " (*)" );
 
   if ( myFile.isEmpty() )
     return false;

@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
   : QItemDelegate( parent )
   , mListModel( listModel )
-{
-}
+{}
 
 QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {

@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 QVariant QgsUniqueValuesWidgetWrapper::value() const
 {

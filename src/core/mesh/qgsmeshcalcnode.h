@@ -46,9 +46,9 @@ class CORE_EXPORT QgsMeshCalcNode
     //! types of mesh node
     enum Type
     {
-      tOperator = 1, //!< Operator (e.g. +, -)
-      tNumber, //!< Number (e.g. 1)
-      tNoData, //!< Nodata (NaN)
+      tOperator = 1,   //!< Operator (e.g. +, -)
+      tNumber,         //!< Number (e.g. 1)
+      tNoData,         //!< Nodata (NaN)
       tDatasetGroupRef //!< Dataset group
     };
 
@@ -105,9 +105,7 @@ class CORE_EXPORT QgsMeshCalcNode
      * \param left Left node. This node takes ownership of the node
      * \param right Right node. This node takes ownership of the node
      */
-    QgsMeshCalcNode( QgsMeshCalcNode *condition /* bool condition */,
-                     QgsMeshCalcNode *left /*if true */,
-                     QgsMeshCalcNode *right /* if false */ );
+    QgsMeshCalcNode( QgsMeshCalcNode *condition /* bool condition */, QgsMeshCalcNode *left /*if true */, QgsMeshCalcNode *right /* if false */ );
 
     /**
      * Constructs a Type::tDatasetGroupRef node with values from dataset group

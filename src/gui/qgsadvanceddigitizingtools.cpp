@@ -32,13 +32,11 @@ QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsA
   : QObject( canvas ? canvas->viewport() : nullptr )
   , mMapCanvas( canvas )
   , mCadDockWidget( cadDockWidget )
-{
-}
+{}
 
 QgsAdvancedDigitizingCirclesIntersectionTool::QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsAdvancedDigitizingTool( canvas, cadDockWidget )
-{
-}
+{}
 
 QgsAdvancedDigitizingCirclesIntersectionTool::~QgsAdvancedDigitizingCirclesIntersectionTool()
 {
@@ -201,7 +199,8 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::processParameters()
 {
   mP1 = QgsPointXY();
   mP2 = QgsPointXY();
-  QgsGeometryUtils::circleCircleIntersections( QgsPointXY( mCircle1X->value(), mCircle1Y->value() ), mCircle1Distance->value(), QgsPointXY( mCircle2X->value(), mCircle2Y->value() ), mCircle2Distance->value(), mP1, mP2 );
+  QgsGeometryUtils::
+    circleCircleIntersections( QgsPointXY( mCircle1X->value(), mCircle1Y->value() ), mCircle1Distance->value(), QgsPointXY( mCircle2X->value(), mCircle2Y->value() ), mCircle2Distance->value(), mP1, mP2 );
   emit paintRequested();
 }
 

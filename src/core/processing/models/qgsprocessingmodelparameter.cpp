@@ -25,9 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &parameterName )
   : mParameterName( parameterName )
-{
-
-}
+{}
 
 QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
 {

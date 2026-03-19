@@ -66,7 +66,6 @@ class CORE_EXPORT QgsLocator : public QObject
     Q_OBJECT
 
   public:
-
     //! List of core filters (i.e. not plugin filters)
     static const QList<QString> CORE_FILTERS;
 
@@ -157,7 +156,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * This list is updated when preparing the search
      * \since QGIS 3.16
      */
-    QStringList completionList() const {return mAutocompletionList;}
+    QStringList completionList() const { return mAutocompletionList; }
 
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( u"locator-filters"_s );
@@ -196,7 +195,6 @@ class CORE_EXPORT QgsLocator : public QObject
     void filterSentResult( QgsLocatorResult result );
 
   private:
-
     QgsFeedback *mFeedback = nullptr;
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
@@ -206,9 +204,6 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList mAutocompletionList;
 
     void cancelRunningQuery();
-
 };
 
 #endif // QGSLOCATOR_H
-
-

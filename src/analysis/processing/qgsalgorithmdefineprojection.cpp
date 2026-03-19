@@ -53,10 +53,12 @@ QString QgsDefineProjectionAlgorithm::groupId() const
 
 QString QgsDefineProjectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets an existing layer's projection to the provided CRS without reprojecting features. "
-                      "Contrary to the \"Assign projection\" algorithm, it will not output a new layer.\n\n"
-                      "If the input layer is a shapefile, the .prj file will be overwritten — or created if "
-                      "missing — to match the provided CRS." );
+  return QObject::tr(
+    "This algorithm sets an existing layer's projection to the provided CRS without reprojecting features. "
+    "Contrary to the \"Assign projection\" algorithm, it will not output a new layer.\n\n"
+    "If the input layer is a shapefile, the .prj file will be overwritten — or created if "
+    "missing — to match the provided CRS."
+  );
 }
 
 QString QgsDefineProjectionAlgorithm::shortDescription() const

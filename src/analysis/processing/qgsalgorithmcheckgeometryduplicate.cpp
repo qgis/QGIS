@@ -62,8 +62,10 @@ QString QgsGeometryCheckDuplicateAlgorithm::groupId() const
 
 QString QgsGeometryCheckDuplicateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the duplicate geometries.\n"
-                      "Duplicate geometries are errors." );
+  return QObject::tr(
+    "This algorithm checks the duplicate geometries.\n"
+    "Duplicate geometries are errors."
+  );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckDuplicateAlgorithm::flags() const
@@ -80,31 +82,23 @@ void QgsGeometryCheckDuplicateAlgorithm::initAlgorithm( const QVariantMap &confi
 {
   Q_UNUSED( configuration )
 
-  addParameter(
-    new QgsProcessingParameterFeatureSource(
-      u"INPUT"_s, QObject::tr( "Input layer" ),
-      QList<int>()
-        << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-        << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
-        << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  addParameter( new QgsProcessingParameterFeatureSource(
+    u"INPUT"_s,
+    QObject::tr( "Input layer" ),
+    QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"ERRORS"_s, QObject::tr( "Duplicate geometries errors" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Duplicate geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
+
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
     )
   );
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"ERRORS"_s, QObject::tr( "Duplicate geometries errors" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Duplicate geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
-  ) );
-
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
-  );
-  tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -147,12 +141,8 @@ QVariantMap QgsGeometryCheckDuplicateAlgorithm::processAlgorithm( const QVariant
   QgsFields fields = outputFields();
   fields.append( uniqueIdField );
 
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs()
-  ) );
-  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink( parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
@@ -205,15 +195,16 @@ QVariantMap QgsGeometryCheckDuplicateAlgorithm::processAlgorithm( const QVariant
     QgsFeature f;
     QgsAttributes attrs = f.attributes();
 
-    attrs << error->layerId()
-          << inputLayer->name()
-          << error->vidx().part
-          << error->vidx().ring
-          << error->vidx().vertex
-          << error->location().x()
-          << error->location().y()
-          << error->value().toString()
-          << inputLayer->getFeature( error->featureId() ).attribute( uniqueIdField.name() );
+    attrs
+      << error->layerId()
+      << inputLayer->name()
+      << error->vidx().part
+      << error->vidx().ring
+      << error->vidx().vertex
+      << error->location().x()
+      << error->location().y()
+      << error->value().toString()
+      << inputLayer->getFeature( error->featureId() ).attribute( uniqueIdField.name() );
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );

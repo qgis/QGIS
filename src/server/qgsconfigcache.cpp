@@ -38,26 +38,17 @@ QgsAbstractCacheStrategy *getStrategyFromSettings( QgsServerSettings *settings )
   if ( settings && settings->projectCacheStrategy() == "periodic"_L1 )
   {
     strategy = new QgsPeriodicCacheStrategy( settings->projectCacheCheckInterval() );
-    QgsMessageLog::logMessage(
-      u"Initializing 'periodic' cache strategy"_s,
-      u"Server"_s, Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'periodic' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
   else if ( settings && settings->projectCacheStrategy() == "off"_L1 )
   {
     strategy = new QgsNullCacheStrategy();
-    QgsMessageLog::logMessage(
-      u"Initializing 'off' cache strategy"_s,
-      u"Server"_s, Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'off' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
   else
   {
     strategy = new QgsFileSystemCacheStrategy();
-    QgsMessageLog::logMessage(
-      u"Initializing 'filesystem' cache strategy"_s,
-      u"Server"_s, Qgis::MessageLevel::Info
-    );
+    QgsMessageLog::logMessage( u"Initializing 'filesystem' cache strategy"_s, u"Server"_s, Qgis::MessageLevel::Info );
   }
 
   return strategy;
@@ -68,10 +59,7 @@ void QgsConfigCache::initialize( QgsServerSettings *settings )
 {
   if ( sInstance )
   {
-    QgsMessageLog::logMessage(
-      u"Project's cache is already initialized"_s,
-      u"Server"_s, Qgis::MessageLevel::Warning
-    );
+    QgsMessageLog::logMessage( u"Project's cache is already initialized"_s, u"Server"_s, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -103,8 +91,7 @@ QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
 
 QgsConfigCache::QgsConfigCache()
   : QgsConfigCache( new QgsFileSystemCacheStrategy() )
-{
-}
+{}
 
 const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
@@ -120,9 +107,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage
-    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                                       | Qgis::ProjectReadFlag::DontLoad3DViews
-                                       | Qgis::ProjectReadFlag::DontUpgradeAnnotations;
+    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations;
     if ( settings )
     {
       // Activate trust layer metadata flag
@@ -167,18 +152,12 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           // This is a critical error unless QGIS_SERVER_IGNORE_BAD_LAYERS is set to TRUE
           if ( !settings || !settings->ignoreBadLayers() )
           {
-            QgsMessageLog::logMessage(
-              u"Error, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ),
-              u"Server"_s, Qgis::MessageLevel::Critical
-            );
+            QgsMessageLog::logMessage( u"Error, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ), u"Server"_s, Qgis::MessageLevel::Critical );
             throw QgsServerException( u"Layer(s) not valid"_s );
           }
           else
           {
-            QgsMessageLog::logMessage(
-              u"Warning, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ),
-              u"Server"_s, Qgis::MessageLevel::Warning
-            );
+            QgsMessageLog::logMessage( u"Warning, Layer(s) %1 not valid in project %2"_s.arg( unrestrictedBadLayers.join( ", "_L1 ), path ), u"Server"_s, Qgis::MessageLevel::Warning );
           }
         }
       }
@@ -186,10 +165,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     }
     else
     {
-      QgsMessageLog::logMessage(
-        u"Error when loading project file '%1': %2 "_s.arg( path, prj->error() ),
-        u"Server"_s, Qgis::MessageLevel::Critical
-      );
+      QgsMessageLog::logMessage( u"Error when loading project file '%1': %2 "_s.arg( path, prj->error() ), u"Server"_s, Qgis::MessageLevel::Critical );
     }
   }
 
@@ -322,8 +298,7 @@ void QgsConfigCache::removeChangedEntries()
 
 
 QgsFileSystemCacheStrategy::QgsFileSystemCacheStrategy()
-{
-}
+{}
 
 void QgsFileSystemCacheStrategy::attach( QgsConfigCache *cache )
 {
@@ -344,8 +319,7 @@ void QgsFileSystemCacheStrategy::entryInserted( const QString &path )
 
 QgsPeriodicCacheStrategy::QgsPeriodicCacheStrategy( int interval )
   : mInterval( interval )
-{
-}
+{}
 
 void QgsPeriodicCacheStrategy::attach( QgsConfigCache *cache )
 {

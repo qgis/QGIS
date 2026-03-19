@@ -71,7 +71,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString customComment READ customComment WRITE setCustomComment )
 
   public:
-
+    // clang-format off
     /**
      * Constructor. Constructs a new QgsField object.
      * \param name Field name
@@ -87,13 +87,8 @@ class CORE_EXPORT QgsField
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
-    QgsField( const QString &name = QString(),
-              QMetaType::Type type = QMetaType::Type::UnknownType,
-              const QString &typeName = QString(),
-              int len = 0,
-              int prec = 0,
-              const QString &comment = QString(),
-              QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+    // clang-format on
 
 
     /**
@@ -427,6 +422,7 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant &v, QString *errorMessage = nullptr ) const;
 #else
+// clang-format off
 
     /**
      * Converts the provided variant to a compatible format
@@ -488,6 +484,7 @@ class CORE_EXPORT QgsField
     }
 
     % End
+// clang-format on
 #endif
 
     //! Allows direct construction of QVariants from fields.
@@ -585,11 +582,13 @@ class CORE_EXPORT QgsField
     void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsField: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

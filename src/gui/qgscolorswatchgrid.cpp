@@ -274,7 +274,8 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     const int row = index / NUMBER_COLORS_PER_ROW;
     const int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
+    QRect swatchRect
+      = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {

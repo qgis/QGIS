@@ -20,6 +20,8 @@
 
 #include <mutex>
 
+#include "qgsnetworkaccessmanager.h"
+
 #include <QStorageInfo>
 
 #include "moc_qgsnetworkdiskcache.cpp"
@@ -29,9 +31,70 @@ ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
 ///@endcond
 QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
+QHash<QUrl, QVariantMap> QgsNetworkDiskCache::sPendingRequestHeaders;
+
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
   : QNetworkDiskCache( parent )
+{}
+
+void QgsNetworkDiskCache::insertPendingRequestHeaders( const QUrl &url, const QVariantMap &headers )
 {
+  const QMutexLocker lock( &sDiskCacheMutex );
+  sPendingRequestHeaders.insert( url, headers );
+}
+
+bool QgsNetworkDiskCache::hasPendingRequestForUrl( const QUrl &url ) const
+{
+  const QMutexLocker lock( &sDiskCacheMutex );
+  return sPendingRequestHeaders.contains( url );
+}
+
+void QgsNetworkDiskCache::removePendingRequestForUrl( const QUrl &url ) const
+{
+  const QMutexLocker lock( &sDiskCacheMutex );
+  sPendingRequestHeaders.remove( url );
+}
+
+bool QgsNetworkDiskCache::hasInvalidMatchForRequest( const QNetworkRequest &request )
+{
+  // metaData is protected by mutex, so thread-safe to call here
+  const QNetworkCacheMetaData cachedMetadata = metaData( request.url() );
+  if ( !cachedMetadata.isValid() )
+    return false;
+
+  // iterate through the cached response headers looking for "Vary"
+  const QNetworkCacheMetaData::RawHeaderList rawHeaders = cachedMetadata.rawHeaders();
+  for ( const QNetworkCacheMetaData::RawHeader &cachedHeader : rawHeaders )
+  {
+    if ( cachedHeader.first.compare( "vary", Qt::CaseInsensitive ) == 0 )
+    {
+      const QString varyValue = QString::fromUtf8( cachedHeader.second ).trimmed();
+
+      // vary: * indicates we should NEVER use this cached response
+      if ( varyValue == '*' )
+      {
+        return true;
+      }
+
+      // retrieve the original headers that generated this cached response
+      const QVariantMap originalCachedHeaders = cachedMetadata.attributes().value( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeOriginalHeaders ) ).toMap();
+      const QStringList varyHeaderNames = varyValue.split( ',' );
+      for ( const QString &headerName : varyHeaderNames )
+      {
+        const QString normalizedHeaderName = headerName.trimmed().toLower();
+        const QByteArray currentHeaderValue = request.rawHeader( normalizedHeaderName.toUtf8() );
+        const QByteArray originalCachedHeaderValue = originalCachedHeaders.value( normalizedHeaderName ).toByteArray();
+        if ( currentHeaderValue != originalCachedHeaderValue )
+        {
+          // we can't use the previously cached response, the header corresponding to the Vary value doesn't match
+          // what was used when the cached response was stored
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 QString QgsNetworkDiskCache::cacheDirectory() const
@@ -98,7 +161,26 @@ bool QgsNetworkDiskCache::remove( const QUrl &url )
 QIODevice *QgsNetworkDiskCache::prepare( const QNetworkCacheMetaData &metaData )
 {
   const QMutexLocker lock( &sDiskCacheMutex );
-  return sDiskCache.prepare( metaData );
+
+  // explicitly drop responses with "Vary: *" -- these should never be cached!
+  for ( const QNetworkCacheMetaData::RawHeader &header : metaData.rawHeaders() )
+  {
+    if ( header.first.compare( "vary", Qt::CaseInsensitive ) == 0 && QString::fromUtf8( header.second ).trimmed() == "*" )
+    {
+      return nullptr;
+    }
+  }
+
+  QNetworkCacheMetaData modifiedMeta = metaData;
+  // inject the original request headers, so that these are stored in the cache files and we can later retrieve them
+  if ( sPendingRequestHeaders.contains( metaData.url() ) )
+  {
+    QNetworkCacheMetaData::AttributesMap attributes = modifiedMeta.attributes();
+    attributes.insert( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeOriginalHeaders ), sPendingRequestHeaders.value( metaData.url() ) );
+    modifiedMeta.setAttributes( attributes );
+  }
+
+  return sDiskCache.prepare( modifiedMeta );
 }
 
 void QgsNetworkDiskCache::insert( QIODevice *device )
@@ -128,8 +210,7 @@ void QgsNetworkDiskCache::clear()
 void determineSmartCacheSize( const QString &cacheDir, qint64 &cacheSize )
 {
   std::function<qint64( const QString & )> dirSize;
-  dirSize = [&dirSize]( const QString & dirPath ) -> qint64
-  {
+  dirSize = [&dirSize]( const QString &dirPath ) -> qint64 {
     qint64 size = 0;
     QDir dir( dirPath );
 
@@ -182,8 +263,8 @@ void determineSmartCacheSize( const QString &cacheDir, qint64 &cacheSize )
 
     // Add 16% of free space up to 500 MB
     cacheSize10MB += std::max( 2LL, static_cast<qint64>( available10MB * 0.16 ) );
-#else \
-  // Add 30% of free space up to 500 MB
+#else
+    // Add 30% of free space up to 500 MB
     cacheSize10MB += std::max( 5LL, static_cast<qint64>( available10MB * 0.30 ) );
 #endif
   }

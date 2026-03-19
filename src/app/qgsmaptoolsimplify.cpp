@@ -61,8 +61,12 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   // communication with map tool
   connect( mToleranceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
-  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) { emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value<Qgis::MapToolUnit>() ); } );
-  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( const int method ) { emit methodChanged( ( QgsMapToolSimplify::Method ) method ); } );
+  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value<Qgis::MapToolUnit>() );
+  } );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( const int method ) {
+    emit methodChanged( ( QgsMapToolSimplify::Method ) method );
+  } );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
       mOptionsStackedWidget->setCurrentIndex( 0 );
@@ -233,7 +237,8 @@ QgsGeometry QgsMapToolSimplify::processGeometry( const QgsGeometry &geometry, do
     case SimplifySnapToGrid:
     case SimplifyVisvalingam:
     {
-      const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod == SimplifySnapToGrid ? Qgis::VectorSimplificationAlgorithm::SnapToGrid : Qgis::VectorSimplificationAlgorithm::Visvalingam );
+      const QgsMapToPixelSimplifier
+        simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod == SimplifySnapToGrid ? Qgis::VectorSimplificationAlgorithm::SnapToGrid : Qgis::VectorSimplificationAlgorithm::Visvalingam );
       return simplifier.simplify( geometry );
     }
 
@@ -486,11 +491,7 @@ void QgsMapToolSimplify::deactivate()
 QString QgsMapToolSimplify::statusText() const
 {
   const int percent = mOriginalVertexCount ? ( 100 * mReducedVertexCount / mOriginalVertexCount ) : 0;
-  QString txt = tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
-                  .arg( mSelectedFeatures.count() )
-                  .arg( mOriginalVertexCount )
-                  .arg( mReducedVertexCount )
-                  .arg( percent );
+  QString txt = tr( "%1 feature(s): %2 to %3 vertices (%4%)" ).arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
   if ( mReducedHasErrors )
     txt += '\n' + tr( "Simplification failed!" );
   return txt;

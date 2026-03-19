@@ -458,5 +458,5 @@ foreach(module ${PY_MODULES})
   endif()
 endforeach(module)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/METADATA.in ${CMAKE_CURRENT_BINARY_DIR}/METADATA @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/METADATA DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/qgis-${COMPLETE_VERSION}.dist-info/")

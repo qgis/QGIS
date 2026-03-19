@@ -94,12 +94,10 @@ void TestQgsAttributeForm::cleanupTestCase()
 }
 
 void TestQgsAttributeForm::init()
-{
-}
+{}
 
 void TestQgsAttributeForm::cleanup()
-{
-}
+{}
 
 void TestQgsAttributeForm::testFieldConstraint()
 {
@@ -961,7 +959,8 @@ void TestQgsAttributeForm::testAttributeFormInterface()
   {
     public:
       MyInterface( QgsAttributeForm *form )
-        : QgsAttributeFormInterface( form ) {}
+        : QgsAttributeFormInterface( form )
+      {}
 
       void featureChanged() override
       {

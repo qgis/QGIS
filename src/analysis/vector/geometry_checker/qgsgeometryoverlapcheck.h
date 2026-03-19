@@ -57,7 +57,14 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
      * The \a value is the area of the overlapping area in map units.
      * The \a overlappedFeature provides more details about the overlap.
      */
-    QgsGeometryOverlapCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature );
+    QgsGeometryOverlapCheckError(
+      const QgsGeometryCheck *check,
+      const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+      const QgsGeometry &geometry,
+      const QgsPointXY &errorLocation,
+      const QVariant &value,
+      const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature
+    );
 
     /**
      * Returns the overlapped feature
@@ -108,7 +115,9 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
      */
     QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()
+    ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 

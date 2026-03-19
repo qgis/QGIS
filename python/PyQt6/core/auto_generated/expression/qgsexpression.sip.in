@@ -86,32 +86,31 @@ Implicit sharing was added in 2.14
 #include "qgsexpression.h"
 %End
   public:
-
     struct ParserError
     {
-      enum ParserErrorType /BaseType=IntEnum/
-      {
-        Unknown,
-        FunctionUnknown,
-        FunctionWrongArgs,
-        FunctionInvalidParams,
-        FunctionNamedArgsError
-      };
+        enum ParserErrorType /BaseType=IntEnum/
+        {
+          Unknown,
+          FunctionUnknown,
+          FunctionWrongArgs,
+          FunctionInvalidParams,
+          FunctionNamedArgsError
+        };
 
-      QgsExpression::ParserError::ParserErrorType errorType;
+        QgsExpression::ParserError::ParserErrorType errorType;
 %Docstring
 The type of parser error that was found.
 %End
 
-      QString errorMsg;
+        QString errorMsg;
 
-      int firstLine;
+        int firstLine;
 
-      int firstColumn;
+        int firstColumn;
 
-      int lastLine;
+        int lastLine;
 
-      int lastColumn;
+        int lastColumn;
     };
 
     QgsExpression( const QString &expr );
@@ -450,8 +449,7 @@ units.
 .. seealso:: :py:func:`setDistanceUnits`
 %End
 
-    static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
-                                          const QgsDistanceArea *distanceArea = 0 );
+    static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea = 0 );
 %Docstring
 This function replaces each expression between [% and %] in the string
 with the result of its evaluation with the specified context

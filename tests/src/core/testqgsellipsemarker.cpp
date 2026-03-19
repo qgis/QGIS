@@ -46,7 +46,8 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
 
   public:
     TestQgsEllipseMarkerSymbol()
-      : QgsTest( u"Ellipse Marker Tests"_s, u"symbol_ellipsemarker"_s ) {}
+      : QgsTest( u"Ellipse Marker Tests"_s, u"symbol_ellipsemarker"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

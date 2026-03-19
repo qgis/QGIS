@@ -298,8 +298,7 @@ void QgsFilteredTableWidget::onTableWidgetMenuActionDeselectAllTriggered()
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-{
-}
+{}
 
 QVariant QgsValueRelationWidgetWrapper::value() const
 {
@@ -535,8 +534,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     QVariant oldValue( value() );
     setFormFeatureAttribute( attribute, newValue );
     // Update combos if the value used in the filter expression has changed
-    if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression )
-         && QgsValueRelationFieldFormatter::expressionFormAttributes( mExpression ).contains( attribute ) )
+    if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) && QgsValueRelationFieldFormatter::expressionFormAttributes( mExpression ).contains( attribute ) )
     {
       populate();
       // Restore value
@@ -582,10 +580,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   // A bit of logic to set the default value if AllowNull is false and this is a new feature
   // Note that this needs to be here after the cache has been created/updated by populate()
   // and signals unblocked (we want this to propagate to the feature itself)
-  if ( context().attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode
-       && !formFeature().attribute( fieldIdx() ).isValid()
-       && !mCache.isEmpty()
-       && !config( u"AllowNull"_s ).toBool() )
+  if ( context().attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode && !formFeature().attribute( fieldIdx() ).isValid() && !mCache.isEmpty() && !config( u"AllowNull"_s ).toBool() )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
@@ -696,7 +691,9 @@ void QgsValueRelationWidgetWrapper::populate()
     QStringListModel *m = new QStringListModel( values, mLineEdit );
     QCompleter *completer = new QCompleter( m, mLineEdit );
 
-    const Qt::MatchFlags completerMatchFlags { config().contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config().value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
+    const Qt::MatchFlags completerMatchFlags {
+      config().contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config().value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith
+    };
 
     if ( completerMatchFlags.testFlag( Qt::MatchFlag::MatchContains ) )
     {

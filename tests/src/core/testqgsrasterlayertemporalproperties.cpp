@@ -59,12 +59,10 @@ void TestQgsRasterLayerTemporalProperties::initTestCase()
 }
 
 void TestQgsRasterLayerTemporalProperties::init()
-{
-}
+{}
 
 void TestQgsRasterLayerTemporalProperties::cleanup()
-{
-}
+{}
 
 void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 {
@@ -86,9 +84,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QgsRasterLayerTemporalProperties temporalProperties;
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
-  );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   QDomElement node = doc.createElement( u"temp"_s );

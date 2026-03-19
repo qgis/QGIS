@@ -69,7 +69,7 @@ QList<QgsMapLayer *> QgsProjectUtils::layersMatchingUri( const QgsProject *proje
     catch ( QgsNotSupportedException &e )
     {
       // expected
-      ( void )e;
+      ( void ) e;
     }
   }
   return layersList;
@@ -104,9 +104,8 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
       return true;
   }
 
-  std::function< bool( QgsLayerTreeGroup *group ) > traverseTree;
-  traverseTree = [ &traverseTree, layer ]( QgsLayerTreeGroup * group ) -> bool
-  {
+  std::function< bool( QgsLayerTreeGroup * group ) > traverseTree;
+  traverseTree = [&traverseTree, layer]( QgsLayerTreeGroup *group ) -> bool {
     // is the group a layer group containing our target layer?
     if ( group->groupLayer() && group->findLayer( layer ) )
     {

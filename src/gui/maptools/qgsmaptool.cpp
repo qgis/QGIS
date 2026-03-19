@@ -21,6 +21,8 @@
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QAbstractButton>
 #include <QAction>
@@ -30,12 +32,14 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryDouble *QgsMapTool::settingSearchRadiusMM
+  = new QgsSettingsEntryDouble( u"search-radius-mm"_s, QgsSettingsTree::sTreeMap, Qgis::DEFAULT_SEARCH_RADIUS_MM, u"Search/identify radius in millimeters"_s );
+
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-{
-}
+{}
 
 
 QgsMapTool::~QgsMapTool()
@@ -130,8 +134,7 @@ void QgsMapTool::reactivate()
 }
 
 void QgsMapTool::clean()
-{
-}
+{}
 
 void QgsMapTool::setAction( QAction *action )
 {
@@ -236,8 +239,7 @@ QgsMapCanvas *QgsMapTool::canvas() const
 
 double QgsMapTool::searchRadiusMM()
 {
-  const QgsSettings settings;
-  const double radius = settings.value( u"Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const double radius = settingSearchRadiusMM->value();
 
   if ( radius > 0 )
   {
@@ -264,8 +266,7 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
 
 
 void QgsMapTool::populateContextMenu( QMenu * )
-{
-}
+{}
 
 
 bool QgsMapTool::populateContextMenuWithEvent( QMenu *, QgsMapMouseEvent * )

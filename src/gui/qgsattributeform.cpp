@@ -1724,7 +1724,8 @@ void QgsAttributeForm::synchronizeState()
       {
         if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
         {
-          mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
+          mConstraintsFailMessageBarItem
+            = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
           mMessageBar->pushItem( mConstraintsFailMessageBarItem );
         }
         else if ( mValidConstraints && mConstraintsFailMessageBarItem )
@@ -1894,7 +1895,12 @@ void QgsAttributeForm::init()
 
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
-              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+              registerContainerInformation( new ContainerInformation(
+                widgetInfo.widget,
+                containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+                containerDef->collapsed(),
+                containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+              ) );
             }
             column += 2;
             break;
@@ -1929,7 +1935,12 @@ void QgsAttributeForm::init()
 
             if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
             {
-              registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+              registerContainerInformation( new ContainerInformation(
+                widgetInfo.widget,
+                containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+                containerDef->collapsed(),
+                containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+              ) );
             }
             column += 2;
             break;
@@ -2384,9 +2395,7 @@ void QgsAttributeForm::init()
     openAttributeTableButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     openAttributeTableButton->setText( tr( "Show in &Table" ) );
     openAttributeTableButton->setToolTip( tr( "Open the attribute table editor with the filtered features" ) );
-    connect( openAttributeTableButton, &QToolButton::clicked, this, [this] {
-      emit openFilteredFeaturesAttributeTable( createFilterExpression() );
-    } );
+    connect( openAttributeTableButton, &QToolButton::clicked, this, [this] { emit openFilteredFeaturesAttributeTable( createFilterExpression() ); } );
     boxLayout->addWidget( openAttributeTableButton );
 
     QPushButton *zoomButton = new QPushButton();
@@ -2494,17 +2503,12 @@ void QgsAttributeForm::initPython()
 
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
-  if ( !mLayer->editFormConfig().initFunction().isEmpty()
-       && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
+  if ( !mLayer->editFormConfig().initFunction().isEmpty() && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
     const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
     if ( !allowed )
     {
-      mMessageBar->pushMessage(
-        tr( "Security warning" ),
-        tr( "The attribute form contains an embedded script which has been denied execution." ),
-        Qgis::MessageLevel::Warning
-      );
+      mMessageBar->pushMessage( tr( "Security warning" ), tr( "The attribute form contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -2573,9 +2577,7 @@ void QgsAttributeForm::initPython()
       static int sFormId = 0;
       mPyFormVarName = u"_qgis_featureform_%1_%2"_s.arg( mFormNr ).arg( sFormId++ );
 
-      QString form = u"%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )"_s
-                       .arg( mPyFormVarName )
-                       .arg( ( quint64 ) this );
+      QString form = u"%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )"_s.arg( mPyFormVarName ).arg( ( quint64 ) this );
 
       QgsPythonRunner::run( form );
 
@@ -2590,7 +2592,9 @@ void QgsAttributeForm::initPython()
       {
         // If we get here, it means that the function doesn't accept three arguments
         QMessageBox msgBox;
-        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+        msgBox.setText(
+          tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction )
+        );
         msgBox.exec();
 #if 0
         QString expr = QString( "%1(%2)" )
@@ -2814,7 +2818,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
           if ( containerDef->visibilityExpression().enabled() || containerDef->collapsedExpression().enabled() )
           {
-            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(), containerDef->collapsed(), containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression() ) );
+            registerContainerInformation( new ContainerInformation(
+              widgetInfo.widget,
+              containerDef->visibilityExpression().enabled() ? containerDef->visibilityExpression().data() : QgsExpression(),
+              containerDef->collapsed(),
+              containerDef->collapsedExpression().enabled() ? containerDef->collapsedExpression().data() : QgsExpression()
+            ) );
           }
           if ( childDef->verticalStretch() == 0 )
           {
@@ -3408,7 +3417,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
 bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 {
-  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature, mMode == QgsAttributeEditorContext::PreviewMode ? QgsVectorLayerUtils::FieldIsEditableFlag::IgnoreLayerEditability : QgsVectorLayerUtils::FieldIsEditableFlags() );
+  return QgsVectorLayerUtils::
+    fieldIsEditable( mLayer, fieldIndex, mFeature, mMode == QgsAttributeEditorContext::PreviewMode ? QgsVectorLayerUtils::FieldIsEditableFlag::IgnoreLayerEditability : QgsVectorLayerUtils::FieldIsEditableFlags() );
 }
 
 void QgsAttributeForm::updateFieldDependencies()
@@ -3497,8 +3507,7 @@ void QgsAttributeForm::updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrap
   if ( eww )
   {
     QString expressionField = eww->layer()->expressionField( eww->fieldIdx() );
-    if ( expressionField.contains( u"relation_aggregate"_s )
-         || expressionField.contains( u"get_features"_s ) )
+    if ( expressionField.contains( u"relation_aggregate"_s ) || expressionField.contains( u"get_features"_s ) )
       mRelatedLayerFieldsDependencies.insert( eww );
   }
   else

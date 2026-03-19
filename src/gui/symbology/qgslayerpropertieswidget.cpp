@@ -254,10 +254,11 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   expContext << QgsExpressionContextUtils::layerScope( mVectorLayer );
@@ -291,7 +292,21 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << u"symbol_layer_count"_s << u"symbol_layer_index"_s << u"symbol_frame"_s );
+  expContext.setHighlightedVariables(
+    QStringList()
+    << QgsExpressionContext::EXPR_ORIGINAL_VALUE
+    << QgsExpressionContext::EXPR_SYMBOL_COLOR
+    << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT
+    << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+    << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
+    << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT
+    << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+    << QgsExpressionContext::EXPR_CLUSTER_COLOR
+    << QgsExpressionContext::EXPR_CLUSTER_SIZE
+    << u"symbol_layer_count"_s
+    << u"symbol_layer_index"_s
+    << u"symbol_frame"_s
+  );
 
   return expContext;
 }
@@ -442,7 +457,9 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
     mLayer->paintEffect()->setEnabled( false );
     paintEffectToggled = true;
   }
-  mEffectWidget->setPreviewPicture( QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, Qgis::RenderUnit::Millimeters, QSize( 60, 60 ), QgsMapUnitScale(), mSymbol ? mSymbol->type() : Qgis::SymbolType::Hybrid ) );
+  mEffectWidget->setPreviewPicture(
+    QgsSymbolLayerUtils::symbolLayerPreviewPicture( mLayer, Qgis::RenderUnit::Millimeters, QSize( 60, 60 ), QgsMapUnitScale(), mSymbol ? mSymbol->type() : Qgis::SymbolType::Hybrid )
+  );
   if ( paintEffectToggled )
   {
     mLayer->paintEffect()->setEnabled( true );

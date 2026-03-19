@@ -640,8 +640,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile = std::make_unique<QgsDelimitedTextFile>();
   mFile->setFromUrl( url );
 
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 

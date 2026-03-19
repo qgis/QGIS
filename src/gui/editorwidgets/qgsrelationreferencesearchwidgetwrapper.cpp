@@ -16,11 +16,12 @@
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 
 #include "qgsapplication.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
@@ -34,8 +35,7 @@ using namespace Qt::StringLiterals;
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
   , mCanvas( canvas )
-{
-}
+{}
 
 bool QgsRelationReferenceSearchWidgetWrapper::applyDirectly()
 {
@@ -189,8 +189,7 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expr
   }
   else
   {
-    str = u"%1 = '%3'"_s
-            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+    str = u"%1 = '%3'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   }
   mExpression = str;
 }
@@ -214,10 +213,10 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 
-  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() > 0 ).toBool();
   if ( fetchLimitActive )
   {
-    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
+    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsFeatureFilterModel::settingsMaxEntriesRelationWidget->value() ).toInt() );
   }
 
   if ( config( u"FilterFields"_s, QVariant() ).isValid() )

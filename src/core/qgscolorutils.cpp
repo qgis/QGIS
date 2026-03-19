@@ -196,10 +196,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getRgbF( &red, &green, &blue, &alpha );
-      return compatString + u"rgb:%1,%2,%3,%4"_s.arg( qgsDoubleToString( red, 7 ),
-             qgsDoubleToString( green, 7 ),
-             qgsDoubleToString( blue, 7 ),
-             qgsDoubleToString( alpha, 7 ) );
+      return compatString + u"rgb:%1,%2,%3,%4"_s.arg( qgsDoubleToString( red, 7 ), qgsDoubleToString( green, 7 ), qgsDoubleToString( blue, 7 ), qgsDoubleToString( alpha, 7 ) );
     }
 
     case QColor::Hsv:
@@ -210,10 +207,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getHsvF( &h, &s, &v, &alpha );
-      return compatString + u"hsv:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ),
-             qgsDoubleToString( s ),
-             qgsDoubleToString( v ),
-             qgsDoubleToString( alpha ) );
+      return compatString + u"hsv:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ), qgsDoubleToString( s ), qgsDoubleToString( v ), qgsDoubleToString( alpha ) );
     }
 
     case QColor::Hsl:
@@ -224,10 +218,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getHslF( &h, &s, &l, &alpha );
-      return compatString + u"hsl:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ),
-             qgsDoubleToString( s ),
-             qgsDoubleToString( l ),
-             qgsDoubleToString( alpha ) );
+      return compatString + u"hsl:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ), qgsDoubleToString( s ), qgsDoubleToString( l ), qgsDoubleToString( alpha ) );
     }
 
     case QColor::Cmyk:
@@ -239,11 +230,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getCmykF( &c, &m, &y, &k, &alpha );
-      return compatString + u"cmyk:%1,%2,%3,%4,%5"_s.arg( qgsDoubleToString( c ),
-             qgsDoubleToString( m ),
-             qgsDoubleToString( y ),
-             qgsDoubleToString( k ),
-             qgsDoubleToString( alpha ) );
+      return compatString + u"cmyk:%1,%2,%3,%4,%5"_s.arg( qgsDoubleToString( c ), qgsDoubleToString( m ), qgsDoubleToString( y ), qgsDoubleToString( k ), qgsDoubleToString( alpha ) );
     }
   }
   return QString();
@@ -349,7 +336,7 @@ QString QgsColorUtils::saveIccProfile( const QColorSpace &colorSpace, const QStr
   return QString();
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
 Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )
 {

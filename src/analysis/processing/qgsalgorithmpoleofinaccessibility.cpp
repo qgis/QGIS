@@ -52,20 +52,26 @@ QString QgsPoleOfInaccessibilityAlgorithm::groupId() const
 
 QString QgsPoleOfInaccessibilityAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the pole of inaccessibility for a polygon layer, which is the most "
-                      "distant internal point from the boundary of the surface. This algorithm uses the 'polylabel' "
-                      "algorithm (Vladimir Agafonkin, 2016), which is an iterative approach guaranteed to find the "
-                      "true pole of inaccessibility within a specified tolerance (in layer units). More precise "
-                      "tolerances require more iterations and will take longer to calculate." )
+  return QObject::tr(
+           "This algorithm calculates the pole of inaccessibility for a polygon layer, which is the most "
+           "distant internal point from the boundary of the surface. This algorithm uses the 'polylabel' "
+           "algorithm (Vladimir Agafonkin, 2016), which is an iterative approach guaranteed to find the "
+           "true pole of inaccessibility within a specified tolerance (in layer units). More precise "
+           "tolerances require more iterations and will take longer to calculate."
+         )
          + u"\n\n"_s
-         + QObject::tr( "The distance from the calculated pole to the polygon boundary will be stored as a new "
-                        "attribute in the output layer." );
+         + QObject::tr(
+           "The distance from the calculated pole to the polygon boundary will be stored as a new "
+           "attribute in the output layer."
+         );
 }
 
 QString QgsPoleOfInaccessibilityAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a point layer with features representing the most "
-                      "distant internal point from the boundary of the surface for a polygon layer." );
+  return QObject::tr(
+    "Creates a point layer with features representing the most "
+    "distant internal point from the boundary of the surface for a polygon layer."
+  );
 }
 
 QString QgsPoleOfInaccessibilityAlgorithm::svgIconPath() const

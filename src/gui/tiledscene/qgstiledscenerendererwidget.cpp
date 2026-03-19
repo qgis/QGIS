@@ -19,8 +19,7 @@
 QgsTiledSceneRendererWidget::QgsTiledSceneRendererWidget( QgsTiledSceneLayer *layer, QgsStyle *style )
   : mLayer( layer )
   , mStyle( style )
-{
-}
+{}
 
 void QgsTiledSceneRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {

@@ -68,13 +68,7 @@ class ANALYSIS_EXPORT QgsConvertGpxFeatureTypeAlgorithm : public QgsProcessingAl
     /**
      * Builds the argument lists for the babel command
      */
-    static void createArgumentLists(
-      const QString &inputFile,
-      const QString &outputFile,
-      ConversionType conversion,
-      QStringList &processArgs,
-      QStringList &logArgs
-    );
+    static void createArgumentLists( const QString &inputFile, const QString &outputFile, ConversionType conversion, QStringList &processArgs, QStringList &logArgs );
 
     friend class TestQgsProcessingAlgsPt2;
 };

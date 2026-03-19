@@ -33,13 +33,8 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
 {
     Q_OBJECT
   public:
-
     //! Constructor
-    QgsRunnableProviderCreator( const QString &layerId,
-                                QString const &providerKey,
-                                QString const &dataSource,
-                                const QgsDataProvider::ProviderOptions &options,
-                                Qgis::DataProviderReadFlags flags );
+    QgsRunnableProviderCreator( const QString &layerId, QString const &providerKey, QString const &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags );
 
     void run() override;
 

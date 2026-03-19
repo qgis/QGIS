@@ -68,12 +68,10 @@ class TestQgsMapRendererJob : public QgsTest
 
   public:
     TestQgsMapRendererJob()
-      : QgsTest( u"Map Renderer Job Tests"_s, u"map_renderer"_s ) {}
+      : QgsTest( u"Map Renderer Job Tests"_s, u"map_renderer"_s )
+    {}
 
-    ~TestQgsMapRendererJob() override
-    {
-      delete mMapSettings;
-    }
+    ~TestQgsMapRendererJob() override { delete mMapSettings; }
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -129,7 +127,9 @@ void TestQgsMapRendererJob::initTestCase()
   mEncoding = u"UTF-8"_s;
   QgsField myField1( u"Value"_s, QMetaType::Type::Int, u"int"_s, 10, 0, u"Value on lon"_s );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
+  mCRS = QgsCoordinateReferenceSystem(
+    R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+  );
   //
   // Create the test dataset if it doesn't exist
   //
@@ -432,10 +432,19 @@ void TestQgsMapRendererJob::testRenderedFeatureHandlers()
     wkts << g.asWkt( 1 );
   }
   wkts.sort();
-  QCOMPARE( wkts.at( 0 ), u"LineString (0 124.4, 0.3 124.4, 4 123.4, 5.5 121.9, 7.3 119.5, 8.2 118.9, 10.6 116.4, 11.2 115.8, 15.8 113.1, 20.4 111, 24 110.1, 30.7 108.5, 32.8 108.5, 36.5 108.5, 42.6 109.1, 44.4 109.5, 47.4 110.4, 49.9 110.4, 54.1 111.9, 55 112.5, 57.2 113.1, 58.4 113.7, 60.8 114.9, 62 115.5, 63.8 116.4, 64.8 116.8, 66.3 117.4, 72.4 119.2, 80 119.5, 83.9 120.7, 85.7 121.3, 87.3 121.6, 89.4 121.6, 91.8 121.6, 93.6 121.9, 95.5 122.2, 99.7 122.2, 100.3 122.2, 103.7 122.8, 106.4 122.8, 109.8 122.5, 112.8 122.5, 117.1 122.5, 121 121, 125.6 119.5, 127.4 118.3, 134.7 118, 144.7 120.4, 148.4 121.3, 156 121.9, 159.6 121.9, 168.4 119.2, 173.6 116.4, 179.1 112.5, 183.9 110.1, 188.5 107.6, 197.3 104.9, 197.3 104.9, 198.5 104.6, 204 105.2, 206.4 106.4, 211.3 107.6, 216.2 109.5, 218 110.1, 221 111, 229.5 112.2, 230.8 112.2, 243.2 111.6, 243.5 111, 251.4 107.3, 253.3 106.7)"_s );
-  QCOMPARE( wkts.at( 1 ), u"LineString (93.3 45.3, 94.6 48.3, 95.2 49.6, 95.8 50.5, 97.9 52.3, 104 55.3, 110.4 58.1, 112.2 59.6, 115.2 62.6, 115.5 63.2, 116.1 66.9, 116.4 68.7, 117.4 71.4, 117.7 72.7, 118 75.7, 118.6 76.6, 119.5 78.4, 120.4 80.3, 122.5 82.7, 122.8 83.3, 123.1 85.1, 123.1 87.9, 123.1 89.1, 123.7 91.5, 124.4 92.7, 126.8 94.6, 128.9 95.8, 131 97, 133.2 97.9, 133.5 99.7, 133.5 100.9, 132.3 103.1, 131.6 103.7, 130.7 105.5, 129.8 106.7, 128.9 107.6, 128.6 108.2, 128.3 109.8, 128 111, 128 112.2, 128.9 114.3, 129.5 115.5, 129.5 115.5, 132.6 122.2, 131 125.3, 129.8 126.5, 127.7 130.1, 127.7 132.6, 125 135, 124 136.5, 122.5 138.9, 122.5 140.2, 122.5 141.7, 122.5 142.9, 122.5 144.4, 123.4 145.6, 123.7 147.2, 124.4 148.4, 125.6 149.6, 126.8 151.4, 128.6 153.5, 131.6 159.3, 132 159.6, 134.1 161.7, 135 162.7, 137.1 165.7, 138.6 166.9, 141.4 168.7, 143.2 170.3, 145.3 172.4, 146.9 173.3, 149 175.1, 151.7 176.6, 153.8 178.2, 157.2 180.6, 158.4 181.8, 159.3 183.9, 159.3 185.8, 159.3 187.6, 159 188.2, 157.8 190, 156 192.8, 154.8 194, 154.5 195.2, 154.5 196.7, 154.8 197.9, 155.7 200.4, 156 201.6, 157.8 203.7, 158.7 204.6, 159.9 206.4, 161.7 209.2, 166.6 211.3)"_s );
+  QCOMPARE(
+    wkts.at( 0 ),
+    u"LineString (0 124.4, 0.3 124.4, 4 123.4, 5.5 121.9, 7.3 119.5, 8.2 118.9, 10.6 116.4, 11.2 115.8, 15.8 113.1, 20.4 111, 24 110.1, 30.7 108.5, 32.8 108.5, 36.5 108.5, 42.6 109.1, 44.4 109.5, 47.4 110.4, 49.9 110.4, 54.1 111.9, 55 112.5, 57.2 113.1, 58.4 113.7, 60.8 114.9, 62 115.5, 63.8 116.4, 64.8 116.8, 66.3 117.4, 72.4 119.2, 80 119.5, 83.9 120.7, 85.7 121.3, 87.3 121.6, 89.4 121.6, 91.8 121.6, 93.6 121.9, 95.5 122.2, 99.7 122.2, 100.3 122.2, 103.7 122.8, 106.4 122.8, 109.8 122.5, 112.8 122.5, 117.1 122.5, 121 121, 125.6 119.5, 127.4 118.3, 134.7 118, 144.7 120.4, 148.4 121.3, 156 121.9, 159.6 121.9, 168.4 119.2, 173.6 116.4, 179.1 112.5, 183.9 110.1, 188.5 107.6, 197.3 104.9, 197.3 104.9, 198.5 104.6, 204 105.2, 206.4 106.4, 211.3 107.6, 216.2 109.5, 218 110.1, 221 111, 229.5 112.2, 230.8 112.2, 243.2 111.6, 243.5 111, 251.4 107.3, 253.3 106.7)"_s
+  );
+  QCOMPARE(
+    wkts.at( 1 ),
+    u"LineString (93.3 45.3, 94.6 48.3, 95.2 49.6, 95.8 50.5, 97.9 52.3, 104 55.3, 110.4 58.1, 112.2 59.6, 115.2 62.6, 115.5 63.2, 116.1 66.9, 116.4 68.7, 117.4 71.4, 117.7 72.7, 118 75.7, 118.6 76.6, 119.5 78.4, 120.4 80.3, 122.5 82.7, 122.8 83.3, 123.1 85.1, 123.1 87.9, 123.1 89.1, 123.7 91.5, 124.4 92.7, 126.8 94.6, 128.9 95.8, 131 97, 133.2 97.9, 133.5 99.7, 133.5 100.9, 132.3 103.1, 131.6 103.7, 130.7 105.5, 129.8 106.7, 128.9 107.6, 128.6 108.2, 128.3 109.8, 128 111, 128 112.2, 128.9 114.3, 129.5 115.5, 129.5 115.5, 132.6 122.2, 131 125.3, 129.8 126.5, 127.7 130.1, 127.7 132.6, 125 135, 124 136.5, 122.5 138.9, 122.5 140.2, 122.5 141.7, 122.5 142.9, 122.5 144.4, 123.4 145.6, 123.7 147.2, 124.4 148.4, 125.6 149.6, 126.8 151.4, 128.6 153.5, 131.6 159.3, 132 159.6, 134.1 161.7, 135 162.7, 137.1 165.7, 138.6 166.9, 141.4 168.7, 143.2 170.3, 145.3 172.4, 146.9 173.3, 149 175.1, 151.7 176.6, 153.8 178.2, 157.2 180.6, 158.4 181.8, 159.3 183.9, 159.3 185.8, 159.3 187.6, 159 188.2, 157.8 190, 156 192.8, 154.8 194, 154.5 195.2, 154.5 196.7, 154.8 197.9, 155.7 200.4, 156 201.6, 157.8 203.7, 158.7 204.6, 159.9 206.4, 161.7 209.2, 166.6 211.3)"_s
+  );
   QCOMPARE( wkts.at( 2 ), u"Polygon ((122.4 105.6, 165.2 105.6, 165.2 148.4, 122.4 148.4, 122.4 105.6))"_s );
-  QCOMPARE( wkts.at( 3 ), u"Polygon ((26.5 151.7, 31.3 153.8, 32.2 155.7, 32.8 156.3, 38 156.6, 41.3 156.6, 43.8 156.6, 48.3 157.5, 50.8 158.7, 52.9 160.8, 55 165.1, 55 165.1, 52.6 180.6, 52.6 182.7, 52.3 186.4, 50.2 190.3, 47.7 192.8, 45.9 194, 45 194.3, 30.4 193.7, 25.8 192.8, 20.4 190.9, 15.8 190, 13.4 188.8, 12.8 188.5, 11.6 187.9, 9.7 186.1, 8.8 184.9, 7.9 183.6, 7 181.8, 6.7 180.3, 7 177.9, 7.6 176.3, 8.5 173.9, 8.5 172.4, 7.9 170.6, 6.7 170, 4 168.4, -0.3 165.7, -1.8 163, -1.8 159.6, -1.5 156.6, 0 152.3, 7.6 147.5, 18.9 148.4, 25.2 150.5, 26.5 151.7))"_s );
+  QCOMPARE(
+    wkts.at( 3 ),
+    u"Polygon ((26.5 151.7, 31.3 153.8, 32.2 155.7, 32.8 156.3, 38 156.6, 41.3 156.6, 43.8 156.6, 48.3 157.5, 50.8 158.7, 52.9 160.8, 55 165.1, 55 165.1, 52.6 180.6, 52.6 182.7, 52.3 186.4, 50.2 190.3, 47.7 192.8, 45.9 194, 45 194.3, 30.4 193.7, 25.8 192.8, 20.4 190.9, 15.8 190, 13.4 188.8, 12.8 188.5, 11.6 187.9, 9.7 186.1, 8.8 184.9, 7.9 183.6, 7 181.8, 6.7 180.3, 7 177.9, 7.6 176.3, 8.5 173.9, 8.5 172.4, 7.9 170.6, 6.7 170, 4 168.4, -0.3 165.7, -1.8 163, -1.8 159.6, -1.5 156.6, 0 152.3, 7.6 147.5, 18.9 148.4, 25.2 150.5, 26.5 151.7))"_s
+  );
   QCOMPARE( wkts.at( 4 ), u"Polygon ((4.2 59.5, 73.5 59.5, 73.5 128.8, 4.2 128.8, 4.2 59.5))"_s );
 
   // now, use a handler which requires all attributes to be fetched
@@ -1043,44 +1052,30 @@ void TestQgsMapRendererJob::customNullPainterJob()
 
 void TestQgsMapRendererJob::testMapShading()
 {
-  auto pointCloudLayer = std::make_unique<QgsPointCloudLayer>(
-    TEST_DATA_DIR + u"/point_clouds/ept/lone-star-laszip/ept.json"_s,
-    u"point-cloud"_s,
-    u"ept"_s
-  );
+  auto pointCloudLayer = std::make_unique<QgsPointCloudLayer>( TEST_DATA_DIR + u"/point_clouds/ept/lone-star-laszip/ept.json"_s, u"point-cloud"_s, u"ept"_s );
   QVERIFY( pointCloudLayer->isValid() );
 
   std::unique_ptr<QgsPointCloudAttributeByRampRenderer> pointCloudRenderer( new QgsPointCloudAttributeByRampRenderer );
   pointCloudRenderer->setDrawOrder2d( Qgis::PointCloudDrawOrder::BottomToTop );
   pointCloudLayer->setRenderer( pointCloudRenderer.release() );
 
-  auto rasterLayer = std::make_unique<QgsRasterLayer>(
-    TEST_DATA_DIR + u"/raster/raster_shading.tif"_s,
-    u"raster"_s,
-    u"gdal"_s
-  );
+  auto rasterLayer = std::make_unique<QgsRasterLayer>( TEST_DATA_DIR + u"/raster/raster_shading.tif"_s, u"raster"_s, u"gdal"_s );
   QVERIFY( rasterLayer->isValid() );
   static_cast<QgsRasterLayerElevationProperties *>( rasterLayer->elevationProperties() )->setEnabled( true );
   rasterLayer->dataProvider()->enableProviderResampling( true );
   rasterLayer->dataProvider()->setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod::Cubic );
 
-  auto meshLayer = std::make_unique<QgsMeshLayer>(
-    TEST_DATA_DIR + u"/mesh/mesh_shading.nc"_s,
-    u"mesh"_s,
-    u"mdal"_s
-  );
+  auto meshLayer = std::make_unique<QgsMeshLayer>( TEST_DATA_DIR + u"/mesh/mesh_shading.nc"_s, u"mesh"_s, u"mdal"_s );
   QVERIFY( meshLayer->isValid() );
 
-  auto vectorLayer = std::make_unique<QgsVectorLayer>(
-    u"Polygon?crs=%1&field=id:integer&field=name:string(20)&index=no"_s
-      .arg( pointCloudLayer->crs().toWkt( Qgis::CrsWktVariant::Preferred ) ),
-    u"vector-layer"_s,
-    u"memory"_s
-  );
+  auto vectorLayer = std::make_unique<
+    QgsVectorLayer>( u"Polygon?crs=%1&field=id:integer&field=name:string(20)&index=no"_s.arg( pointCloudLayer->crs().toWkt( Qgis::CrsWktVariant::Preferred ) ), u"vector-layer"_s, u"memory"_s );
   QVERIFY( vectorLayer->isValid() );
 
   QgsFeature ft0( vectorLayer->fields() );
-  QgsGeometry geom = QgsGeometry::fromWkt( u"Polygon ((515336.29208192101214081 4918401.81226893234997988, 515336.29208192101214081 4918321.69825699832290411, 515439.75482995307538658 4918321.26983982231467962, 515441.89691583369858563 4918402.02647752035409212, 515336.29208192101214081 4918401.81226893234997988))"_s );
+  QgsGeometry geom = QgsGeometry::fromWkt(
+    u"Polygon ((515336.29208192101214081 4918401.81226893234997988, 515336.29208192101214081 4918321.69825699832290411, 515439.75482995307538658 4918321.26983982231467962, 515441.89691583369858563 4918402.02647752035409212, 515336.29208192101214081 4918401.81226893234997988))"_s
+  );
   ft0.setGeometry( geom );
   vectorLayer->startEditing();
   vectorLayer->addFeature( ft0 );

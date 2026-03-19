@@ -45,12 +45,10 @@ class TestQgsCopyFileTask : public QObject
 
 
 void TestQgsCopyFileTask::initTestCase()
-{
-}
+{}
 
 void TestQgsCopyFileTask::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsCopyFileTask::testCopy()
 {

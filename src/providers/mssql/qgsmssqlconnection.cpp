@@ -151,8 +151,10 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
-  const QString sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                               "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'" )
+  const QString sql = QString(
+                        "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
+                        "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'"
+  )
                         .arg( schema, table );
   if ( !q.exec( sql ) )
   {
@@ -262,19 +264,8 @@ QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, Q
 
 bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 {
-  static const QSet<QString> sSystemSchemas {
-    u"db_owner"_s,
-    u"db_securityadmin"_s,
-    u"db_accessadmin"_s,
-    u"db_backupoperator"_s,
-    u"db_ddladmin"_s,
-    u"db_datawriter"_s,
-    u"db_datareader"_s,
-    u"db_denydatawriter"_s,
-    u"db_denydatareader"_s,
-    u"INFORMATION_SCHEMA"_s,
-    u"sys"_s
-  };
+  static const QSet<QString>
+    sSystemSchemas { u"db_owner"_s, u"db_securityadmin"_s, u"db_accessadmin"_s, u"db_backupoperator"_s, u"db_ddladmin"_s, u"db_datawriter"_s, u"db_datareader"_s, u"db_denydatawriter"_s, u"db_denydatareader"_s, u"INFORMATION_SCHEMA"_s, u"sys"_s };
 
   return sSystemSchemas.contains( schema );
 }
@@ -442,19 +433,25 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   }
   else
   {
-    query += QStringLiteral( "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY', CASE when sys.objects.type = 'V' THEN 1 ELSE 0 END \n, 0"
-                             "FROM sys.columns JOIN sys.types ON sys.columns.system_type_id = sys.types.system_type_id AND sys.columns.user_type_id = sys.types.user_type_id JOIN sys.objects ON sys.objects.object_id = sys.columns.object_id JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id \n"
-                             "WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND (sys.objects.type = 'U' OR sys.objects.type = 'V')" );
+    query += QStringLiteral(
+      "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY', CASE when sys.objects.type = 'V' THEN 1 ELSE 0 END \n, 0"
+      "FROM sys.columns JOIN sys.types ON sys.columns.system_type_id = sys.types.system_type_id AND sys.columns.user_type_id = sys.types.user_type_id JOIN sys.objects ON sys.objects.object_id = "
+      "sys.columns.object_id JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id \n"
+      "WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND (sys.objects.type = 'U' OR sys.objects.type = 'V')"
+    );
     if ( !notSelectedSchemas.isEmpty() )
       query += u" AND (sys.schemas.name NOT IN %1)"_s.arg( notSelectedSchemas );
   }
 
   if ( allowTablesWithNoGeometry )
   {
-    query += QStringLiteral( " UNION ALL \n"
-                             "SELECT sys.schemas.name, sys.objects.name, null, null, 'NONE', CASE when sys.objects.type = 'V' THEN 1 ELSE 0 END \n, 0"
-                             "FROM  sys.objects JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id "
-                             "WHERE NOT EXISTS (SELECT * FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND sys.objects.object_id = sc1.object_id) AND (sys.objects.type = 'U' or sys.objects.type = 'V')" );
+    query += QStringLiteral(
+      " UNION ALL \n"
+      "SELECT sys.schemas.name, sys.objects.name, null, null, 'NONE', CASE when sys.objects.type = 'V' THEN 1 ELSE 0 END \n, 0"
+      "FROM  sys.objects JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id "
+      "WHERE NOT EXISTS (SELECT * FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND "
+      "sys.objects.object_id = sc1.object_id) AND (sys.objects.type = 'U' or sys.objects.type = 'V')"
+    );
     if ( !notSelectedSchemas.isEmpty() )
       query += u" AND sys.schemas.name NOT IN %1"_s.arg( notSelectedSchemas );
   }

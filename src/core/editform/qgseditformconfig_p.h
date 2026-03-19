@@ -50,33 +50,14 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mFields( o.mFields )
     {}
 
-    ~QgsEditFormConfigPrivate()
-    {
-      delete mInvisibleRootContainer;
-    }
+    ~QgsEditFormConfigPrivate() { delete mInvisibleRootContainer; }
 
     static QgsPropertiesDefinition &propertyDefinitions()
     {
-      static QgsPropertiesDefinition sPropertyDefinitions
-      {
-        {
-          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Alias ),
-          QgsPropertyDefinition( "dataDefinedAlias",
-                                 QObject::tr( "Alias" ),
-                                 QgsPropertyDefinition::String )
-        },
-        {
-          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Editable ),
-          QgsPropertyDefinition( "dataDefinedEditable",
-                                 QObject::tr( "Editable" ),
-                                 QgsPropertyDefinition::Boolean )
-        },
-        {
-          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::CustomComment ),
-          QgsPropertyDefinition( "dataDefinedCustomComment",
-                                 QObject::tr( "CustomComment" ),
-                                 QgsPropertyDefinition::String )
-        },
+      static QgsPropertiesDefinition sPropertyDefinitions {
+        { static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Alias ), QgsPropertyDefinition( "dataDefinedAlias", QObject::tr( "Alias" ), QgsPropertyDefinition::String ) },
+        { static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Editable ), QgsPropertyDefinition( "dataDefinedEditable", QObject::tr( "Editable" ), QgsPropertyDefinition::Boolean ) },
+        { static_cast< int >( QgsEditFormConfig::DataDefinedProperty::CustomComment ), QgsPropertyDefinition( "dataDefinedCustomComment", QObject::tr( "CustomComment" ), QgsPropertyDefinition::String ) },
       };
       return sPropertyDefinitions;
     };
@@ -114,7 +95,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsFields mFields;
 
   private:
-    QgsEditFormConfigPrivate &operator= ( const QgsEditFormConfigPrivate & ) = delete;
+    QgsEditFormConfigPrivate &operator=( const QgsEditFormConfigPrivate & ) = delete;
 };
 
 

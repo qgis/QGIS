@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsStacSourceSelectProvider::QgsStacSourceSelectProvider()
   : QgsSourceSelectProvider()
-{
-}
+{}
 
 QString QgsStacSourceSelectProvider::providerKey() const
 {

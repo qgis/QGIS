@@ -75,8 +75,7 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 
   private:
 #ifdef SIP_RUN
-    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other )
-    {}
+    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other ) {}
 #endif
 
     void readFromSettings();

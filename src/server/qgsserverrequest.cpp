@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsServerRequest::QgsServerRequest( const QString &url, Method method, const Headers &headers )
   : QgsServerRequest( QUrl( url ), method, headers )
-{
-}
+{}
 
 QgsServerRequest::QgsServerRequest( const QUrl &url, Method method, const Headers &headers )
   : mUrl( url )
@@ -50,8 +49,7 @@ QgsServerRequest::QgsServerRequest( const QgsServerRequest &other )
   , mMethod( other.mMethod )
   , mHeaders( other.mHeaders )
   , mParams( other.mParams )
-{
-}
+{}
 
 QString QgsServerRequest::methodToString( const QgsServerRequest::Method &method )
 {
@@ -68,10 +66,7 @@ QString QgsServerRequest::header( const QString &name ) const
 QString QgsServerRequest::header( const QgsServerRequest::RequestHeader &headerEnum ) const
 {
   const QString headerKey = QString( qgsEnumValueToKey<QgsServerRequest::RequestHeader>( headerEnum ) );
-  const QString headerName = QgsStringUtils::capitalize(
-                               QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase
-  )
-                               .replace( ' '_L1, '-'_L1 );
+  const QString headerName = QgsStringUtils::capitalize( QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase ).replace( ' '_L1, '-'_L1 );
   return header( headerName );
 }
 

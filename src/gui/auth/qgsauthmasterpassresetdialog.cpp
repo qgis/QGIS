@@ -45,9 +45,7 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
     connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
     connect( leMasterPassNew2, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
-    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( u"auth_system/auth_overview.html#master-password"_s );
-    } );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"auth_system/auth_overview.html#master-password"_s ); } );
 
     if ( QgsApplication::authManager()->sqliteDatabasePath().isEmpty() )
     {
@@ -102,15 +100,12 @@ void QgsMasterPasswordResetDialog::validatePasswords()
 
   if ( leMasterPassCurrent->isEnabled() )
   {
-    const QString ss1 = currentPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s )
-                                          : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
+    const QString ss1 = currentPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s ) : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
     leMasterPassCurrent->setStyleSheet( ss1 );
   }
-  const QString ss2 = newPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s )
-                                    : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
+  const QString ss2 = newPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s ) : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
   leMasterPassNew->setStyleSheet( ss2 );
-  const QString ss3 = confirmPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s )
-                                        : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
+  const QString ss3 = confirmPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s ) : QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
   leMasterPassNew2->setStyleSheet( ss3 );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( currentPasswordOk && newPasswordOk && confirmPasswordOk );
 }

@@ -37,10 +37,12 @@ Works with one layer.
 #include "qgspointlocator.h"
 %End
   public:
-
-    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
-                              const QgsRectangle *extent = 0 );
+    explicit QgsPointLocator(
+      QgsVectorLayer *layer,
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+      const QgsRectangle *extent = 0
+    );
 %Docstring
 Construct point locator for a ``layer``.
 
@@ -218,8 +220,8 @@ snapper: dest CRS)
 
     struct MatchFilter
     {
-      virtual ~MatchFilter();
-      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
+        virtual ~MatchFilter();
+        virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
     };
 
 

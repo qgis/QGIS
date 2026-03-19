@@ -27,7 +27,6 @@ objects.
 #include "qgstextdocument.h"
 %End
   public:
-
     QgsTextDocument();
     QgsTextDocument( const QgsTextDocument &other );
 
@@ -137,7 +136,7 @@ Returns the block at the specified ``index``.
       sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
 %End
 
-    int size() const;
+      int size() const;
 %Docstring
 Returns the number of blocks in the document.
 %End
@@ -147,7 +146,7 @@ Returns the number of blocks in the document.
     sipRes = sipCpp->size();
 %End
 
-    QStringList toPlainText() const;
+        QStringList toPlainText() const;
 %Docstring
 Returns a list of plain text lines of text representing the document.
 %End

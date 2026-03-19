@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 const QString QgsStackedDiagram::DIAGRAM_NAME_STACKED = u"StackedDiagram"_s;
 
 QgsStackedDiagram::QgsStackedDiagram()
-{
-}
+{}
 
 QgsStackedDiagram *QgsStackedDiagram::clone() const
 {

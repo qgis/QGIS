@@ -22,8 +22,7 @@
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
-{
-}
+{}
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
 {
@@ -213,8 +212,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     do
     {
       orderByIt->prepare( expressionContext );
-    }
-    while ( ++orderByIt != preparedOrderBys.end() );
+    } while ( ++orderByIt != preparedOrderBys.end() );
 
     // Fetch all features
     QgsIndexedFeature indexedFeature;
@@ -258,8 +256,7 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
 }
 
 void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
-{
-}
+{}
 
 ///////
 

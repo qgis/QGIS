@@ -27,6 +27,9 @@ using namespace Qt::StringLiterals;
 
 class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
+  public:
+    void setLayerTree( QgsLayerTree *layerTree ) { mLayerTree = layerTree; }
+
   private:
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
     {
@@ -37,6 +40,10 @@ class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
       detail.displayAttribute = u"attr %1"_s.arg( layerId );
       return detail;
     }
+    virtual QgsLayerTree *layerTree() const override { return mLayerTree; };
+
+    // For testing purposes
+    QgsLayerTree *mLayerTree = nullptr;
 };
 
 class TestQgsGeospatialPdfExport : public QgsTest
@@ -45,7 +52,8 @@ class TestQgsGeospatialPdfExport : public QgsTest
 
   public:
     TestQgsGeospatialPdfExport()
-      : QgsTest( u"Geospatial PDF Export Testss"_s ) {}
+      : QgsTest( u"Geospatial PDF Export Testss"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -59,9 +67,15 @@ class TestQgsGeospatialPdfExport : public QgsTest
     void testCustomGroups();
     void testGroupOrder();
     void testLayerOrder();
+    void testLayerOrderWithGroup();
     void compositionMode();
     void testMutuallyExclusiveGroupsLayers();
     void testMutuallyExclusiveGroupsCustom();
+    void testGroupsWithSameLayer();
+    void testCreatePdfTreeNodes();
+    void testCreatePdfTreeNodesWithGroupLayer();
+    void testUseLayerTree();
+    void testUseLayerTreeInvisibleNodes();
 };
 
 void TestQgsGeospatialPdfExport::initTestCase()
@@ -238,12 +252,9 @@ void TestQgsGeospatialPdfExport::testComposition()
   QDomNodeList ifLayerOnList = doc.elementsByTagName( u"IfLayerOn"_s );
   QCOMPARE( ifLayerOnList.count(), 3 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 1
-                                                                                                                                                                              : 2;
-  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 1
-                                                                                                                                                                              : 2;
-  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 1
-                                                                                                                                                                              : 2;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer1"_L1 ? 1 : 2;
+  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer2"_L1 ? 1 : 2;
+  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( u"layerId"_s ) == "layer3"_L1 ? 1 : 2;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( u"layerId"_s ), u"layer1"_s );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( u"Vector"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), layer1Path );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( u"Vector"_s ).at( 0 ).toElement().attribute( u"layer"_s ), layer1Layer );
@@ -748,6 +759,88 @@ void TestQgsGeospatialPdfExport::testLayerOrder()
   QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), u"xxx layer 3"_s );
 }
 
+void TestQgsGeospatialPdfExport::testLayerOrderWithGroup()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+
+  QgsFields fields;
+  fields.append( QgsField( u"a1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"a2"_s, QMetaType::Type::Int ) );
+  QgsFeature f( fields );
+
+  f.setAttributes( QgsAttributes() << 1 << 2 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
+  geospatialPdfExporter.pushRenderedFeature( u"layer1"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), "my_group" );
+  f.setAttributes( QgsAttributes() << 31 << 32 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
+  renderedBounds = QgsGeometry::fromWkt( u"LineString(1 1, 2 2)"_s );
+  geospatialPdfExporter.pushRenderedFeature( u"layer2"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), "my_group" );
+
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+
+  // test creation of the composition XML
+  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  details.layerOrder = QStringList { "layer2", "layer1" };
+
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+
+  QDomNodeList nodeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( nodeList.count(), 1 );
+  QDomElement groupElem = nodeList.at( 0 ).toElement();
+  QCOMPARE( groupElem.attribute( u"name"_s ), u"my_group"_s );
+
+  nodeList = groupElem.childNodes();
+  QCOMPARE( nodeList.count(), 2 );
+  QCOMPARE( nodeList.at( 0 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+  QCOMPARE( nodeList.at( 1 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
+
+  details.layerOrder = QStringList { "layer1", "layer2" };
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  doc.setContent( composition );
+
+  nodeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( nodeList.count(), 1 );
+  groupElem = nodeList.at( 0 ).toElement();
+  QCOMPARE( groupElem.attribute( u"name"_s ), u"my_group"_s );
+
+  nodeList = groupElem.childNodes();
+  QCOMPARE( nodeList.count(), 2 );
+  QCOMPARE( nodeList.at( 0 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
+  QCOMPARE( nodeList.at( 1 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+
+  // layer without attributes
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
+  detail.mapLayerId = u"layer3"_s;
+  detail.name = u"xxx layer 3"_s;
+  detail.opacity = 0.7;
+  detail.group = "my_group";
+  detail.compositionMode = QPainter::CompositionMode_Screen;
+  detail.sourcePdfPath = u"a pdf.pdf"_s;
+  renderedLayers << detail;
+
+  details.layerOrder = QStringList { "layer3", "layer1", "layer2" };
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  doc.setContent( composition );
+
+  nodeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( nodeList.count(), 1 );
+  groupElem = nodeList.at( 0 ).toElement();
+  QCOMPARE( groupElem.attribute( u"name"_s ), u"my_group"_s );
+
+  nodeList = groupElem.childNodes();
+  QCOMPARE( nodeList.count(), 3 );
+  QCOMPARE( nodeList.at( 0 ).toElement().attribute( u"name"_s ), u"xxx layer 3"_s );
+  QCOMPARE( nodeList.at( 1 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
+  QCOMPARE( nodeList.at( 2 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+}
+
 void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
 {
   TestGeospatialPdfExporter geospatialPdfExporter;
@@ -846,15 +939,9 @@ void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
   QDomNodeList contentList = doc.documentElement().firstChildElement( u"Page"_s ).firstChildElement( u"Content"_s ).childNodes();
   QCOMPARE( contentList.count(), 3 );
 
-  int layer1Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group1Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group1Id ? 1
-                                                                                          : 2;
-  int layer2Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group2Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group2Id ? 1
-                                                                                          : 2;
-  int layer3Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group3Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group3Id ? 1
-                                                                                          : 2;
+  int layer1Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group1Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group1Id ? 1 : 2;
+  int layer2Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group2Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group2Id ? 1 : 2;
+  int layer3Idx = contentList.at( 0 ).toElement().attribute( u"layerId"_s ) == group3Id ? 0 : contentList.at( 1 ).toElement().attribute( u"layerId"_s ) == group3Id ? 1 : 2;
   QCOMPARE( contentList.at( layer1Idx ).toElement().attribute( u"layerId"_s ), group1Id );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().tagName(), u"IfLayerOn"_s );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().attribute( u"layerId"_s ), u"my group_layer1"_s );
@@ -982,6 +1069,588 @@ void TestQgsGeospatialPdfExport::compositionMode()
   QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Plus ), u"Normal"_s );
 }
 
+void TestQgsGeospatialPdfExport::testGroupsWithSameLayer()
+{
+  // Unit test to avoid broken theme export issue: https: //github.com/qgis/QGIS/issues/62014
+
+  TestGeospatialPdfExporter geospatialPdfExporter;
+  // no features, no crash
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 0 );
+
+  QgsFields fields;
+  fields.append( QgsField( u"a1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"a2"_s, QMetaType::Type::Int ) );
+  QgsFeature f( fields );
+
+  f.setAttributes( QgsAttributes() << 1 << 2 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
+  geospatialPdfExporter.pushRenderedFeature( u"layer1"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group1"_s );
+  geospatialPdfExporter.pushRenderedFeature( u"layer1"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group_1_and_2"_s );
+  f.setAttributes( QgsAttributes() << 31 << 32 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
+  renderedBounds = QgsGeometry::fromWkt( u"LineString(1 1, 2 2)"_s );
+  geospatialPdfExporter.pushRenderedFeature( u"layer2"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group2"_s );
+  geospatialPdfExporter.pushRenderedFeature( u"layer2"_s, QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ), u"group_1_and_2"_s );
+
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
+  QString layer1Path;
+  QString layer1Layer;
+  QString layer2Path;
+  QString layer2Layer;
+
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
+  {
+    if ( it.mapLayerId == "layer1"_L1 )
+    {
+      layer1Path = it.sourceVectorPath;
+      layer1Layer = it.sourceVectorLayer;
+    }
+    else if ( it.mapLayerId == "layer2"_L1 )
+    {
+      layer2Path = it.sourceVectorPath;
+      layer2Layer = it.sourceVectorLayer;
+    }
+  }
+
+  // test creation of the composition xml
+  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
+  detail.mapLayerId = u"raster_layer"_s;
+  detail.name = u"raster_layer_g1"_s;
+  detail.group = u"group1"_s;
+  renderedLayers << detail;
+
+  detail.mapLayerId = u"raster_layer"_s;
+  detail.name = u"raster_layer_g1and2"_s;
+  detail.group = u"group_1_and_2"_s;
+  renderedLayers << detail;
+
+  detail.mapLayerId = u"raster_layer"_s;
+  detail.name = u"raster_layer_global"_s;
+  detail.group = u""_s;
+  renderedLayers << detail;
+
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+
+  QDomNodeList layerTreeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 4 );
+
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), u"group1"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().count(), 2 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group1_layer1"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( u"id"_s ), u"group1_raster_layer"_s );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"raster_layer_g1"_s );
+
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), u"group2"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().count(), 1 );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group2_layer2"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), u"group_1_and_2"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().count(), 3 );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"id"_s ), u"group_1_and_2_layer1"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"name layer1"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( u"id"_s ), u"group_1_and_2_layer2"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"name layer2"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( u"id"_s ), u"group_1_and_2_raster_layer"_s );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().childNodes().at( 2 ).toElement().attribute( u"name"_s ), u"raster_layer_g1and2"_s );
+
+  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( u"name"_s ), u"raster_layer_global"_s );
+  QCOMPARE( layerTreeList.at( 3 ).toElement().childNodes().count(), 0 );
+
+  QCOMPARE( doc.elementsByTagName( u"Content"_s ).count(), 1 );
+  QDomNodeList ifLayerOnList = doc.elementsByTagName( u"Content"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( ifLayerOnList.count(), 7 );
+
+  QStringList groupedLayerIds;
+  QStringList rootLayerIds;
+  for ( int i = 0; i < ifLayerOnList.count(); i++ )
+  {
+    QCOMPARE( ifLayerOnList.at( i ).toElement().childNodes().count(), 1 );
+    const QDomElement child = ifLayerOnList.at( i ).toElement().childNodes().at( 0 ).toElement();
+    const QString tagName = child.tagName();
+    QVERIFY( ( QStringList() << u"IfLayerOn"_s << u"PDF"_s ).contains( tagName ) );
+    if ( tagName == "IfLayerOn"_L1 )
+      groupedLayerIds << child.attribute( u"layerId"_s );
+    else
+      rootLayerIds << ifLayerOnList.at( i ).toElement().attribute( u"layerId"_s );
+  }
+
+  std::sort( groupedLayerIds.begin(), groupedLayerIds.end() );
+
+  const QStringList ref { u"group1_layer1"_s, u"group1_raster_layer"_s, u"group2_layer2"_s, u"group_1_and_2_layer1"_s, u"group_1_and_2_layer2"_s, u"group_1_and_2_raster_layer"_s };
+  QCOMPARE( groupedLayerIds, ref );
+  QCOMPARE( rootLayerIds, QStringList() << u"raster_layer"_s );
+}
+
+void TestQgsGeospatialPdfExport::testCreatePdfTreeNodes()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + u"/geospatial_pdf_projects/test_nested_groups_no_graphics.qgz"_s ) );
+
+  QMap< QString, TreeNode * > groupNameToTreeNode;
+  QMap< QString, TreeNode * > layerIdToTreeNode;
+
+  QgsLayerTree *qgisLayerTree = p.layerTreeRoot();
+
+  std::unique_ptr< TreeNode > rootTreeNode = geospatialPdfExporter.createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, qgisLayerTree );
+  rootTreeNode->isRootNode = true;
+
+  // Check the rootTreeNode structure matches the one from the project's layer tree
+
+  // First check the root tree node
+  QVERIFY( rootTreeNode->isRootNode );
+  QVERIFY( !rootTreeNode->id.isEmpty() );
+  QVERIFY( rootTreeNode->name.isEmpty() );
+  QVERIFY( rootTreeNode->mapLayerId.isEmpty() );
+  QVERIFY( !rootTreeNode->parent );
+
+  // Then check children
+  QCOMPARE( rootTreeNode->children.size(), 3L );
+  TreeNode *firstChild = rootTreeNode->children.at( 0 ).get();
+  QVERIFY( firstChild->parent );
+  QCOMPARE( firstChild->parent->id, rootTreeNode->id );
+  QVERIFY( firstChild->children.empty() );
+  QCOMPARE( firstChild->name, qgisLayerTree->children().at( 0 )->name() ); // points
+
+  TreeNode *secondChild = rootTreeNode->children.at( 1 ).get();
+  QVERIFY( secondChild->parent );
+  QCOMPARE( secondChild->parent->id, rootTreeNode->id );
+  QCOMPARE( secondChild->children.size(), 3L );
+  QCOMPARE( secondChild->name, qgisLayerTree->children().at( 1 )->name() ); // group1
+
+  TreeNode *firstSubChild = secondChild->children.at( 0 ).get();
+  QVERIFY( firstSubChild->parent );
+  QCOMPARE( firstSubChild->parent->id, secondChild->id );
+  QVERIFY( firstSubChild->children.empty() );
+  QCOMPARE( firstSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 0 )->name() ); // multipoint
+
+  TreeNode *secondSubChild = secondChild->children.at( 1 ).get();
+  QVERIFY( secondSubChild->parent );
+  QCOMPARE( secondSubChild->parent->id, secondChild->id );
+  QCOMPARE( secondSubChild->children.size(), 1L );
+  QCOMPARE( secondSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 1 )->name() ); // sub-group1
+
+  TreeNode *firstSubSubChild = secondSubChild->children.at( 0 ).get();
+  QVERIFY( firstSubSubChild->parent );
+  QCOMPARE( firstSubSubChild->parent->id, secondSubChild->id );
+  QVERIFY( firstSubSubChild->children.empty() );
+  QCOMPARE( firstSubSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 1 )->children().at( 0 )->name() ); // lines
+
+  TreeNode *thirdSubChild = secondChild->children.at( 2 ).get();
+  QVERIFY( thirdSubChild->parent );
+  QCOMPARE( thirdSubChild->parent->id, secondChild->id );
+  QVERIFY( thirdSubChild->children.empty() );
+  QCOMPARE( thirdSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 2 )->name() ); // polys
+
+
+  TreeNode *thirdChild = rootTreeNode->children.at( 2 ).get();
+  QVERIFY( thirdChild->parent );
+  QCOMPARE( thirdChild->parent->id, rootTreeNode->id );
+  QVERIFY( thirdChild->children.empty() );
+  QCOMPARE( thirdChild->name, qgisLayerTree->children().at( 2 )->name() ); // raster_layer
+
+  // Check expected behavior from TreeNode methods
+
+  // Check the PDF tree layer (note that parent root node is not included in the output)
+  QDomDocument doc;
+  QDomElement layerTreeElem = doc.createElement( u"LayerTree"_s );
+  rootTreeNode->toChildrenElements( doc, layerTreeElem );
+  QDomNodeList layerTreeList = layerTreeElem.childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+
+  QgsMapLayer *layer0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 0 ) )->layer();
+  QgsLayerTreeGroup *group1 = qobject_cast< QgsLayerTreeGroup * >( qgisLayerTree->children().at( 1 ) );
+  QgsMapLayer *layer2 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 2 ) )->layer();
+
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer0->id() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer0->name() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"id"_s ), secondChild->id );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), group1->name() );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QDomNodeList group1LayerTreeList = layerTreeList.at( 1 ).toElement().childNodes();
+  QCOMPARE( group1LayerTreeList.count(), 3L );
+
+  QgsMapLayer *layer1_0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 0 ) )->layer();
+  QgsLayerTreeGroup *group1_1 = qobject_cast< QgsLayerTreeGroup * >( qgisLayerTree->children().at( 1 )->children().at( 1 ) );
+  QgsMapLayer *layer1_2 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 2 ) )->layer();
+
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer1_0->id() );
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer1_0->name() );
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"id"_s ), secondSubChild->id );
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"name"_s ), group1_1->name() );
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QgsMapLayer *layer1_1_0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 1 )->children().at( 0 ) )->layer();
+
+  QDomNodeList group1_1LayerTreeList = group1LayerTreeList.at( 1 ).toElement().childNodes();
+  QCOMPARE( group1_1LayerTreeList.count(), 1L );
+
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer1_1_0->id() );
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer1_1_0->name() );
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layer1_2->id() );
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layer1_2->name() );
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layer2->id() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layer2->name() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  // Check that createNestedIfLayerOnElements does not include the parent root node
+  QDomElement contentElem = doc.createElement( u"Content"_s );
+  firstChild->createNestedIfLayerOnElements( doc, contentElem );
+  QCOMPARE( contentElem.elementsByTagName( u"IfLayerOn"_s ).count(), 1L );
+  QDomElement firstChildElem = contentElem.firstChild().toElement();
+  QCOMPARE( firstChildElem.attribute( u"layerId"_s ), firstChild->mapLayerId ); // layer has no (root) parent
+  QCOMPARE( firstChildElem.elementsByTagName( u"IfLayerOn"_s ).count(), 0L );
+
+  QDomElement contentElem2 = doc.createElement( u"Content"_s );
+  firstSubChild->createNestedIfLayerOnElements( doc, contentElem2 );
+  QCOMPARE( contentElem2.childNodes().count(), 1L );
+  QDomElement firstChildElem2 = contentElem2.childNodes().at( 0 ).toElement();
+  QCOMPARE( firstChildElem2.attribute( u"layerId"_s ), secondChild->id ); // parent layer tree group id (i.e., no 'root' parent)
+  QCOMPARE( firstChildElem2.childNodes().count(), 1L );
+  QDomElement firstSubChildElem = firstChildElem2.childNodes().at( 0 ).toElement();
+  QCOMPARE( firstSubChildElem.attribute( u"layerId"_s ), firstSubChild->mapLayerId );
+  QCOMPARE( firstSubChildElem.childNodes().count(), 0L );
+}
+
+void TestQgsGeospatialPdfExport::testCreatePdfTreeNodesWithGroupLayer()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + u"/geospatial_pdf_projects/test_non_nested_group_no_graphics_with_grouplayer.qgz"_s ) );
+
+  QMap< QString, TreeNode * > groupNameToTreeNode;
+  QMap< QString, TreeNode * > layerIdToTreeNode;
+
+  QgsLayerTree *qgisLayerTree = p.layerTreeRoot();
+
+  std::unique_ptr< TreeNode > rootTreeNode = geospatialPdfExporter.createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, qgisLayerTree );
+  rootTreeNode->isRootNode = true;
+
+  // Check the rootTreeNode structure matches the one from the project's layer tree
+
+  // First check the root tree node
+  QVERIFY( rootTreeNode->isRootNode );
+  QVERIFY( !rootTreeNode->id.isEmpty() );
+  QVERIFY( rootTreeNode->name.isEmpty() );
+  QVERIFY( rootTreeNode->mapLayerId.isEmpty() );
+  QVERIFY( !rootTreeNode->parent );
+
+  // Then check children
+  QCOMPARE( rootTreeNode->children.size(), 4L );
+  TreeNode *firstChild = rootTreeNode->children.at( 0 ).get();
+  QVERIFY( firstChild->parent );
+  QCOMPARE( firstChild->parent->id, rootTreeNode->id );
+  QVERIFY( firstChild->children.empty() );
+  QCOMPARE( firstChild->name, qgisLayerTree->children().at( 0 )->name() ); // points
+
+  TreeNode *secondChild = rootTreeNode->children.at( 1 ).get();
+  QVERIFY( secondChild->parent );
+  QCOMPARE( secondChild->parent->id, rootTreeNode->id );
+  QCOMPARE( secondChild->children.size(), 0L );
+  QCOMPARE( secondChild->name, qgisLayerTree->children().at( 1 )->name() ); // group1
+
+  TreeNode *thirdChild = rootTreeNode->children.at( 2 ).get();
+  QVERIFY( thirdChild->parent );
+  QCOMPARE( thirdChild->parent->id, rootTreeNode->id );
+  QVERIFY( thirdChild->children.empty() );
+  QCOMPARE( thirdChild->name, qgisLayerTree->children().at( 2 )->name() ); // polys
+
+  TreeNode *fourthChild = rootTreeNode->children.at( 3 ).get();
+  QVERIFY( fourthChild->parent );
+  QCOMPARE( fourthChild->parent->id, rootTreeNode->id );
+  QVERIFY( fourthChild->children.empty() );
+  QCOMPARE( fourthChild->name, qgisLayerTree->children().at( 3 )->name() ); // raster_layer
+
+  // Check expected behavior from TreeNode methods
+
+  // Check the PDF tree layer (note that parent root node is not included in the output)
+  QDomDocument doc;
+  QDomElement layerTreeElem = doc.createElement( u"LayerTree"_s );
+  rootTreeNode->toChildrenElements( doc, layerTreeElem );
+  QDomNodeList layerTreeList = layerTreeElem.childNodes();
+  QCOMPARE( layerTreeList.count(), 4 );
+
+  QgsMapLayer *layer0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 0 ) )->layer();
+  QgsLayerTreeGroup *group1 = qobject_cast< QgsLayerTreeGroup * >( qgisLayerTree->children().at( 1 ) );
+  QgsMapLayer *layer2 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 2 ) )->layer();
+  QgsMapLayer *layer3 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 3 ) )->layer();
+
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer0->id() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer0->name() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"id"_s ), secondChild->id );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), group1->name() );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().childNodes().count(), 0 );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"id"_s ), thirdChild->id );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layer2->name() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( u"id"_s ), fourthChild->id );
+  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( u"name"_s ), layer3->name() );
+  QCOMPARE( layerTreeList.at( 3 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  // Check that createNestedIfLayerOnElements does not include the parent root node
+  QDomElement contentElem = doc.createElement( u"Content"_s );
+  firstChild->createNestedIfLayerOnElements( doc, contentElem );
+  QCOMPARE( contentElem.elementsByTagName( u"IfLayerOn"_s ).count(), 1L );
+  QDomElement firstChildElem = contentElem.firstChild().toElement();
+  QCOMPARE( firstChildElem.attribute( u"layerId"_s ), firstChild->mapLayerId ); // layer has no (root) parent
+  QCOMPARE( firstChildElem.elementsByTagName( u"IfLayerOn"_s ).count(), 0L );
+
+  // Check that createNestedIfLayerOnElements does not include the parent root node
+  QDomElement contentElem2 = doc.createElement( u"Content"_s );
+  secondChild->createNestedIfLayerOnElements( doc, contentElem2 );
+  QCOMPARE( contentElem2.elementsByTagName( u"IfLayerOn"_s ).count(), 1L );
+  QDomElement secondChildElem = contentElem2.firstChild().toElement();
+  QCOMPARE( secondChildElem.attribute( u"layerId"_s ), secondChild->mapLayerId ); // layer has no (root) parent
+  QCOMPARE( secondChildElem.elementsByTagName( u"IfLayerOn"_s ).count(), 0L );
+}
+
+void TestQgsGeospatialPdfExport::testUseLayerTree()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+
+  // Layer tree structure:
+  // + points
+  // + group1
+  //   + multipoint
+  //   + sub-group1
+  //     + lines
+  //   + polys
+  // + raster_layer
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + u"/geospatial_pdf_projects/test_nested_groups_no_graphics.qgz"_s ) );
+  QgsLayerTree *qgisLayerTree = p.layerTreeRoot();
+  const QList< QgsMapLayer * > qgisLayers = qgisLayerTree->layerOrder();
+  QgsMapLayer *layerPoints = qgisLayers.at( 0 );
+  QgsMapLayer *layerMultipoint = qgisLayers.at( 1 );
+  QgsMapLayer *layerLines = qgisLayers.at( 2 );
+  QgsMapLayer *layerPolys = qgisLayers.at( 3 );
+  QgsMapLayer *layerRaster = qgisLayers.at( 4 );
+
+  geospatialPdfExporter.setLayerTree( qgisLayerTree );
+
+  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+
+  for ( const auto &qgisLayer : qgisLayers )
+  {
+    QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
+    detail.mapLayerId = qgisLayer->id();
+    detail.name = qgisLayer->name();
+    detail.opacity = 0.7;
+    detail.compositionMode = QPainter::CompositionMode_Screen;
+    detail.sourcePdfPath = u"%1.pdf"_s.arg( qgisLayer->name() );
+
+    renderedLayers << detail;
+  }
+
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  details.useLayerTreeConfig = true;
+  details.includeFeatures = false;
+
+  // Check the composition XML
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+  QVERIFY( true );
+
+  // Check the PDF layer tree
+  QDomNodeList layerTreeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layerPoints->name() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layerPoints->id() );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), u"group1"_s );
+  QString group1Id = layerTreeList.at( 1 ).toElement().attribute( u"id"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"multipoint"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"id"_s ), layerMultipoint->id() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"sub-group1"_s );
+  QString subGroup1Id = layerTreeList.at( 1 ).childNodes().at( 1 ).toElement().attribute( u"id"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).childNodes().at( 0 ).toElement().attribute( u"name"_s ), layerLines->name() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).childNodes().at( 0 ).toElement().attribute( u"id"_s ), layerLines->id() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 2 ).toElement().attribute( u"name"_s ), layerPolys->name() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 2 ).toElement().attribute( u"id"_s ), layerPolys->id() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layerRaster->name() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layerRaster->id() );
+
+  // Check the content section
+  QDomNodeList contentList = doc.documentElement().firstChildElement( u"Page"_s ).firstChildElement( u"Content"_s ).childNodes();
+  QCOMPARE( contentList.count(), 5 );
+
+  QCOMPARE( contentList.at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 0 ).toElement().attribute( u"layerId"_s ), layerPoints->id() );
+  QCOMPARE( contentList.at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerPoints->name() ) );
+
+  QCOMPARE( contentList.at( 1 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 1 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerMultipoint->id() );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerMultipoint->name() ) );
+
+  QCOMPARE( contentList.at( 2 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), subGroup1Id );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerLines->id() );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE(
+    contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ),
+    u"%1.pdf"_s.arg( layerLines->name() )
+  );
+
+  QCOMPARE( contentList.at( 3 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 3 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerPolys->id() );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerPolys->name() ) );
+
+  QCOMPARE( contentList.at( 4 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 4 ).toElement().attribute( u"layerId"_s ), layerRaster->id() );
+  QCOMPARE( contentList.at( 4 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 4 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerRaster->name() ) );
+}
+
+void TestQgsGeospatialPdfExport::testUseLayerTreeInvisibleNodes()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+
+  // Layer tree structure:
+  // + points         [invisible]
+  // + group1
+  //   + multipoint
+  //   + sub-group1   [invisible]
+  //     + lines
+  //   + polys        [invisible]
+  // + raster_layer
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + u"/geospatial_pdf_projects/test_nested_groups_no_graphics_invisible_layers.qgz"_s ) );
+  QgsLayerTree *qgisLayerTree = p.layerTreeRoot();
+  const QList< QgsMapLayer * > qgisLayers = qgisLayerTree->layerOrder();
+  QgsMapLayer *layerPoints = qgisLayers.at( 0 );
+  QgsMapLayer *layerMultipoint = qgisLayers.at( 1 );
+  QgsMapLayer *layerLines = qgisLayers.at( 2 );
+  QgsMapLayer *layerPolys = qgisLayers.at( 3 );
+  QgsMapLayer *layerRaster = qgisLayers.at( 4 );
+
+  geospatialPdfExporter.setLayerTree( qgisLayerTree );
+
+  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+
+  for ( const auto &qgisLayer : qgisLayers )
+  {
+    QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
+    detail.mapLayerId = qgisLayer->id();
+    detail.name = qgisLayer->name();
+    detail.opacity = 0.7;
+    detail.compositionMode = QPainter::CompositionMode_Screen;
+    detail.sourcePdfPath = u"%1.pdf"_s.arg( qgisLayer->name() );
+
+    renderedLayers << detail;
+  }
+
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  details.useLayerTreeConfig = true;
+  details.includeFeatures = false;
+
+  // Check the composition XML
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+  QVERIFY( true );
+
+  // Check the PDF layer tree
+  QDomNodeList layerTreeList = doc.elementsByTagName( u"LayerTree"_s ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layerPoints->name() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layerPoints->id() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), "false" );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), u"group1"_s );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), "true" );
+  QString group1Id = layerTreeList.at( 1 ).toElement().attribute( u"id"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"name"_s ), u"multipoint"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"id"_s ), layerMultipoint->id() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"initiallyVisible"_s ), "true" );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).toElement().attribute( u"name"_s ), u"sub-group1"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).toElement().attribute( u"initiallyVisible"_s ), "false" );
+  QString subGroup1Id = layerTreeList.at( 1 ).childNodes().at( 1 ).toElement().attribute( u"id"_s );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).childNodes().at( 0 ).toElement().attribute( u"name"_s ), layerLines->name() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).childNodes().at( 0 ).toElement().attribute( u"id"_s ), layerLines->id() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 1 ).childNodes().at( 0 ).toElement().attribute( u"initiallyVisible"_s ), "true" );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 2 ).toElement().attribute( u"name"_s ), layerPolys->name() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 2 ).toElement().attribute( u"id"_s ), layerPolys->id() );
+  QCOMPARE( layerTreeList.at( 1 ).childNodes().at( 2 ).toElement().attribute( u"initiallyVisible"_s ), "false" );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layerRaster->name() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layerRaster->id() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), "true" );
+
+  // Check the content section
+  QDomNodeList contentList = doc.documentElement().firstChildElement( u"Page"_s ).firstChildElement( u"Content"_s ).childNodes();
+  QCOMPARE( contentList.count(), 5 );
+
+  QCOMPARE( contentList.at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 0 ).toElement().attribute( u"layerId"_s ), layerPoints->id() );
+  QCOMPARE( contentList.at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerPoints->name() ) );
+
+  QCOMPARE( contentList.at( 1 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 1 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerMultipoint->id() );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 1 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerMultipoint->name() ) );
+
+  QCOMPARE( contentList.at( 2 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), subGroup1Id );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerLines->id() );
+  QCOMPARE( contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE(
+    contentList.at( 2 ).toElement().childNodes().at( 0 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ),
+    u"%1.pdf"_s.arg( layerLines->name() )
+  );
+
+  QCOMPARE( contentList.at( 3 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 3 ).toElement().attribute( u"layerId"_s ), group1Id );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().attribute( u"layerId"_s ), layerPolys->id() );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 3 ).childNodes().at( 0 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerPolys->name() ) );
+
+  QCOMPARE( contentList.at( 4 ).toElement().tagName(), u"IfLayerOn"_s );
+  QCOMPARE( contentList.at( 4 ).toElement().attribute( u"layerId"_s ), layerRaster->id() );
+  QCOMPARE( contentList.at( 4 ).toElement().elementsByTagName( u"PDF"_s ).count(), 1 );
+  QCOMPARE( contentList.at( 4 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerRaster->name() ) );
+}
 
 QGSTEST_MAIN( TestQgsGeospatialPdfExport )
 #include "testqgsgeopdfexport.moc"

@@ -21,14 +21,12 @@ Utils class for QGIS command line tools.
 #include "qgscommandlineutils.h"
 %End
   public:
-
-    static QString allVersions( );
+    static QString allVersions();
 %Docstring
 Display all versions in the standard output stream
 
 .. versionadded:: 3.22
 %End
-
 };
 
 /************************************************************************

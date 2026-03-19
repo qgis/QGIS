@@ -30,7 +30,8 @@
 using namespace Qt::StringLiterals;
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
-  : QDialog( parent ), mManager( manager )
+  : QDialog( parent )
+  , mManager( manager )
 
 {
   setupUi( this );
@@ -109,4 +110,5 @@ void QgsUserProfileSelectionDialog::onAddProfile()
   }
 }
 
-QgsUserProfileSelectionDialog::~QgsUserProfileSelectionDialog() {}
+QgsUserProfileSelectionDialog::~QgsUserProfileSelectionDialog()
+{}

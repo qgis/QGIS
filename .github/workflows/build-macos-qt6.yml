@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375 # latest
+        uses: lukka/get-cmake@b78306120111dc2522750771cfd09ee7ca723687 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -135,7 +135,7 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -149,7 +149,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: qgis-sdk-${{ matrix.triplet }}
           path: |
@@ -167,7 +167,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -191,7 +191,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
@@ -223,7 +223,7 @@ jobs:
             universal/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg

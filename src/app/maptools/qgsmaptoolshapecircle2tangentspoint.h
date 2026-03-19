@@ -47,7 +47,8 @@ class QgsMapToolShapeCircle2TangentsPoint : public QgsMapToolShapeCircleAbstract
 
   public:
     QgsMapToolShapeCircle2TangentsPoint( QgsMapToolCapture *parentTool )
-      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle2TangentsPointMetadata::TOOL_ID, parentTool ) {}
+      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle2TangentsPointMetadata::TOOL_ID, parentTool )
+    {}
     ~QgsMapToolShapeCircle2TangentsPoint() override;
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

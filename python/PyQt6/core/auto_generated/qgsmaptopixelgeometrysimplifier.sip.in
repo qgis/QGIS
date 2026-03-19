@@ -28,7 +28,6 @@ target to speed up the vector drawing.
 #include "qgsmaptopixelgeometrysimplifier.h"
 %End
   public:
-
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = Qgis::VectorSimplificationAlgorithm::Distance );
 %Docstring
 Constructor
@@ -86,7 +85,6 @@ Sets the tolerance of the vector layer managed
 %End
 
   public:
-
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 %Docstring
 Returns whether the envelope can be replaced by its BBOX when is applied

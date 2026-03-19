@@ -43,7 +43,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsTextCharacterFormat
 {
   public:
-
     QgsTextCharacterFormat() = default;
 
     /**
@@ -54,8 +53,8 @@ class CORE_EXPORT QgsTextCharacterFormat
     //! Status values for boolean format properties
     enum class BooleanValue
     {
-      NotSet, //!< Property is not set
-      SetTrue, //!< Property is set and TRUE
+      NotSet,   //!< Property is not set
+      SetTrue,  //!< Property is set and TRUE
       SetFalse, //!< Property is set and FALSE
     };
 
@@ -413,7 +412,6 @@ class CORE_EXPORT QgsTextCharacterFormat
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
-
     QColor mTextColor;
     int mFontWeight = -1;
     QString mStyleName;
@@ -435,7 +433,6 @@ class CORE_EXPORT QgsTextCharacterFormat
 
     QBrush mBackgroundBrush;
     QString mBackgroundPath;
-
 };
 
 #endif // QGSTEXTCHARACTERFORMAT_H

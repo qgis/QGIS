@@ -85,9 +85,7 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileTiledSceneFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
-    emit enableButtons( !path.isEmpty() );
-  } );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) { emit enableButtons( !path.isEmpty() ); } );
 }
 
 void QgsTiledSceneSourceSelect::btnEdit_clicked()
@@ -111,8 +109,7 @@ void QgsTiledSceneSourceSelect::btnEdit_clicked()
 
 void QgsTiledSceneSourceSelect::btnDelete_clicked()
 {
-  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 

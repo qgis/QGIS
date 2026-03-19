@@ -42,9 +42,7 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
 
   setupUi( this );
 
-  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, [this] {
-    mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
-  } );
+  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, [this] { mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() ); } );
   connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstRangeFrame, &QWidget::setEnabled );
   connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstChoiceFrame, &QWidget::setEnabled );
 
@@ -67,9 +65,11 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
   else
   {
     mProjectTemporalRangeRadio->setEnabled( false );
-    mProjectTemporalRangeLabel->setText( tr( "The project does not have a temporal range set. "
-                                             "Update the project temporal range via the Project Properties "
-                                             "with valid values in order to use it here." ) );
+    mProjectTemporalRangeLabel->setText( tr(
+      "The project does not have a temporal range set. "
+      "Update the project temporal range via the Project Properties "
+      "with valid values in order to use it here."
+    ) );
     mProjectTemporalRangeLabel->setEnabled( false );
   }
 
@@ -113,8 +113,7 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
       mStaticWmstRangeCombo->clear();
       for ( const QgsDateTimeRange &range : allAvailableRanges )
       {
-        const QString identifier = range.isInstant() ? range.begin().toString( Qt::ISODate )
-                                                     : tr( "%1 to %2" ).arg( range.begin().toString( Qt::ISODate ), range.end().toString( Qt::ISODate ) );
+        const QString identifier = range.isInstant() ? range.begin().toString( Qt::ISODate ) : tr( "%1 to %2" ).arg( range.begin().toString( Qt::ISODate ), range.end().toString( Qt::ISODate ) );
         mStaticWmstRangeCombo->addItem( identifier, QVariant::fromValue( range ) );
       }
       mStaticTemporalRangeRadio->setText( tr( "Predefined date" ) );
@@ -126,9 +125,7 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
       mStaticTemporalRangeRadio->setText( tr( "Predefined range" ) );
     }
 
-    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
-      mRasterLayer->providerType()
-    );
+    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( mRasterLayer->providerType() );
 
     const QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
 
@@ -219,7 +216,9 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     mFetchModeComboBox->addItem( tr( "Match to End of Range" ), static_cast<int>( Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange ) );
     mFetchModeComboBox->addItem( tr( "Closest Match to Start of Range" ), static_cast<int>( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange ) );
     mFetchModeComboBox->addItem( tr( "Closest Match to End of Range" ), static_cast<int>( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToEndOfRange ) );
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( static_cast<int>( qobject_cast<QgsRasterLayerTemporalProperties *>( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) ) );
+    mFetchModeComboBox->setCurrentIndex(
+      mFetchModeComboBox->findData( static_cast<int>( qobject_cast<QgsRasterLayerTemporalProperties *>( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) )
+    );
 
     const QString temporalSource = uri.value( u"temporalSource"_s ).toString();
     mDisableTime->setChecked( !uri.value( u"enableTime"_s, true ).toBool() );
@@ -264,7 +263,8 @@ void QgsWmstSettingsWidget::apply()
   if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
     uri[u"enableTime"_s] = !mDisableTime->isChecked();
-    qobject_cast<QgsRasterLayerTemporalProperties *>( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast<Qgis::TemporalIntervalMatchMethod>( mFetchModeComboBox->currentData().toInt() ) );
+    qobject_cast<QgsRasterLayerTemporalProperties *>( mRasterLayer->temporalProperties() )
+      ->setIntervalHandlingMethod( static_cast<Qgis::TemporalIntervalMatchMethod>( mFetchModeComboBox->currentData().toInt() ) );
 
     if ( mReferenceTimeGroupBox->isChecked() )
     {
@@ -283,7 +283,9 @@ void QgsWmstSettingsWidget::apply()
       if ( mStaticTemporalRangeRadio->isChecked() )
       {
         const QString time = mStaticWmstRangeCombo->count() > 0
-                               ? ( mStaticWmstRangeCombo->currentData().value<QgsDateTimeRange>().begin().toString( Qt::ISODateWithMs ) + '/' + mStaticWmstRangeCombo->currentData().value<QgsDateTimeRange>().end().toString( Qt::ISODateWithMs ) )
+                               ? ( mStaticWmstRangeCombo->currentData().value<QgsDateTimeRange>().begin().toString( Qt::ISODateWithMs )
+                                   + '/'
+                                   + mStaticWmstRangeCombo->currentData().value<QgsDateTimeRange>().end().toString( Qt::ISODateWithMs ) )
                                : ( mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' + mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) );
         uri[u"time"_s] = time;
         uri[u"temporalSource"_s] = "provider"_L1;

@@ -47,15 +47,7 @@ namespace QgsWms
     // Build default url
     if ( href.isEmpty() )
     {
-      static const QSet<QString> sFilter {
-        u"REQUEST"_s,
-        u"VERSION"_s,
-        u"SERVICE"_s,
-        u"LAYERS"_s,
-        u"STYLES"_s,
-        u"SLD_VERSION"_s,
-        u"_DC"_s
-      };
+      static const QSet<QString> sFilter { u"REQUEST"_s, u"VERSION"_s, u"SERVICE"_s, u"LAYERS"_s, u"STYLES"_s, u"SLD_VERSION"_s, u"_DC"_s };
 
       href = request.originalUrl();
       QUrlQuery q( href );

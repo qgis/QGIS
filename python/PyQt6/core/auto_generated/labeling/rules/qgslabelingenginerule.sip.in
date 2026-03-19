@@ -20,7 +20,6 @@ Encapsulates the context for a labeling engine run.
 #include "qgslabelingenginerule.h"
 %End
   public:
-
     QgsLabelingEngineContext( QgsRenderContext &renderContext );
 %Docstring
 Constructor for QgsLabelingEngineContext.
@@ -245,7 +244,6 @@ Should be called following a call
 
 
   protected:
-
     virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
 %Docstring
 Copies common properties from this object to an ``other``.

@@ -319,7 +319,7 @@ Give the layer tree model hints about the currently associated map view
 so that legend nodes that use map units can be scaled correctly
 %End
 
-    void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale  /Out/ ) const;
+    void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale /Out/ ) const;
 %Docstring
 Gets hints about map view - to be used in legend nodes. Arguments that
 are not ``None`` will receive values. If there are no valid map view
@@ -507,7 +507,6 @@ filtering rules
     void legendInvalidateMapBasedData();
 
   protected:
-
 
 
 

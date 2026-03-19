@@ -63,8 +63,7 @@ QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *p
   : QAbstractItemModel( parent )
   , mMimeFormat( u"application/x-qgscategorizedsymbolrendererv2model"_s )
   , mScreen( screen )
-{
-}
+{}
 
 void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRenderer *renderer )
 {
@@ -520,8 +519,7 @@ void QgsCategorizedSymbolRendererViewStyle::drawPrimitive( PrimitiveElement elem
 QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( QgsFieldExpressionWidget *expressionWidget, QObject *parent )
   : QStyledItemDelegate( parent )
   , mFieldExpressionWidget( expressionWidget )
-{
-}
+{}
 
 QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -854,8 +852,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 
 
 void QgsCategorizedSymbolRendererWidget::populateCategories()
-{
-}
+{}
 
 void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString &field )
 {
@@ -922,7 +919,8 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
   {
-    const int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ), tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel );
+    const int res = QMessageBox::
+      warning( nullptr, tr( "Classify Categories" ), tr( "High number of classes. Classification would yield %n entries which might not be expected. Continue?", nullptr, uniqueValues.size() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
     {
       return;
@@ -940,10 +938,16 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 
   if ( !mOldClassificationAttribute.isEmpty() && attrName != mOldClassificationAttribute && !mRenderer->categories().isEmpty() )
   {
-    const int res = QMessageBox::question( this, tr( "Delete Classification" ), tr( "The classification field was changed from '%1' to '%2'.\n"
-                                                                                    "Should the existing classes be deleted before classification?" )
-                                                                                  .arg( mOldClassificationAttribute, attrName ),
-                                           QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    const int res = QMessageBox::question(
+      this,
+      tr( "Delete Classification" ),
+      tr(
+        "The classification field was changed from '%1' to '%2'.\n"
+        "Should the existing classes be deleted before classification?"
+      )
+        .arg( mOldClassificationAttribute, attrName ),
+      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+    );
     if ( res == QMessageBox::Cancel )
     {
       return;
@@ -1373,10 +1377,11 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )

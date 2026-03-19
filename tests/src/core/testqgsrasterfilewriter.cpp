@@ -48,7 +48,8 @@ class TestQgsRasterFileWriter : public QgsTest
 
   public:
     TestQgsRasterFileWriter()
-      : QgsTest( u"Raster File Writer Tests"_s ) {}
+      : QgsTest( u"Raster File Writer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

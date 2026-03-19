@@ -252,20 +252,24 @@ std::unique_ptr<QgsPythonUtils> QgsProcessingExec::loadPythonSupport()
 #endif
 
 QgsProcessingExec::QgsProcessingExec()
-{
-}
+{}
 
 int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel logLevel, Flags flags )
 {
   mFlags = flags;
 
-  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level, Qgis::StringFormat ) {
-    if ( level == Qgis::MessageLevel::Critical )
-    {
-      if ( !message.contains( "DeprecationWarning:"_L1 ) )
-        std::cerr << message.toLocal8Bit().constData() << '\n';
+  QObject::connect(
+    QgsApplication::messageLog(),
+    static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ),
+    QgsApplication::instance(),
+    []( const QString &message, const QString &, Qgis::MessageLevel level, Qgis::StringFormat ) {
+      if ( level == Qgis::MessageLevel::Critical )
+      {
+        if ( !message.contains( "DeprecationWarning:"_L1 ) )
+          std::cerr << message.toLocal8Bit().constData() << '\n';
+      }
     }
-  } );
+  );
 
   // core providers
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
@@ -461,8 +465,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
               else
               {
                 // upgrade previous value to list
-                QStringList listValue = QStringList() << params.value( name ).toString()
-                                                      << value;
+                QStringList listValue = QStringList() << params.value( name ).toString() << value;
                 params.insert( name, listValue );
               }
             }
@@ -474,7 +477,9 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
         }
         else
         {
-          std::cerr << u"Invalid parameter value %1. Parameter values must be entered after \"--\" e.g.\n  Example:\n    qgis_process run algorithm_name -- PARAM1=VALUE PARAM2=42\"\n"_s.arg( arg ).toLocal8Bit().constData();
+          std::cerr << u"Invalid parameter value %1. Parameter values must be entered after \"--\" e.g.\n  Example:\n    qgis_process run algorithm_name -- PARAM1=VALUE PARAM2=42\"\n"_s.arg( arg )
+                         .toLocal8Bit()
+                         .constData();
           return 1;
         }
       }
@@ -501,8 +506,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
             else
             {
               // upgrade previous value to list
-              QStringList listValue = QStringList() << params.value( name ).toString()
-                                                    << value;
+              QStringList listValue = QStringList() << params.value( name ).toString() << value;
               params.insert( name, listValue );
             }
           }
@@ -527,27 +531,37 @@ void QgsProcessingExec::showUsage( const QString &appName )
 {
   QStringList msg;
 
-  msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
-      << Qgis::version() << ")\n"
-      << "Usage: " << appName << " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
-      << "\nOptions:\n"
-      << "\t--help or -h\t\tOutput the help\n"
-      << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
-      << "\t--json\t\t\tOutput results as JSON objects\n"
-      << "\t--verbose\t\tOutput verbose logs\n"
-      << "\t--no-python\t\tDisable Python support (results in faster startup)\n"
-      << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)\n"
-      << "Available commands:\n"
-      << "\tplugins\t\tlist available and active plugins\n"
-      << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
-      << "\tplugins disable\tdisables an installed plugin. The plugin name must be specified, e.g. \"plugins disable cartography_tools\"\n"
-      << "\tlist\t\tlist all available processing algorithms\n"
-      << "\thelp\t\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
-      << "\trun\t\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax. Ordered list values for a parameter can be created by specifying the parameter multiple times, e.g. --LAYERS=layer1.shp --LAYERS=layer2.shp\n"
-      << "\t\t\tAlternatively, a '-' character in place of the parameters argument indicates that the parameters should be read from STDIN as a JSON object. The JSON should be structured as a map containing at least the \"inputs\" key specifying a map of input parameter values. This implies the --json option for output as a JSON object.\n"
-      << "\t\t\tIf required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n"
-      << "\t\t\tIf required, an existing QGIS project to use during the algorithm execution can be specified via the \"--PROJECT_PATH=path\" argument.\n"
-      << "\t\t\tWhen passing parameters as a JSON object from STDIN, these extra arguments can be provided as an \"ellipsoid\" and a \"project_path\" key respectively.\n";
+  msg
+    << "QGIS Processing Executor - "
+    << VERSION
+    << " '"
+    << RELEASE_NAME
+    << "' ("
+    << Qgis::version()
+    << ")\n"
+    << "Usage: "
+    << appName
+    << " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+    << "\nOptions:\n"
+    << "\t--help or -h\t\tOutput the help\n"
+    << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
+    << "\t--json\t\t\tOutput results as JSON objects\n"
+    << "\t--verbose\t\tOutput verbose logs\n"
+    << "\t--no-python\t\tDisable Python support (results in faster startup)\n"
+    << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)\n"
+    << "Available commands:\n"
+    << "\tplugins\t\tlist available and active plugins\n"
+    << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
+    << "\tplugins disable\tdisables an installed plugin. The plugin name must be specified, e.g. \"plugins disable cartography_tools\"\n"
+    << "\tlist\t\tlist all available processing algorithms\n"
+    << "\thelp\t\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
+    << "\trun\t\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax. Ordered "
+       "list values for a parameter can be created by specifying the parameter multiple times, e.g. --LAYERS=layer1.shp --LAYERS=layer2.shp\n"
+    << "\t\t\tAlternatively, a '-' character in place of the parameters argument indicates that the parameters should be read from STDIN as a JSON object. The JSON should be structured as a map "
+       "containing at least the \"inputs\" key specifying a map of input parameter values. This implies the --json option for output as a JSON object.\n"
+    << "\t\t\tIf required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n"
+    << "\t\t\tIf required, an existing QGIS project to use during the algorithm execution can be specified via the \"--PROJECT_PATH=path\" argument.\n"
+    << "\t\t\tWhen passing parameters as a JSON object from STDIN, these extra arguments can be provided as an \"ellipsoid\" and a \"project_path\" key respectively.\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
@@ -1044,7 +1058,9 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, Qgis::ProcessingLogLevel logLevel, const QString &projectPath )
+int QgsProcessingExec::execute(
+  const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, Qgis::ProcessingLogLevel logLevel, const QString &projectPath
+)
 {
   QVariantMap json;
   if ( mFlags & Flag::UseJson )

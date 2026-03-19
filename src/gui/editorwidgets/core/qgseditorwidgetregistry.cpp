@@ -106,7 +106,9 @@ QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( QgsVectorLayer *vl, int
   return create( setup.type(), vl, fieldIdx, setup.config(), editor, parent, context );
 }
 
-QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create(
+  const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context
+)
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
@@ -137,7 +139,9 @@ QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId
   return nullptr;
 }
 
-QgsSearchWidgetWrapper *QgsEditorWidgetRegistry::createSearchWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent, const QgsAttributeEditorContext &context )
+QgsSearchWidgetWrapper *QgsEditorWidgetRegistry::createSearchWidget(
+  const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent, const QgsAttributeEditorContext &context
+)
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {

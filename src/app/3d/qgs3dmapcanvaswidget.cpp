@@ -67,8 +67,10 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
-const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingCrossSectionToleranceLocked = new QgsSettingsEntryBool( u"cross-section-tolerance-locked"_s, QgsSettingsTree::sTree3DMap, true, u"Whether cross section tolerance is locked"_s );
+const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance
+  = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingCrossSectionToleranceLocked
+  = new QgsSettingsEntryBool( u"cross-section-tolerance-locked"_s, QgsSettingsTree::sTree3DMap, true, u"Whether cross section tolerance is locked"_s );
 
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
@@ -125,15 +127,21 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar->addAction( mEditingToolsAction );
   QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
-  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectPolygon.svg"_s ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
-  QAction *actionPaintbrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"propertyicons/rendering.svg"_s ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
-  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectAboveLine.svg"_s ) ), tr( "Select Above Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
-  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectBelowLine.svg"_s ) ), tr( "Select Below Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
+  QAction *actionPointCloudChangeAttributeTool
+    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectPolygon.svg"_s ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
+  QAction *actionPaintbrush
+    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"propertyicons/rendering.svg"_s ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
+  QAction *actionAboveLineTool
+    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectAboveLine.svg"_s ) ), tr( "Select Above Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
+  QAction *actionBelowLineTool
+    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectBelowLine.svg"_s ) ), tr( "Select Below Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
-  QAction *actionPointFilter = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mIconExpressionFilter.svg" ) ), tr( "Filter Points" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter );
+  QAction *actionPointFilter
+    = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mIconExpressionFilter.svg" ) ), tr( "Filter Points" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter );
   actionPointFilter->setCheckable( true );
-  const QString tooltip = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
+  const QString tooltip
+    = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
   actionPointFilter->setToolTip( tooltip );
 
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
@@ -151,9 +159,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ) );
   actionEditingToolbar->setCheckable( true );
-  actionEditingToolbar->setChecked(
-    setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool()
-  );
+  actionEditingToolbar->setChecked( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
   connect( actionEditingToolbar, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleEditingToolbar );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
   connect( mCboChangeAttributeValue, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString &text ) {
@@ -174,15 +180,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
 
-  QAction *toggleOnScreenNavigation = toolBar->addAction(
-    QgsApplication::getThemeIcon( u"mAction3DNavigation.svg"_s ),
-    tr( "Toggle On-Screen Navigation" )
-  );
+  QAction *toggleOnScreenNavigation = toolBar->addAction( QgsApplication::getThemeIcon( u"mAction3DNavigation.svg"_s ), tr( "Toggle On-Screen Navigation" ) );
 
   toggleOnScreenNavigation->setCheckable( true );
-  toggleOnScreenNavigation->setChecked(
-    setting.value( u"/3D/navigationWidget/visibility"_s, true, QgsSettings::Gui ).toBool()
-  );
+  toggleOnScreenNavigation->setChecked( setting.value( u"/3D/navigationWidget/visibility"_s, true, QgsSettings::Gui ).toBool() );
   QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleNavigationWidget );
 
   toolBar->addSeparator();
@@ -266,16 +267,12 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mShowFrustumPolygon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
   mShowFrustumPolygon->setCheckable( true );
-  connect( mShowFrustumPolygon, &QAction::triggered, this, [this]( bool enabled ) {
-    mCanvas->mapSettings()->setViewFrustumVisualizationEnabled( enabled );
-  } );
+  connect( mShowFrustumPolygon, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setViewFrustumVisualizationEnabled( enabled ); } );
   mCameraMenu->addAction( mShowFrustumPolygon );
 
   mActionShow2DMapOverlay = new QAction( tr( "Show 2D Map Overlay" ), this );
   mActionShow2DMapOverlay->setCheckable( true );
-  connect( mActionShow2DMapOverlay, &QAction::triggered, this, [this]( bool enabled ) {
-    mCanvas->mapSettings()->setIs2DMapOverlayEnabled( enabled );
-  } );
+  connect( mActionShow2DMapOverlay, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setIs2DMapOverlayEnabled( enabled ); } );
   mCameraMenu->addAction( mActionShow2DMapOverlay );
 
   mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"extents.svg"_s ), tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
@@ -326,7 +323,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCrossSectionMenu->addAction( mActionNudgeRight );
 
   mCrossSectionMenu->addSeparator();
-  mActionDisableClippingPlanes = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
+  mActionDisableClippingPlanes
+    = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
   // Effects Menu
@@ -349,9 +347,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionEnableEyeDome = new QAction( tr( "Show Eye Dome Lighting" ), this );
   mActionEnableEyeDome->setCheckable( true );
-  connect( mActionEnableEyeDome, &QAction::triggered, this, [this]( bool enabled ) {
-    mCanvas->mapSettings()->setEyeDomeLightingEnabled( enabled );
-  } );
+  connect( mActionEnableEyeDome, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setEyeDomeLightingEnabled( enabled ); } );
   mEffectsMenu->addAction( mActionEnableEyeDome );
 
   mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
@@ -372,7 +368,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
 
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, []( const QString &fileName ) {
-    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+    QgisApp::instance()
+      ->messageBar()
+      ->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   } );
 
   connect( mCanvas, &Qgs3DMapCanvas::fpsCountChanged, this, &Qgs3DMapCanvasWidget::updateFpsCount );
@@ -447,9 +445,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
   debugPanelShortCut->setObjectName( u"DebugPanel"_s );
   debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
-  toggleNavigationWidget(
-    setting.value( u"/3D/navigationWidget/visibility"_s, false, QgsSettings::Gui ).toBool()
-  );
+  toggleNavigationWidget( setting.value( u"/3D/navigationWidget/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
   layout->addLayout( hLayout );
   layout->addWidget( mAnimationWidget );
@@ -458,7 +454,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+  mDockableWidgetHelper
+    = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
 
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
   {
@@ -468,12 +465,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   }
   QAction *dockAction = mDockableWidgetHelper->createDockUndockAction( tr( "Dock 3D Map View" ), this );
   toolBar->addAction( dockAction );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
-    QgisApp::instance()->close3DMapView( canvasName() );
-  } );
-  connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) {
-    toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) );
-  } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { QgisApp::instance()->close3DMapView( canvasName() ); } );
+  connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) { toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) ); } );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
@@ -487,9 +480,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   }
 
   // sort actions in toolbar menu
-  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), []( QAction *a, QAction *b ) {
-    return QString::localeAwareCompare( a->text(), b->text() ) < 0;
-  } );
+  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), []( QAction *a, QAction *b ) { return QString::localeAwareCompare( a->text(), b->text() ) < 0; } );
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
@@ -629,7 +620,8 @@ void Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter()
     mMapToolChangeAttribute->setPointFilter( mChangeAttributePointFilter );
   }
   action->setChecked( !mChangeAttributePointFilter.isEmpty() );
-  QString tooltip = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
+  QString tooltip
+    = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
   if ( !mChangeAttributePointFilter.isEmpty() )
     tooltip.append( u"\n%1\n%2"_s.arg( tr( "Current filter expression: " ), mChangeAttributePointFilter ) );
   action->setToolTip( tooltip );
@@ -767,7 +759,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mAnimationWidget->setMap( map );
 
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
-  mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  mActionMapThemes->setDisabled(
+    !mCanvas->mapSettings()->terrainRenderingEnabled() || !mCanvas->mapSettings()->terrainGenerator() || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh
+  );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
@@ -847,11 +841,7 @@ void Qgs3DMapCanvasWidget::configure()
     // update map
     w->apply();
 
-    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
-      oldLookingAt,
-      oldOrigin, oldCrs,
-      map->origin(), map->crs(), QgsProject::instance()->transformContext()
-    );
+    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates( oldLookingAt, oldOrigin, oldCrs, map->origin(), map->crs(), QgsProject::instance()->transformContext() );
 
     if ( p != oldLookingAt )
     {
@@ -914,11 +904,13 @@ void Qgs3DMapCanvasWidget::exportScene()
     const QString exportFilePath = QDir( exportSettings.sceneFolderPath() ).filePath( exportSettings.sceneName() + u".obj"_s );
     if ( success )
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar
+        ->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Success, 0 );
     }
     else
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Warning, 0 );
+      mMessageBar
+        ->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Warning, 0 );
     }
   }
 }
@@ -970,9 +962,7 @@ void Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow()
   {
     actionFollowMain->setChecked( true );
   }
-  connect( actionFollowMain, &QAction::triggered, this, [this] {
-    mCanvas->mapSettings()->setTerrainMapTheme( QString() );
-  } );
+  connect( actionFollowMain, &QAction::triggered, this, [this] { mCanvas->mapSettings()->setTerrainMapTheme( QString() ); } );
   mMapThemeMenuPresetActions.append( actionFollowMain );
 
   const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
@@ -984,9 +974,7 @@ void Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow()
     {
       a->setChecked( true );
     }
-    connect( a, &QAction::triggered, this, [a, this] {
-      mCanvas->mapSettings()->setTerrainMapTheme( a->text() );
-    } );
+    connect( a, &QAction::triggered, this, [a, this] { mCanvas->mapSettings()->setTerrainMapTheme( a->text() ); } );
     mMapThemeMenuPresetActions.append( a );
   }
   mMapThemeMenu->addActions( mMapThemeMenuPresetActions );
@@ -1071,10 +1059,14 @@ void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
 
   const QgsSettings settings;
   double memLimit = settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble();
-  mMessageBar->pushMessage( tr( "A map layer has used all graphics memory allowed (%1 MB). "
-                                "You may want to lower the amount of detail in the scene, or increase the limit in the options." )
-                              .arg( memLimit ),
-                            Qgis::MessageLevel::Warning );
+  mMessageBar->pushMessage(
+    tr(
+      "A map layer has used all graphics memory allowed (%1 MB). "
+      "You may want to lower the amount of detail in the scene, or increase the limit in the options."
+    )
+      .arg( memLimit ),
+    Qgis::MessageLevel::Warning
+  );
   mGpuMemoryLimitReachedReported = true;
 }
 
@@ -1097,7 +1089,12 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMaximum( 15 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == "Synthetic"_L1 || attributeName == "KeyPoint"_L1 || attributeName == "Withheld"_L1 || attributeName == "Overlap"_L1 || attributeName == "ScanDirectionFlag"_L1 || attributeName == "EdgeOfFlightLine"_L1 )
+  else if ( attributeName == "Synthetic"_L1
+            || attributeName == "KeyPoint"_L1
+            || attributeName == "Withheld"_L1
+            || attributeName == "Overlap"_L1
+            || attributeName == "ScanDirectionFlag"_L1
+            || attributeName == "EdgeOfFlightLine"_L1 )
   {
     useComboBox = true;
     const int oldIndex = mCboChangeAttributeValue->currentIndex();
@@ -1414,7 +1411,10 @@ Qgs3DMapClippingToleranceWidgetSettingsAction::Qgs3DMapClippingToleranceWidgetSe
   auto refreshLockButton = [this]( bool locked ) {
     mLockButton->setIcon( QIcon( QgsApplication::iconPath( locked ? u"locked.svg"_s : u"unlocked.svg"_s ) ) );
     mToleranceWidget->setEnabled( locked );
-    mLockButton->setToolTip( locked ? tr( "Locked: spinbox enabled, cross section width from tolerance.\nClick to unlock for width from 3rd point." ) : tr( "Unlocked: spinbox disabled, cross section width from 3rd point.\nClick to lock for tolerance width." ) );
+    mLockButton->setToolTip(
+      locked ? tr( "Locked: spinbox enabled, cross section width from tolerance.\nClick to unlock for width from 3rd point." )
+             : tr( "Unlocked: spinbox disabled, cross section width from 3rd point.\nClick to lock for tolerance width." )
+    );
   };
 
   const bool isLocked = !Qgs3DMapCanvasWidget::settingCrossSectionToleranceLocked->value();

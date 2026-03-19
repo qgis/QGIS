@@ -45,10 +45,7 @@ class TestQgsMapSaveDialog : public QgsTest
       mQgisApp = new QgisApp();
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testUpdateExtent()
     {

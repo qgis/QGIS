@@ -19,12 +19,8 @@
 QgsRay3D::QgsRay3D( const QVector3D &origin, const QVector3D &direction )
   : mOrigin( origin )
   , mDirection( direction.normalized() )
-  , mDirectionInversed( 1.0f / mDirection.x(),
-                        1.0f / mDirection.y(),
-                        1.0f / mDirection.z() )
-{
-
-}
+  , mDirectionInversed( 1.0f / mDirection.x(), 1.0f / mDirection.y(), 1.0f / mDirection.z() )
+{}
 
 void QgsRay3D::setOrigin( const QVector3D &origin )
 {
@@ -34,9 +30,7 @@ void QgsRay3D::setOrigin( const QVector3D &origin )
 void QgsRay3D::setDirection( const QVector3D direction )
 {
   mDirection = direction.normalized();
-  mDirectionInversed = QVector3D( 1.0f / mDirection.x(),
-                                  1.0f / mDirection.y(),
-                                  1.0f / mDirection.z() );
+  mDirectionInversed = QVector3D( 1.0f / mDirection.x(), 1.0f / mDirection.y(), 1.0f / mDirection.z() );
 }
 
 QVector3D QgsRay3D::projectedPoint( const QVector3D &point ) const
@@ -60,7 +54,7 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
   const QVector3D projPoint = projectedPoint( point );
 
   // calculate the angle between the point and the projected point
-  const QVector3D v1 = projPoint - mOrigin ;
+  const QVector3D v1 = projPoint - mOrigin;
   const QVector3D v2 = point - projPoint;
   return qRadiansToDegrees( std::atan2( v2.length(), v1.length() ) );
 }

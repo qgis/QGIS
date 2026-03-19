@@ -64,9 +64,18 @@ with this symbol.
 %End
 
     enum class Property /BaseType=IntEnum/
-      {
+    {
       Height,
       ExtrusionHeight,
+      ScaleX,
+      ScaleY,
+      ScaleZ,
+      TranslationX,
+      TranslationY,
+      TranslationZ,
+      RotationX,
+      RotationY,
+      RotationZ,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -96,7 +105,6 @@ Sets default properties for the symbol based on a layer's configuration.
 %End
 
   protected:
-
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 %Docstring
 Copies base class settings from this object to a ``destination`` object.

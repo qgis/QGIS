@@ -22,6 +22,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
 #include "qgsprojecttimesettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
@@ -93,8 +95,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   } );
 
   for ( const Qgis::TemporalUnit u :
-        {
-          Qgis::TemporalUnit::Milliseconds,
+        { Qgis::TemporalUnit::Milliseconds,
           Qgis::TemporalUnit::Seconds,
           Qgis::TemporalUnit::Minutes,
           Qgis::TemporalUnit::Hours,
@@ -104,8 +105,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
           Qgis::TemporalUnit::Years,
           Qgis::TemporalUnit::Decades,
           Qgis::TemporalUnit::Centuries,
-          Qgis::TemporalUnit::IrregularStep
-        } )
+          Qgis::TemporalUnit::IrregularStep } )
   {
     mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), static_cast<int>( u ) );
   }
@@ -127,9 +127,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsAnimationExportDialog::setToProjectTime );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"map_views/map_view.html#maptimecontrol"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"map_views/map_view.html#maptimecontrol"_s ); } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [this] {
     emit startExport();
@@ -249,8 +247,8 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 {
   const QgsSettings settings;
 
-  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, false );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );
@@ -267,9 +265,7 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );
 }

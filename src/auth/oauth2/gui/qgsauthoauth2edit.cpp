@@ -61,9 +61,7 @@ QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   updatePredefinedLocationsTooltip();
 
   pteDefinedDesc->setOpenLinks( false );
-  connect( pteDefinedDesc, &QTextBrowser::anchorClicked, this, []( const QUrl &url ) {
-    QDesktopServices::openUrl( url );
-  } );
+  connect( pteDefinedDesc, &QTextBrowser::anchorClicked, this, []( const QUrl &url ) { QDesktopServices::openUrl( url ); } );
 }
 
 
@@ -180,9 +178,7 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( leTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setTokenUrl );
   connect( leRefreshTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRefreshTokenUrl );
   connect( leRedirectUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectUrl );
-  connect( comboRedirectHost, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
-    mOAuthConfigCustom->setRedirectHost( comboRedirectHost->currentData().toString() );
-  } );
+  connect( comboRedirectHost, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { mOAuthConfigCustom->setRedirectHost( comboRedirectHost->currentData().toString() ); } );
   connect( spnbxRedirectPort, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectPort );
   connect( leClientId, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientId );
   connect( leClientSecret, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientSecret );
@@ -195,9 +191,7 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
 
   connect( mTokenHeaderLineEdit, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setCustomHeader );
-  connect( mExtraTokensTable, &QTableWidget::cellChanged, mOAuthConfigCustom.get(), [this]( int, int ) {
-    mOAuthConfigCustom->setExtraTokens( extraTokens() );
-  } );
+  connect( mExtraTokensTable, &QTableWidget::cellChanged, mOAuthConfigCustom.get(), [this]( int, int ) { mOAuthConfigCustom->setExtraTokens( extraTokens() ); } );
   connect( mAddExtraTokenButton, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::addExtraToken );
   connect( mRemoveExtraTokenButton, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::removeExtraToken );
 
@@ -645,9 +639,7 @@ void QgsAuthOAuth2Edit::removeTokenCacheFile()
     return;
   }
 
-  const QStringList cachefiles = QStringList()
-                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, false )
-                                 << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
+  const QStringList cachefiles = QStringList() << QgsAuthOAuth2Config::tokenCachePath( authcfg, false ) << QgsAuthOAuth2Config::tokenCachePath( authcfg, true );
 
   for ( const QString &cachefile : cachefiles )
   {
@@ -685,11 +677,9 @@ void QgsAuthOAuth2Edit::loadDefinedConfigs()
 
     const QString grantflow = QgsAuthOAuth2Config::grantFlowString( config->grantFlow() );
 
-    const QString name = u"%1 (%2): %3"_s
-                           .arg( config->name(), grantflow, config->description() );
+    const QString name = u"%1 (%2): %3"_s.arg( config->name(), grantflow, config->description() );
 
-    const QString tip = tr( "ID: %1\nGrant flow: %2\nDescription: %3" )
-                          .arg( i.key(), grantflow, config->description() );
+    const QString tip = tr( "ID: %1\nGrant flow: %2\nDescription: %3" ).arg( i.key(), grantflow, config->description() );
 
     QListWidgetItem *itm = new QListWidgetItem( lstwdgDefinedConfigs );
     itm->setText( name );
@@ -787,9 +777,7 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
 
   QSettings settings;
   const QString recentdir = settings.value( u"UI/lastAuthSaveFileDir"_s, QDir::homePath() ).toString();
-  const QString configpath = QFileDialog::getSaveFileName(
-    this, tr( "Save OAuth2 Config File" ), recentdir, u"OAuth2 config files (*.json)"_s
-  );
+  const QString configpath = QFileDialog::getSaveFileName( this, tr( "Save OAuth2 Config File" ), recentdir, u"OAuth2 config files (*.json)"_s );
   this->raise();
   this->activateWindow();
 
@@ -907,8 +895,7 @@ void QgsAuthOAuth2Edit::addQueryPairRow( const QString &key, const QString &val 
   const int rowCnt = tblwdgQueryPairs->rowCount();
   tblwdgQueryPairs->insertRow( rowCnt );
 
-  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItm = new QTableWidgetItem( key );
   keyItm->setFlags( itmFlags );
@@ -1025,8 +1012,7 @@ void QgsAuthOAuth2Edit::addExtraTokenRow( const QString &key, const QString &val
   const int rowCnt = mExtraTokensTable->rowCount();
   mExtraTokensTable->insertRow( rowCnt );
 
-  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
 
   QTableWidgetItem *keyItm = new QTableWidgetItem( key );
   keyItm->setFlags( itmFlags );
@@ -1264,11 +1250,17 @@ void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
   if ( !locationListHtml.isEmpty() )
     locationListHtml += "</ul>"_L1;
 
-  const QString tip = u"<p>"_s + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
-                                     "This allows configurations to be swapped out via filesystem tools without affecting user "
-                                     "configurations. It is recommended to use the Configure tab’s export function, then edit the "
-                                     "resulting file. See QGIS documentation for further details." )
-                      + u"</p><p>"_s + tr( "Configurations files can be placed in the directories:" ) + u"</p>"_s + locationListHtml;
+  const QString tip = u"<p>"_s
+                      + tr(
+                        "Defined configurations are JSON-formatted files, with a single configuration per file. "
+                        "This allows configurations to be swapped out via filesystem tools without affecting user "
+                        "configurations. It is recommended to use the Configure tab’s export function, then edit the "
+                        "resulting file. See QGIS documentation for further details."
+                      )
+                      + u"</p><p>"_s
+                      + tr( "Configurations files can be placed in the directories:" )
+                      + u"</p>"_s
+                      + locationListHtml;
   pteDefinedDesc->setHtml( tip );
 
   lstwdgDefinedConfigs->setToolTip( tr( "Configuration files can be placed in the directories:\n\n%1" ).arg( locationList ) );

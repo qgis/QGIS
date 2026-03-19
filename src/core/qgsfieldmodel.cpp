@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
@@ -522,9 +521,7 @@ QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVec
   if ( fieldIdx < 0 )
     return QString();
 
-  const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression
-                                   ? layer->expressionField( fieldIdx )
-                                   : QString();
+  const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression ? layer->expressionField( fieldIdx ) : QString();
 
   if ( !expressionString.isEmpty() )
   {

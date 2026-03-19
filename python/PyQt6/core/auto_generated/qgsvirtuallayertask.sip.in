@@ -22,7 +22,6 @@ data in a separate thread.
 #include "qgsvirtuallayertask.h"
 %End
   public:
-
     QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition );
 %Docstring
 Constructor.

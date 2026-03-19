@@ -32,14 +32,13 @@ the rules and draws features with symbols from rules that match.
 
     struct FeatureToRender
     {
-      FeatureToRender( const QgsFeature &_f, int _flags );
-      QgsFeature feat;
-      int flags; // selected and/or draw markers
+        FeatureToRender( const QgsFeature &_f, int _flags );
+        QgsFeature feat;
+        int flags; // selected and/or draw markers
     };
 
     struct RenderJob
     {
-
         RenderJob( const QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 %Docstring
 Constructor for a render job, with the specified feature to render and
@@ -60,16 +59,15 @@ symbol.
 
     struct RenderLevel
     {
-      explicit RenderLevel( int z );
+        explicit RenderLevel( int z );
 
-      ~RenderLevel();
-      int zIndex;
+        ~RenderLevel();
+        int zIndex;
 
-      QList<QgsRuleBasedRenderer::RenderJob *> jobs;
+        QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
 
-      RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other );
-
+        RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other );
     };
 
     typedef QList<QgsRuleBasedRenderer::RenderLevel> RenderQueue;
@@ -96,8 +94,15 @@ filter and scale range match.
           Rendered
         };
 
-        Rule( QgsSymbol *symbol /Transfer/, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(),
-              const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule(
+          QgsSymbol *symbol /Transfer/,
+          int maximumScale = 0,
+          int minimumScale = 0,
+          const QString &filterExp = QString(),
+          const QString &label = QString(),
+          const QString &description = QString(),
+          bool elseRule = false
+        );
 %Docstring
 Constructor takes ownership of the symbol
 %End

@@ -35,17 +35,24 @@ QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceUR
 
 void QgsWFSFeatureHitsAsyncRequest::launchGet( const QUrl &url )
 {
-  sendGET( url,
-           QString(), // content-type
-           false,     /* synchronous */
-           true,      /* forceRefresh */
-           false /* cache */ );
+  sendGET(
+    url,
+    QString(), // content-type
+    false,     /* synchronous */
+    true,      /* forceRefresh */
+    false      /* cache */
+  );
 }
 
 void QgsWFSFeatureHitsAsyncRequest::launchPost( const QUrl &url, const QByteArray &data )
 {
-  sendPOST( url, u"application/xml; charset=utf-8"_s, data, false, /* synchronous */
-            { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
+  sendPOST(
+    url,
+    u"application/xml; charset=utf-8"_s,
+    data,
+    false, /* synchronous */
+    { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } }
+  );
 }
 
 void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()

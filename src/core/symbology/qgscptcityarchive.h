@@ -40,8 +40,7 @@ class QgsCptCitySelectionItem;
 class CORE_EXPORT QgsCptCityArchive
 {
   public:
-    QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE,
-                       const QString &baseDir = QString() );
+    QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 
     QgsCptCityArchive( const QgsCptCityArchive &rh ) = delete;
@@ -78,7 +77,6 @@ class CORE_EXPORT QgsCptCityArchive
     QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
 
   private:
-
     QString mArchiveName;
     QString mBaseDir;
     // root items, namely directories at root of archive
@@ -89,7 +87,6 @@ class CORE_EXPORT QgsCptCityArchive
 #ifdef SIP_RUN
     QgsCptCityArchive( const QgsCptCityArchive &rh );
 #endif
-
 };
 
 /**
@@ -109,8 +106,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
       AllRamps
     };
 
-    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent,
-                        const QString &name, const QString &path );
+    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
     bool hasChildren();
 
@@ -181,7 +177,12 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
      *
      * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
-    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED { Q_UNUSED( data ); Q_UNUSED( action ); return false; }
+    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED
+    {
+      Q_UNUSED( data );
+      Q_UNUSED( action );
+      return false;
+    }
 
     // static methods
 
@@ -197,7 +198,11 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setParent( QgsCptCityDataItem *parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem *> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
-    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) return icon(); }
+    virtual QIcon icon( QSize size )
+    {
+      Q_UNUSED( size )
+      return icon();
+    }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }
@@ -211,7 +216,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     bool isValid() { return mValid; }
 
   protected:
-
     Type mType;
     QgsCptCityDataItem *mParent = nullptr;
     QVector<QgsCptCityDataItem *> mChildren; // easier to have it always
@@ -279,14 +283,8 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 {
     Q_OBJECT
   public:
-    QgsCptCityColorRampItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path,
-                             const QString &variantName = QString(),
-                             bool initialize = false );
-    QgsCptCityColorRampItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path,
-                             const QStringList &variantList,
-                             bool initialize = false );
+    QgsCptCityColorRampItem( QgsCptCityDataItem *parent, const QString &name, const QString &path, const QString &variantName = QString(), bool initialize = false );
+    QgsCptCityColorRampItem( QgsCptCityDataItem *parent, const QString &name, const QString &path, const QStringList &variantList, bool initialize = false );
 
     // --- reimplemented from QgsCptCityDataItem ---
 
@@ -300,7 +298,6 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     void init();
 
   protected:
-
     bool mInitialized;
     QgsCptCityColorRamp mRamp;
     QList< QIcon > mIcons;
@@ -315,8 +312,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
 {
     Q_OBJECT
   public:
-    QgsCptCityCollectionItem( QgsCptCityDataItem *parent,
-                              const QString &name, const QString &path );
+    QgsCptCityCollectionItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
     ~QgsCptCityCollectionItem() override;
 
     void setPopulated() { mPopulated = true; }
@@ -335,15 +331,13 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCityDirectoryItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path );
+    QgsCptCityDirectoryItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsCptCityDataItem *> createChildren() override;
 
     bool equal( const QgsCptCityDataItem *other ) override;
 
-    static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent,
-                                         const QString &name, const QString &path );
+    static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
   protected:
     QMap< QString, QStringList > rampsMap();
@@ -381,8 +375,7 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCityAllRampsItem( QgsCptCityDataItem *parent, const QString &name,
-                            const QVector<QgsCptCityDataItem *> &items );
+    QgsCptCityAllRampsItem( QgsCptCityDataItem *parent, const QString &name, const QVector<QgsCptCityDataItem *> &items );
 
     QVector<QgsCptCityDataItem *> createChildren() override;
 
@@ -400,7 +393,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     enum ViewType
     {
       Authors = 0,
@@ -408,9 +400,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
       List = 2 // not used anymore
     };
 
-    QgsCptCityBrowserModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
-                            QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(),
-                            ViewType Type = Authors );
+    QgsCptCityBrowserModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(), ViewType Type = Authors );
     ~QgsCptCityBrowserModel() override;
 
     // implemented methods from QAbstractItemModel for read-only access
@@ -457,7 +447,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void endRemoveItems();
 
   protected:
-
     // populates the model
     void addRootItems();
     void removeRootItems();

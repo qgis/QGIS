@@ -93,8 +93,8 @@ class TestAuthManager(QgisTestCase):
         self.assertEqual(proxy.password(), "")
         self.assertEqual(proxy.user(), "")
         settings = QgsSettings()
-        settings.setValue("proxy/authcfg", self.auth_config.id())
-        settings.setValue("proxy/proxyEnabled", True)
+        settings.setValue("proxy/auth-cfg", self.auth_config.id())
+        settings.setValue("proxy/proxy-enabled", True)
         del settings
         nam.setupDefaultProxyAndCache()
         proxy = nam.fallbackProxy()

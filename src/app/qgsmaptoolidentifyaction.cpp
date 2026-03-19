@@ -79,9 +79,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 
     connect( mResultsDialog.data(), static_cast<void ( QgsIdentifyResultsDialog::* )( QgsRasterLayer * )>( &QgsIdentifyResultsDialog::formatChanged ), this, &QgsMapToolIdentify::formatChanged );
     connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::copyToClipboard, this, &QgsMapToolIdentifyAction::handleCopyToClipboard );
-    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] {
-      mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
-    } );
+    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] { mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() ); } );
   }
 
   return mResultsDialog;

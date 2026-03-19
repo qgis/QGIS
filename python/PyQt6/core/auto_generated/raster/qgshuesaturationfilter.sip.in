@@ -20,7 +20,6 @@ Color and saturation filter pipe for rasters.
 #include "qgshuesaturationfilter.h"
 %End
   public:
-
     enum GrayscaleMode /BaseType=IntEnum/
     {
       GrayscaleOff,

@@ -964,7 +964,8 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     // check for duplicates
     if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1042,7 +1043,8 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1087,7 +1089,8 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( u"pagingenabled"_s ), { u"wfs"_s, connectionName } );
     QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( u"ignoreAxisOrientation"_s ).toInt(), { u"wfs"_s, connectionName } );
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( u"invertAxisOrientation"_s ).toInt(), { u"wfs"_s, connectionName } );
-    QgsOwsConnection::settingsPreferredHttpMethod->setValue( child.attribute( u"httpMethod"_s ).compare( "post"_L1, Qt::CaseInsensitive ) == 0 ? Qgis::HttpMethod::Post : Qgis::HttpMethod::Get, { u"wfs"_s, connectionName } );
+    QgsOwsConnection::settingsPreferredHttpMethod
+      ->setValue( child.attribute( u"httpMethod"_s ).compare( "post"_L1, Qt::CaseInsensitive ) == 0 ? Qgis::HttpMethod::Post : Qgis::HttpMethod::Get, { u"wfs"_s, connectionName } );
     QgsOwsConnection::settingsWfsFeatureMode->setValue( child.attribute( u"featureMode"_s ), { u"wfs"_s, connectionName } );
 
     if ( !child.attribute( u"username"_s ).isEmpty() )
@@ -1129,7 +1132,8 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1226,7 +1230,8 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1317,7 +1322,8 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1411,7 +1417,8 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1450,10 +1457,25 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     settings.beginGroup( "/HANA/connections/" + connectionName );
 
     for ( const QString param :
-          { "driver", "host", "database", "identifierType", "identifier", "multitenant", "schema", "userTablesOnly",
-            "allowGeometrylessTables", "saveUsername", "username", "savePassword", "password", "sslEnabled",
-            "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate"
-          } )
+          { "driver",
+            "host",
+            "database",
+            "identifierType",
+            "identifier",
+            "multitenant",
+            "schema",
+            "userTablesOnly",
+            "allowGeometrylessTables",
+            "saveUsername",
+            "username",
+            "savePassword",
+            "password",
+            "sslEnabled",
+            "sslCryptoProvider",
+            "sslKeyStore",
+            "sslTrustStore",
+            "sslValidateCertificate",
+            "sslHostNameInCertificate" } )
       settings.setValue( u"/"_s + param, child.attribute( param ) );
 
     settings.endGroup();
@@ -1489,7 +1511,8 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1568,7 +1591,8 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1648,7 +1672,8 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1730,7 +1755,8 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1809,7 +1835,8 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1887,7 +1914,8 @@ void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1987,7 +2015,8 @@ void QgsManageConnectionsDialog::loadStacConnections( const QDomDocument &doc, c
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::
+        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {

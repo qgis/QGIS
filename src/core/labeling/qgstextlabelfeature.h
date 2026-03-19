@@ -100,8 +100,17 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      *
      * \since QGIS 3.20
      */
-    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
-        double wordSpacing, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics );
+    static QgsPrecalculatedTextMetrics calculateTextMetrics(
+      const QgsMapToPixel *xform,
+      const QgsRenderContext &context,
+      const QgsTextFormat &format,
+      const QFont &baseFont,
+      const QFontMetricsF &fontMetrics,
+      double letterSpacing,
+      double wordSpacing,
+      const QgsTextDocument &document,
+      const QgsTextDocumentMetrics &metrics
+    );
 
     /**
      * Returns the document for the label.
@@ -159,7 +168,6 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     double maximumCharacterAngleOutside() const { return mMaximumCharacterAngleOutside; }
 
   protected:
-
     //! Font for rendering
     QFont mDefinedFont;
 
@@ -173,7 +181,6 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     double mMaximumCharacterAngleOutside = 0;
 
     std::optional< QgsPrecalculatedTextMetrics > mTextMetrics;
-
 };
 
 #endif //QGSTEXTLABELFEATURE_H

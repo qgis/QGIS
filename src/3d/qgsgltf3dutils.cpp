@@ -181,17 +181,12 @@ class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGe
 {
   public:
     TinyGltfTextureImageDataGenerator( Qt3DRender::QTextureImageDataPtr imagePtr )
-      : mImagePtr( imagePtr ) {}
+      : mImagePtr( imagePtr )
+    {}
 
-    Qt3DRender::QTextureImageDataPtr operator()() override
-    {
-      return mImagePtr;
-    }
+    Qt3DRender::QTextureImageDataPtr operator()() override { return mImagePtr; }
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TinyGltfTextureImageDataGenerator>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TinyGltfTextureImageDataGenerator>::id ); }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override
     {
@@ -227,10 +222,7 @@ class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
       imgDataPtr->setTarget( QOpenGLTexture::Target2D );
     }
 
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
-    {
-      return Qt3DRender::QTextureImageDataGeneratorPtr( new TinyGltfTextureImageDataGenerator( imgDataPtr ) );
-    }
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override { return Qt3DRender::QTextureImageDataGeneratorPtr( new TinyGltfTextureImageDataGenerator( imgDataPtr ) ); }
 
     Qt3DRender::QTextureImageDataPtr imgDataPtr;
 };
@@ -399,7 +391,9 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
 }
 
 
-static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QString baseUri, QMatrix4x4 parentTransform, QStringList *errors )
+static QVector<Qt3DCore::QEntity *> parseNode(
+  tinygltf::Model &model, int nodeIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QString baseUri, QMatrix4x4 parentTransform, QStringList *errors
+)
 {
   tinygltf::Node &node = model.nodes[nodeIndex];
 

@@ -33,7 +33,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudExtentRenderer.
      *
@@ -97,9 +96,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
     void renderLabel( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const;
 
   private:
-
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
-
 };
 
 #endif // QGSPOINTCLOUDEXTENTRENDERER_H

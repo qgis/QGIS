@@ -76,10 +76,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
     bool renameAttributes( const QgsFieldNameMap &fieldMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-    bool changeFeatures(
-      const QgsChangedAttributesMap &attrMap,
-      const QgsGeometryMap &geometryMap
-    ) override;
+    bool changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
 
     Qgis::VectorProviderCapabilities capabilities() const override;

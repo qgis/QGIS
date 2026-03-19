@@ -28,7 +28,6 @@ coordinate reference system associated with them.
 #include "qgsreferencedgeometry.h"
 %End
   public:
-
     QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
 Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
@@ -65,7 +64,6 @@ A :py:class:`QgsRectangle` with associated coordinate reference system.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Constructor for QgsReferencedRectangle, with the specified initial
@@ -84,7 +82,6 @@ Constructor for QgsReferencedRectangle, with the specified initial
     QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 
@@ -98,7 +95,6 @@ A :py:class:`QgsPointXY` with associated coordinate reference system.
 #include "qgsreferencedgeometry.h"
 %End
   public:
-
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Constructor for QgsReferencedPointXY, with the specified initial
@@ -117,7 +113,6 @@ Constructor for QgsReferencedPointXY, with the specified initial
     QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 
@@ -133,7 +128,6 @@ A :py:class:`QgsGeometry` with associated coordinate reference system.
 #include "qgsreferencedgeometry.h"
 %End
   public:
-
     QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Constructor for QgsReferencedGeometry, with the specified initial
@@ -163,7 +157,6 @@ Construct a new QgsReferencedGeometry from referenced ``rectangle``
     QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 

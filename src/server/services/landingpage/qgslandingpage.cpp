@@ -36,8 +36,7 @@ class QgsLandingPageApi : public QgsServerOgcApi
   public:
     QgsLandingPageApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() )
       : QgsServerOgcApi( serverIface, rootPath, name, description, version )
-    {
-    }
+    {}
 
     bool accept( const QUrl &url ) const override
     {
@@ -83,8 +82,7 @@ class QgsProjectLoaderFilter : public QgsServerFilter
   public:
     QgsProjectLoaderFilter( QgsServerInterface *serverIface )
       : QgsServerFilter( serverIface )
-    {
-    }
+    {}
 
     /**
      * Read the project hash and set the QGIS_PROJECT_FILE environment variable
@@ -139,11 +137,7 @@ class QgsLandingPageModule : public QgsServiceModule
     {
       QgsLandingPageApi *landingPageApi = new QgsLandingPageApi { serverIface, u"/"_s, u"Landing Page"_s, u"1.0.0"_s };
       // Register handlers
-      landingPageApi->registerHandler<QgsServerStaticHandler>(
-        u"%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$"_s
-          .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ),
-        u"landingpage"_s
-      );
+      landingPageApi->registerHandler<QgsServerStaticHandler>( u"%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$"_s.arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ), u"landingpage"_s );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );
 

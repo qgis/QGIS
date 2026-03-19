@@ -36,7 +36,8 @@ class TestQgsLayoutItemGroup : public QgsTest
 
   public:
     TestQgsLayoutItemGroup()
-      : QgsTest( u"Layout Group Item"_s ) {}
+      : QgsTest( u"Layout Group Item"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -81,12 +82,10 @@ void TestQgsLayoutItemGroup::cleanupTestCase()
 }
 
 void TestQgsLayoutItemGroup::init()
-{
-}
+{}
 
 void TestQgsLayoutItemGroup::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutItemGroup::createGroupDirect()
 {

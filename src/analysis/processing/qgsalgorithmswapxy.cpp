@@ -37,7 +37,7 @@ QString QgsSwapXYAlgorithm::displayName() const
 
 QStringList QgsSwapXYAlgorithm::tags() const
 {
-  return QObject::tr( "invert,flip,swap,switch,latitude,longitude" ).split( ',' );
+  return QObject::tr( "invert,flip,swap,switch,latitude,longitude,reverse" ).split( ',' );
 }
 
 QString QgsSwapXYAlgorithm::group() const
@@ -57,8 +57,10 @@ QString QgsSwapXYAlgorithm::outputName() const
 
 QString QgsSwapXYAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm swaps the X and Y coordinate values in input geometries. It can be used to repair geometries "
-                      "which have accidentally had their latitude and longitude values reversed." );
+  return QObject::tr(
+    "This algorithm swaps the X and Y coordinate values in input geometries. It can be used to repair geometries "
+    "which have accidentally had their latitude and longitude values reversed."
+  );
 }
 
 QString QgsSwapXYAlgorithm::shortDescription() const

@@ -89,9 +89,14 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     QAction *actionDelete = new QAction( pgConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [pgConnectionItems, context] {
-      QgsDataItemGuiProviderUtils::deleteConnections( pgConnectionItems, []( const QString &connectionName ) {
-        QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
-        md->deleteConnection( connectionName ); }, context );
+      QgsDataItemGuiProviderUtils::deleteConnections(
+        pgConnectionItems,
+        []( const QString &connectionName ) {
+          QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
+          md->deleteConnection( connectionName );
+        },
+        context
+      );
     } );
     menu->addAction( actionDelete );
 
@@ -246,9 +251,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     }
     else
     {
-      bool allCanBeCast = std::all_of( selection.begin(), selection.end(), []( QgsDataItem *item ) {
-        return qobject_cast<QgsPGProjectItem *>( item ) != nullptr;
-      } );
+      bool allCanBeCast = std::all_of( selection.begin(), selection.end(), []( QgsDataItem *item ) { return qobject_cast<QgsPGProjectItem *>( item ) != nullptr; } );
 
       if ( allCanBeCast )
       {
@@ -287,7 +290,9 @@ bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataIte
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = typeNameFromLayer( layerInfo );
 
-    if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ), QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::
+           question( nullptr, tr( "Delete %1" ).arg( typeName ), QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return false;
 
     QString errCause;
@@ -497,7 +502,14 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
     {
       objects += u"\n[%1 additional objects not listed]"_s.arg( count - maxListed );
     }
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ), QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaItem->name(), objects ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question(
+           nullptr,
+           QObject::tr( "Delete Schema" ),
+           QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaItem->name(), objects ),
+           QMessageBox::Yes | QMessageBox::No,
+           QMessageBox::No
+         )
+         != QMessageBox::Yes )
     {
       conn->unref();
       return;
@@ -505,7 +517,8 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   }
   else
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ), QObject::tr( "Are you sure you want to delete schema '%1'?" ).arg( schemaItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ), QObject::tr( "Are you sure you want to delete schema '%1'?" ).arg( schemaItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return;
   }
 
@@ -540,8 +553,7 @@ void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem, 
   }
 
   //rename the schema
-  const QString sql = u"ALTER SCHEMA %1 RENAME TO %2"_s
-                        .arg( schemaName, QgsPostgresConn::quotedIdentifier( dlg.name() ) );
+  const QString sql = u"ALTER SCHEMA %1 RENAME TO %2"_s.arg( schemaName, QgsPostgresConn::quotedIdentifier( dlg.name() ) );
 
   QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -562,9 +574,7 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
   const QString typeName = typeNameFromLayer( layerInfo );
-  const QString lowerTypeName = ( layerInfo.relKind == Qgis::PostgresRelKind::View || layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView )
-                                  ? tr( "view" )
-                                  : tr( "table" );
+  const QString lowerTypeName = ( layerInfo.relKind == Qgis::PostgresRelKind::View || layerInfo.relKind == Qgis::PostgresRelKind::MaterializedView ) ? tr( "view" ) : tr( "table" );
 
   QgsNewNameDialog dlg( tr( "%1 %2.%3" ).arg( lowerTypeName, layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
   dlg.setWindowTitle( tr( "Rename %1" ).arg( typeName ) );
@@ -619,7 +629,14 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
 void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ), QObject::tr( "Are you sure you want to truncate \"%1.%2\"?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question(
+         nullptr,
+         QObject::tr( "Truncate Table" ),
+         QObject::tr( "Are you sure you want to truncate \"%1.%2\"?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
+         QMessageBox::Yes | QMessageBox::No,
+         QMessageBox::No
+       )
+       != QMessageBox::Yes )
     return;
 
   const QgsDataSourceUri dsUri( layerItem->uri() );
@@ -656,7 +673,14 @@ void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem, Q
 void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-  if ( QMessageBox::question( nullptr, QObject::tr( "Refresh Materialized View" ), QObject::tr( "Are you sure you want to refresh the materialized view \"%1.%2\"?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question(
+         nullptr,
+         QObject::tr( "Refresh Materialized View" ),
+         QObject::tr( "Are you sure you want to refresh the materialized view \"%1.%2\"?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
+         QMessageBox::Yes | QMessageBox::No,
+         QMessageBox::No
+       )
+       != QMessageBox::Yes )
     return;
 
   const QgsDataSourceUri dsUri( layerItem->uri() );
@@ -833,7 +857,8 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
     }
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::
+    handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
@@ -862,7 +887,8 @@ void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *co
     }
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::
+    handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
@@ -876,12 +902,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
   const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
 
   QString filter;
-  const QString path = QFileDialog::getSaveFileName(
-    nullptr,
-    tr( "Save Project As" ),
-    defaultPath,
-    qgisProjectExt + u";;"_s + qgzProjectExt + u";;"_s + qgsProjectExt, &filter
-  );
+  const QString path = QFileDialog::getSaveFileName( nullptr, tr( "Save Project As" ), defaultPath, qgisProjectExt + u";;"_s + qgzProjectExt + u";;"_s + qgsProjectExt, &filter );
 
   if ( path.isEmpty() )
     return;
@@ -969,7 +990,8 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
 
 void QgsPostgresDataItemGuiProvider::deleteProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  if ( QMessageBox::question( nullptr, tr( "Delete Project" ), tr( "Are you sure you want to delete project “%1”?" ).arg( projectItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, tr( "Delete Project" ), tr( "Are you sure you want to delete project “%1”?" ).arg( projectItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
     return;
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
@@ -1061,7 +1083,9 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
 
     if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
     {
-      const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+      const QString errCause
+        = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." )
+            .arg( mainItem->postgresProjectUri().connInfo.username() );
 
       notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
       conn2->unref();
@@ -1070,7 +1094,9 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
 
     if ( !QgsPostgresUtils::addCommentColumnToProjectsTable( conn2, newSchemaName ) )
     {
-      const QString errCause = tr( "Unable to move projects. It's not possible to add the comment column to the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+      const QString errCause
+        = tr( "Unable to move projects. It's not possible to add the comment column to the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." )
+            .arg( mainItem->postgresProjectUri().connInfo.username() );
 
       notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
       conn2->unref();

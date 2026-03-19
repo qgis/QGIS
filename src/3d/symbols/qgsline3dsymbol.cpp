@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
-{
-}
+{}
 
 QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 

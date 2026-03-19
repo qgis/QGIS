@@ -68,7 +68,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr,      //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAttributeForm(
+      QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
     ~QgsAttributeForm() override;
 
     /**

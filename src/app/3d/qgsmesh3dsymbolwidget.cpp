@@ -174,7 +174,10 @@ void QgsMesh3DSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   reloadColorRampShaderMinMax(); //As the symbol is new, the Color ramp shader needs to be initialized with min max value
 }
 
-QgsMeshLayer *QgsMesh3DSymbolWidget::meshLayer() const { return mLayer; }
+QgsMeshLayer *QgsMesh3DSymbolWidget::meshLayer() const
+{
+  return mLayer;
+}
 
 double QgsMesh3DSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 {

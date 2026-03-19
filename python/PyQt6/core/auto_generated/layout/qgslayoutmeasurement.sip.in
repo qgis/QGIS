@@ -24,7 +24,6 @@ a variety of different measurement units.
 #include "qgslayoutmeasurement.h"
 %End
   public:
-
     explicit QgsLayoutMeasurement( double length, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutMeasurement.

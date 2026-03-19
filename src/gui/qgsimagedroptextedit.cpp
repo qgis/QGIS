@@ -258,9 +258,7 @@ void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format
   QTextImageFormat imageFormat;
   imageFormat.setWidth( image.width() );
   imageFormat.setHeight( image.height() );
-  imageFormat.setName( u"data:image/%1;base64,%2"_s
-                         .arg( u"%1.%2"_s.arg( rand() ).arg( format ), base64l.data() )
-  );
+  imageFormat.setName( u"data:image/%1;base64,%2"_s.arg( u"%1.%2"_s.arg( rand() ).arg( format ), base64l.data() ) );
   cursor.insertImage( imageFormat );
 }
 

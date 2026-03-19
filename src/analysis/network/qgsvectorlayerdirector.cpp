@@ -58,15 +58,16 @@ struct TiePointInfo
     QgsPointXY mLastPoint;
 };
 
-QgsVectorLayerDirector::QgsVectorLayerDirector( QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, const Direction defaultDirection )
+QgsVectorLayerDirector::QgsVectorLayerDirector(
+  QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, const Direction defaultDirection
+)
   : mSource( source )
   , mDirectionFieldId( directionFieldId )
   , mDirectDirectionValue( directDirectionValue )
   , mReverseDirectionValue( reverseDirectionValue )
   , mBothDirectionValue( bothDirectionValue )
   , mDefaultDirection( defaultDirection )
-{
-}
+{}
 
 QString QgsVectorLayerDirector::name() const
 {
@@ -116,22 +117,14 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
 {
   public:
     explicit QgsNetworkVisitor( QVector<int> &pointIndexes )
-      : mPoints( pointIndexes ) {}
+      : mPoints( pointIndexes )
+    {}
 
-    void visitNode( const INode &n ) override
-    {
-      Q_UNUSED( n )
-    }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
 
-    void visitData( const IData &d ) override
-    {
-      mPoints.append( static_cast<int>( d.getIdentifier() ) );
-    }
+    void visitData( const IData &d ) override { mPoints.append( static_cast<int>( d.getIdentifier() ) ); }
 
-    void visitData( std::vector<const IData *> &v ) override
-    {
-      Q_UNUSED( v )
-    }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
   private:
     QVector<int> &mPoints;
@@ -159,8 +152,7 @@ int findClosestVertex( const QgsPointXY &point, SpatialIndex::ISpatialIndex *ind
   QVector<int> matching;
   QgsNetworkVisitor visitor( matching );
 
-  double pt1[2] = { point.x() - tolerance, point.y() - tolerance },
-         pt2[2] = { point.x() + tolerance, point.y() + tolerance };
+  double pt1[2] = { point.x() - tolerance, point.y() - tolerance }, pt2[2] = { point.x() + tolerance, point.y() + tolerance };
   SpatialIndex::Region searchRegion( pt1, pt2, 2 );
 
   index->intersectsWithQuery( searchRegion, visitor );
@@ -193,9 +185,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   std::unique_ptr<SpatialIndex::ISpatialIndex> iRTree = createVertexSpatialIndex( *iStorage );
 
   double tolerance = std::max( builder->topologyTolerance(), 1e-10 );
-  auto findPointWithinTolerance = [&iRTree, tolerance]( const QgsPointXY &point ) -> int {
-    return findClosestVertex( point, iRTree.get(), tolerance );
-  };
+  auto findPointWithinTolerance = [&iRTree, tolerance]( const QgsPointXY &point ) -> int { return findClosestVertex( point, iRTree.get(), tolerance ); };
   auto addPointToIndex = [&iRTree]( const QgsPointXY &point, int index ) {
     double coords[] = { point.x(), point.y() };
     iRTree->insertData( 0, nullptr, SpatialIndex::Point( coords, 2 ), index );

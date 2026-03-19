@@ -43,13 +43,13 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
     ArrowsTextureGenerator( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
-      : mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
+      : mVectors( vectors )
+      , mSize( size )
+      , mFixedSize( fixedSize )
+      , mMaxVectorLength( maxVectorLength )
     {}
 
-    qintptr id() const override
-    {
-      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id );
-    }
+    qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id ); }
 
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -235,14 +235,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
     const double yMin = gridExtent.yMinimum() + ySpacing / 2;
     minCorner = QgsPointXY( xMin, yMin );
 
-    vectors = QgsMeshLayerUtils::griddedVectorValues(
-      layer,
-      datasetIndex,
-      xSpacing,
-      ySpacing,
-      gridSize,
-      minCorner
-    );
+    vectors = QgsMeshLayerUtils::griddedVectorValues( layer, datasetIndex, xSpacing, ySpacing, gridSize, minCorner );
 
     if ( vectors.isEmpty() )
       return;

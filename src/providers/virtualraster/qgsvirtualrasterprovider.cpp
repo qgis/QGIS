@@ -273,8 +273,7 @@ int QgsVirtualRasterProvider::yBlockSize() const
 
 QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QIcon QgsVirtualRasterProviderMetadata::icon() const
 {

@@ -29,16 +29,14 @@ QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri, bool inclu
   : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mUri( uri )
   , mIncludeSystemTables( includeSystemTables )
-{
-}
+{}
 
 QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri, const QString &providerKey, bool includeSystemTables )
   : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mUri( uri )
   , mProviderKey( providerKey )
   , mIncludeSystemTables( includeSystemTables )
-{
-}
+{}
 
 QList<QgsProviderSublayerDetails> QgsProviderSublayerTask::results() const
 {

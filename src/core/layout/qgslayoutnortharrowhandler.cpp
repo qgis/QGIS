@@ -30,9 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayoutNorthArrowHandler::QgsLayoutNorthArrowHandler( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 void QgsLayoutNorthArrowHandler::disconnectMap( QgsLayoutItemMap *map )
 {
@@ -80,7 +78,7 @@ void QgsLayoutNorthArrowHandler::updateMapRotation()
 
   rotation += mNorthOffset;
   const double oldRotation = mArrowRotation;
-  mArrowRotation = ( rotation > 360.0 ) ? rotation - 360.0 : rotation ;
+  mArrowRotation = ( rotation > 360.0 ) ? rotation - 360.0 : rotation;
   if ( mArrowRotation != oldRotation )
     emit arrowRotationChanged( mArrowRotation );
 }

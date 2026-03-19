@@ -107,20 +107,12 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
     if ( layer->crs().isValid() )
     {
       const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context, layer->crs() );
-      args << u"--bounds=([%1, %2], [%3, %4])"_s
-                .arg( extent.xMinimum() )
-                .arg( extent.xMaximum() )
-                .arg( extent.yMinimum() )
-                .arg( extent.yMaximum() );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s.arg( extent.xMinimum() ).arg( extent.xMaximum() ).arg( extent.yMinimum() ).arg( extent.yMaximum() );
     }
     else
     {
       const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context );
-      args << u"--bounds=([%1, %2], [%3, %4])"_s
-                .arg( extent.xMinimum() )
-                .arg( extent.xMaximum() )
-                .arg( extent.yMinimum() )
-                .arg( extent.yMaximum() );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s.arg( extent.xMinimum() ).arg( extent.xMaximum() ).arg( extent.yMinimum() ).arg( extent.yMaximum() );
     }
   }
 

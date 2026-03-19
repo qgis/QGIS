@@ -129,7 +129,10 @@ void QgsSingleBandPseudoColorRendererWidget::doComputations()
   mMinMaxWidget->doComputations();
 }
 
-QgsRasterMinMaxWidget *QgsSingleBandPseudoColorRendererWidget::minMaxWidget() { return mMinMaxWidget; }
+QgsRasterMinMaxWidget *QgsSingleBandPseudoColorRendererWidget::minMaxWidget()
+{
+  return mMinMaxWidget;
+}
 
 void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {

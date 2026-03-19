@@ -125,8 +125,7 @@ void QgsQuickMapCanvasMap::refreshMap()
 
   //build the expression context
   QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   QgsProject *project = mMapSettings->project();
   if ( project )

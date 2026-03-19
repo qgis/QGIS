@@ -63,8 +63,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
 QgsTransaction::QgsTransaction( const QString &connString )
   : mConnString( connString )
-{
-}
+{}
 
 QgsTransaction::~QgsTransaction()
 {
@@ -82,11 +81,10 @@ QString QgsTransaction::cleanupConnectionString( const QString &str )
 {
   QString res( str );
 
-  static const QStringList toRemove
-  {
-    { u"|layername="_s},
-    { u"|layerid="_s},
-    { u"|subset="_s},
+  static const QStringList toRemove {
+    { u"|layername="_s },
+    { u"|layerid="_s },
+    { u"|subset="_s },
   };
 
   for ( const auto &strToRm : std::as_const( toRemove ) )
@@ -128,8 +126,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
   if ( !layer )
     return false;
 
-  if ( ! addLayersInEditMode
-       && layer->isEditable() )
+  if ( !addLayersInEditMode && layer->isEditable() )
     return false;
 
   //test if provider supports transactions
@@ -143,8 +140,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
 
   if ( connectionString( layer->source() ) != mConnString )
   {
-    QgsDebugError( u"Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'"_s.arg(
-                     layer->id(), connectionString( layer->source() ), mConnString ) );
+    QgsDebugError( u"Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'"_s.arg( layer->id(), connectionString( layer->source() ), mConnString ) );
     return false;
   }
 
@@ -275,7 +271,7 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
   // the status of the DB has changed between the previous savepoint and the
   // one we are rolling back to.
   mLastSavePointIsDirty = true;
-  if ( ! executeSql( u"ROLLBACK TO SAVEPOINT %1"_s.arg( QgsExpression::quotedColumnRef( name ) ), error ) )
+  if ( !executeSql( u"ROLLBACK TO SAVEPOINT %1"_s.arg( QgsExpression::quotedColumnRef( name ) ), error ) )
   {
     return false;
   }

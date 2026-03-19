@@ -52,7 +52,8 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
   public:
     QgsBufferedLine3DSymbolHandler( const QgsLine3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsLine3DSymbol *>( symbol->clone() ) )
-      , mSelectedIds( selectedIds ) {}
+      , mSelectedIds( selectedIds )
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
@@ -100,6 +101,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataNormalTessellator->setAddTextureUVs( requiresTextureCoordinates );
   lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataNormalTessellator->setTextureRotation( textureRotation );
+  lineDataNormalTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   mLineDataNormal.tessellator = std::move( lineDataNormalTessellator );
 
@@ -109,6 +111,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataSelectedTessellator->setAddTextureUVs( requiresTextureCoordinates );
   lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataSelectedTessellator->setTextureRotation( textureRotation );
+  lineDataSelectedTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 
@@ -260,8 +263,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     QgsThickLine3DSymbolHandler( const QgsLine3DSymbol *symbol, const QgsFeatureIds &selectedIds )
       : mSymbol( static_cast<QgsLine3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds )
-    {
-    }
+    {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;

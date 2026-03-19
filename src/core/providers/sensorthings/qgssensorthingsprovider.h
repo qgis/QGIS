@@ -40,7 +40,6 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
     static const inline QString SENSORTHINGS_PROVIDER_KEY = u"sensorthings"_s;
     static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = u"OGC SensorThings API data provider"_s;
 
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     void reloadProviderData() final;
 };
 
-class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
+class QgsSensorThingsProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -105,7 +104,6 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
     QgsAbstractProviderConnection *createConnection( const QString &name ) final;
     void deleteConnection( const QString &name ) final;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) final;
-
 };
 
 ///@endcond PRIVATE
