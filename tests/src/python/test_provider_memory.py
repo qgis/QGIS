@@ -1348,6 +1348,78 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[12].typeName(), vl2.fields()[12].typeName())
         self.assertEqual(pr.fields()[13].typeName(), vl2.fields()[13].typeName())
 
+    def testExtent3D(self):
+        vl = QgsVectorLayer("PointZ?crs=epsg:4326", "temporary_points", "memory")
+        self.assertTrue(vl.isValid())
+
+        f1 = QgsFeature()
+        f1.setGeometry(QgsGeometry.fromWkt("Point Z(-71.123 78.23 1.2)"))
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry.fromWkt("Point Z(-70.332 66.33 3.4)"))
+        f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry.fromWkt("Point Z(-68.2 70.8 1.9)"))
+
+        provider = vl.dataProvider()
+        res, [f1, f2, f3] = provider.addFeatures([f1, f2, f3])
+        self.assertTrue(res)
+        self.assertEqual(provider.featureCount(), 3)
+
+        extent_3d = vl.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -71.123)
+        self.assertEqual(extent_3d.yMinimum(), 66.33)
+        self.assertEqual(extent_3d.zMinimum(), 1.2)
+        self.assertEqual(extent_3d.xMaximum(), -68.2)
+        self.assertEqual(extent_3d.yMaximum(), 78.23)
+        self.assertEqual(extent_3d.zMaximum(), 3.4)
+
+        extent = vl.extent()
+        self.assertEqual(extent.xMinimum(), -71.123)
+        self.assertEqual(extent.yMinimum(), 66.33)
+        self.assertEqual(extent.xMaximum(), -68.2)
+        self.assertEqual(extent.yMaximum(), 78.23)
+
+        # Add a new feature
+        f4 = QgsFeature()
+        f4.setGeometry(QgsGeometry.fromWkt("Point Z(-72.7 71.2 5.7)"))
+        res, [f4] = provider.addFeatures([f4])
+        self.assertTrue(res)
+        self.assertEqual(provider.featureCount(), 4)
+
+        vl.updateExtents()
+
+        extent_3d = vl.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -72.7)
+        self.assertEqual(extent_3d.yMinimum(), 66.33)
+        self.assertEqual(extent_3d.zMinimum(), 1.2)
+        self.assertEqual(extent_3d.xMaximum(), -68.2)
+        self.assertEqual(extent_3d.yMaximum(), 78.23)
+        self.assertEqual(extent_3d.zMaximum(), 5.7)
+
+        extent = vl.extent()
+        self.assertEqual(extent.xMinimum(), -72.7)
+        self.assertEqual(extent.yMinimum(), 66.33)
+        self.assertEqual(extent.xMaximum(), -68.2)
+        self.assertEqual(extent.yMaximum(), 78.23)
+
+        # Delete a feature
+        self.assertTrue(provider.deleteFeatures([f2.id()]))
+        self.assertEqual(provider.featureCount(), 3)
+        vl.updateExtents()
+
+        extent_3d = vl.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -72.7)
+        self.assertEqual(extent_3d.yMinimum(), 70.8)
+        self.assertEqual(extent_3d.zMinimum(), 1.2)
+        self.assertEqual(extent_3d.xMaximum(), -68.2)
+        self.assertEqual(extent_3d.yMaximum(), 78.23)
+        self.assertEqual(extent_3d.zMaximum(), 5.7)
+
+        extent = vl.extent()
+        self.assertEqual(extent.xMinimum(), -72.7)
+        self.assertEqual(extent.yMinimum(), 70.8)
+        self.assertEqual(extent.xMaximum(), -68.2)
+        self.assertEqual(extent.yMaximum(), 78.23)
+
 
 class TestPyQgsMemoryProviderIndexed(QgisTestCase, ProviderTestCase):
     """Runs the provider test suite against an indexed memory layer"""
