@@ -2,7 +2,7 @@
   "name": "+",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Addition of two values or concatenation of two strings.<br><br>For numeric and datetime operations if either value is NULL the result will be NULL.<br><br>For string concatenation NULL values from fields are treated as empty strings. Use the || operator instead if NULL propagation for strings is required.<br><br>When used with a color and a number, adds the number to each RGB (or CMYK) component of the color, clamping results to [0, 1]. Color alpha channel is preserved.",
+  "description": "Addition of two values or concatenation of two strings.<br><br>For numeric and datetime operations if either value is NULL the result will be NULL.<br><br>For string concatenation NULL values from fields are treated as empty strings. Use the || operator instead if NULL propagation for strings is required.<br><br>When used with two colors, performs component-wise addition on all channels including alpha, clamping results to [0, 1]. HSL and HSV colors are operated on in RGB space and converted back to their original color spec.<br><br>When used with a color and a number (in any order), adds the number to each color component (excluding alpha), clamping results to [0, 1]. The alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
