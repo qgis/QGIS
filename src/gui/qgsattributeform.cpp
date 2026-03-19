@@ -2206,7 +2206,8 @@ void QgsAttributeForm::init()
 
     for ( const QgsField &field : fields )
     {
-      int idx = fields.lookupField( field.name() );
+      const QString fieldName = field.name();
+      int idx = fields.lookupField( fieldName );
       if ( idx < 0 )
         continue;
 
@@ -2214,8 +2215,7 @@ void QgsAttributeForm::init()
         continue;
 
       //show attribute alias if available
-      QString fieldName = mLayer->attributeDisplayName( idx );
-      QString labelText = fieldName;
+      QString labelText = mLayer->attributeDisplayName( idx );
       labelText.replace( '&', "&&"_L1 ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
@@ -2227,7 +2227,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *label = new QLabel( labelText );
-      label->setObjectName( field.name() );
+      label->setObjectName( fieldName );
 
       label->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
       QSvgWidget *i = new QSvgWidget();
