@@ -2,7 +2,7 @@
   "name": "*",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Multiplication of two values",
+  "description": "Multiplication of two values. When used with a color and a number, multiplies each RGB (or CMYK) component of the color by the number, clamping results to [0, 1]. Color alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -16,6 +16,9 @@
   }, {
     "expression": "5 * NULL",
     "returns": "NULL"
+  }, {
+    "expression": "color_rgbf(0.2, 0.4, 0.6) * 2",
+    "returns": "RGBA: 0.40,0.80,1.00,1.00"
   }],
-  "tags": ["multiplication", "values"]
+  "tags": ["multiplication", "values", "color"]
 }
