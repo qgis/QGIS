@@ -198,7 +198,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
 
     Qgis::ElevationMapCombineMethod mCombinedElevationMethod = Qgis::ElevationMapCombineMethod::HighestElevation;
 
-    bool mRenderEdl = false;
+    bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;
     double mEyeDomeLightingDistance = 0.5;
     Qgis::RenderUnit mEyeDomeLightingDistanceUnit = Qgis::RenderUnit::Millimeters;
