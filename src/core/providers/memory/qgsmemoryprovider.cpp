@@ -544,6 +544,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   bool returnValue = true;
+  bool deleted = false;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
     const QgsFeatureMap::iterator fit = mFeatures.find( *it );
@@ -560,10 +561,14 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
       mSpatialIndex->deleteFeature( *fit );
 
     mFeatures.erase( fit );
+    deleted = true;
   }
 
-  updateExtents();
-  clearMinMaxCache();
+  if ( deleted )
+  {
+    updateExtents();
+    clearMinMaxCache();
+  }
 
   return returnValue;
 }
