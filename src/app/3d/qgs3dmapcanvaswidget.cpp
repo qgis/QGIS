@@ -1389,12 +1389,6 @@ void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSe
   whileBlocking( mActionShow2DMapOverlay )->setChecked( mapSettings->is2DMapOverlayEnabled() );
 }
 
-void Qgs3DMapCanvasWidget::onProfileDestroyed( QObject *obj )
-{
-  if ( QgsElevationProfile *profile = static_cast<QgsElevationProfile *>( obj ) )
-    mElevationProfileData.erase( profile );
-}
-
 void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint )
 {
   if ( !mCanvas || !mElevationProfileData.contains( profile ) )
@@ -1418,10 +1412,12 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
     data.cursorLineRubberBand->setMarkersEnabled( false );
   }
 
-  QgsGeometry cursorGeom( new QgsLineString( QVector<QgsPoint> {
-    QgsPoint( mapPoint.x(), mapPoint.y(), data.zMin ),
-    QgsPoint( mapPoint.x(), mapPoint.y(), data.zMax ),
-  } ) );
+  QgsGeometry cursorGeom( new QgsLineString(
+    QVector<QgsPoint> {
+      QgsPoint( mapPoint.x(), mapPoint.y(), data.zMin ),
+      QgsPoint( mapPoint.x(), mapPoint.y(), data.zMax ),
+    }
+  ) );
   data.cursorLineRubberBand->setGeometry( cursorGeom );
 
   // we need to properly rotate the curve depending on where it is
@@ -1457,13 +1453,15 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
   const double x = mapPoint.x();
   const double y = mapPoint.y();
 
-  QgsGeometry polyGeom( new QgsPolygon( new QgsLineString( QVector<QgsPoint> {
-    QgsPoint( x + normalX, y + normalY, data.zMin ),
-    QgsPoint( x - normalX, y - normalY, data.zMin ),
-    QgsPoint( x - normalX, y - normalY, data.zMax ),
-    QgsPoint( x + normalX, y + normalY, data.zMax ),
-    QgsPoint( x + normalX, y + normalY, data.zMin ),
-  } ) ) );
+  QgsGeometry polyGeom( new QgsPolygon( new QgsLineString(
+    QVector<QgsPoint> {
+      QgsPoint( x + normalX, y + normalY, data.zMin ),
+      QgsPoint( x - normalX, y - normalY, data.zMin ),
+      QgsPoint( x - normalX, y - normalY, data.zMax ),
+      QgsPoint( x + normalX, y + normalY, data.zMax ),
+      QgsPoint( x + normalX, y + normalY, data.zMin ),
+    }
+  ) ) );
 
   if ( !data.cursorPolygonRubberBand )
   {
@@ -1498,11 +1496,26 @@ void Qgs3DMapCanvasWidget::setProfileData( QgsElevationProfile *profile, double 
   profileData.zMax = zMax;
   mElevationProfileData[profile] = std::move( profileData );
 
-  connect( profile, &QgsElevationProfile::profileCurveChanged, this, [this, profile] { updateProfileRubberBands( profile ); } );
-  connect( profile, &QgsElevationProfile::toleranceChanged, this, [this, profile] { updateProfileRubberBands( profile ); } );
-  connect( profile, &QObject::destroyed, this, &Qgs3DMapCanvasWidget::onProfileDestroyed );
+  connect( profile, &QObject::destroyed, this, [this, profile] { mElevationProfileData.erase( profile ); } );
 
   updateProfileRubberBands( profile );
+}
+
+void Qgs3DMapCanvasWidget::removeProfileData( QgsElevationProfile *profile )
+{
+  hideProfileRubberBands( profile );
+  mElevationProfileData.erase( profile );
+}
+
+void Qgs3DMapCanvasWidget::hideProfileRubberBands( QgsElevationProfile *profile )
+{
+  if ( mElevationProfileData.contains( profile ) )
+  {
+    ElevationProfileData &data = mElevationProfileData[profile];
+    data.rubberBandZMin.reset();
+    data.rubberBandZMax.reset();
+    data.rubberBandSideLines.clear();
+  }
 }
 
 void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profile )
@@ -1644,10 +1657,12 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
   {
     const QgsPointXY &point = sidePoints[i];
 
-    QgsGeometry lineGeom( new QgsLineString( QVector<QgsPoint> {
-      QgsPoint( point.x(), point.y(), data.zMin ),
-      QgsPoint( point.x(), point.y(), data.zMax ),
-    } ) );
+    QgsGeometry lineGeom( new QgsLineString(
+      QVector<QgsPoint> {
+        QgsPoint( point.x(), point.y(), data.zMin ),
+        QgsPoint( point.x(), point.y(), data.zMax ),
+      }
+    ) );
 
     if ( !data.rubberBandSideLines[i] )
     {

@@ -82,7 +82,6 @@ using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance
   = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTreeElevationProfile, 0.1, u"Tolerance distance for elevation profile plots"_s, Qgis::SettingsOptions(), 0 );
-
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree
   = new QgsSettingsEntryBool( u"show-layer-tree"_s, QgsSettingsTree::sTreeElevationProfile, true, u"Whether the layer tree should be shown for elevation profile plots"_s );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis
@@ -95,6 +94,9 @@ const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections
   = new QgsSettingsEntryBool( u"show-sub-sections"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether to display subsections"_s );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowScaleRatioInToolbar
   = new QgsSettingsEntryBool( u"show-scale-ratio-in-toolbar"_s, QgsSettingsTree::sTreeElevationProfile, false, u"If true, the scale ratio widget will be moved to the toolbar instead of the options menu"_s );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowCurveIn3D
+  = new QgsSettingsEntryBool( u"show-curve-3d"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether to display curve in 3D map"_s );
+
 //
 // QgsElevationProfileLayersDialog
 //
@@ -466,6 +468,29 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   connect( mShowSubsectionsAction, &QAction::triggered, this, &QgsElevationProfileWidget::showSubsectionsTriggered );
   mOptionsMenu->addAction( mShowSubsectionsAction );
 
+#ifdef HAVE_3D
+  mShowCurveIn3DAction = new QAction( tr( "Show Curve in 3D" ), this );
+  mShowCurveIn3DAction->setCheckable( true );
+  mShowCurveIn3DAction->setChecked( settingShowCurveIn3D->value() );
+  connect( mShowCurveIn3DAction, &QAction::triggered, this, &QgsElevationProfileWidget::updateCurveIn3D );
+  mOptionsMenu->addAction( mShowCurveIn3DAction );
+
+  connect( mProfile, &QgsElevationProfile::profileCurveChanged, this, [this] {
+    if ( mShowCurveIn3DAction->isChecked() )
+    {
+      const QgsDoubleRange elevationRange = mCanvas->dataElevationRange();
+      emit profileDataChanged( mProfile, elevationRange.lower(), elevationRange.upper() );
+    }
+  } );
+  connect( mProfile, &QgsElevationProfile::toleranceChanged, this, [this] {
+    if ( mShowCurveIn3DAction->isChecked() )
+    {
+      const QgsDoubleRange elevationRange = mCanvas->dataElevationRange();
+      emit profileDataChanged( mProfile, elevationRange.lower(), elevationRange.upper() );
+    }
+  } );
+#endif
+
   // Edit Subsections Symbology action
   mSubsectionsSymbologyAction = new QAction( tr( "Subsections Symbology…" ), this );
   mSubsectionsSymbologyAction->setEnabled( settingShowSubsections->value() );
@@ -526,7 +551,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
   toolBar->addWidget( toggleButton );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { close(); } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
+    if ( mProfile && mShowCurveIn3DAction && mShowCurveIn3DAction->isChecked() )
+      emit profileDataRemoved( mProfile );
+    close();
+  } );
 
   if ( settingShowScaleRatioInToolbar->value() )
   {
@@ -906,11 +935,7 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
     mLastJobTimeSeconds = mLastJobTime.elapsed() / 1000.0;
     mProgressPendingJobs->setVisible( false );
 
-    if ( mProfile )
-    {
-      const QgsDoubleRange elevationRange = mCanvas->dataElevationRange();
-      emit profileDataChanged( mProfile, elevationRange.lower(), elevationRange.upper() );
-    }
+    updateCurveIn3D();
   }
 }
 
@@ -1306,6 +1331,29 @@ void QgsElevationProfileWidget::editSubsectionsSymbology()
       mProfile->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
     }
     showSubsectionsTriggered();
+  }
+}
+
+void QgsElevationProfileWidget::updateCurveIn3D()
+{
+  if ( !mShowCurveIn3DAction )
+    return;
+
+  const bool showCurveIn3D = mShowCurveIn3DAction->isChecked();
+
+  settingShowCurveIn3D->setValue( showCurveIn3D );
+
+  if ( !mProfile )
+    return;
+
+  if ( showCurveIn3D )
+  {
+    const QgsDoubleRange elevationRange = mCanvas->dataElevationRange();
+    emit profileDataChanged( mProfile, elevationRange.lower(), elevationRange.upper() );
+  }
+  else
+  {
+    emit profileDataRemoved( mProfile );
   }
 }
 
