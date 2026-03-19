@@ -414,12 +414,13 @@ static bool parseExtMeshGpuInstancing(
       const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
       const tinygltf::Buffer &buf = model.buffers[bv.buffer];
       const unsigned char *ptr = buf.data.data() + bv.byteOffset + accessor.byteOffset;
-      const int stride = bv.byteStride ? bv.byteStride : 3 * static_cast<int>( sizeof( float ) );
+      const int stride = bv.byteStride ? static_cast<int>( bv.byteStride ) : 3 * static_cast<int>( sizeof( float ) );
 
       out.resize( count );
-      for ( int i = 0; i < count; ++i )
+      const unsigned char *row = ptr;
+      for ( int i = 0; i < count; ++i, row += stride )
       {
-        const float *fptr = reinterpret_cast<const float *>( ptr + i * stride );
+        const float *fptr = reinterpret_cast<const float *>( row );
         out[i] = QVector3D( fptr[0], fptr[1], fptr[2] );
       }
     }
@@ -463,30 +464,33 @@ static bool parseExtMeshGpuInstancing(
 
     if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT )
     {
-      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( float ) );
-      for ( int i = 0; i < count; ++i )
+      const int stride = bv.byteStride ? static_cast<int>( bv.byteStride ) : 4 * static_cast<int>( sizeof( float ) );
+      const unsigned char *row = ptr;
+      for ( int i = 0; i < count; ++i, row += stride )
       {
-        const float *fptr = reinterpret_cast<const float *>( ptr + i * stride );
+        const float *fptr = reinterpret_cast<const float *>( row );
         // glTF quaternion: (x, y, z, w)
         rotations[i] = QQuaternion( fptr[3], fptr[0], fptr[1], fptr[2] );
       }
     }
     else if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_SHORT )
     {
-      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( short ) );
-      for ( int i = 0; i < count; ++i )
+      const int stride = bv.byteStride ? static_cast<int>( bv.byteStride ) : 4 * static_cast<int>( sizeof( short ) );
+      const unsigned char *row = ptr;
+      for ( int i = 0; i < count; ++i, row += stride )
       {
-        const short *sptr = reinterpret_cast<const short *>( ptr + i * stride );
+        const short *sptr = reinterpret_cast<const short *>( row );
         // Normalized short: divide by 32767.0
         rotations[i] = QQuaternion( static_cast<float>( sptr[3] ) / 32767.0f, static_cast<float>( sptr[0] ) / 32767.0f, static_cast<float>( sptr[1] ) / 32767.0f, static_cast<float>( sptr[2] ) / 32767.0f );
       }
     }
     else if ( accessor.componentType == TINYGLTF_COMPONENT_TYPE_BYTE )
     {
-      const int stride = bv.byteStride ? bv.byteStride : 4 * static_cast<int>( sizeof( char ) );
-      for ( int i = 0; i < count; ++i )
+      const int stride = bv.byteStride ? static_cast<int>( bv.byteStride ) : 4 * static_cast<int>( sizeof( char ) );
+      const unsigned char *row = ptr;
+      for ( int i = 0; i < count; ++i, row += stride )
       {
-        const signed char *bptr = reinterpret_cast<const signed char *>( ptr + i * stride );
+        const signed char *bptr = reinterpret_cast<const signed char *>( row );
         // Normalized byte: divide by 127.0
         rotations[i] = QQuaternion( static_cast<float>( bptr[3] ) / 127.0f, static_cast<float>( bptr[0] ) / 127.0f, static_cast<float>( bptr[1] ) / 127.0f, static_cast<float>( bptr[2] ) / 127.0f );
       }
@@ -658,7 +662,7 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
   memcpy( &hdr, tileContent.constData(), sizeof( i3dmHeader ) );
 
   const int featureTableJsonOffset = sizeof( i3dmHeader );
-  const int featureTableBinaryOffset = featureTableJsonOffset + hdr.featureTableJsonByteLength;
+  const int featureTableBinaryOffset = featureTableJsonOffset + static_cast<int>( hdr.featureTableJsonByteLength );
 
   // Parse feature table JSON
   const QString featureTableJson( tileContent.mid( featureTableJsonOffset, hdr.featureTableJsonByteLength ) );
@@ -748,7 +752,7 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
   }
 
   const char *featureBinaryPtr = tileContent.constData() + featureTableBinaryOffset;
-  const int featureBinarySize = hdr.featureTableBinaryByteLength;
+  const int featureBinarySize = static_cast<int>( hdr.featureTableBinaryByteLength );
 
   QgsCesiumUtils::TileI3dmData instancing;
   instancing.instanceCount = instanceCount;
@@ -763,9 +767,9 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
     }
     instancing.translations.resize( instanceCount );
     const float *posPtr = reinterpret_cast<const float *>( featureBinaryPtr + positionByteOffset );
-    for ( int i = 0; i < instanceCount; ++i )
+    for ( int i = 0; i < instanceCount; ++i, posPtr += 3 )
     {
-      instancing.translations[i] = QVector3D( posPtr[i * 3], posPtr[i * 3 + 1], posPtr[i * 3 + 2] );
+      instancing.translations[i] = QVector3D( posPtr[0], posPtr[1], posPtr[2] );
     }
   }
 
@@ -782,10 +786,10 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
     instancing.rotations.resize( instanceCount );
     const float *upPtr = reinterpret_cast<const float *>( featureBinaryPtr + normalUpByteOffset );
     const float *rightPtr = reinterpret_cast<const float *>( featureBinaryPtr + normalRightByteOffset );
-    for ( int i = 0; i < instanceCount; ++i )
+    for ( int i = 0; i < instanceCount; ++i, upPtr += 3, rightPtr += 3 )
     {
-      QVector3D normalUp( upPtr[i * 3], upPtr[i * 3 + 1], upPtr[i * 3 + 2] );
-      QVector3D normalRight( rightPtr[i * 3], rightPtr[i * 3 + 1], rightPtr[i * 3 + 2] );
+      const QVector3D normalUp( upPtr[0], upPtr[1], upPtr[2] );
+      const QVector3D normalRight( rightPtr[0], rightPtr[1], rightPtr[2] );
       instancing.rotations[i] = quaternionFromNormalUpRight( normalUp, normalRight );
     }
   }
@@ -813,9 +817,9 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
     }
     instancing.scales.resize( instanceCount );
     const float *scalePtr = reinterpret_cast<const float *>( featureBinaryPtr + scaleNonUniformByteOffset );
-    for ( int i = 0; i < instanceCount; ++i )
+    for ( int i = 0; i < instanceCount; ++i, scalePtr += 3 )
     {
-      instancing.scales[i] = QVector3D( scalePtr[i * 3], scalePtr[i * 3 + 1], scalePtr[i * 3 + 2] );
+      instancing.scales[i] = QVector3D( scalePtr[0], scalePtr[1], scalePtr[2] );
     }
   }
   else if ( scaleByteOffset >= 0 )
@@ -842,7 +846,10 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
   res.instancing = std::move( instancing );
 
   // Extract embedded glTF body
-  const int gltfOffset = featureTableBinaryOffset + hdr.featureTableBinaryByteLength + hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength;
+  const int gltfOffset = featureTableBinaryOffset
+                         + static_cast<int>( hdr.featureTableBinaryByteLength )
+                         + static_cast<int>( hdr.batchTableJsonByteLength )
+                         + static_cast<int>( hdr.batchTableBinaryByteLength );
   QByteArray gltfContent = tileContent.mid( gltfOffset );
 
   if ( hdr.gltfFormat == 1 ) // embedded
