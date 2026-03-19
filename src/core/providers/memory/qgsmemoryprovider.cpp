@@ -78,6 +78,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
     mCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   }
 
+  elevationProperties()->setContainsElevationData( QgsWkbTypes::hasZ( mWkbType ) );
+
   mNextFeatureId = 1;
 
   setNativeTypes(

@@ -771,6 +771,25 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
             & Qgis.VectorProviderCapability.CreateSpatialIndex
         )
 
+    def testSpatialLayerContainsElevationData(self):
+        wkb_types = [
+            [QgsWkbTypes.Type.Point, False],
+            [QgsWkbTypes.Type.PointZ, True],
+            [QgsWkbTypes.Type.Polygon, False],
+            [QgsWkbTypes.Type.PolygonZM, True],
+            [QgsWkbTypes.Type.LineString, False],
+            [QgsWkbTypes.Type.LineStringM, False],
+        ]
+
+        for wkb_type in wkb_types:
+            layer = QgsMemoryProviderUtils.createMemoryLayer(
+                "my name", QgsFields(), wkb_type[0]
+            )
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        elevation_properties = layer.dataProvider().elevationProperties()
+        self.assertEqual(elevation_properties.containsElevationData(), wkb_type[1])
+
     def testCreateMemoryLayer(self):
         """
         Test QgsMemoryProviderUtils.createMemoryLayer()
