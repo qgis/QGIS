@@ -1447,19 +1447,19 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
   dy /= length;
 
   const double tolerance = profile->tolerance();
-  const double normalX = -dy * tolerance;
-  const double normalY = dx * tolerance;
+  const double nX = -dy * tolerance;
+  const double nY = dx * tolerance;
 
   const double x = mapPoint.x();
   const double y = mapPoint.y();
 
   QgsGeometry polyGeom( new QgsPolygon( new QgsLineString(
     QVector<QgsPoint> {
-      QgsPoint( x + normalX, y + normalY, data.zMin ),
-      QgsPoint( x - normalX, y - normalY, data.zMin ),
-      QgsPoint( x - normalX, y - normalY, data.zMax ),
-      QgsPoint( x + normalX, y + normalY, data.zMax ),
-      QgsPoint( x + normalX, y + normalY, data.zMin ),
+      QgsPoint( x + nX, y + nY, data.zMin ),
+      QgsPoint( x - nX, y - nY, data.zMin ),
+      QgsPoint( x - nX, y - nY, data.zMax ),
+      QgsPoint( x + nX, y + nY, data.zMax ),
+      QgsPoint( x + nX, y + nY, data.zMin ),
     }
   ) ) );
 
@@ -1595,7 +1595,7 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
   {
     const int numCurvePoints = curve->numPoints();
 
-    // vertical lines at the beggining
+    // vertical lines at the beginning
     QgsPoint pt1 = curve->vertexAt( QgsVertexId( 0, 0, 0 ) );
     QgsPoint pt2 = curve->vertexAt( QgsVertexId( 0, 0, 1 ) );
 
