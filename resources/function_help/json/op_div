@@ -2,7 +2,7 @@
   "name": "/",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Division of two values. When used with a color and a number, divides each RGB (or CMYK) component of the color by the number, clamping results to [0, 1]. The color must be on the left side. Division by zero returns NULL. Color alpha channel is preserved.",
+  "description": "Division of two values.<br><br>When used with two colors, performs component-wise division on all channels including alpha, clamping results to [0, 1]. HSL and HSV colors are operated on in RGB space and converted back to their original color spec.<br><br>When used with a color and a number, divides each color component (excluding alpha) by the number, clamping results to [0, 1]. The color must be on the left side. Division by zero returns NULL. The alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
