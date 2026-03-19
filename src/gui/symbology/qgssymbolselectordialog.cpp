@@ -96,14 +96,14 @@ void DataDefinedRestorer::save()
 
 void DataDefinedRestorer::restore()
 {
-  if ( mMarker )
+  if ( mMarker && mMarker->symbolLayerCount() > 1 )
   {
     if ( mDDSize && ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
       mMarker->setDataDefinedSize( mDDSize );
     if ( mDDAngle && mAngle != mMarkerSymbolLayer->angle() )
       mMarker->setDataDefinedAngle( mDDAngle );
   }
-  else if ( mLine )
+  else if ( mLine && mLine->symbolLayerCount() > 1 )
   {
     if ( mDDWidth && ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
       mLine->setDataDefinedWidth( mDDWidth );
