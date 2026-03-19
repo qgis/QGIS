@@ -344,9 +344,9 @@ QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest &requ
 
 QgsRectangle QgsMemoryProvider::extent() const
 {
-  if ( mExtent.isEmpty() && !mFeatures.isEmpty() )
+  if ( mExtent2D.isEmpty() && !mFeatures.isEmpty() )
   {
-    mExtent.setNull();
+    mExtent2D.setNull();
     if ( mSubsetString.isEmpty() )
     {
       // fast way - iterate through all features
@@ -354,7 +354,7 @@ QgsRectangle QgsMemoryProvider::extent() const
       for ( const QgsFeature &feat : constMFeatures )
       {
         if ( feat.hasGeometry() )
-          mExtent.combineExtentWith( feat.geometry().boundingBox() );
+          mExtent2D.combineExtentWith( feat.geometry().boundingBox() );
       }
     }
     else
@@ -364,16 +364,16 @@ QgsRectangle QgsMemoryProvider::extent() const
       while ( fi.nextFeature( f ) )
       {
         if ( f.hasGeometry() )
-          mExtent.combineExtentWith( f.geometry().boundingBox() );
+          mExtent2D.combineExtentWith( f.geometry().boundingBox() );
       }
     }
   }
   else if ( mFeatures.isEmpty() )
   {
-    mExtent.setNull();
+    mExtent2D.setNull();
   }
 
-  return mExtent;
+  return mExtent2D;
 }
 
 Qgis::WkbType QgsMemoryProvider::wkbType() const
@@ -420,7 +420,7 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
     // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
     mFeatures = other->mFeatures;
     mNextFeatureId = other->mNextFeatureId;
-    mExtent = other->mExtent;
+    mExtent2D = other->mExtent2D;
   }
 }
 
@@ -429,12 +429,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   bool result = true;
   // whether or not to update the layer extent on the fly as we add features
-  const bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
+  const bool updateExtent = mFeatures.isEmpty() || !mExtent2D.isEmpty();
 
   const int fieldCount = mFields.count();
 
   // For rollback
-  const auto oldExtent { mExtent };
+  const auto oldExtent { mExtent2D };
   const auto oldNextFeatureId { mNextFeatureId };
   QgsFeatureIds addedFids;
 
@@ -515,7 +515,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( it->hasGeometry() )
     {
       if ( updateExtent )
-        mExtent.combineExtentWith( it->geometry().boundingBox() );
+        mExtent2D.combineExtentWith( it->geometry().boundingBox() );
 
       // update spatial index
       if ( mSpatialIndex )
@@ -532,7 +532,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       mFeatures.remove( addedFid );
     }
-    mExtent = oldExtent;
+    mExtent2D = oldExtent;
     mNextFeatureId = oldNextFeatureId;
   }
   else
@@ -764,7 +764,7 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   mSubsetString = theSQL;
   clearMinMaxCache();
-  mExtent.setNull();
+  mExtent2D.setNull();
 
   emit dataChanged();
   return true;
@@ -829,13 +829,13 @@ bool QgsMemoryProvider::truncate()
 {
   mFeatures.clear();
   clearMinMaxCache();
-  mExtent.setNull();
+  mExtent2D.setNull();
   return true;
 }
 
 void QgsMemoryProvider::updateExtents()
 {
-  mExtent.setNull();
+  mExtent2D.setNull();
 }
 
 QString QgsMemoryProvider::name() const
