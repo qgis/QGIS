@@ -115,6 +115,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void setProfileData( QgsElevationProfile *profile, double zMin, double zMax );
 
+    void removeProfileData( QgsElevationProfile *profile );
+
     void updateProfileCursorPosition( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint );
 
   private slots:
@@ -166,7 +168,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void lockCrossSectionTolerance( bool enabled );
     void updateClippingRubberBand();
     void updateProfileRubberBands( QgsElevationProfile *profile );
-    void onProfileDestroyed( QObject *profile );
+    void hideProfileRubberBands( QgsElevationProfile *profile );
 
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;

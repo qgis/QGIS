@@ -13426,7 +13426,9 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
   {
     connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+    profileWidget->updateCurveIn3D();
   }
 
   return widget;
@@ -13473,6 +13475,7 @@ QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *p
   for ( Qgs3DMapCanvasWidget *canvasWidget : std::as_const( mOpen3DMapViews ) )
   {
     connect( widget, &QgsElevationProfileWidget::profileDataChanged, canvasWidget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileDataRemoved, canvasWidget, &Qgs3DMapCanvasWidget::removeProfileData );
     connect( widget, &QgsElevationProfileWidget::profileCursorMoved, canvasWidget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
   }
 #endif
