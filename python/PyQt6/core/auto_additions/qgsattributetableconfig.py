@@ -7,7 +7,7 @@ QgsAttributeTableConfig.DropDown = QgsAttributeTableConfig.ActionWidgetStyle.Dro
 QgsAttributeTableConfig.AddFeatureMethod.Unset.__doc__ = "No method set for current layer"
 QgsAttributeTableConfig.AddFeatureMethod.Form.__doc__ = "Opens a new Attributeform-Dialog"
 QgsAttributeTableConfig.AddFeatureMethod.Table.__doc__ = "Adds a new row (or a form embedded in the attribute table depending on the view)"
-QgsAttributeTableConfig.AddFeatureMethod.__doc__ = """The way how to add features in the attribute table
+QgsAttributeTableConfig.AddFeatureMethod.__doc__ = """The way to add features in the attribute table
 
 * ``Unset``: No method set for current layer
 * ``Form``: Opens a new Attributeform-Dialog

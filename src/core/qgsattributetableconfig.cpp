@@ -258,7 +258,11 @@ void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
 {
-  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder || mAddFeatureMethod != other.mAddFeatureMethod;
+  return mSortExpression != other.mSortExpression
+         || mColumns != other.mColumns
+         || mActionWidgetStyle != other.mActionWidgetStyle
+         || mSortOrder != other.mSortOrder
+         || mAddFeatureMethod != other.mAddFeatureMethod;
 }
 
 Qt::SortOrder QgsAttributeTableConfig::sortOrder() const

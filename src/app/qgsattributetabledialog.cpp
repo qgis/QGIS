@@ -183,11 +183,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     const QString lastMethod = settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ).toString();
     method = ( lastMethod == "attributeForm"_L1 ) ? QgsAttributeTableConfig::AddFeatureMethod::Form : QgsAttributeTableConfig::AddFeatureMethod::Table;
   }
-  mAddFeatureButton->setDefaultAction(
-    ( method == QgsAttributeTableConfig::AddFeatureMethod::Form )
-      ? mActionAddFeatureViaAttributeForm
-      : mActionAddFeature
-  );
+  mAddFeatureButton->setDefaultAction( ( method == QgsAttributeTableConfig::AddFeatureMethod::Form ) ? mActionAddFeatureViaAttributeForm : mActionAddFeature );
 
   // Fix selection color on losing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
