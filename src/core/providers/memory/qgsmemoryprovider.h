@@ -92,7 +92,6 @@ class QgsMemoryProvider final : public QgsVectorDataProvider
     // fields
     QgsFields mFields;
     Qgis::WkbType mWkbType;
-    mutable QgsRectangle mExtent2D;
     mutable QgsBox3D mExtent3D;
 
     // features

@@ -344,36 +344,7 @@ QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest &requ
 
 QgsRectangle QgsMemoryProvider::extent() const
 {
-  if ( mExtent2D.isEmpty() && !mFeatures.isEmpty() )
-  {
-    mExtent2D.setNull();
-    if ( mSubsetString.isEmpty() )
-    {
-      // fast way - iterate through all features
-      const auto constMFeatures = mFeatures;
-      for ( const QgsFeature &feat : constMFeatures )
-      {
-        if ( feat.hasGeometry() )
-          mExtent2D.combineExtentWith( feat.geometry().boundingBox() );
-      }
-    }
-    else
-    {
-      QgsFeature f;
-      QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setNoAttributes() );
-      while ( fi.nextFeature( f ) )
-      {
-        if ( f.hasGeometry() )
-          mExtent2D.combineExtentWith( f.geometry().boundingBox() );
-      }
-    }
-  }
-  else if ( mFeatures.isEmpty() )
-  {
-    mExtent2D.setNull();
-  }
-
-  return mExtent2D;
+  return extent3D().toRectangle();
 }
 
 QgsBox3D QgsMemoryProvider::extent3D() const
@@ -454,7 +425,6 @@ void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source
     // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
     mFeatures = other->mFeatures;
     mNextFeatureId = other->mNextFeatureId;
-    mExtent2D = other->mExtent2D;
     mExtent3D = other->mExtent3D;
   }
 }
@@ -464,12 +434,11 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   bool result = true;
   // whether or not to update the layer extent on the fly as we add features
-  const bool updateExtent = mFeatures.isEmpty() || !mExtent2D.isEmpty() || !mExtent3D.isEmpty();
+  const bool updateExtent = mFeatures.isEmpty() || !mExtent3D.isEmpty();
 
   const int fieldCount = mFields.count();
 
   // For rollback
-  const auto oldExtent2D { mExtent2D };
   const auto oldExtent3D { mExtent3D };
   const auto oldNextFeatureId { mNextFeatureId };
   QgsFeatureIds addedFids;
@@ -552,7 +521,6 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       if ( updateExtent )
       {
-        mExtent2D.combineExtentWith( it->geometry().boundingBox() );
         mExtent3D.combineWith( it->geometry().boundingBox3D() );
       }
 
@@ -571,7 +539,6 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       mFeatures.remove( addedFid );
     }
-    mExtent2D = oldExtent2D;
     mExtent3D = oldExtent3D;
     mNextFeatureId = oldNextFeatureId;
   }
@@ -804,7 +771,6 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   mSubsetString = theSQL;
   clearMinMaxCache();
-  mExtent2D.setNull();
   mExtent3D.setNull();
 
   emit dataChanged();
@@ -870,14 +836,12 @@ bool QgsMemoryProvider::truncate()
 {
   mFeatures.clear();
   clearMinMaxCache();
-  mExtent2D.setNull();
   mExtent3D.setNull();
   return true;
 }
 
 void QgsMemoryProvider::updateExtents()
 {
-  mExtent2D.setNull();
   mExtent3D.setNull();
 }
 
