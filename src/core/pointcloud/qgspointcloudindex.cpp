@@ -482,6 +482,12 @@ QString QgsPointCloudIndex::uri() const
   return mIndex->uri();
 }
 
+bool QgsPointCloudIndex::needsHierarchyFetching( const QgsPointCloudNodeId &n ) const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->needsHierarchyFetching( n );
+}
+
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {
   Q_ASSERT( mIndex );

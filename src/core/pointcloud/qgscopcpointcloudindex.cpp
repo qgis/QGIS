@@ -541,4 +541,43 @@ QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
   };
 }
 
+bool QgsCopcPointCloudIndex::needsHierarchyFetching( const QgsPointCloudNodeId &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+
+  auto hierarchyIt = mHierarchy.constFind( n );
+  if ( hierarchyIt == mHierarchy.constEnd() )
+    return false;
+  const int pointsCount = *hierarchyIt;
+  if ( pointsCount < 0 )
+    return true;
+
+  const QVector<QgsPointCloudNodeId> children = n.childrenNodes();
+  for ( const QgsPointCloudNodeId &ch : children )
+  {
+    auto hierarchyIt = mHierarchy.constFind( ch );
+    if ( hierarchyIt == mHierarchy.constEnd() )
+      continue;
+    const int pointsCount = *hierarchyIt;
+    if ( pointsCount < 0 )
+      return true;
+  }
+
+  for ( const QgsPointCloudNodeId &ch : children )
+  {
+    const QVector<QgsPointCloudNodeId> grandChildren = ch.childrenNodes();
+    for ( const QgsPointCloudNodeId &gch : grandChildren )
+    {
+      auto hierarchyIt = mHierarchy.constFind( gch );
+      if ( hierarchyIt == mHierarchy.constEnd() )
+        continue;
+      const int pointsCount = *hierarchyIt;
+      if ( pointsCount < 0 )
+        return true;
+    }
+  }
+
+  return false;
+}
+
 ///@endcond

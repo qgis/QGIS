@@ -399,6 +399,16 @@ Returns a list of node IDs that have been modified
 Returns the uri used to load the index
 %End
 
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &node ) const;
+%Docstring
+Returns whether calling :py:func:`~QgsPointCloudIndex.getNode` for
+``node`` will trigger a hierarchy page fetch. If any of the node's
+ancestors, children and grand-children info exist in a hierarchy page
+that has not yet been loaded, it will return ``True``.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 

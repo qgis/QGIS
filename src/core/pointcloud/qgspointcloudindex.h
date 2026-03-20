@@ -384,6 +384,15 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      */
     QString uri() const { return mUri; }
 
+    /**
+     * Returns whether calling getNode() for \a node will trigger a hierarchy page fetch.
+     * If any of the node's ancestors, children and grand-children info exist in a hierarchy
+     * page that has not yet been loaded, it will return TRUE.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool needsHierarchyFetching( const QgsPointCloudNodeId & ) const { return false; }
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -668,6 +677,15 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Returns the uri used to load the index
     QString uri() const;
+
+    /**
+     * Returns whether calling getNode() for \a node will trigger a hierarchy page fetch.
+     * If any of the node's ancestors, children and grand-children info exist in a hierarchy
+     * page that has not yet been loaded, it will return TRUE.
+     *
+     * \since QGIS 4.2
+     */
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &node ) const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
