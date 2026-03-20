@@ -30,6 +30,26 @@
 
 using namespace Qt::StringLiterals;
 
+QString resolveAxisConflict( const QString &axisWithPossibleConflict, const QString &fixedAxis )
+{
+  // mapping of original axis which clashes to suggested value, respecting right hand rule
+  static const QMap<QString, QString> rightHandRules = {
+    { u"x"_s, u"y"_s },
+    { u"-x"_s, u"-y"_s },
+    { u"y"_s, u"z"_s },
+    { u"-y"_s, u"-z"_s },
+    { u"z"_s, u"x"_s },
+    { u"-z"_s, u"-x"_s },
+  };
+
+  if ( fixedAxis.last( 1 ) == axisWithPossibleConflict.last( 1 ) )
+  {
+    return rightHandRules.value( axisWithPossibleConflict );
+  }
+  return QString();
+}
+
+
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
 {
@@ -101,29 +121,10 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     // ensure up axis is different to forward axis
     const QString upAxis = mComboModelUpAxis->currentData().toString();
     const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
-    if ( forwardAxis == "x" && ( upAxis == "x" || upAxis == "-x" ) )
+    const QString resolvedAxisConflict = resolveAxisConflict( forwardAxis, upAxis );
+    if ( !resolvedAxisConflict.isEmpty() )
     {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"y"_s ) );
-    }
-    else if ( forwardAxis == "-x" && ( upAxis == "x" || upAxis == "-x" ) )
-    {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"-y"_s ) );
-    }
-    else if ( forwardAxis == "y" && ( upAxis == "y" || upAxis == "-y" ) )
-    {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"z"_s ) );
-    }
-    else if ( forwardAxis == "-y" && ( upAxis == "y" || upAxis == "-y" ) )
-    {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"-z"_s ) );
-    }
-    else if ( forwardAxis == "z" && ( upAxis == "z" || upAxis == "-z" ) )
-    {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"-x"_s ) );
-    }
-    else if ( forwardAxis == "-z" && ( upAxis == "z" || upAxis == "-z" ) )
-    {
-      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( u"x"_s ) );
+      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( resolvedAxisConflict ) );
     }
 
     emit changed();
@@ -132,31 +133,11 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     // ensure up axis is different to forward axis
     const QString upAxis = mComboModelUpAxis->currentData().toString();
     const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
-    if ( upAxis == "x" && ( forwardAxis == "x" || forwardAxis == "-x" ) )
+    const QString resolvedAxisConflict = resolveAxisConflict( upAxis, forwardAxis );
+    if ( !resolvedAxisConflict.isEmpty() )
     {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"y"_s ) );
+      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( resolvedAxisConflict ) );
     }
-    else if ( upAxis == "-x" && ( forwardAxis == "x" || forwardAxis == "-x" ) )
-    {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"-y"_s ) );
-    }
-    else if ( upAxis == "y" && ( forwardAxis == "y" || forwardAxis == "-y" ) )
-    {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"z"_s ) );
-    }
-    else if ( upAxis == "-y" && ( forwardAxis == "y" || forwardAxis == "-y" ) )
-    {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"-z"_s ) );
-    }
-    else if ( upAxis == "z" && ( forwardAxis == "z" || forwardAxis == "-z" ) )
-    {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"-x"_s ) );
-    }
-    else if ( upAxis == "-z" && ( forwardAxis == "z" || forwardAxis == "-z" ) )
-    {
-      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( u"x"_s ) );
-    }
-
     emit changed();
   } );
 
