@@ -547,7 +547,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate2D( double angle, co
   return resultGeom;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x4 &mat ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QgsMatrix4x4 &mat ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
@@ -943,7 +943,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurfa
 #endif
 }
 
-QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
+QgsMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
 {
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
@@ -1018,25 +1018,29 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
 {
-  mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() );
+  const double *primTransformData = mPrimTransform.constData();
+  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
+  mPrimTransform.translate( prevTrans + translation );
 }
 
 void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
 {
-  QVector3D qCenter( center.x(), center.y(), center.z() );
-  QVector3D prevTrans = mPrimTransform.column( 3 ).toVector3D();
+  QgsVector3D qCenter( center.x(), center.y(), center.z() );
+  const double *primTransformData = mPrimTransform.constData();
+  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
   mPrimTransform.translate( prevTrans - qCenter );
-  mPrimTransform.scale( scaleFactor.toVector3D() );
+  mPrimTransform.scale( scaleFactor );
   mPrimTransform.translate( prevTrans + qCenter );
 }
 
 void QgsSfcgalGeometry::setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center )
 {
-  QVector3D qCenter( center.x(), center.y(), center.z() );
-  QVector3D prevTrans = mPrimTransform.column( 3 ).toVector3D();
+  QgsVector3D qCenter( center.x(), center.y(), center.z() );
+  const double *primTransformData = mPrimTransform.constData();
+  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
   mPrimTransform.translate( prevTrans - qCenter );
   // TODO: need to merge previous rotation values with the new ones
-  mPrimTransform.rotate( QQuaternion::fromAxisAndAngle( axisVector.toVector3D(), angle ) );
+  mPrimTransform.rotate( angle * 180.0 / M_PI, axisVector );
   mPrimTransform.translate( prevTrans + qCenter );
 }
 

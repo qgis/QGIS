@@ -92,6 +92,29 @@ class CORE_EXPORT QgsMatrix4x4
     //! Sets matrix to be identity matrix
     void setToIdentity() SIP_HOLDGIL;
 
+    /**
+     * Multiplies this matrix by another that scales coordinates by the components of a \a vector.
+     *
+     * \since QGIS 4.2
+     */
+    void scale( const QgsVector3D &vector );
+
+    /**
+     * Multiples this matrix by another that rotates coordinates through
+     * \a angle degrees about the vector (\a x, \a y, \a z).
+     *
+     * \since QGIS 4.2
+     */
+    void rotate( double angle, double x, double y, double z );
+
+    /**
+     * Multiples this matrix by another that rotates coordinates through
+     * \a angle degrees about \a vector.
+     *
+     * \since QGIS 4.2
+     */
+    void rotate( double angle, const QgsVector3D &vector );
+
 #ifdef SIP_RUN
 // clang-format off
     SIP_PYOBJECT __repr__();
