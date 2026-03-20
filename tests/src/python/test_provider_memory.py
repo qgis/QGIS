@@ -10,6 +10,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
+import math
 import unittest
 from urllib.parse import parse_qs
 
@@ -1349,6 +1350,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[13].typeName(), vl2.fields()[13].typeName())
 
     def testExtent3D(self):
+        # vector layer with 3d data
         vl = QgsVectorLayer("PointZ?crs=epsg:4326", "temporary_points", "memory")
         self.assertTrue(vl.isValid())
 
@@ -1419,6 +1421,78 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(extent.yMinimum(), 70.8)
         self.assertEqual(extent.xMaximum(), -68.2)
         self.assertEqual(extent.yMaximum(), 78.23)
+
+        # layer with 2d data
+        vl2d = QgsVectorLayer("Point?crs=epsg:4326", "temporary_points_2d", "memory")
+        self.assertTrue(vl2d.isValid())
+
+        f1 = QgsFeature()
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.456 75.23)"))
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry.fromWkt("Point (-71.432 67.33)"))
+        f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry.fromWkt("Point (-67.2 69.8)"))
+
+        provider = vl2d.dataProvider()
+        res, [f1, f2, f3] = provider.addFeatures([f1, f2, f3])
+        self.assertTrue(res)
+        self.assertEqual(provider.featureCount(), 3)
+
+        extent_3d = vl2d.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -72.456)
+        self.assertEqual(extent_3d.yMinimum(), 67.33)
+        self.assertTrue(math.isnan(extent_3d.zMinimum()))
+        self.assertEqual(extent_3d.xMaximum(), -67.2)
+        self.assertEqual(extent_3d.yMaximum(), 75.23)
+        self.assertTrue(math.isnan(extent_3d.zMaximum()))
+
+        extent = vl2d.extent()
+        self.assertEqual(extent.xMinimum(), -72.456)
+        self.assertEqual(extent.yMinimum(), 67.33)
+        self.assertEqual(extent.xMaximum(), -67.2)
+        self.assertEqual(extent.yMaximum(), 75.23)
+
+        # Add a new feature
+        f4 = QgsFeature()
+        f4.setGeometry(QgsGeometry.fromWkt("Point (-73.7 75.5)"))
+        res, [f4] = provider.addFeatures([f4])
+        self.assertTrue(res)
+        self.assertEqual(provider.featureCount(), 4)
+
+        vl2d.updateExtents()
+
+        extent_3d = vl2d.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -73.7)
+        self.assertEqual(extent_3d.yMinimum(), 67.33)
+        self.assertTrue(math.isnan(extent_3d.zMinimum()))
+        self.assertEqual(extent_3d.xMaximum(), -67.2)
+        self.assertEqual(extent_3d.yMaximum(), 75.5)
+        self.assertTrue(math.isnan(extent_3d.zMaximum()))
+
+        extent = vl2d.extent()
+        self.assertEqual(extent.xMinimum(), -73.7)
+        self.assertEqual(extent.yMinimum(), 67.33)
+        self.assertEqual(extent.xMaximum(), -67.2)
+        self.assertEqual(extent.yMaximum(), 75.5)
+
+        # Delete a feature
+        self.assertTrue(provider.deleteFeatures([f2.id()]))
+        self.assertEqual(provider.featureCount(), 3)
+        vl2d.updateExtents()
+
+        extent_3d = vl2d.extent3D()
+        self.assertEqual(extent_3d.xMinimum(), -73.7)
+        self.assertEqual(extent_3d.yMinimum(), 69.8)
+        self.assertTrue(math.isnan(extent_3d.zMinimum()))
+        self.assertEqual(extent_3d.xMaximum(), -67.2)
+        self.assertEqual(extent_3d.yMaximum(), 75.5)
+        self.assertTrue(math.isnan(extent_3d.zMaximum()))
+
+        extent = vl2d.extent()
+        self.assertEqual(extent.xMinimum(), -73.7)
+        self.assertEqual(extent.yMinimum(), 69.8)
+        self.assertEqual(extent.xMaximum(), -67.2)
+        self.assertEqual(extent.yMaximum(), 75.5)
 
 
 class TestPyQgsMemoryProviderIndexed(QgisTestCase, ProviderTestCase):
