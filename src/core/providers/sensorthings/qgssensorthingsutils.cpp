@@ -43,9 +43,7 @@ QgsSensorThingsExpansionDefinition::QgsSensorThingsExpansionDefinition( Qgis::Se
   , mSortOrder( sortOrder )
   , mLimit( limit )
   , mFilter( filter )
-{
-
-}
+{}
 
 QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDefinitionForEntity( Qgis::SensorThingsEntity entity )
 {
@@ -60,25 +58,17 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // no special defaults for these entities
-      return QgsSensorThingsExpansionDefinition(
-               entity
-             );
+      return QgsSensorThingsExpansionDefinition( entity );
 
     case Qgis::SensorThingsEntity::Observation:
       // default to descending sort by phenomenonTime
-      return QgsSensorThingsExpansionDefinition(
-               Qgis::SensorThingsEntity::Observation,
-               u"phenomenonTime"_s, Qt::SortOrder::DescendingOrder
-             );
+      return QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity::Observation, u"phenomenonTime"_s, Qt::SortOrder::DescendingOrder );
 
     case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::MultiDatastream:
     case Qgis::SensorThingsEntity::ObservedProperty:
       // use smaller limit by default
-      return QgsSensorThingsExpansionDefinition(
-               entity,
-               QString(), Qt::SortOrder::AscendingOrder, 10
-             );
+      return QgsSensorThingsExpansionDefinition( entity, QString(), Qt::SortOrder::AscendingOrder, 10 );
   }
   BUILTIN_UNREACHABLE
 }
@@ -247,11 +237,7 @@ bool QgsSensorThingsExpansionDefinition::operator==( const QgsSensorThingsExpans
   if ( mChildEntity == Qgis::SensorThingsEntity::Invalid )
     return other.mChildEntity == Qgis::SensorThingsEntity::Invalid;
 
-  return mChildEntity == other.mChildEntity
-         && mSortOrder == other.mSortOrder
-         && mLimit == other.mLimit
-         && mOrderBy == other.mOrderBy
-         && mFilter == other.mFilter;
+  return mChildEntity == other.mChildEntity && mSortOrder == other.mSortOrder && mLimit == other.mLimit && mOrderBy == other.mOrderBy && mFilter == other.mFilter;
 }
 
 bool QgsSensorThingsExpansionDefinition::operator!=( const QgsSensorThingsExpansionDefinition &other ) const
@@ -388,96 +374,105 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
 
     case Qgis::SensorThingsEntity::Thing:
       // https://docs.ogc.org/is/18-088/18-088.html#thing
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"properties"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
 
     case Qgis::SensorThingsEntity::Location:
       // https://docs.ogc.org/is/18-088/18-088.html#location
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"properties"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
       // https://docs.ogc.org/is/18-088/18-088.html#historicallocation
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"time"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"time"_s,
+      };
 
     case Qgis::SensorThingsEntity::Datastream:
       // https://docs.ogc.org/is/18-088/18-088.html#datastream
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"unitOfMeasurement"_s,
-               u"observationType"_s,
-               u"properties"_s,
-               u"phenomenonTime"_s,
-               u"resultTime"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"unitOfMeasurement"_s,
+        u"observationType"_s,
+        u"properties"_s,
+        u"phenomenonTime"_s,
+        u"resultTime"_s,
+      };
 
     case Qgis::SensorThingsEntity::Sensor:
       // https://docs.ogc.org/is/18-088/18-088.html#sensor
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"metadata"_s,
-               u"properties"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"metadata"_s,
+        u"properties"_s,
+      };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       // https://docs.ogc.org/is/18-088/18-088.html#observedproperty
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"definition"_s,
-               u"description"_s,
-               u"properties"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"phenomenonTime"_s,
-               u"result"_s,
-               u"resultTime"_s,
-               u"resultQuality"_s,
-               u"validTime"_s,
-               u"parameters"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"phenomenonTime"_s,
+        u"result"_s,
+        u"resultTime"_s,
+        u"resultQuality"_s,
+        u"validTime"_s,
+        u"parameters"_s,
+      };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // https://docs.ogc.org/is/18-088/18-088.html#featureofinterest
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"properties"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
-      return { u"id"_s,
-               u"selfLink"_s,
-               u"name"_s,
-               u"description"_s,
-               u"unitOfMeasurements"_s,
-               u"observationType"_s,
-               u"multiObservationDataTypes"_s,
-               u"properties"_s,
-               u"phenomenonTime"_s,
-               u"resultTime"_s,
-           };
+      return {
+        u"id"_s,
+        u"selfLink"_s,
+        u"name"_s,
+        u"description"_s,
+        u"unitOfMeasurements"_s,
+        u"observationType"_s,
+        u"multiObservationDataTypes"_s,
+        u"properties"_s,
+        u"phenomenonTime"_s,
+        u"resultTime"_s,
+      };
   }
 
   return {};
@@ -714,9 +709,7 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
 QString QgsSensorThingsUtils::filterForExtent( const QString &geometryField, const QgsRectangle &extent )
 {
   // TODO -- confirm using 'geography' is always correct here
-  return ( extent.isNull() || geometryField.isEmpty() )
-         ? QString()
-         : u"geo.intersects(%1, geography'%2')"_s.arg( geometryField, extent.asWktPolygon() );
+  return ( extent.isNull() || geometryField.isEmpty() ) ? QString() : u"geo.intersects(%1, geography'%2')"_s.arg( geometryField, extent.asWktPolygon() );
 }
 
 QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
@@ -740,7 +733,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
   QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
   QgsSetRequestInitiatorClass( request, u"QgsSensorThingsUtils"_s )
 
-  QgsBlockingNetworkRequest networkRequest;
+    QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authCfg );
 
   switch ( networkRequest.get( request ) )
@@ -798,8 +791,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     return {};
   }
 
-  auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
-  {
+  auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long {
     // return no features, just the total count
     QString countUri = u"%1?$top=0&$count=true"_s.arg( entityBaseUri );
     Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
@@ -848,12 +840,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
   };
 
   QList<Qgis::GeometryType> types;
-  for ( Qgis::GeometryType geometryType :
-        {
-          Qgis::GeometryType::Point,
-          Qgis::GeometryType::Line,
-          Qgis::GeometryType::Polygon
-        } )
+  for ( Qgis::GeometryType geometryType : { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon } )
   {
     const long long matchCount = getCountForType( geometryType );
     if ( matchCount < 0 )
@@ -875,70 +862,41 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
       return {};
 
     case Qgis::SensorThingsEntity::Thing:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::HistoricalLocation,
         Qgis::SensorThingsEntity::Datastream,
         Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::Location:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::Thing,
         Qgis::SensorThingsEntity::HistoricalLocation,
       };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
-      return
-      {
-        Qgis::SensorThingsEntity::Thing
-      };
+      return { Qgis::SensorThingsEntity::Thing };
 
     case Qgis::SensorThingsEntity::Datastream:
-      return
-      {
-        Qgis::SensorThingsEntity::Thing,
-        Qgis::SensorThingsEntity::Sensor,
-        Qgis::SensorThingsEntity::ObservedProperty,
-        Qgis::SensorThingsEntity::Observation
-      };
+      return { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Sensor, Qgis::SensorThingsEntity::ObservedProperty, Qgis::SensorThingsEntity::Observation };
 
     case Qgis::SensorThingsEntity::Sensor:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::Datastream,
         Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
-      return
-      {
-        Qgis::SensorThingsEntity::Datastream,
-        Qgis::SensorThingsEntity::MultiDatastream
-      };
+      return { Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::MultiDatastream };
 
     case Qgis::SensorThingsEntity::Observation:
-      return
-      {
-        Qgis::SensorThingsEntity::Datastream,
-        Qgis::SensorThingsEntity::MultiDatastream
-      };
+      return { Qgis::SensorThingsEntity::Datastream, Qgis::SensorThingsEntity::MultiDatastream };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return
-      {
-        Qgis::SensorThingsEntity::Observation
-      };
+      return { Qgis::SensorThingsEntity::Observation };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return
-      {
-        Qgis::SensorThingsEntity::Thing,
-        Qgis::SensorThingsEntity::Sensor,
-        Qgis::SensorThingsEntity::ObservedProperty,
-        Qgis::SensorThingsEntity::Observation
-      };
+      return { Qgis::SensorThingsEntity::Thing, Qgis::SensorThingsEntity::Sensor, Qgis::SensorThingsEntity::ObservedProperty, Qgis::SensorThingsEntity::Observation };
   }
   // NOLINTEND(bugprone-branch-clone)
 
@@ -1169,7 +1127,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
 QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, const QList<QgsSensorThingsExpansionDefinition> &expansions )
 {
   QString res;
-  for ( int i = expansions.size() - 1; i >= 0 ; i-- )
+  for ( int i = expansions.size() - 1; i >= 0; i-- )
   {
     const QgsSensorThingsExpansionDefinition &expansion = expansions.at( i );
     if ( !expansion.isValid() )
@@ -1177,7 +1135,7 @@ QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, 
 
     const Qgis::SensorThingsEntity parentType = i > 0 ? expansions.at( i - 1 ).childEntity() : baseType;
 
-    res = expansion.asQueryString( parentType, res.isEmpty() ? QStringList() : QStringList{ res } );
+    res = expansion.asQueryString( parentType, res.isEmpty() ? QStringList() : QStringList { res } );
   }
 
   return res;

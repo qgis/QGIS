@@ -22,6 +22,9 @@
 #include "qgsguiutils.h"
 #include "qgsplotmouseevent.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
@@ -86,21 +89,19 @@ void QgsProfileMeasureResultsDialog::setMeasures( double total, double distance,
 
   // the distance delta HAS units!
   const QgsSettings settings;
-  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const bool baseUnit = QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->value();
 
   Qgis::DistanceUnit distanceUnit = mCrs.mapUnits();
   const Qgis::DistanceUnit projectUnit = QgsProject::instance()->distanceUnits();
 
-  if ( projectUnit != distanceUnit
-       && QgsUnitTypes::unitType( distanceUnit ) == Qgis::DistanceUnitType::Standard
-       && QgsUnitTypes::unitType( projectUnit ) == Qgis::DistanceUnitType::Standard )
+  if ( projectUnit != distanceUnit && QgsUnitTypes::unitType( distanceUnit ) == Qgis::DistanceUnitType::Standard && QgsUnitTypes::unitType( projectUnit ) == Qgis::DistanceUnitType::Standard )
   {
     // convert distance to desired project units. We can only do this if neither the crs units nor the project units are geographic!
     distance *= QgsUnitTypes::fromUnitToUnitFactor( distanceUnit, projectUnit );
     distanceUnit = projectUnit;
   }
 
-  int decimals = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
+  int decimals = QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->value();
   if ( distanceUnit == Qgis::DistanceUnit::Degrees && distance < 1 )
   {
     // special handling for degrees - because we can't use smaller units (eg m->mm), we need to make sure there's
@@ -135,11 +136,8 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   QPen pen;
   pen.setWidthF( QgsGuiUtils::scaleIconSize( 2 ) );
   pen.setCosmetic( true );
-  QgsSettings settings;
-  const int red = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
-  const int green = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
-  const int blue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
-  pen.setColor( QColor( red, green, blue, 100 ) );
+  const QColor measureColor = QgsSettingsRegistryGui::settingsDefaultMeasureColor->value();
+  pen.setColor( QColor( measureColor.red(), measureColor.green(), measureColor.blue(), 100 ) );
   mRubberBand->setPen( pen );
 
   mRubberBand->hide();
@@ -155,9 +153,7 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
     mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
     mDialog->show();
   } );
-  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [this] {
-    clear();
-  } );
+  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [this] { clear(); } );
 }
 
 QgsElevationProfileToolMeasure::~QgsElevationProfileToolMeasure()

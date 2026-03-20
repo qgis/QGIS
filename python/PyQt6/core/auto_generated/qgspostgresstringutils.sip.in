@@ -13,7 +13,7 @@
 #include "qgspostgresstringutils.h"
 %End
 
-class QgsPostgresStringUtils
+  class QgsPostgresStringUtils
 {
 %Docstring(signature="appended")
 Provides functions to handle postgres array-like formatted lists in
@@ -26,7 +26,6 @@ strings.
 #include "qgspostgresstringutils.h"
 %End
   public:
-
     static QVariantList parseArray( const QString &string );
 %Docstring
 Returns a QVariantList created out of a string containing an array in

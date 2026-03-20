@@ -67,12 +67,10 @@ void TestQgs3DMaterial::cleanupTestCase()
 }
 
 void TestQgs3DMaterial::init()
-{
-}
+{}
 
 void TestQgs3DMaterial::cleanup()
-{
-}
+{}
 
 void TestQgs3DMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
 {
@@ -229,11 +227,8 @@ void TestQgs3DMaterial::colorDataDefinedGooch()
 void TestQgs3DMaterial::clipping()
 {
   const QString defineClippingStr = u"#define %1"_s.arg( QgsMaterial::CLIP_PLANE_DEFINE );
-  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  const QList<QVector4D> clipPlanesEquations
+    = QList<QVector4D>() << QVector4D( 0.866025, -0.5, 0, 150.0 ) << QVector4D( -0.866025, 0.5, 0, 150.0 ) << QVector4D( 0.5, 0.866025, 0, 305.0 ) << QVector4D( -0.5, -0.866025, 0, 205.0 );
 
   auto findParameters = []( const Qt3DRender::QEffect *effect, bool &arrayFound, bool &maxFound ) -> void {
     arrayFound = false;

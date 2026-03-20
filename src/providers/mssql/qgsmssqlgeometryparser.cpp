@@ -165,8 +165,7 @@ SegmentType (1 byte)
 #define ReadM( iPoint ) ( ReadDouble( mPointPos + 24 * mNumPoints + 8 * ( iPoint ) ) )
 
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
-{
-}
+{}
 
 void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen )
 {

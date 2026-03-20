@@ -333,8 +333,7 @@ bool QgsTableEditorWidget::hasMergedCells( const QModelIndexList &list ) const
 {
   for ( const QModelIndex &index : list )
   {
-    if ( rowSpan( index.row(), index.column() ) > 1
-         || columnSpan( index.row(), index.column() ) > 1 )
+    if ( rowSpan( index.row(), index.column() ) > 1 || columnSpan( index.row(), index.column() ) > 1 )
       return true;
   }
   return false;
@@ -538,8 +537,7 @@ QgsNumericFormat *QgsTableEditorWidget::selectionNumericFormat()
         f = mNumericFormats.value( i );
         first = false;
       }
-      else if ( ( !f && !mNumericFormats.value( i ) )
-                || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
+      else if ( ( !f && !mNumericFormats.value( i ) ) || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
         continue;
       else
       {
@@ -568,8 +566,7 @@ bool QgsTableEditorWidget::hasMixedSelectionNumericFormat()
         f = mNumericFormats.value( i );
         first = false;
       }
-      else if ( ( !f && !mNumericFormats.value( i ) )
-                || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
+      else if ( ( !f && !mNumericFormats.value( i ) ) || ( f && mNumericFormats.value( i ) && *f == *mNumericFormats.value( i ) ) )
         continue;
       else
       {
@@ -866,16 +863,12 @@ bool QgsTableEditorWidget::isHeaderCellSelected() const
 
 bool QgsTableEditorWidget::canMergeSelection() const
 {
-  return selectedIndexes().size() > 1
-         && !isHeaderCellSelected()
-         && isRectangularSelection( selectedIndexes() );
+  return selectedIndexes().size() > 1 && !isHeaderCellSelected() && isRectangularSelection( selectedIndexes() );
 }
 
 bool QgsTableEditorWidget::canSplitSelection() const
 {
-  return !selectedIndexes().empty()
-         && !isHeaderCellSelected()
-         && hasMergedCells( selectedIndexes() );
+  return !selectedIndexes().empty() && !isHeaderCellSelected() && hasMergedCells( selectedIndexes() );
 }
 
 void QgsTableEditorWidget::insertRowsBelow()
@@ -1568,8 +1561,7 @@ void QgsTableEditorTextEdit::changeEvent( QEvent *e )
 
 QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 void QgsTableEditorDelegate::setWeakEditorMode( bool weakEditorMode )
 {

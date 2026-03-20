@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMPDALEXPORTRASTER_H
 #define QGSALGORITHMPDALEXPORTRASTER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgspdalalgorithmbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

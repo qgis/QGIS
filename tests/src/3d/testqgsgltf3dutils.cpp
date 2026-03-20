@@ -36,7 +36,8 @@ class TestQgsGltf3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgsGltf3DUtils()
-      : QgsTest( u"GLTF 3D Utils"_s ) {}
+      : QgsTest( u"GLTF 3D Utils"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -52,8 +53,7 @@ class TestQgsGltf3DUtils : public QgsTest
 
 //runs before all tests
 void TestQgsGltf3DUtils::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsGltf3DUtils::cleanupTestCase()

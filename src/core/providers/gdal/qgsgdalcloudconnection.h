@@ -22,9 +22,10 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
-#define SIP_NO_FILE
 
 #include <QStringList>
 
@@ -45,9 +46,7 @@ class QgsSettingsEntryVariantMap;
  */
 class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
@@ -76,12 +75,12 @@ class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderCon
 
     struct DirectoryObject
     {
-      //! Object name
-      QString name;
-      //! TRUE if the object represents a file
-      bool isFile = false;
-      //! TRUE if the object represents a directory
-      bool isDir = false;
+        //! Object name
+        QString name;
+        //! TRUE if the object represents a file
+        bool isFile = false;
+        //! TRUE if the object represents a directory
+        bool isDir = false;
     };
 
     /**
@@ -99,18 +98,17 @@ class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderCon
     */
     struct Data
     {
-      //! VSI handler
-      QString vsiHandler;
+        //! VSI handler
+        QString vsiHandler;
 
-      //! Container or bucket
-      QString container;
+        //! Container or bucket
+        QString container;
 
-      //! Path
-      QString rootPath;
+        //! Path
+        QString rootPath;
 
-      //! Credential options
-      QVariantMap credentialOptions;
-
+        //! Credential options
+        QVariantMap credentialOptions;
     };
 
     /**
@@ -157,7 +155,6 @@ class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderCon
      * \see selectedConnection()
      */
     static void setSelectedConnection( const QString &name );
-
 };
 
 #endif // QGSGDALCLOUDCONNECTION_H

@@ -40,16 +40,15 @@ using namespace Qt::StringLiterals;
  * \ingroup core
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterTinInputLayers : public QgsProcessingParameterDefinition
 {
   public:
-
     //! Used to store input layer Id and other associated parameters
     struct InputLayer
     {
-      QString source; //!The source of the input layer
-      Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
-      int attributeIndex; //! The attribute index used for Z value of vertices
+        QString source;                         //!The source of the input layer
+        Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
+        int attributeIndex;                     //! The attribute index used for Z value of vertices
     };
 
     //! Constructor
@@ -80,51 +79,23 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
 class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterTinInputLayers( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterTinInputLayers( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "An input allowing selection of multiple layers to create a TIN with vertices and/or break lines" );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "An input allowing selection of multiple layers to create a TIN with vertices and/or break lines" ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "TIN Creation Layers" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "TIN Creation Layers" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterTinInputLayers::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterTinInputLayers::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterTinInputLayers"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterTinInputLayers"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterTinInputLayers"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterTinInputLayers"_s; }
 
-    QStringList acceptedPythonTypes() const override
-    {
-      return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs" );
-    }
+    QStringList acceptedPythonTypes() const override { return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs" ); }
 
-    QStringList acceptedParameterTypes() const override
-    {
-      return QStringList()
-             << QgsProcessingParameterTinInputLayers::typeName();
-    }
+    QStringList acceptedParameterTypes() const override { return QStringList() << QgsProcessingParameterTinInputLayers::typeName(); }
 
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList();
-    }
+    QStringList acceptedOutputTypes() const override { return QStringList(); }
 };
 
 ///@endcond

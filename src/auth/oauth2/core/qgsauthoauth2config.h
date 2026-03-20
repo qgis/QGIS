@@ -230,20 +230,10 @@ class QgsAuthOAuth2Config : public QObject
     static bool writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, ConfigFormat format = ConfigFormat::JSON, bool pretty = false );
 
     //! Load and parse a directory of configs (e.g. JSON) to objects
-    static QList<QgsAuthOAuth2Config *> loadOAuth2Configs(
-      const QString &configdirectory,
-      QObject *parent = nullptr,
-      ConfigFormat format = ConfigFormat::JSON,
-      bool *ok = nullptr
-    );
+    static QList<QgsAuthOAuth2Config *> loadOAuth2Configs( const QString &configdirectory, QObject *parent = nullptr, ConfigFormat format = ConfigFormat::JSON, bool *ok = nullptr );
 
     //! Load and parse a directory of configs (e.g. JSON) to a map
-    static QgsStringMap mapOAuth2Configs(
-      const QString &configdirectory,
-      QObject *parent = nullptr,
-      ConfigFormat format = ConfigFormat::JSON,
-      bool *ok = nullptr
-    );
+    static QgsStringMap mapOAuth2Configs( const QString &configdirectory, QObject *parent = nullptr, ConfigFormat format = ConfigFormat::JSON, bool *ok = nullptr );
 
     /**
      * Returns an ordered list of locations from which stored configuration files

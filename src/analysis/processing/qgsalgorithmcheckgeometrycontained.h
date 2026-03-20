@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMCHECKGEOMETRYCONTAINED_H
 #define QGSALGORITHMCHECKGEOMETRYCONTAINED_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsfeaturepool.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

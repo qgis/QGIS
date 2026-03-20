@@ -22,8 +22,7 @@
 
 QgsRangeSlider::QgsRangeSlider( QWidget *parent )
   : QgsRangeSlider( Qt::Horizontal, parent )
-{
-}
+{}
 
 QgsRangeSlider::QgsRangeSlider( Qt::Orientation orientation, QWidget *parent )
   : QWidget( parent )

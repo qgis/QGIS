@@ -78,16 +78,13 @@ void TestQgsFeature::initTestCase()
 }
 
 void TestQgsFeature::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsFeature::init()
-{
-}
+{}
 
 void TestQgsFeature::cleanup()
-{
-}
+{}
 
 void TestQgsFeature::attributesTest()
 {

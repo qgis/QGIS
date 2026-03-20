@@ -17,6 +17,8 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
@@ -38,6 +40,8 @@ class QgsMapToolCaptureRubberBand;
 class QgsCurvePolygon;
 class QgsMapToolShapeAbstract;
 class QgsMapToolShapeMetadata;
+class QgsBezierData;
+class QgsBezierMarker;
 
 
 /**
@@ -140,6 +144,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
+    void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
@@ -465,6 +470,19 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
+
+    //! Data structure for Poly-Bézier curve digitizing (anchors and handles)
+    std::unique_ptr<QgsBezierData> mBezierData;
+    //! Visualization for Poly-Bézier curve digitizing
+    std::unique_ptr<QgsBezierMarker> mBezierMarker;
+    //! TRUE if user is currently dragging
+    bool mBezierDragging = false;
+    //! Index of the anchor being dragged for new anchor handle definition (-1 if not)
+    int mBezierDragAnchorIndex = -1;
+    //! Index of the handle being dragged independently (-1 if not)
+    int mBezierDragHandleIndex = -1;
+    //! Index of the anchor being moved (-1 if not)
+    int mBezierMoveAnchorIndex = -1;
 
     //! Flag for NURBS weight editing mode (activated with W key)
     bool mWeightEditMode = false;

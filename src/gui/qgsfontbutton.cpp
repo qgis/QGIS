@@ -508,7 +508,12 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
 
       double ytrans = 0.0;
       if ( tempFormat->buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat->buffer().size() / 100 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+        ytrans = std::max(
+          ytrans,
+          tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage
+            ? fontSize * tempFormat->buffer().size() / 100
+            : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() )
+        );
       if ( tempFormat->background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
@@ -621,8 +626,7 @@ void QgsFontButton::prepareMenu()
     fontAction->setFont( f );
     fontAction->setToolTip( family );
     recentFontMenu->addAction( fontAction );
-    if ( ( mMode == ModeTextRenderer && family == mFormat.font().family() )
-         || ( mMode == ModeQFont && family == mFont.family() ) )
+    if ( ( mMode == ModeTextRenderer && family == mFormat.font().family() ) || ( mMode == ModeQFont && family == mFont.family() ) )
     {
       fontAction->setCheckable( true );
       fontAction->setChecked( true );
@@ -937,7 +941,12 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       double ytrans = 0.0;
       if ( tempFormat.buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat.buffer().size() / 100 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+        ytrans = std::max(
+          ytrans,
+          tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
+            ? fontSize * tempFormat.buffer().size() / 100
+            : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() )
+        );
       if ( tempFormat.background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 

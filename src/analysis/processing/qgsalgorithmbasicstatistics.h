@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMBASICSTATISTICS_H
 #define QGSALGORITHMBASICSTATISTICS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 
@@ -53,9 +54,15 @@ class QgsBasicStatisticsAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QVariantMap calculateNumericStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
-    QVariantMap calculateDateTimeStatistics( const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
-    QVariantMap calculateStringStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback );
+    QVariantMap calculateNumericStatistics(
+      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+    );
+    QVariantMap calculateDateTimeStatistics(
+      const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+    );
+    QVariantMap calculateStringStatistics(
+      const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback
+    );
 };
 
 ///@endcond PRIVATE

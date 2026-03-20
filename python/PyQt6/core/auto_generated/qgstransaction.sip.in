@@ -44,7 +44,6 @@ active.
 #include "qgstransaction.h"
 %End
   public:
-
     static QgsTransaction *create( const QString &connString, const QString &providerKey ) /Factory/;
 %Docstring
 Create a transaction for the specified connection string ``connString``

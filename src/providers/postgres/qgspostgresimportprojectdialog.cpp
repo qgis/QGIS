@@ -36,7 +36,8 @@
 using namespace Qt::StringLiterals;
 
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )
-  : QDialog { parent }, mSchemaToImportTo( targetSchema )
+  : QDialog { parent }
+  , mSchemaToImportTo( targetSchema )
 {
   setWindowTitle( tr( "Import Projects to Schema “%1”" ).arg( targetSchema ) );
   setMinimumWidth( 600 );

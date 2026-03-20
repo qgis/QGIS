@@ -23,7 +23,6 @@ data provider.
 #include "qgsconnectionsitem.h"
 %End
   public:
-
     QgsConnectionsRootItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 %Docstring
 Constructor for QgsConnectionsRootItem, with the specified ``parent``
@@ -49,8 +48,6 @@ the :py:class:`QgsDataItemProvider` that created this item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

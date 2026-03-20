@@ -58,8 +58,7 @@ QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const
 QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces )
   : mSettings( new QgsPalLayerSettings( settings ) )
   , mLabelFaces( labelFaces )
-{
-}
+{}
 
 QString QgsMeshLayerSimpleLabeling::type() const
 {

@@ -55,17 +55,21 @@ QString QgsRasterRankAlgorithm::groupId() const
 
 QString QgsRasterRankAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs a cell-by-cell analysis in which output values match the rank of a "
-                      "sorted list of overlapping cell values from input layers. The output raster "
-                      "will be multi-band if multiple ranks are provided.\n"
-                      "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters." );
+  return QObject::tr(
+    "This algorithm performs a cell-by-cell analysis in which output values match the rank of a "
+    "sorted list of overlapping cell values from input layers. The output raster "
+    "will be multi-band if multiple ranks are provided.\n"
+    "If multiband rasters are used in the data raster stack, the algorithm will always "
+    "perform the analysis on the first band of the rasters."
+  );
 }
 
 QString QgsRasterRankAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Performs a cell-by-cell analysis in which output values match the rank of a "
-                      "sorted list of overlapping cell values from input layers." );
+  return QObject::tr(
+    "Performs a cell-by-cell analysis in which output values match the rank of a "
+    "sorted list of overlapping cell values from input layers."
+  );
 }
 
 QgsRasterRankAlgorithm *QgsRasterRankAlgorithm::createInstance() const
@@ -77,14 +81,20 @@ void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT_RASTERS"_s, QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
   auto ranksParameter = std::make_unique<QgsProcessingParameterString>( u"RANKS"_s, QObject::tr( "Rank(s) (separate multiple ranks using commas)" ), 1 );
-  ranksParameter->setHelp( QObject::tr( "A rank value must be numerical, with multiple ranks separated by commas. The rank will be used to "
-                                        "generate output values from sorted lists of input layers’ cell values. A rank value of 1 will pick "
-                                        "the first value from a given sorted input layers’ cell values list (i.e. the minimum value). "
-                                        "Negative rank values are supported, and will behave like a negative index. A rank value of -2 will "
-                                        "pick the second to last value in sorted input values lists, while a rank value of -1 will pick the "
-                                        "last value (i.e. the maximum value)." ) );
+  ranksParameter->setHelp(
+    QObject::tr(
+      "A rank value must be numerical, with multiple ranks separated by commas. The rank will be used to "
+      "generate output values from sorted lists of input layers’ cell values. A rank value of 1 will pick "
+      "the first value from a given sorted input layers’ cell values list (i.e. the minimum value). "
+      "Negative rank values are supported, and will behave like a negative index. A rank value of -2 will "
+      "pick the second to last value in sorted input values lists, while a rank value of -1 will pick the "
+      "last value (i.e. the maximum value)."
+    )
+  );
   addParameter( ranksParameter.release() );
-  addParameter( new QgsProcessingParameterEnum( u"NODATA_HANDLING"_s, QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"NODATA_HANDLING"_s, QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 )
+  );
 
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );

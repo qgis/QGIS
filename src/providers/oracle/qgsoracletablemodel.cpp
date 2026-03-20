@@ -29,14 +29,7 @@ using namespace Qt::StringLiterals;
 QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
 {
-  mColumns << tr( "Owner" )
-           << tr( "Table" )
-           << tr( "Type" )
-           << tr( "Geometry column" )
-           << tr( "SRID" )
-           << tr( "Primary key column" )
-           << tr( "Select at id" )
-           << tr( "SQL" );
+  mColumns << tr( "Owner" ) << tr( "Table" ) << tr( "Type" ) << tr( "Geometry column" ) << tr( "SRID" ) << tr( "Primary key column" ) << tr( "Select at id" ) << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
 }
 
@@ -105,10 +98,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem(
-      QgsIconUtils::iconForWkbType( wkbType ),
-      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType )
-    );
+    QStandardItem *typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType ) );
     typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
     typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
     if ( wkbType == Qgis::WkbType::Unknown )

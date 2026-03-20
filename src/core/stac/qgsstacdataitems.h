@@ -25,13 +25,14 @@
 #include <QString>
 #include <QUrl>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 class QgsStacController;
 class QgsStacCollection;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 /**
@@ -69,7 +70,6 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 
     bool handleDoubleClick() override;
     QVariant sortKey() const override { return u"3"_s; }
-
 };
 
 /**

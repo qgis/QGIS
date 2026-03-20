@@ -41,9 +41,7 @@ namespace QgsWms
        * \param maxThreads The number of threads to use in case of parallel rendering
        * \param featureFilterProvider Features filtering
        */
-      QgsMapRendererJobProxy(
-        bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider
-      );
+      QgsMapRendererJobProxy( bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider );
 
       /**
        * Sequential or parallel map rendering.

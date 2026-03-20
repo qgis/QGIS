@@ -43,7 +43,8 @@ class TestQgsWcsProvider : public QgsTest
 
   public:
     TestQgsWcsProvider()
-      : QgsTest( u"WCS provider tests"_s ) {}
+      : QgsTest( u"WCS provider tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -162,13 +163,22 @@ bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri,
 void TestQgsWcsProvider::providerUriUpdates()
 {
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wcs" );
-  QString uriString = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
-                                      "layers=testlayer&styles&"
-                                      "url=http://localhost:8380/mapserv&"
-                                      "testParam=true" );
+  QString uriString = QStringLiteral(
+    "crs=EPSG:4326&dpiMode=7&"
+    "layers=testlayer&styles&"
+    "url=http://localhost:8380/mapserv&"
+    "testParam=true"
+  );
 
   QVariantMap parts = metadata->decodeUri( uriString );
-  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) }, { QString( "dpiMode" ), QVariant( "7" ) }, { QString( "testParam" ), QVariant( "true" ) }, { QString( "layers" ), QVariant( "testlayer" ) }, { QString( "styles" ), QString() }, { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QVariantMap expectedParts {
+    { QString( "crs" ), QVariant( "EPSG:4326" ) },
+    { QString( "dpiMode" ), QVariant( "7" ) },
+    { QString( "testParam" ), QVariant( "true" ) },
+    { QString( "layers" ), QVariant( "testlayer" ) },
+    { QString( "styles" ), QString() },
+    { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) }
+  };
   QCOMPARE( parts, expectedParts );
 
   parts["testParam"] = QVariant( "false" );
@@ -176,10 +186,12 @@ void TestQgsWcsProvider::providerUriUpdates()
   QCOMPARE( parts["testParam"], QVariant( "false" ) );
 
   QString updatedUri = metadata->encodeUri( parts );
-  QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
-                                        "layers=testlayer&styles&"
-                                        "testParam=false&"
-                                        "url=http://localhost:8380/mapserv" );
+  QString expectedUri = QStringLiteral(
+    "crs=EPSG:4326&dpiMode=7&"
+    "layers=testlayer&styles&"
+    "testParam=false&"
+    "url=http://localhost:8380/mapserv"
+  );
   QCOMPARE( updatedUri, expectedUri );
 }
 

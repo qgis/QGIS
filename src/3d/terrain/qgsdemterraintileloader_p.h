@@ -27,7 +27,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
@@ -39,8 +38,11 @@
 #include <QFutureWatcher>
 #include <QMutex>
 
+#define SIP_NO_FILE
+
 class QgsRasterDataProvider;
 class QgsRasterLayer;
+class QgsRasterBlock;
 class QgsCoordinateTransformContext;
 class QgsTerrainGenerator;
 
@@ -136,7 +138,7 @@ class QgsDemHeightMapGenerator : public QObject
     void lazyLoadDtmCoarseData( int res, const QgsRectangle &rect );
     mutable QMutex mLazyLoadDtmCoarseDataMutex;
     //! used for height queries
-    QByteArray mDtmCoarseData;
+    std::unique_ptr<QgsRasterBlock> mDtmCoarseRasterBlock;
 
     QgsCoordinateTransformContext mTransformContext;
 };

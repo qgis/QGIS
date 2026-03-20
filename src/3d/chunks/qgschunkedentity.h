@@ -33,6 +33,8 @@
 #include <QMatrix4x4>
 #include <QTime>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;
@@ -42,8 +44,6 @@ class QgsChunkBoundsEntity;
 class QgsChunkQueueJobFactory;
 class QgsRay3D;
 class QgsRayCastContext;
-
-#define SIP_NO_FILE
 
 
 /**
@@ -56,7 +56,9 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity(
+      Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr
+    );
     ~QgsChunkedEntity() override;
 
     //! Called when e.g. camera changes and entity may need updated

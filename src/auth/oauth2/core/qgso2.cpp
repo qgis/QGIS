@@ -78,8 +78,7 @@ QgsO2::~QgsO2()
   //        Verify that objects are actually being deleted via QgsAuthManager's destruction
   //mOAuth2Config->deleteLater();
 
-  if ( mTokenCacheFile.startsWith( QgsAuthOAuth2Config::tokenCacheDirectory( true ) )
-       && QFile::exists( mTokenCacheFile ) )
+  if ( mTokenCacheFile.startsWith( QgsAuthOAuth2Config::tokenCacheDirectory( true ) ) && QFile::exists( mTokenCacheFile ) )
   {
     if ( !QFile::remove( mTokenCacheFile ) )
     {
@@ -178,10 +177,11 @@ void QgsO2::setVerificationResponseContent()
   QFile verhtml( u":/oauth2method/oauth2_verification_finished.html"_s );
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    setReplyContent( QString::fromUtf8( verhtml.readAll() )
-                       .replace( "{{ H2_TITLE }}"_L1, tr( "QGIS OAuth2 verification has finished." ) )
-                       .replace( "{{ H3_TITLE }}"_L1, tr( "You can close this window and return to QGIS." ) )
-                       .toUtf8()
+    setReplyContent(
+      QString::fromUtf8( verhtml.readAll() )
+        .replace( "{{ H2_TITLE }}"_L1, tr( "QGIS OAuth2 verification has finished." ) )
+        .replace( "{{ H3_TITLE }}"_L1, tr( "You can close this window and return to QGIS." ) )
+        .toUtf8()
     );
   }
 }
@@ -303,7 +303,9 @@ void QgsO2::link()
     }
     // Assemble initial authentication URL
     QList<QPair<QString, QString>> parameters;
-    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ? QString( O2_OAUTH2_GRANT_TYPE_CODE ) : QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
+    parameters.append(
+      qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ? QString( O2_OAUTH2_GRANT_TYPE_CODE ) : QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) )
+    );
     parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
 

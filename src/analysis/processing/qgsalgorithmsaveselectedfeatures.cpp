@@ -58,8 +58,10 @@ QString QgsSaveSelectedFeatures::groupId() const
 
 QString QgsSaveSelectedFeatures::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
-                      "If the selected layer has no selected features, the newly created layer will be empty." );
+  return QObject::tr(
+    "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
+    "If the selected layer has no selected features, the newly created layer will be empty."
+  );
 }
 
 QString QgsSaveSelectedFeatures::shortDescription() const

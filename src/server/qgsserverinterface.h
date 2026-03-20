@@ -70,14 +70,14 @@ class SERVER_EXPORT QgsServerInterface
      * \param requestHandler request handler
      * \note not available in Python bindings
      */
-    virtual void setRequestHandler( QgsRequestHandler *requestHandler ) = 0 SIP_SKIP;
+    virtual void setRequestHandler( QgsRequestHandler *requestHandler ) SIP_SKIP = 0;
 
     /**
      * Clear the request handler
      *
      * \note not available in Python bindings
      */
-    virtual void clearRequestHandler() = 0 SIP_SKIP;
+    virtual void clearRequestHandler() SIP_SKIP = 0;
 
     /**
      * Gets pointer to the capabiblities cache
@@ -167,7 +167,7 @@ class SERVER_EXPORT QgsServerInterface
      *
      * \note not available in Python bindings
      */
-    virtual QgsServerSettings *serverSettings() = 0 SIP_SKIP;
+    virtual QgsServerSettings *serverSettings() SIP_SKIP = 0;
 
     /**
      * Reloads the server settings re-reading the configuration.

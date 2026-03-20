@@ -88,9 +88,6 @@ class TestQgsServerProjectUtils(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
-    @mock.patch.dict(
-        os.environ, {"QGIS_SERVER_WFS_SERVICE_URL": "http://localhost:8080"}
-    )
     def test_map_uppercase_replace(self):
         """Test issue GH #54533 MAP replacementin URL arg"""
 

@@ -21,10 +21,11 @@
 #include <QMap>
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QgsReadWriteContext;
 class QDomElement;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Contains the configuration of ambient occlusion rendering.

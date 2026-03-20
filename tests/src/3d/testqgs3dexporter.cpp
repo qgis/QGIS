@@ -24,6 +24,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgspoint3dsymbol.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
@@ -50,9 +51,21 @@ class TestQgs3DExporter : public QgsTest
     void test3DSceneExporter();
     void test3DSceneExporterBig();
     void test3DSceneExporterFlatTerrain();
+    void test3DSceneExporterInstanced();
+    void test3DSceneExporterInstancedTrs();
+    void test3DSceneExporterInstancedDataDefinedTrs();
 
   private:
-    void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
+    void do3DSceneExport(
+      const QString &testName,
+      int expectedObjectCount,
+      int expectedFeatureCount,
+      int maxFaceCount,
+      Qgs3DMapScene *scene,
+      QgsVectorLayer *layerPoly,
+      QgsOffscreen3DEngine *engine,
+      QgsTerrainEntity *terrainEntity = nullptr
+    );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
 };
@@ -88,7 +101,9 @@ void TestQgs3DExporter::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
+void TestQgs3DExporter::do3DSceneExport(
+  const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity
+)
 {
   // 3d renderer must be replaced to have the tiling updated
   QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
@@ -120,7 +135,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
   for ( Qgs3DExportObject *o : std::as_const( exporter.mObjects ) )
   {
     if ( !terrainEntity ) // not compatible with terrain entity
-      QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
+      QVERIFY( o->indexes().size() <= o->vertexPosition().size() );
     sum += o->indexes().size();
   }
 
@@ -276,6 +291,191 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
   do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::test3DSceneExporterInstanced()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *plane3DSymbol = new QgsPoint3DSymbol();
+  plane3DSymbol->setShape( Qgis::Point3DShape::Plane );
+  QVariantMap vmPlane;
+  vmPlane[u"size"_s] = 100.0f;
+  plane3DSymbol->setShapeProperties( vmPlane );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::blue );
+  plane3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( plane3DSymbol ) );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+  mapSettings.setOutputDpi( 92 );
+
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  engine.setRootEntity( scene );
+
+  do3DSceneExport( u"instanced_export"_s, 2, 0, 12, scene, layerPointsZ.get(), &engine );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::test3DSceneExporterInstancedTrs()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *cube3DSymbol = new QgsPoint3DSymbol();
+  cube3DSymbol->setShape( Qgis::Point3DShape::Cube );
+  QVariantMap vmCube;
+  vmCube[u"size"_s] = 100.0f;
+  cube3DSymbol->setShapeProperties( vmCube );
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 550, 150, 300 );
+  trsTransform.scale( 1.5, 0.5, 2.3 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  cube3DSymbol->setTransform( trsTransform );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::blue );
+  cube3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cube3DSymbol ) );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+  mapSettings.setOutputDpi( 92 );
+
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  engine.setRootEntity( scene );
+
+  do3DSceneExport( u"instanced_trs_export"_s, 2, 0, 72, scene, layerPointsZ.get(), &engine );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::test3DSceneExporterInstancedDataDefinedTrs()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700&field=field1:int&field=field2:int", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 1000, 75 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f1.setAttributes( QgsAttributes() << 1 << 2 );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f2.setAttributes( QgsAttributes() << 10 << 2 );
+  f3.setGeometry( QgsGeometry( p3 ) );
+  f3.setAttributes( QgsAttributes() << 1 << 20 );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *cube3DSymbol = new QgsPoint3DSymbol();
+  cube3DSymbol->setShape( Qgis::Point3DShape::Cube );
+  QVariantMap vmCube;
+  vmCube[u"size"_s] = 100.0f;
+  cube3DSymbol->setShapeProperties( vmCube );
+
+  QgsPropertyCollection ddProps;
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then .75 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then .5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field1\" = 10 then .3 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -200 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -100 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field2\" = 20 then 50 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 5 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
+  ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field2\" = 20 then 45 end"_s ) );
+  cube3DSymbol->setDataDefinedProperties( ddProps );
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 550, 150, 300 );
+  trsTransform.scale( 1.5, 0.5, 2.3 );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
+  cube3DSymbol->setTransform( trsTransform );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::blue );
+  cube3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cube3DSymbol ) );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+  mapSettings.setOutputDpi( 92 );
+
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  engine.setRootEntity( scene );
+
+  do3DSceneExport( u"instanced_trs_dd_export"_s, 3, 0, 108, scene, layerPointsZ.get(), &engine );
 
   delete scene;
   mapSettings.setLayers( {} );

@@ -24,7 +24,6 @@ backends and registered in :py:class:`QgsProjectStorageRegistry`.
 #include "qgsprojectstorage.h"
 %End
   public:
-
     class Metadata
     {
 %Docstring(signature="appended")
@@ -151,7 +150,6 @@ destination or empty string if the GUI was canceled.
 
    Use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality.
 %End
-
 };
 
 /************************************************************************

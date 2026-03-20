@@ -1672,6 +1672,65 @@ return sipGetState(sipTransferObj);
 %End
 };
 
+%MappedType QVector<uint32_t>
+    /TypeHintIn="Iterable[int]",
+    TypeHintOut="List[int]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <QVector>
+#include <cstdint>
+%End
+
+%ConvertFromTypeCode
+    // Create the list.
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return NULL;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *tobj = PyLong_FromUnsignedLong(sipCpp->at(i));
+
+        if (!tobj)
+        {
+            Py_DECREF(l);
+            return NULL;
+        }
+        PyList_SET_ITEM(l, i, tobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+        return PyList_Check(sipPy);
+
+    QVector<uint32_t> *qvec = new QVector<uint32_t>;
+    qvec->reserve(PyList_GET_SIZE(sipPy));
+
+    for (Py_ssize_t i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+    {
+        PyObject *item = PyList_GET_ITEM(sipPy, i);
+        unsigned long val = PyLong_AsUnsignedLong(item);
+
+        if (PyErr_Occurred())
+        {
+            delete qvec;
+            *sipIsErr = 1;
+            return 0;
+        }
+
+        qvec->append(static_cast<uint32_t>(val));
+    }
+
+    *sipCppPtr = qvec;
+    return sipGetState(sipTransferObj);
+%End
+};
+
 
 %MappedType QSet<qint64>
 {

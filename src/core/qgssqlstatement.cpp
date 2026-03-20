@@ -20,6 +20,7 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsexpression.h"
 #include "qgsvariantutils.h"
 
 #include <QRegularExpression>
@@ -33,25 +34,27 @@ extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg
 ///////////////////////////////////////////////
 // operators
 
-const char *QgsSQLStatement::BINARY_OPERATOR_TEXT[] =
-{
+const char *QgsSQLStatement::BINARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
-  "OR", "AND",
-  "=", "<>", "<=", ">=", "<", ">", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
-  "+", "-", "*", "/", "//", "%", "^",
-  "||"
+  "OR", "AND", "=", "<>", "<=", ">=", "<", ">", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT", "+", "-", "*", "/", "//", "%", "^", "||"
 };
 
-const char *QgsSQLStatement::UNARY_OPERATOR_TEXT[] =
-{
+const char *QgsSQLStatement::UNARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
-  "NOT", "-"
+  "NOT",
+  "-"
 };
 
-const char *QgsSQLStatement::JOIN_TYPE_TEXT[] =
-{
+const char *QgsSQLStatement::JOIN_TYPE_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum JoinType
-  "", "LEFT", "LEFT OUTER", "RIGHT", "RIGHT OUTER", "CROSS", "INNER", "FULL"
+  "",
+  "LEFT",
+  "LEFT OUTER",
+  "RIGHT",
+  "RIGHT OUTER",
+  "CROSS",
+  "INNER",
+  "FULL"
 };
 
 //////
@@ -80,13 +83,9 @@ QString QgsSQLStatement::quotedIdentifier( QString name )
 QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString &name )
 {
   // This might not be complete, but it must be at least what we recognize
-  static const char *const RESERVED_KEYWORDS[] =
-  {
-    "AND", "OR", "NOT", "LIKE", "IN", "IS", "BETWEEN", "NULL", "SELECT", "ALL", "DISTINCT", "CAST", "AS",
-    "FROM", "JOIN", "ON", "USING", "WHERE", "ORDER", "BY", "ASC", "DESC",
-    "LEFT", "RIGHT", "INNER", "OUTER", "CROSS", "FULL", "NATURAL", "UNION",
-    "OFFSET", "LIMIT", "GROUP", "HAVING"
-  };
+  static const char *const RESERVED_KEYWORDS[] = { "AND",   "OR",    "NOT",   "LIKE", "IN",      "IS",    "BETWEEN", "NULL",  "SELECT", "ALL",   "DISTINCT", "CAST",
+                                                   "AS",    "FROM",  "JOIN",  "ON",   "USING",   "WHERE", "ORDER",   "BY",    "ASC",    "DESC",  "LEFT",     "RIGHT",
+                                                   "INNER", "OUTER", "CROSS", "FULL", "NATURAL", "UNION", "OFFSET",  "LIMIT", "GROUP",  "HAVING" };
 
   for ( size_t i = 0; i < sizeof( RESERVED_KEYWORDS ) / sizeof( RESERVED_KEYWORDS[0] ); ++i )
   {
@@ -133,8 +132,7 @@ QString QgsSQLStatement::quotedString( QString text )
 
 QgsSQLStatement::QgsSQLStatement( const QString &expr )
   : QgsSQLStatement( expr, false )
-{
-}
+{}
 
 QgsSQLStatement::QgsSQLStatement( const QString &expr, bool allowFragments )
   : mAllowFragments( allowFragments )
@@ -163,13 +161,17 @@ QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
 }
 
 QgsSQLStatement::~QgsSQLStatement()
-{
+{}
 
+bool QgsSQLStatement::hasParserError() const
+{
+  return !mParserErrorString.isNull() || ( !mRootNode && !mAllowFragments );
 }
 
-bool QgsSQLStatement::hasParserError() const { return !mParserErrorString.isNull() || ( !mRootNode && !mAllowFragments ); }
-
-QString QgsSQLStatement::parserErrorString() const { return mParserErrorString; }
+QString QgsSQLStatement::parserErrorString() const
+{
+  return mParserErrorString;
+}
 
 void QgsSQLStatement::acceptVisitor( QgsSQLStatement::Visitor &v ) const
 {
@@ -222,7 +224,7 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
  * \brief Internal use.
  * \note not available in Python bindings
  */
-class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
+class QgsSQLStatementCollectTableNames : public QgsSQLStatement::RecursiveVisitor
 {
   public:
     typedef QPair<QString, QString> TableColumnPair;
@@ -307,8 +309,10 @@ QString QgsSQLStatement::NodeList::dump() const
   const auto constMList = mList;
   for ( Node *n : constMList )
   {
-    if ( !first ) msg += ", "_L1;
-    else first = false;
+    if ( !first )
+      msg += ", "_L1;
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;
@@ -325,6 +329,11 @@ QString QgsSQLStatement::NodeUnaryOperator::dump() const
 QgsSQLStatement::Node *QgsSQLStatement::NodeUnaryOperator::clone() const
 {
   return new NodeUnaryOperator( mOp, mOperand->clone() );
+}
+
+QString QgsSQLStatement::NodeUnaryOperator::text() const
+{
+  return UNARY_OPERATOR_TEXT[mOp];
 }
 
 //
@@ -407,6 +416,11 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return false;
+}
+
+QString QgsSQLStatement::NodeBinaryOperator::text() const
+{
+  return BINARY_OPERATOR_TEXT[mOp];
 }
 
 QString QgsSQLStatement::NodeBinaryOperator::dump() const
@@ -508,6 +522,34 @@ QString QgsSQLStatement::NodeLiteral::dump() const
 QgsSQLStatement::Node *QgsSQLStatement::NodeLiteral::clone() const
 {
   return new NodeLiteral( mValue );
+}
+
+QString QgsSQLStatement::NodeLiteral::valueAsString() const
+{
+  if ( QgsVariantUtils::isNull( mValue ) )
+    return u"NULL"_s;
+
+  switch ( mValue.userType() )
+  {
+    case QMetaType::Type::Int:
+      return QString::number( mValue.toInt() );
+    case QMetaType::Type::Double:
+      return qgsDoubleToString( mValue.toDouble() );
+    case QMetaType::Type::LongLong:
+      return QString::number( mValue.toLongLong() );
+    case QMetaType::Type::QString:
+      return QgsExpression::quotedString( mValue.toString() );
+    case QMetaType::Type::QTime:
+      return QgsExpression::quotedString( mValue.toTime().toString( Qt::ISODate ) );
+    case QMetaType::Type::QDate:
+      return QgsExpression::quotedString( mValue.toDate().toString( Qt::ISODate ) );
+    case QMetaType::Type::QDateTime:
+      return QgsExpression::quotedString( mValue.toDateTime().toString( Qt::ISODate ) );
+    case QMetaType::Type::Bool:
+      return mValue.toBool() ? u"TRUE"_s : u"FALSE"_s;
+    default:
+      return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
+  }
 }
 
 //
@@ -776,6 +818,4 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeCast::clone() const
 
 QgsSQLStatementFragment::QgsSQLStatementFragment( const QString &fragment )
   : QgsSQLStatement( fragment, true )
-{
-
-}
+{}

@@ -47,51 +47,21 @@ struct TriangleCoords
       normals[2] = nc;
     }
 
-    /**
-   * Constructs from tessellator output. We expect the tessellator is run with zUp=true,
-   * so that the Y and Z axes are not flipped
-   */
-    TriangleCoords( const float *data, bool withNormal )
-    {
-#define FLOAT3_TO_VECTOR( x ) QVector3D( data[0], data[1], data[2] )
-
-      pts[0] = FLOAT3_TO_VECTOR( data );
-      data += 3;
-      if ( withNormal )
-      {
-        normals[0] = FLOAT3_TO_VECTOR( data );
-        data += 3;
-      }
-
-      pts[1] = FLOAT3_TO_VECTOR( data );
-      data += 3;
-      if ( withNormal )
-      {
-        normals[1] = FLOAT3_TO_VECTOR( data );
-        data += 3;
-      }
-
-      pts[2] = FLOAT3_TO_VECTOR( data );
-      data += 3;
-      if ( withNormal )
-      {
-        normals[2] = FLOAT3_TO_VECTOR( data );
-        data += 3;
-      }
-    }
 
     //! Compares two triangles
     bool operator==( const TriangleCoords &other ) const
     {
       // TODO: allow that the two triangles have coordinates shifted (but still in the same order)
       const double eps = 1e-6;
-      return qgsVectorNear( pts[0], other.pts[0], eps ) && qgsVectorNear( pts[1], other.pts[1], eps ) && qgsVectorNear( pts[2], other.pts[2], eps ) && qgsVectorNear( normals[0], other.normals[0], eps ) && qgsVectorNear( normals[1], other.normals[1], eps ) && qgsVectorNear( normals[2], other.normals[2], eps );
+      return qgsVectorNear( pts[0], other.pts[0], eps )
+             && qgsVectorNear( pts[1], other.pts[1], eps )
+             && qgsVectorNear( pts[2], other.pts[2], eps )
+             && qgsVectorNear( normals[0], other.normals[0], eps )
+             && qgsVectorNear( normals[1], other.normals[1], eps )
+             && qgsVectorNear( normals[2], other.normals[2], eps );
     }
 
-    bool operator!=( const TriangleCoords &other ) const
-    {
-      return !operator==( other );
-    }
+    bool operator!=( const TriangleCoords &other ) const { return !operator==( other ); }
 
     bool operator<( const TriangleCoords &other ) const
     {
@@ -126,36 +96,76 @@ struct TriangleCoords
       return false;
     }
 
-    void dump() const
-    {
-      qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
-    }
+    void dump() const { qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2]; }
 
     QVector3D pts[3];
     QVector3D normals[3];
 };
 
-
-bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QList<TriangleCoords> &expected )
+QList<TriangleCoords> extractTriangles( QgsTessellator &tessellator, bool withNormals )
 {
-  const int valuesPerTriangle = withNormals ? 18 : 9;
-  if ( data.count() != expected.count() * valuesPerTriangle )
+  QList<TriangleCoords> triangles;
+
+  const QByteArray vertexBuffer = tessellator.vertexBuffer();
+  const QByteArray indexBuffer = tessellator.indexBuffer();
+
+  if ( vertexBuffer.isEmpty() || indexBuffer.isEmpty() )
+    return triangles;
+
+  const int vertexStride = tessellator.stride();
+  const int indexStride = tessellator.indexStride();
+
+  const char *vertices = vertexBuffer.constData();
+  const char *indices = indexBuffer.constData();
+
+  qsizetype triangleCount = indexBuffer.size() / static_cast<qsizetype>( 3 * indexStride );
+  triangles.reserve( triangleCount );
+
+  for ( qsizetype i = 0; i < triangleCount; i++ )
   {
-    qDebug() << "expected" << expected.count() << "triangles, got" << data.count() / valuesPerTriangle;
+    size_t index0 = 0;
+    size_t index1 = 0;
+    size_t index2 = 0;
+    std::memcpy( &index0, indices + ( 3 * i + 0 ) * indexStride, indexStride );
+    std::memcpy( &index1, indices + ( 3 * i + 1 ) * indexStride, indexStride );
+    std::memcpy( &index2, indices + ( 3 * i + 2 ) * indexStride, indexStride );
+
+    const float *vertex0 = reinterpret_cast<const float *>( vertices + index0 * vertexStride );
+    const float *vertex1 = reinterpret_cast<const float *>( vertices + index1 * vertexStride );
+    const float *vertex2 = reinterpret_cast<const float *>( vertices + index2 * vertexStride );
+
+    QVector3D p0( vertex0[0], vertex0[1], vertex0[2] );
+    QVector3D p1( vertex1[0], vertex1[1], vertex1[2] );
+    QVector3D p2( vertex2[0], vertex2[1], vertex2[2] );
+
+    if ( withNormals )
+    {
+      QVector3D n0( vertex0[3], vertex0[4], vertex0[5] );
+      QVector3D n1( vertex1[3], vertex1[4], vertex1[5] );
+      QVector3D n2( vertex2[3], vertex2[4], vertex2[5] );
+
+      triangles.append( TriangleCoords( p0, p1, p2, n0, n1, n2 ) );
+    }
+    else
+    {
+      triangles.append( TriangleCoords( p0, p1, p2 ) );
+    }
+  }
+
+  return triangles;
+}
+
+bool checkTriangleOutput( const QList<TriangleCoords> &output, const QList<TriangleCoords> &expected )
+{
+  if ( output.size() != expected.size() )
+  {
     return false;
   }
 
   QList<TriangleCoords> sortedExpected = expected;
   std::sort( sortedExpected.begin(), sortedExpected.end() );
 
-  QList<TriangleCoords> sortedOutput;
-  const float *dataRaw = data.constData();
-  for ( int i = 0; i < expected.count(); ++i )
-  {
-    const TriangleCoords out( dataRaw, withNormals );
-    sortedOutput.append( out );
-    dataRaw += withNormals ? 18 : 9;
-  }
+  QList<TriangleCoords> sortedOutput = output;
   std::sort( sortedOutput.begin(), sortedOutput.end() );
 
   for ( int i = 0; i < expected.count(); ++i )
@@ -216,8 +226,7 @@ class TestQgsTessellator : public QgsTest
 
 //runs before all tests
 void TestQgsTessellator::initTestCase()
-{
-}
+{}
 
 //runs after all tests
 void TestQgsTessellator::cleanupTestCase()
@@ -272,7 +281,7 @@ void TestQgsTessellator::testBasic()
   tesCD.setAddNormals( false );
   tesCD.setOutputZUp( true );
   tesCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesCD, false ), trianglesCD ) );
 
   QCOMPARE( tesCD.zMinimum(), 0 );
   QCOMPARE( tesCD.zMaximum(), 0 );
@@ -281,7 +290,7 @@ void TestQgsTessellator::testBasic()
   tesZCD.setAddNormals( false );
   tesZCD.setOutputZUp( true );
   tesZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZCD, false ), trianglesZCD ) );
 
   QgsTessellator tesEarcut;
   tesEarcut.setOrigin( QgsVector3D( 0, 0, 0 ) );
@@ -289,7 +298,7 @@ void TestQgsTessellator::testBasic()
   tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesEarcut.setOutputZUp( true );
   tesEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesEarcut.data(), false, trianglesEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesEarcut, false ), trianglesEarcut ) );
 
   QCOMPARE( tesEarcut.zMinimum(), 0 );
   QCOMPARE( tesEarcut.zMaximum(), 0 );
@@ -299,7 +308,7 @@ void TestQgsTessellator::testBasic()
   tesZEarcut.setOutputZUp( true );
   tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZEarcut, false ), trianglesZEarcut ) );
 
   QCOMPARE( tesZEarcut.zMinimum(), 3 );
   QCOMPARE( tesZEarcut.zMaximum(), 3 );
@@ -309,7 +318,7 @@ void TestQgsTessellator::testBasic()
   tesNormalsCD.setAddNormals( true );
   tesNormalsCD.setOutputZUp( true );
   tesNormalsCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesNormalsCD.data(), true, trianglesNormalsCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsCD, true ), trianglesNormalsCD ) );
   QCOMPARE( tesNormalsCD.zMinimum(), 0 );
   QCOMPARE( tesNormalsCD.zMaximum(), 0 );
 
@@ -317,7 +326,7 @@ void TestQgsTessellator::testBasic()
   tesNormalsZCD.setAddNormals( true );
   tesNormalsZCD.setOutputZUp( true );
   tesNormalsZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesNormalsZCD.data(), true, trianglesNormalsZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsZCD, true ), trianglesNormalsZCD ) );
 
   QCOMPARE( tesNormalsZCD.zMinimum(), 3 );
   QCOMPARE( tesNormalsZCD.zMaximum(), 3 );
@@ -327,7 +336,7 @@ void TestQgsTessellator::testBasic()
   tesNormalsEarcut.setOutputZUp( true );
   tesNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesNormalsEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsEarcut, true ), trianglesNormalsEarcut ) );
 
   QCOMPARE( tesNormalsEarcut.zMinimum(), 0 );
   QCOMPARE( tesNormalsEarcut.zMaximum(), 0 );
@@ -337,7 +346,7 @@ void TestQgsTessellator::testBasic()
   tesNormalsZEarcut.setOutputZUp( true );
   tesNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesNormalsZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesNormalsZEarcut.data(), true, trianglesNormalsZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsZEarcut, true ), trianglesNormalsZEarcut ) );
 
   QCOMPARE( tesNormalsZEarcut.zMinimum(), 3 );
   QCOMPARE( tesNormalsZEarcut.zMaximum(), 3 );
@@ -364,7 +373,7 @@ void TestQgsTessellator::testBasic()
   tesInvertedNormalsCD.setInvertNormals( true );
   tesInvertedNormalsCD.setOutputZUp( true );
   tesInvertedNormalsCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsCD.data(), true, trianglesInvertedNormalsCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsCD, true ), trianglesInvertedNormalsCD ) );
 
   QCOMPARE( tesInvertedNormalsCD.zMinimum(), 0 );
   QCOMPARE( tesInvertedNormalsCD.zMaximum(), 0 );
@@ -375,7 +384,7 @@ void TestQgsTessellator::testBasic()
   tesInvertedNormalsZCD.setInvertNormals( true );
   tesInvertedNormalsZCD.setOutputZUp( true );
   tesInvertedNormalsZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsZCD.data(), true, trianglesInvertedNormalsZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsZCD, true ), trianglesInvertedNormalsZCD ) );
 
   QCOMPARE( tesInvertedNormalsZCD.zMinimum(), 3 );
   QCOMPARE( tesInvertedNormalsZCD.zMaximum(), 3 );
@@ -386,7 +395,7 @@ void TestQgsTessellator::testBasic()
   tesInvertedNormalsEarcut.setOutputZUp( true );
   tesInvertedNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesInvertedNormalsEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsEarcut.data(), true, trianglesInvertedNormalsEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsEarcut, true ), trianglesInvertedNormalsEarcut ) );
 
   QCOMPARE( tesInvertedNormalsEarcut.zMinimum(), 0 );
   QCOMPARE( tesInvertedNormalsEarcut.zMaximum(), 0 );
@@ -397,7 +406,7 @@ void TestQgsTessellator::testBasic()
   tesInvertedNormalsZEarcut.setOutputZUp( true );
   tesInvertedNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesInvertedNormalsZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsZEarcut.data(), true, trianglesInvertedNormalsZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsZEarcut, true ), trianglesInvertedNormalsZEarcut ) );
 
   QCOMPARE( tesInvertedNormalsZEarcut.zMinimum(), 3 );
   QCOMPARE( tesInvertedNormalsZEarcut.zMaximum(), 3 );
@@ -451,7 +460,7 @@ void TestQgsTessellator::testBasicClockwise()
   QgsTessellator tesCD;
   tesCD.setOutputZUp( true );
   tesCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesCD, false ), trianglesCD ) );
 
   QCOMPARE( tesCD.zMinimum(), 0 );
   QCOMPARE( tesCD.zMaximum(), 0 );
@@ -459,7 +468,7 @@ void TestQgsTessellator::testBasicClockwise()
   QgsTessellator tesZCD;
   tesZCD.setOutputZUp( true );
   tesZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZCD, false ), trianglesZCD ) );
 
   QCOMPARE( tesZCD.zMinimum(), 3 );
   QCOMPARE( tesZCD.zMaximum(), 3 );
@@ -469,7 +478,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesN.setAddNormals( true );
   tesN.setOutputZUp( true );
   tesN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesN.data(), true, trianglesNormalsCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesN, true ), trianglesNormalsCD ) );
 
   QCOMPARE( tesN.zMinimum(), 0 );
   QCOMPARE( tesN.zMaximum(), 0 );
@@ -478,7 +487,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesNZ.setAddNormals( true );
   tesNZ.setOutputZUp( true );
   tesNZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesNZ.data(), true, trianglesNormalsZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNZ, true ), trianglesNormalsZCD ) );
 
   QCOMPARE( tesNZ.zMinimum(), 3 );
   QCOMPARE( tesNZ.zMaximum(), 3 );
@@ -488,7 +497,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesEarcut.setOutputZUp( true );
   tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesEarcut.data(), true, trianglesNormalsEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesEarcut, true ), trianglesNormalsEarcut ) );
 
   QCOMPARE( tesEarcut.zMinimum(), 0 );
   QCOMPARE( tesEarcut.zMaximum(), 0 );
@@ -498,7 +507,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesZEarcut.setOutputZUp( true );
   tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZEarcut.data(), true, trianglesNormalsZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZEarcut, true ), trianglesNormalsZEarcut ) );
 
   QCOMPARE( tesZEarcut.zMinimum(), 3 );
   QCOMPARE( tesZEarcut.zMaximum(), 3 );
@@ -526,7 +535,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesInvertedNormalsCD.setInvertNormals( true );
   tesInvertedNormalsCD.setOutputZUp( true );
   tesInvertedNormalsCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsCD.data(), true, trianglesInvertedNormalsCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsCD, true ), trianglesInvertedNormalsCD ) );
 
   QCOMPARE( tesInvertedNormalsCD.zMinimum(), 0 );
   QCOMPARE( tesInvertedNormalsCD.zMaximum(), 0 );
@@ -536,7 +545,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesInvertedNormalsZCD.setInvertNormals( true );
   tesInvertedNormalsZCD.setOutputZUp( true );
   tesInvertedNormalsZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsZCD.data(), true, trianglesInvertedNormalsZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsZCD, true ), trianglesInvertedNormalsZCD ) );
 
   QCOMPARE( tesInvertedNormalsZCD.zMinimum(), 3 );
   QCOMPARE( tesInvertedNormalsZCD.zMaximum(), 3 );
@@ -547,7 +556,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesInvertedNormalsEarcut.setOutputZUp( true );
   tesInvertedNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesInvertedNormalsEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsEarcut.data(), true, trianglesInvertedNormalsEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsEarcut, true ), trianglesInvertedNormalsEarcut ) );
 
   QCOMPARE( tesInvertedNormalsEarcut.zMinimum(), 0 );
   QCOMPARE( tesInvertedNormalsEarcut.zMaximum(), 0 );
@@ -558,7 +567,7 @@ void TestQgsTessellator::testBasicClockwise()
   tesInvertedNormalsZEarcut.setOutputZUp( true );
   tesInvertedNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesInvertedNormalsZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesInvertedNormalsZEarcut.data(), true, trianglesInvertedNormalsZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesInvertedNormalsZEarcut, true ), trianglesInvertedNormalsZEarcut ) );
 
   QCOMPARE( tesInvertedNormalsZEarcut.zMinimum(), 3 );
   QCOMPARE( tesInvertedNormalsZEarcut.zMaximum(), 3 );
@@ -591,7 +600,7 @@ void TestQgsTessellator::testWalls()
   tRect.setAddNormals( true );
   tRect.setOutputZUp( true );
   tRect.addPolygon( rect, 1 );
-  QVERIFY( checkTriangleOutput( tRect.data(), true, tcRect ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tRect, true ), tcRect ) );
   QCOMPARE( tRect.zMinimum(), 0 );
   QCOMPARE( tRect.zMaximum(), 1 );
 
@@ -604,7 +613,7 @@ void TestQgsTessellator::testWalls()
   tRectRev.setAddNormals( true );
   tRectRev.setOutputZUp( true );
   tRectRev.addPolygon( rectRev, 1 );
-  QVERIFY( checkTriangleOutput( tRectRev.data(), true, tcRect ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tRectRev, true ), tcRect ) );
   QCOMPARE( tRectRev.zMinimum(), 0 );
   QCOMPARE( tRectRev.zMaximum(), 1 );
 
@@ -630,7 +639,7 @@ void TestQgsTessellator::testWalls()
   QgsTessellator tZ;
   tZ.setOutputZUp( true );
   tZ.addPolygon( polygonZ, 10 );
-  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tZ, false ), tc ) );
 
   QCOMPARE( tZ.zMinimum(), 1 );
   QCOMPARE( tZ.zMaximum(), 14 );
@@ -655,7 +664,7 @@ void TestQgsTessellator::testBackEdges()
   tN.setBackFacesEnabled( true );
   tN.setOutputZUp( true );
   tN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tN, true ), tcNormals ) );
 
   QCOMPARE( tN.zMinimum(), 0 );
   QCOMPARE( tN.zMaximum(), 0 );
@@ -680,7 +689,7 @@ void TestQgsTessellator::test2DTriangle()
     tessellatorNormalsCD.setAddNormals( true );
     tessellatorNormalsCD.setOutputZUp( true );
     tessellatorNormalsCD.addPolygon( polygon, 0 );
-    QVERIFY( checkTriangleOutput( tessellatorNormalsCD.data(), true, trianglesNormalsCD ) );
+    QVERIFY( checkTriangleOutput( extractTriangles( tessellatorNormalsCD, true ), trianglesNormalsCD ) );
 
     QCOMPARE( tessellatorNormalsCD.zMinimum(), 0 );
     QCOMPARE( tessellatorNormalsCD.zMaximum(), 0 );
@@ -693,7 +702,7 @@ void TestQgsTessellator::test2DTriangle()
     tessellatorNormalsEarcut.setOutputZUp( true );
     tessellatorNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
     tessellatorNormalsEarcut.addPolygon( polygon, 0 );
-    QVERIFY( checkTriangleOutput( tessellatorNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
+    QVERIFY( checkTriangleOutput( extractTriangles( tessellatorNormalsEarcut, true ), trianglesNormalsEarcut ) );
 
     QCOMPARE( tessellatorNormalsEarcut.zMinimum(), 0 );
     QCOMPARE( tessellatorNormalsEarcut.zMaximum(), 0 );
@@ -728,7 +737,7 @@ void TestQgsTessellator::test2DTriangle()
     tesNormalsCD.setAddNormals( true );
     tesNormalsCD.setOutputZUp( true );
     tesNormalsCD.addPolygon( polygon, 7 );
-    QVERIFY( checkTriangleOutput( tesNormalsCD.data(), true, trianglesNormalsCD ) );
+    QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsCD, true ), trianglesNormalsCD ) );
 
     QCOMPARE( tesNormalsCD.zMinimum(), 0 );
     QCOMPARE( tesNormalsCD.zMaximum(), 7 );
@@ -754,7 +763,7 @@ void TestQgsTessellator::test3DTriangle()
     tN.setAddNormals( true );
     tN.setOutputZUp( true );
     tN.addPolygon( polygon, 0 );
-    QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+    QVERIFY( checkTriangleOutput( extractTriangles( tN, true ), tcNormals ) );
 
     QCOMPARE( tN.zMinimum(), 5 );
     QCOMPARE( tN.zMaximum(), 5 );
@@ -791,7 +800,7 @@ void TestQgsTessellator::test3DTriangle()
     tesNormalsEarcut.setOutputZUp( true );
     tesNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
     tesNormalsEarcut.addPolygon( polygon, 7 );
-    QVERIFY( checkTriangleOutput( tesNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
+    QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsEarcut, true ), trianglesNormalsEarcut ) );
 
     QCOMPARE( tesNormalsEarcut.zMinimum(), 5 );
     QCOMPARE( tesNormalsEarcut.zMaximum(), 5 + 7 );
@@ -835,7 +844,7 @@ void TestQgsTessellator::testBadCoordinates()
   QgsTessellator tesZCD;
   tesZCD.setOutputZUp( true );
   tesZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZCD, false ), trianglesZCD ) );
 
   QCOMPARE( tesZCD.zMinimum(), 1.0f );
   QCOMPARE( tesZCD.zMaximum(), 2.0f );
@@ -845,7 +854,7 @@ void TestQgsTessellator::testBadCoordinates()
   tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesZEarcut.addPolygon( polygonZ, 0 );
 
-  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZEarcut, false ), trianglesZEarcut ) );
 
   QCOMPARE( tesZEarcut.zMinimum(), 1.0f );
   QCOMPARE( tesZEarcut.zMaximum(), 2.0f );
@@ -866,7 +875,7 @@ void TestQgsTessellator::testBadCoordinates()
   QgsTessellator tesCD;
   tesCD.setOutputZUp( true );
   tesCD.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesCD, false ), trianglesCD ) );
 
   QCOMPARE( tesCD.zMinimum(), 0 );
   QCOMPARE( tesCD.zMaximum(), 0 );
@@ -875,7 +884,7 @@ void TestQgsTessellator::testBadCoordinates()
   tesEarcut.setOutputZUp( true );
   tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesEarcut.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tesEarcut.data(), false, trianglesEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesEarcut, false ), trianglesEarcut ) );
 
   QCOMPARE( tesEarcut.zMinimum(), 0 );
   QCOMPARE( tesEarcut.zMaximum(), 0 );
@@ -907,7 +916,11 @@ void TestQgsTessellator::testCrashSelfIntersection()
   t.setAddNormals( true );
   t.setOutputZUp( true );
   QgsPolygon p;
-  const bool resWktRead = p.fromWkt( "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 -1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))" );
+  const bool resWktRead = p.fromWkt(
+    "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 "
+    "-1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 "
+    "263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))"
+  );
 
   QVERIFY( resWktRead );
 
@@ -946,7 +959,7 @@ void TestQgsTessellator::testBoundsScaling()
   t.setAddNormals( true );
   t.setOutputZUp( true );
   t.addPolygon( polygon, 0 );
-  QCOMPARE( t.data().size(), 0 );
+  QCOMPARE( t.uniqueVertexCount(), 0 );
 
   // using bounds scaling, expect good result
   QgsTessellator t2;
@@ -954,7 +967,7 @@ void TestQgsTessellator::testBoundsScaling()
   t2.setAddNormals( true );
   t2.setOutputZUp( true );
   t2.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( t2.data(), true, tc ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( t2, true ), tc ) );
   QCOMPARE( t2.zMinimum(), 0 );
   QCOMPARE( t2.zMaximum(), 0 );
 }
@@ -974,7 +987,7 @@ void TestQgsTessellator::testNoZ()
   t.setInputZValueIgnored( true );
   t.setOutputZUp( true );
   t.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( t, false ), tc ) );
   QCOMPARE( t.zMinimum(), 0 );
   QCOMPARE( t.zMaximum(), 0 );
 }
@@ -1016,7 +1029,16 @@ void TestQgsTessellator::narrowPolygon()
   // test that tessellation of a long narrow polygon results in a "nice" tessellation (i.e. not lots of long thin triangles)
   // refs https://github.com/qgis/QGIS/issues/37077
   QgsPolygon polygon;
-  polygon.fromWkt( "Polygon ((383393.53728186257649213 4902093.79335568379610777, 383383.73728171654511243 4902092.99335567187517881, 383375.25399118528002873 4902092.8891992112621665, 383368.08741026872303337 4902093.48088630195707083, 383362.87084332120139152 4902093.91129046399146318, 383359.60429034277331084 4902094.18041169829666615, 383357.23274148383643478 4902093.6530067715793848, 383355.75619674433255568 4902092.32907568290829659, 383355.57501344417687505 4902090.56084021460264921, 383356.68919158342760056 4902088.34830036386847496, 383361.07830215193098411 4902086.48156050778925419, 383368.74234514962881804 4902084.96062064450234175, 383380.44909519288921729 4902084.10479906108230352, 383396.19855228182859719 4902083.91409575659781694, 383406.97328086948255077 4902084.21874411031603813, 383412.77328095590928569 4902085.01874412223696709, 383416.70496230950811878 4902086.31405469868332148, 383418.76832493022084236 4902088.1046758396551013, 383419.69647055567475036 4902089.60464367642998695, 383419.48939918575342745 4902090.81395820714533329, 383418.40130056580528617 4902092.01381655503064394, 383416.43217469577211887 4902093.20421871729195118, 383411.19502930447924882 4902093.89790377207100391, 383402.68986439192667603 4902094.09487171657383442, 383393.53728186257649213 4902093.79335568379610777))" );
+  polygon.fromWkt(
+    "Polygon ((383393.53728186257649213 4902093.79335568379610777, 383383.73728171654511243 4902092.99335567187517881, 383375.25399118528002873 4902092.8891992112621665, 383368.08741026872303337 "
+    "4902093.48088630195707083, 383362.87084332120139152 4902093.91129046399146318, 383359.60429034277331084 4902094.18041169829666615, 383357.23274148383643478 4902093.6530067715793848, "
+    "383355.75619674433255568 4902092.32907568290829659, 383355.57501344417687505 4902090.56084021460264921, 383356.68919158342760056 4902088.34830036386847496, 383361.07830215193098411 "
+    "4902086.48156050778925419, 383368.74234514962881804 4902084.96062064450234175, 383380.44909519288921729 4902084.10479906108230352, 383396.19855228182859719 4902083.91409575659781694, "
+    "383406.97328086948255077 4902084.21874411031603813, 383412.77328095590928569 4902085.01874412223696709, 383416.70496230950811878 4902086.31405469868332148, 383418.76832493022084236 "
+    "4902088.1046758396551013, 383419.69647055567475036 4902089.60464367642998695, 383419.48939918575342745 4902090.81395820714533329, 383418.40130056580528617 4902092.01381655503064394, "
+    "383416.43217469577211887 4902093.20421871729195118, 383411.19502930447924882 4902093.89790377207100391, 383402.68986439192667603 4902094.09487171657383442, 383393.53728186257649213 "
+    "4902093.79335568379610777))"
+  );
   QgsTessellator t;
   t.setBounds( polygon.boundingBox() );
   t.setOutputZUp( true );
@@ -1024,7 +1046,10 @@ void TestQgsTessellator::narrowPolygon()
   QgsGeometry res( t.asMultiPolygon() );
   res.translate( polygon.boundingBox().xMinimum(), polygon.boundingBox().yMinimum() );
   QgsDebugMsgLevel( res.asWkt( 0 ), 1 );
-  QCOMPARE( res.asWkt( 0 ), u"MultiPolygon Z (((383357 4902094 0, 383356 4902092 0, 383356 4902091 0, 383357 4902094 0)),((383357 4902088 0, 383357 4902094 0, 383356 4902091 0, 383357 4902088 0)),((383357 4902088 0, 383361 4902086 0, 383357 4902094 0, 383357 4902088 0)),((383357 4902094 0, 383361 4902086 0, 383360 4902094 0, 383357 4902094 0)),((383363 4902094 0, 383360 4902094 0, 383361 4902086 0, 383363 4902094 0)),((383368 4902093 0, 383363 4902094 0, 383361 4902086 0, 383368 4902093 0)),((383368 4902093 0, 383361 4902086 0, 383369 4902085 0, 383368 4902093 0)),((383368 4902093 0, 383369 4902085 0, 383375 4902093 0, 383368 4902093 0)),((383375 4902093 0, 383369 4902085 0, 383380 4902084 0, 383375 4902093 0)),((383375 4902093 0, 383380 4902084 0, 383384 4902093 0, 383375 4902093 0)),((383384 4902093 0, 383380 4902084 0, 383396 4902084 0, 383384 4902093 0)),((383394 4902094 0, 383384 4902093 0, 383396 4902084 0, 383394 4902094 0)),((383403 4902094 0, 383394 4902094 0, 383396 4902084 0, 383403 4902094 0)),((383396 4902084 0, 383407 4902084 0, 383403 4902094 0, 383396 4902084 0)),((383411 4902094 0, 383403 4902094 0, 383407 4902084 0, 383411 4902094 0)),((383411 4902094 0, 383407 4902084 0, 383413 4902085 0, 383411 4902094 0)),((383411 4902094 0, 383413 4902085 0, 383416 4902093 0, 383411 4902094 0)),((383416 4902093 0, 383413 4902085 0, 383417 4902086 0, 383416 4902093 0)),((383419 4902088 0, 383416 4902093 0, 383417 4902086 0, 383419 4902088 0)),((383418 4902092 0, 383416 4902093 0, 383419 4902088 0, 383418 4902092 0)),((383418 4902092 0, 383419 4902088 0, 383419 4902091 0, 383418 4902092 0)),((383419 4902091 0, 383419 4902088 0, 383420 4902090 0, 383419 4902091 0)))"_s );
+  QCOMPARE(
+    res.asWkt( 0 ),
+    u"MultiPolygon Z (((383357 4902094 0, 383356 4902092 0, 383356 4902091 0, 383357 4902094 0)),((383357 4902088 0, 383357 4902094 0, 383356 4902091 0, 383357 4902088 0)),((383357 4902088 0, 383361 4902086 0, 383357 4902094 0, 383357 4902088 0)),((383357 4902094 0, 383361 4902086 0, 383360 4902094 0, 383357 4902094 0)),((383363 4902094 0, 383360 4902094 0, 383361 4902086 0, 383363 4902094 0)),((383368 4902093 0, 383363 4902094 0, 383361 4902086 0, 383368 4902093 0)),((383368 4902093 0, 383361 4902086 0, 383369 4902085 0, 383368 4902093 0)),((383368 4902093 0, 383369 4902085 0, 383375 4902093 0, 383368 4902093 0)),((383375 4902093 0, 383369 4902085 0, 383380 4902084 0, 383375 4902093 0)),((383375 4902093 0, 383380 4902084 0, 383384 4902093 0, 383375 4902093 0)),((383384 4902093 0, 383380 4902084 0, 383396 4902084 0, 383384 4902093 0)),((383394 4902094 0, 383384 4902093 0, 383396 4902084 0, 383394 4902094 0)),((383403 4902094 0, 383394 4902094 0, 383396 4902084 0, 383403 4902094 0)),((383396 4902084 0, 383407 4902084 0, 383403 4902094 0, 383396 4902084 0)),((383411 4902094 0, 383403 4902094 0, 383407 4902084 0, 383411 4902094 0)),((383411 4902094 0, 383407 4902084 0, 383413 4902085 0, 383411 4902094 0)),((383411 4902094 0, 383413 4902085 0, 383416 4902093 0, 383411 4902094 0)),((383416 4902093 0, 383413 4902085 0, 383417 4902086 0, 383416 4902093 0)),((383419 4902088 0, 383416 4902093 0, 383417 4902086 0, 383419 4902088 0)),((383418 4902092 0, 383416 4902093 0, 383419 4902088 0, 383418 4902092 0)),((383418 4902092 0, 383419 4902088 0, 383419 4902091 0, 383418 4902092 0)),((383419 4902091 0, 383419 4902088 0, 383420 4902090 0, 383419 4902091 0)))"_s
+  );
 }
 
 void TestQgsTessellator::testOutputZUp()
@@ -1042,34 +1067,16 @@ void TestQgsTessellator::testOutputZUp()
   tYUp.setOutputZUp( false );
   tYUp.addPolygon( polygon, 0 );
 
-  QVector<float> expectedOutputZUp = {
-    //   triangle 1
-    // pos     normal
-    1, 2, 0, 0, 0, 1,
-    2, 1, 0, 0, 0, 1,
-    3, 2, 0, 0, 0, 1,
-    //   triangle 2
-    // pos     normal
-    1, 2, 0, 0, 0, 1,
-    1, 1, 0, 0, 0, 1,
-    2, 1, 0, 0, 0, 1
-  };
+  QList<TriangleCoords> expectedOutputZUp;
+  expectedOutputZUp << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  expectedOutputZUp << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
 
-  QVector<float> expectedOutputYUp = {
-    //   triangle 1
-    // pos     normal
-    1, 0, -2, 0, 1, 0,
-    2, 0, -1, 0, 1, 0,
-    3, 0, -2, 0, 1, 0,
-    //   triangle 2
-    // pos     normal
-    1, 0, -2, 0, 1, 0,
-    1, 0, -1, 0, 1, 0,
-    2, 0, -1, 0, 1, 0
-  };
+  QList<TriangleCoords> expectedOutputYUp;
+  expectedOutputYUp << TriangleCoords( QVector3D( 1, 0, -2 ), QVector3D( 2, 0, -1 ), QVector3D( 3, 0, -2 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ) );
+  expectedOutputYUp << TriangleCoords( QVector3D( 1, 0, -2 ), QVector3D( 1, 0, -1 ), QVector3D( 2, 0, -1 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ), QVector3D( 0, 1, 0 ) );
 
-  QCOMPARE( tZUp.data(), expectedOutputZUp );
-  QCOMPARE( tYUp.data(), expectedOutputYUp );
+  QVERIFY( checkTriangleOutput( extractTriangles( tZUp, true ), expectedOutputZUp ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tYUp, true ), expectedOutputYUp ) );
 }
 
 void TestQgsTessellator::testDuplicatePoints()
@@ -1088,13 +1095,13 @@ void TestQgsTessellator::testDuplicatePoints()
   QgsTessellator tesZCD;
   tesZCD.setOutputZUp( true );
   tesZCD.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZCD, false ), trianglesZCD ) );
 
   QgsTessellator tesZEarcut;
   tesZEarcut.setOutputZUp( true );
   tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
   tesZEarcut.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesZEarcut, false ), trianglesZEarcut ) );
 }
 
 QGSTEST_MAIN( TestQgsTessellator )

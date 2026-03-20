@@ -54,10 +54,7 @@ class TestAlignRaster : public QgsTest
       QgsApplication::init(); // needed for CRS database
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testRasterInfo()
     {

@@ -69,8 +69,7 @@ class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
 
 inline TriDecorator::TriDecorator( QgsTriangulation *t )
   : mTIN( t )
-{
-}
+{}
 
 inline void TriDecorator::addTriangulation( QgsTriangulation *t )
 {

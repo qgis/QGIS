@@ -19,13 +19,14 @@
 #define QGSLAYOUTCHARTSERIESDETAILSWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutchartseriesdetailswidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgslayoutitemchart.h"
 #include "qgspanelwidget.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui

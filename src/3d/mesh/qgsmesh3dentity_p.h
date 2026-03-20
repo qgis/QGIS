@@ -26,6 +26,8 @@
 
 #include <Qt3DCore/QEntity>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //
@@ -37,7 +39,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 class Qgs3DMapSettings;
 class QgsMesh3DSymbol;

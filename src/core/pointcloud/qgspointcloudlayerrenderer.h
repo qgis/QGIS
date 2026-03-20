@@ -31,6 +31,8 @@
 #include <QPainter>
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QgsPointCloudExtentRenderer;
 class QgsPointCloudLayer;
 class QgsPointCloudRenderContext;
@@ -38,7 +40,6 @@ class QgsPointCloudRenderer;
 class QgsPointCloudSubIndex;
 class QgsRenderContext;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -50,10 +51,9 @@ class QgsRenderContext;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
+class CORE_EXPORT QgsPointCloudLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-
     //! Ctor
     explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
     ~QgsPointCloudLayerRenderer() override;
@@ -69,7 +69,9 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels );
     int renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
     int renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
-    int renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order );
+    int renderNodesSorted(
+      const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order
+    );
     void renderTriangulatedSurface( QgsPointCloudRenderContext &context );
     bool renderIndex( QgsPointCloudIndex &pc );
 

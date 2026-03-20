@@ -18,8 +18,7 @@
 #include "qgsmaplayer.h"
 
 QgsRayCastResult::QgsRayCastResult()
-{
-}
+{}
 
 bool QgsRayCastResult::isEmpty() const
 {
@@ -36,14 +35,7 @@ QList<QgsMapLayer *> QgsRayCastResult::layers() const
   QList<QgsMapLayer *> layerList { mLayerResults.keyBegin(), mLayerResults.keyEnd() };
 
   // Remove any deleted layers, or python won't be happy
-  layerList.erase(
-    std::remove_if(
-      layerList.begin(),
-      layerList.end(),
-      [this]( QgsMapLayer *l ) { return mLayerPointers[l].isNull(); }
-    ),
-    layerList.end()
-  );
+  layerList.erase( std::remove_if( layerList.begin(), layerList.end(), [this]( QgsMapLayer *l ) { return mLayerPointers[l].isNull(); } ), layerList.end() );
 
   return layerList;
 }

@@ -86,8 +86,7 @@ QgsGpsExtended::QgsGpsExtended()
   , yMin( std::numeric_limits<double>::max() )
   , yMax( -std::numeric_limits<double>::max() )
   , number( std::numeric_limits<int>::max() )
-{
-}
+{}
 
 
 void QgsGpsExtended::writeXml( QTextStream &stream )
@@ -112,8 +111,7 @@ void QgsRoute::writeXml( QTextStream &stream )
   QgsGpsExtended::writeXml( stream );
   for ( int i = 0; i < points.size(); ++i )
   {
-    stream << "<rtept lat=\"" << QString::number( points[i].lat, 'f', OUTPUT_PRECISION )
-           << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
+    stream << "<rtept lat=\"" << QString::number( points[i].lat, 'f', OUTPUT_PRECISION ) << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
     points[i].writeXml( stream );
     stream << "</rtept>\n";
   }
@@ -130,7 +128,12 @@ void QgsTrack::writeXml( QTextStream &stream )
     stream << "<trkseg>\n";
     for ( int j = 0; j < segments.at( i ).points.size(); ++j )
     {
-      stream << "<trkpt lat=\"" << QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) << "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) << "\">\n";
+      stream
+        << "<trkpt lat=\""
+        << QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION )
+        << "\" lon=\""
+        << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION )
+        << "\">\n";
       segments[i].points[j].writeXml( stream );
       stream << "</trkpt>\n";
     }
@@ -300,8 +303,7 @@ void QgsGpsData::removeWaypoints( const QgsFeatureIds &ids )
   std::sort( ids2.begin(), ids2.end() );
   QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   WaypointIterator wIter;
-  for ( wIter = waypoints.begin();
-        wIter != waypoints.end() && iter != ids2.constEnd(); )
+  for ( wIter = waypoints.begin(); wIter != waypoints.end() && iter != ids2.constEnd(); )
   {
     WaypointIterator tmpIter = wIter;
     ++tmpIter;
@@ -357,10 +359,10 @@ void QgsGpsData::removeTracks( const QgsFeatureIds &ids )
 
 void QgsGpsData::writeXml( QTextStream &stream )
 {
-  stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-         << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
-  for ( WaypointIterator wIter = waypoints.begin();
-        wIter != waypoints.end(); ++wIter )
+  stream
+    << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
+  for ( WaypointIterator wIter = waypoints.begin(); wIter != waypoints.end(); ++wIter )
     wIter->writeXml( stream );
   for ( RouteIterator rIter = routes.begin(); rIter != routes.end(); ++rIter )
     rIter->writeXml( stream );
@@ -404,9 +406,7 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )
       {
-        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" )
-                              .arg( XML_GetCurrentLineNumber( p ) )
-                              .arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
+        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" ).arg( XML_GetCurrentLineNumber( p ) ).arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
         failed = true;
         break;
       }

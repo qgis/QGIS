@@ -55,7 +55,8 @@ class _3D_EXPORT Qgs3DExportObject
      * \param name The name of the parent (Will be useful to define scene hierarchy)
      */
     Qgs3DExportObject( const QString &name )
-      : mName( name ) {}
+      : mName( name )
+    {}
 
     //! Returns the object name
     QString name() const { return mName; }

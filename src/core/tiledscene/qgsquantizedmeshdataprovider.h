@@ -40,13 +40,10 @@
 class CORE_EXPORT QgsQuantizedMeshMetadata
 {
   public:
-
     /**
      * \warning Check \p error, object is incomplete if non-empty!
      */
-    QgsQuantizedMeshMetadata( const QString &uri,
-                              const QgsCoordinateTransformContext &transformContext,
-                              QgsError &error );
+    QgsQuantizedMeshMetadata( const QString &uri, const QgsCoordinateTransformContext &transformContext, QgsError &error );
 
     bool containsTile( QgsTileXYZ tile ) const;
     double geometricErrorAtZoom( int zoom ) const;
@@ -72,9 +69,10 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
 class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
 {
   public:
-    QgsQuantizedMeshIndex( const QgsQuantizedMeshMetadata &metadata,
-                           const QgsCoordinateTransform &wgs84ToCrs )
-      : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
+    QgsQuantizedMeshIndex( const QgsQuantizedMeshMetadata &metadata, const QgsCoordinateTransform &wgs84ToCrs )
+      : mMetadata( metadata )
+      , mWgs84ToCrs( wgs84ToCrs )
+    {}
     QgsTiledSceneTile rootTile() const override;
     long long parentTileId( long long id ) const override;
     QVector< long long > childTileIds( long long id ) const override;
@@ -97,13 +95,11 @@ class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
     QgsCoordinateTransform mWgs84ToCrs;
 };
 
-class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
+class CORE_EXPORT QgsQuantizedMeshDataProvider : public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-    QgsQuantizedMeshDataProvider( const QString &uri,
-                                  const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsQuantizedMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     Qgis::TiledSceneProviderCapabilities capabilities() const override;
     QgsTiledSceneDataProvider *clone() const override;
     const QgsCoordinateReferenceSystem sceneCrs() const override;
@@ -125,7 +121,7 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     QString uriFromIon( const QString &uri );
 
   private:
-    QString mUri; // For clone()
+    QString mUri;                                      // For clone()
     QgsDataProvider::ProviderOptions mProviderOptions; // For clone()
     bool mIsValid = false;
     std::optional<QgsQuantizedMeshMetadata> mMetadata; // Initialized in constructor
@@ -138,9 +134,7 @@ class QgsQuantizedMeshProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsQuantizedMeshProviderMetadata();
-    QgsDataProvider *createProvider( const QString &uri,
-                                     const QgsDataProvider::ProviderOptions &providerOptions,
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 };
 
 ///@endcond

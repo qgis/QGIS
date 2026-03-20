@@ -88,6 +88,7 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
     case Qgis::CaptureTechnique::NurbsCurve:
       return true;
   }
@@ -243,7 +244,8 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
 // QgsCreatePictureItemMapTool
 //
 
-const QgsSettingsEntryString *QgsCreatePictureItemMapTool::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreePicture, QString(), u"Last used folder for picture annotation source files"_s );
+const QgsSettingsEntryString *QgsCreatePictureItemMapTool::settingLastSourceFolder
+  = new QgsSettingsEntryString( u"last-source-folder"_s, sTreePicture, QString(), u"Last used folder for picture annotation source files"_s );
 
 QgsCreatePictureItemMapTool::QgsCreatePictureItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )

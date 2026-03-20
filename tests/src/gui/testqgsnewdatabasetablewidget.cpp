@@ -76,7 +76,9 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   mGpkgPath = mDir.filePath( u"test.gpkg"_s );
   const QMap<QString, QVariant> options { { u"layerName"_s, QString( "test_layer" ) } };
   QString createdLayerUri;
-  QVERIFY( md->createEmptyLayer( mGpkgPath, QgsFields(), Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), true, m, errCause, &options, createdLayerUri ) == Qgis::VectorExportResult::Success );
+  QVERIFY(
+    md->createEmptyLayer( mGpkgPath, QgsFields(), Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), true, m, errCause, &options, createdLayerUri ) == Qgis::VectorExportResult::Success
+  );
   QCOMPARE( createdLayerUri, mGpkgPath + "|layername=test_layer" );
   QVERIFY( errCause.isEmpty() );
   mGpkgConn.reset( md->createConnection( mDir.filePath( u"test.gpkg"_s ), {} ) );
@@ -89,12 +91,10 @@ void TestQgsNewDatabaseTableNameWidget::cleanupTestCase()
 }
 
 void TestQgsNewDatabaseTableNameWidget::init()
-{
-}
+{}
 
 void TestQgsNewDatabaseTableNameWidget::cleanup()
-{
-}
+{}
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 {

@@ -199,8 +199,7 @@ void QgsFloatingWidget::onAnchorPointChanged()
 /// @cond PRIVATE
 QgsFloatingWidgetEventFilter::QgsFloatingWidgetEventFilter( QWidget *parent )
   : QObject( parent )
-{
-}
+{}
 
 bool QgsFloatingWidgetEventFilter::eventFilter( QObject *object, QEvent *event )
 {

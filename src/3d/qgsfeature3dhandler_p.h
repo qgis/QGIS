@@ -34,6 +34,8 @@
 #include <QString>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 namespace Qt3DCore
 {
   class QEntity;
@@ -42,8 +44,6 @@ namespace Qt3DCore
 class Qgs3DRenderContext;
 class QgsFeature;
 class QgsGeometry;
-
-#define SIP_NO_FILE
 
 
 /**

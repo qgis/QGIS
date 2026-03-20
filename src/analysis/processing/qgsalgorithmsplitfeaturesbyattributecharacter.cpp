@@ -57,11 +57,13 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::groupId() const
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits features into multiple output features by splitting a field's value with a specified character.\n\n"
-                      "For instance, if a layer contains features with multiple comma separated values contained in a single field, this "
-                      "algorithm can be used to split these values up across multiple output features.\n\n"
-                      "Geometries and other attributes remain unchanged in the output.\n\n"
-                      "Optionally, the separator string can be a regular expression for added flexibility." );
+  return QObject::tr(
+    "This algorithm splits features into multiple output features by splitting a field's value with a specified character.\n\n"
+    "For instance, if a layer contains features with multiple comma separated values contained in a single field, this "
+    "algorithm can be used to split these values up across multiple output features.\n\n"
+    "Geometries and other attributes remain unchanged in the output.\n\n"
+    "Optionally, the separator string can be a regular expression for added flexibility."
+  );
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortDescription() const

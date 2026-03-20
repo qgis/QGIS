@@ -39,8 +39,10 @@ QString QgsZonalStatisticsAlgorithm::displayName() const
 
 QStringList QgsZonalStatisticsAlgorithm::tags() const
 {
-  return QObject::tr( "stats,statistics,zones,layer,sum,maximum,minimum,mean,count,standard,deviation,"
-                      "median,range,majority,minority,variety,variance,summary,raster" )
+  return QObject::tr(
+           "stats,statistics,zones,layer,sum,maximum,minimum,mean,count,standard,deviation,"
+           "median,range,majority,minority,variety,variance,summary,raster"
+  )
     .split( ',' );
 }
 
@@ -61,8 +63,10 @@ QString QgsZonalStatisticsAlgorithm::shortDescription() const
 
 QString QgsZonalStatisticsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates statistics of a raster layer for each feature "
-                      "of an overlapping polygon vector layer. The results will be written in place." );
+  return QObject::tr(
+    "This algorithm calculates statistics of a raster layer for each feature "
+    "of an overlapping polygon vector layer. The results will be written in place."
+  );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsZonalStatisticsAlgorithm::flags() const

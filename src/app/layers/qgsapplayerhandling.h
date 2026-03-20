@@ -170,8 +170,9 @@ class APP_EXPORT QgsAppLayerHandling
      */
     enum class DependencyFlag : int
     {
-      LoadAllRelationships = 1 << 1, //!< Causes all relationships to be loaded, regardless of whether the originating table is the referenced or referencing table. By default relationships are only loaded when the originating table is the referencing table.
-      SilentLoad = 1 << 2,           //!< Dependencies are loaded without any user-visible notifications.
+      LoadAllRelationships
+      = 1 << 1, //!< Causes all relationships to be loaded, regardless of whether the originating table is the referenced or referencing table. By default relationships are only loaded when the originating table is the referencing table.
+      SilentLoad = 1 << 2, //!< Dependencies are loaded without any user-visible notifications.
     };
     Q_ENUM( DependencyFlag )
     Q_DECLARE_FLAGS( DependencyFlags, DependencyFlag )
@@ -184,7 +185,12 @@ class APP_EXPORT QgsAppLayerHandling
      * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
      * \return a list of weak references to broken layer dependencies
      */
-    static const QList<QgsVectorLayerRef> findBrokenLayerDependencies( QgsVectorLayer *vectorLayer, QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, DependencyFlags dependencyFlags = DependencyFlags() );
+    static const QList<QgsVectorLayerRef> findBrokenLayerDependencies(
+      QgsVectorLayer *vectorLayer,
+      QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories,
+      QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+      DependencyFlags dependencyFlags = DependencyFlags()
+    );
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
@@ -193,7 +199,12 @@ class APP_EXPORT QgsAppLayerHandling
      * used to exclude one of the currently implemented search categories
      * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
-    static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, DependencyFlags dependencyFlags = DependencyFlags() );
+    static void resolveVectorLayerDependencies(
+      QgsVectorLayer *vectorLayer,
+      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+      QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+      DependencyFlags dependencyFlags = DependencyFlags()
+    );
 
     /**
      * Scans the \a vectorLayer for weak relations and automatically
@@ -213,8 +224,30 @@ class APP_EXPORT QgsAppLayerHandling
      */
     static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
 
+    /**
+     * Loads style for \a layer from selected source.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( QgsMapLayer *layer );
+
+    /**
+     * Loads style for list of layers from selected file.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Save qml style for the layer
+     *
+     * \since QGIS 4.0
+     */
+    static void saveStyleFile( QgsMapLayer *layer = nullptr );
+
   private:
-    template<typename T> static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
+    template<typename T>
+    static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 
     /**
      * Post processes a single added \a layer, applying any default behavior which should

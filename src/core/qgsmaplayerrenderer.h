@@ -51,7 +51,6 @@ class QgsRenderedItemDetails;
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for QgsMapLayerRenderer, with the associated \a layerID and render \a context.
      */
@@ -196,7 +195,6 @@ class CORE_EXPORT QgsMapLayerRenderer
     void appendRenderedItemDetails( QgsRenderedItemDetails *details SIP_TRANSFER );
 
   private:
-
     // TODO QGIS 5.0 - make reference instead of pointer!
 
     /**

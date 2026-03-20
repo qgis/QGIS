@@ -196,8 +196,7 @@ void QgsOgrSourceSelect::deleteConnection()
 {
   QgsSettings settings;
   QString key = '/' + cmbDatabaseTypes->currentText() + "/connections/" + cmbConnections->currentText();
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                  .arg( cmbConnections->currentText() );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
@@ -433,7 +432,10 @@ void QgsOgrSourceSelect::computeDataSources( bool interactive )
       parts.insert( u"openOptions"_s, openOptions );
     if ( !credentialOptions.isEmpty() )
       parts.insert( u"credentialOptions"_s, credentialOptions );
-    parts.insert( u"path"_s, QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() ) );
+    parts.insert(
+      u"path"_s,
+      QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() )
+    );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( u"ogr"_s, parts );
   }
   else if ( radioSrcFile->isChecked() || radioSrcOgcApi->isChecked() )
@@ -660,9 +662,7 @@ bool QgsOgrSourceSelect::configureFromUri( const QString &uri )
   {
     for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
     {
-      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [opt]( QWidget *widget ) {
-        return widget->objectName() == opt.key();
-      } ) };
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [opt]( QWidget *widget ) { return widget->objectName() == opt.key(); } ) };
 
       if ( widget != mOpenOptionsWidgets.cend() )
       {
@@ -798,8 +798,7 @@ void QgsOgrSourceSelect::fillOpenOptions()
   for ( const QgsGdalOption &option : options )
   {
     // Exclude options that are not of vector scope
-    if ( !option.scope.isEmpty()
-         && option.scope.compare( "vector"_L1, Qt::CaseInsensitive ) != 0 )
+    if ( !option.scope.isEmpty() && option.scope.compare( "vector"_L1, Qt::CaseInsensitive ) != 0 )
       continue;
 
     // The GPKG driver list a lot of options that are only for rasters
@@ -812,7 +811,8 @@ void QgsOgrSourceSelect::fillOpenOptions()
       continue;
 
     // Do not list database options already asked in the database dialog
-    if ( radioSrcDatabase->isChecked() && ( option.name == "USER"_L1 || option.name == "PASSWORD"_L1 || option.name == "HOST"_L1 || option.name == "DBNAME"_L1 || option.name == "DATABASE"_L1 || option.name == "PORT"_L1 || option.name == "SERVICE"_L1 ) )
+    if ( radioSrcDatabase->isChecked()
+         && ( option.name == "USER"_L1 || option.name == "PASSWORD"_L1 || option.name == "HOST"_L1 || option.name == "DBNAME"_L1 || option.name == "DATABASE"_L1 || option.name == "PORT"_L1 || option.name == "SERVICE"_L1 ) )
     {
       continue;
     }

@@ -38,8 +38,10 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::displayName() const
 
 QStringList QgsZonalStatisticsFeatureBasedAlgorithm::tags() const
 {
-  return QObject::tr( "stats,statistics,zones,layer,sum,maximum,minimum,mean,count,standard,deviation,"
-                      "median,range,majority,minority,variety,variance,summary,raster" )
+  return QObject::tr(
+           "stats,statistics,zones,layer,sum,maximum,minimum,mean,count,standard,deviation,"
+           "median,range,majority,minority,variety,variance,summary,raster"
+  )
     .split( ',' );
 }
 
@@ -55,14 +57,18 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::groupId() const
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates statistics of a raster layer for each feature "
-                      "of an overlapping polygon vector layer." );
+  return QObject::tr(
+    "This algorithm calculates statistics of a raster layer for each feature "
+    "of an overlapping polygon vector layer."
+  );
 }
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates statistics of a raster layer for each feature "
-                      "of an overlapping polygon vector layer." );
+  return QObject::tr(
+    "Calculates statistics of a raster layer for each feature "
+    "of an overlapping polygon vector layer."
+  );
 }
 
 QList<int> QgsZonalStatisticsFeatureBasedAlgorithm::inputLayerTypes() const

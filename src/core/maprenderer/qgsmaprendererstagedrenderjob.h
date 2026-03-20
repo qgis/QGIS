@@ -33,13 +33,13 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 {
     Q_OBJECT
   public:
-
     /**
      * Flags which control the staged render job behavior.
      */
     enum Flag
     {
-      RenderLabelsByMapLayer = 0x01, //!< Labels should be rendered in individual stages by map layer. This allows separation of labels belonging to different layers, but may affect label stacking order as the order will become layer-dependent, instead of per-label-dependent.
+      RenderLabelsByMapLayer
+      = 0x01, //!< Labels should be rendered in individual stages by map layer. This allows separation of labels belonging to different layers, but may affect label stacking order as the order will become layer-dependent, instead of per-label-dependent.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -49,8 +49,8 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     enum RenderStage
     {
       Symbology, //!< Rendering layer symbology
-      Labels, //!< Rendering labels
-      Finished, //!< Rendering is finished
+      Labels,    //!< Rendering labels
+      Finished,  //!< Rendering is finished
     };
 
     /**
@@ -114,7 +114,6 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     RenderStage currentStage() const;
 
   private:
-
     void startPrivate() override;
 
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;

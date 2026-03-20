@@ -83,12 +83,14 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
         switch ( role )
         {
           case Qt::ToolTipRole:
-            return tr( "The source of this layer is a <b>WFS</b> server.<br>"
-                       "Some WFS layers are not suitable for offline<br>"
-                       "editing due to unstable primary keys<br>"
-                       "please check with your system administrator<br>"
-                       "if this WFS layer can be used for offline<br>"
-                       "editing." );
+            return tr(
+              "The source of this layer is a <b>WFS</b> server.<br>"
+              "Some WFS layers are not suitable for offline<br>"
+              "editing due to unstable primary keys<br>"
+              "please check with your system administrator<br>"
+              "if this WFS layer can be used for offline<br>"
+              "editing."
+            );
 
           case Qt::DecorationRole:
             return QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s );
@@ -168,7 +170,8 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::GPKG:
     {
       //GeoPackage
-      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "GeoPackage" ) + " (*.gpkg);;" + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::
+        getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "GeoPackage" ) + " (*.gpkg);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {
@@ -186,7 +189,8 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::SpatiaLite:
     {
       //SpaciaLite
-      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "SpatiaLite DB" ) + " (*.sqlite);;" + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::
+        getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "SpatiaLite DB" ) + " (*.sqlite);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {

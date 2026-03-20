@@ -919,7 +919,7 @@ used to build dependency package.
 
 Download the latest QGIS-Deps install script, qt package and QGIS-Deps packages from
 
-https://download.qgis.org/downloads/macos/deps
+https://qgis.org/downloads-list/#macos/deps
 
 You should have one bash script and two tar archive in your download folder.
 Run the install script to install Qt and QGIS-Deps to `/opt/` area. You need
@@ -1372,3 +1372,5 @@ The following people have contributed to this document:
 
 * MXE/Mingw64 section
   * Alessandro Pasotti (2018-2021)
+
+NOTE:  The Windows build instructions may change over time. Please refer to the latest `ms-windows/mingw` folder for current build scripts.

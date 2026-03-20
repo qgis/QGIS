@@ -386,7 +386,11 @@ void TestQgsCoordinateReferenceSystemRegistry::testRecent()
   QCOMPARE( pushSpy.size(), 3 );
 
   // no custom CRSes in list:
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem::fromProj( u"+proj=sterea +lat_0=47.9860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs"_s ) );
+  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent(
+    QgsCoordinateReferenceSystem::fromProj(
+      u"+proj=sterea +lat_0=47.9860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs"_s
+    )
+  );
   recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   QCOMPARE( recent.size(), 2 );
   QCOMPARE( recent.at( 0 ).authid(), u"EPSG:3111"_s );

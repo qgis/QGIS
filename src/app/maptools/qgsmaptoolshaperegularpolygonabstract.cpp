@@ -26,8 +26,7 @@
 
 QgsMapToolShapeRegularPolygonAbstract::QgsMapToolShapeRegularPolygonAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )
-{
-}
+{}
 
 void QgsMapToolShapeRegularPolygonAbstract::createNumberSidesSpinBox()
 {

@@ -95,7 +95,7 @@ bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-#ifdef HAVE_PDAL_QGIS
+#if defined( HAVE_PDAL_QGIS ) && QT_CONFIG( process )
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
@@ -209,7 +209,11 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   Q_UNUSED( parameters )
   Q_UNUSED( context )
   Q_UNUSED( feedback )
+#if QT_CONFIG( process )
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#else
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with Qt process feature enabled" ) );
+#endif
 #endif
 }
 

@@ -45,8 +45,7 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   , mFactory( factory )
   , mContext( factory->mRenderContext )
   , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
-{
-}
+{}
 
 void QgsRuleBasedChunkLoader::start()
 {
@@ -229,7 +228,9 @@ QVector<QgsChunkNode *> QgsRuleBasedChunkLoaderFactory::createChildren( QgsChunk
 
 ///////////////
 
-QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule )
+QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity(
+  Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule
+)
   : QgsChunkedEntity( map, 3, new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   mTransform = new Qt3DCore::QTransform;
@@ -299,17 +300,12 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
 
 void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
 {
-  const float previousOffset = mTransform->translation()[1];
   float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
   if ( !applyTerrainOffset() )
   {
     newOffset = 0.0;
   }
-
-  if ( newOffset != previousOffset )
-  {
-    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
-  }
+  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 QList<QgsRayCastHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const

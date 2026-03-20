@@ -10,7 +10,7 @@
 
 
 
-class QgsCubicRasterResampler: QgsRasterResamplerV2
+class QgsCubicRasterResampler : QgsRasterResamplerV2
 {
 %Docstring(signature="appended")
 Cubic Raster Resampler.
@@ -20,7 +20,6 @@ Cubic Raster Resampler.
 #include "qgscubicrasterresampler.h"
 %End
   public:
-
     QgsCubicRasterResampler();
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 

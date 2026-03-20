@@ -38,7 +38,8 @@ class TestQgsLayoutContext : public QgsTest
 
   public:
     TestQgsLayoutContext()
-      : QgsTest( u"Layout Context Tests"_s ) {}
+      : QgsTest( u"Layout Context Tests"_s )
+    {}
 
   private slots:
 

@@ -18,6 +18,8 @@
 
 #include "qgis_3d.h"
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //
@@ -28,8 +30,6 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
-
-#define SIP_NO_FILE
 
 
 #include "qgschunkedentity.h"

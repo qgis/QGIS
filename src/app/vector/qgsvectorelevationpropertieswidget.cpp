@@ -328,12 +328,14 @@ void QgsVectorElevationPropertiesWidget::bindingChanged()
   {
     case Qgis::AltitudeBinding::Vertex:
       mLabelBindingExplanation->setText(
-        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at every vertex." ), tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s
+          .arg( tr( "Feature elevation is relative to the terrain height at every vertex." ), tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." ) )
       );
       break;
     case Qgis::AltitudeBinding::Centroid:
       mLabelBindingExplanation->setText(
-        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at feature's centroid only." ), tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s
+          .arg( tr( "Feature elevation is relative to the terrain height at feature's centroid only." ), tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." ) )
       );
       break;
   }
@@ -385,24 +387,31 @@ void QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions()
   {
     case Qgis::CrsType::Compound:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg( mLayer->crs().userFriendlyIdentifier(), mLayer->verticalCrs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." )
+                                    .arg( mLayer->crs().userFriendlyIdentifier(), mLayer->verticalCrs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geographic3d:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Geocentric:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+      mCrsDisabledLabel->setText(
+        tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+      );
       break;
 
     case Qgis::CrsType::Projected:
       if ( mLayer->crs().hasVerticalAxis() )
       {
         mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
+        mCrsDisabledLabel->setText(
+          tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() )
+        );
         break;
       }
       [[fallthrough]];

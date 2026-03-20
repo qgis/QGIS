@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_SELFCONTACT_CHECK_H
 #define QGS_GEOMETRY_SELFCONTACT_CHECK_H
@@ -21,6 +20,8 @@
 #include "qgssinglegeometrycheck.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 
@@ -33,7 +34,8 @@ class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryChec
     Q_DECLARE_TR_FUNCTIONS( QgsGeometrySelfContactCheck )
   public:
     QgsGeometrySelfContactCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsSingleGeometryCheck( context, configuration ) {}
+      : QgsSingleGeometryCheck( context, configuration )
+    {}
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }

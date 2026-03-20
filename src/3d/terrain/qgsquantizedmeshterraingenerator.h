@@ -26,9 +26,10 @@
 
 #include <QPointer>
 
+#define SIP_NO_FILE
+
 class QgsTerrainEntity;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

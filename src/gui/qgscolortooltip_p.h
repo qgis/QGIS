@@ -33,8 +33,7 @@ class QgsColorTooltip
 {
   public:
     //! Returns an HTML description given a \a color with a preview image of the color
-    template<typename T>
-    static QString htmlDescription( QColor color, T *widget )
+    template<typename T> static QString htmlDescription( QColor color, T *widget )
     {
       // create very large preview swatch
       const int width = static_cast<int>( Qgis::UI_SCALE_FACTOR * widget->fontMetrics().horizontalAdvance( 'X' ) * 23 );
@@ -85,12 +84,7 @@ class QgsColorTooltip
         const double black = color.blackF() * 100.;
         const double alpha = color.alphaF() * 100.;
 
-        info += u"<b>CMYKA</b> %1,%2,%3,%4,%5<p>"_s
-                  .arg( cyan, 0, 'f', 2 )
-                  .arg( magenta, 0, 'f', 2 )
-                  .arg( yellow, 0, 'f', 2 )
-                  .arg( black, 0, 'f', 2 )
-                  .arg( alpha, 0, 'f', 2 );
+        info += u"<b>CMYKA</b> %1,%2,%3,%4,%5<p>"_s.arg( cyan, 0, 'f', 2 ).arg( magenta, 0, 'f', 2 ).arg( yellow, 0, 'f', 2 ).arg( black, 0, 'f', 2 ).arg( alpha, 0, 'f', 2 );
       }
       else
       {
@@ -98,8 +92,10 @@ class QgsColorTooltip
         const int value = color.value();
         const int saturation = color.saturation();
 
-        info += QStringLiteral( "<b>RGBA</b> %1<br>"
-                                "<b>HSV</b> %2,%3,%4<p>" )
+        info += QStringLiteral(
+                  "<b>RGBA</b> %1<br>"
+                  "<b>HSV</b> %2,%3,%4<p>"
+        )
                   .arg( QgsSymbolLayerUtils::encodeColor( color ) )
                   .arg( hue )
                   .arg( saturation )

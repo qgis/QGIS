@@ -83,16 +83,20 @@ QgsSocketMonitoringThread::QgsSocketMonitoringThread( std::shared_ptr<QgsFeedbac
     }
     else
     {
-      QgsMessageLog::logMessage( u"FCGI_stdout stream data is null! Socket monitoring disabled."_s, //
-                                 u"FCGIServer"_s,                                                   //
-                                 Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage(
+        u"FCGI_stdout stream data is null! Socket monitoring disabled."_s, //
+        u"FCGIServer"_s,                                                   //
+        Qgis::MessageLevel::Warning
+      );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( u"FCGI_stdout is null! Socket monitoring disabled."_s, //
-                               u"FCGIServer"_s,                                       //
-                               Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage(
+      u"FCGI_stdout is null! Socket monitoring disabled."_s, //
+      u"FCGIServer"_s,                                       //
+      Qgis::MessageLevel::Warning
+    );
   }
 #endif
 }
@@ -138,10 +142,13 @@ void QgsSocketMonitoringThread::run()
     if ( rv == -1 )
     {
       // socket closed, nothing can be read
-      QgsMessageLog::logMessage( u"FCGIServer %1: remote socket has been closed (select)! errno: %2"_s //
-                                   .arg( threadId )
-                                   .arg( errno ),
-                                 u"FCGIServer"_s, Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage(
+        u"FCGIServer %1: remote socket has been closed (select)! errno: %2"_s //
+          .arg( threadId )
+          .arg( errno ),
+        u"FCGIServer"_s,
+        Qgis::MessageLevel::Warning
+      );
       mFeedback->cancel();
       break;
     }
@@ -153,20 +160,25 @@ void QgsSocketMonitoringThread::run()
       if ( x != 0 )
       {
         // Ie. we are still connected but we have an 'error' as there is nothing to read
-        QgsDebugMsgLevel( u"FCGIServer %1: remote socket still connected. errno: %2, x: %3"_s //
-                            .arg( threadId )
-                            .arg( errno )
-                            .arg( x ),
-                          5 );
+        QgsDebugMsgLevel(
+          u"FCGIServer %1: remote socket still connected. errno: %2, x: %3"_s //
+            .arg( threadId )
+            .arg( errno )
+            .arg( x ),
+          5
+        );
       }
       else
       {
         // socket closed, nothing can be read
-        QgsMessageLog::logMessage( u"FCGIServer %1: remote socket has been closed (recv)! errno: %2, x: %3"_s //
-                                     .arg( threadId )
-                                     .arg( errno )
-                                     .arg( x ),
-                                   u"FCGIServer"_s, Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage(
+          u"FCGIServer %1: remote socket has been closed (recv)! errno: %2, x: %3"_s //
+            .arg( threadId )
+            .arg( errno )
+            .arg( x ),
+          u"FCGIServer"_s,
+          Qgis::MessageLevel::Warning
+        );
         mFeedback->cancel();
         break;
       }
@@ -184,9 +196,12 @@ void QgsSocketMonitoringThread::run()
   }
   else
   {
-    QgsMessageLog::logMessage( u"FCGIServer::run %1: socket monitoring quits: no more socket."_s //
-                                 .arg( threadId ),                                               //
-                               u"FCGIServer"_s, Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage(
+      u"FCGIServer::run %1: socket monitoring quits: no more socket."_s //
+        .arg( threadId ),                                               //
+      u"FCGIServer"_s,
+      Qgis::MessageLevel::Warning
+    );
   }
 #endif
 }

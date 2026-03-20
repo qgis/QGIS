@@ -28,7 +28,8 @@ using namespace nlohmann;
 #include <QTextCodec>
 
 QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) )
+  , mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -155,9 +156,7 @@ void QgsOapifApiRequest::processReply()
           const char *suffix = "/items";
           if ( key.size() > strlen( prefix ) + strlen( suffix ) && key.compare( 0, strlen( prefix ), prefix ) == 0 && key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
           {
-            const std::string collection = key.substr(
-              strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix )
-            );
+            const std::string collection = key.substr( strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix ) );
             if ( val.is_object() && val.contains( "get" ) )
             {
               const auto &get = val["get"];
@@ -181,7 +180,13 @@ void QgsOapifApiRequest::processReply()
                           parameterResolved = resolveRef( j, refStr );
                         }
                       }
-                      if ( parameterResolved && parameterResolved->is_object() && parameterResolved->contains( "name" ) && parameterResolved->contains( "in" ) && parameterResolved->contains( "style" ) && parameterResolved->contains( "explode" ) && parameterResolved->contains( "schema" ) )
+                      if ( parameterResolved
+                           && parameterResolved->is_object()
+                           && parameterResolved->contains( "name" )
+                           && parameterResolved->contains( "in" )
+                           && parameterResolved->contains( "style" )
+                           && parameterResolved->contains( "explode" )
+                           && parameterResolved->contains( "schema" ) )
                       {
                         const auto &jName = ( *parameterResolved )["name"];
                         const auto &jIn = ( *parameterResolved )["in"];
@@ -195,7 +200,18 @@ void QgsOapifApiRequest::processReply()
                           const auto style = jStyle.get<std::string>();
                           const bool explode = jExplode.get<bool>();
                           const auto jSchemaType = jSchema["type"];
-                          if ( in == "query" && style == "form" && !explode && jSchemaType.is_string() && name != "crs" && name != "bbox" && name != "bbox-crs" && name != "filter" && name != "filter-lang" && name != "filter-crs" && name != "datetime" && name != "limit" )
+                          if ( in == "query"
+                               && style == "form"
+                               && !explode
+                               && jSchemaType.is_string()
+                               && name != "crs"
+                               && name != "bbox"
+                               && name != "bbox-crs"
+                               && name != "filter"
+                               && name != "filter-lang"
+                               && name != "filter-crs"
+                               && name != "datetime"
+                               && name != "limit" )
                           {
                             SimpleQueryable queryable;
                             queryable.mType = QString::fromStdString( jSchemaType.get<std::string>() );

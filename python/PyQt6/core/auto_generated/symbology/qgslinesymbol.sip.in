@@ -19,7 +19,6 @@ geometries.
 #include "qgslinesymbol.h"
 %End
   public:
-
     static std::unique_ptr< QgsLineSymbol > createSimple( const QVariantMap &properties );
 %Docstring
 Create a line symbol with one symbol layer: SimpleLine with specified
@@ -120,7 +119,6 @@ style.
 
 
 };
-
 
 
 /************************************************************************

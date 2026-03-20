@@ -48,7 +48,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
       sipType = sipType_QgsGraphBuilder;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -64,36 +64,26 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     virtual ~QgsGraphBuilderInterface() = default;
 
     //! Returns destinaltion CRS
-    QgsCoordinateReferenceSystem destinationCrs() const
-    {
-      return mCrs;
-    }
+    QgsCoordinateReferenceSystem destinationCrs() const { return mCrs; }
 
     //! Returns coordinate transformation enabled
-    bool coordinateTransformationEnabled() const
-    {
-      return mCtfEnabled;
-    }
+    bool coordinateTransformationEnabled() const { return mCtfEnabled; }
 
     //! Returns topology tolerance
-    double topologyTolerance() const
-    {
-      return mTopologyTolerance;
-    }
+    double topologyTolerance() const { return mTopologyTolerance; }
 
     //! Returns measurement tool
-    QgsDistanceArea *distanceArea()
-    {
-      return &mDa;
-    }
+    QgsDistanceArea *distanceArea() { return &mDa; }
 
     /**
      * Add vertex to the graph
      * \param id vertex identifier
      * \param pt vertex coordinates
      * \note id and pt are redundant. You can use pt or id to identify the vertex
+     *
+     * \returns the index of the newly added vertex
      */
-    virtual void addVertex( int id, const QgsPointXY &pt );
+    virtual int addVertex( int id, const QgsPointXY &pt );
 
     /**
      * Add edge to the graph

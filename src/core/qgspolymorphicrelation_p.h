@@ -17,7 +17,6 @@
 #ifndef QGSPOLYMORPHICRELATION_P_H
 #define QGSPOLYMORPHICRELATION_P_H
 
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
@@ -35,6 +34,8 @@
 
 #include <QPointer>
 #include <QSharedData>
+
+#define SIP_NO_FILE
 
 class QgsVectorLayer;
 

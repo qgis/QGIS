@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMEXPORTMESH_H
 #define QGSALGORITHMEXPORTMESH_H
 
-#define SIP_NO_FILE
 
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgstriangularmesh.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -74,10 +75,7 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
 
   private:
     Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::PointZ; }
-    QSet<int> supportedDataType() const override
-    {
-      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices } );
-    }
+    QSet<int> supportedDataType() const override { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices } ); }
     Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorPoint; }
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType() const override { return QgsMesh::Vertex; }
@@ -96,10 +94,7 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
 
   private:
     Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::PolygonZ; }
-    QSet<int> supportedDataType() const override
-    {
-      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnFaces } );
-    }
+    QSet<int> supportedDataType() const override { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnFaces } ); }
     Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorPolygon; }
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType() const override { return QgsMesh::Face; }
@@ -118,10 +113,7 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 
   private:
     Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::LineStringZ; }
-    QSet<int> supportedDataType() const override
-    {
-      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnEdges } );
-    }
+    QSet<int> supportedDataType() const override { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnEdges } ); }
     Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorLine; }
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType() const override { return QgsMesh::Edge; }
@@ -198,14 +190,7 @@ class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QSet<int> supportedDataType()
-    {
-      return QSet<int>(
-        { QgsMeshDatasetGroupMetadata::DataOnVertices,
-          QgsMeshDatasetGroupMetadata::DataOnFaces,
-          QgsMeshDatasetGroupMetadata::DataOnVolumes }
-      );
-    }
+    QSet<int> supportedDataType() { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices, QgsMeshDatasetGroupMetadata::DataOnFaces, QgsMeshDatasetGroupMetadata::DataOnVolumes } ); }
 
     QgsTriangularMesh mTriangularMesh;
     QgsMesh mNativeMesh;
@@ -234,14 +219,7 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QSet<int> supportedDataType()
-    {
-      return QSet<int>(
-        { QgsMeshDatasetGroupMetadata::DataOnVertices,
-          QgsMeshDatasetGroupMetadata::DataOnFaces,
-          QgsMeshDatasetGroupMetadata::DataOnVolumes }
-      );
-    }
+    QSet<int> supportedDataType() { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices, QgsMeshDatasetGroupMetadata::DataOnFaces, QgsMeshDatasetGroupMetadata::DataOnVolumes } ); }
 
     QgsTriangularMesh mTriangularMesh;
 
@@ -267,14 +245,7 @@ class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QSet<int> supportedDataType()
-    {
-      return QSet<int>(
-        { QgsMeshDatasetGroupMetadata::DataOnVertices,
-          QgsMeshDatasetGroupMetadata::DataOnFaces,
-          QgsMeshDatasetGroupMetadata::DataOnVolumes }
-      );
-    }
+    QSet<int> supportedDataType() { return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices, QgsMeshDatasetGroupMetadata::DataOnFaces, QgsMeshDatasetGroupMetadata::DataOnVolumes } ); }
 
     QgsTriangularMesh mTriangularMesh;
 

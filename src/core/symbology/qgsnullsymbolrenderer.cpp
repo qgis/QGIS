@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
   : QgsFeatureRenderer( u"nullSymbol"_s )
-{
-}
+{}
 
 QgsNullSymbolRenderer::~QgsNullSymbolRenderer() = default;
 
@@ -49,9 +48,7 @@ bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderC
     return true;
   }
 
-  if ( !feature.hasGeometry() ||
-       feature.geometry().type() == Qgis::GeometryType::Null ||
-       feature.geometry().type() == Qgis::GeometryType::Unknown )
+  if ( !feature.hasGeometry() || feature.geometry().type() == Qgis::GeometryType::Null || feature.geometry().type() == Qgis::GeometryType::Unknown )
     return true;
 
   if ( !mSymbol )

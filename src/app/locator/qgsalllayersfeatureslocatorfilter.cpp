@@ -76,13 +76,11 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
       req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QString enhancedSearch = string;
     enhancedSearch.replace( ' ', '%' );
-    req.setFilterExpression( u"%1 ILIKE '%%2%'"_s
-                               .arg( layer->displayExpression(), enhancedSearch ) );
+    req.setFilterExpression( u"%1 ILIKE '%%2%'"_s.arg( layer->displayExpression(), enhancedSearch ) );
     req.setLimit( mMaxResultsPerLayer );
 
     QgsFeatureRequest exactMatchRequest = req;
-    exactMatchRequest.setFilterExpression( u"%1 ILIKE '%2'"_s
-                                             .arg( layer->displayExpression(), enhancedSearch ) );
+    exactMatchRequest.setFilterExpression( u"%1 ILIKE '%2'"_s.arg( layer->displayExpression(), enhancedSearch ) );
     exactMatchRequest.setLimit( mMaxResultsPerLayer );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );

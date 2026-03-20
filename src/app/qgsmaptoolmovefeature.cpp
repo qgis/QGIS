@@ -177,7 +177,8 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         // for extra safety to make sure we are not modifying geometries by accident
 
-        const int res = QMessageBox::warning( mCanvas, tr( "Move features" ), tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ), QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::
+          warning( mCanvas, tr( "Move features" ), tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ), QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           mMovedFeatures.clear();
@@ -242,7 +243,8 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
             if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
             {
-              const QString errorMessage = ( geom.isEmpty() ) ? tr( "The feature cannot be moved because the resulting geometry would be empty" ) : tr( "An error was reported during intersection removal" );
+              const QString errorMessage = ( geom.isEmpty() ) ? tr( "The feature cannot be moved because the resulting geometry would be empty" )
+                                                              : tr( "An error was reported during intersection removal" );
 
               emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
               vlayer->destroyEditCommand();

@@ -291,7 +291,12 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 class GUI_EXPORT QgsProcessingWidgetWrapperUtils
 {
   public:
-    static QgsExpressionContext createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator = nullptr, const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(), const QgsProcessingAlgorithm *algorithm = nullptr, const QgsVectorLayer *linkedLayer = nullptr );
+    static QgsExpressionContext createExpressionContext(
+      QgsProcessingContextGenerator *processingContextGenerator = nullptr,
+      const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(),
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      const QgsVectorLayer *linkedLayer = nullptr
+    );
 };
 ///@endcond
 #endif
@@ -324,7 +329,9 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
      */
-    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsAbstractProcessingParameterWidgetWrapper(
+      const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Returns the dialog type for which widgets and labels will be created by this wrapper.
@@ -593,7 +600,9 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      *
      * \see createWidgetWrapper()
      */
-    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context );
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper(
+      QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context
+    );
 
     /**
      * Creates a new parameter definition widget allowing for configuration of an instance of
@@ -620,10 +629,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \since QGIS 3.10
      */
     virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
-      QgsProcessingContext &context,
-      const QgsProcessingParameterWidgetContext &widgetContext,
-      const QgsProcessingParameterDefinition *definition = nullptr,
-      const QgsProcessingAlgorithm *algorithm = nullptr
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
     ) SIP_FACTORY;
 
   protected:

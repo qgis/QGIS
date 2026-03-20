@@ -27,6 +27,8 @@
 #include <QVector3D>
 #include <Qt3DCore/QGeometry>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //
@@ -38,7 +40,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 namespace Qt3DCore
 {
@@ -138,7 +139,9 @@ class QgsMeshDataset3DGeometry : public QgsMesh3DGeometry
     Q_OBJECT
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshDataset3DGeometry( const QgsTriangularMesh &triangularMesh, QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsRectangle &extent, const QgsMesh3DSymbol *symbol, QNode *parent );
+    explicit QgsMeshDataset3DGeometry(
+      const QgsTriangularMesh &triangularMesh, QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsRectangle &extent, const QgsMesh3DSymbol *symbol, QNode *parent
+    );
 
     //! Data sended to the other thread to consctruct the 3D geometry
     struct VertexData
@@ -177,7 +180,9 @@ class QgsMeshDataset3DGeometryBuilder : public QgsMesh3DGeometryBuilder
     Q_OBJECT
 
   public:
-    QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, const QgsMeshDataset3DGeometry::VertexData &vertexData, QObject *parent );
+    QgsMeshDataset3DGeometryBuilder(
+      const QgsTriangularMesh &mesh, const QgsMesh &nativeMesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, const QgsMeshDataset3DGeometry::VertexData &vertexData, QObject *parent
+    );
     void start() override;
 
   private:

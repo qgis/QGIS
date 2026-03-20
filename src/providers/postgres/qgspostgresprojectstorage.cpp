@@ -109,7 +109,8 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
 
   if ( projectUri.isVersion )
   {
-    sql = u"SELECT content FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ), QgsPostgresConn::quotedValue( projectUri.dateSaved ) );
+    sql = u"SELECT content FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3"_s
+            .arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ), QgsPostgresConn::quotedValue( projectUri.dateSaved ) );
   }
   else
   {
@@ -160,7 +161,9 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   {
     if ( !QgsPostgresUtils::createProjectsTable( conn, projectUri.schemaName ) )
     {
-      QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectUri.connInfo.username() );
+      QString errCause
+        = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." )
+            .arg( projectUri.connInfo.username() );
       context.pushMessage( errCause, Qgis::MessageLevel::Critical );
       QgsPostgresConnPool::instance()->releaseConnection( conn );
       return false;
@@ -170,18 +173,23 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadataExpr = u"(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb"_s.arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
+  QString metadataExpr = u"(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb"_s
+                           .arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
 
   // TODO: would be useful to have QByteArray version of PQexec() to avoid bytearray -> string -> bytearray conversion
   // insert explicitly into name, metadata, content so adding a 'comment' column doesn't break older INSERTs
   QString sql( "INSERT INTO %1.qgis_projects(name, metadata, content) VALUES (%2, %3, E'\\\\x" );
-  sql = sql.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ),
-                 metadataExpr // no need to quote: already quoted
+  sql = sql.arg(
+    QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
+    QgsPostgresConn::quotedValue( projectUri.projectName ),
+    metadataExpr // no need to quote: already quoted
   );
   sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
-  const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
+  const QString errCause
+    = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." )
+        .arg( projectUri.projectName, projectUri.connInfo.username() );
 
   QgsPostgresResult res( conn->PQexec( sql ) );
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -195,11 +203,9 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   // the comment is stored only in PG DB and project does not have access to it
   if ( projectUri.isVersion && !projectUri.dateSaved.isEmpty() )
   {
-    const QString sqlSetComment = u"UPDATE %1.qgis_projects SET comment = (SELECT comment FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3 ) WHERE name = %2"_s.arg(
-      QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
-      QgsPostgresConn::quotedValue( projectUri.projectName ),
-      QgsPostgresConn::quotedValue( projectUri.dateSaved )
-    );
+    const QString sqlSetComment
+      = u"UPDATE %1.qgis_projects SET comment = (SELECT comment FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3 ) WHERE name = %2"_s
+          .arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ), QgsPostgresConn::quotedValue( projectUri.dateSaved ) );
 
     QgsPostgresResult resComment( conn->PQexec( sqlSetComment ) );
     if ( resComment.PQresultStatus() != PGRES_COMMAND_OK )

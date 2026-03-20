@@ -32,7 +32,6 @@ class QgsMapLayer;
 class CORE_EXPORT QgsElevationUtils
 {
   public:
-
     /**
      * Calculates the elevation range for a \a project.
      *
@@ -75,7 +74,6 @@ class CORE_EXPORT QgsElevationUtils
      * \since QGIS 3.32
      */
     static bool enableElevationForLayer( QgsMapLayer *layer );
-
 };
 
 

@@ -68,12 +68,10 @@ void TestQgsPointCloudRendererRegistry::cleanupTestCase()
 }
 
 void TestQgsPointCloudRendererRegistry::init()
-{
-}
+{}
 
 void TestQgsPointCloudRendererRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsPointCloudRendererRegistry::metadata()
 {

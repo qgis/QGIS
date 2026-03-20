@@ -20,6 +20,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
 #include <QString>
@@ -53,9 +54,9 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), u"bilinear"_s );
   mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), u"cubic"_s );
 
-  QString zoomedInResampling = settings.value( u"/Raster/defaultZoomedInResampling"_s, u"nearest neighbour"_s ).toString();
+  QString zoomedInResampling = QgsRasterLayer::settingsRasterDefaultZoomedInResampling->value();
   mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
-  QString zoomedOutResampling = settings.value( u"/Raster/defaultZoomedOutResampling"_s, u"nearest neighbour"_s ).toString();
+  QString zoomedOutResampling = QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->value();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
 
   spnOversampling->setValue( QgsRasterLayer::settingsRasterDefaultOversampling->value() );
@@ -92,8 +93,8 @@ void QgsRasterRenderingOptionsWidget::apply()
   settings.setValue( u"/Raster/defaultGreenBand"_s, spnGreen->value() );
   settings.setValue( u"/Raster/defaultBlueBand"_s, spnBlue->value() );
 
-  settings.setValue( u"/Raster/defaultZoomedInResampling"_s, mZoomedInResamplingComboBox->currentData().toString() );
-  settings.setValue( u"/Raster/defaultZoomedOutResampling"_s, mZoomedOutResamplingComboBox->currentData().toString() );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->setValue( mZoomedInResamplingComboBox->currentData().toString() );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->setValue( mZoomedOutResamplingComboBox->currentData().toString() );
 
   QgsRasterLayer::settingsRasterDefaultOversampling->setValue( spnOversampling->value() );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->setValue( mCbEarlyResampling->isChecked() );
@@ -159,8 +160,7 @@ void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const Q
 //
 QgsRasterRenderingOptionsFactory::QgsRasterRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Raster" ), QIcon(), u"raster"_s )
-{
-}
+{}
 
 QIcon QgsRasterRenderingOptionsFactory::icon() const
 {

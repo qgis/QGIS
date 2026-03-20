@@ -18,8 +18,7 @@
 #include "qgsabstractmaterialsettings.h"
 
 QgsMaterialRegistry::QgsMaterialRegistry()
-{
-}
+{}
 
 QgsMaterialRegistry::~QgsMaterialRegistry()
 {

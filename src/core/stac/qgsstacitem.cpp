@@ -19,20 +19,15 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacItem::QgsStacItem( const QString &id,
-                          const QString &version,
-                          const QgsGeometry &geometry,
-                          const QVariantMap &properties,
-                          const QVector< QgsStacLink > &links,
-                          const QMap< QString, QgsStacAsset > &assets,
-                          const QgsBox3D &bbox )
+QgsStacItem::QgsStacItem(
+  const QString &id, const QString &version, const QgsGeometry &geometry, const QVariantMap &properties, const QVector< QgsStacLink > &links, const QMap< QString, QgsStacAsset > &assets, const QgsBox3D &bbox
+)
   : QgsStacObject( id, version, links )
-  ,  mGeometry( geometry )
-  ,  mBbox( bbox )
-  ,  mProperties( properties )
-  ,  mAssets( assets )
-{
-}
+  , mGeometry( geometry )
+  , mBbox( bbox )
+  , mProperties( properties )
+  , mAssets( assets )
+{}
 
 Qgis::StacObjectType QgsStacItem::type() const
 {
@@ -69,7 +64,7 @@ QString QgsStacItem::toHtml() const
   html += u"<li>%1</li>\n"_s.arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
   html += "</ul>\n"_L1;
 
-  if ( ! mProperties.isEmpty() )
+  if ( !mProperties.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Properties"_L1 );
     html += "<table class=\"list-view\">\n"_L1;
@@ -91,7 +86,7 @@ QString QgsStacItem::toHtml() const
     html += "</table><br/>\n"_L1;
   }
 
-  if ( ! mAssets.isEmpty() )
+  if ( !mAssets.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
@@ -159,8 +154,7 @@ QDateTime QgsStacItem::dateTime() const
 
 bool QgsStacItem::hasDateTimeRange() const
 {
-  return mProperties.contains( u"start_datetime"_s ) &&
-         mProperties.contains( u"end_datetime"_s );
+  return mProperties.contains( u"start_datetime"_s ) && mProperties.contains( u"end_datetime"_s );
 }
 
 QgsDateTimeRange QgsStacItem::dateTimeRange() const

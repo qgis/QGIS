@@ -86,8 +86,7 @@ void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 
 QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget *parent )
   : QWidget( parent )
-{
-}
+{}
 
 void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
 {
@@ -107,10 +106,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == Qgis::BrowserItemType::Layer
-            || item->type() == Qgis::BrowserItemType::Custom
-            || item->type() == Qgis::BrowserItemType::Fields
-            || item->type() == Qgis::BrowserItemType::Field )
+  else if ( item->type() == Qgis::BrowserItemType::Layer || item->type() == Qgis::BrowserItemType::Custom || item->type() == Qgis::BrowserItemType::Fields || item->type() == Qgis::BrowserItemType::Field )
   {
     // try new infrastructure of creation of layer widgets
     QWidget *paramWidget = nullptr;
@@ -298,8 +294,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 }
 
 void QgsBrowserLayerProperties::setCondensedMode( bool )
-{
-}
+{}
 
 void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 {

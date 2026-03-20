@@ -221,22 +221,6 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         self.requestModelRepaint.emit()
         self.changed.emit()
 
-        res, errors = self.model().validateChildAlgorithm(alg.childId())
-        if not res:
-            self.scene().showWarning(
-                QCoreApplication.translate(
-                    "ModelerGraphicItem", "Algorithm “{}” is invalid"
-                ).format(alg.description()),
-                self.tr("Algorithm is Invalid"),
-                QCoreApplication.translate(
-                    "ModelerGraphicItem",
-                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
-                ).format(alg.description(), "</li><li>".join(errors)),
-                level=Qgis.MessageLevel.Warning,
-            )
-        else:
-            self.scene().messageBar().clearWidgets()
-
     def editComponent(self):
         self.edit()
 

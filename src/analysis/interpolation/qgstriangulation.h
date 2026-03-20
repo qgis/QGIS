@@ -26,11 +26,12 @@
 #include <QList>
 #include <QPainter>
 
+#define SIP_NO_FILE
+
 class QgsFeatureSink;
 class QgsFields;
 class QgsFeedback;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

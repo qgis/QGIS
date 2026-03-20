@@ -16,7 +16,6 @@
 #ifndef QGSMAPTOOLEDITBLANKSEGMENTS_H
 #define QGSMAPTOOLEDITBLANKSEGMENTS_H
 
-#define SIP_NO_FILE
 
 #include "qgsfeatureid.h"
 #include "qgslinesymbollayer.h"
@@ -25,6 +24,8 @@
 #include "qgsrubberband.h"
 #include "qgssymbol.h"
 #include "qobjectuniqueptr.h"
+
+#define SIP_NO_FILE
 
 class QgsMapToolBlankSegmentRubberBand;
 class QgsVectorLayer;
@@ -180,8 +181,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
  * layer type (QgsMarkerLineSymbolLayer and QgsHashedLineSymbolLayer).
  * \since QGIS 4.0
 */
-template<class T>
-class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapToolEditBlankSegmentsBase
+template<class T> class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapToolEditBlankSegmentsBase
 {
   public:
     /**
@@ -193,8 +193,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapToolEditBlankSegment
      */
     QgsMapToolEditBlankSegments( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
       : QgsMapToolEditBlankSegmentsBase( canvas, layer, symbolLayer, blankSegmentFieldIndex )
-    {
-    }
+    {}
 
     QgsTemplatedLineSymbolLayerBase *createRenderedPointsSymbolLayer( const QgsTemplatedLineSymbolLayerBase *originalSl ) override
     {

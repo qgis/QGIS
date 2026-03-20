@@ -51,7 +51,8 @@ const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = u"OAPIF"_s;
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = u"OGC API - Features data provider"_s;
 
 QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
-  : QgsVectorDataProvider( uri, options, flags ), mShared( new QgsOapifSharedData( uri ) )
+  : QgsVectorDataProvider( uri, options, flags )
+  , mShared( new QgsOapifSharedData( uri ) )
 {
   connect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
   connect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
@@ -80,8 +81,7 @@ QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &o
 }
 
 QgsOapifProvider::~QgsOapifProvider()
-{
-}
+{}
 
 bool QgsOapifProvider::init()
 {
@@ -181,10 +181,17 @@ bool QgsOapifProvider::init()
     const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
     implementsPart2 = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"_L1 );
 
-    const bool implementsCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text"_L1 ) );
-    mShared->mServerSupportsFilterCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter"_L1 ) ) && implementsCql2Text;
-    mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators"_L1 ) );
-    mShared->mServerSupportsCaseI = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison"_L1 ) );
+    const bool implementsCql2Text
+      = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text"_L1 ) );
+    mShared->mServerSupportsFilterCql2Text
+      = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2"_L1 ) )
+        && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter"_L1 ) )
+        && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter"_L1 ) )
+        && implementsCql2Text;
+    mShared->mServerSupportsLikeBetweenIn
+      = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators"_L1 ) );
+    mShared->mServerSupportsCaseI
+      = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison"_L1 ) );
     mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions"_L1 ) ||
                                                       // Two below names are deprecated
                                                       conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators"_L1 ) );
@@ -214,9 +221,7 @@ bool QgsOapifProvider::init()
   }
   else
   {
-    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-      OAPIF_PROVIDER_DEFAULT_CRS
-    );
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
   }
   mShared->mCapabilityExtent = collectionDesc.mBbox;
 
@@ -285,8 +290,7 @@ bool QgsOapifProvider::init()
   else
     tenFeaturesRequestUrl += '&'_L1;
   tenFeaturesRequestUrl += "limit=10"_L1;
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
     tenFeaturesRequestUrl += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
@@ -313,9 +317,7 @@ bool QgsOapifProvider::init()
     mShared->mCapabilityExtent = itemsRequest.bbox();
     if ( !mShared->mCapabilityExtent.isNull() )
     {
-      QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-        OAPIF_PROVIDER_DEFAULT_CRS
-      );
+      QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS );
       if ( defaultCrs != mShared->mSourceCrs )
       {
         QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
@@ -368,11 +370,19 @@ bool QgsOapifProvider::init()
         QgsMessageLog::logMessage( QObject::tr( "Cannot parse XML schema for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
       }
       else if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
-                  QObject::tr( "OAPIF" ), mShared.get(), mCapabilities,
-                  describeFeatureDocument, response, /* singleLayerContext = */ true,
-                  mShared->mURI.typeName(), mShared->mGeometryAttribute,
-                  mShared->mFields, mShared->mWKBType, geometryMaybeMissing,
-                  errorMsg, metadataRetrievalCanceled
+                  QObject::tr( "OAPIF" ),
+                  mShared.get(),
+                  mCapabilities,
+                  describeFeatureDocument,
+                  response,
+                  /* singleLayerContext = */ true,
+                  mShared->mURI.typeName(),
+                  mShared->mGeometryAttribute,
+                  mShared->mFields,
+                  mShared->mWKBType,
+                  geometryMaybeMissing,
+                  errorMsg,
+                  metadataRetrievalCanceled
                 ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Analysis of XML schema failed for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
@@ -607,7 +617,10 @@ bool QgsOapifProvider::empty() const
   return !getFeatures( request ).nextFeature( f );
 };
 
-QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryAttribute; }
+QString QgsOapifProvider::geometryColumnName() const
+{
+  return mShared->mGeometryAttribute;
+}
 
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
@@ -707,8 +720,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QStringList jsonIds;
   QString contentCrs;
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -791,8 +803,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 {
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -853,8 +864,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 {
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+  if ( mShared->mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -974,7 +984,8 @@ QList<Qgis::LayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
 }
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata()
-  : QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}
+  : QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION )
+{}
 
 QIcon QgsOapifProviderMetadata::icon() const
 {

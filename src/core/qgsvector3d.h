@@ -37,14 +37,22 @@ class CORE_EXPORT QgsVector3D
 
     //! Constructs a vector from given coordinates
     QgsVector3D( double x, double y, double z )
-      : mX( x ), mY( y ), mZ( z ) {}
+      : mX( x )
+      , mY( y )
+      , mZ( z )
+    {}
 
     //! Constructs a vector from single-precision QVector3D
     QgsVector3D( const QVector3D &v )
-      : mX( v.x() ), mY( v.y() ), mZ( v.z() ) {}
+      : mX( v.x() )
+      , mY( v.y() )
+      , mZ( v.z() )
+    {}
 
+    // clang-format off
     //! Returns TRUE if all three coordinates are zero
     bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
+    // clang-format on
 
     //! Returns X coordinate
     double x() const SIP_HOLDGIL { return mX; }
@@ -225,11 +233,13 @@ class CORE_EXPORT QgsVector3D
     QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsVector3D: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
   private:
     double mX = 0, mY = 0, mZ = 0;

@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 int QgsRangeWidgetWrapper::defaultFieldPrecision( const QgsField &field )
 {
@@ -93,8 +92,7 @@ QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
   return editor;
 }
 
-template<class T>
-static void setupIntEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
+template<class T> static void setupIntEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
 {
   // must use a template function because those methods are overloaded and not inherited by some classes
   slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );
@@ -103,8 +101,7 @@ static void setupIntEditor( const QVariant &min, const QVariant &max, const QVar
   QObject::connect( slider, qOverload<int>( &T::valueChanged ), wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
 }
 
-template<class T>
-static void setupVariantEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
+template<class T> static void setupVariantEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
 {
   // must use a template function because those methods are overloaded and not inherited by some classes
   slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );

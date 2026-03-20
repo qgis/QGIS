@@ -21,11 +21,11 @@
 
 #include <QColor>
 
+#define SIP_NO_FILE
+
 class QTreeWidgetItem;
 class QWidget;
 class QgsMessageBar;
-
-#define SIP_NO_FILE
 
 
 /**

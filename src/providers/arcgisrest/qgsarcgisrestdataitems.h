@@ -56,6 +56,10 @@ class QgsArcGisRestConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisRestConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName );
+
+    using QgsDataCollectionItem::refresh;
+    void refresh() override;
+
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
     QString url() const;
@@ -64,6 +68,7 @@ class QgsArcGisRestConnectionItem : public QgsDataCollectionItem
     QString mConnName;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -77,7 +82,9 @@ class QgsArcGisPortalGroupsItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
+    QgsArcGisPortalGroupsItem(
+      QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint, bool forceRefresh
+    );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -87,6 +94,7 @@ class QgsArcGisPortalGroupsItem : public QgsDataCollectionItem
     QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -99,7 +107,17 @@ class QgsArcGisPortalGroupItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
+    QgsArcGisPortalGroupItem(
+      QgsDataItem *parent,
+      const QString &groupId,
+      const QString &name,
+      const QString &authcfg,
+      const QgsHttpHeaders &headers,
+      const QString &urlPrefix,
+      const QString &communityEndpoint,
+      const QString &contentEndpoint,
+      bool forceRefresh
+    );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -110,6 +128,7 @@ class QgsArcGisPortalGroupItem : public QgsDataCollectionItem
     QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
+    bool mForceRefresh = false;
 };
 
 
@@ -124,7 +143,7 @@ class QgsArcGisRestServicesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix );
+    QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, bool forceRefresh );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -135,6 +154,7 @@ class QgsArcGisRestServicesItem : public QgsDataCollectionItem
     QString mUrlPrefix;
     QString mPortalCommunityEndpoint;
     QString mPortalContentEndpoint;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -147,7 +167,9 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisRestFolderItem(
+      QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, bool forceRefresh
+    );
     void setSupportedFormats( const QString &formats );
 
     QVector<QgsDataItem *> createChildren() override;
@@ -160,6 +182,7 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
     QString mSupportedFormats;
+    bool mForceRefresh = false;
 };
 
 
@@ -173,7 +196,9 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisFeatureServiceItem(
+      QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, bool forceRefresh
+    );
     void setSupportedFormats( const QString &formats );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
@@ -185,6 +210,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
     QString mSupportedFormats;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -197,7 +223,17 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, Qgis::ArcGisRestServiceType serviceType );
+    QgsArcGisMapServiceItem(
+      QgsDataItem *parent,
+      const QString &name,
+      const QString &path,
+      const QString &baseUrl,
+      const QString &authcfg,
+      const QgsHttpHeaders &headers,
+      const QString &urlPrefix,
+      Qgis::ArcGisRestServiceType serviceType,
+      bool forceRefresh
+    );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -208,6 +244,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
     Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -220,7 +257,9 @@ class QgsArcGisSceneServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisSceneServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisSceneServiceItem(
+      QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, bool forceRefresh
+    );
     void setSupportedFormats( const QString &formats );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
@@ -232,6 +271,7 @@ class QgsArcGisSceneServiceItem : public QgsDataCollectionItem
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
     QString mSupportedFormats;
+    bool mForceRefresh = false;
 };
 
 /**
@@ -278,7 +318,16 @@ class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
     Q_OBJECT
 
   public:
-    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType );
+    QgsArcGisFeatureServiceLayerItem(
+      QgsDataItem *parent,
+      const QString &url,
+      const QString &title,
+      const QgsCoordinateReferenceSystem &crs,
+      const QString &authcfg,
+      const QgsHttpHeaders &headers,
+      const QString urlPrefix,
+      Qgis::BrowserLayerType geometryType
+    );
 };
 
 /**
@@ -290,7 +339,17 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
     Q_OBJECT
 
   public:
-    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisMapServiceLayerItem(
+      QgsDataItem *parent,
+      const QString &url,
+      const QString &id,
+      const QString &title,
+      const QgsCoordinateReferenceSystem &crs,
+      const QString &format,
+      const QString &authcfg,
+      const QgsHttpHeaders &headers,
+      const QString &urlPrefix
+    );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
@@ -306,7 +365,9 @@ class QgsArcGisSceneServiceLayerItem : public QgsArcGisRestLayerItem
     Q_OBJECT
 
   public:
-    QgsArcGisSceneServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix );
+    QgsArcGisSceneServiceLayerItem(
+      QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix
+    );
 };
 
 //! Provider for ArcGIS REST root data item

@@ -20,7 +20,6 @@ comma-separated list.
 #include "qgslistfieldformatter.h"
 %End
   public:
-
     QgsListFieldFormatter();
     virtual QString id() const;
 

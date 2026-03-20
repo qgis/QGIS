@@ -59,7 +59,6 @@ Abstract base class for annotation items which are drawn with
     }
 %End
   public:
-
     QgsAnnotationItem();
 
 
@@ -420,7 +419,6 @@ Sets the ``unit`` for the
 %End
 
   protected:
-
     virtual void copyCommonProperties( const QgsAnnotationItem *other );
 %Docstring
 Copies common properties from the base class from an ``other`` item.

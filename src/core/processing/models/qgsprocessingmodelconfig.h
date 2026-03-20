@@ -38,7 +38,6 @@ class QgsMapLayerStore;
 class CORE_EXPORT QgsProcessingModelInitialRunConfig
 {
   public:
-
     QgsProcessingModelInitialRunConfig();
     ~QgsProcessingModelInitialRunConfig();
 
@@ -147,15 +146,12 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
     void setPreviousLayerStore( std::unique_ptr< QgsMapLayerStore > store );
 
   private:
-
     QSet<QString> mChildAlgorithmSubset;
     QVariantMap mInitialChildInputs;
     QVariantMap mInitialChildOutputs;
     QSet< QString > mPreviouslyExecutedChildren;
 
     std::unique_ptr< QgsMapLayerStore > mModelInitialLayerStore;
-
-
 };
 
 #endif // QGSPROCESSINGMODELCONFIG_H

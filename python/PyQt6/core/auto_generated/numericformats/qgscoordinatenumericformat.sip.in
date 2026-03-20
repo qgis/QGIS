@@ -23,7 +23,6 @@ coordinate (latitude or longitude).
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class AngleFormat
     {
       DegreesMinutesSeconds,

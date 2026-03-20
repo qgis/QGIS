@@ -54,6 +54,7 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( Qgis::CaptureTechnique techni
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
     case Qgis::CaptureTechnique::NurbsCurve:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
@@ -94,7 +95,8 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
         }
         else
         {
-          emit messageEmitted( tr( "The digitized geometry type (%1) does not correspond to the layer geometry type (%2)." ).arg( QgsWkbTypes::displayString( layerGeometry.wkbType() ), QgsWkbTypes::displayString( layerWKBType ) ), Qgis::MessageLevel::Warning );
+          emit
+            messageEmitted( tr( "The digitized geometry type (%1) does not correspond to the layer geometry type (%2)." ).arg( QgsWkbTypes::displayString( layerGeometry.wkbType() ), QgsWkbTypes::displayString( layerWKBType ) ), Qgis::MessageLevel::Warning );
         }
         return;
       }

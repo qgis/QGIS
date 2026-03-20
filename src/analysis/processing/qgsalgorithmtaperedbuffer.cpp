@@ -85,8 +85,10 @@ bool QgsTaperedBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
 QString QgsTaperedBufferAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates tapered buffers along line geometries, using a specified start and "
-                      "end buffer diameter corresponding to the buffer diameter at the start and end of the linestrings." );
+  return QObject::tr(
+    "This algorithm creates tapered buffers along line geometries, using a specified start and "
+    "end buffer diameter corresponding to the buffer diameter at the start and end of the linestrings."
+  );
 }
 
 QString QgsTaperedBufferAlgorithm::shortDescription() const
@@ -206,14 +208,18 @@ bool QgsVariableWidthBufferByMAlgorithm::prepareAlgorithm( const QVariantMap &pa
 
 QString QgsVariableWidthBufferByMAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates variable width buffers along lines, using the M value of the line geometries "
-                      "as the diameter of the buffer at each vertex." );
+  return QObject::tr(
+    "This algorithm creates variable width buffers along lines, using the M value of the line geometries "
+    "as the diameter of the buffer at each vertex."
+  );
 }
 
 QString QgsVariableWidthBufferByMAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates variable width buffers along lines, using the M value of the line geometries "
-                      "as the diameter of the buffer at each vertex." );
+  return QObject::tr(
+    "Creates variable width buffers along lines, using the M value of the line geometries "
+    "as the diameter of the buffer at each vertex."
+  );
 }
 
 QList<int> QgsVariableWidthBufferByMAlgorithm::inputLayerTypes() const

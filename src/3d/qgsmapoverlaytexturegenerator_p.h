@@ -27,11 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgsrectangle.h"
 
 #include <QObject>
+
+#define SIP_NO_FILE
 
 class Qgs3DMapSettings;
 class QgsMapRendererParallelJob;

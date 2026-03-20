@@ -27,13 +27,14 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgsmapsettings.h"
 #include "qgsoverlaytextureentity.h"
 #include "qgsrectangle.h"
 
 #include <Qt3DRender/QTextureImageDataPtr>
+
+#define SIP_NO_FILE
 
 class Qgs3DMapSettings;
 class QgsOverlayTextureRenderView;

@@ -23,7 +23,6 @@ or label rule).
 #include "qgsselectivemaskingsource.h"
 %End
   public:
-
     QgsSelectiveMaskSource();
 %Docstring
 Constructor for an invalid QgsSelectiveMaskSource.
@@ -108,7 +107,7 @@ Sets the symbol layer or label rule ``id``.
     }
 %End
 
-    bool operator==( const QgsSelectiveMaskSource &other ) const;
+      bool operator==( const QgsSelectiveMaskSource &other ) const;
     bool operator!=( const QgsSelectiveMaskSource &other ) const;
 
 };

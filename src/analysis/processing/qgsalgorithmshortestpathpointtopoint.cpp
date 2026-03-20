@@ -63,9 +63,12 @@ void QgsShortestPathPointToPointAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork
+    = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
   maxEndPointDistanceFromNetwork->setFlags( maxEndPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  maxEndPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the start and end points to the network layer. If either point is further from the network than this distance an error will be raised." ) );
+  maxEndPointDistanceFromNetwork->setHelp(
+    QObject::tr( "Specifies an optional limit on the distance from the start and end points to the network layer. If either point is further from the network than this distance an error will be raised." )
+  );
   addParameter( maxEndPointDistanceFromNetwork.release() );
 
   addOutput( new QgsProcessingOutputNumber( u"TRAVEL_COST"_s, QObject::tr( "Travel cost" ) ) );

@@ -17,7 +17,6 @@
 #define QGSLAYOUTADDPAGESDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutnewpagedialog.h"
 
@@ -27,6 +26,8 @@
 #include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui

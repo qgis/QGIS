@@ -78,7 +78,6 @@ Converts a QVariant value (a QVariantMap) to a single input layer
 %Docstring
 Converts a single input layer to QVariant representation (a QVariantMap)
 %End
-
 };
 
 

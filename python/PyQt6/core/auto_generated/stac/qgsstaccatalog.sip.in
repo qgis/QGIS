@@ -22,10 +22,7 @@ Class for storing a STAC Catalog's data.
 %End
   public:
 
-    QgsStacCatalog( const QString &id,
-                    const QString &version,
-                    const QString &description,
-                    const QVector< QgsStacLink > &links );
+    QgsStacCatalog( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links );
 %Docstring
 Constructs a valid QgsStacCatalog
 

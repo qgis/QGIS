@@ -2204,6 +2204,100 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         )  # test credentials always return valid credentials so it's valid, but we don't care
         self.assertEqual(credentials.nbCall, 2)
 
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("oracle")
+
+        uri1_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "service": "MY_SERVICE",
+            "port": "2222",
+            "dbworkspace": "MY_WORKSPACE",
+            "schema": "schema1",
+            "table": "table1",
+        }
+        uri2_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "service": "MY_SERVICE",
+            "port": "2222",
+            "dbworkspace": "MY_WORKSPACE",
+            "schema": "schema2",
+            "table": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["host"] = "MY_HOST2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["host"] = "MY_HOST"
+        uri2_parts["dbname"] = "MY_DB2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["dbname"] = "MY_DB"
+        uri2_parts["service"] = "MY_SERVICE2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["service"] = "MY_SERVICE"
+        uri2_parts["port"] = "3333"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["port"] = "2222"
+        uri2_parts["dbworkspace"] = "MY_WORKSPACE2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["dbworkspace"] = "MY_WORKSPACE"
+        uri2_parts["schema"] = "schema1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+        uri2_parts["table"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

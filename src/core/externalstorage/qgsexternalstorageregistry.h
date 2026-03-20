@@ -36,7 +36,6 @@ class QgsExternalStorage;
 class CORE_EXPORT QgsExternalStorageRegistry
 {
   public:
-
     /**
      * Constructor - creates a registry of external storage backends
      */

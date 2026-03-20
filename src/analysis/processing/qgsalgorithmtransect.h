@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMTRANSECT_H
 #define QGSALGORITHMTRANSECT_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsalgorithmtransectbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -39,10 +40,8 @@ class QgsTransectAlgorithm : public QgsTransectAlgorithmBase
 
   private:
     void addAlgorithmParams() override;
-    bool
-      prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    std::vector<QgsPoint>
-      generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) override;
+    bool prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    std::vector<QgsPoint> generateSamplingPoints( const QgsLineString &line, const QVariantMap &parameters, QgsProcessingContext &context ) override;
     double calculateAzimuth( const QgsLineString &line, const QgsPoint &point, int pointIndex ) override;
 };
 

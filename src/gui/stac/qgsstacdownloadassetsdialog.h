@@ -17,13 +17,14 @@
 #define QGSSTACDOWNLOADASSETSDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgsstacdownloadassetsdialog.h"
 
 #include "qgsstacitem.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsMessageBar;
 

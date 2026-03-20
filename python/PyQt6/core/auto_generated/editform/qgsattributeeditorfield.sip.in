@@ -17,7 +17,6 @@ This element will load a field's widget onto the form.
 #include "qgsattributeeditorfield.h"
 %End
   public:
-
     QgsAttributeEditorField( const QString &name, int idx, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new attribute editor element which represents a field
@@ -36,7 +35,6 @@ Returns the index of the field.
 
 
 };
-
 
 
 /************************************************************************

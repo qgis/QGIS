@@ -114,7 +114,9 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single );
+    QgsProcessingAlgorithmDialogBase(
+      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), QgsProcessingAlgorithmDialogBase::DialogMode mode = QgsProcessingAlgorithmDialogBase::DialogMode::Single
+    );
     ~QgsProcessingAlgorithmDialogBase() override;
 
     /**

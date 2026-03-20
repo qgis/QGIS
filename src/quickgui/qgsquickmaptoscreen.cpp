@@ -21,8 +21,7 @@
 
 QgsQuickMapToScreen::QgsQuickMapToScreen( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 void QgsQuickMapToScreen::setMapSettings( QgsQuickMapSettings *mapSettings )
 {

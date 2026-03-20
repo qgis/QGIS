@@ -40,8 +40,7 @@ class TestQgsProjectStorage : public QObject
 };
 
 void TestQgsProjectStorage::init()
-{
-}
+{}
 
 void TestQgsProjectStorage::cleanup()
 {
@@ -73,10 +72,7 @@ void TestQgsProjectStorage::cleanupTestCase()
 class MemoryStorage : public QgsProjectStorage
 {
   public:
-    QString type() override
-    {
-      return u"memory"_s;
-    }
+    QString type() override { return u"memory"_s; }
 
     QStringList listProjects( const QString &uri ) override
     {

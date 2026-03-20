@@ -19,7 +19,6 @@
 #define QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgspdfexportoptions.h"
 
@@ -27,6 +26,8 @@
 #include "qgis_gui.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsGeospatialPdfLayerTreeModel;
 class QgsGeospatialPdfLayerFilteredTreeModel;
@@ -52,7 +53,13 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
      * will instead be appended to the end of the geospatial PDF layer list
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, bool allowGeospatialPdfExport = true, const QString &geospatialPdfReason = QString(), const QStringList &geospatialPdfLayerOrder = QStringList(), Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsLayoutPdfExportOptionsDialog(
+      QWidget *parent = nullptr,
+      bool allowGeospatialPdfExport = true,
+      const QString &geospatialPdfReason = QString(),
+      const QStringList &geospatialPdfLayerOrder = QStringList(),
+      Qt::WindowFlags flags = Qt::WindowFlags()
+    );
 
     //! Sets the text render format
     void setTextRenderFormat( Qgis::TextRenderFormat format );
@@ -91,6 +98,22 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
     //! Returns whether Geospatial PDF export is enabled
     bool exportGeospatialPdf() const;
 
+    /**
+     * Sets whether to use QGIS layer tree config to export a Geospatial PDF.
+     *
+     * If disabled, a custom configuration will be used.
+     */
+    void setUseLayerTreeConfig( bool enabled );
+    //! Returns whether to use QGIS layer tree config to export a Geospatial PDF
+    bool useLayerTreeConfig() const;
+    /**
+     * Disables the option to follow QGIS layer tree configuration from the GUI.
+     *
+     * That option should be disabled if all map items in the layout follow
+     * either map themes or locked layers.
+     */
+    void disableUseLayerTreeConfig();
+
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
@@ -109,6 +132,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
 
   private slots:
 
+    void toggleLayerTreeConfig();
     void showHelp();
     void showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index );
 

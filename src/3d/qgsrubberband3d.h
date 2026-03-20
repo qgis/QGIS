@@ -16,7 +16,6 @@
 #ifndef QGSRUBBERBAND3D_H
 #define QGSRUBBERBAND3D_H
 
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
@@ -34,6 +33,8 @@
 #include "qobjectuniqueptr.h"
 
 #include <QColor>
+
+#define SIP_NO_FILE
 
 class QgsGeometry;
 class QgsAbstract3DEngine;

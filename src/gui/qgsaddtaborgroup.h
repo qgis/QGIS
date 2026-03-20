@@ -20,14 +20,16 @@
 #define QGSADDTABORGROUP
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsaddtaborgroupbase.h"
 
 #include "qgis_gui.h"
 #include "qgsguiutils.h"
 
+#define SIP_NO_FILE
+
 class QgsVectorLayer;
+class QgsSettingsEntryInteger;
 
 /**
  * \ingroup gui
@@ -78,6 +80,12 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
   protected:
     QgsVectorLayer *mLayer = nullptr;
     QList<ContainerPair> mExistingContainers;
+
+  public:
+    //! Settings entry for the default column count for tab containers \since QGIS 4.0.1
+    static const QgsSettingsEntryInteger *settingsDefaultTabColumnCount;
+    //! Settings entry for the default column count for group box containers \since QGIS 4.0.1
+    static const QgsSettingsEntryInteger *settingsDefaultGroupColumnCount;
 };
 
 #endif

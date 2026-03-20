@@ -21,8 +21,7 @@
 
 QgsProcessingAlgorithmConfigurationWidget::QgsProcessingAlgorithmConfigurationWidget( QWidget *parent )
   : QWidget( parent )
-{
-}
+{}
 
 void QgsProcessingAlgorithmConfigurationWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {

@@ -55,9 +55,7 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { createPreview( index ); } );
   connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#edit-widgets"_s );
-  } );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#edit-widgets"_s ); } );
 }
 
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
@@ -102,8 +100,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   {
     const QVariant val1 = f.attribute( idx );
     const QVariant val2 = f.attribute( idx2 );
-    if ( val1.isValid() && !QgsVariantUtils::isNull( val1 ) && !val1.toString().isEmpty()
-         && val2.isValid() && !QgsVariantUtils::isNull( val2 ) && !val2.toString().isEmpty() )
+    if ( val1.isValid() && !QgsVariantUtils::isNull( val1 ) && !val1.toString().isEmpty() && val2.isValid() && !QgsVariantUtils::isNull( val2 ) && !val2.toString().isEmpty() )
     {
       valueMap.insert( val1.toString(), val2.toString() );
     }

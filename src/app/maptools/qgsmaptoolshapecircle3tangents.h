@@ -43,7 +43,8 @@ class QgsMapToolShapeCircle3Tangents : public QgsMapToolShapeCircleAbstract
 
   public:
     QgsMapToolShapeCircle3Tangents( QgsMapToolCapture *parentTool )
-      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID, parentTool ) {}
+      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID, parentTool )
+    {}
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

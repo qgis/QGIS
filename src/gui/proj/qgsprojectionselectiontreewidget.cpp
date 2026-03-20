@@ -474,8 +474,7 @@ void QgsProjectionSelectionTreeWidget::lstRecentClicked( const QModelIndex &inde
 }
 
 void QgsProjectionSelectionTreeWidget::pushProjectionToFront()
-{
-}
+{}
 
 void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 {
@@ -488,11 +487,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   mAreaCanvas->setPreviewRect( rect );
   if ( !rect.isNull() && !rect.isEmpty() )
   {
-    extentString = u"%1, %2, %3, %4"_s
-                     .arg( rect.xMinimum(), 0, 'f', 2 )
-                     .arg( rect.yMinimum(), 0, 'f', 2 )
-                     .arg( rect.xMaximum(), 0, 'f', 2 )
-                     .arg( rect.yMaximum(), 0, 'f', 2 );
+    extentString = u"%1, %2, %3, %4"_s.arg( rect.xMinimum(), 0, 'f', 2 ).arg( rect.yMinimum(), 0, 'f', 2 ).arg( rect.xMaximum(), 0, 'f', 2 ).arg( rect.yMaximum(), 0, 'f', 2 );
   }
 
   QStringList properties;
@@ -513,8 +508,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
 
   try
   {
@@ -537,8 +531,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-  }
+  {}
 
   const QgsProjOperation operation = currentCrs.operation();
   properties << tr( "Method: %1" ).arg( operation.description() );
@@ -546,7 +539,8 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   const QString propertiesString = u"<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>"_s.arg( tr( "Properties" ), properties.join( "</li><li>"_L1 ) );
 
   const QString extentHtml = u"<dt><b>%1</b></dt><dd>%2</dd>"_s.arg( tr( "Extent" ), extentString );
-  const QString wktString = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', "<br>"_L1 ).replace( ' ', "&nbsp;"_L1 ) );
+  const QString wktString
+    = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', "<br>"_L1 ).replace( ' ', "&nbsp;"_L1 ) );
   const QString proj4String = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN
@@ -573,7 +567,8 @@ void QgsProjectionSelectionTreeWidget::clearRecentCrs()
   }
 
   // Ask for confirmation
-  if ( QMessageBox::question( this, tr( "Clear Recent CRS" ), tr( "Are you sure you want to clear the list of recently used coordinate reference system?" ), QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Clear Recent CRS" ), tr( "Are you sure you want to clear the list of recently used coordinate reference system?" ), QMessageBox::Yes | QMessageBox::No )
+       != QMessageBox::Yes )
   {
     return;
   }
@@ -672,8 +667,7 @@ QVariant QgsRecentCoordinateReferenceSystemTableModel::data( const QModelIndex &
 
 RemoveRecentCrsDelegate::RemoveRecentCrsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 bool RemoveRecentCrsDelegate::eventFilter( QObject *obj, QEvent *event )
 {

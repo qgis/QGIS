@@ -57,10 +57,12 @@ QString QgsBoundaryAlgorithm::outputName() const
 
 QString QgsBoundaryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm returns the closure of the combinatorial boundary of the input geometries (ie the "
-                      "topological boundary of the geometry). For instance, a polygon geometry will have a "
-                      "boundary consisting of the linestrings for each ring in the polygon. Only valid for "
-                      "polygon or line layers." );
+  return QObject::tr(
+    "This algorithm returns the closure of the combinatorial boundary of the input geometries (ie the "
+    "topological boundary of the geometry). For instance, a polygon geometry will have a "
+    "boundary consisting of the linestrings for each ring in the polygon. Only valid for "
+    "polygon or line layers."
+  );
 }
 
 QString QgsBoundaryAlgorithm::shortDescription() const

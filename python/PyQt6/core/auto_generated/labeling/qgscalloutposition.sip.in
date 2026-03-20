@@ -21,7 +21,6 @@ Represents the calculated placement of a map label callout line.
 #include "qgscalloutposition.h"
 %End
   public:
-
     QgsCalloutPosition( QgsFeatureId id, const QString &layer, const QString &providerId = QString() );
 %Docstring
 Constructor for QgsCalloutPosition.

@@ -17,12 +17,13 @@
 #define QGSSTACDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsdataitemguiprovider.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

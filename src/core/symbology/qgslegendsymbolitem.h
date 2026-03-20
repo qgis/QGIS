@@ -36,13 +36,14 @@ class QgsSymbol;
 class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
-
     QgsLegendSymbolItem();
 
     /**
      * Construct item. Does not take ownership of symbol (makes internal clone)
      */
-    QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
+    QgsLegendSymbolItem(
+      QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString()
+    );
     ~QgsLegendSymbolItem();
 
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );

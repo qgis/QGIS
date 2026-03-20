@@ -35,7 +35,6 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelThinningSettings
 {
   public:
-
     /**
      * Returns TRUE if the number of labels drawn for the layer should be limited.
      * \see maximumNumberLabels()
@@ -250,7 +249,6 @@ class CORE_EXPORT QgsLabelThinningSettings
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
   private:
-
     bool mLimitNumLabels = false;
     int mMaxNumLabels = 2000;
     double mMinFeatureSize = 0;
@@ -279,7 +277,6 @@ class CORE_EXPORT QgsLabelThinningSettings
 class CORE_EXPORT QgsLabelFeatureThinningSettings
 {
   public:
-
     /**
       * Returns the minimum distance (in label units) between labels for this
       * feature and other labels.
@@ -309,10 +306,8 @@ class CORE_EXPORT QgsLabelFeatureThinningSettings
     void setNoRepeatDistance( double distance ) { mNoRepeatDistance = distance; }
 
   private:
-
     double mLabelMarginDistance = 0;
     double mNoRepeatDistance = 0;
-
 };
 
 #endif

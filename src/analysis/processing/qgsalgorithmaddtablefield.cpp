@@ -37,9 +37,11 @@ QString QgsAddTableFieldAlgorithm::displayName() const
 
 QString QgsAddTableFieldAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm adds a new attribute to a vector layer.\n\n"
-                      "The name and characteristics of the attribute are defined as parameters. The new attribute "
-                      "is not added to the input layer but a new layer is generated instead." );
+  return QObject::tr(
+    "This algorithm adds a new attribute to a vector layer.\n\n"
+    "The name and characteristics of the attribute are defined as parameters. The new attribute "
+    "is not added to the input layer but a new layer is generated instead."
+  );
 }
 
 QString QgsAddTableFieldAlgorithm::shortDescription() const
@@ -90,8 +92,7 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
   QVariantList icons;
   typeStrings.reserve( 11 );
   icons.reserve( 11 );
-  for ( const auto &type :
-        std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
+  for ( const auto &type : std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
           { QMetaType::Type::Int, QMetaType::Type::UnknownType },
           { QMetaType::Type::Double, QMetaType::Type::UnknownType },
           { QMetaType::Type::QString, QMetaType::Type::UnknownType },
@@ -110,10 +111,7 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
   }
 
   auto fieldTypes = std::make_unique<QgsProcessingParameterEnum>( u"FIELD_TYPE"_s, QObject::tr( "Field type" ), typeStrings, false, 0 );
-  fieldTypes->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"icons"_s, icons } } ) } } )
-    }
-  );
+  fieldTypes->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"icons"_s, icons } } ) } } ) } );
   addParameter( fieldTypes.release() );
   addParameter( new QgsProcessingParameterNumber( u"FIELD_LENGTH"_s, QObject::tr( "Field length" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
   addParameter( new QgsProcessingParameterNumber( u"FIELD_PRECISION"_s, QObject::tr( "Field precision" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );

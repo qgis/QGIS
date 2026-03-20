@@ -16,6 +16,7 @@
 #include "qgscreaterasterattributetabledialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterlayer.h"
 
@@ -92,6 +93,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s ); } );
 
   updateButtons();
 
@@ -148,7 +150,10 @@ void QgsCreateRasterAttributeTableDialog::accept()
     if ( storageIsFile )
     {
       const QString destinationPath { filePath() };
-      if ( !QFile::exists( destinationPath ) || QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+      if ( !QFile::exists( destinationPath )
+           || QMessageBox::
+                  warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+                == QMessageBox::Yes )
       {
         success = rat->writeToFile( destinationPath, &errorMessage );
         if ( !success )

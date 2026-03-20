@@ -18,7 +18,6 @@
 #ifndef QGSALGORITHMMERGELINES_H
 #define QGSALGORITHMMERGELINES_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -26,6 +25,8 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

@@ -23,9 +23,10 @@
 
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class Vector3D;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup analysis
@@ -77,8 +78,7 @@ class ANALYSIS_EXPORT ParametricLine
 inline ParametricLine::ParametricLine( ParametricLine *par, QVector<QgsPoint *> *controlpoly )
   : mParent( par )
   , mControlPoly( controlpoly )
-{
-}
+{}
 
 #endif
 

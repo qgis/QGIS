@@ -21,7 +21,6 @@ Contains settings and helpers relating to a render of a
 #include "qgslayoutitem.h"
 %End
   public:
-
     QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor = 1.0 );
 %Docstring
 Constructor for QgsLayoutItemRenderContext.
@@ -154,7 +153,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
         *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
         break;
 
-      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+        // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
       default:
         sipType = NULL;
@@ -514,17 +513,17 @@ multi-layered export.
 
     struct ExportLayerDetail
     {
-      QString name;
+        QString name;
 
-      QString mapLayerId;
+        QString mapLayerId;
 
-      QPainter::CompositionMode compositionMode;
+        QPainter::CompositionMode compositionMode;
 
-      double opacity;
+        double opacity;
 
-      QString mapTheme;
+        QString mapTheme;
 
-      QString groupName;
+        QString groupName;
     };
 
     virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
@@ -1224,7 +1223,6 @@ Emitted when the item's clipping path has changed.
 %End
 
   protected:
-
     virtual void drawDebugRect( QPainter *painter );
 %Docstring
 Draws a debugging rectangle of the item's current bounds within the

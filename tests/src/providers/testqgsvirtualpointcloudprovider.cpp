@@ -57,7 +57,8 @@ class TestQgsVirtualPointCloudProvider : public QgsTest
 
   public:
     TestQgsVirtualPointCloudProvider()
-      : QgsTest( u"Virtual Point Cloud Provider Tests"_s ) {}
+      : QgsTest( u"Virtual Point Cloud Provider Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

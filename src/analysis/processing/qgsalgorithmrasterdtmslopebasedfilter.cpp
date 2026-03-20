@@ -54,19 +54,21 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::groupId() const
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm can be used to filter a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells.\n\n"
-                      "The tool uses concepts as described by Vosselman (2000) and is based on the assumption that a large height difference between two nearby "
-                      "cells is unlikely to be caused by a steep slope in the terrain. The probability that the higher cell might be non-ground increases when "
-                      "the distance between the two cells decreases. Therefore the filter defines a maximum height difference (<i>dz_max</i>) between two cells as a "
-                      "function of the distance (<i>d</i>) between the cells (<i>dz_max( d ) = d</i>).\n\n"
-                      "A cell is classified as terrain if there is no cell within the kernel radius to which the height difference is larger than the allowed "
-                      "maximum height difference at the distance between these two cells.\n\n"
-                      "The approximate terrain slope (<i>s</i>) parameter is used to modify the filter function to match the overall slope in the study "
-                      "area (<i>dz_max( d ) = d * s</i>).\n\n"
-                      "A 5 % confidence interval (<i>ci = 1.65 * sqrt( 2 * stddev )</i>) may be used to modify the filter function even further by either "
-                      "relaxing (<i>dz_max( d ) = d * s + ci</i>) or amplifying (<i>dz_max( d ) = d * s - ci</i>) the filter criterium.\n\n"
-                      "References: Vosselman, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands, 935-942\n\n"
-                      "This algorithm is a port of the SAGA 'DTM Filter (slope-based)' tool." );
+  return QObject::tr(
+    "This algorithm can be used to filter a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells.\n\n"
+    "The tool uses concepts as described by Vosselman (2000) and is based on the assumption that a large height difference between two nearby "
+    "cells is unlikely to be caused by a steep slope in the terrain. The probability that the higher cell might be non-ground increases when "
+    "the distance between the two cells decreases. Therefore the filter defines a maximum height difference (<i>dz_max</i>) between two cells as a "
+    "function of the distance (<i>d</i>) between the cells (<i>dz_max( d ) = d</i>).\n\n"
+    "A cell is classified as terrain if there is no cell within the kernel radius to which the height difference is larger than the allowed "
+    "maximum height difference at the distance between these two cells.\n\n"
+    "The approximate terrain slope (<i>s</i>) parameter is used to modify the filter function to match the overall slope in the study "
+    "area (<i>dz_max( d ) = d * s</i>).\n\n"
+    "A 5 % confidence interval (<i>ci = 1.65 * sqrt( 2 * stddev )</i>) may be used to modify the filter function even further by either "
+    "relaxing (<i>dz_max( d ) = d * s + ci</i>) or amplifying (<i>dz_max( d ) = d * s - ci</i>) the filter criterium.\n\n"
+    "References: Vosselman, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands, 935-942\n\n"
+    "This algorithm is a port of the SAGA 'DTM Filter (slope-based)' tool."
+  );
 }
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
@@ -84,11 +86,15 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
   radiusParam->setHelp( QObject::tr( "The radius of the filter kernel (in pixels). Must be large enough to reach ground cells next to non-ground objects." ) );
   addParameter( radiusParam.release() );
 
-  auto terrainSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"TERRAIN_SLOPE"_s, QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
-  terrainSlopeParam->setHelp( QObject::tr( "The approximate terrain slope in %. The terrain slope must be adjusted to account for the ratio of height units vs raster pixel dimensions. Used to relax the filter criterium in steeper terrain." ) );
+  auto terrainSlopeParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"TERRAIN_SLOPE"_s, QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
+  terrainSlopeParam->setHelp(
+    QObject::tr( "The approximate terrain slope in %. The terrain slope must be adjusted to account for the ratio of height units vs raster pixel dimensions. Used to relax the filter criterium in steeper terrain." )
+  );
   addParameter( terrainSlopeParam.release() );
 
-  auto filterModificationParam = std::make_unique<QgsProcessingParameterEnum>( u"FILTER_MODIFICATION"_s, QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
+  auto filterModificationParam = std::make_unique<
+    QgsProcessingParameterEnum>( u"FILTER_MODIFICATION"_s, QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
   filterModificationParam->setHelp( QObject::tr( "Choose whether to apply the filter kernel without modification or to use a confidence interval to relax or amplify the height criterium." ) );
   addParameter( filterModificationParam.release() );
 

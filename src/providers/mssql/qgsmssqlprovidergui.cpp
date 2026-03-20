@@ -32,7 +32,9 @@ class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
     QString text() const override { return QObject::tr( "MS SQL Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddMssqlLayer.svg"_s ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const override
     {
       return new QgsMssqlSourceSelect( parent, fl, widgetMode );
     }
@@ -44,14 +46,9 @@ class QgsMssqlProviderGuiMetadata : public QgsProviderGuiMetadata
   public:
     QgsMssqlProviderGuiMetadata()
       : QgsProviderGuiMetadata( QgsMssqlProvider::MSSQL_PROVIDER_KEY )
-    {
-    }
+    {}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsMssqlDataItemGuiProvider;
-    }
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override { return QList<QgsDataItemGuiProvider *>() << new QgsMssqlDataItemGuiProvider; }
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {

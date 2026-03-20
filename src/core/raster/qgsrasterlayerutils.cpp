@@ -30,11 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
-  QgsRasterLayer *layer,
-  const QgsDateTimeRange &temporalRange,
-  const QgsDoubleRange &elevationRange,
-  bool &matched )
+int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &temporalRange, const QgsDoubleRange &elevationRange, bool &matched )
 {
   if ( !layer )
   {
@@ -47,8 +43,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
 
   // neither active
-  if ( ( !temporalProperties->isActive() || temporalRange.isInfinite() )
-       && ( !elevationProperties->hasElevation() || elevationRange.isInfinite() ) )
+  if ( ( !temporalProperties->isActive() || temporalRange.isInfinite() ) && ( !elevationProperties->hasElevation() || elevationRange.isInfinite() ) )
   {
     return -1;
   }
@@ -178,14 +173,9 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   BUILTIN_UNREACHABLE;
 }
 
-void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
-    int band,
-    const QgsRasterMinMaxOrigin &mmo,
-    Qgis::RasterRangeLimit limits,
-    const QgsRectangle &extent,
-    int sampleSize,
-    double &min SIP_OUT,
-    double &max SIP_OUT )
+void QgsRasterLayerUtils::computeMinMax(
+  QgsRasterDataProvider *provider, int band, const QgsRasterMinMaxOrigin &mmo, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, double &min SIP_OUT, double &max SIP_OUT
+)
 {
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
@@ -282,4 +272,20 @@ void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
     provider->cumulativeCut( band, myLower, myUpper, min, max, extent, sampleSize );
   }
   QgsDebugMsgLevel( u"band = %1 min = %2 max = %3"_s.arg( band ).arg( min ).arg( max ), 4 );
+}
+
+QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY )
+{
+  // Return original extent if pixel sizes are zero (to avoid division by zero) or if the extent is empty
+  if ( qgsDoubleNear( pixelSizeX, 0.0 ) || qgsDoubleNear( pixelSizeY, 0.0 ) || extent.isEmpty() )
+  {
+    return extent;
+  }
+  // Y pixel size may be negative to indicate inverted NS axis: use absolute value for calculations
+  const double absPixelSizeY { std::abs( pixelSizeY ) };
+  const double minX { origin.x() + std::floor( ( extent.xMinimum() - origin.x() ) / pixelSizeX ) * pixelSizeX };
+  const double minY { origin.y() + std::floor( ( extent.yMinimum() - origin.y() ) / absPixelSizeY ) * absPixelSizeY };
+  const double maxX { origin.x() + std::ceil( ( extent.xMaximum() - origin.x() ) / pixelSizeX ) * pixelSizeX };
+  const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) * absPixelSizeY };
+  return QgsRectangle( minX, minY, maxX, maxY );
 }

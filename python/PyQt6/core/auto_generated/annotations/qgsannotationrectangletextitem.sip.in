@@ -21,7 +21,6 @@ An annotation item which renders paragraphs of text within a rectangle.
 #include "qgsannotationrectangletextitem.h"
 %End
   public:
-
     QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds );
 %Docstring
 Constructor for QgsAnnotationRectangleTextItem, containing the specified
@@ -137,7 +136,6 @@ interior text.
 %End
 
   protected:
-
     virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback );
 
 

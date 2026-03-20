@@ -67,8 +67,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
     btnConfigEdit->setText( QString() );
     btnConfigMsgClear->setText( QString() );
 
-    leConfigMsg->setStyleSheet( u"QLineEdit{background-color: %1}"_s
-                                  .arg( QgsAuthGuiUtils::yellowColor().name() ) );
+    leConfigMsg->setStyleSheet( u"QLineEdit{background-color: %1}"_s.arg( QgsAuthGuiUtils::yellowColor().name() ) );
 
     clearConfig();
     clearMessage();
@@ -121,8 +120,10 @@ void QgsAuthConfigSelect::loadConfig()
     {
       methoddesc = meta->description();
     }
-    cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
-                                     "<li><b>Configuration ID:</b> %2</li></ul>" )
+    cmbConfigSelect->setToolTip( tr(
+                                   "<ul><li><b>Method type:</b> %1</li>"
+                                   "<li><b>Configuration ID:</b> %2</li></ul>"
+    )
                                    .arg( methoddesc, config.id() ) );
     btnConfigEdit->setEnabled( true );
     btnConfigRemove->setEnabled( true );
@@ -243,9 +244,16 @@ void QgsAuthConfigSelect::btnConfigEdit_clicked()
 
 void QgsAuthConfigSelect::btnConfigRemove_clicked()
 {
-  if ( QMessageBox::warning( this, tr( "Remove Authentication" ), tr( "Are you sure that you want to permanently remove this configuration right now?\n\n"
-                                                                      "Operation can NOT be undone!" ),
-                             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+  if ( QMessageBox::warning(
+         this,
+         tr( "Remove Authentication" ),
+         tr(
+           "Are you sure that you want to permanently remove this configuration right now?\n\n"
+           "Operation can NOT be undone!"
+         ),
+         QMessageBox::Ok | QMessageBox::Cancel,
+         QMessageBox::Cancel
+       )
        == QMessageBox::Cancel )
   {
     return;
@@ -435,8 +443,7 @@ void QgsAuthConfigUriEdit::removeAuthCfgFromUri()
 
   // add any preceding space so two spaces will not result after removal
   int rmvlen = 15;
-  if ( startindex - 1 >= 0
-       && ( mDataUri.at( startindex - 1 ).isSpace() || mDataUri.at( startindex - 1 ) == QChar( '&' ) ) )
+  if ( startindex - 1 >= 0 && ( mDataUri.at( startindex - 1 ).isSpace() || mDataUri.at( startindex - 1 ) == QChar( '&' ) ) )
   {
     startindex -= 1;
     rmvlen += 1;

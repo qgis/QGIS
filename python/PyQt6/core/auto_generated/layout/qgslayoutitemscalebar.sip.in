@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItemScaleBar: QgsLayoutItem
+class QgsLayoutItemScaleBar : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for scale bars.
@@ -19,7 +19,6 @@ A layout item subclass for scale bars.
 #include "qgslayoutitemscalebar.h"
 %End
   public:
-
     QgsLayoutItemScaleBar( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemScaleBar, with the specified parent
@@ -78,7 +77,7 @@ scalebar.
 .. seealso:: :py:func:`setNumberOfSegments`
 %End
 
-    int numberOfSubdivisions()  const;
+    int numberOfSubdivisions() const;
 %Docstring
 Returns the number of subdivisions for segments included in the right
 part of the scalebar (only used for some scalebar types).
@@ -878,7 +877,6 @@ Adjusts the scale bar box size and updates the item.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -887,8 +885,6 @@ Adjusts the scale bar box size and updates the item.
 
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

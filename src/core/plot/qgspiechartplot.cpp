@@ -135,6 +135,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       randomRamp->setTotalColorCount( categories.size() );
     }
 
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
+
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
       const QList<std::pair<double, double>> data = xySeries->data();
@@ -442,4 +444,18 @@ void QgsPieChartPlot::setNumericFormat( QgsNumericFormat *format )
 void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type )
 {
   mLabelType = type;
+}
+
+void QgsPieChartPlot::initFromPlot( const QgsPlot *plot )
+{
+  if ( !plot )
+  {
+    return;
+  }
+
+  // pie charts do not have axis, so we transfer only settings related to the chart area
+  if ( const Qgs2DPlot *plot2D = dynamic_cast<const Qgs2DPlot *>( plot ) )
+  {
+    Qgs2DPlot::copyCommonProperties( plot2D );
+  }
 }

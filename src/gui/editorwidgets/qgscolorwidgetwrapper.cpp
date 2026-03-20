@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
-{
-}
+{}
 
 
 QVariant QgsColorWidgetWrapper::value() const

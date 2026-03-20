@@ -44,27 +44,23 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   mColorStartFieldExpression->setLayer( layer );
   mColorEndFieldExpression->setLayer( layer );
 
-  mWidthUnitSelectionFixed->setUnits(
-    {
-      Qgis::RenderUnit::Inches,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-    }
-  );
+  mWidthUnitSelectionFixed->setUnits( {
+    Qgis::RenderUnit::Inches,
+    Qgis::RenderUnit::MapUnits,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
-  mWidthUnitSelectionVarying->setUnits(
-    {
-      Qgis::RenderUnit::Inches,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-    }
-  );
+  mWidthUnitSelectionVarying->setUnits( {
+    Qgis::RenderUnit::Inches,
+    Qgis::RenderUnit::MapUnits,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
   connect( mWidthMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );
   connect( mColorMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );
@@ -82,13 +78,9 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
 
-  connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, [this] {
-    whileBlocking( mWidthUnitSelectionFixed )->setUnit( mWidthUnitSelectionVarying->unit() );
-  } );
+  connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, [this] { whileBlocking( mWidthUnitSelectionFixed )->setUnit( mWidthUnitSelectionVarying->unit() ); } );
 
-  connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, [this] {
-    whileBlocking( mWidthUnitSelectionVarying )->setUnit( mWidthUnitSelectionFixed->unit() );
-  } );
+  connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, [this] { whileBlocking( mWidthUnitSelectionVarying )->setUnit( mWidthUnitSelectionFixed->unit() ); } );
 
   connect( mCheckBoxAbsoluteValue, &QCheckBox::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mCheckBoxOutOfrange, &QCheckBox::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
@@ -185,12 +177,8 @@ void QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget()
   mFixedWidthWidget->setVisible( !mWidthMethodComboBox->currentData().toBool() );
   mVaryingWidthWidget->setVisible( mWidthMethodComboBox->currentData().toBool() );
 
-  mFixedColorWidget->setVisible(
-    static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) == QgsInterpolatedLineColor::SingleColor
-  );
-  mVaryingColorWidget->setVisible(
-    static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) == QgsInterpolatedLineColor::ColorRamp
-  );
+  mFixedColorWidget->setVisible( static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) == QgsInterpolatedLineColor::SingleColor );
+  mVaryingColorWidget->setVisible( static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) == QgsInterpolatedLineColor::ColorRamp );
 }
 
 void QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueWidth()

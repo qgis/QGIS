@@ -769,7 +769,8 @@ Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture
 Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
 Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
 Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
-Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points. \n.. versionadded:: 4.0"
+Qgis.CaptureTechnique.PolyBezier.__doc__ = "Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points). \n.. versionadded:: 4.0"
+Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points). \n.. versionadded:: 4.0"
 Qgis.CaptureTechnique.__doc__ = """Capture technique.
 
 .. versionadded:: 3.26
@@ -778,7 +779,11 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 * ``CircularString``: Capture in circular strings
 * ``Streaming``: Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
 * ``Shape``: Digitize shapes.
-* ``NurbsCurve``: Digitizes NURBS curves with control points.
+* ``PolyBezier``: Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points).
+
+  .. versionadded:: 4.0
+
+* ``NurbsCurve``: Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points).
 
   .. versionadded:: 4.0
 
@@ -786,17 +791,6 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 """
 # --
 Qgis.CaptureTechnique.baseClass = Qgis
-# monkey patching scoped based enum
-Qgis.NurbsMode.ControlPoints.__doc__ = "Direct control points mode - the curve is attracted to control points but does not pass through them"
-Qgis.NurbsMode.__doc__ = """NURBS digitizing mode.
-
-.. versionadded:: 4.0
-
-* ``ControlPoints``: Direct control points mode - the curve is attracted to control points but does not pass through them
-
-"""
-# --
-Qgis.NurbsMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
@@ -1542,6 +1536,22 @@ Qgis.SymbolRenderHints = lambda flags=0: Qgis.SymbolRenderHint(flags)
 QgsSymbol.RenderHints = Qgis.SymbolRenderHints
 Qgis.SymbolRenderHints.baseClass = Qgis
 SymbolRenderHints = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SymbolConverterCapability.ReadSymbol.__doc__ = "Allows reading symbols from variants"
+Qgis.SymbolConverterCapability.WriteSymbol.__doc__ = "Allows writing symbols to variants"
+Qgis.SymbolConverterCapability.__doc__ = """Symbol converter capabilities.
+
+.. versionadded:: 4.2
+
+* ``ReadSymbol``: Allows reading symbols from variants
+* ``WriteSymbol``: Allows writing symbols to variants
+
+"""
+# --
+Qgis.SymbolConverterCapability.baseClass = Qgis
+Qgis.SymbolConverterCapabilities = lambda flags=0: Qgis.SymbolConverterCapability(flags)
+Qgis.SymbolConverterCapabilities.baseClass = Qgis
+SymbolConverterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolRotationMode.RespectMapRotation.__doc__ = "Entity is rotated along with the map"
 Qgis.SymbolRotationMode.IgnoreMapRotation.__doc__ = "Entity ignores map rotation"
@@ -2801,6 +2811,21 @@ Qgis.UriCleaningFlag.baseClass = Qgis
 Qgis.UriCleaningFlags = lambda flags=0: Qgis.UriCleaningFlag(flags)
 Qgis.UriCleaningFlags.baseClass = Qgis
 UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SourceHierarchyLevel.Connection.__doc__ = "The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases)."
+Qgis.SourceHierarchyLevel.Group.__doc__ = "An intermediate logical grouping, e.g. a database schema or layer group."
+Qgis.SourceHierarchyLevel.Object.__doc__ = "Represents a specific data entity, e.g. a table, view, or layer."
+Qgis.SourceHierarchyLevel.__doc__ = """Defines the structural levels within a data source hierarchy.
+
+.. versionadded:: 4.0
+
+* ``Connection``: The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases).
+* ``Group``: An intermediate logical grouping, e.g. a database schema or layer group.
+* ``Object``: Represents a specific data entity, e.g. a table, view, or layer.
+
+"""
+# --
+Qgis.SourceHierarchyLevel.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
@@ -4068,6 +4093,19 @@ Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
 """
 # --
 Qgis.JoinStyle3D.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GeometryBackend.QGIS.__doc__ = "Use internal implementation"
+Qgis.GeometryBackend.GEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 4.2
+
+* ``QGIS``: Use internal implementation
+* ``GEOS``: Use GEOS implementation
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"

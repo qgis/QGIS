@@ -22,7 +22,6 @@ A embedded script entity for
 #include "qgsobjectvisitor.h"
 %End
   public:
-
     QgsEmbeddedScriptEntity( Qgis::EmbeddedScriptType type, const QString &name, const QString &script );
 %Docstring
 Constructor for QgsEmbeddedScriptEntity.
@@ -58,7 +57,6 @@ A :py:class:`QgsObjectEntityVisitorInterface` context object.
 #include "qgsobjectvisitor.h"
 %End
   public:
-
     QgsObjectVisitorContext();
 };
 
@@ -76,7 +74,6 @@ embedded script) nodes using the visitor pattern.
 #include "qgsobjectvisitor.h"
 %End
   public:
-
     virtual ~QgsObjectEntityVisitorInterface();
 
     virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context );
@@ -86,7 +83,6 @@ Called when the visitor will visit an embedded script ``entity``.
 Subclasses should return ``False`` to abort further visitations, or
 ``True`` to continue visiting after processing this entity.
 %End
-
 };
 
 
@@ -103,7 +99,6 @@ its layers.
 #include "qgsobjectvisitor.h"
 %End
   public:
-
     virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext & );
 
     const QList<QgsEmbeddedScriptEntity> &embeddedScripts() const;

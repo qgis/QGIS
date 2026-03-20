@@ -70,14 +70,16 @@ Qgis::WkbType QgsWedgeBuffersAlgorithm::outputWkbType( Qgis::WkbType inputWkbTyp
 
 QString QgsWedgeBuffersAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates wedge shaped buffers from input points.\n\n"
-                      "The azimuth parameter gives the angle (in degrees) for the middle of the wedge to point. "
-                      "The buffer width (in degrees) is specified by the width parameter. Note that the "
-                      "wedge will extend to half of the angular width either side of the azimuth direction.\n\n"
-                      "The outer radius of the buffer is specified via outer radius, and optionally an "
-                      "inner radius can also be specified.\n\n"
-                      "The native output from this algorithm are CurvePolygon geometries, but these may "
-                      "be automatically segmentized to Polygons depending on the output format." );
+  return QObject::tr(
+    "This algorithm creates wedge shaped buffers from input points.\n\n"
+    "The azimuth parameter gives the angle (in degrees) for the middle of the wedge to point. "
+    "The buffer width (in degrees) is specified by the width parameter. Note that the "
+    "wedge will extend to half of the angular width either side of the azimuth direction.\n\n"
+    "The outer radius of the buffer is specified via outer radius, and optionally an "
+    "inner radius can also be specified.\n\n"
+    "The native output from this algorithm are CurvePolygon geometries, but these may "
+    "be automatically segmentized to Polygons depending on the output format."
+  );
 }
 
 QString QgsWedgeBuffersAlgorithm::shortDescription() const

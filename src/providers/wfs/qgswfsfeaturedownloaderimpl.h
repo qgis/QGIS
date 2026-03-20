@@ -45,8 +45,7 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
 
       signals :
       /* Used internally by the stop() method */
-      void
-      doStop();
+      void doStop();
 
     /* Emitted with the total accumulated number of features downloaded. */
     void updateProgress( long long totalFeatureCount );
@@ -84,7 +83,8 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     qint64 mTotalDownloadedFeatureCount = 0;
 
-    const QStringList WFS1FORMATS { u"text/xml; subtype=gml/3.2.1"_s, u"application/gml+xml; version=3.2"_s, u"text/xml; subtype=gml/3.1.1"_s, u"application/gml+xml; version=3.1"_s, u"text/xml; subtype=gml/3.0.1"_s, u"application/gml+xml; version=3.0"_s, u"GML3"_s };
+    const QStringList
+      WFS1FORMATS { u"text/xml; subtype=gml/3.2.1"_s, u"application/gml+xml; version=3.2"_s, u"text/xml; subtype=gml/3.1.1"_s, u"application/gml+xml; version=3.1"_s, u"text/xml; subtype=gml/3.0.1"_s, u"application/gml+xml; version=3.0"_s, u"GML3"_s };
 };
 
 

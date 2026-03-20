@@ -161,7 +161,8 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
   qgssize falseCount = 0;
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
 
-  QgsRasterAnalysisUtils::applyRasterLogicOperator( mInputs, std::move( provider ), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight, mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );
+  QgsRasterAnalysisUtils::
+    applyRasterLogicOperator( mInputs, std::move( provider ), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight, mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );
 
   QVariantMap outputs;
   outputs.insert( u"EXTENT"_s, mExtent.toString() );
@@ -238,12 +239,14 @@ QString QgsRasterLogicalOrAlgorithm::shortDescription() const
 
 QString QgsRasterLogicalOrAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the boolean OR for a set of input rasters. If any of the input rasters have a non-zero value for a pixel, "
-                      "that pixel will be set to 1 in the output raster. If all the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
-                      "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
-                      "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
-                      "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
-                      "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value." );
+  return QObject::tr(
+    "This algorithm calculates the boolean OR for a set of input rasters. If any of the input rasters have a non-zero value for a pixel, "
+    "that pixel will be set to 1 in the output raster. If all the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
+    "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
+    "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
+    "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
+    "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value."
+  );
 }
 
 QgsRasterLogicalOrAlgorithm *QgsRasterLogicalOrAlgorithm::createInstance() const
@@ -314,12 +317,14 @@ QString QgsRasterLogicalAndAlgorithm::shortDescription() const
 
 QString QgsRasterLogicalAndAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the boolean AND for a set of input rasters. If all of the input rasters have a non-zero value for a pixel, "
-                      "that pixel will be set to 1 in the output raster. If any of the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
-                      "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
-                      "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
-                      "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
-                      "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value." );
+  return QObject::tr(
+    "This algorithm calculates the boolean AND for a set of input rasters. If all of the input rasters have a non-zero value for a pixel, "
+    "that pixel will be set to 1 in the output raster. If any of the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
+    "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
+    "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
+    "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
+    "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value."
+  );
 }
 
 QgsRasterLogicalAndAlgorithm *QgsRasterLogicalAndAlgorithm::createInstance() const

@@ -27,7 +27,6 @@ Stores metadata about one tiled scene renderer class.
 #include "qgstiledscenerendererregistry.h"
 %End
   public:
-
     QgsTiledSceneRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsTiledSceneRendererAbstractMetadata, with the
@@ -96,7 +95,6 @@ scene renderer and its widget.
 %End
   public:
 
-
     virtual QgsTiledSceneRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 
 
@@ -125,7 +123,6 @@ created, but rather accessed through
 #include "qgstiledscenerendererregistry.h"
 %End
   public:
-
     QgsTiledSceneRendererRegistry();
     ~QgsTiledSceneRendererRegistry();
 

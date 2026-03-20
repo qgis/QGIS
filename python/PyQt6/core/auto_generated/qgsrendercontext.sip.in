@@ -769,7 +769,9 @@ between curve and approximation)
 %End
 
 
-    double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
+    double convertToPainterUnits(
+      double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic
+    ) const;
 %Docstring
 Converts a size from the specified units to painter units (pixels). The
 conversion respects the limits specified by the optional scale

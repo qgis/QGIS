@@ -13,6 +13,7 @@
 
 
 
+
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 %Docstring(signature="appended")
@@ -115,6 +116,8 @@ Gets the capture curve
 %Docstring
 Returns a list of matches for each point on the captureCurve.
 %End
+
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 

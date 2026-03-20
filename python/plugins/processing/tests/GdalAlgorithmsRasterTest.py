@@ -84,6 +84,7 @@ from processing.algs.gdal.slope import slope
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.viewshed import viewshed
 from processing.algs.gdal.warp import warp
+from processing.tests.TestData import wms_layer_1_3_0_frankfurt
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
@@ -746,7 +747,10 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # TEST: WMS layer and no scale, therefore NO XML
-            wms_source = "wms://contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
+            wms_layer = wms_layer_1_3_0_frankfurt("clipbyext_no_scale", "EPSG:25832")
+            self.assertTrue(wms_layer.isValid())
+            wms_source = "wms://" + wms_layer.publicSource()
+
             command = alg.getConsoleCommands(
                 {
                     "INPUT": QgsProcessingRasterLayerDefinition(wms_source),
@@ -767,7 +771,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             #  '45.78',
             #  '-of',
             #  'JPEG',
-            #  '"contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"',
+            #  '"crs=EPSG:25832&layers=bplan_stadtkarte&styles&url=file:///tmp/tmpstqn8v1p/clipbyext_no_scale_fake_qgis_http_endpoint_SERVICE=WMS_REQUEST=GetCapabilities"',
             #  '/tmp/tmpd0s9gnal/check.jpg']
             self.assertEqual(len(parts), 9)
 
@@ -1125,7 +1129,10 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
             # TEST: WMS layer and no scale, therefore NO XML
-            wms_source = "wms://contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
+            wms_layer = wms_layer_1_3_0_frankfurt("clipbymask_no_scale", "EPSG:25832")
+            self.assertTrue(wms_layer.isValid())
+            wms_source = "wms://" + wms_layer.publicSource()
+
             command = alg.getConsoleCommands(
                 {
                     "INPUT": QgsProcessingRasterLayerDefinition(wms_source),
@@ -1143,7 +1150,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             #  '-overwrite -of JPEG -cutline '
             #  '/docs/dev/QGIS-QT/QGIS/python/plugins/processing/tests/testdata/polys.gml '
             #  '-cl polys2 -crop_to_cutline '
-            #  '"contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service" '
+            #  '"crs=EPSG:25832&layers=bplan_stadtkarte&styles&url=file:///tmp/tmpstqn8v1p/clipbymask_no_scale_fake_qgis_http_endpoint_SERVICE=WMS_REQUEST=GetCapabilities" '
             #  '/tmp/tmpu8tqyhux/check.jpg']
 
             self.assertEqual(len(parts), 10)

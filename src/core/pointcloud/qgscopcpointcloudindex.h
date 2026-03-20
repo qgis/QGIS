@@ -33,15 +33,15 @@
 #include <QStringList>
 #include <QVector>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
+class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
 {
   public:
-
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex() override;
 

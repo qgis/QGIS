@@ -29,7 +29,10 @@
 #include "moc_qgsmap3dexportwidget.cpp"
 
 QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent )
-  : QWidget( parent ), ui( new Ui::Map3DExportWidget ), mScene( scene ), mExportSettings( exportSettings )
+  : QWidget( parent )
+  , ui( new Ui::Map3DExportWidget )
+  , mScene( scene )
+  , mExportSettings( exportSettings )
 {
   ui->setupUi( this );
   ui->terrainResolutionSpinBox->setClearValue( 128 );

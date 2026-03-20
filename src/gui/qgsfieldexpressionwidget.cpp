@@ -69,8 +69,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
 
   mExpressionContext = QgsExpressionContext();
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  mExpressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   mCombo->installEventFilter( this );
 }
@@ -168,7 +167,9 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
   mExpressionContextGenerator = generator;
 }
 
-void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsFieldExpressionWidget::setCustomPreviewGenerator(
+  const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator
+)
 {
   mCustomPreviewLabel = label;
   mCustomChoices = choices;

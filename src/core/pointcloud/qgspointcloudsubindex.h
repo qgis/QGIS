@@ -26,7 +26,6 @@
 #include <QString>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 /**
@@ -34,9 +33,9 @@
  *
  * The index is initially NULLPTR until the virtual point cloud data provider explicitly loads the uri.
  *
- * \since QGIS 3.32
+ * \since QGIS 4.0
  */
-class QgsPointCloudSubIndex
+class CORE_EXPORT QgsPointCloudSubIndex
 {
   public:
     //! Constructor
@@ -46,8 +45,7 @@ class QgsPointCloudSubIndex
       , mGeometry( geometry )
       , mPointCount( count )
       , mZRange( zRange )
-    {
-    }
+    {}
 
     //! Returns the point cloud index. May be NULLPTR if not loaded.
     QgsPointCloudIndex index() const { return mIndex; }

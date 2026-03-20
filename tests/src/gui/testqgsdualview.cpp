@@ -202,23 +202,24 @@ void TestQgsDualView::testSort()
   mDualView->setSortExpression( u"Class"_s );
 
   QStringList classes;
-  classes << u"B52"_s
-          << u"B52"_s
-          << u"B52"_s
-          << u"B52"_s
-          << u"Biplane"_s
-          << u"Biplane"_s
-          << u"Biplane"_s
-          << u"Biplane"_s
-          << u"Biplane"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s
-          << u"Jet"_s;
+  classes
+    << u"B52"_s
+    << u"B52"_s
+    << u"B52"_s
+    << u"B52"_s
+    << u"Biplane"_s
+    << u"Biplane"_s
+    << u"Biplane"_s
+    << u"Biplane"_s
+    << u"Biplane"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s
+    << u"Jet"_s;
 
   for ( int i = 0; i < classes.length(); ++i )
   {
@@ -227,23 +228,7 @@ void TestQgsDualView::testSort()
   }
 
   QStringList headings;
-  headings << u"0"_s
-           << u"0"_s
-           << u"12"_s
-           << u"34"_s
-           << u"80"_s
-           << u"85"_s
-           << u"90"_s
-           << u"90"_s
-           << u"95"_s
-           << u"100"_s
-           << u"140"_s
-           << u"160"_s
-           << u"180"_s
-           << u"240"_s
-           << u"270"_s
-           << u"300"_s
-           << u"340"_s;
+  headings << u"0"_s << u"0"_s << u"12"_s << u"34"_s << u"80"_s << u"85"_s << u"90"_s << u"90"_s << u"95"_s << u"100"_s << u"140"_s << u"160"_s << u"180"_s << u"240"_s << u"270"_s << u"300"_s << u"340"_s;
 
   mDualView->setSortExpression( u"Heading"_s );
 

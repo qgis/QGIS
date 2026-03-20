@@ -23,29 +23,25 @@ using namespace Qt::StringLiterals;
 
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
-{
-}
+{}
 
 QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
   : mType( tMatrix )
   , mMatrix( matrix )
-{
-}
+{}
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right )
   : mType( tOperator )
   , mLeft( left )
   , mRight( right )
   , mOperator( op )
-{
-}
+{}
 
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector<QgsRasterCalcNode *> functionArgs )
   : mType( tFunction )
   , mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
-{
-}
+{}
 
 QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
   : mType( tRasterRef )

@@ -96,8 +96,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
       req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QString enhancedSearch = searchString;
     enhancedSearch.replace( ' ', '%' );
-    req.setFilterExpression( u"%1 ILIKE '%%2%'"_s
-                               .arg( layer->displayExpression(), enhancedSearch ) );
+    req.setFilterExpression( u"%1 ILIKE '%%2%'"_s.arg( layer->displayExpression(), enhancedSearch ) );
     req.setLimit( mMaxTotalResults );
     mDisplayTitleIterator = layer->getFeatures( req );
   }
@@ -200,13 +199,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       QgsLocatorResult result;
 
       result.displayString = mDispExpression.evaluate( &mContext ).toString();
-      result.setUserData( QVariantMap(
-        { { u"type"_s, QVariant::fromValue( ResultType::Feature ) },
-          { u"feature_id"_s, f.id() },
-          { u"layer_id"_s, mLayerId },
-          { u"layer_is_spatial"_s, mLayerIsSpatial }
-        }
-      ) );
+      result.setUserData(
+        QVariantMap( { { u"type"_s, QVariant::fromValue( ResultType::Feature ) }, { u"feature_id"_s, f.id() }, { u"layer_id"_s, mLayerId }, { u"layer_is_spatial"_s, mLayerIsSpatial } } )
+      );
       result.icon = mLayerIcon;
       result.score = static_cast<double>( searchString.length() ) / result.displayString.size();
       if ( mLayerIsSpatial )
@@ -255,13 +250,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-    result.setUserData( QVariantMap(
-      { { u"type"_s, QVariant::fromValue( ResultType::Feature ) },
-        { u"feature_id"_s, f.id() },
-        { u"layer_id"_s, mLayerId },
-        { u"layer_is_spatial"_s, mLayerIsSpatial }
-      }
-    ) );
+    result.setUserData( QVariantMap( { { u"type"_s, QVariant::fromValue( ResultType::Feature ) }, { u"feature_id"_s, f.id() }, { u"layer_id"_s, mLayerId }, { u"layer_is_spatial"_s, mLayerIsSpatial } } ) );
     result.icon = mLayerIcon;
     result.score = static_cast<double>( searchString.length() ) / result.displayString.size();
     if ( mLayerIsSpatial )

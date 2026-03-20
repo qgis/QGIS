@@ -165,7 +165,15 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void addFeature( QgsVectorLayer *layer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes );
 
     //! Adds feature from raster layer
-    void addFeature( QgsRasterLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes, const QgsFields &fields = QgsFields(), const QgsFeature &feature = QgsFeature(), const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
+    void addFeature(
+      QgsRasterLayer *layer,
+      const QString &label,
+      const QMap<QString, QString> &attributes,
+      const QMap<QString, QString> &derivedAttributes,
+      const QgsFields &fields = QgsFields(),
+      const QgsFeature &feature = QgsFeature(),
+      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() )
+    );
 
     /**
      * Adds results from mesh layer

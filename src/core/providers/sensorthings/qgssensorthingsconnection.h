@@ -16,7 +16,6 @@
 #ifndef QGSSENSORTHINGSCONNECTION_H
 #define QGSSENSORTHINGSCONNECTION_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsabstractproviderconnection.h"
@@ -25,6 +24,8 @@
 
 #include <QString>
 #include <QStringList>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 
@@ -45,12 +46,10 @@ template<class T> class QgsSettingsEntryEnumFlag;
  */
 class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections = QgsSettingsTree::sTreeConnections->createNamedListNode(
-          u"sensorthings"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections
+      = QgsSettingsTree::sTreeConnections->createNamedListNode( u"sensorthings"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;
@@ -82,16 +81,16 @@ class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProvider
     */
     struct Data
     {
-      //! Source URI
-      QString url;
-      //! Authentication configuration id
-      QString authCfg;
-      //! HTTP Basic username
-      QString username;
-      //! HTTP Basic password
-      QString password;
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
+        //! Source URI
+        QString url;
+        //! Authentication configuration id
+        QString authCfg;
+        //! HTTP Basic username
+        QString username;
+        //! HTTP Basic password
+        QString password;
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
     };
 
     /**

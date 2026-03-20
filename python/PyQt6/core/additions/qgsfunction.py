@@ -111,7 +111,7 @@ def register_function(
     The function signature may contain special parameters (in any order at the end of the signature):
 
     - feature: the QgsFeature related to the current evaluation
-    - parent: the QgsExpressionFunction parent
+    - parent: the QgsExpression parent
     - context: the QgsExpressionContext related to the current evaluation
 
     If those parameters are present in the function signature, they will be automatically passed to the function,
@@ -192,7 +192,7 @@ def qgsfunction(args="auto", group: str = "custom", **kwargs):
     The decorated function signature may contain special parameters (in any order at the end of the signature):
 
     - ``feature``: the QgsFeature related to the current evaluation
-    - ``parent``: the QgsExpressionFunction parent
+    - ``parent``: the QgsExpression parent
     - ``context``: the QgsExpressionContext related to the current evaluation
 
     If those parameters are present in the function signature, they will be automatically passed to the function,
@@ -296,7 +296,7 @@ def qgsfunction(args="auto", group: str = "custom", **kwargs):
 
     This registers a function called "display_field" in the "custom" group.
     This expression requires an unique parameter: ``fieldname``. ``feature`` is automatically passed to the function.
-    ``parent`` is the QgsExpressionFunction parent, and can be used to raise an error.
+    ``parent`` is the QgsExpression parent, and can be used to raise an error.
 
     .. code-block:: text
 

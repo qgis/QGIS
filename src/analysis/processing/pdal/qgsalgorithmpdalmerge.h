@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMPDALMERGE_H
 #define QGSALGORITHMPDALMERGE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgspdalalgorithmbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

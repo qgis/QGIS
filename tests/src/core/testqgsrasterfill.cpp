@@ -46,7 +46,8 @@ class TestQgsRasterFill : public QgsTest
 
   public:
     TestQgsRasterFill()
-      : QgsTest( u"Raster Fill Renderer Tests"_s, u"symbol_rasterfill"_s ) {}
+      : QgsTest( u"Raster Fill Renderer Tests"_s, u"symbol_rasterfill"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -99,9 +100,7 @@ void TestQgsRasterFill::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup raster fill
   mRasterFill = new QgsRasterFillSymbolLayer();
@@ -134,8 +133,7 @@ void TestQgsRasterFill::init()
 }
 
 void TestQgsRasterFill::cleanup()
-{
-}
+{}
 
 void TestQgsRasterFill::rasterFillSymbol()
 {
@@ -148,10 +146,7 @@ void TestQgsRasterFill::coordinateMode()
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
 
   mMapSettings.setExtent( mpPolysLayer->extent() );
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_viewport"_s, u"rasterfill_viewport"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_viewport"_s, u"rasterfill_viewport"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
 
@@ -162,10 +157,7 @@ void TestQgsRasterFill::alpha()
 {
   mRasterFill->setOpacity( 0.5 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_alpha"_s, u"rasterfill_alpha"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_alpha"_s, u"rasterfill_alpha"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setOpacity( 1.0 );
 
@@ -176,10 +168,7 @@ void TestQgsRasterFill::offset()
 {
   mRasterFill->setOffset( QPointF( 5, 10 ) );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_offset"_s, u"rasterfill_offset"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_offset"_s, u"rasterfill_offset"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setOffset( QPointF() );
 
@@ -191,10 +180,7 @@ void TestQgsRasterFill::width()
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Millimeters );
   mRasterFill->setWidth( 5.0 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_width"_s, u"rasterfill_width"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_width"_s, u"rasterfill_width"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -209,10 +195,7 @@ void TestQgsRasterFill::widthAndHeight()
 
   mRasterFill->setHeight( 15.0 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_width_and_height"_s, u"rasterfill_width_and_height"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_width_and_height"_s, u"rasterfill_width_and_height"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -229,10 +212,7 @@ void TestQgsRasterFill::widthForHeight()
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Millimeters );
   mRasterFill->setHeight( 15.0 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_height"_s, u"rasterfill_height"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_height"_s, u"rasterfill_height"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -247,10 +227,7 @@ void TestQgsRasterFill::percentageHeight()
   mRasterFill->setWidth( 5.0 );
   mRasterFill->setHeight( 10 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_height_percentage"_s, u"rasterfill_height_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_height_percentage"_s, u"rasterfill_height_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -264,10 +241,7 @@ void TestQgsRasterFill::percentage()
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 6.3 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_percentage"_s, u"rasterfill_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_percentage"_s, u"rasterfill_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -281,10 +255,7 @@ void TestQgsRasterFill::percentageCoordinateMode()
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_viewport_percentage"_s, u"rasterfill_viewport_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_viewport_percentage"_s, u"rasterfill_viewport_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -300,10 +271,7 @@ void TestQgsRasterFill::percentageOffset()
   mRasterFill->setOffsetUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setOffset( QPointF( 12, 15 ) );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_offset_percentage"_s, u"rasterfill_offset_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_offset_percentage"_s, u"rasterfill_offset_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -319,10 +287,7 @@ void TestQgsRasterFill::percentageAlpha()
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setOpacity( 0.5 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_alpha_percentage"_s, u"rasterfill_alpha_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_alpha_percentage"_s, u"rasterfill_alpha_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );
@@ -336,10 +301,7 @@ void TestQgsRasterFill::percentageWidth()
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 3.3 );
 
-  const bool result = QGSRENDERMAPSETTINGSCHECK(
-    u"rasterfill_width_percentage"_s, u"rasterfill_width_percentage"_s,
-    mMapSettings, 500, 20
-  );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( u"rasterfill_width_percentage"_s, u"rasterfill_width_percentage"_s, mMapSettings, 500, 20 );
 
   mRasterFill->setSizeUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setWidth( 0 );

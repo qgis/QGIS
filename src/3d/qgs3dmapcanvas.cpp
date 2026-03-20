@@ -168,9 +168,7 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 
   resetView();
 
-  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [this]( QPoint point ) {
-    QCursor::setPos( mapToGlobal( point ) );
-  } );
+  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [this]( QPoint point ) { QCursor::setPos( mapToGlobal( point ) ); } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMapSettings, &Qgs3DMapSettings::setCameraMovementSpeed );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
   connect( cameraController(), &QgsCameraController::navigationModeChanged, this, &Qgs3DMapCanvas::onNavigationModeChanged );
@@ -215,12 +213,7 @@ void Qgs3DMapCanvas::setCrossSection( const QgsCrossSection &crossSection )
 
   const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
   const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
-  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
-    startVec,
-    endVec,
-    width,
-    mMapSettings->origin()
-  );
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( startVec, endVec, width, mMapSettings->origin() );
 
   mScene->enableClipping( clippingPlanes );
   emit crossSectionEnabledChanged( true );

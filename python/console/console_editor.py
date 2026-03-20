@@ -357,10 +357,12 @@ class Editor(QgsCodeEditorPython):
         self.console_widget.show_editor_action.setChecked(False)
 
     def createTempFile(self):
-        name = tempfile.NamedTemporaryFile(delete=False).name
         # Need to use newline='' to avoid adding extra \r characters on Windows
-        with open(name, "w", encoding="utf-8", newline="") as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", newline="", delete=False
+        ) as f:
             f.write(self.text())
+            name = f.name
         return name
 
     def runScriptCode(self):

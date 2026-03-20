@@ -16,9 +16,10 @@ email                : matthias@opengis.ch
 #ifndef QGSGEOMETRYISVALIDCHECK_H
 #define QGSGEOMETRYISVALIDCHECK_H
 
-#define SIP_NO_FILE
 
 #include "qgssinglegeometrycheck.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

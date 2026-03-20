@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
   , mFlags( flags )
-{
-}
+{}
 
 QgsMapRendererStagedRenderJob::~QgsMapRendererStagedRenderJob()
 {
@@ -59,9 +58,9 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
     if ( mFlags & RenderLabelsByMapLayer )
-      mLabelingEngineV2 = std::make_unique<QgsStagedRenderLabelingEngine>( );
+      mLabelingEngineV2 = std::make_unique<QgsStagedRenderLabelingEngine>();
     else
-      mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
+      mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -72,16 +71,13 @@ void QgsMapRendererStagedRenderJob::startPrivate()
 }
 
 void QgsMapRendererStagedRenderJob::cancel()
-{
-}
+{}
 
 void QgsMapRendererStagedRenderJob::cancelWithoutBlocking()
-{
-}
+{}
 
 void QgsMapRendererStagedRenderJob::waitForFinished()
-{
-}
+{}
 
 bool QgsMapRendererStagedRenderJob::isActive() const
 {

@@ -28,6 +28,8 @@
 #include "qgsrubberband.h"
 #include "qobjectuniqueptr.h"
 
+#define SIP_NO_FILE
+
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationItem;
@@ -35,7 +37,6 @@ class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
 class QgsMapToolSelectAnnotationMouseHandles;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui

@@ -23,7 +23,6 @@ Represents a default, "not-specified" value for a feature attribute.
 #include "qgsunsetattributevalue.h"
 %End
   public:
-
     QgsUnsetAttributeValue();
 
     explicit QgsUnsetAttributeValue( const QString &defaultValueClause );
@@ -51,7 +50,7 @@ Returns the original data provider's default value clause.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    operator QVariant() const;
+      operator QVariant() const;
 
 };
 
@@ -61,8 +60,6 @@ bool operator==( const QgsUnsetAttributeValue &value, const QString &other );
 
 
 bool operator!=( const QgsUnsetAttributeValue &value, const QString &other );
-
-
 
 
 /************************************************************************

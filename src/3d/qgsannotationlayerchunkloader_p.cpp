@@ -57,8 +57,7 @@ QgsAnnotationLayerChunkLoader::QgsAnnotationLayerChunkLoader( const QgsAnnotatio
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mRenderContext( factory->mRenderContext )
-{
-}
+{}
 
 
 struct Billboard
@@ -150,7 +149,14 @@ void QgsAnnotationLayerChunkLoader::start()
     QStringList textBillboardTexts;
     textBillboardTexts.reserve( mItemsToRender.size() );
 
-    auto addTextBillboard = [layerToMapTransform, showCallouts, rect, zOffset, altitudeClamping, this, &textBillboards, &textBillboardTexts]( const QgsPointXY &p, const QString &annotationText, const QgsTextFormat &annotationTextFormat ) {
+    auto addTextBillboard = [layerToMapTransform,
+                             showCallouts,
+                             rect,
+                             zOffset,
+                             altitudeClamping,
+                             this,
+                             &textBillboards,
+                             &textBillboardTexts]( const QgsPointXY &p, const QString &annotationText, const QgsTextFormat &annotationTextFormat ) {
       QString text = annotationText;
       if ( annotationTextFormat.allowHtmlFormatting() )
       {
@@ -167,8 +173,10 @@ void QgsAnnotationLayerChunkLoader::start()
             return;
 
           double z = 0;
-          const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0 : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator() ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
-                                                                                                                                                                                               : 0.f;
+          const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0
+                                 : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator()
+                                   ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
+                                   : 0.f;
 
           switch ( altitudeClamping )
           {
@@ -226,8 +234,10 @@ void QgsAnnotationLayerChunkLoader::start()
               continue;
 
             double z = 0;
-            const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0 : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator() ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
-                                                                                                                                                                                                 : 0.f;
+            const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0
+                                   : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator()
+                                     ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
+                                     : 0.f;
 
             switch ( altitudeClamping )
             {
@@ -323,8 +333,13 @@ void QgsAnnotationLayerChunkLoader::start()
           const QRect textureRect = atlas.rect( billboard.textureId );
           QgsBillboardGeometry::BillboardAtlasData geometry;
           geometry.position = billboard.position;
-          geometry.textureAtlasOffset = QVector2D( static_cast< float >( textureRect.left() ) / static_cast< float>( mBillboardAtlas.width() ), 1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mBillboardAtlas.height() ) ) );
-          geometry.textureAtlasSize = QVector2D( static_cast< float >( textureRect.width() ) / static_cast< float>( mBillboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( mBillboardAtlas.height() ) );
+          geometry.textureAtlasOffset = QVector2D(
+            static_cast< float >( textureRect.left() ) / static_cast< float>( mBillboardAtlas.width() ),
+            1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mBillboardAtlas.height() ) )
+          );
+          geometry.textureAtlasSize = QVector2D(
+            static_cast< float >( textureRect.width() ) / static_cast< float>( mBillboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( mBillboardAtlas.height() )
+          );
           geometry.pixelOffset = QPoint( 0, textureRect.height() / 2 );
           mBillboardPositions.append( geometry );
         }
@@ -360,10 +375,17 @@ void QgsAnnotationLayerChunkLoader::start()
             const QRect textureRect = atlas.textureRectForGrapheme( billboard.text, graphemeIndex );
             QgsBillboardGeometry::BillboardAtlasData geometry;
             geometry.position = billboard.position;
-            geometry.textureAtlasOffset = QVector2D( static_cast< float >( textureRect.left() ) / static_cast< float>( mTextBillboardAtlas.width() ), 1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mTextBillboardAtlas.height() ) ) );
-            geometry.textureAtlasSize = QVector2D( static_cast< float >( textureRect.width() ) / static_cast< float>( mTextBillboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( mTextBillboardAtlas.height() ) );
+            geometry.textureAtlasOffset = QVector2D(
+              static_cast< float >( textureRect.left() ) / static_cast< float>( mTextBillboardAtlas.width() ),
+              1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mTextBillboardAtlas.height() ) )
+            );
+            geometry.textureAtlasSize = QVector2D(
+              static_cast< float >( textureRect.width() ) / static_cast< float>( mTextBillboardAtlas.width() ),
+              static_cast< float>( textureRect.height() ) / static_cast< float>( mTextBillboardAtlas.height() )
+            );
             const QPointF pixelOffset = atlas.pixelOffsetForGrapheme( billboard.text, graphemeIndex );
-            geometry.pixelOffset = QPoint( static_cast< int >( std::round( -xOffset + pixelOffset.x() + 0.5 * textureRect.width() ) ), static_cast< int >( std::round( pixelOffset.y() + 0.5 * textureRect.height() ) ) );
+            geometry.pixelOffset
+              = QPoint( static_cast< int >( std::round( -xOffset + pixelOffset.x() + 0.5 * textureRect.width() ) ), static_cast< int >( std::round( pixelOffset.y() + 0.5 * textureRect.height() ) ) );
             mTextBillboardPositions.append( geometry );
           }
         }
@@ -514,7 +536,19 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsAnnotationLayer *layer, int leafLevel, Qgis::AltitudeClamping clamping, double zOffset, bool showCallouts, const QColor &calloutLineColor, double calloutLineWidth, const QgsTextFormat &textFormat, double zMin, double zMax )
+QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
+  const Qgs3DRenderContext &context,
+  QgsAnnotationLayer *layer,
+  int leafLevel,
+  Qgis::AltitudeClamping clamping,
+  double zOffset,
+  bool showCallouts,
+  const QColor &calloutLineColor,
+  double calloutLineWidth,
+  const QgsTextFormat &textFormat,
+  double zMin,
+  double zMax
+)
   : mRenderContext( context )
   , mLayer( layer )
   , mLeafLevel( leafLevel )
@@ -549,10 +583,24 @@ QgsChunkLoader *QgsAnnotationLayerChunkLoaderFactory::createChunkLoader( QgsChun
 ///////////////
 
 
-QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity( Qgs3DMapSettings *map, QgsAnnotationLayer *layer, Qgis::AltitudeClamping clamping, double zOffset, bool showCallouts, const QColor &calloutLineColor, double calloutLineWidth, const QgsTextFormat &textFormat, double zMin, double zMax )
-  : QgsChunkedEntity( map,
-                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      new QgsAnnotationLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ), true )
+QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity(
+  Qgs3DMapSettings *map,
+  QgsAnnotationLayer *layer,
+  Qgis::AltitudeClamping clamping,
+  double zOffset,
+  bool showCallouts,
+  const QColor &calloutLineColor,
+  double calloutLineWidth,
+  const QgsTextFormat &textFormat,
+  double zMin,
+  double zMax
+)
+  : QgsChunkedEntity(
+      map,
+      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
+      new QgsAnnotationLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ),
+      true
+    )
 {
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )

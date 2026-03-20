@@ -156,8 +156,7 @@ void QgsUserProfileOptionsWidget::onAskUserChanged()
 //
 QgsUserProfileOptionsFactory::QgsUserProfileOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "User Profiles" ), QgsApplication::getThemeIcon( u"/user.svg"_s ) )
-{
-}
+{}
 
 QgsOptionsPageWidget *QgsUserProfileOptionsFactory::createWidget( QWidget *parent ) const
 {
