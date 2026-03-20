@@ -19,6 +19,7 @@
 #include "qgssfcgalengine.h"
 
 #include <SFCGAL/capi/sfcgal_c.h>
+#include <array>
 #include <nlohmann/json.hpp>
 
 #include "qgsgeometry.h"
@@ -988,7 +989,16 @@ sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, co
   CHECK_NOT_NULL( geom, nullptr );
 
   sfcgal::geometry *result;
-  result = sfcgal_geometry_transform( geom, mat.constData() );
+
+  // Convert matrix float data to double for SFCGAL API
+  std::array<double, 16> matDouble;
+  const float *matFloatData = mat.constData();
+  for ( unsigned int i = 0; i < 16; ++i )
+  {
+    matDouble[i] = static_cast<double>( matFloatData[i] );
+  }
+
+  result = sfcgal_geometry_transform( geom, matDouble.data() );
 
   CHECK_SUCCESS( errorMsg, nullptr );
   return sfcgal::make_shared_geom( result );
@@ -1023,7 +1033,15 @@ sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primit
 
   if ( !mat.isIdentity() )
   {
-    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, mat.constData() );
+    // Convert matrix float data to double for SFCGAL API
+    std::array<double, 16> matDouble;
+    const float *matFloatData = mat.constData();
+    for ( unsigned int i = 0; i < 16; ++i )
+    {
+      matDouble[i] = static_cast<double>( matFloatData[i] );
+    }
+
+    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, matDouble.data() );
     sfcgal_geometry_delete( result );
     result = result2;
     CHECK_SUCCESS( errorMsg, nullptr );
