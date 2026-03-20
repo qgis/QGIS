@@ -469,7 +469,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mOptionsMenu->addAction( mShowSubsectionsAction );
 
 #ifdef HAVE_3D
-  mShowCurveIn3DAction = new QAction( tr( "Show Curve in 3D" ), this );
+  mShowCurveIn3DAction = new QAction( tr( "Show Profile in 3D Views" ), this );
   mShowCurveIn3DAction->setCheckable( true );
   mShowCurveIn3DAction->setChecked( settingShowCurveIn3D->value() );
   connect( mShowCurveIn3DAction, &QAction::triggered, this, &QgsElevationProfileWidget::updateCurveIn3D );

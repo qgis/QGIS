@@ -1526,6 +1526,9 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
   ElevationProfileData &data = mElevationProfileData[profile];
 
   QgsCurve *curve = profile->profileCurve();
+  if ( curve )
+    ( void ) curve->removeDuplicateNodes();
+
   if ( !curve )
   {
     data.rubberBandZMin.reset();
@@ -1606,24 +1609,23 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
     QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), 0.0, -tolerance, &x, &y );
     sidePoints.append( QgsPointXY( x, y ) );
 
-    // we want only one vertical line at the arch middle point (where the curve bends, if curve is made out of multiple lines)
+    // we want only one vertical line at the arc middle point (where the curve bends, if the curve is made out of multiple segments)
     for ( int i = 1; i < numCurvePoints - 1; i++ )
     {
       const QgsPoint vertexPrevious = curve->vertexAt( QgsVertexId( 0, 0, i - 1 ) );
       const QgsPoint vertexMiddle = curve->vertexAt( QgsVertexId( 0, 0, i ) );
       const QgsPoint vertexNext = curve->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
 
-      const double anglePreviousMiddle = QgsGeometryUtilsBase::lineAngle( vertexPrevious.x(), vertexPrevious.y(), vertexMiddle.x(), vertexMiddle.y() );
-      const double angleMiddleNext = QgsGeometryUtilsBase::lineAngle( vertexMiddle.x(), vertexMiddle.y(), vertexNext.x(), vertexNext.y() );
-
-      const double averageAngle = QgsGeometryUtilsBase::averageAngle( anglePreviousMiddle, angleMiddleNext ) - M_PI_2;
+      const double averageAngle = QgsGeometryUtilsBase::averageAngle( vertexPrevious.x(), vertexPrevious.y(), vertexMiddle.x(), vertexMiddle.y(), vertexNext.x(), vertexNext.y() ) - M_PI_2;
       const double dx = std::sin( averageAngle );
       const double dy = std::cos( averageAngle );
 
-      const double turnAngle = QgsGeometryUtilsBase::normalizedAngle( angleMiddleNext - anglePreviousMiddle );
+      const double angleBetweenPoints = QgsGeometryUtilsBase::angleBetweenThreePoints( vertexPrevious.x(), vertexPrevious.y(), vertexMiddle.x(), vertexMiddle.y(), vertexNext.x(), vertexNext.y() );
+      const double turnAngle = QgsGeometryUtilsBase::normalizedAngle( angleBetweenPoints - M_PI );
       const double angleHalf = turnAngle < M_PI ? turnAngle * 0.5 : ( 2.0 * M_PI - turnAngle ) * 0.5;
 
-      const double miter = tolerance / std::cos( angleHalf );
+      const double cosAngleHalf = std::cos( angleHalf );
+      const double miter = std::abs( cosAngleHalf ) > 1e-10 ? tolerance / cosAngleHalf : tolerance;
 
       const double left = turnAngle < M_PI ? tolerance : miter;
       const double right = turnAngle < M_PI ? miter : tolerance;
