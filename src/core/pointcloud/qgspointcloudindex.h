@@ -73,6 +73,12 @@ class CORE_EXPORT QgsPointCloudNodeId
      */
     QgsPointCloudNodeId parentNode() const;
 
+    /**
+     * Returns the node's 8 direct child nodes
+     * \since QGIS 4.2
+     */
+    QVector<QgsPointCloudNodeId> childrenNodes() const;
+
     //! Creates node from string
     static QgsPointCloudNodeId fromString( const QString &str );
 
@@ -91,14 +97,25 @@ class CORE_EXPORT QgsPointCloudNodeId
     //! Returns z
     int z() const;
 
+    // clang-format off
+#ifdef SIP_RUN
+    //! hash operator
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
+
   private:
     int mD = -1, mX = -1, mY = -1, mZ = -1;
+    // clang-format on
 };
 
 Q_DECLARE_TYPEINFO( QgsPointCloudNodeId, Q_PRIMITIVE_TYPE );
 
 //! Hash function for indexed nodes
 CORE_EXPORT uint qHash( QgsPointCloudNodeId id );
+
 
 #ifndef SIP_RUN
 

@@ -17,6 +17,7 @@
 
 #include "qgscopcpointcloudindex.h"
 
+#include <algorithm>
 #include <fstream>
 #include <memory>
 
@@ -418,24 +419,20 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
     pointCount = mHierarchy.value( id, -1 );
   }
 
-  QList<QgsPointCloudNodeId> children;
-  children.reserve( 8 );
-  const int d = id.d() + 1;
-  const int x = id.x() * 2;
-  const int y = id.y() * 2;
-  const int z = id.z() * 2;
-
-  for ( int i = 0; i < 8; ++i )
-  {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-    bool found = fetchNodeHierarchy( n2 );
-    {
-      QMutexLocker locker( &mHierarchyMutex );
-      if ( found && mHierarchy[id] >= 0 )
-        children.append( n2 );
-    }
-  }
+  QList<QgsPointCloudNodeId> children = id.childrenNodes();
+  children.erase(
+    std::remove_if(
+      children.begin(),
+      children.end(),
+      [this]( const QgsPointCloudNodeId &c ) {
+        const bool found = fetchNodeHierarchy( c );
+        QMutexLocker locker( &mHierarchyMutex );
+        const bool shouldRemove = !found || mHierarchy[c] < 0;
+        return shouldRemove;
+      }
+    ),
+    children.end()
+  );
 
   QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );

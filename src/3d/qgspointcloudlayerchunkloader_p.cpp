@@ -227,12 +227,12 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
   QVector<QgsChunkNode *> children;
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
+  const QgsPointCloudNodeId pcId( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
-  for ( int i = 0; i < 8; ++i )
+  const QVector<QgsPointCloudNodeId> childrenPcIds = pcId.childrenNodes();
+  for ( const QgsPointCloudNodeId &childPcId : childrenPcIds )
   {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
-    const QgsPointCloudNodeId childPcId( childId.d, childId.x, childId.y, childId.z );
+    const QgsChunkNodeId childId( childPcId.d(), childPcId.x(), childPcId.y(), childPcId.z() );
     if ( !mPointCloudIndex.hasNode( childPcId ) )
       continue;
     const QgsPointCloudNode childNode = mPointCloudIndex.getNode( childPcId );
