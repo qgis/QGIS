@@ -91,6 +91,10 @@
 #include <Qt3DRender/QTechnique>
 #include <QtMath>
 
+#ifdef HAVE_TRACY
+#include "tracy/Tracy.hpp"
+#endif
+
 #include "moc_qgs3dmapscene.cpp"
 
 using namespace Qt::StringLiterals;
@@ -498,7 +502,10 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
 void Qgs3DMapScene::onFrameTriggered( float dt )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::EventType::Instant, u"3D"_s, u"Frame begins"_s );
+#ifdef HAVE_TRACY
+  FrameMark;
+#endif
+  QgsEventTracing::addEventToQgisTrace( QgsEventTracing::EventType::Instant, u"3D"_s, u"Frame begins"_s );
 
   mCameraController->frameTriggered( dt );
 
@@ -636,6 +643,7 @@ void Qgs3DMapScene::createTerrainDeferred()
     mMap.terrainGenerator()->setupQuadtree( rootBox3D, rootError, maxZoomLevel, clippingBox3D );
 
     mTerrain = new QgsTerrainEntity( &mMap );
+    mTerrain->setObjectName( u"Terrain"_s );
     terrainOrGlobe = mTerrain;
   }
 
@@ -867,6 +875,9 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
     {
+      // Add name to QObject for debugging
+      newEntity->setObjectName( u"%1 3D entity"_s.arg( layer->name() ) );
+
       mLayerEntities.insert( layer, newEntity );
 
       if ( Qgs3DMapSceneEntity *sceneNewEntity = qobject_cast<Qgs3DMapSceneEntity *>( newEntity ) )
