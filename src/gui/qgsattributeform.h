@@ -26,6 +26,7 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QMultiMap>
+#include <QToolButton>
 #include <QWidget>
 
 class QgsAttributeFormInterface;
@@ -465,6 +466,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     Q_DECL_DEPRECATED QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context ) SIP_DEPRECATED;
     QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QString &relationWidgetTypeId, const QgsRelation &rel, const QgsAttributeEditorContext &context );
+
+    QToolButton *createCommentInfoButton( QLabel *label );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
