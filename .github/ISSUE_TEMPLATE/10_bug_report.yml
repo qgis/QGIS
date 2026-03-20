@@ -64,6 +64,16 @@ body:
       options:
         - label: I tried with a new [QGIS profile](https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles)
 
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: No Duplicate of the Issue
+      description: |
+        Please confirm that you have searched for similar issues and none of them match your problem.
+      options:
+        - label: I have verified that there are no existing issues raised related to my problem.
+          required: true
+
   - type: textarea
     id: additional-context
     attributes:
