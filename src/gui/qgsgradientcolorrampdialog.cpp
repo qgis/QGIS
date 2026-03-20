@@ -154,26 +154,22 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   mLightnessCurve = new QwtPlotCurve();
   mLightnessCurve->setTitle( tr( "Lightness" ) );
-  mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ),
-    mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mLightnessCurve->setPen( QPen( QColor( 70, 150, 255 ), 0.0 ) ), mLightnessCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mLightnessCurve->attach( mPlot );
 
   mHueCurve = new QwtPlotCurve();
   mHueCurve->setTitle( tr( "Hue" ) );
-  mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ),
-    mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mHueCurve->setPen( QPen( QColor( 255, 215, 70 ), 0.0 ) ), mHueCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mHueCurve->attach( mPlot );
 
   mSaturationCurve = new QwtPlotCurve();
   mSaturationCurve->setTitle( tr( "Saturation" ) );
-  mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ),
-    mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mSaturationCurve->setPen( QPen( QColor( 255, 70, 150 ), 0.0 ) ), mSaturationCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
   mAlphaCurve->setTitle( tr( "Opacity" ) );
-  mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
-    mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+  mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ), mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );
 
   mPlotFilter = new QgsGradientPlotEventFilter( mPlot );
@@ -251,8 +247,7 @@ void QgsGradientColorRampDialog::btnInformation_pressed()
   tableInfo->setColumnCount( 2 );
   int i = 0;
   QgsStringMap rampInfo = mRamp.info();
-  for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
-        it != rampInfo.constEnd(); ++it )
+  for ( QgsStringMap::const_iterator it = rampInfo.constBegin(); it != rampInfo.constEnd(); ++it )
   {
     if ( it.key().startsWith( "cpt-city"_L1 ) )
       continue;

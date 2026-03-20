@@ -25,9 +25,7 @@ operation.
 #include "qgspointcloudrenderer.h"
 %End
   public:
-
-    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = 0 );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
 
@@ -648,7 +646,6 @@ Returns the overview switching scale
 %End
 
   protected:
-
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring
 Retrieves the x and y coordinate for the point at index ``i``.

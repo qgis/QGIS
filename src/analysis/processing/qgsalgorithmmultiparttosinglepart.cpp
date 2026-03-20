@@ -62,14 +62,18 @@ QString QgsMultipartToSinglepartAlgorithm::groupId() const
 
 QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
-                      "a single part. Features with multipart geometries are divided in as many different features as parts the geometry "
-                      "contain, and the same attributes are used for each of them." );
+  return QObject::tr(
+    "This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
+    "a single part. Features with multipart geometries are divided in as many different features as parts the geometry "
+    "contain, and the same attributes are used for each of them."
+  );
 }
 QString QgsMultipartToSinglepartAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
-                      "a single part." );
+  return QObject::tr(
+    "Takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
+    "a single part."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultipartToSinglepartAlgorithm::documentationFlags() const

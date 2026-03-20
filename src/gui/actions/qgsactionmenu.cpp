@@ -198,7 +198,8 @@ void QgsActionMenu::reloadActions()
     mVisibleActionCount++;
   }
 
-  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
+  const QList<QgsMapLayerAction *> mapLayerActions
+    = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
 
   if ( !mapLayerActions.isEmpty() )
   {

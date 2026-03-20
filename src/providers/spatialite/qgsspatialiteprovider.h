@@ -136,10 +136,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform() const
-    {
-      return false;
-    }
+    bool supportsNativeTransform() const { return false; }
 
     QString name() const override;
     QString description() const override;
@@ -161,24 +158,17 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     {
         explicit SLException( const QString &msg )
           : errMsg( msg )
-        {
-        }
+        {}
 
         SLException( const SLException &e )
           : errMsg( e.errMsg )
-        {
-        }
+        {}
 
-        ~SLException()
-        {
-        }
+        ~SLException() {}
 
         SLException &operator=( const SLException &other ) = delete;
 
-        QString errorMessage() const
-        {
-          return !errMsg.isEmpty() ? errMsg : u"unknown cause"_s;
-        }
+        QString errorMessage() const { return !errMsg.isEmpty() ? errMsg : u"unknown cause"_s; }
 
       private:
         QString errMsg;
@@ -402,11 +392,13 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
   public:
     QgsSpatiaLiteProviderMetadata();
     QIcon icon() const override;
-
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     void cleanupProvider() override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    bool saveStyle(
+      const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
+    ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
@@ -417,8 +409,19 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
-    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
+    Qgis::VectorExportResult createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
+    ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 

@@ -52,11 +52,13 @@ QString QgsSetZValueAlgorithm::groupId() const
 
 QString QgsSetZValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the Z value for geometries in a layer.\n\n"
-                      "If Z values already exist in the layer, they will be overwritten "
-                      "with the new value. If no Z values exist, the geometry will be "
-                      "upgraded to include Z values and the specified value used as "
-                      "the initial Z value for all geometries." );
+  return QObject::tr(
+    "This algorithm sets the Z value for geometries in a layer.\n\n"
+    "If Z values already exist in the layer, they will be overwritten "
+    "with the new value. If no Z values exist, the geometry will be "
+    "upgraded to include Z values and the specified value used as "
+    "the initial Z value for all geometries."
+  );
 }
 
 QString QgsSetZValueAlgorithm::shortDescription() const

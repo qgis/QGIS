@@ -26,7 +26,13 @@ properties of a Processing parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-    QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingAbstractParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = 0,
+      const QgsProcessingAlgorithm *algorithm = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Creates a new QgsProcessingAbstractParameterDefinitionWidget, with the
 specified ``parent`` widget.
@@ -117,7 +123,14 @@ parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-    QgsProcessingParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = 0,
+      const QgsProcessingAlgorithm *algorithm = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Constructor for QgsProcessingParameterDefinitionWidget, for a parameter
 of the specified ``type``.
@@ -177,7 +190,14 @@ Processing parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-    QgsProcessingParameterDefinitionPanelWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingParameterDefinitionPanelWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = 0,
+      const QgsProcessingAlgorithm *algorithm = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Constructor for QgsProcessingParameterDefinitionPanelWidget, for a
 parameter of the specified ``type``.
@@ -257,7 +277,14 @@ parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-    QgsProcessingParameterDefinitionDialog( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingParameterDefinitionDialog(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = 0,
+      const QgsProcessingAlgorithm *algorithm = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Constructor for QgsProcessingParameterDefinitionDialog, for a parameter
 of the specified ``type``.

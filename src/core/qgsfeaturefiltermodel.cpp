@@ -15,7 +15,8 @@
 #include "qgsfeaturefiltermodel.h"
 
 #include "qgsfeatureexpressionvaluesgatherer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
@@ -24,6 +25,9 @@
 #include "moc_qgsfeaturefiltermodel.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryInteger *QgsFeatureFilterModel::settingsMaxEntriesRelationWidget
+  = new QgsSettingsEntryInteger( u"max-entries-relation-widget"_s, QgsSettingsTree::sTreeGui, 100, u"Maximum number of entries in relation widget"_s );
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {
@@ -43,7 +47,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QgsFeaturePickerModelBase( parent )
 {
   setFetchGeometry( false );
-  setFetchLimit( QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() );
+  setFetchLimit( settingsMaxEntriesRelationWidget->value() );
   setExtraIdentifierValueUnguarded( nullIdentifier() );
 }
 
@@ -157,4 +161,3 @@ void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
 {
   setExtraIdentifierValue( nullIdentifier() );
 }
-

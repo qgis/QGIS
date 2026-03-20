@@ -53,8 +53,11 @@ identification:
         IdentifyResult();
 
         IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes );
+
         IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes );
+
         IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes );
+
         QgsMapLayer *mLayer;
         QString mLabel;
         QgsFields mFields;
@@ -89,7 +92,9 @@ constructor
     virtual void deactivate();
 
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    QList<QgsMapToolIdentify::IdentifyResult> identify(
+      int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting, const QgsIdentifyContext &identifyContext = QgsIdentifyContext()
+    );
 %Docstring
 Performs the identification.
 
@@ -127,7 +132,9 @@ publics methods are offered
 %Docstring
 Performs identification based on a geometry (in map coordinates)
 %End
-    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    QList<QgsMapToolIdentify::IdentifyResult> identify(
+      const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, const QgsIdentifyContext &identifyContext = QgsIdentifyContext()
+    );
 %Docstring
 Performs identification based on a geometry (in map coordinates)
 %End
@@ -168,7 +175,9 @@ updated in user-facing displays.
 %End
 
   protected:
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    QList<QgsMapToolIdentify::IdentifyResult> identify(
+      int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext()
+    );
 %Docstring
 Performs the identification. To avoid being forced to specify
 IdentifyMode with a list of layers this has been made private and two
@@ -188,12 +197,27 @@ publics methods are offered
 %End
 
 
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    bool identifyLayer(
+      QList<QgsMapToolIdentify::IdentifyResult> *results,
+      QgsMapLayer *layer,
+      const QgsPointXY &point,
+      const QgsRectangle &viewExtent,
+      double mapUnitsPerPixel,
+      QgsMapToolIdentify::LayerType layerType = AllLayers,
+      const QgsIdentifyContext &identifyContext = QgsIdentifyContext()
+    );
 %Docstring
 Call the right method depending on layer type
 %End
 
-    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    bool identifyRasterLayer(
+      QList<QgsMapToolIdentify::IdentifyResult> *results,
+      QgsRasterLayer *layer,
+      QgsPointXY point,
+      const QgsRectangle &viewExtent,
+      double mapUnitsPerPixel,
+      const QgsIdentifyContext &identifyContext = QgsIdentifyContext()
+    );
 %Docstring
 Performs the identification against a given raster layer.
 

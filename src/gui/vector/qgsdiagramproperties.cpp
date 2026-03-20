@@ -60,10 +60,11 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
   }
   else
   {
-    expContext << QgsExpressionContextUtils::globalScope()
-               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-               << QgsExpressionContextUtils::atlasScope( nullptr )
-               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::atlasScope( nullptr )
+      << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -97,7 +98,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   mBarSpacingSpinBox->setClearValue( 0 );
-  mBarSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mBarSpacingUnitComboBox->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -485,7 +488,10 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
-      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ), ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() ) );
+      mScaleRangeWidget->setScaleRange(
+        ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ),
+        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() )
+      );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
       mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
       mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
@@ -820,10 +826,11 @@ void QgsDiagramProperties::mFindMaximumValueButton_clicked()
   {
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-            << QgsExpressionContextUtils::layerScope( mLayer );
+    context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+      << QgsExpressionContextUtils::layerScope( mLayer );
 
     exp.prepare( &context );
     if ( !exp.hasEvalError() )
@@ -1031,23 +1038,19 @@ QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
 
   QWidget *curWdgt = stackedPlacement->currentWidget();
-  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
-       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() ) || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     dls.setPlacement( QgsDiagramLayerSettings::AroundPoint );
   }
-  else if ( ( curWdgt == pagePoint && radOverPoint->isChecked() )
-            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
+  else if ( ( curWdgt == pagePoint && radOverPoint->isChecked() ) || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
   }
-  else if ( ( curWdgt == pageLine && radAroundLine->isChecked() )
-            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
+  else if ( ( curWdgt == pageLine && radAroundLine->isChecked() ) || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
   {
     dls.setPlacement( QgsDiagramLayerSettings::Line );
   }
-  else if ( ( curWdgt == pageLine && radOverLine->isChecked() )
-            || ( curWdgt == pagePolygon && radInsidePolygon->isChecked() ) )
+  else if ( ( curWdgt == pageLine && radOverLine->isChecked() ) || ( curWdgt == pagePolygon && radInsidePolygon->isChecked() ) )
   {
     dls.setPlacement( QgsDiagramLayerSettings::Horizontal );
   }
@@ -1160,9 +1163,7 @@ void QgsDiagramProperties::updatePlacementWidgets()
 {
   QWidget *curWdgt = stackedPlacement->currentWidget();
 
-  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
-       || ( curWdgt == pageLine && radAroundLine->isChecked() )
-       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() ) || ( curWdgt == pageLine && radAroundLine->isChecked() ) || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     mDiagramDistanceLabel->setEnabled( true );
     mDiagramDistanceSpinBox->setEnabled( true );

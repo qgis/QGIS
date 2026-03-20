@@ -53,7 +53,7 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
       sipType = sipType_QgsGeometryRubberBand;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:

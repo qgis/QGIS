@@ -65,20 +65,24 @@ QString QgsSumLineLengthAlgorithm::groupId() const
 
 QString QgsSumLineLengthAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon layer and a line layer and "
-                      "measures the total length of lines and the total number of "
-                      "them that cross each polygon.\n\n"
-                      "The resulting layer has the same features as the input polygon "
-                      "layer, but with two additional attributes containing the length "
-                      "and count of the lines across each polygon. The names of these "
-                      "two fields can be configured in the algorithm parameters." );
+  return QObject::tr(
+    "This algorithm takes a polygon layer and a line layer and "
+    "measures the total length of lines and the total number of "
+    "them that cross each polygon.\n\n"
+    "The resulting layer has the same features as the input polygon "
+    "layer, but with two additional attributes containing the length "
+    "and count of the lines across each polygon. The names of these "
+    "two fields can be configured in the algorithm parameters."
+  );
 }
 
 QString QgsSumLineLengthAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Takes a polygon layer and a line layer and "
-                      "measures the total length of lines and the total number of "
-                      "them that cross each polygon." );
+  return QObject::tr(
+    "Takes a polygon layer and a line layer and "
+    "measures the total length of lines and the total number of "
+    "them that cross each polygon."
+  );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsSumLineLengthAlgorithm::documentationFlags() const

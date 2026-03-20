@@ -53,10 +53,12 @@ QString QgsExtentFromLayerAlgorithm::groupId() const
 
 QString QgsExtentFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a map layer and generates a new vector "
-                      "layer with the minimum bounding box (rectangle polygon with "
-                      "N-S orientation) that covers the input layer. Optionally, the "
-                      "extent can be enlarged to a rounded value." );
+  return QObject::tr(
+    "This algorithm takes a map layer and generates a new vector "
+    "layer with the minimum bounding box (rectangle polygon with "
+    "N-S orientation) that covers the input layer. Optionally, the "
+    "extent can be enlarged to a rounded value."
+  );
 }
 
 QString QgsExtentFromLayerAlgorithm::shortDescription() const

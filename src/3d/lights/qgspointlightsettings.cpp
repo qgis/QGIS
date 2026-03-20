@@ -115,5 +115,10 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const
 {
-  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity && mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation && mQuadraticAttenuation == other.mQuadraticAttenuation;
+  return mPosition == other.mPosition
+         && mColor == other.mColor
+         && mIntensity == other.mIntensity
+         && mConstantAttenuation == other.mConstantAttenuation
+         && mLinearAttenuation == other.mLinearAttenuation
+         && mQuadraticAttenuation == other.mQuadraticAttenuation;
 }

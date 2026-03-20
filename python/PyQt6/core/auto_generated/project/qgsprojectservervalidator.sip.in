@@ -22,7 +22,6 @@ project.
 #include "qgsprojectservervalidator.h"
 %End
   public:
-
     QgsProjectServerValidator();
 
     enum ValidationError /BaseType=IntEnum/
@@ -46,15 +45,14 @@ Returns a human readable string for a given error.
 
     struct ValidationResult
     {
-
-      ValidationResult( const QgsProjectServerValidator::ValidationError error, const QVariant &identifier );
+        ValidationResult( const QgsProjectServerValidator::ValidationError error, const QVariant &identifier );
 %Docstring
 Constructor for ValidationResult.
 %End
 
-      QgsProjectServerValidator::ValidationError error;
+        QgsProjectServerValidator::ValidationError error;
 
-      QVariant identifier;
+        QVariant identifier;
     };
 
     static bool validate( QgsProject *project, QList< QgsProjectServerValidator::ValidationResult > &results /Out/ );

@@ -35,6 +35,7 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 {
   addWrapper( new QgsSettingsStringLineEditWrapper() );
   addWrapper( new QgsSettingsBoolCheckBoxWrapper() );
+  addWrapper( new QgsSettingsBoolGroupBoxWrapper() );
   addWrapper( new QgsSettingsIntegerSpinBoxWrapper() );
   addWrapper( new QgsSettingsDoubleSpinBoxWrapper() );
   addWrapper( new QgsSettingsColorButtonWrapper() );

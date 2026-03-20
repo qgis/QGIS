@@ -28,7 +28,6 @@ All spacing and sizes are in millimeters.
 #include "qgslegendrenderer.h"
 %End
   public:
-
     QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
 %Docstring
 Constructor for QgsLegendRenderer. The ownership of the legend model is

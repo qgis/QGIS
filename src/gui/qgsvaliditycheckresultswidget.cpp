@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 QgsValidityCheckResultsModel::QgsValidityCheckResultsModel( const QList<QgsValidityCheckResult> &results, QObject *parent )
   : QAbstractItemModel( parent )
   , mResults( results )
-{
-}
+{}
 
 QModelIndex QgsValidityCheckResultsModel::index( int row, int column, const QModelIndex &parent ) const
 {
@@ -156,9 +155,7 @@ bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckC
       QCoreApplication::processEvents();
     }
   } );
-  connect( progressDialog.get(), &QProgressDialog::canceled, progressDialog.get(), [&] {
-    feedback->cancel();
-  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, progressDialog.get(), [&] { feedback->cancel(); } );
 
   QgsApplication::taskManager()->addTask( proxyTask );
 

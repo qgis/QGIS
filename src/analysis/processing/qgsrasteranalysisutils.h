@@ -43,13 +43,37 @@ namespace QgsRasterAnalysisUtils
   /**
    * Analyzes which cells need to be considered to completely cover the bounding box of a feature.
   */
-  void cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent );
+  void cellInfoForBBox(
+    const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent
+  );
 
   //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
-  void statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, const QgsPointXY & )> &addValue, bool skipNodata = true );
+  void statisticsFromMiddlePointTest(
+    QgsRasterInterface *rasterInterface,
+    int rasterBand,
+    const QgsGeometry &poly,
+    int nCellsX,
+    int nCellsY,
+    double cellSizeX,
+    double cellSizeY,
+    const QgsRectangle &rasterBBox,
+    const std::function<void( double, const QgsPointXY & )> &addValue,
+    bool skipNodata = true
+  );
 
   //! Returns statistics with precise pixel - polygon intersection test (slow)
-  void statisticsFromPreciseIntersection( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, double, const QgsPointXY & )> &addValue, bool skipNodata = true );
+  void statisticsFromPreciseIntersection(
+    QgsRasterInterface *rasterInterface,
+    int rasterBand,
+    const QgsGeometry &poly,
+    int nCellsX,
+    int nCellsY,
+    double cellSizeX,
+    double cellSizeY,
+    const QgsRectangle &rasterBBox,
+    const std::function<void( double, double, const QgsPointXY & )> &addValue,
+    bool skipNodata = true
+  );
 
   //! Tests whether a pixel's value should be included in the result
   bool validPixel( double value );
@@ -81,7 +105,20 @@ namespace QgsRasterAnalysisUtils
       std::vector<int> bands { 1 };
   };
 
-  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+  ANALYSIS_EXPORT void applyRasterLogicOperator(
+    const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs,
+    std::unique_ptr<QgsRasterDataProvider> destinationRaster,
+    double outputNoDataValue,
+    const bool treatNoDataAsFalse,
+    int width,
+    int height,
+    const QgsRectangle &extent,
+    QgsFeedback *feedback,
+    std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc,
+    qgssize &noDataCount,
+    qgssize &trueCount,
+    qgssize &falseCount
+  );
 
   /**
    * Returns a vector of double values obtained from a stack of input QgsRasterBlocks

@@ -43,11 +43,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
   public:
     class Rule;
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
+
   private:
     typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderVec;
 
   public:
-
     /**
      * \ingroup core
      * \class QgsRuleBasedLabeling::Rule
@@ -57,7 +57,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     {
       public:
         //! takes ownership of settings, settings may be NULLPTR
-        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule(
+          QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false
+        );
         ~Rule();
 
         Rule( const Rule &rh ) = delete;
@@ -157,7 +159,11 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \param filterExp An expression
          */
-        void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString &filterExp )
+        {
+          mFilterExp = filterExp;
+          initFilter();
+        }
 
         /**
          * Set a human readable description for this rule
@@ -291,7 +297,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \note not available in Python bindings
          */
-        std::tuple< RegisterResult, QList< QgsLabelFeature * > > registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderVec &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) SIP_SKIP;
+        std::tuple< RegisterResult, QList< QgsLabelFeature * > > registerFeature(
+          const QgsFeature &feature, QgsRenderContext &context, RuleToProviderVec &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr
+        ) SIP_SKIP;
 
         /**
          * Returns TRUE if this rule or any of its children requires advanced composition effects
@@ -371,7 +379,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString mRuleKey = QUuid::createUuid().toString(); // string used for unique identification of rule within labeling
 
         std::unique_ptr<QgsExpression> mFilter;
-
     };
 
 

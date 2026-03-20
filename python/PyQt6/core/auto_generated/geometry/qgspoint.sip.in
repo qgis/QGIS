@@ -12,7 +12,7 @@
 
 
 
-class QgsPoint: QgsAbstractGeometry
+class QgsPoint : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
@@ -38,7 +38,6 @@ documentation for examples of situations where it is appropriate to use
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsPoint( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.

@@ -76,17 +76,19 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
     QTextEdit *edit = new QTextEdit( nullptr );
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
-    const QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                                 "You have two means of installing them:\n\n"
-                                 "1) Install the \"Color Ramp Manager\" python plugin "
-                                 "(you must enable Experimental plugins in the plugin manager) "
-                                 "and use it to download latest cpt-city package.\n"
-                                 "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
-                                 "2) Download the complete archive (in svg format) "
-                                 "and unzip it to your QGIS settings directory [%1] .\n\n"
-                                 "This file can be found at [%2]\nand current file is [%3]"
-    )
-                               .arg( QgsApplication::qgisSettingsDirPath(), u"http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"_s, u"http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip"_s );
+    const QString helpText
+      = tr(
+          "Error - cpt-city gradient files not found.\n\n"
+          "You have two means of installing them:\n\n"
+          "1) Install the \"Color Ramp Manager\" python plugin "
+          "(you must enable Experimental plugins in the plugin manager) "
+          "and use it to download latest cpt-city package.\n"
+          "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
+          "2) Download the complete archive (in svg format) "
+          "and unzip it to your QGIS settings directory [%1] .\n\n"
+          "This file can be found at [%2]\nand current file is [%3]"
+      )
+          .arg( QgsApplication::qgisSettingsDirPath(), u"http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"_s, u"http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip"_s );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
@@ -460,9 +462,10 @@ void QgsCptCityColorRampDialog::onFinished()
 void QgsCptCityColorRampDialog::showHelp()
 {
   // show error message to use color ramp manager to get more gradients
-  const QString helpText = tr( "You can download a more complete set of cpt-city gradients "
-                               "by installing the \"Color Ramp Manager\" plugin "
-                               "(you must enable Experimental plugins in the plugin manager).\n\n"
+  const QString helpText = tr(
+    "You can download a more complete set of cpt-city gradients "
+    "by installing the \"Color Ramp Manager\" plugin "
+    "(you must enable Experimental plugins in the plugin manager).\n\n"
   );
   QMessageBox *msg = new QMessageBox( this );
   msg->setWindowTitle( tr( "Download More Cpt-city Gradients" ) );

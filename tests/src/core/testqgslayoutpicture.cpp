@@ -36,7 +36,8 @@ class TestQgsLayoutPicture : public QgsTest
 
   public:
     TestQgsLayoutPicture()
-      : QgsTest( u"Layout Picture Tests"_s, u"composer_picture"_s ) {}
+      : QgsTest( u"Layout Picture Tests"_s, u"composer_picture"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -114,12 +115,10 @@ void TestQgsLayoutPicture::cleanupTestCase()
 }
 
 void TestQgsLayoutPicture::init()
-{
-}
+{}
 
 void TestQgsLayoutPicture::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutPicture::pictureRender()
 {

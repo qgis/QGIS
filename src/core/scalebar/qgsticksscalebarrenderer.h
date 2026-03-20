@@ -25,15 +25,14 @@
  * \ingroup core
  * \brief A scale bar that draws segments using short ticks.
  */
-class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsTicksScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     //! Tick positions
     enum TickPosition
     {
-      TicksUp, //!< Render ticks above line
-      TicksDown, //!< Render ticks below line
+      TicksUp,     //!< Render ticks above line
+      TicksDown,   //!< Render ticks below line
       TicksMiddle, //!< Render ticks crossing line
     };
 
@@ -48,9 +47,7 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
     Flags flags() const override;
     QgsTicksScaleBarRenderer *clone() const override SIP_FACTORY;
 
-    void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
+    void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
     /**
      * Sets the \a position for tick marks in the scalebar.
@@ -65,7 +62,6 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
     TickPosition tickPosition() const { return mTickPosition; }
 
   private:
-
     TickPosition mTickPosition = TicksMiddle;
 };
 

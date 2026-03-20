@@ -27,9 +27,15 @@ set(ENV{EMSCRIPTEN_ROOT} "${EMSCRIPTEN_ROOT}")
 set(VCPKG_BUILD_TYPE release)
 
 # TODO:
-#  -fwasm-exceptions : requires patching qtbase with wasm-exception feature
 #  -msimd128 would be nice but requires patching gdal
-set(QGIS_JS_FLAGS "-pthread")
+set(QGIS_JS_FLAGS "-pthread -fwasm-exceptions")
 
 set(VCPKG_C_FLAGS "${QGIS_JS_FLAGS}")
 set(VCPKG_CXX_FLAGS "${QGIS_JS_FLAGS}")
+
+# Qt6 feature configuration for Emscripten
+if(PORT MATCHES "qtbase")
+    list(APPEND VCPKG_CMAKE_CONFIGURE_OPTIONS
+        "-DFEATURE_wasm_exceptions=ON"
+    )
+endif()

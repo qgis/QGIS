@@ -21,7 +21,6 @@ Class for storing data associated with a STAC link.
 #include "qgsstaclink.h"
 %End
   public:
-
     QgsStacLink( const QString &href, const QString &relation, const QString &mediaType, const QString &title );
 %Docstring
 Constructor

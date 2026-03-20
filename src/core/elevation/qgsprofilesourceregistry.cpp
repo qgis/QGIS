@@ -24,9 +24,7 @@
 using namespace Qt::StringLiterals;
 
 QgsProfileSourceRegistry::QgsProfileSourceRegistry()
-{
-
-}
+{}
 
 QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
 {
@@ -40,7 +38,6 @@ QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() c
 
 bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {
-
   if ( mSources.contains( profileSource ) )
   {
     return false;

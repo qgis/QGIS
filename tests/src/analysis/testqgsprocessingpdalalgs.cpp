@@ -111,8 +111,7 @@ void TestQgsProcessingPdalAlgs::cleanupTestCase()
 }
 
 void TestQgsProcessingPdalAlgs::init()
-{
-}
+{}
 
 void TestQgsProcessingPdalAlgs::updateFileListArg( QStringList &args, const QString &fileName )
 {
@@ -552,7 +551,20 @@ void TestQgsProcessingPdalAlgs::density()
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"density"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputFile )
+      << u"--resolution=0.5"_s
+      << u"--tile-size=100"_s
+      << u"--tile-origin-x=1"_s
+      << u"--tile-origin-y=10"_s
+      << u"--filter=Intensity > 50"_s
+      << u"--bounds=([1, 3], [2, 4])"_s
+      << u"--threads=2"_s
+  );
 }
 
 void TestQgsProcessingPdalAlgs::exportRasterTin()
@@ -622,7 +634,20 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"to_raster_tin"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputFile )
+      << u"--resolution=0.5"_s
+      << u"--tile-size=100"_s
+      << u"--tile-origin-x=1"_s
+      << u"--tile-origin-y=10"_s
+      << u"--filter=Intensity > 50"_s
+      << u"--bounds=([1, 3], [2, 4])"_s
+      << u"--threads=2"_s
+  );
 }
 
 void TestQgsProcessingPdalAlgs::tile()
@@ -731,12 +756,39 @@ void TestQgsProcessingPdalAlgs::exportRaster()
   // filter extent
   parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"to_raster"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputFile )
+      << u"--attribute=ReturnNumber"_s
+      << u"--resolution=0.5"_s
+      << u"--tile-size=100"_s
+      << u"--tile-origin-x=1"_s
+      << u"--tile-origin-y=10"_s
+      << u"--filter=Intensity > 50"_s
+      << u"--bounds=([1, 3], [2, 4])"_s
+  );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"to_raster"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputFile )
+      << u"--attribute=ReturnNumber"_s
+      << u"--resolution=0.5"_s
+      << u"--tile-size=100"_s
+      << u"--tile-origin-x=1"_s
+      << u"--tile-origin-y=10"_s
+      << u"--filter=Intensity > 50"_s
+      << u"--bounds=([1, 3], [2, 4])"_s
+      << u"--threads=2"_s
+  );
 }
 
 void TestQgsProcessingPdalAlgs::exportVector()
@@ -1008,7 +1060,9 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
 
 void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundtriangulation"_s ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>(
+    static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundtriangulation"_s ) )
+  );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1029,7 +1083,9 @@ void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
 
 void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundbynearestneighbor"_s ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>(
+    static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundbynearestneighbor"_s ) )
+  );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1077,7 +1133,18 @@ void TestQgsProcessingPdalAlgs::classifyGround()
   parameters.insert( u"WINDOW_SIZE"_s, windowSize );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"classify_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--cell-size=%1"_s.arg( cellSize ) << u"--scalar=%1"_s.arg( scalar ) << u"--slope=%1"_s.arg( slope ) << u"--threshold=%1"_s.arg( threshold ) << u"--window-size=%1"_s.arg( windowSize ) );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"classify_ground"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputPointCloud )
+      << u"--cell-size=%1"_s.arg( cellSize )
+      << u"--scalar=%1"_s.arg( scalar )
+      << u"--slope=%1"_s.arg( slope )
+      << u"--threshold=%1"_s.arg( threshold )
+      << u"--window-size=%1"_s.arg( windowSize )
+  );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
@@ -1105,7 +1172,17 @@ void TestQgsProcessingPdalAlgs::filterNoiseStatistical()
 
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=statistical"_s << u"--remove-noise-points=true"_s << u"--statistical-mean-k=%1"_s.arg( meanK ) << u"--statistical-multiplier=%1"_s.arg( multiplier ) );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"filter_noise"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputPointCloud )
+      << u"--algorithm=statistical"_s
+      << u"--remove-noise-points=true"_s
+      << u"--statistical-mean-k=%1"_s.arg( meanK )
+      << u"--statistical-multiplier=%1"_s.arg( multiplier )
+  );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
@@ -1132,7 +1209,17 @@ void TestQgsProcessingPdalAlgs::filterNoiseRadius()
   parameters.insert( u"RADIUS"_s, radius );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=radius"_s << u"--remove-noise-points=false"_s << u"--radius-min-k=%1"_s.arg( minK ) << u"--radius-radius=%1"_s.arg( radius ) );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"filter_noise"_s
+      << u"--input=%1"_s.arg( mPointCloudLayerPath )
+      << u"--output=%1"_s.arg( outputPointCloud )
+      << u"--algorithm=radius"_s
+      << u"--remove-noise-points=false"_s
+      << u"--radius-min-k=%1"_s.arg( minK )
+      << u"--radius-radius=%1"_s.arg( radius )
+  );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
@@ -1226,7 +1313,20 @@ void TestQgsProcessingPdalAlgs::compare()
 
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"compare"_s << u"--input=%1"_s.arg( inputPointCloud ) << u"--input-compare=%1"_s.arg( inputComparePointCloud ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ) << u"--normal-radius=%1"_s.arg( normalRadius ) << u"--cyl-radius=%1"_s.arg( cylRadius ) << u"--cyl-halflen=%1"_s.arg( cylHalflen ) << u"--reg-error=%1"_s.arg( regError ) << u"--cyl-orientation=%1"_s.arg( cylOrientation ) );
+  QCOMPARE(
+    args,
+    QStringList()
+      << u"compare"_s
+      << u"--input=%1"_s.arg( inputPointCloud )
+      << u"--input-compare=%1"_s.arg( inputComparePointCloud )
+      << u"--output=%1"_s.arg( outputPointCloud )
+      << u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize )
+      << u"--normal-radius=%1"_s.arg( normalRadius )
+      << u"--cyl-radius=%1"_s.arg( cylRadius )
+      << u"--cyl-halflen=%1"_s.arg( cylHalflen )
+      << u"--reg-error=%1"_s.arg( regError )
+      << u"--cyl-orientation=%1"_s.arg( cylOrientation )
+  );
 
   bool ok;
   alg->run( parameters, *context, &feedback, &ok );

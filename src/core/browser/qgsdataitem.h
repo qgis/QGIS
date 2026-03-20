@@ -79,7 +79,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
      *
@@ -96,17 +95,19 @@ class CORE_EXPORT QgsDataItem : public QObject
     ~QgsDataItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns whether this item has children.
      */
-    bool hasChildren() const;
+      bool hasChildren() const;
 
     /**
      * Returns TRUE if the data item is a collection of layers
@@ -347,8 +348,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \since QGIS 3.38
      */
-    template<class T>
-    static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
+    template<class T> static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
     {
       QList< T * > result;
       result.reserve( items.size() );
@@ -646,19 +646,17 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
-
 };
 
 #endif // QGSDATAITEM_H
-
-

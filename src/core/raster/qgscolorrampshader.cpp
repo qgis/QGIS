@@ -207,7 +207,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
 
   if ( minimumValue() == maximumValue() )
   {
-    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    if ( sourceColorRamp() && sourceColorRamp()->count() > 1 )
     {
       entryValues.push_back( min );
       if ( discrete )
@@ -218,7 +218,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   }
   else if ( classificationMode() == Qgis::ShaderClassificationMethod::Continuous )
   {
-    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    if ( sourceColorRamp() && sourceColorRamp()->count() > 1 )
     {
       int numberOfEntries = sourceColorRamp()->count();
       entryValues.reserve( numberOfEntries );
@@ -337,7 +337,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       int colorDiff = 0;
       if ( classes != 0 )
       {
-        colorDiff = ( int )( 255 / classes );
+        colorDiff = ( int ) ( 255 / classes );
       }
 
       entryColors.reserve( classes );
@@ -410,7 +410,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       const double rangeValue = colorRampItems[colorRampItemListCount - 2].value - minimumValue;
       if ( rangeValue > 0 )
       {
-        const int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
+        const int lutSize = 256;                           // TODO: test if speed can be increased with a different LUT size
         mLUTFactor = ( lutSize - 0.0000001 ) / rangeValue; // decrease slightly to make sure last LUT category is correct
         idx = 0;
         double val;
@@ -418,8 +418,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
         for ( int i = 0; i < lutSize; i++ )
         {
           val = ( i / mLUTFactor ) + mLUTOffset;
-          while ( idx < colorRampItemListCount
-                  && colorRampItems[idx].value - DOUBLE_DIFF_THRESHOLD < val )
+          while ( idx < colorRampItemListCount && colorRampItems[idx].value - DOUBLE_DIFF_THRESHOLD < val )
           {
             idx++;
           }
@@ -455,7 +454,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   else
   {
     // get initial value from LUT
-    idx = mLUT[ lutIndex ];
+    idx = mLUT[lutIndex];
 
     // check if it's correct and if not increase until correct
     // the LUT is made in such a way the index is always correct or too low, never too high
@@ -479,14 +478,13 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       // Interpolate the color between two class breaks linearly.
       if ( idx < 1 || overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
       {
-        if ( mClip && ( overflow
-                        || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
+        if ( mClip && ( overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
         {
           return false;
         }
-        *returnRedValue   = currentColorRampItem.color.red();
+        *returnRedValue = currentColorRampItem.color.red();
         *returnGreenValue = currentColorRampItem.color.green();
-        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnBlueValue = currentColorRampItem.color.blue();
         *returnAlphaValue = currentColorRampItem.color.alpha();
         return true;
       }
@@ -507,9 +505,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       const int c2Blue = currentColorRampItem.color.blue();
       const int c2Alpha = currentColorRampItem.color.alpha();
 
-      *returnRedValue   = c1Red   + static_cast< int >( ( c2Red - c1Red )   * scale );
+      *returnRedValue = c1Red + static_cast< int >( ( c2Red - c1Red ) * scale );
       *returnGreenValue = c1Green + static_cast< int >( ( c2Green - c1Green ) * scale );
-      *returnBlueValue  = c1Blue  + static_cast< int >( ( c2Blue - c1Blue )  * scale );
+      *returnBlueValue = c1Blue + static_cast< int >( ( c2Blue - c1Blue ) * scale );
       *returnAlphaValue = c1Alpha + static_cast< int >( ( c2Alpha - c1Alpha ) * scale );
       return true;
     };
@@ -522,9 +520,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       {
         return false;
       }
-      *returnRedValue   = currentColorRampItem.color.red();
+      *returnRedValue = currentColorRampItem.color.red();
       *returnGreenValue = currentColorRampItem.color.green();
-      *returnBlueValue  = currentColorRampItem.color.blue();
+      *returnBlueValue = currentColorRampItem.color.blue();
       *returnAlphaValue = currentColorRampItem.color.alpha();
       return true;
     };
@@ -533,9 +531,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       // Assign the color of the exact matching value in the color ramp item list
       if ( !overflow && currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
       {
-        *returnRedValue   = currentColorRampItem.color.red();
+        *returnRedValue = currentColorRampItem.color.red();
         *returnGreenValue = currentColorRampItem.color.green();
-        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnBlueValue = currentColorRampItem.color.blue();
         *returnAlphaValue = currentColorRampItem.color.alpha();
         return true;
       }
@@ -548,10 +546,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   return false;
 }
 
-bool QgsColorRampShader::shade( double redValue, double greenValue,
-                                double blueValue, double alphaValue,
-                                int *returnRedValue, int *returnGreenValue,
-                                int *returnBlueValue, int *returnAlphaValue ) const
+bool QgsColorRampShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
   Q_UNUSED( redValue )
   Q_UNUSED( greenValue )

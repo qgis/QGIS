@@ -39,11 +39,7 @@ using namespace Qt::StringLiterals;
 // List of data item provider keys that are filesystem based
 QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { u"GPKG"_s, u"spatialite"_s };
 
-QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
-  QgsBrowserGuiModel *browserModel,
-  const QStringList &providersFilter,
-  QWidget *parent
-)
+QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel, const QStringList &providersFilter, QWidget *parent )
   : QgsPanelWidget( parent )
 {
   // Initialize the browser
@@ -109,9 +105,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     validate();
   } );
 
-  connect( mActionRefresh, &QAction::triggered, this, [this] {
-    refreshModel( QModelIndex() );
-  } );
+  connect( mActionRefresh, &QAction::triggered, this, [this] { refreshModel( QModelIndex() ); } );
 
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.isValid() )
@@ -364,13 +358,8 @@ void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
   const QString lastSelectedPath( QgsSettings().value( u"newDatabaseTableNameWidgetLastSelectedItem"_s, QString(), QgsSettings::Section::Gui ).toString() );
   if ( !lastSelectedPath.isEmpty() )
   {
-    const QModelIndexList items = mBrowserProxyModel.match(
-      mBrowserProxyModel.index( 0, 0 ),
-      static_cast<int>( QgsBrowserModel::CustomRole::Path ),
-      QVariant::fromValue( lastSelectedPath ),
-      1,
-      Qt::MatchRecursive
-    );
+    const QModelIndexList items
+      = mBrowserProxyModel.match( mBrowserProxyModel.index( 0, 0 ), static_cast<int>( QgsBrowserModel::CustomRole::Path ), QVariant::fromValue( lastSelectedPath ), 1, Qt::MatchRecursive );
     if ( items.count() > 0 )
     {
       const QModelIndex expandIndex = items.at( 0 );

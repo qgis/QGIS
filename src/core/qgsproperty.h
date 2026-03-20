@@ -46,38 +46,37 @@ class QgsPropertyPrivate;
 class CORE_EXPORT QgsPropertyDefinition
 {
   public:
-
     //! Predefined standard property templates
     enum StandardPropertyTemplate
     {
-      Boolean = 0, //!< Boolean value
-      Integer, //!< Integer value (including negative values)
-      IntegerPositive, //!< Positive integer values (including 0)
+      Boolean = 0,                //!< Boolean value
+      Integer,                    //!< Integer value (including negative values)
+      IntegerPositive,            //!< Positive integer values (including 0)
       IntegerPositiveGreaterZero, //!< Non-zero positive integer values
-      Double, //!< Double value (including negative values)
-      DoublePositive, //!< Positive double value (including 0)
-      Double0To1, //!< Double value between 0-1 (inclusive)
-      Rotation, //!< Rotation (value between 0-360 degrees)
-      String, //!< Any string value
-      Opacity, //!< Opacity (0-100)
-      RenderUnits, //!< Render units (eg mm/pixels/map units)
-      ColorWithAlpha, //!< Color with alpha channel
-      ColorNoAlpha, //!< Color with no alpha channel
-      PenJoinStyle, //!< Pen join style
-      BlendMode, //!< Blend mode
-      Point, //!< 2D point
-      Size, //!< 1D size (eg marker radius, or square marker height/width)
-      Size2D, //!< 2D size (width/height different)
-      LineStyle, //!< Line style (eg solid/dashed)
-      StrokeWidth, //!< Line stroke width
-      FillStyle, //!< Fill style (eg solid, lines)
-      CapStyle, //!< Line cap style (eg round)
-      HorizontalAnchor, //!< Horizontal anchor point
-      VerticalAnchor, //!< Vertical anchor point
-      SvgPath, //!< Path to an SVG file
-      Offset, //!< 2D offset
-      DateTime, //!< DateTime value
-      Custom = 3000, //!< Custom property types
+      Double,                     //!< Double value (including negative values)
+      DoublePositive,             //!< Positive double value (including 0)
+      Double0To1,                 //!< Double value between 0-1 (inclusive)
+      Rotation,                   //!< Rotation (value between 0-360 degrees)
+      String,                     //!< Any string value
+      Opacity,                    //!< Opacity (0-100)
+      RenderUnits,                //!< Render units (eg mm/pixels/map units)
+      ColorWithAlpha,             //!< Color with alpha channel
+      ColorNoAlpha,               //!< Color with no alpha channel
+      PenJoinStyle,               //!< Pen join style
+      BlendMode,                  //!< Blend mode
+      Point,                      //!< 2D point
+      Size,                       //!< 1D size (eg marker radius, or square marker height/width)
+      Size2D,                     //!< 2D size (width/height different)
+      LineStyle,                  //!< Line style (eg solid/dashed)
+      StrokeWidth,                //!< Line stroke width
+      FillStyle,                  //!< Fill style (eg solid, lines)
+      CapStyle,                   //!< Line cap style (eg round)
+      HorizontalAnchor,           //!< Horizontal anchor point
+      VerticalAnchor,             //!< Vertical anchor point
+      SvgPath,                    //!< Path to an SVG file
+      Offset,                     //!< 2D offset
+      DateTime,                   //!< DateTime value
+      Custom = 3000,              //!< Custom property types
     };
 
     //! Valid data types required by property
@@ -200,7 +199,6 @@ class CORE_EXPORT QgsPropertyDefinition
     bool supportsAssistant() const;
 
   private:
-
     QString mName;
     QString mDescription;
     DataType mTypes = DataTypeString;
@@ -229,7 +227,6 @@ class CORE_EXPORT QgsPropertyDefinition
 class CORE_EXPORT QgsProperty
 {
   public:
-
     /**
      * Convert a map of QgsProperty to a map of QVariant
      * This is useful to save a map of properties
@@ -528,13 +525,11 @@ class CORE_EXPORT QgsProperty
     bool convertToTransformer();
 
     //! Allows direct construction of QVariants from properties.
-    operator QVariant() const
-    {
-      return QVariant::fromValue( *this );
-    }
+    operator QVariant() const { return QVariant::fromValue( *this ); }
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString typeString;
@@ -566,18 +561,21 @@ class CORE_EXPORT QgsProperty
                   definitionString.isEmpty() ? QString() : u" (%1)"_s.arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    mutable QExplicitlySharedDataPointer<QgsPropertyPrivate> d;
+    mutable QExplicitlySharedDataPointer<QgsPropertyPrivate>
+      d;
 
     /**
      * Calculates the current value of the property, before any transformations or
      * conversions are applied.
      */
     QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
-
 };
 
 Q_DECLARE_METATYPE( QgsProperty )

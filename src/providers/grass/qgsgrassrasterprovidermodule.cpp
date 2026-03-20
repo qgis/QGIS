@@ -30,21 +30,16 @@ class QgsGrassRasterProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsGrassRasterProviderMetadata()
-      : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+      : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+    {}
     QgsGrassRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override
     {
       Q_UNUSED( options );
       Q_UNUSED( flags );
       return new QgsGrassRasterProvider( uri );
     }
-    QList<Qgis::LayerType> supportedLayerTypes() const override
-    {
-      return { Qgis::LayerType::Raster };
-    }
-    QIcon icon() const override
-    {
-      return QgsApplication::getThemeIcon( u"providerGrass.svg"_s );
-    }
+    QList<Qgis::LayerType> supportedLayerTypes() const override { return { Qgis::LayerType::Raster }; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"providerGrass.svg"_s ); }
 };
 
 

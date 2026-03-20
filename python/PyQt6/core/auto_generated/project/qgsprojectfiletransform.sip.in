@@ -26,8 +26,7 @@ file, and perform upgrades to a more recent version
 %End
   public:
 
-    QgsProjectFileTransform( QDomDocument &domDocument,
-                             const QgsProjectVersion &version );
+    QgsProjectFileTransform( QDomDocument &domDocument, const QgsProjectVersion &version );
 %Docstring
 Create an instance from a Dom and a supplied version
 

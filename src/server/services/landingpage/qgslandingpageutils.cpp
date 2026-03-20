@@ -195,8 +195,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
             { "city", a.city.toStdString() },
             { "country", a.country.toStdString() },
             { "postalCode", a.postalCode.toStdString() },
-            { "administrativeArea", a.administrativeArea.toStdString() }
-          }
+            { "administrativeArea", a.administrativeArea.toStdString() } }
         );
       }
       jContacts.push_back( jContact );
@@ -215,8 +214,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           { "type", l.type.toStdString() },
           { "mimeType", l.mimeType.toStdString() },
           { "format", l.format.toStdString() },
-          { "size", l.size.toStdString() }
-        }
+          { "size", l.size.toStdString() } }
       );
     }
     return jLinks;
@@ -253,7 +251,11 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         if ( !canvasElements.isEmpty() )
         {
           const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( u"extent"_s ) };
-          if ( !canvasElement.isNull() && !canvasElement.firstChildElement( u"xmin"_s ).isNull() && !canvasElement.firstChildElement( u"ymin"_s ).isNull() && !canvasElement.firstChildElement( u"xmax"_s ).isNull() && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
+          if ( !canvasElement.isNull()
+               && !canvasElement.firstChildElement( u"xmin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymin"_s ).isNull()
+               && !canvasElement.firstChildElement( u"xmax"_s ).isNull()
+               && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
           {
             QgsRectangle extent {
               canvasElement.firstChildElement( u"xmin"_s ).text().toDouble(),
@@ -272,10 +274,15 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         }
       } );
 
-      QgsMessageLog::logMessage( QStringLiteral( "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
-                                                 "For better performances consider re-saving the project with the latest version of QGIS." )
-                                   .arg( projectUri ),
-                                 u"Landing Page"_s, Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage(
+        QStringLiteral(
+          "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
+          "For better performances consider re-saving the project with the latest version of QGIS."
+        )
+          .arg( projectUri ),
+        u"Landing Page"_s,
+        Qgis::MessageLevel::Warning
+      );
       temporaryProject.read( projectUri );
     }
 
@@ -457,9 +464,13 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               continue;
             }
             const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
-            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull
+                                 && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique
+                                && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression
+                                       && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression )
+                                            == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
             const QString defaultValue = vl->dataProvider()->defaultValueClause( fieldIdx );
             const bool isReadOnly = notNull && unique && !defaultValue.isEmpty();
             fieldsData[field.name().toStdString()] = {
@@ -529,12 +540,10 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         json constraints = json::array();
         for ( const auto &c : cConstraints )
         {
-          constraints.push_back(
-            {
-              { "type", c.type.toStdString() },
-              { "constraint", c.constraint.toStdString() },
-            }
-          );
+          constraints.push_back( {
+            { "type", c.type.toStdString() },
+            { "constraint", c.constraint.toStdString() },
+          } );
         }
         layerMetadata["constraints"] = constraints;
         wmsLayer["metadata"] = layerMetadata;
@@ -575,8 +584,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
-      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
-           && !wmsRestrictedLayers.contains( l->name() ) )
+      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster ) && !wmsRestrictedLayers.contains( l->name() ) )
       {
         rec["id"] = l->layerId().toStdString();
         nodeIdentifier = l->layerId();

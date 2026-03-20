@@ -23,8 +23,7 @@ QgsStacObject::QgsStacObject( const QString &id, const QString &version, const Q
   : mId( id )
   , mStacVersion( version )
   , mLinks( links )
-{
-}
+{}
 
 QString QgsStacObject::stacVersion() const
 {
@@ -95,5 +94,3 @@ QString QgsStacObject::parentUrl() const
   }
   return QString();
 }
-
-

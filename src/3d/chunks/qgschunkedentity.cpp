@@ -217,7 +217,17 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-  QgsDebugMsgLevel( u"update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms"_s.arg( mActiveNodes.count() ).arg( enabled ).arg( disabled ).arg( mFrustumCulled ).arg( mChunkLoaderQueue->count() ).arg( mReplacementQueue->count() ).arg( unloaded ).arg( t.elapsed() ), 2 );
+  QgsDebugMsgLevel(
+    u"update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms"_s.arg( mActiveNodes.count() )
+      .arg( enabled )
+      .arg( disabled )
+      .arg( mFrustumCulled )
+      .arg( mChunkLoaderQueue->count() )
+      .arg( mReplacementQueue->count() )
+      .arg( unloaded )
+      .arg( t.elapsed() ),
+    2
+  );
 }
 
 
@@ -402,11 +412,7 @@ struct ResidencyRequest
     float dist = 0.0;
     int level = -1;
     ResidencyRequest() = default;
-    ResidencyRequest(
-      QgsChunkNode *n,
-      float d,
-      int l
-    )
+    ResidencyRequest( QgsChunkNode *n, float d, int l )
       : node( n )
       , dist( d )
       , level( l )
@@ -429,9 +435,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
   QVector<ResidencyRequest> residencyRequests;
 
   using slotItem = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( const slotItem &p1, const slotItem &p2 ) {
-    return p1.second <= p2.second;
-  };
+  auto cmp_funct = []( const slotItem &p1, const slotItem &p2 ) { return p1.second <= p2.second; };
   int renderedCount = 0;
   std::priority_queue<slotItem, std::vector<slotItem>, decltype( cmp_funct )> pq( cmp_funct );
   const QgsAABB rootBbox = Qgs3DUtils::mapToWorldExtent( root->box3D(), mMapSettings->origin() );

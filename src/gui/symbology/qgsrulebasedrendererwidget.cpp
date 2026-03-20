@@ -458,9 +458,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
-      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
-    } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
     panel->openPanel( widget );
   }
   else
@@ -771,7 +769,10 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( u"ELSE"_s ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
+    if ( toggled )
+      editFilter->setText( u"ELSE"_s );
+  } );
 }
 
 #include "qgsvscrollarea.h"
@@ -918,8 +919,7 @@ QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *rend
   : QAbstractItemModel( parent )
   , mR( renderer )
   , mScreen( screen )
-{
-}
+{}
 
 Qt::ItemFlags QgsRuleBasedRendererModel::flags( const QModelIndex &index ) const
 {

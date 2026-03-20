@@ -405,7 +405,12 @@ bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
-  return u"<p><b>%1</b></p>%2<p>%3</p>%4"_s.arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? u"<p>%1</p>"_s.arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( u"<i>%1</i>"_s.arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? u"<b style=\"color:red\">%1</b>"_s.arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
+  return u"<p><b>%1</b></p>%2<p>%3</p>%4"_s.arg(
+    algorithm->displayName(),
+    !algorithm->shortDescription().isEmpty() ? u"<p>%1</p>"_s.arg( algorithm->shortDescription() ) : QString(),
+    QObject::tr( "Algorithm ID: ‘%1’" ).arg( u"<i>%1</i>"_s.arg( algorithm->id() ) ),
+    ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? u"<b style=\"color:red\">%1</b>"_s.arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
+  );
 }
 
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
@@ -822,7 +827,9 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 // QgsProcessingToolboxProxyModel
 //
 
-QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
+QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel(
+  QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager
+)
   : QSortFilterProxyModel( parent )
   , mModel( new QgsProcessingToolboxModel( this, registry, recentLog, favoriteManager ) )
 {
@@ -870,7 +877,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
-    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::KnownIssues );
+    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
+                                & static_cast<int>( Qgis::ProcessingAlgorithmFlag::KnownIssues );
     if ( hasKnownIssues && !( mFilters & Filter::ShowKnownIssues ) )
       return false;
 
@@ -919,7 +927,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & Filter::InPlace )
     {
-      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
+      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
+                                   & static_cast<int>( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
       if ( !supportsInPlace )
         return false;
 
@@ -931,12 +940,14 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
     if ( mFilters & Filter::Modeler )
     {
-      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
+      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
+                                 & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
       return !isHiddenFromModeler;
     }
     if ( mFilters & Filter::Toolbox )
     {
-      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
+      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
+                                 & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
       return !isHiddenFromToolbox;
     }
     return true;
@@ -992,8 +1003,12 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsProcessingToolboxModelNode::NodeType leftType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
-  QgsProcessingToolboxModelNode::NodeType rightType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  QgsProcessingToolboxModelNode::NodeType leftType = static_cast<QgsProcessingToolboxModelNode::NodeType>(
+    sourceModel()->data( left, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt()
+  );
+  QgsProcessingToolboxModelNode::NodeType rightType = static_cast<QgsProcessingToolboxModelNode::NodeType>(
+    sourceModel()->data( right, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt()
+  );
 
   if ( leftType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return true;

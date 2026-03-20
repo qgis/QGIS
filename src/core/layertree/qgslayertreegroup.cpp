@@ -227,13 +227,22 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer *layer )
   updateGroupLayers();
 }
 
-void QgsLayerTreeGroup::removeCustomNode( const QString &id )
+void QgsLayerTreeGroup::removeCustomNode( QgsLayerTreeCustomNode *customNode )
 {
-  QgsLayerTreeCustomNode *node = findCustomNode( id );
-  if ( node )
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
   {
-    removeChildNode( node );
+    if ( QgsLayerTree::isCustomNode( child ) )
+    {
+      QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
+      if ( childCustom->nodeId() == customNode->nodeId() )
+      {
+        removeChildren( mChildren.indexOf( child ), 1 );
+        break;
+      }
+    }
   }
+
+  updateGroupLayers();
 }
 
 void QgsLayerTreeGroup::removeChildren( int from, int count )
@@ -496,7 +505,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
   if ( element.tagName() != "layer-tree-group"_L1 )
     return nullptr;
 
-  QString name =  context.projectTranslator()->translate( u"project:layergroups"_s, element.attribute( u"name"_s ) );
+  QString name = context.projectTranslator()->translate( u"project:layergroups"_s, element.attribute( u"name"_s ) );
   bool isExpanded = ( element.attribute( u"expanded"_s, u"1"_s ) == "1"_L1 );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( u"checked"_s ) ) != Qt::Unchecked;
   bool isMutuallyExclusive = element.attribute( u"mutually-exclusive"_s, u"0"_s ) == "1"_L1;
@@ -524,7 +533,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
 void QgsLayerTreeGroup::readLegacyServerProperties( QgsLayerTreeGroup *groupNode )
 {
-  const QVariant wmsShortName  = groupNode->customProperty( u"wmsShortName"_s );
+  const QVariant wmsShortName = groupNode->customProperty( u"wmsShortName"_s );
   if ( wmsShortName.isValid() )
   {
     groupNode->serverProperties()->setShortName( wmsShortName.toString() );
@@ -794,8 +803,7 @@ void QgsLayerTreeGroup::updateGroupLayers()
   QList< QgsMapLayer * > layers;
 
   std::function< void( QgsLayerTreeGroup * ) > findGroupLayerChildren;
-  findGroupLayerChildren = [&layers, &findGroupLayerChildren]( QgsLayerTreeGroup * group )
-  {
+  findGroupLayerChildren = [&layers, &findGroupLayerChildren]( QgsLayerTreeGroup *group ) {
     for ( auto it = group->mChildren.crbegin(); it != group->mChildren.crend(); ++it )
     {
       if ( QgsLayerTreeLayer *layerTreeLayer = qobject_cast< QgsLayerTreeLayer * >( *it ) )

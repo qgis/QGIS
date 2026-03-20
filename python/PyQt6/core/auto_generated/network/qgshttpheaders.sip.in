@@ -24,7 +24,6 @@ Implements simple HTTP header management.
 %End
   public:
 
-
     QgsHttpHeaders( const QVariantMap &headers );
 %Docstring
 Constructor from map
@@ -202,7 +201,6 @@ Returns key/value pairs as strings separated by space
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

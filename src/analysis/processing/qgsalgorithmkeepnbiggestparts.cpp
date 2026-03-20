@@ -70,14 +70,18 @@ Qgis::ProcessingSourceType QgsKeepNBiggestPartsAlgorithm::outputLayerType() cons
 
 QString QgsKeepNBiggestPartsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon layer and creates a new polygon layer in which multipart "
-                      "geometries have been removed, leaving only the n largest (in terms of area) parts." );
+  return QObject::tr(
+    "This algorithm takes a polygon layer and creates a new polygon layer in which multipart "
+    "geometries have been removed, leaving only the n largest (in terms of area) parts."
+  );
 }
 
 QString QgsKeepNBiggestPartsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a polygon layer in which multipart geometries have been removed, "
-                      "leaving only the n largest (in terms of area) parts." );
+  return QObject::tr(
+    "Creates a polygon layer in which multipart geometries have been removed, "
+    "leaving only the n largest (in terms of area) parts."
+  );
 }
 
 QgsKeepNBiggestPartsAlgorithm *QgsKeepNBiggestPartsAlgorithm::createInstance() const
@@ -140,10 +144,7 @@ QgsFeatureList QgsKeepNBiggestPartsAlgorithm::processFeature( const QgsFeature &
       {
         struct GreaterThanByArea
         {
-            bool operator()( const QgsAbstractGeometry *lhs, const QgsAbstractGeometry *rhs ) const
-            {
-              return lhs->area() < rhs->area();
-            }
+            bool operator()( const QgsAbstractGeometry *lhs, const QgsAbstractGeometry *rhs ) const { return lhs->area() < rhs->area(); }
         };
 
         std::unique_ptr<QgsMultiSurface> res = QgsWkbTypes::isCurvedType( collection->wkbType() ) ? std::make_unique<QgsMultiSurface>() : std::make_unique<QgsMultiPolygon>();

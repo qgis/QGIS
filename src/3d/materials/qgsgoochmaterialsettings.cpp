@@ -131,8 +131,7 @@ QgsMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingT
 }
 
 void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
-{
-}
+{}
 
 QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {

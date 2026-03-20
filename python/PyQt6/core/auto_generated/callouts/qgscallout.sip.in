@@ -50,9 +50,8 @@ of the callout and using any relevant symbology elements to render them.
     }
 %End
   public:
-
     enum class Property /BaseType=IntEnum/
-      {
+    {
       MinimumCalloutLength,
       OffsetFromAnchor,
       OffsetFromLabel,
@@ -432,7 +431,6 @@ Sets the blending ``mode`` used for drawing callouts.
 %End
 
   protected:
-
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 %Docstring
 Performs the actual rendering of the callout implementation onto the
@@ -507,7 +505,6 @@ A simple direct line callout style.
 #include "qgscallout.h"
 %End
   public:
-
     QgsSimpleLineCallout();
     ~QgsSimpleLineCallout();
 
@@ -754,7 +751,9 @@ Sets whether callout lines should be drawn to all feature parts.
     virtual void draw( QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext );
 
 
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
+    virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const /Factory/;
 %Docstring
 Creates a callout line between ``start`` and ``end`` in the desired
 style.
@@ -782,7 +781,6 @@ Draws straight (right angled) lines as callouts.
 #include "qgscallout.h"
 %End
   public:
-
     QgsManhattanLineCallout();
 
 
@@ -799,8 +797,9 @@ the ``properties`` map (corresponding to the output from
 
 
   protected:
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext ) const /Factory/;
-
+     virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCallout::QgsCalloutContext &calloutContext
+    ) const /Factory/;
 
   private:
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
@@ -820,7 +819,6 @@ Draws curved lines as callouts.
 #include "qgscallout.h"
 %End
   public:
-
     enum Orientation /BaseType=IntEnum/
     {
       Automatic,
@@ -880,8 +878,9 @@ Sets the callout line's curve ``orientation``.
 %End
 
   protected:
-    virtual QgsCurve *createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) const /Factory/;
-
+     virtual QgsCurve *createCalloutLine(
+      const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext
+    ) const /Factory/;
 
   private:
     QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
@@ -901,7 +900,6 @@ A cartoon talking bubble callout style.
 #include "qgscallout.h"
 %End
   public:
-
     QgsBalloonCallout();
     ~QgsBalloonCallout();
 
@@ -1229,8 +1227,6 @@ Returns the map unit scale for the corner radius.
     QgsBalloonCallout( const QgsBalloonCallout &other );
     QgsBalloonCallout &operator=( const QgsBalloonCallout & );
 };
-
-
 
 
 /************************************************************************

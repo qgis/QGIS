@@ -4,8 +4,7 @@ description=Spatial data processing framework for QGIS
 about=Spatial data processing framework for QGIS
 category=Analysis
 version=2.12.99
-qgisMinimumVersion=3.0
-supportsQt6=yes
+qgisMinimumVersion=4.0
 author=Victor Olaya
 
 icon=:/images/themes/default/processingAlgorithm.svg

@@ -31,6 +31,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsdirectoryitem.h"
 #include "qgslayeritem.h"
 
@@ -351,7 +352,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QVERIFY( !childItem3->mFileSystemWatcher );
 
   // turn off monitoring
-  QgsSettings().setValue( u"/qgis/monitorDirectoriesInBrowser"_s, false );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( false );
   dirItem->reevaluateMonitoring();
   QVERIFY( !dirItem->isMonitored() );
   QVERIFY( !dirItem->mFileSystemWatcher );
@@ -364,7 +365,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
   QVERIFY( !childItem3->isMonitored() );
   QVERIFY( !childItem3->mFileSystemWatcher );
-  QgsSettings().setValue( u"/qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( true );
 }
 
 void TestQgsDataItem::testDirItemMonitoringSlowDrive()

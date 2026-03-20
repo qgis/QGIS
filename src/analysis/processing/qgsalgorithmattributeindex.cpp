@@ -59,9 +59,11 @@ Qgis::ProcessingAlgorithmFlags QgsAttributeIndexAlgorithm::flags() const
 
 QString QgsAttributeIndexAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates an index to speed up queries made against "
-                      "a field in a table. Support for index creation is "
-                      "dependent on the layer's data provider and the field type." );
+  return QObject::tr(
+    "This algorithm creates an index to speed up queries made against "
+    "a field in a table. Support for index creation is "
+    "dependent on the layer's data provider and the field type."
+  );
 }
 
 QString QgsAttributeIndexAlgorithm::shortDescription() const

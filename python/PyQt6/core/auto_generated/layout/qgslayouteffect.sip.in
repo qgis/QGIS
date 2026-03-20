@@ -25,7 +25,6 @@ with custom composition modes.
 #include "qgslayouteffect.h"
 %End
   public:
-
     QgsLayoutEffect();
 
  void setCompositionMode( QPainter::CompositionMode mode ) /Deprecated="Since 3.34. This class should not be used, it is non-stable and results in crashes. See https//bugreports.qt.io/browse/QTBUG-58501."/;
@@ -51,12 +50,10 @@ Returns the composition (blending) mode used for rendering the item.
 %End
 
   protected:
-
     virtual void draw( QPainter *painter );
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

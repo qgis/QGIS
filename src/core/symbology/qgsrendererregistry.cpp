@@ -37,74 +37,34 @@ using namespace Qt::StringLiterals;
 QgsRendererRegistry::QgsRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsRendererMetadata( u"nullSymbol"_s,
-                                        QObject::tr( "No Symbols" ),
-                                        QgsNullSymbolRenderer::create ) );
+  addRenderer( new QgsRendererMetadata( u"nullSymbol"_s, QObject::tr( "No Symbols" ), QgsNullSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( u"singleSymbol"_s,
-                                        QObject::tr( "Single Symbol" ),
-                                        QgsSingleSymbolRenderer::create,
-                                        QgsSingleSymbolRenderer::createFromSld ) );
+  addRenderer( new QgsRendererMetadata( u"singleSymbol"_s, QObject::tr( "Single Symbol" ), QgsSingleSymbolRenderer::create, QgsSingleSymbolRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererMetadata( u"categorizedSymbol"_s,
-                                        QObject::tr( "Categorized" ),
-                                        QgsCategorizedSymbolRenderer::create ) );
+  addRenderer( new QgsRendererMetadata( u"categorizedSymbol"_s, QObject::tr( "Categorized" ), QgsCategorizedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( u"graduatedSymbol"_s,
-                                        QObject::tr( "Graduated" ),
-                                        QgsGraduatedSymbolRenderer::create ) );
+  addRenderer( new QgsRendererMetadata( u"graduatedSymbol"_s, QObject::tr( "Graduated" ), QgsGraduatedSymbolRenderer::create ) );
 
-  addRenderer( new QgsRendererMetadata( u"RuleRenderer"_s,
-                                        QObject::tr( "Rule-based" ),
-                                        QgsRuleBasedRenderer::create,
-                                        QgsRuleBasedRenderer::createFromSld ) );
+  addRenderer( new QgsRendererMetadata( u"RuleRenderer"_s, QObject::tr( "Rule-based" ), QgsRuleBasedRenderer::create, QgsRuleBasedRenderer::createFromSld ) );
 
-  addRenderer( new QgsRendererMetadata( u"pointDisplacement"_s,
-                                        QObject::tr( "Point Displacement" ),
-                                        QgsPointDisplacementRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::PointLayer ) );
+  addRenderer( new QgsRendererMetadata( u"pointDisplacement"_s, QObject::tr( "Point Displacement" ), QgsPointDisplacementRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::PointLayer ) );
 
-  addRenderer( new QgsRendererMetadata( u"pointCluster"_s,
-                                        QObject::tr( "Point Cluster" ),
-                                        QgsPointClusterRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::PointLayer ) );
+  addRenderer( new QgsRendererMetadata( u"pointCluster"_s, QObject::tr( "Point Cluster" ), QgsPointClusterRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::PointLayer ) );
 
-  addRenderer( new QgsRendererMetadata( u"mergedFeatureRenderer"_s,
-                                        QObject::tr( "Merged Features" ),
-                                        QgsMergedFeatureRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::LineLayer | QgsRendererAbstractMetadata::PolygonLayer ) );
+  addRenderer(
+    new QgsRendererMetadata( u"mergedFeatureRenderer"_s, QObject::tr( "Merged Features" ), QgsMergedFeatureRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::LineLayer | QgsRendererAbstractMetadata::PolygonLayer )
+  );
 
-  addRenderer( new QgsRendererMetadata( u"invertedPolygonRenderer"_s,
-                                        QObject::tr( "Inverted Polygons" ),
-                                        QgsInvertedPolygonRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::PolygonLayer ) );
+  addRenderer(
+    new QgsRendererMetadata( u"invertedPolygonRenderer"_s, QObject::tr( "Inverted Polygons" ), QgsInvertedPolygonRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::PolygonLayer )
+  );
 
-  addRenderer( new QgsRendererMetadata( u"heatmapRenderer"_s,
-                                        QObject::tr( "Heatmap" ),
-                                        QgsHeatmapRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::PointLayer ) );
+  addRenderer( new QgsRendererMetadata( u"heatmapRenderer"_s, QObject::tr( "Heatmap" ), QgsHeatmapRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::PointLayer ) );
 
 
-  addRenderer( new QgsRendererMetadata( u"25dRenderer"_s,
-                                        QObject::tr( "2.5 D" ),
-                                        Qgs25DRenderer::create,
-                                        QIcon(),
-                                        nullptr,
-                                        QgsRendererAbstractMetadata::PolygonLayer ) );
+  addRenderer( new QgsRendererMetadata( u"25dRenderer"_s, QObject::tr( "2.5 D" ), Qgs25DRenderer::create, QIcon(), nullptr, QgsRendererAbstractMetadata::PolygonLayer ) );
 
-  addRenderer( new QgsRendererMetadata( u"embeddedSymbol"_s,
-                                        QObject::tr( "Embedded Symbols" ),
-                                        QgsEmbeddedSymbolRenderer::create ) );
+  addRenderer( new QgsRendererMetadata( u"embeddedSymbol"_s, QObject::tr( "Embedded Symbols" ), QgsEmbeddedSymbolRenderer::create ) );
 }
 
 QgsRendererRegistry::~QgsRendererRegistry()

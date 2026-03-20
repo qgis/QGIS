@@ -17,7 +17,6 @@
 #define QGSWEBVIEW_H
 
 
-
 #include "qgswebpage.h"
 
 #include <QTextBrowser>
@@ -38,8 +37,7 @@ class QPrinter;
  */
 class CORE_EXPORT QgsWebView : public QTextBrowser
 {
-
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = nullptr )
@@ -57,35 +55,17 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       delete mPage;
     }
 
-    void setUrl( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void setUrl( const QUrl &url ) { setSource( url ); }
 
-    void load( const QUrl &url )
-    {
-      setSource( url );
-    }
+    void load( const QUrl &url ) { setSource( url ); }
 
-    QUrl url() const
-    {
-      return source();
-    }
+    QUrl url() const { return source(); }
 
-    QWebPage *page() const
-    {
-      return mPage;
-    }
+    QWebPage *page() const { return mPage; }
 
-    QWebSettings *settings() const
-    {
-      return mSettings;
-    }
+    QWebSettings *settings() const { return mSettings; }
 
-    virtual QgsWebView *createWindow( QWebPage::WebWindowType )
-    {
-      return new QgsWebView();
-    }
+    virtual QgsWebView *createWindow( QWebPage::WebWindowType ) { return new QgsWebView(); }
 
     void setContent( const QByteArray &data, const QString &contentType, const QUrl & )
     {
@@ -98,9 +78,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       emit pageLoadFinished( true );
     }
 
-    void print( QPrinter * )
-    {
-    }
+    void print( QPrinter * ) {}
 
   signals:
     void linkClicked( const QUrl &link );
@@ -125,7 +103,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     QWebSettings *mSettings = nullptr;
     QWebPage *mPage = nullptr;
 
-/// @endcond
+    /// @endcond
 };
 
 #endif // QGSWEBVIEW_H

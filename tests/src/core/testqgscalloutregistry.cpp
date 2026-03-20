@@ -70,12 +70,10 @@ void TestQgsCalloutRegistry::cleanupTestCase()
 }
 
 void TestQgsCalloutRegistry::init()
-{
-}
+{}
 
 void TestQgsCalloutRegistry::cleanup()
-{
-}
+{}
 
 void TestQgsCalloutRegistry::metadata()
 {

@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsFeatureSink
 {
   public:
-
     /**
      * Flags that can be set on a QgsFeatureSink. Not all sinks may implement all flags.
      *

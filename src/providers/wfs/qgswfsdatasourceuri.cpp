@@ -152,8 +152,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other )
   , mGetEndpoints( other.mGetEndpoints )
   , mPostEndpoints( other.mPostEndpoints )
   , mDeprecatedURI( other.mDeprecatedURI )
-{
-}
+{}
 
 QgsWFSDataSourceURI &QgsWFSDataSourceURI::operator=( const QgsWFSDataSourceURI &other )
 {
@@ -415,8 +414,7 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
 
 bool QgsWFSDataSourceURI::forceInitialGetFeature() const
 {
-  return mURI.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
-         && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == "TRUE"_L1;
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ) && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == "TRUE"_L1;
 }
 
 bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
@@ -527,7 +525,9 @@ QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
   }
 }
 
-QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat )
+QString QgsWFSDataSourceURI::build(
+  const QString &baseUri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat
+)
 {
   QgsWFSDataSourceURI uri( baseUri );
   uri.setTypeName( typeName );

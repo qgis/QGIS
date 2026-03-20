@@ -61,7 +61,9 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Loads point from the feature source for further processing.
      */
-    void loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *features );
+    void loadPoints(
+      QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *features
+    );
 
     std::unique_ptr<QgsFeatureSource> mNetwork;
     QgsVectorLayerDirector *mDirector = nullptr;

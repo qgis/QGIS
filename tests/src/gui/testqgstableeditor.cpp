@@ -56,20 +56,16 @@ class TestQgsTableEditor : public QObject
 };
 
 void TestQgsTableEditor::initTestCase()
-{
-}
+{}
 
 void TestQgsTableEditor::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsTableEditor::init()
-{
-}
+{}
 
 void TestQgsTableEditor::cleanup()
-{
-}
+{}
 
 void TestQgsTableEditor::testData()
 {
@@ -637,7 +633,13 @@ void TestQgsTableEditor::deleteColumns()
 void TestQgsTableEditor::selectRows()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+  );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.expandRowSelection();
@@ -667,7 +669,12 @@ void TestQgsTableEditor::selectRows()
 void TestQgsTableEditor::selectColumns()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+  );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.expandColumnSelection();
@@ -696,7 +703,12 @@ void TestQgsTableEditor::selectColumns()
 void TestQgsTableEditor::clearSelected()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << QgsTableCell( u"A2"_s ) << QgsTableCell( u"A3"_s ) ) << ( QgsTableRow() << QgsTableCell( u"B1"_s ) << QgsTableCell( u"B2"_s ) << QgsTableCell( u"B3"_s ) ) << ( QgsTableRow() << QgsTableCell( u"C1"_s ) << QgsTableCell( u"C2"_s ) << QgsTableCell( u"C3"_s ) ) );
+  w.setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell( u"A1"_s ) << QgsTableCell( u"A2"_s ) << QgsTableCell( u"A3"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"B1"_s ) << QgsTableCell( u"B2"_s ) << QgsTableCell( u"B3"_s ) )
+    << ( QgsTableRow() << QgsTableCell( u"C1"_s ) << QgsTableCell( u"C2"_s ) << QgsTableCell( u"C3"_s ) )
+  );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.selectionModel()->clearSelection();
@@ -1116,7 +1128,12 @@ void TestQgsTableEditor::rowHeight()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+  );
   QCOMPARE( spy.count(), 1 );
   w.setTableRowHeight( 1, 14.0 );
 
@@ -1156,7 +1173,12 @@ void TestQgsTableEditor::columnWidth()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents(
+    QgsTableContents()
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+    << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
+  );
   QCOMPARE( spy.count(), 1 );
   w.setTableColumnWidth( 1, 14.0 );
 
@@ -1196,7 +1218,9 @@ void TestQgsTableEditor::headers()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) ) << ( QgsTableRow() << QgsTableCell( 4 ) << QgsTableCell( 5 ) << QgsTableCell( 6 ) ) );
+  w.setTableContents(
+    QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) ) << ( QgsTableRow() << QgsTableCell( 4 ) << QgsTableCell( 5 ) << QgsTableCell( 6 ) )
+  );
   QCOMPARE( spy.count(), 1 );
 
   w.setIncludeTableHeader( true );

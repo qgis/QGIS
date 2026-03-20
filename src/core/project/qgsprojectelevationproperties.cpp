@@ -29,9 +29,7 @@ using namespace Qt::StringLiterals;
 QgsProjectElevationProperties::QgsProjectElevationProperties( QObject *parent )
   : QObject( parent )
   , mTerrainProvider( std::make_unique< QgsFlatTerrainProvider >() )
-{
-
-}
+{}
 
 QgsProjectElevationProperties::~QgsProjectElevationProperties() = default;
 

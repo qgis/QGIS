@@ -18,7 +18,6 @@ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 #include "qgslayoutitemshape.h"
 %End
   public:
-
     enum Shape /BaseType=IntEnum/
     {
       Ellipse,
@@ -109,7 +108,6 @@ Returns the corner radius for rounded rectangle corners.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
 

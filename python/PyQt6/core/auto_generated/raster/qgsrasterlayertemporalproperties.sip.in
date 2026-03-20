@@ -23,7 +23,6 @@ Implementation of map layer temporal properties for raster layers.
 #include "qgsrasterlayertemporalproperties.h"
 %End
   public:
-
     QgsRasterLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
 Constructor for QgsRasterLayerTemporalProperties, with the specified

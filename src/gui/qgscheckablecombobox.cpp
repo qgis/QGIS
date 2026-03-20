@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )
-{
-}
+{}
 
 Qt::ItemFlags QgsCheckableItemModel::flags( const QModelIndex &index ) const
 {
@@ -68,8 +67,7 @@ bool QgsCheckableItemModel::setData( const QModelIndex &index, const QVariant &v
 
 QgsCheckBoxDelegate::QgsCheckBoxDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-{
-}
+{}
 
 void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
@@ -251,8 +249,7 @@ bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
       showPopup();
     }
   }
-  else if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
-            && object == view()->viewport() )
+  else if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease ) && object == view()->viewport() )
   {
     mSkipHide = true;
 

@@ -134,8 +134,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
       }
       QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( viewCenterLatLon.x() ) )
                             * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( viewCenterLatLon.y() ) );
-      QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), newHeading )
-                                  * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), newPitch );
+      QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), newHeading ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), newPitch );
       QVector3D newCameraToCenter = ( qLatLon * qPitchHeading * QVector3D( -1, 0, 0 ) ) * mCameraPose.distanceFromCenterPoint();
 
       mCameraPose.setCenterPoint( mCamera->position() + newCameraToCenter );
@@ -214,6 +213,9 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
 void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
+
+  // In case viewport size has changed
+  updateOrthographicProjectionPlane();
 
   if ( mCameraChanged )
   {
@@ -455,6 +457,19 @@ void QgsCameraController::resetGlobe( float distance, double lat, double lon )
   setCameraPose( cp );
 }
 
+void QgsCameraController::updateOrthographicProjectionPlane()
+{
+  // When using orthographic projection, reuse the distance to center (which
+  // ordinarily wouldn't do anything) to set the viewport size in the world.
+  if ( mScene->mapSettings()->projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
+  {
+    const QSize viewportRect = mScene->engine()->size();
+    const float viewWidthFromCenter = distance();
+    const float viewHeightFromCenter = distance() * static_cast<float>( viewportRect.height() ) / static_cast<float>( viewportRect.width() );
+    mCamera->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mCamera->nearPlane(), mCamera->farPlane() );
+  }
+}
+
 void QgsCameraController::updateCameraFromPose()
 {
   if ( mCamera )
@@ -480,6 +495,9 @@ void QgsCameraController::updateCameraFromPose()
     {
       mCameraPose.updateCamera( mCamera );
     }
+
+    updateOrthographicProjectionPlane();
+
     mCameraChanged = true;
   }
 }
@@ -923,7 +941,9 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 
   mKeyboardHandler->setFocus( true );
 
-  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) || ( ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ControlModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
+  if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton
+       || ( ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton )
+       || ( ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ControlModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
   {
     mMousePos = QPoint( mouse->x(), mouse->y() );
 
@@ -931,7 +951,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
       mIgnoreNextMouseMove = true;
 
     const MouseOperation operation {
-      ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ControlModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ? MouseOperation::RotationCamera : MouseOperation::RotationCenter
+      ( mouse->modifiers() & Qt3DInput::QMouseEvent::Modifiers::ControlModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ? MouseOperation::RotationCamera
+                                                                                                                                                : MouseOperation::RotationCenter
     };
     setMouseParameters( operation, mMousePos );
   }
@@ -1362,11 +1383,13 @@ bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
           switch ( mCameraNavigationMode )
           {
             case Qgis::NavigationMode::Walk:
+              // clang-format off
               setCameraNavigationMode(
                 mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe
                   ? Qgis::NavigationMode::GlobeTerrainBased
                   : Qgis::NavigationMode::TerrainBased
               );
+              // clang-format on
               break;
             case Qgis::NavigationMode::TerrainBased:
             case Qgis::NavigationMode::GlobeTerrainBased:
@@ -1440,7 +1463,8 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
 
 bool QgsCameraController::isATranslationRotationSequence( MouseOperation newOperation ) const
 {
-  return std::find( mTranslateOrRotate.begin(), mTranslateOrRotate.end(), newOperation ) != std::end( mTranslateOrRotate ) && std::find( mTranslateOrRotate.begin(), mTranslateOrRotate.end(), mCurrentOperation ) != std::end( mTranslateOrRotate );
+  return std::find( mTranslateOrRotate.begin(), mTranslateOrRotate.end(), newOperation ) != std::end( mTranslateOrRotate )
+         && std::find( mTranslateOrRotate.begin(), mTranslateOrRotate.end(), mCurrentOperation ) != std::end( mTranslateOrRotate );
 }
 
 void QgsCameraController::setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint )
@@ -1545,13 +1569,7 @@ void QgsCameraController::setCrossSectionSideView( const QgsCrossSection &crossS
   const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
   const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
 
-  const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
-    frontStartPoint,
-    frontEndPoint,
-    mScene->elevationRange( true ),
-    mCamera->fieldOfView(),
-    mOrigin
-  );
+  const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose( frontStartPoint, frontEndPoint, mScene->elevationRange( true ), mCamera->fieldOfView(), mOrigin );
 
   setCameraPose( camPose );
 }

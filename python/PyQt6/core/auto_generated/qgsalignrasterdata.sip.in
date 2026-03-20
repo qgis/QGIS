@@ -20,20 +20,19 @@ Provides data structures and enums for the align raster tool.
 #include "qgsalignrasterdata.h"
 %End
   public:
-
     struct RasterItem
     {
-      RasterItem( const QString &input, const QString &output );
+        RasterItem( const QString &input, const QString &output );
 
-      virtual ~RasterItem();
+        virtual ~RasterItem();
 
-      QString inputFilename;
-      QString outputFilename;
-      Qgis::GdalResampleAlgorithm resampleMethod;
-      bool rescaleValues;
+        QString inputFilename;
+        QString outputFilename;
+        Qgis::GdalResampleAlgorithm resampleMethod;
+        bool rescaleValues;
 
 
-      double srcCellSizeInDestCRS;
+        double srcCellSizeInDestCRS;
     };
     typedef QList<QgsAlignRasterData::RasterItem> RasterItemList;
 };

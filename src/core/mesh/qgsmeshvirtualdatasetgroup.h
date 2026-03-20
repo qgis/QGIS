@@ -34,10 +34,9 @@
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
+class CORE_EXPORT QgsMeshVirtualDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
-
     /**
      * Constructor
      * \param name name of the dataset group
@@ -46,11 +45,7 @@ class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
      * \param relativeStartTime relative time start, in mimliseconds, from the mesh layer provider reference time
      * \param relativeEndTime relative time end, in mimliseconds, from the mesh layer provider reference time
      */
-    QgsMeshVirtualDatasetGroup( const QString &name,
-                                const QString &formulaString,
-                                QgsMeshLayer *layer,
-                                qint64 relativeStartTime,
-                                qint64 relativeEndTime );
+    QgsMeshVirtualDatasetGroup( const QString &name, const QString &formulaString, QgsMeshLayer *layer, qint64 relativeStartTime, qint64 relativeEndTime );
 
     void initialize() override;
     int datasetCount() const override;
@@ -59,7 +54,7 @@ class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
     QStringList datasetGroupNamesDependentOn() const override;
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString description() const override;
-    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Virtual;}
+    QgsMeshDatasetGroup::Type type() const override { return QgsMeshDatasetGroup::Virtual; }
 
   private:
     QString mFormula;

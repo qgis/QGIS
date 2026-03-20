@@ -37,13 +37,17 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   QLabel *minLbl = new QLabel( tr( "Minimum (exclusive)" ), this );
   minLbl->setWordWrap( true );
   minLbl->setAlignment( Qt::AlignTop );
-  minLbl->setToolTip( tr( "Minimum scale, i.e. most \"zoomed out\". "
-                          "This limit is exclusive, that means the layer will not be displayed on this scale." ) );
+  minLbl->setToolTip( tr(
+    "Minimum scale, i.e. most \"zoomed out\". "
+    "This limit is exclusive, that means the layer will not be displayed on this scale."
+  ) );
   QLabel *maxLbl = new QLabel( tr( "Maximum (inclusive)" ), this );
   maxLbl->setWordWrap( true );
   maxLbl->setAlignment( Qt::AlignTop );
-  maxLbl->setToolTip( tr( "Maximum scale, i.e. most \"zoomed in\". "
-                          "This limit is inclusive, that means the layer will be displayed on this scale." ) );
+  maxLbl->setToolTip( tr(
+    "Maximum scale, i.e. most \"zoomed in\". "
+    "This limit is inclusive, that means the layer will be displayed on this scale."
+  ) );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mMinimumScaleIconLabel = new QLabel( this );

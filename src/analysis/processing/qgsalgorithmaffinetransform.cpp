@@ -57,8 +57,10 @@ QString QgsAffineTransformationAlgorithm::outputName() const
 
 QString QgsAffineTransformationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm applies an affine transformation to the geometries from a layer. Affine transformations can include "
-                      "translation, scaling and rotation. The operations are performed in a scale, rotation, translation order." )
+  return QObject::tr(
+           "This algorithm applies an affine transformation to the geometries from a layer. Affine transformations can include "
+           "translation, scaling and rotation. The operations are performed in a scale, rotation, translation order."
+         )
          + u"\n\n"_s
          + QObject::tr( "Z and M values present in the geometry can also be translated and scaled independently." );
 }

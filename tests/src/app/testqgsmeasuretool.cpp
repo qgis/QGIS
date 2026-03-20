@@ -19,6 +19,7 @@
 #include "qgsmeasuretool.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstest.h"
 
 #include <QString>
@@ -87,7 +88,7 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
 {
   //test length measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -154,7 +155,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
 {
   //test length measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -222,7 +223,7 @@ void TestQgsMeasureTool::testLengthCalculationNoCrs()
 {
   // test length measurement when no projection is set
   QSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem() );
@@ -249,7 +250,7 @@ void TestQgsMeasureTool::testAreaCalculationCartesian()
 {
   //test area measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -303,7 +304,7 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
 {
   //test area measurement
   QgsSettings s;
-  s.setValue( u"/qgis/measure/keepbaseunit"_s, true );
+  QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit->setValue( true );
 
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
@@ -359,7 +360,7 @@ void TestQgsMeasureTool::degreeDecimalPlaces()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
 
   QgsSettings s;
-  s.setValue( u"qgis/measure/decimalplaces"_s, 3 );
+  QgsSettingsRegistryCore::settingsMeasureDecimalPlaces->setValue( 3 );
 
   const std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
   auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );

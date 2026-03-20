@@ -36,9 +36,7 @@ using namespace Qt::StringLiterals;
 
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
   : mFillSymbol( symbol ? symbol : defaultFillSymbol() )
-{
-
-}
+{}
 
 QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
 
@@ -55,9 +53,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
 }
 
 void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & )
-{
-
-}
+{}
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -75,8 +71,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
 
 void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context )
 {
-  auto transformRing = [&context]( QPolygonF & pts )
-  {
+  auto transformRing = [&context]( QPolygonF &pts ) {
     //transform the QPolygonF to screen coordinates
     if ( context.renderContext().coordinateTransform().isValid() )
     {
@@ -91,11 +86,7 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
     }
 
     // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-    pts.erase( std::remove_if( pts.begin(), pts.end(),
-                               []( const QPointF point )
-    {
-      return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-    } ), pts.end() );
+    pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) { return !std::isfinite( point.x() ) || !std::isfinite( point.y() ); } ), pts.end() );
 
     QPointF *ptr = pts.data();
     for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -145,7 +136,7 @@ void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 }
 void QgsPointCloudExtentRenderer::renderLabel( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const
 {
-  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( {text}, labelTextFormat() );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, labelTextFormat() );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( doc, labelTextFormat(), context.renderContext() );
   const QSizeF textSize = metrics.documentSize( Qgis::TextLayoutMode::Rectangle, labelTextFormat().orientation() );
   if ( textSize.width() < extent.width() && textSize.height() < extent.height() )

@@ -38,20 +38,16 @@ class TestQgsGenericSpatialIndex : public QObject
 };
 
 void TestQgsGenericSpatialIndex::initTestCase()
-{
-}
+{}
 
 void TestQgsGenericSpatialIndex::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsGenericSpatialIndex::init()
-{
-}
+{}
 
 void TestQgsGenericSpatialIndex::cleanup()
-{
-}
+{}
 
 void TestQgsGenericSpatialIndex::testIndex()
 {

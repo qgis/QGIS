@@ -35,11 +35,7 @@
 using namespace Qt::StringLiterals;
 
 QgsRectangle QgsWmsLayerInfos::transformExtent(
-  const QgsRectangle &extent,
-  const QgsCoordinateReferenceSystem &source,
-  const QgsCoordinateReferenceSystem &destination,
-  const QgsCoordinateTransformContext &context,
-  const bool &ballparkTransformsAreAppropriate
+  const QgsRectangle &extent, const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context, const bool &ballparkTransformsAreAppropriate
 )
 {
   QgsCoordinateTransform transformer { source, destination, context };
@@ -49,10 +45,7 @@ QgsRectangle QgsWmsLayerInfos::transformExtent(
 }
 
 QMap<QString, QgsRectangle> QgsWmsLayerInfos::transformExtentToCrsList(
-  const QgsRectangle &extent,
-  const QgsCoordinateReferenceSystem &source,
-  const QList<QgsCoordinateReferenceSystem> &destinations,
-  const QgsCoordinateTransformContext &context
+  const QgsRectangle &extent, const QgsCoordinateReferenceSystem &source, const QList<QgsCoordinateReferenceSystem> &destinations, const QgsCoordinateTransformContext &context
 )
 {
   QMap<QString, QgsRectangle> crsExtents;
@@ -71,12 +64,7 @@ QMap<QString, QgsRectangle> QgsWmsLayerInfos::transformExtentToCrsList(
 
 
 bool setBoundingRect(
-  const QgsProject *project,
-  QgsWmsLayerInfos &pLayer,
-  QgsMapLayer *ml,
-  const QgsRectangle &wmsExtent,
-  const QgsCoordinateReferenceSystem &wgs84,
-  const QList<QgsCoordinateReferenceSystem> &outputCrsList
+  const QgsProject *project, QgsWmsLayerInfos &pLayer, QgsMapLayer *ml, const QgsRectangle &wmsExtent, const QgsCoordinateReferenceSystem &wgs84, const QList<QgsCoordinateReferenceSystem> &outputCrsList
 )
 {
   QgsRectangle layerExtent = ml->extent();
@@ -125,9 +113,7 @@ bool setBoundingRect(
 
   try
   {
-    pLayer.crsExtents = QgsWmsLayerInfos::transformExtentToCrsList(
-      layerExtent, ml->crs(), outputCrsList, project->transformContext()
-    );
+    pLayer.crsExtents = QgsWmsLayerInfos::transformExtentToCrsList( layerExtent, ml->crs(), outputCrsList, project->transformContext() );
   }
   catch ( QgsCsException &cse )
   {
@@ -141,11 +127,7 @@ bool setBoundingRect(
 // ===================================
 // Get wms layer infos
 // ===================================
-QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
-  QgsServerInterface *serverIface,
-  const QgsProject *project,
-  const QList<QgsCoordinateReferenceSystem> &outputCrsList
-)
+QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project, const QList<QgsCoordinateReferenceSystem> &outputCrsList )
 {
   QMap<QString, QgsWmsLayerInfos> wmsLayers;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

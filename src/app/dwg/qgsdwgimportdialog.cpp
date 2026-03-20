@@ -64,7 +64,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mDatabaseFileWidget->setConfirmOverwrite( false );
 
   mBlockModeComboBox->addItem( tr( "Expand Block Geometries" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) );
-  mBlockModeComboBox->addItem( tr( "Expand Block Geometries and Add Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) | static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
+  mBlockModeComboBox
+    ->addItem( tr( "Expand Block Geometries and Add Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) | static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
   mBlockModeComboBox->addItem( tr( "Add Only Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
 
   const QgsSettings s;
@@ -97,8 +98,10 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   crs.createFromSrsId( crsid );
   mCrsSelector->setCrs( crs );
   mCrsSelector->setLayerCrs( crs );
-  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
-                                "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr(
+    "Select the coordinate reference system for the dxf file. "
+    "The data points will be transformed from the layer coordinate reference system."
+  ) );
 
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
@@ -441,8 +444,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
                                      " END"
                                      " END"
       )
-                                     .arg( DRW::MTEXT )
-      )
+                                     .arg( DRW::MTEXT ) )
     );
 
     pls.dataDefinedProperties().setProperty(
@@ -464,8 +466,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
                                      " END"
                                      " END"
       )
-                                     .arg( DRW::MTEXT )
-      )
+                                     .arg( DRW::MTEXT ) )
     );
 
     pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( u"360-angle"_s ) );

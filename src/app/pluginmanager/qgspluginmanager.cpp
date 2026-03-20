@@ -71,10 +71,12 @@ using namespace Qt::StringLiterals;
 #endif
 #endif
 
-const QgsSettingsEntryBool *QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( u"automatically-check-for-updates"_s, sTreePluginManager, true, u"Automatically check for plugin updates on startup"_s );
+const QgsSettingsEntryBool *QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates
+  = new QgsSettingsEntryBool( u"automatically-check-for-updates"_s, sTreePluginManager, true, u"Automatically check for plugin updates on startup"_s );
 const QgsSettingsEntryBool *QgsPluginManager::settingsAllowExperimental = new QgsSettingsEntryBool( u"allow-experimental"_s, sTreePluginManager, false, u"Allow experimental plugins."_s );
 const QgsSettingsEntryBool *QgsPluginManager::settingsAllowDeprecated = new QgsSettingsEntryBool( u"allow-deprecated"_s, sTreePluginManager, false, u"Allow deprecated plugins."_s );
-const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate = new QgsSettingsEntryVariant( u"check-on-start-last-date"_s, sTreePluginManager, QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ), u"Date last time the check was performed."_s );
+const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate
+  = new QgsSettingsEntryVariant( u"check-on-start-last-date"_s, sTreePluginManager, QgsVariantUtils::createNullVariant( QMetaType::Type::QDate ), u"Date last time the check was performed."_s );
 const QgsSettingsEntryStringList *QgsPluginManager::settingsSeenPlugins = new QgsSettingsEntryStringList( u"seen-plugins"_s, sTreePluginManager, {}, u"Date last time the check was performed."_s );
 const QgsSettingsEntryString *QgsPluginManager::settingsLastZipDirectory = new QgsSettingsEntryString( u"last-zip-directory"_s, sTreePluginManager, QString(), u"Last ZIP directory."_s );
 const QgsSettingsEntryBool *QgsPluginManager::settingsShowInstallFromZipWarning = new QgsSettingsEntryBool( u"show-install-from-zip-warning"_s, sTreePluginManager, true );
@@ -558,9 +560,7 @@ void QgsPluginManager::reloadModelData()
     buttonUninstall->setEnabled( false );
   }
 
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( !it->value( u"id"_s ).isEmpty() )
     {
@@ -696,45 +696,50 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   QString html = "<style>"
                  "  body {"
                  "    color:"
-                 + palette().color( QPalette::ColorRole::Text ).name() + ";"
-                                                                         "    background-color:"
-                 + palette().color( QPalette::ColorRole::Base ).name() + ";"
-                                                                         "  }"
-                                                                         "  body, table {"
-                                                                         "    padding:0px;"
-                                                                         "    margin:0px;"
-                                                                         "    font-family:Verdana, Sans-serif;"
-                                                                         "    font-size:10pt;"
-                                                                         "  }"
-                                                                         "  a {"
-                                                                         "    color: "
-                 + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                                                                         "    text-decoration:none;"
-                                                                         "  }"
-                                                                         "  a:hover,a:focus {"
-                                                                         "    color: "
-                 + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                                                                         "    text-decoration:underline;"
-                                                                         "  }"
-                                                                         "  a:visited {"
-                                                                         "    color: "
-                 + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
-                                                                                "  }"
-                                                                                "  div#votes {"
-                                                                                "    width:360px;"
-                                                                                "    margin-left:98px;"
-                                                                                "    padding-top:3px;"
-                                                                                "  }"
-                                                                                "  td {"
-                                                                                "    vertical-align:top;"
-                                                                                "  }"
-                                                                                "  td.key {"
-                                                                                "    font-weight: bold;"
-                                                                                "    white-space:nowrap;"
-                                                                                "    padding-right:10px;"
-                                                                                "    text-align:right;"
-                                                                                "  }"
-                                                                                "</style>";
+                 + palette().color( QPalette::ColorRole::Text ).name()
+                 + ";"
+                   "    background-color:"
+                 + palette().color( QPalette::ColorRole::Base ).name()
+                 + ";"
+                   "  }"
+                   "  body, table {"
+                   "    padding:0px;"
+                   "    margin:0px;"
+                   "    font-family:Verdana, Sans-serif;"
+                   "    font-size:10pt;"
+                   "  }"
+                   "  a {"
+                   "    color: "
+                 + palette().color( QPalette::ColorRole::Link ).name()
+                 + ";"
+                   "    text-decoration:none;"
+                   "  }"
+                   "  a:hover,a:focus {"
+                   "    color: "
+                 + palette().color( QPalette::ColorRole::Link ).name()
+                 + ";"
+                   "    text-decoration:underline;"
+                   "  }"
+                   "  a:visited {"
+                   "    color: "
+                 + palette().color( QPalette::ColorRole::LinkVisited ).name()
+                 + ";"
+                   "  }"
+                   "  div#votes {"
+                   "    width:360px;"
+                   "    margin-left:98px;"
+                   "    padding-top:3px;"
+                   "  }"
+                   "  td {"
+                   "    vertical-align:top;"
+                   "  }"
+                   "  td.key {"
+                   "    font-weight: bold;"
+                   "    white-space:nowrap;"
+                   "    padding-right:10px;"
+                   "    text-align:right;"
+                   "  }"
+                   "</style>";
 
   if ( !metadata->value( u"plugin_id"_s ).isEmpty() )
   {
@@ -774,61 +779,75 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       errorMsg = u"<b>%1</b><br/>%2"_s.arg( tr( "This plugin is broken" ), metadata->value( u"error_details"_s ) );
     }
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 144, 0, 0.25)\">"
-                     "  <tr><td width=\"100%\">%1</td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 144, 0, 0.25)\">"
+              "  <tr><td width=\"100%\">%1</td></tr>"
+              "</table>"
+    )
               .arg( errorMsg );
   }
 
   if ( metadata->value( u"status"_s ) == "upgradeable"_L1 || metadata->value( u"status_exp"_s ) == "upgradeable"_L1 )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(170, 0, 238, 0.25)\">"
-                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(170, 0, 238, 0.25)\">"
+              "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
+              "</table>"
+    )
               .arg( tr( "There is a new version available" ) );
   }
 
   if ( metadata->value( u"status"_s ) == "new"_L1 || metadata->value( u"status_exp"_s ) == "new"_L1 )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(0, 238, 0, 0.25)\">"
-                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(0, 238, 0, 0.25)\">"
+              "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
+              "</table>"
+    )
               .arg( tr( "This is a new plugin" ) );
   }
 
   if ( metadata->value( u"status"_s ) == "newer"_L1 && metadata->value( u"status_exp"_s ) == "newer"_L1 )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 133, 0, 0.25)\">"
-                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 133, 0, 0.25)\">"
+              "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
+              "</table>"
+    )
               .arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
   if ( !metadata->value( u"version_available_experimental"_s ).isEmpty() )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 238, 10, 0.25)\">"
-                     "  <tr><td width=\"100%\">"
-                     "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
-                     "  </td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 238, 10, 0.25)\">"
+              "  <tr><td width=\"100%\">"
+              "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
+              "  </td></tr>"
+              "</table>"
+    )
               .arg( tr( "This plugin has an experimental version available" ) );
   }
 
   if ( metadata->value( u"deprecated"_s ) == "true"_L1 )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 0, 80, 0.25)\">"
-                     "  <tr><td width=\"100%\">"
-                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
-                     "  </td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 0, 80, 0.25)\">"
+              "  <tr><td width=\"100%\">"
+              "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
+              "  </td></tr>"
+              "</table>"
+    )
               .arg( tr( "This plugin is deprecated" ) );
   }
 
   if ( metadata->value( u"readonly"_s ) == "true"_L1 )
   {
-    html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(0, 133, 238, 0.25)\">"
-                     "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" )
+    html += QString(
+              "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(0, 133, 238, 0.25)\">"
+              "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
+              "</table>"
+    )
               .arg( tr( "This is a core plugin, so you can't uninstall it" ) );
   }
 
@@ -953,9 +972,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       localDir = QDir( localDir ).canonicalPath();
     }
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"
-    )
-              .arg( tr( "Installed version" ), QDir::toNativeSeparators( localDir ), QUrl::fromLocalFile( localDir ).toString(), ver );
+    html += u"<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"_s.arg( tr( "Installed version" ), QDir::toNativeSeparators( localDir ), QUrl::fromLocalFile( localDir ).toString(), ver );
   }
 
   // use a localized date/time short format string
@@ -986,9 +1003,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       }
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-    )
-              .arg( tr( "Available version (stable)" ), downloadUrl, metadata->value( u"version_available_stable"_s ), dateUpdatedStr );
+    html += u"<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"_s.arg( tr( "Available version (stable)" ), downloadUrl, metadata->value( u"version_available_stable"_s ), dateUpdatedStr );
   }
 
   if ( !metadata->value( u"version_available_experimental"_s ).isEmpty() )
@@ -1008,8 +1023,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
         dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-    )
+    html += u"<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"_s
               .arg( tr( "Available version (experimental)" ), downloadUrl, metadata->value( u"version_available_experimental"_s ), dateUpdatedStr );
   }
 
@@ -1110,8 +1124,7 @@ void QgsPluginManager::selectTabItem( int idx )
 
 void QgsPluginManager::clearPythonPluginMetadata()
 {
-  for ( QMap<QString, QMap<QString, QString>>::iterator it = mPlugins.begin();
-        it != mPlugins.end(); )
+  for ( QMap<QString, QMap<QString, QString>>::iterator it = mPlugins.begin(); it != mPlugins.end(); )
   {
     if ( it->value( u"pythonic"_s ) == "true"_L1 )
     {
@@ -1245,7 +1258,20 @@ void QgsPluginManager::setCurrentTab( int idx )
     case Tabs::AllPlugins:
       mOptionsStackedWidget->setCurrentIndex( 0 );
       // all (statuses ends with Z are for spacers to always sort properly)
-      acceptedStatuses << u"installed"_s << u"not installed"_s << u"new"_s << u"orphan"_s << u"none available"_s << u"newer"_s << u"upgradeable"_s << u"not installedZ"_s << u"installedZ"_s << u"upgradeableZ"_s << u"orphanZ"_s << u"newerZZ"_s << QString();
+      acceptedStatuses
+        << u"installed"_s
+        << u"not installed"_s
+        << u"new"_s
+        << u"orphan"_s
+        << u"none available"_s
+        << u"newer"_s
+        << u"upgradeable"_s
+        << u"not installedZ"_s
+        << u"installedZ"_s
+        << u"upgradeableZ"_s
+        << u"orphanZ"_s
+        << u"newerZZ"_s
+        << QString();
       tabTitle = u"all_plugins"_s;
       break;
 
@@ -1305,22 +1331,26 @@ void QgsPluginManager::setCurrentTab( int idx )
       tabInfoHTML += "<style>"
                      "  body, p {"
                      "      color: "
-                     + palette().color( QPalette::ColorRole::Text ).name() + ";"
-                                                                             "      background-color:"
-                     + palette().color( QPalette::ColorRole::Base ).name() + ";"
-                                                                             "      margin: 2px;"
-                                                                             "      font-family: Verdana, Sans-serif;"
-                                                                             "      font-size: 10pt;"
-                                                                             "  }"
-                                                                             "  a, a:hover {"
-                                                                             "      color: "
-                     + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                                                                             "  }"
-                                                                             "  a:visited {"
-                                                                             "      color: "
-                     + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
-                                                                                    "  }"
-                                                                                    "</style>";
+                     + palette().color( QPalette::ColorRole::Text ).name()
+                     + ";"
+                       "      background-color:"
+                     + palette().color( QPalette::ColorRole::Base ).name()
+                     + ";"
+                       "      margin: 2px;"
+                       "      font-family: Verdana, Sans-serif;"
+                       "      font-size: 10pt;"
+                       "  }"
+                       "  a, a:hover {"
+                       "      color: "
+                     + palette().color( QPalette::ColorRole::Link ).name()
+                     + ";"
+                       "  }"
+                       "  a:visited {"
+                       "      color: "
+                     + palette().color( QPalette::ColorRole::LinkVisited ).name()
+                     + ";"
+                       "  }"
+                       "</style>";
       // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
       tabInfoHTML += it.value();
     }
@@ -1605,9 +1635,7 @@ bool QgsPluginManager::isPluginEnabled( const QString &key )
 
 bool QgsPluginManager::hasAvailablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( it->value( u"status"_s ) == "not installed"_L1 || it->value( u"status"_s ) == "new"_L1 )
     {
@@ -1621,9 +1649,7 @@ bool QgsPluginManager::hasAvailablePlugins()
 
 bool QgsPluginManager::hasReinstallablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     // plugins marked as "installed" are available for download (otherwise they are marked "orphans")
     if ( it->value( u"status"_s ) == "installed"_L1 )
@@ -1638,9 +1664,7 @@ bool QgsPluginManager::hasReinstallablePlugins()
 
 bool QgsPluginManager::hasUpgradeablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( it->value( u"status"_s ) == "upgradeable"_L1 )
     {
@@ -1654,9 +1678,7 @@ bool QgsPluginManager::hasUpgradeablePlugins()
 
 bool QgsPluginManager::hasNewPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( it->value( u"status"_s ) == "new"_L1 )
     {
@@ -1670,9 +1692,7 @@ bool QgsPluginManager::hasNewPlugins()
 
 bool QgsPluginManager::hasNewerPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( it->value( u"status"_s ) == "newer"_L1 )
     {
@@ -1686,9 +1706,7 @@ bool QgsPluginManager::hasNewerPlugins()
 
 bool QgsPluginManager::hasInvalidPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
-        it != mPlugins.constEnd();
-        ++it )
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin(); it != mPlugins.constEnd(); ++it )
   {
     if ( !it->value( u"error"_s ).isEmpty() )
     {

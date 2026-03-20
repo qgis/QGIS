@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -57,10 +58,12 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
-  mCountStyleSheet = QString( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
-                              " border-radius: 2px; background: rgba(0, 0, 0, 0);"
-                              " image: url(:/images/themes/default/%1) }"
-                              "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
+  mCountStyleSheet = QString(
+    "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
+    " border-radius: 2px; background: rgba(0, 0, 0, 0);"
+    " image: url(:/images/themes/default/%1) }"
+    "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }"
+  );
 
   mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.svg"_L1 ) );
   mCountProgress->setObjectName( u"mCountdown"_s );
@@ -228,8 +231,7 @@ int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::NoLevel:
     {
-      const QgsSettings settings;
-      return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
+      return QgsSettingsRegistryGui::settingsMessageTimeout->value();
     }
 
     case Qgis::MessageLevel::Warning:
@@ -374,13 +376,7 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
     duration = defaultMessageTimeout( level );
   }
 
-  QgsMessageBarItem *item = new QgsMessageBarItem(
-    title,
-    text,
-    showMoreButton,
-    level,
-    duration
-  );
+  QgsMessageBarItem *item = new QgsMessageBarItem( title, text, showMoreButton, level, duration );
   pushItem( item );
 }
 

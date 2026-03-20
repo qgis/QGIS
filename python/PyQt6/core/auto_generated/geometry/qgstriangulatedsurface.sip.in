@@ -13,7 +13,7 @@
 
 
 
-class QgsTriangulatedSurface: QgsPolyhedralSurface
+class QgsTriangulatedSurface : QgsPolyhedralSurface
 {
 %Docstring(signature="appended")
 Triangulated surface geometry type.

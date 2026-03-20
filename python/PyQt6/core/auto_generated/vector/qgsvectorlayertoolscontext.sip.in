@@ -22,7 +22,6 @@ operations should be considered.
 #include "qgsvectorlayertoolscontext.h"
 %End
   public:
-
     QgsVectorLayerToolsContext();
 
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );

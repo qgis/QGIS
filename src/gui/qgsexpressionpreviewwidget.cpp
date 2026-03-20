@@ -47,12 +47,8 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   connect( mCustomComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsExpressionPreviewWidget::setCustomChoice );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
   connect( mCopyPreviewAction, &QAction::triggered, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
-  connect( mCustomButtonPrev, &QToolButton::clicked, this, [this] {
-    mCustomComboBox->setCurrentIndex( std::max( 0, mCustomComboBox->currentIndex() - 1 ) );
-  } );
-  connect( mCustomButtonNext, &QToolButton::clicked, this, [this] {
-    mCustomComboBox->setCurrentIndex( std::min( mCustomComboBox->count() - 1, mCustomComboBox->currentIndex() + 1 ) );
-  } );
+  connect( mCustomButtonPrev, &QToolButton::clicked, this, [this] { mCustomComboBox->setCurrentIndex( std::max( 0, mCustomComboBox->currentIndex() - 1 ) ); } );
+  connect( mCustomButtonNext, &QToolButton::clicked, this, [this] { mCustomComboBox->setCurrentIndex( std::min( mCustomComboBox->count() - 1, mCustomComboBox->currentIndex() + 1 ) ); } );
 }
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
@@ -64,7 +60,9 @@ void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
   }
 }
 
-void QgsExpressionPreviewWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsExpressionPreviewWidget::setCustomPreviewGenerator(
+  const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator
+)
 {
   mCustomPreviewGeneratorFunction = previewContextGenerator;
   mStackedWidget->setCurrentWidget( mPageCustomPicker );
@@ -161,16 +159,20 @@ void QgsExpressionPreviewWidget::refreshPreview()
       const QString errorString = mExpression.parserErrorString().replace( "\n"_L1, "<br>"_L1 );
       QString tooltip;
       if ( mExpression.hasParserError() )
-        tooltip = QStringLiteral( "<b>%1:</b>"
-                                  "%2" )
+        tooltip = QStringLiteral(
+                    "<b>%1:</b>"
+                    "%2"
+        )
                     .arg( tr( "Parser Errors" ), errorString );
       // Only show the eval error if there is no parser error.
       if ( !mExpression.hasParserError() && mExpression.hasEvalError() )
         tooltip += u"<b>%1:</b> %2"_s.arg( tr( "Eval Error" ), mExpression.evalErrorString() );
 
-      mPreviewLabel->setText( tr( "Expression is invalid <a href="
-                                  "more"
-                                  ">(more info)</a>" ) );
+      mPreviewLabel->setText( tr(
+        "Expression is invalid <a href="
+        "more"
+        ">(more info)</a>"
+      ) );
       mPreviewLabel->setStyleSheet( u"color: rgba(255, 6, 10, 255);"_s );
       setExpressionToolTip( tooltip );
       emit expressionParsed( false );

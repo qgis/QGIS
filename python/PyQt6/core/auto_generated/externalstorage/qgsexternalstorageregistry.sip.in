@@ -27,7 +27,6 @@ but rather accessed through
 #include "qgsexternalstorageregistry.h"
 %End
   public:
-
     QgsExternalStorageRegistry();
 %Docstring
 Constructor - creates a registry of external storage backends

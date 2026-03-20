@@ -20,7 +20,9 @@ Contains utilities for working with files.
 #include "qgsfileutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
 
+  public:
     static QString representFileSize( qint64 bytes );
 %Docstring
 Returns the human size from bytes
@@ -169,7 +171,9 @@ For instance, if ``path`` specified a .shp file then the corresponding
 .. versionadded:: 3.22
 %End
 
-    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error /Out/, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+    static bool renameDataset(
+      const QString &oldPath, const QString &newPath, QString &error /Out/, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile
+    );
 %Docstring
 Renames the dataset at ``oldPath`` to ``newPath``, renaming both the
 file at ``oldPath`` and all associated sidecar files which exist for it.
@@ -233,7 +237,49 @@ already exist is found.
 .. versionadded:: 3.30
 %End
 
+    enum class CopyFlag /BaseType=IntFlag/
+    {
+      NoSymLinks,
+    };
+
+    typedef QFlags<QgsFileUtils::CopyFlag> CopyFlags;
+
+
+    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags(), const QStringList &excludePatterns = QStringList() );
+%Docstring
+Recursively copies a whole directory.
+
+Returns ``True`` if the copy was successful and all files and folders
+were copied.
+
+.. note::
+
+   If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+
+Since QGIS 4.0.1 the ``flags`` argument can be used to specify flags
+controlling the behavior of the copy operation.
+
+Since QGIS 4.0.1 the ``excludePatterns`` argument can be used to specify
+a list of regular expressions. Any files or folders matching any of
+these patterns will be excluded from the copy.
+
+.. versionadded:: 4.0
+%End
+
+    static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
+%Docstring
+Replaces all occurrences of a given string in a file.
+
+Returns ``True`` if the replacement was successful and the file updated.
+
+Replacement is case-sensitive.
+
+.. versionadded:: 4.0
+%End
 };
+
+QFlags<QgsFileUtils::CopyFlag> operator|(QgsFileUtils::CopyFlag f1, QFlags<QgsFileUtils::CopyFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

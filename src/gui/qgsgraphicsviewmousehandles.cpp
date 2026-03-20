@@ -108,8 +108,7 @@ void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, d
 }
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
-{
-}
+{}
 
 QRectF QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF )
 {
@@ -117,20 +116,16 @@ QRectF QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF 
 }
 
 void QgsGraphicsViewMouseHandles::startMacroCommand( const QString & )
-{
-}
+{}
 
 void QgsGraphicsViewMouseHandles::endMacroCommand()
-{
-}
+{}
 
 void QgsGraphicsViewMouseHandles::endItemCommand( QGraphicsItem * )
-{
-}
+{}
 
 void QgsGraphicsViewMouseHandles::createItemCommand( QGraphicsItem * )
-{
-}
+{}
 
 QPointF QgsGraphicsViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsViewMouseHandles::SnapGuideMode, bool, bool )
 {
@@ -1065,9 +1060,19 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
   {
     //snapping only occurs if handles are not rotated for now
 
-    bool snapVertical = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeft || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRight || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
+    bool snapVertical = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeft
+                        || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRight
+                        || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp
+                        || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp
+                        || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown
+                        || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
 
-    bool snapHorizontal = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
+    bool snapHorizontal = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeUp
+                          || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeDown
+                          || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp
+                          || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp
+                          || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown
+                          || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
 
     //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
     //rather then cursor position

@@ -189,8 +189,7 @@ int QgsGraphEdge::toVertex() const
 
 QgsGraphVertex::QgsGraphVertex( const QgsPointXY &point )
   : mCoordinate( point )
-{
-}
+{}
 
 QgsGraphEdgeIds QgsGraphVertex::incomingEdges() const
 {

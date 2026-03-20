@@ -46,8 +46,7 @@ using namespace Qt::StringLiterals;
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
-{
-}
+{}
 
 QgsMapToolLabel::~QgsMapToolLabel()
 {
@@ -73,34 +72,40 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
     return false;
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsAtPosition( pt );
-  labelPosList.erase( std::remove_if( labelPosList.begin(), labelPosList.end(), [this]( const QgsLabelPosition &position ) {
-                        if ( position.layerID.isEmpty() )
-                          return true;
+  labelPosList.erase(
+    std::remove_if(
+      labelPosList.begin(),
+      labelPosList.end(),
+      [this]( const QgsLabelPosition &position ) {
+        if ( position.layerID.isEmpty() )
+          return true;
 
-                        if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
-                        {
-                          // strip out any labels from non vector layers (e.g. those from vector tile layers). Only vector layer labels
-                          // are supported by the map tools.
-                          switch ( layer->type() )
-                          {
-                            case Qgis::LayerType::Vector:
-                              return false;
+        if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
+        {
+          // strip out any labels from non vector layers (e.g. those from vector tile layers). Only vector layer labels
+          // are supported by the map tools.
+          switch ( layer->type() )
+          {
+            case Qgis::LayerType::Vector:
+              return false;
 
-                            case Qgis::LayerType::Raster:
-                            case Qgis::LayerType::Plugin:
-                            case Qgis::LayerType::Mesh:
-                            case Qgis::LayerType::VectorTile:
-                            case Qgis::LayerType::Annotation:
-                            case Qgis::LayerType::PointCloud:
-                            case Qgis::LayerType::Group:
-                            case Qgis::LayerType::TiledScene:
-                              return true;
-                          }
-                        }
+            case Qgis::LayerType::Raster:
+            case Qgis::LayerType::Plugin:
+            case Qgis::LayerType::Mesh:
+            case Qgis::LayerType::VectorTile:
+            case Qgis::LayerType::Annotation:
+            case Qgis::LayerType::PointCloud:
+            case Qgis::LayerType::Group:
+            case Qgis::LayerType::TiledScene:
+              return true;
+          }
+        }
 
-                        return true;
-                      } ),
-                      labelPosList.end() );
+        return true;
+      }
+    ),
+    labelPosList.end()
+  );
 
   if ( labelPosList.empty() )
     return false;
@@ -165,34 +170,40 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   const double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QList<QgsCalloutPosition> calloutPosList = labelingResults->calloutsWithinRectangle( QgsRectangle::fromCenterAndSize( pt, tol * 2, tol * 2 ) );
-  calloutPosList.erase( std::remove_if( calloutPosList.begin(), calloutPosList.end(), [this]( const QgsCalloutPosition &position ) {
-                          if ( position.layerID.isEmpty() )
-                            return true;
+  calloutPosList.erase(
+    std::remove_if(
+      calloutPosList.begin(),
+      calloutPosList.end(),
+      [this]( const QgsCalloutPosition &position ) {
+        if ( position.layerID.isEmpty() )
+          return true;
 
-                          if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
-                          {
-                            // strip out any callouts from non vector layers (e.g. those from vector tile layers). Only vector layer callouts
-                            // are supported by the map tools.
-                            switch ( layer->type() )
-                            {
-                              case Qgis::LayerType::Vector:
-                                return false;
+        if ( QgsMapLayer *layer = QgsMapTool::layer( position.layerID ) )
+        {
+          // strip out any callouts from non vector layers (e.g. those from vector tile layers). Only vector layer callouts
+          // are supported by the map tools.
+          switch ( layer->type() )
+          {
+            case Qgis::LayerType::Vector:
+              return false;
 
-                              case Qgis::LayerType::Raster:
-                              case Qgis::LayerType::Plugin:
-                              case Qgis::LayerType::Mesh:
-                              case Qgis::LayerType::VectorTile:
-                              case Qgis::LayerType::Annotation:
-                              case Qgis::LayerType::PointCloud:
-                              case Qgis::LayerType::Group:
-                              case Qgis::LayerType::TiledScene:
-                                return true;
-                            }
-                          }
+            case Qgis::LayerType::Raster:
+            case Qgis::LayerType::Plugin:
+            case Qgis::LayerType::Mesh:
+            case Qgis::LayerType::VectorTile:
+            case Qgis::LayerType::Annotation:
+            case Qgis::LayerType::PointCloud:
+            case Qgis::LayerType::Group:
+            case Qgis::LayerType::TiledScene:
+              return true;
+          }
+        }
 
-                          return true;
-                        } ),
-                        calloutPosList.end() );
+        return true;
+      }
+    ),
+    calloutPosList.end()
+  );
   if ( calloutPosList.empty() )
     return false;
 
@@ -481,11 +492,7 @@ bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
   {
     return false;
   }
-  return vlayer->getFeatures( QgsFeatureRequest()
-                                .setFilterFid( mCurrentLabel.pos.featureId )
-                                .setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
-  )
-    .nextFeature( f );
+  return vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f );
 }
 
 QFont QgsMapToolLabel::currentLabelFont()
@@ -826,8 +833,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
 
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionPoint ) )
     {
-      if ( pointCol >= 0
-           && !QgsVariantUtils::isNull( attributes.at( pointCol ) ) )
+      if ( pointCol >= 0 && !QgsVariantUtils::isNull( attributes.at( pointCol ) ) )
       {
         QVariant pointAsVariant = attributes.at( pointCol );
         if ( pointAsVariant.userType() == qMetaTypeId<QgsGeometry>() )
@@ -856,7 +862,20 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   return true;
 }
 
-bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol, QString &lineAnchorClipping, bool &lineAnchorClippingSuccess, int &lineAnchorClippingCol, QString &lineAnchorType, bool &lineAnchorTypeSuccess, int &lineAnchorTypeCol, QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol ) const
+bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent(
+  double &lineAnchorPercent,
+  bool &lineAnchorPercentSuccess,
+  int &lineAnchorPercentCol,
+  QString &lineAnchorClipping,
+  bool &lineAnchorClippingSuccess,
+  int &lineAnchorClippingCol,
+  QString &lineAnchorType,
+  bool &lineAnchorTypeSuccess,
+  int &lineAnchorTypeCol,
+  QString &lineAnchorTextPoint,
+  bool &lineAnchorTextPointSuccess,
+  int &lineAnchorTextPointCol
+) const
 {
   lineAnchorPercentSuccess = false;
   lineAnchorClippingSuccess = true;
@@ -987,7 +1006,9 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
     QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
     int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) ) ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue(
+           mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) )
+         ) )
       return false;
   }
   else
@@ -998,8 +1019,7 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
     int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
     int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x )
-         || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, x ) || !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, y ) )
       return false;
   }
 
@@ -1188,8 +1208,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
       return true;
   }
 
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionX )
-       && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionY ) )
+  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionX ) && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionY ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
     QString xColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, settings, vlayer, status );
@@ -1203,7 +1222,9 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   return false;
 }
 
-bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol, int &lineAnchorTypeCol, int &lineAnchorTextPointCol ) const
+bool QgsMapToolLabel::labelAnchorPercentMovable(
+  QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol, int &lineAnchorTypeCol, int &lineAnchorTextPointCol
+) const
 {
   auto checkProperty = [&]( const QgsPalLayerSettings::Property &property, int &col ) -> bool {
     if ( settings.dataDefinedProperties().isActive( property ) )
@@ -1426,7 +1447,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     int index = -1;
 
     // always use the default activated property
-    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p ) : QgsProperty();
+    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout()
+                         ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p )
+                         : QgsProperty();
     if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
@@ -1507,7 +1530,10 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   LabelDetails newHoverLabel( labelPos, canvas() );
 
-  if ( mCurrentHoverLabel.valid && newHoverLabel.layer == mCurrentHoverLabel.layer && newHoverLabel.pos.featureId == mCurrentHoverLabel.pos.featureId && newHoverLabel.pos.providerID == mCurrentHoverLabel.pos.providerID )
+  if ( mCurrentHoverLabel.valid
+       && newHoverLabel.layer == mCurrentHoverLabel.layer
+       && newHoverLabel.pos.featureId == mCurrentHoverLabel.pos.featureId
+       && newHoverLabel.pos.providerID == mCurrentHoverLabel.pos.providerID )
     return;
 
   if ( !canModifyLabel( newHoverLabel ) )

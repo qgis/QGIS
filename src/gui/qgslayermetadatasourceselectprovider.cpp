@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayerMetadataSourceSelectProvider::QgsLayerMetadataSourceSelectProvider()
   : QgsSourceSelectProvider()
-{
-}
+{}
 
 QString QgsLayerMetadataSourceSelectProvider::providerKey() const
 {

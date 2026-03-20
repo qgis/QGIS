@@ -94,8 +94,7 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent )
   : QAbstractListModel( parent )
   , mBridge( bridge )
-{
-}
+{}
 
 int CustomLayerOrderModel::rowCount( const QModelIndex & ) const
 {

@@ -123,17 +123,12 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
             {
               if ( mMessageBar )
               {
-                mMessageBar->pushMessage(
-                  tr( "Security warning" ),
-                  tr( "The action contains an embedded script which has been denied execution." ),
-                  Qgis::MessageLevel::Warning
-                );
+                mMessageBar->pushMessage( tr( "Security warning" ), tr( "The action contains an embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
               }
               return;
             }
 
-            const QString formCode = u"locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n"_s
-                                       .arg( ( quint64 ) form );
+            const QString formCode = u"locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n"_s.arg( ( quint64 ) form );
             QgsAction action { mAction };
             action.setCommand( formCode + mAction.command() );
             action.run( layer(), mFeature, expressionContext );

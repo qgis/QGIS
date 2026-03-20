@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 QgsNetworkLoggerWidgetFactory::QgsNetworkLoggerWidgetFactory( QgsNetworkLogger *logger )
   : QgsDevToolWidgetFactory( QObject::tr( "Network Logger" ), QgsApplication::getThemeIcon( u"propertyicons/network_and_proxy.svg"_s ) )
   , mLogger( logger )
-{
-}
+{}
 
 QgsDevToolWidget *QgsNetworkLoggerWidgetFactory::createWidget( QWidget *parent ) const
 {

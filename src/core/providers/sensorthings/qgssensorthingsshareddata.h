@@ -36,7 +36,6 @@ class QgsFeedback;
  */
 class QgsSensorThingsSharedData
 {
-
   public:
     QgsSensorThingsSharedData( const QString &uri );
 
@@ -57,20 +56,21 @@ class QgsSensorThingsSharedData
 
     bool hasCachedAllFeatures() const;
     bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
-    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage,
-                                         const QgsFeatureIds &alreadyFetchedIds );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback, const QString &thisPage, QString &nextPage, const QgsFeatureIds &alreadyFetchedIds );
 
     void clearCache();
 
   private:
-
-    bool processFeatureRequest( QString &nextPage, QgsFeedback *feedback,
-                                const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
-                                const std::function< bool() > &continueFetchingCallback,
-                                const std::function< void() > &onNoMoreFeaturesCallback );
+    bool processFeatureRequest(
+      QString &nextPage,
+      QgsFeedback *feedback,
+      const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
+      const std::function< bool() > &continueFetchingCallback,
+      const std::function< void() > &onNoMoreFeaturesCallback
+    );
 
     friend class QgsSensorThingsProvider;
-    mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
+    mutable QReadWriteLock mReadWriteLock { QReadWriteLock::Recursive };
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;

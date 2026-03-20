@@ -43,8 +43,7 @@ struct QgsChunkListEntry
     //! Constructs entry for a particular node
     QgsChunkListEntry( QgsChunkNode *node )
       : chunk( node )
-    {
-    }
+    {}
 
     QgsChunkListEntry *prev = nullptr;
     QgsChunkListEntry *next = nullptr;

@@ -155,7 +155,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

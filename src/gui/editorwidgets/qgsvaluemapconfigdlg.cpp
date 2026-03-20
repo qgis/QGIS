@@ -140,8 +140,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
       const QString validValue = checkValueLength( item->text() );
       if ( validValue.length() != item->text().length() )
       {
-        const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                       .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
+        const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" ).arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
         item->setText( validValue );
         mValueMapErrorsLabel->setVisible( true );
         mValueMapErrorsLabel->setText( u"%1<br>%2"_s.arg( errorMessage, mValueMapErrorsLabel->text() ) );
@@ -225,13 +224,11 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       {
         if ( reportedErrors.length() < maxOverflowErrors )
         {
-          reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                      .arg( value, QString::number( mappedField.length() ) ) );
+          reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" ).arg( value, QString::number( mappedField.length() ) ) );
         }
         else if ( reportedErrors.length() == maxOverflowErrors )
         {
-          reportedErrors.push_back( tr( "Only first %1 errors have been reported." )
-                                      .arg( maxOverflowErrors ) );
+          reportedErrors.push_back( tr( "Only first %1 errors have been reported." ).arg( maxOverflowErrors ) );
         }
       }
 

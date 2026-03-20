@@ -24,8 +24,7 @@ using namespace Qt::StringLiterals;
 
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )
-{
-}
+{}
 
 QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
@@ -172,7 +171,12 @@ QStringList QgsOracleExpressionCompiler::sqlArgumentsFromFunctionName( const QSt
   QStringList args( fnArgs );
   if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( u"TIMESTAMP '%1-%2-%3 %4:%5:%6'"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TIMESTAMP '%1-%2-%3 %4:%5:%6'"_s.arg( args[0].rightJustified( 4, '0' ) )
+                          .arg( args[1].rightJustified( 2, '0' ) )
+                          .arg( args[2].rightJustified( 2, '0' ) )
+                          .arg( args[3].rightJustified( 2, '0' ) )
+                          .arg( args[4].rightJustified( 2, '0' ) )
+                          .arg( args[5].rightJustified( 2, '0' ) ) );
   }
   return args;
 }

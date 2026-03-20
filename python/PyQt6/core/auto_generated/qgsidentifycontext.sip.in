@@ -20,7 +20,6 @@ perform an identify action.
 #include "qgsidentifycontext.h"
 %End
   public:
-
     QgsIdentifyContext();
 
     void setTemporalRange( const QgsDateTimeRange &range );

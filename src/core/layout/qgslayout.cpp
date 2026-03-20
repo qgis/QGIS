@@ -49,7 +49,14 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( u"search-paths-for-templates"_s, QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
+const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates
+  = new QgsSettingsEntryStringList( u"search-paths-for-templates"_s, QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
+
+const QgsSettingsEntryString *QgsLayout::settingsLayoutDefaultFont
+  = new QgsSettingsEntryString( u"default-font"_s, QgsSettingsTree::sTreeLayout, QString(), QObject::tr( "Default font family for new layout items" ) );
+
+const QgsSettingsEntryString *QgsLayout::settingsLayoutDefaultNorthArrow
+  = new QgsSettingsEntryString( u"default-north-arrow"_s, QgsSettingsTree::sTreeLayout, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QObject::tr( "Default north arrow SVG path" ) );
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -335,10 +342,10 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
     {
       // If we are not checking for a an item below a specified item, or if we've
       // already found that item, then we've found our target
-      if ( ( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
+      if ( ( !belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
       {
         // If ignoreLocked and item is part of a locked group, return the next item below
-        if ( ignoreLocked && layoutItem->parentGroup() &&  layoutItem->parentGroup()->isLocked() )
+        if ( ignoreLocked && layoutItem->parentGroup() && layoutItem->parentGroup()->isLocked() )
         {
           return layoutItemAt( position, layoutItem, ignoreLocked, searchTolerance );
         }
@@ -540,7 +547,6 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   }
 
   return bounds;
-
 }
 
 QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
@@ -726,17 +732,15 @@ const QgsLayoutUndoStack *QgsLayout::undoStack() const
 }
 
 ///@cond PRIVATE
-class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
+class QgsLayoutUndoCommand : public QgsAbstractLayoutUndoCommand
 {
   public:
-
     QgsLayoutUndoCommand( QgsLayout *layout, const QString &text, int id, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsAbstractLayoutUndoCommand( text, id, parent )
       , mLayout( layout )
     {}
 
   protected:
-
     void saveState( QDomDocument &stateDoc ) const override
     {
       stateDoc.clear();
@@ -757,7 +761,6 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
     }
 
   private:
-
     QgsLayout *mLayout = nullptr;
 };
 ///@endcond
@@ -856,10 +859,7 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( u"Layout"_s );
-  auto save = [&]( const QgsLayoutSerializableObject * object )->bool
-  {
-    return object->writeXml( element, document, context );
-  };
+  auto save = [&]( const QgsLayoutSerializableObject *object ) -> bool { return object->writeXml( element, document, context ); };
   save( &mSnapper );
   save( &mGridSettings );
   save( mPageCollection.get() );
@@ -987,10 +987,7 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return false;
   }
 
-  auto restore = [&]( QgsLayoutSerializableObject * object )->bool
-  {
-    return object->readXml( layoutElement, document, context );
-  };
+  auto restore = [&]( QgsLayoutSerializableObject *object ) -> bool { return object->readXml( layoutElement, document, context ); };
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )

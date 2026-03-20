@@ -61,8 +61,10 @@ QString QgsFixGeometrySelfIntersectionAlgorithm::groupId() const
 
 QString QgsFixGeometrySelfIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm splits self intersecting lines or polygons according to the chosen method, "
-                      "based on an error layer from the \"Self-intersections\" algorithm in the \"Check geometry\" section." );
+  return QObject::tr(
+    "This algorithm splits self intersecting lines or polygons according to the chosen method, "
+    "based on an error layer from the \"Self-intersections\" algorithm in the \"Check geometry\" section."
+  );
 }
 
 QgsFixGeometrySelfIntersectionAlgorithm *QgsFixGeometrySelfIntersectionAlgorithm::createInstance() const
@@ -74,69 +76,36 @@ void QgsFixGeometrySelfIntersectionAlgorithm::initAlgorithm( const QVariantMap &
 {
   Q_UNUSED( configuration )
 
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"INPUT"_s, QObject::tr( "Input layer" ),
-    QList<int>()
-      << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
-      << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSource(
-    u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
-  ) );
+  addParameter(
+    new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
+  );
+  addParameter( new QgsProcessingParameterFeatureSource( u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometrySelfIntersectionCheck( nullptr, QVariantMap() ).availableResolutionMethods();
-    std::transform(
-      checkMethods.cbegin(), checkMethods.cend() - 1, std::inserter( methods, methods.begin() ),
-      []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); }
-    );
+    std::transform( checkMethods.cbegin(), checkMethods.cend() - 1, std::inserter( methods, methods.begin() ), []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); } );
   }
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), methods ) );
 
-  addParameter( new QgsProcessingParameterField(
-    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
-    QString(), u"ERRORS"_s
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"PART_IDX"_s, QObject::tr( "Field of part index" ),
-    u"gc_partidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"RING_IDX"_s, QObject::tr( "Field of ring index" ),
-    u"gc_ringidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ),
-    u"gc_vertidx"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"SEGMENT_1"_s, QObject::tr( "Field of segment 1" ),
-    u"gc_segment_1"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
-  addParameter( new QgsProcessingParameterField(
-    u"SEGMENT_2"_s, QObject::tr( "Field of segment 2" ),
-    u"gc_segment_2"_s, u"ERRORS"_s,
-    Qgis::ProcessingFieldParameterDataType::Numeric
-  ) );
+  addParameter( new QgsProcessingParameterField( u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ), QString(), u"ERRORS"_s ) );
+  addParameter( new QgsProcessingParameterField( u"PART_IDX"_s, QObject::tr( "Field of part index" ), u"gc_partidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"RING_IDX"_s, QObject::tr( "Field of ring index" ), u"gc_ringidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ), u"gc_vertidx"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"SEGMENT_1"_s, QObject::tr( "Field of segment 1" ), u"gc_segment_1"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
+  addParameter( new QgsProcessingParameterField( u"SEGMENT_2"_s, QObject::tr( "Field of segment 2" ), u"gc_segment_2"_s, u"ERRORS"_s, Qgis::ProcessingFieldParameterDataType::Numeric ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"OUTPUT"_s, QObject::tr( "Self-intersections fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    u"REPORT"_s, QObject::tr( "Report layer from fixing self-intersections" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Self-intersections fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"REPORT"_s, QObject::tr( "Report layer from fixing self-intersections" ), Qgis::ProcessingSourceType::VectorPoint ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
-  );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
-                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
+  tolerance->setHelp(
+    QObject::tr(
+      "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+      "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero."
+    )
+  );
   addParameter( tolerance.release() );
 }
 
@@ -184,9 +153,7 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
@@ -194,9 +161,7 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
   reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
-    parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
-  ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
@@ -290,17 +255,10 @@ QVariantMap QgsFixGeometrySelfIntersectionAlgorithm::processAlgorithm( const QVa
         &check,
         inputFeature.geometry(),
         errorFeature.geometry(),
-        QgsVertexId(
-          errorFeature.attribute( partIdxFieldName ).toInt(),
-          errorFeature.attribute( ringIdxFieldName ).toInt(),
-          errorFeature.attribute( vertexIdxFieldName ).toInt()
-        ),
+        QgsVertexId( errorFeature.attribute( partIdxFieldName ).toInt(), errorFeature.attribute( ringIdxFieldName ).toInt(), errorFeature.attribute( vertexIdxFieldName ).toInt() ),
         intersection
       );
-      QgsGeometryCheckErrorSingle checkError = QgsGeometryCheckErrorSingle(
-        &intersectionError,
-        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false )
-      );
+      QgsGeometryCheckErrorSingle checkError = QgsGeometryCheckErrorSingle( &intersectionError, QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ) );
       for ( const QgsGeometryCheck::Changes &changes : std::as_const( changesList ) )
         checkError.handleChanges( changes );
 

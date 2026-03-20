@@ -14,7 +14,7 @@
 
 
 
-class QgsLineString: QgsCurve
+class QgsLineString : QgsCurve
 {
 %Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
@@ -24,7 +24,6 @@ Line string geometry type, with support for z-dimension and m-values.
 #include "qgslinestring.h"
 %End
   public:
-
     QgsLineString() /HoldGIL/;
 %Docstring
 Constructor for an empty linestring geometry.
@@ -406,10 +405,9 @@ point in the line.
     virtual double mAt( int index ) const;
 
 %Docstring
-Returns the m-coordinate of the specified node in the line string.
+Returns the m value of the specified node in the line string.
 
-If the LineString does not have a m-dimension then ``NaN`` will be
-returned.
+If the LineString does not have m values then ``NaN`` will be returned.
 
 Indexes can be less than 0, in which case they correspond to positions
 from the end of the line. E.g. an index of -1 corresponds to the last

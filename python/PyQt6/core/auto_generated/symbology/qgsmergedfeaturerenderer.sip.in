@@ -27,7 +27,6 @@ together.
 #include "qgsmergedfeaturerenderer.h"
 %End
   public:
-
     QgsMergedFeatureRenderer( QgsFeatureRenderer *embeddedRenderer /Transfer/ );
 %Docstring
 Constructor for QgsMergedFeatureRenderer.
@@ -128,7 +127,6 @@ renderer.
 %End
 
   protected:
-
     QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *embeddedRenderer /Transfer/ );
 %Docstring
 Constructor for QgsMergedFeatureRenderer.

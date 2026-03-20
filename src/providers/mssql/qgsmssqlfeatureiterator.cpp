@@ -205,8 +205,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // get geometry col
   if ( ( !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
          || ( request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
-         || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() )
-       )
+         || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() ) )
        && mSource->isSpatial() )
   {
     selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mGeometryColName );
@@ -236,19 +235,49 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
     if ( mSource->mGeometryColType == "geometry"_L1 )
     {
-      stream << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() ) << ", "
-             << qgsDoubleToString( mFilterRect.xMaximum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
-             << qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' << qgsDoubleToString( mFilterRect.yMinimum() );
+      stream
+        << qgsDoubleToString( mFilterRect.xMinimum() )
+        << ' '
+        << qgsDoubleToString( mFilterRect.yMinimum() )
+        << ", "
+        << qgsDoubleToString( mFilterRect.xMaximum() )
+        << ' '
+        << qgsDoubleToString( mFilterRect.yMinimum() )
+        << ", "
+        << qgsDoubleToString( mFilterRect.xMaximum() )
+        << ' '
+        << qgsDoubleToString( mFilterRect.yMaximum() )
+        << ", "
+        << qgsDoubleToString( mFilterRect.xMinimum() )
+        << ' '
+        << qgsDoubleToString( mFilterRect.yMaximum() )
+        << ", "
+        << qgsDoubleToString( mFilterRect.xMinimum() )
+        << ' '
+        << qgsDoubleToString( mFilterRect.yMinimum() );
     }
     else
     {
-      stream << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
-             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) ) << ", "
-             << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
-             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) ) << ", "
-             << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
+      stream
+        << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) )
+        << ' '
+        << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) )
+        << ", "
+        << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) )
+        << ' '
+        << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) )
+        << ", "
+        << qgsDoubleToString( validLon( mFilterRect.xMaximum() ) )
+        << ' '
+        << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) )
+        << ", "
+        << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) )
+        << ' '
+        << qgsDoubleToString( validLat( mFilterRect.yMaximum() ) )
+        << ", "
+        << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) )
+        << ' '
+        << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
     }
 
     mStatement += " WHERE "_L1;
@@ -301,8 +330,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
     filterAdded = true;
   }
-  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids && !mSource->mPrimaryKeyAttrs.isEmpty()
-            && !mRequest.filterFids().isEmpty() )
+  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids && !mSource->mPrimaryKeyAttrs.isEmpty() && !mRequest.filterFids().isEmpty() )
   {
     if ( !filterAdded )
       mStatement += " WHERE "_L1;

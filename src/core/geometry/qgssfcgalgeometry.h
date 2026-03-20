@@ -28,10 +28,10 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 
 #include "qgsabstractgeometry.h"
 #include "qgslinestring.h"
+#include "qgsmatrix4x4.h"
 #include "qgspoint.h"
 #include "qgssfcgalengine.h"
 
-#include <QtGui/qmatrix4x4.h>
 
 /**
  * Wraps SFCGAL geometry object.
@@ -120,6 +120,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
+    // clang-format off
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
@@ -130,6 +131,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Clones the geometry by performing a deep copy
@@ -431,14 +433,14 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom
      *
-     * \param mat 4x4 transformation matrix (translation is defined of the 4th column)
+     * \param mat 4x4 transformation matrix (translation is defined in the 4th column)
      * \param errorMsg Error message returned by SFGCAL
      * \return new geometry
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
-    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Checks if \a otherGeom intersects this.
@@ -615,6 +617,30 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
 
+    /**
+     * Converts the geometry to a Solid geometry.
+     * The geometry must be of type PolyhedralSurface
+     *
+     * \return geometry as a Solid
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the geometry to a PolyhedralSurface geometry.
+     * The geometry must be of type Solid
+     *
+     * \return geometry as a PolyhedralSurface
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const SIP_THROW( QgsSfcgalException );
+
     // ============= PRIMITIVE
 
     /**
@@ -676,7 +702,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
-    QMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
+    QgsMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
 
   protected:
 
@@ -695,11 +721,12 @@ class CORE_EXPORT QgsSfcgalGeometry
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
     void setPrimitiveTranslate( const QgsVector3D &translation );
     void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
+    //!The rotation angle is in radians.
     void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
 
     sfcgal::shared_prim mSfcgalPrim;
     sfcgal::primitiveType mPrimType;
-    QMatrix4x4 mPrimTransform;
+    QgsMatrix4x4 mPrimTransform;
 #endif
 };
 

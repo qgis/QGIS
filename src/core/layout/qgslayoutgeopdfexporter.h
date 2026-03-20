@@ -48,7 +48,6 @@ class QgsGeospatialPdfRenderedFeatureHandler;
 class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
   public:
-
     /**
      * Constructor for QgsLayoutGeospatialPdfExporter, associated with the specified \a layout.
      */
@@ -92,9 +91,32 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      */
     QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
 
-  private:
+    /**
+     * Sets QGIS project layers (including invisible ones) to layout item maps before rendering.
+     * Only map items that do not follow map themes nor locked layers are altered.
+     *
+     * Used by Geospatial PDF exports that should follow QGIS layer tree configuration.
+     *
+     * \return whether at least one map was found not following map themes nor locked layers.
+     *
+     * \see restoreMapItemLayersAfterRendering()
+     * \since QGIS 4.2
+     */
+    bool setMapItemLayersBeforeRendering();
 
+    /**
+     * Restores map item layers after a rendering operation for Geospatial PDFs that follow QGIS layer tree configuration.
+     *
+     * \see setMapItemLayersBeforeRendering()
+     *
+     * \since QGIS 4.2
+     */
+    void restoreMapItemLayersAfterRendering();
+
+  private:
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
+
+    QgsLayerTree *layerTree() const override;
 
     QgsLayout *mLayout = nullptr;
     QHash< QgsLayoutItemMap *, QgsGeospatialPdfRenderedFeatureHandler * > mMapHandlers;
@@ -104,10 +126,13 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
     QStringList mLayerOrder;
     QStringList mLayerTreeGroupOrder;
 
+    /**
+     * To restore map item layers after a rendering operation for
+     * Geospatial PDF exports that follow QGIS layer tree configuration
+     */
+    QMap< QString, QList< QgsMapLayer * > > mTemporaryLayersToRender;
+
     friend class TestQgsLayoutGeospatialPdfExport;
 };
 
 #endif //QGSLAYOUTGEOPDFEXPORTER_H
-
-
-

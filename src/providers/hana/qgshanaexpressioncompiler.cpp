@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )
-{
-}
+{}
 
 QString QgsHanaExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
@@ -86,7 +85,12 @@ QStringList QgsHanaExpressionCompiler::sqlArgumentsFromFunctionName( const QStri
   QStringList args( fnArgs );
   if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( u"TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')"_s.arg( args[0].rightJustified( 4, '0' ) )
+                          .arg( args[1].rightJustified( 2, '0' ) )
+                          .arg( args[2].rightJustified( 2, '0' ) )
+                          .arg( args[3].rightJustified( 2, '0' ) )
+                          .arg( args[4].rightJustified( 2, '0' ) )
+                          .arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == "make_date"_L1 )
   {
@@ -114,9 +118,7 @@ QString QgsHanaExpressionCompiler::castToText( const QString &value ) const
   return u"CAST((%1) AS NVARCHAR)"_s.arg( value );
 }
 
-QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
-  const QgsExpressionNode *node, QString &result
-)
+QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
   if ( staticRes != Fail )

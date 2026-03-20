@@ -182,8 +182,7 @@ void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
 }
 
 void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
-{
-}
+{}
 
 double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
 {

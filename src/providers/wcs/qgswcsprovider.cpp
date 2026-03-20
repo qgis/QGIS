@@ -580,7 +580,10 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle const &viewExtent, int 
     {
       // using qgsDoubleNear is too precise, example acceptable difference:
       // 179.9999999306699863 x 179.9999999306700431
-      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) || !qgsDoubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) || !qgsDoubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) || !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
+      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
       {
         // Just print a message so user is aware of a server side issue but don't left
         // the tile blank so we can deal with eventually misconfigured WCS server
@@ -711,8 +714,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle const &viewExtent, int p
     extent = extent.intersect( mBBOX );
   }
   // Bounding box in WCS format (Warning: does not work with scientific notation)
-  QString bbox = QString( "%1,%2,%3,%4" )
-                   .arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMinimum() ), qgsDoubleToString( extent.xMaximum() ), qgsDoubleToString( extent.yMaximum() ) );
+  QString bbox
+    = QString( "%1,%2,%3,%4" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMinimum() ), qgsDoubleToString( extent.xMaximum() ), qgsDoubleToString( extent.yMaximum() ) );
 
   QUrl url( mIgnoreGetCoverageUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
 
@@ -778,8 +781,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle const &viewExtent, int p
     // does not work with Mapserver 6.0.3
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
-    const QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" )
-                                 .arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
+    const QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" ).arg( qgsDoubleToString( extent.xMinimum() ), qgsDoubleToString( extent.yMaximum() ) );
     setQueryItem( url, u"GRIDORIGIN"_s, gridOrigin );
 
     // GridOffsets WCS 1.1:
@@ -916,8 +918,14 @@ int QgsWcsProvider::yBlockSize() const
   return mYBlockSize;
 }
 
-int QgsWcsProvider::xSize() const { return mWidth; }
-int QgsWcsProvider::ySize() const { return mHeight; }
+int QgsWcsProvider::xSize() const
+{
+  return mWidth;
+}
+int QgsWcsProvider::ySize() const
+{
+  return mHeight;
+}
 
 void QgsWcsProvider::clearCache() const
 {
@@ -973,11 +981,7 @@ bool QgsWcsProvider::parseServiceExceptionReportDom( const QByteArray &xml, cons
   if ( !contentSuccess )
   {
     errorTitle = tr( "Dom Exception" );
-    errorText = tr( "Could not get WCS Service Exception at %1 at line %2 column %3\n\nResponse was:\n\n%4" )
-                  .arg( errorMsg )
-                  .arg( errorLine )
-                  .arg( errorColumn )
-                  .arg( QString( xml ) );
+    errorText = tr( "Could not get WCS Service Exception at %1 at line %2 column %3\n\nResponse was:\n\n%4" ).arg( errorMsg ).arg( errorLine ).arg( errorColumn ).arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + errorText );
 
@@ -1184,7 +1188,10 @@ bool QgsWcsProvider::calculateExtent() const
     // extent check for rotated, TODO: verify
     if ( cacheCrs.isValid() && !mFixRotate )
     {
-      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) || !qgsDoubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) || !qgsDoubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) || !qgsDoubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
+      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 )
+           || !qgsDoubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
       {
         QgsDebugMsgLevel( u"cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent"_s, 2 );
         mCoverageExtent = cacheExtent;
@@ -1534,7 +1541,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, Qgis:
     }
 
     // Apply no data and user no data
-    if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) && ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) || ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
+    if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) && ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) )
+         || ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );
     }
@@ -1651,7 +1659,9 @@ QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, cons
 
 int QgsWcsDownloadHandler::sErrors = 0;
 
-QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
+QgsWcsDownloadHandler::QgsWcsDownloadHandler(
+  const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback
+)
   : mAuth( auth )
   , mEventLoop( new QEventLoop )
   , mCachedData( cachedData )
@@ -1766,15 +1776,18 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     // Content type examples: text/xml
     //                        application/vnd.ogc.se_xml;charset=UTF-8
     //                        application/xml
-    if ( contentType.startsWith( "text/"_L1, Qt::CaseInsensitive ) || contentType.compare( "application/xml"_L1, Qt::CaseInsensitive ) == 0 || contentType.startsWith( "application/vnd.ogc.se_xml"_L1, Qt::CaseInsensitive ) )
+    if ( contentType.startsWith( "text/"_L1, Qt::CaseInsensitive )
+         || contentType.compare( "application/xml"_L1, Qt::CaseInsensitive ) == 0
+         || contentType.startsWith( "application/vnd.ogc.se_xml"_L1, Qt::CaseInsensitive ) )
     {
       QString errorTitle, errorText;
       const QByteArray text = mCacheReply->readAll();
-      if ( ( contentType.compare( "text/xml"_L1, Qt::CaseInsensitive ) == 0 || contentType.compare( "application/xml"_L1, Qt::CaseInsensitive ) == 0 || contentType.startsWith( "application/vnd.ogc.se_xml"_L1, Qt::CaseInsensitive ) )
+      if ( ( contentType.compare( "text/xml"_L1, Qt::CaseInsensitive ) == 0
+             || contentType.compare( "application/xml"_L1, Qt::CaseInsensitive ) == 0
+             || contentType.startsWith( "application/vnd.ogc.se_xml"_L1, Qt::CaseInsensitive ) )
            && QgsWcsProvider::parseServiceExceptionReportDom( text, mWcsVersion, errorTitle, errorText ) )
       {
-        mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" )
-                                       .arg( errorTitle, errorText, mCacheReply->url().toString() ) ) );
+        mCachedError.append( SRVERR( tr( "Map request error:<br>Title: %1<br>Error: %2<br>URL: <a href='%3'>%3</a>)" ).arg( errorTitle, errorText, mCacheReply->url().toString() ) ) );
       }
       else
       {
@@ -1947,7 +1960,8 @@ QList<QgsDataItemProvider *> QgsWcsProviderMetadata::dataItemProviders() const
 }
 
 QgsWcsProviderMetadata::QgsWcsProviderMetadata()
-  : QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
+  : QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION )
+{}
 
 QIcon QgsWcsProviderMetadata::icon() const
 {

@@ -48,8 +48,7 @@ void TestQgsSimplifyMethod::initTestCase()
 }
 
 void TestQgsSimplifyMethod::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsSimplifyMethod::init()
 {

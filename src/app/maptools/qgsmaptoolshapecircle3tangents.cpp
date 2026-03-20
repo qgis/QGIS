@@ -62,12 +62,15 @@ QgsMapToolShapeAbstract *QgsMapToolShapeCircle3TangentsMetadata::factory( QgsMap
 }
 
 
-static QgsPoint getFirstPointOnParallels( const QgsPoint p1_line1, const QgsPoint p2_line1, const QgsPoint pos_line1, const QgsPoint p1_line2, const QgsPoint p2_line2, const QgsPoint pos_line2, const QgsPoint p1_line3, const QgsPoint p2_line3 )
+static QgsPoint getFirstPointOnParallels(
+  const QgsPoint p1_line1, const QgsPoint p2_line1, const QgsPoint pos_line1, const QgsPoint p1_line2, const QgsPoint p2_line2, const QgsPoint pos_line2, const QgsPoint p1_line3, const QgsPoint p2_line3
+)
 {
   QgsPoint intersection;
   bool isInter;
 
-  if ( ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line2, p2_line2, intersection, isInter, true ) ) || ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line3, p2_line3, intersection, isInter, true ) ) )
+  if ( ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line2, p2_line2, intersection, isInter, true ) )
+       || ( !QgsGeometryUtils::segmentIntersection( p1_line1, p2_line1, p1_line3, p2_line3, intersection, isInter, true ) ) )
     return pos_line1;
   if ( !QgsGeometryUtils::segmentIntersection( p1_line2, p2_line2, p1_line3, p2_line3, intersection, isInter, true ) )
     return pos_line2;

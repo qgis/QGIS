@@ -293,6 +293,7 @@
         <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDeselectActiveLayer.svg</file>
         <file>themes/default/mActionDigitizeShape.svg</file>
+        <file>themes/default/mActionDigitizeWithBezier.svg</file>
         <file>themes/default/mActionDigitizeWithCurve.svg</file>
         <file>themes/default/mActionDigitizeWithNURBS.svg</file>
         <file>themes/default/mActionDigitizeWithSegment.svg</file>

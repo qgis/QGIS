@@ -38,8 +38,7 @@ using namespace Qt::StringLiterals;
 
 QgsNetworkLoggerRootNode::QgsNetworkLoggerRootNode()
   : QgsDevToolsModelGroup( QString() )
-{
-}
+{}
 
 QVariant QgsNetworkLoggerRootNode::data( int ) const
 {
@@ -158,15 +157,11 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
 {
   QList<QAction *> res;
   QAction *openUrlAction = new QAction( QObject::tr( "Open URL" ), parent );
-  QObject::connect( openUrlAction, &QAction::triggered, openUrlAction, [this] {
-    QDesktopServices::openUrl( mUrl );
-  } );
+  QObject::connect( openUrlAction, &QAction::triggered, openUrlAction, [this] { QDesktopServices::openUrl( mUrl ); } );
   res << openUrlAction;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy URL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, openUrlAction, [this] {
-    QApplication::clipboard()->setText( mUrl.url() );
-  } );
+  QObject::connect( copyUrlAction, &QAction::triggered, openUrlAction, [this] { QApplication::clipboard()->setText( mUrl.url() ); } );
   res << copyUrlAction;
 
   QAction *copyAsCurlAction = new QAction( QObject::tr( "Copy As cURL" ), parent );
@@ -207,8 +202,7 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
     }
 
     QString curlData;
-    if ( mOperation == QNetworkAccessManager::PostOperation || mOperation == QNetworkAccessManager::PutOperation
-         || ( mOperation == QNetworkAccessManager::CustomOperation && !mData.isEmpty() ) )
+    if ( mOperation == QNetworkAccessManager::PostOperation || mOperation == QNetworkAccessManager::PutOperation || ( mOperation == QNetworkAccessManager::CustomOperation && !mData.isEmpty() ) )
       curlData = u"--data '%1' "_s.arg( QString( mData ) );
 
     QString curlCmd = u"curl '%1' %2 %3--compressed"_s.arg( mUrl.url(), curlHeaders, curlData );
@@ -369,12 +363,19 @@ QString QgsNetworkLoggerRequestGroup::cacheControlToString( QNetworkRequest::Cac
 QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const QgsNetworkRequestParameters &request )
   : QgsDevToolsModelGroup( QObject::tr( "Request" ) )
 {
-  addKeyValueNode( QObject::tr( "Operation" ), request.operation() == QNetworkAccessManager::Operation::CustomOperation ? request.request().attribute( QNetworkRequest::CustomVerbAttribute ).toString() : QgsNetworkLoggerRequestGroup::operationToString( request.operation() ) );
+  addKeyValueNode(
+    QObject::tr( "Operation" ),
+    request.operation() == QNetworkAccessManager::Operation::CustomOperation ? request.request().attribute( QNetworkRequest::CustomVerbAttribute ).toString()
+                                                                             : QgsNetworkLoggerRequestGroup::operationToString( request.operation() )
+  );
   addKeyValueNode( QObject::tr( "Thread" ), request.originatingThreadId() );
   addKeyValueNode( QObject::tr( "Initiator" ), request.initiatorClassName().isEmpty() ? QObject::tr( "unknown" ) : request.initiatorClassName() );
   if ( request.initiatorRequestId().isValid() )
     addKeyValueNode( QObject::tr( "ID" ), request.initiatorRequestId().toString() );
-  addKeyValueNode( QObject::tr( "Cache (control)" ), QgsNetworkLoggerRequestGroup::cacheControlToString( static_cast<QNetworkRequest::CacheLoadControl>( request.request().attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() ) ) );
+  addKeyValueNode(
+    QObject::tr( "Cache (control)" ),
+    QgsNetworkLoggerRequestGroup::cacheControlToString( static_cast<QNetworkRequest::CacheLoadControl>( request.request().attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() ) )
+  );
   addKeyValueNode( QObject::tr( "Cache (save)" ), request.request().attribute( QNetworkRequest::CacheSaveControlAttribute ).toBool() ? QObject::tr( "Can store result in cache" ) : QObject::tr( "Result cannot be stored in cache" ) );
 
   if ( !QUrlQuery( request.request().url() ).queryItems().isEmpty() )

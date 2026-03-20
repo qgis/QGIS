@@ -120,7 +120,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   stackedWidget->setCurrentIndex( 0 );
 
-  mSymbolUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mSymbolUnitWidget->setUnits(
+    { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+  );
 
   if ( mSymbol )
   {
@@ -585,7 +587,21 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << u"symbol_layer_count"_s << u"symbol_layer_index"_s << u"symbol_frame"_s );
+  expContext.setHighlightedVariables(
+    QStringList()
+    << QgsExpressionContext::EXPR_ORIGINAL_VALUE
+    << QgsExpressionContext::EXPR_SYMBOL_COLOR
+    << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT
+    << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+    << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
+    << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT
+    << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+    << QgsExpressionContext::EXPR_CLUSTER_COLOR
+    << QgsExpressionContext::EXPR_CLUSTER_SIZE
+    << u"symbol_layer_count"_s
+    << u"symbol_layer_index"_s
+    << u"symbol_frame"_s
+  );
 
   return expContext;
 }
@@ -649,14 +665,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   const QList<QAction *> actionList( mStyleItemsListWidget->advancedMenu()->actions() );
   for ( QAction *action : actionList )
   {
-    for ( QAction *actionsToRemove :
-          {
-            mClipFeaturesAction,
-            mStandardizeRingsAction,
-            mAnimationSettingsAction,
-            mExtentBufferAction,
-            mBufferSettingsAction
-          } )
+    for ( QAction *actionsToRemove : { mClipFeaturesAction, mStandardizeRingsAction, mAnimationSettingsAction, mExtentBufferAction, mBufferSettingsAction } )
     {
       if ( actionsToRemove->text() == action->text() )
       {

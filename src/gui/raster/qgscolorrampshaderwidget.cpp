@@ -308,12 +308,8 @@ void QgsColorRampShaderWidget::classify()
     return;
   }
 
-  std::unique_ptr<QgsColorRampShader> colorRampShader( new QgsColorRampShader(
-    mMin, mMax,
-    ramp.release(),
-    mColorInterpolationComboBox->currentData().value<Qgis::ShaderInterpolationMethod>(),
-    mClassificationModeComboBox->currentData().value<Qgis::ShaderClassificationMethod>()
-  )
+  std::unique_ptr<QgsColorRampShader> colorRampShader(
+    new QgsColorRampShader( mMin, mMax, ramp.release(), mColorInterpolationComboBox->currentData().value<Qgis::ShaderInterpolationMethod>(), mClassificationModeComboBox->currentData().value<Qgis::ShaderClassificationMethod>() )
   );
 
   // only for Quantile we need band and provider and extent
@@ -806,7 +802,10 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
     }
     else
     {
-      lbl = applyPrecision( mColormapTreeWidget->topLevelItem( row - 1 )->data( ValueColumn, Qt::ItemDataRole::DisplayRole ).toString() ) + " - " + applyPrecision( currentItem->data( ValueColumn, Qt::ItemDataRole::DisplayRole ).toString() ) + unit;
+      lbl = applyPrecision( mColormapTreeWidget->topLevelItem( row - 1 )->data( ValueColumn, Qt::ItemDataRole::DisplayRole ).toString() )
+            + " - "
+            + applyPrecision( currentItem->data( ValueColumn, Qt::ItemDataRole::DisplayRole ).toString() )
+            + unit;
     }
   }
   else

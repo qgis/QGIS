@@ -60,8 +60,7 @@ void TestQgsProjUtils::cleanupTestCase()
 
 struct ProjContextWrapper
 {
-    explicit ProjContextWrapper()
-    {}
+    explicit ProjContextWrapper() {}
 
     void operator()( int )
     {
@@ -116,13 +115,17 @@ void TestQgsProjUtils::searchPath()
 void TestQgsProjUtils::gridsUsed()
 {
   // ensure local user-writable path is present in Proj search paths
-  QList<QgsDatumTransform::GridDetails> grids = QgsProjUtils::gridsUsed( u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s );
+  QList<QgsDatumTransform::GridDetails> grids = QgsProjUtils::gridsUsed(
+    u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s
+  );
   QCOMPARE( grids.count(), 1 );
   QCOMPARE( grids.at( 0 ).shortName, u"GDA94_GDA2020_conformal_and_distortion.gsb"_s );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
   // using tif grid
-  grids = QgsProjUtils::gridsUsed( u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s );
+  grids = QgsProjUtils::gridsUsed(
+    u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s
+  );
   QCOMPARE( grids.count(), 1 );
   QCOMPARE( grids.at( 0 ).shortName, u"au_icsm_GDA94_GDA2020_conformal_and_distortion.tif"_s );
   QVERIFY( grids.at( 0 ).directDownload );
@@ -185,45 +188,48 @@ void TestQgsProjUtils::hasVerticalAxis()
   QVERIFY( QgsProjUtils::hasVerticalAxis( crs.get() ) );
 
   // projected 3d crs
-  crs.reset( proj_create( context, "PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
-                                   "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
-                                   "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
-                                   "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
-                                   "                LENGTHUNIT[\"metre\",1]]],\n"
-                                   "        PRIMEM[\"Greenwich\",0,\n"
-                                   "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
-                                   "        ID[\"EPSG\",4957]],\n"
-                                   "    CONVERSION[\"unnamed\",\n"
-                                   "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
-                                   "            ID[\"EPSG\",9802]],\n"
-                                   "        PARAMETER[\"Latitude of false origin\",41.75,\n"
-                                   "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
-                                   "            ID[\"EPSG\",8821]],\n"
-                                   "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
-                                   "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
-                                   "            ID[\"EPSG\",8822]],\n"
-                                   "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
-                                   "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
-                                   "            ID[\"EPSG\",8823]],\n"
-                                   "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
-                                   "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
-                                   "            ID[\"EPSG\",8824]],\n"
-                                   "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
-                                   "            LENGTHUNIT[\"foot\",0.3048],\n"
-                                   "            ID[\"EPSG\",8826]],\n"
-                                   "        PARAMETER[\"Northing at false origin\",0,\n"
-                                   "            LENGTHUNIT[\"foot\",0.3048],\n"
-                                   "            ID[\"EPSG\",8827]]],\n"
-                                   "    CS[Cartesian,3],\n"
-                                   "        AXIS[\"easting\",east,\n"
-                                   "            ORDER[1],\n"
-                                   "            LENGTHUNIT[\"foot\",0.3048]],\n"
-                                   "        AXIS[\"northing\",north,\n"
-                                   "            ORDER[2],\n"
-                                   "            LENGTHUNIT[\"foot\",0.3048]],\n"
-                                   "        AXIS[\"ellipsoidal height (h)\",up,\n"
-                                   "            ORDER[3],\n"
-                                   "            LENGTHUNIT[\"foot\",0.3048]]]" ) );
+  crs.reset( proj_create(
+    context,
+    "PROJCRS[\"NAD83(HARN) / Oregon GIC Lambert (ft)\",\n"
+    "    BASEGEOGCRS[\"NAD83(HARN)\",\n"
+    "        DATUM[\"NAD83 (High Accuracy Reference Network)\",\n"
+    "            ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n"
+    "                LENGTHUNIT[\"metre\",1]]],\n"
+    "        PRIMEM[\"Greenwich\",0,\n"
+    "            ANGLEUNIT[\"degree\",0.0174532925199433]],\n"
+    "        ID[\"EPSG\",4957]],\n"
+    "    CONVERSION[\"unnamed\",\n"
+    "        METHOD[\"Lambert Conic Conformal (2SP)\",\n"
+    "            ID[\"EPSG\",9802]],\n"
+    "        PARAMETER[\"Latitude of false origin\",41.75,\n"
+    "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+    "            ID[\"EPSG\",8821]],\n"
+    "        PARAMETER[\"Longitude of false origin\",-120.5,\n"
+    "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+    "            ID[\"EPSG\",8822]],\n"
+    "        PARAMETER[\"Latitude of 1st standard parallel\",43,\n"
+    "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+    "            ID[\"EPSG\",8823]],\n"
+    "        PARAMETER[\"Latitude of 2nd standard parallel\",45.5,\n"
+    "            ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+    "            ID[\"EPSG\",8824]],\n"
+    "        PARAMETER[\"Easting at false origin\",1312335.958,\n"
+    "            LENGTHUNIT[\"foot\",0.3048],\n"
+    "            ID[\"EPSG\",8826]],\n"
+    "        PARAMETER[\"Northing at false origin\",0,\n"
+    "            LENGTHUNIT[\"foot\",0.3048],\n"
+    "            ID[\"EPSG\",8827]]],\n"
+    "    CS[Cartesian,3],\n"
+    "        AXIS[\"easting\",east,\n"
+    "            ORDER[1],\n"
+    "            LENGTHUNIT[\"foot\",0.3048]],\n"
+    "        AXIS[\"northing\",north,\n"
+    "            ORDER[2],\n"
+    "            LENGTHUNIT[\"foot\",0.3048]],\n"
+    "        AXIS[\"ellipsoidal height (h)\",up,\n"
+    "            ORDER[3],\n"
+    "            LENGTHUNIT[\"foot\",0.3048]]]"
+  ) );
   QVERIFY( QgsProjUtils::hasVerticalAxis( crs.get() ) );
 }
 

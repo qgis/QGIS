@@ -82,9 +82,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( chkShowCameraRotationCenter, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setShowCameraRotationCenter( enabled ); } );
   connect( chkShowLightSourceOrigins, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setShowLightSourceOrigins( enabled ); } );
   connect( chkStopUpdates, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setStopUpdates( enabled ); } );
-  connect( chkStopOriginShifts, &QCheckBox::toggled, this, [this]( const bool enabled ) {
-    m3DMapCanvas->scene()->setSceneOriginShiftEnabled( !enabled );
-  } );
+  connect( chkStopOriginShifts, &QCheckBox::toggled, this, [this]( const bool enabled ) { m3DMapCanvas->scene()->setSceneOriginShiftEnabled( !enabled ); } );
   connect( chkDebugOverlay, &QCheckBox::toggled, this, [this]( const bool enabled ) { mMap->setIsDebugOverlayEnabled( enabled ); } );
 
   // set up the shadow map block
@@ -120,9 +118,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mNearPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     m3DMapCanvas->cameraController()->camera()->setNearPlane( static_cast<float>( value ) );
   } );
-  connect( mFarPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
-    m3DMapCanvas->cameraController()->camera()->setFarPlane( static_cast<float>( value ) );
-  } );
+  connect( mFarPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) { m3DMapCanvas->cameraController()->camera()->setFarPlane( static_cast<float>( value ) ); } );
   connect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QVector3D newPosition = m3DMapCanvas->cameraController()->camera()->position();
     newPosition.setX( static_cast<float>( value ) );
@@ -141,32 +137,17 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mLookingX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setX( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
   connect( mLookingY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setY( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
   connect( mLookingZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
     QgsVector3D newLookingAt = m3DMapCanvas->cameraController()->lookingAtPoint();
     newLookingAt.setZ( value );
-    m3DMapCanvas->cameraController()->setLookingAtPoint(
-      newLookingAt,
-      m3DMapCanvas->cameraController()->distance(),
-      m3DMapCanvas->cameraController()->pitch(),
-      m3DMapCanvas->cameraController()->yaw()
-    );
+    m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, m3DMapCanvas->cameraController()->distance(), m3DMapCanvas->cameraController()->pitch(), m3DMapCanvas->cameraController()->yaw() );
   } );
 }
 

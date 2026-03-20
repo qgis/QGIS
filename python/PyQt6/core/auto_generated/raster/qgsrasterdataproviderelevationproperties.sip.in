@@ -22,12 +22,10 @@ Handles elevation related properties for a raster data provider.
 #include "qgsrasterdataproviderelevationproperties.h"
 %End
   public:
-
     QgsRasterDataProviderElevationProperties();
 %Docstring
 Constructor for QgsRasterDataProviderElevationProperties.
 %End
-
 };
 
 /************************************************************************

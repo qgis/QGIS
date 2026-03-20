@@ -64,6 +64,7 @@
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QMesh>
+#include <Qt3DRender/QParameter>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
@@ -72,8 +73,7 @@
 
 using namespace Qt::StringLiterals;
 
-template<typename T>
-QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )
+template<typename T> QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )
 {
   const uint bytesOffset = attribute->byteOffset();
   const uint bytesStride = attribute->byteStride();
@@ -100,8 +100,7 @@ QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &
   return result;
 }
 
-template<typename T>
-QVector<uint> _getIndexDataImplementation( const QByteArray &data )
+template<typename T> QVector<uint> _getIndexDataImplementation( const QByteArray &data )
 {
   QVector<uint> result;
   const char *pData = data.constData();
@@ -160,8 +159,7 @@ Qt3DCore::QAttribute *findAttribute( Qt3DCore::QGeometry *geometry, const QStrin
   return nullptr;
 }
 
-template<typename Component>
-Component *findTypedComponent( Qt3DCore::QEntity *entity )
+template<typename Component> Component *findTypedComponent( Qt3DCore::QEntity *entity )
 {
   if ( !entity )
     return nullptr;
@@ -491,6 +489,31 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
 
 QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix )
 {
+  // built-in Qt3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // They are rotated to have their Z axis goes "up", like the rest of the scene
+  // Retrieve the rotation matrix
+  const QMatrix4x4 instanceMaterialTransform( 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 );
+
+  QVector3D symbolScale;
+  QVector4D symbolRotation;
+  const QList<Qt3DRender::QMaterial *> materials = entity->findChildren<Qt3DRender::QMaterial *>();
+  for ( Qt3DRender::QMaterial *material : materials )
+  {
+    for ( const Qt3DRender::QParameter *parameter : material->parameters() )
+    {
+      if ( parameter->name() == "symbolScale"_L1 )
+      {
+        symbolScale = parameter->value().value<QVector3D>();
+      }
+      else if ( parameter->name() == "symbolRotation"_L1 )
+      {
+        symbolRotation = parameter->value().value<QVector4D>();
+      }
+    }
+  }
+
+  QQuaternion rotationQuat( symbolRotation.w(), symbolRotation.x(), symbolRotation.y(), symbolRotation.z() );
+
   QVector<Qgs3DExportObject *> objects;
   const QList<Qt3DCore::QGeometry *> geometriesList = entity->findChildren<Qt3DCore::QGeometry *>();
   for ( Qt3DCore::QGeometry *geometry : geometriesList )
@@ -503,6 +526,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       continue;
     }
 
+    Qt3DCore::QAttribute *instanceScaleAttribute = findAttribute( geometry, u"instanceScale"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *instanceRotationAttribute = findAttribute( geometry, u"instanceRotation"_s, Qt3DCore::QAttribute::VertexAttribute );
+
     const QByteArray vertexBytes = positionAttribute->buffer()->data();
     const QByteArray indexBytes = indexAttribute->buffer()->data();
     if ( vertexBytes.isNull() || indexBytes.isNull() )
@@ -514,26 +540,41 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"pos"_s, Qt3DCore::QAttribute::VertexAttribute );
+    const QVector<QVector3D> instanceScaleData = instanceScaleAttribute ? getAttributeData<QVector3D>( instanceScaleAttribute, instanceScaleAttribute->buffer()->data() ) : QVector<QVector3D>();
+    const QVector<QVector4D> instanceRotationData = instanceRotationAttribute ? getAttributeData<QVector4D>( instanceRotationAttribute, instanceRotationAttribute->buffer()->data() )
+                                                                              : QVector<QVector4D>();
+
+    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"instanceTranslation"_s, Qt3DCore::QAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
     {
-      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceTranslation attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
     if ( instancePositionBytes.isNull() )
     {
-      QgsDebugError( QString( "Geometry for '%1' has instanceData attribute with empty data!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Geometry for '%1' has instanceTranslation attribute with empty data!" ).arg( objectNamePrefix ) );
       continue;
     }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
 
-    for ( int i = 0; i < instancePosition.size(); i += 3 )
+    int instanceIndex = 0;
+    for ( int i = 0; i < instancePosition.size(); i += 3, instanceIndex++ )
     {
       Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"instance_point"_s ) );
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
+
+      QQuaternion instanceRotation = rotationQuat;
+      if ( instanceRotationAttribute )
+      {
+        const QVector4D instanceRotationVec = instanceRotationData[instanceIndex];
+        instanceRotation = QQuaternion( instanceRotationVec.w(), instanceRotationVec.x(), instanceRotationVec.y(), instanceRotationVec.z() );
+      }
+      instanceTransform.rotate( instanceRotation );
+      instanceTransform.scale( instanceScaleAttribute ? instanceScaleData[instanceIndex] : symbolScale );
+      instanceTransform *= instanceMaterialTransform;
       object->setupTriangle( positionData, indexData, instanceTransform );
 
       object->setSmoothEdges( mSmoothEdges );
@@ -708,16 +749,13 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
       const uint triangleIdx = i / 3;
 
       // search for valid triangle index interval
-      while ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-              && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
+      while ( intervalIdx < triangleIndexStartingIndiceToKeepSize && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         intervalIdx++;
       }
 
       // keep only triangles within the triangle index interval
-      if ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-           && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
-           && triangleIdx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
+      if ( intervalIdx < triangleIndexStartingIndiceToKeepSize && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].first && triangleIdx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         indexData.push_back( indexDataTmp[static_cast<int>( i )] );
         indexData.push_back( indexDataTmp[static_cast<int>( i + 1 )] );

@@ -26,6 +26,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgsgdalutils.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QFileInfo>
 #include <QString>
@@ -51,9 +52,7 @@ QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString 
   init();
 }
 
-QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name,
-                        const QString &filePath, const QString &path,
-                        const QString &providerKey )
+QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey )
   : QgsDataCollectionItem( parent, name, path, providerKey )
   , mFilePath( filePath )
 {
@@ -69,10 +68,7 @@ void QgsZipItem::init()
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
   static std::once_flag initialized;
-  std::call_once( initialized, []
-  {
-    sProviderNames << u"files"_s;
-  } );
+  std::call_once( initialized, [] { sProviderNames << u"files"_s; } );
 }
 
 bool QgsZipItem::hasDragEnabled() const
@@ -98,8 +94,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
 {
   QVector<QgsDataItem *> children;
   QString tmpPath;
-  const QgsSettings settings;
-  const QString scanZipSetting = settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString();
+  const QString scanZipSetting = QgsSettingsRegistryCore::settingsScanZipInBrowser->value();
 
   mZipFileList.clear();
 
@@ -168,8 +163,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &path,
 
 QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path )
 {
-  const QgsSettings settings;
-  const QString scanZipSetting = settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString();
+  const QString scanZipSetting = QgsSettingsRegistryCore::settingsScanZipInBrowser->value();
   QStringList zipFileList;
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( filePath );
   bool populated = false;
@@ -191,8 +185,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   // could also accept all files smaller than a certain size and add options for file count and/or size
 
   // first get list of files inside .zip or .tar files
-  if ( path.endsWith( ".zip"_L1, Qt::CaseInsensitive ) ||
-       path.endsWith( ".tar"_L1, Qt::CaseInsensitive ) )
+  if ( path.endsWith( ".zip"_L1, Qt::CaseInsensitive ) || path.endsWith( ".tar"_L1, Qt::CaseInsensitive ) )
   {
     zipFileList = zipItem->getZipFileList();
   }
@@ -220,12 +213,11 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
 
 QStringList QgsZipItem::getZipFileList()
 {
-  if ( ! mZipFileList.isEmpty() )
+  if ( !mZipFileList.isEmpty() )
     return mZipFileList;
 
   QString tmpPath;
-  const QgsSettings settings;
-  const QString scanZipSetting = settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString();
+  const QString scanZipSetting = QgsSettingsRegistryCore::settingsScanZipInBrowser->value();
 
   QgsDebugMsgLevel( u"mFilePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4"_s.arg( mFilePath, name(), scanZipSetting, mVsiPrefix ), 3 );
 
@@ -257,5 +249,3 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
-
-

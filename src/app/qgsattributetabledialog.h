@@ -42,6 +42,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
+    //! Settings entry autosize columns by default when opening attribute table
+    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable SIP_SKIP;
+
+    //! Settings entry whether attribute tables are docked by default
+    static const QgsSettingsEntryBool *settingsAttributeTableDefaultDocked SIP_SKIP;
+
     /**
      * Constructor
      * \param layer layer pointer
@@ -49,7 +55,14 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param parent parent object
      * \param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window, bool *initiallyDocked = nullptr, const QString &filterExpression = QString() );
+    QgsAttributeTableDialog(
+      QgsVectorLayer *layer,
+      QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll,
+      QWidget *parent = nullptr,
+      Qt::WindowFlags flags = Qt::Window,
+      bool *initiallyDocked = nullptr,
+      const QString &filterExpression = QString()
+    );
     ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
@@ -241,6 +254,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QAction *mActionDockUndock = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+
+    // For testability
+    void addAttribute( const QgsField &field );
+    void removeAttributes( const QList<int> &attributes );
 
     friend class TestQgsAttributeTable;
 };

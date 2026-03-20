@@ -39,7 +39,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.equals( g2 );
+    return g1.isExactlyEqual( g2 );
 }
 
 namespace QTest
@@ -152,11 +152,15 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
-                                              "(10 0 0, 10 10 0),"
-                                              "(20 0 10, 20 10 10),"
-                                              "(30 0 0, 30 10 10)"
-                                              ")" ) );
+  topoFeat.setGeometry(
+    QgsGeometry::fromWkt(
+      "MultiLineStringZ ("
+      "(10 0 0, 10 10 0),"
+      "(20 0 10, 20 10 10),"
+      "(30 0 0, 30 10 10)"
+      ")"
+    )
+  );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );

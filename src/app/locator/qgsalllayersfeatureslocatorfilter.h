@@ -73,7 +73,10 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
       public:
         ResultData &operator=( const ResultData & ) = default;
         ResultData( QgsFeatureId id, const QString &layerId, bool layerIsSpatial )
-          : mId( id ), mLayerId( layerId ), mLayerIsSpatial( layerIsSpatial ) {}
+          : mId( id )
+          , mLayerId( layerId )
+          , mLayerIsSpatial( layerIsSpatial )
+        {}
 
         QgsFeatureId id() const { return mId; }
         QString layerId() const { return mLayerId; }

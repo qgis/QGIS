@@ -15,6 +15,8 @@
 
 #include "qgsdemterraintileloader_p.h"
 
+#include <limits>
+
 #include "qgs3dmapsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
@@ -126,7 +128,12 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   entity->addComponent( transform );
 
-  mNode->setExactBox3D( QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(), extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() ) );
+  // clang-format off
+  mNode->setExactBox3D(
+    QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(),
+             extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() )
+  );
+  // clang-format on
   mNode->updateParentBoundingBoxesRecursively();
 
   entity->setParent( parent );
@@ -162,8 +169,7 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mResolution( resolution )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
   , mTransformContext( transformContext )
-{
-}
+{}
 
 QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
 {
@@ -299,19 +305,16 @@ void QgsDemHeightMapGenerator::waitForFinished()
 void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangle &rect )
 {
   QMutexLocker locker( &mLazyLoadDtmCoarseDataMutex );
-  if ( mDtmCoarseData.isEmpty() )
+  if ( !mDtmCoarseRasterBlock )
   {
-    std::unique_ptr<QgsRasterBlock> block( mClonedProvider->block( 1, rect, res, res ) );
-    block->convert( Qgis::DataType::Float32 );
-    mDtmCoarseData = block->data();
-    mDtmCoarseData.detach(); // make a deep copy
+    mDtmCoarseRasterBlock.reset( mClonedProvider->block( 1, rect, res, res ) );
   }
 }
 
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   if ( !mClonedProvider )
-    return 0; // TODO: calculate heights for online DTM
+    return std::numeric_limits<float>::quiet_NaN(); // TODO: calculate heights for online DTM
 
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
@@ -322,8 +325,10 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   cellX = std::clamp( cellX, 0, res - 1 );
   cellY = std::clamp( cellY, 0, res - 1 );
 
-  const float *data = ( const float * ) mDtmCoarseData.constData();
-  return data[cellX + cellY * res];
+  bool isNoData = false;
+  const double val = mDtmCoarseRasterBlock->valueAndNoData( cellY, cellX, isNoData );
+
+  return isNoData ? std::numeric_limits<float>::quiet_NaN() : static_cast<float>( val );
 }
 
 void QgsDemHeightMapGenerator::onFutureFinished()

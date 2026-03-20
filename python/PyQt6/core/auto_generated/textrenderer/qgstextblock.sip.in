@@ -26,7 +26,6 @@ Represents a block of text consisting of one or more
 #include "qgstextblock.h"
 %End
   public:
-
     QgsTextBlock();
 %Docstring
 Constructor for an empty text block.

@@ -33,9 +33,10 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
   : QComboBox( parent )
 {
   QList<QPair<QgsAuthCertUtils::CertTrustPolicy, QString>> policies;
-  policies << qMakePair( QgsAuthCertUtils::DefaultTrust, defaultTrustText( defaultpolicy ) )
-           << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-           << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+  policies
+    << qMakePair( QgsAuthCertUtils::DefaultTrust, defaultTrustText( defaultpolicy ) )
+    << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+    << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
@@ -117,6 +118,5 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
       defaultpolicy = QgsAuthCertUtils::Trusted;
     }
   }
-  return u"%1 (%2)"_s
-    .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
+  return u"%1 (%2)"_s.arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

@@ -81,12 +81,10 @@ void TestQgsServerQueryStringParameter::cleanupTestCase()
 }
 
 void TestQgsServerQueryStringParameter::init()
-{
-}
+{}
 
 void TestQgsServerQueryStringParameter::cleanup()
-{
-}
+{}
 
 void TestQgsServerQueryStringParameter::testArguments()
 {

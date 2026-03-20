@@ -20,7 +20,6 @@ grid or map overview.
 #include "qgslayoutitemmapitem.h"
 %End
   public:
-
     enum StackingPosition /BaseType=IntEnum/
     {
       StackBelowMap,
@@ -208,8 +207,6 @@ Returns the internal map layer used by this item, if available.
 
 
 
-
-
 };
 
 class QgsLayoutItemMapItemStack
@@ -226,7 +223,6 @@ drawn and the order they are drawn in.
 #include "qgslayoutitemmapitem.h"
 %End
   public:
-
     QgsLayoutItemMapItemStack( QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapItemStack, attached to the specified
@@ -301,7 +297,6 @@ stack.
 %End
 
   protected:
-
     void addItem( QgsLayoutItemMapItem *item /Transfer/ );
 %Docstring
 Adds a new map item to the stack and takes ownership of the item. The
@@ -371,14 +366,12 @@ stack.
   protected:
 
 
-
     void removeItems();
 %Docstring
 Clears the item stack and deletes all :py:class:`QgsLayoutItemMapItems`
 contained by the stack
 %End
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

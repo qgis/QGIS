@@ -33,12 +33,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
-                              const QString &path,
-                              const QString &connectionUri,
-                              const QString &providerKey,
-                              const QString &schema,
-                              const QString &tableName )
+QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema, const QString &tableName )
   : QgsDataItem( Qgis::BrowserItemType::Fields, parent, tr( "Fields" ), path, providerKey )
   , mSchema( schema )
   , mTableName( tableName )
@@ -65,9 +60,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
 }
 
 QgsFieldsItem::~QgsFieldsItem()
-{
-
-}
+{}
 
 QVector<QgsDataItem *> QgsFieldsItem::createChildren()
 {
@@ -81,8 +74,8 @@ QVector<QgsDataItem *> QgsFieldsItem::createChildren()
       if ( conn )
       {
         int i = 0;
-        const QgsFields constFields { conn->fields( mSchema, mTableName ) };
-        for ( const auto &f : constFields )
+        mFields = conn->fields( mSchema, mTableName );
+        for ( const QgsField &f : mFields )
         {
           QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
           fieldItem->setSortKey( i++ );
@@ -140,6 +133,11 @@ QgsVectorLayer *QgsFieldsItem::layer()
   return nullptr;
 }
 
+QgsFields QgsFieldsItem::fields() const
+{
+  return mFields;
+}
+
 QgsAbstractDatabaseProviderConnection::TableProperty *QgsFieldsItem::tableProperty() const
 {
   return mTableProperty.get();
@@ -172,16 +170,13 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
 }
 
 QgsFieldItem::~QgsFieldItem()
-{
-}
+{}
 
 QIcon QgsFieldItem::icon()
 {
   // Check if this is a geometry column and show the right icon
   QgsFieldsItem *parentFields { static_cast<QgsFieldsItem *>( parent() ) };
-  if ( parentFields && parentFields->tableProperty() &&
-       parentFields->tableProperty()->geometryColumn() == mName &&
-       !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
+  if ( parentFields && parentFields->tableProperty() && parentFields->tableProperty()->geometryColumn() == mName && !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
   {
     if ( mField.typeName() == "raster"_L1 )
     {
@@ -224,4 +219,3 @@ bool QgsFieldItem::equal( const QgsDataItem *other )
 
   return ( mPath == o->mPath && mName == o->mName && mField == o->mField && mField.comment() == o->mField.comment() );
 }
-

@@ -22,10 +22,9 @@
 #include "moc_qgscopyfiletask.cpp"
 
 QgsCopyFileTask::QgsCopyFileTask( const QString &source, const QString &destination )
-  : mSource( source ),
-    mDestination( destination )
-{
-}
+  : mSource( source )
+  , mDestination( destination )
+{}
 
 bool QgsCopyFileTask::run()
 {

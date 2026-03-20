@@ -38,14 +38,13 @@ class QDomElement;
 class CORE_EXPORT QgsColorRampLegendNodeSettings
 {
   public:
-
     /**
      * Ramp directions
      */
     enum Direction
     {
       MinimumToMaximum, //!< Minimum value on bottom, maximum value on top
-      MaximumToMinimum,//!< Maximum value on bottom, minimum value on top
+      MaximumToMinimum, //!< Maximum value on bottom, minimum value on top
     };
 
     QgsColorRampLegendNodeSettings();

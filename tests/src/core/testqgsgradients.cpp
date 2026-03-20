@@ -48,7 +48,8 @@ class TestQgsGradients : public QgsTest
 
   public:
     TestQgsGradients()
-      : QgsTest( u"Gradient Renderer Tests"_s ) {}
+      : QgsTest( u"Gradient Renderer Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

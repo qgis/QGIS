@@ -33,9 +33,7 @@
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
-
   public:
-
     //! \brief Default cumulative cut lower limit
     static constexpr double CUMULATIVE_CUT_LOWER = 0.02;
 
@@ -47,7 +45,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
 
     QgsRasterMinMaxOrigin();
 
-    bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
+    bool operator==( const QgsRasterMinMaxOrigin &other ) const;
 
     //////// Getter methods /////////////////////
 
@@ -118,7 +116,6 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     static Qgis::RasterRangeAccuracy statAccuracyFromString( const QString &accuracy );
 
   private:
-
     Qgis::RasterRangeLimit mLimits = Qgis::RasterRangeLimit::NotSet;
     Qgis::RasterRangeExtent mExtent = Qgis::RasterRangeExtent::WholeRaster;
     Qgis::RasterRangeAccuracy mAccuracy = Qgis::RasterRangeAccuracy::Estimated;

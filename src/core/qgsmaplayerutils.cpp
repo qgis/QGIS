@@ -72,8 +72,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
     // rectangle a bit. If they are all at zero, do something a bit
     // more crude.
 
-    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
-         fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 && fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
     {
       fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
     }
@@ -104,7 +103,7 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
   try
   {
     QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->providerType() );
-    if ( ! providerMetadata )
+    if ( !providerMetadata )
     {
       return nullptr;
     }
@@ -131,6 +130,25 @@ bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const Q
   return parts.value( u"path"_s ).toString() == path;
 }
 
+bool QgsMapLayerUtils::layerRefersToUri( const QgsMapLayer *layer, const QString &uri, Qgis::SourceHierarchyLevel level )
+{
+  if ( !layer )
+    return false;
+
+  const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( layer->providerType() );
+  if ( !metadata )
+  {
+    throw QgsNotSupportedException( u"Could not retrieve metadata for %1 provider"_s.arg( layer->providerType() ) );
+  }
+
+  if ( !metadata->capabilities().testFlag( QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame ) )
+  {
+    throw QgsNotSupportedException( u"%1 provider does not support UrisReferToSame capability"_s.arg( layer->providerType() ) );
+  }
+
+  return metadata->urisReferToSame( layer->source(), uri, level );
+}
+
 bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath )
 {
   if ( !layer || newPath.isEmpty() )
@@ -149,8 +167,7 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
 QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<Qgis::LayerType> &order )
 {
   QList< QgsMapLayer * > res = layers;
-  std::sort( res.begin(), res.end(), [&order]( const QgsMapLayer * a, const QgsMapLayer * b ) -> bool
-  {
+  std::sort( res.begin(), res.end(), [&order]( const QgsMapLayer *a, const QgsMapLayer *b ) -> bool {
     for ( Qgis::LayerType type : order )
     {
       if ( a->type() == type && b->type() != type )

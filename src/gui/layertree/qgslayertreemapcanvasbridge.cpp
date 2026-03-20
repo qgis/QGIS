@@ -23,6 +23,8 @@
 #include "qgsmapoverviewcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>
@@ -120,14 +122,11 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     {
       case QgsGui::UseCrsOfFirstLayerAdded:
       {
-        const bool planimetric = QgsSettings().value( u"measure/planimetric"_s, true, QgsSettings::Core ).toBool();
+        const bool planimetric = QgsSettingsRegistryCore::settingsMeasurePlanimetric->value();
         // Only adjust ellipsoid to CRS if it's not set to planimetric
         QgsProject::instance()->setCrs( mFirstCRS.horizontalCrs(), !planimetric );
         const QgsCoordinateReferenceSystem vertCrs = mFirstCRS.verticalCrs();
-        if ( vertCrs.isValid() )
-        {
-          QgsProject::instance()->setVerticalCrs( vertCrs );
-        }
+        QgsProject::instance()->setVerticalCrs( vertCrs );
         break;
       }
 

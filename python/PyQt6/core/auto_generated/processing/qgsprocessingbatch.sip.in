@@ -21,7 +21,6 @@ Processing feedback subclass for use when batch processing.
 #include "qgsprocessingbatch.h"
 %End
   public:
-
     QgsProcessingBatchFeedback( int tasks, QgsProcessingFeedback *feedback );
 %Docstring
 Constructor for QgsProcessingBatchFeedback, for a process with the
@@ -39,8 +38,6 @@ errors.
 %End
 
 };
-
-
 
 
 /************************************************************************

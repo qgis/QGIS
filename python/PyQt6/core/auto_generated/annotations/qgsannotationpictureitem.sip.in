@@ -21,7 +21,6 @@ An annotation item which renders a picture.
 #include "qgsannotationpictureitem.h"
 %End
   public:
-
     QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds );
 %Docstring
 Constructor for QgsAnnotationPictureItem, rendering the specified image
@@ -79,7 +78,6 @@ Sets whether the aspect ratio of the picture will be retained.
 %End
 
   protected:
-
     virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback );
 
 

@@ -27,6 +27,8 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsprojectviewsettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrygui.h"
 
 #include <QMouseEvent>
 #include <QPaintEvent>
@@ -82,7 +84,12 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 {
   QPainter paint( this );
   QRect rect = pe->rect();
-  QRect sourceRect( std::ceil( pe->rect().left() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().top() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().width() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().height() * mPixmap.devicePixelRatio() ) );
+  QRect sourceRect(
+    std::ceil( pe->rect().left() * mPixmap.devicePixelRatio() ),
+    std::ceil( pe->rect().top() * mPixmap.devicePixelRatio() ),
+    std::ceil( pe->rect().width() * mPixmap.devicePixelRatio() ),
+    std::ceil( pe->rect().height() * mPixmap.devicePixelRatio() )
+  );
   if ( !mPixmap.isNull() )
   {
     paint.drawPixmap( rect.topLeft(), mPixmap, sourceRect );
@@ -162,7 +169,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent *e )
 void QgsMapOverviewCanvas::wheelEvent( QWheelEvent *e )
 {
   QgsSettings settings;
-  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
+  bool reverseZoom = QgsSettingsRegistryGui::settingsReverseWheelZoom->value();
   bool zoomIn = reverseZoom ? e->angleDelta().y() < 0 : e->angleDelta().y() > 0;
   double zoomFactor = zoomIn ? 1. / mMapCanvas->zoomInFactor() : mMapCanvas->zoomOutFactor();
 
@@ -301,8 +308,7 @@ void QgsMapOverviewCanvas::updateFullExtent()
       rect = ct.transformBoundingBox( extent );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
 
   if ( rect.isNull() )

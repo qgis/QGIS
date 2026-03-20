@@ -1606,7 +1606,12 @@ development/debugging tools dock.
 .. versionadded:: 3.14
 %End
 
-    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
+    virtual void showApiDocumentation(
+      Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis,
+      Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel,
+      const QString &object = QString(),
+      const QString &module = QString()
+    ) = 0;
 %Docstring
 Show a page of the API documentation
 

@@ -34,7 +34,8 @@ using namespace Qt::StringLiterals;
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
     explicit FilterExcludePoint( const QgsPointXY &p )
-      : mPoint( p ) {}
+      : mPoint( p )
+    {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
@@ -88,10 +89,7 @@ class TestQgsSnappingUtils : public QObject
       QgsProject::instance()->addMapLayer( mVL );
     }
 
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void cleanupTestCase() { QgsApplication::exitQgis(); }
 
     void testSnapModeCurrent()
     {
@@ -425,7 +423,8 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( Qgis::SnappingMode::AdvancedConfiguration );
-      const QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::MiddleOfSegment | Qgis::SnappingType::Centroid ), 0.2, Qgis::MapToolUnit::Project, 0.0, 0.0 );
+      const QgsSnappingConfig::IndividualLayerSettings
+        layerSettings( true, static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::MiddleOfSegment | Qgis::SnappingType::Centroid ), 0.2, Qgis::MapToolUnit::Project, 0.0, 0.0 );
       snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
       u.setConfig( snappingConfig );
 

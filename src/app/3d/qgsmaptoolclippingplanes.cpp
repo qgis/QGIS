@@ -36,7 +36,8 @@
 using namespace Qt::StringLiterals;
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
-  : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )
+  : QgsMapTool( canvas )
+  , m3DCanvasWidget( mapCanvas )
 {
   mRubberBandPolygon.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
   mRubberBandLines.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
@@ -56,11 +57,7 @@ void QgsMapToolClippingPlanes::activate()
   mRubberBandPoints->show();
   mRubberBandLines->show();
   mRubberBandPolygon->show();
-  mCt = std::make_unique<QgsCoordinateTransform>(
-    mCanvas->mapSettings().destinationCrs(),
-    m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(),
-    mCanvas->mapSettings().transformContext()
-  );
+  mCt = std::make_unique<QgsCoordinateTransform>( mCanvas->mapSettings().destinationCrs(), m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(), mCanvas->mapSettings().transformContext() );
 }
 
 void QgsMapToolClippingPlanes::keyReleaseEvent( QKeyEvent *e )

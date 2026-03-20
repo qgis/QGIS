@@ -340,31 +340,20 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     struct OracleException
     {
         OracleException( QString msg, const QSqlQuery &q )
-          : mWhat( tr( "Oracle error: %1\nSQL: %2\nError: %3" )
-                     .arg( msg )
-                     .arg( q.lastError().text() )
-                     .arg( q.lastQuery() )
-            )
+          : mWhat( tr( "Oracle error: %1\nSQL: %2\nError: %3" ).arg( msg ).arg( q.lastError().text() ).arg( q.lastQuery() ) )
         {}
 
         OracleException( QString msg, const QSqlDatabase &q )
-          : mWhat( tr( "Oracle error: %1\nError: %2" )
-                     .arg( msg )
-                     .arg( q.lastError().text() )
-            )
+          : mWhat( tr( "Oracle error: %1\nError: %2" ).arg( msg ).arg( q.lastError().text() ) )
         {}
 
         OracleException( const OracleException &e )
           : mWhat( e.errorMessage() )
         {}
 
-        ~OracleException()
-          = default;
+        ~OracleException() = default;
 
-        QString errorMessage() const
-        {
-          return mWhat;
-        }
+        QString errorMessage() const { return mWhat; }
 
       private:
         QString mWhat;
@@ -404,9 +393,13 @@ class QgsOracleProvider final : public QgsVectorDataProvider
 class QgsOracleUtils
 {
   public:
-    static QString whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &params );
+    static QString whereClause(
+      QgsFeatureId featureId, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &params
+    );
 
-    static QString whereClause( QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &params );
+    static QString whereClause(
+      QgsFeatureIds featureIds, const QgsFields &fields, QgsOraclePrimaryKeyType primaryKeyType, const QList<int> &primaryKeyAttrs, std::shared_ptr<QgsOracleSharedData> sharedData, QVariantList &params
+    );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 };
@@ -442,16 +435,29 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
 
   public:
     QgsOracleProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    bool saveStyle(
+      const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
+    ) override;
     void cleanupProvider() override;
     void initProvider() override;
-    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
+    Qgis::VectorExportResult createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      Qgis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
+    ) override;
 
     QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
@@ -466,6 +472,7 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
   private:
     // helper method to check if LAYER_STYLES table exists

@@ -98,7 +98,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     }
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -106,14 +106,15 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< Container of other groups and layers
-      NodeLayer,    //!< Leaf node pointing to a layer
-      NodeCustom    //!< Leaf node pointing to a custom object
+      NodeGroup, //!< Container of other groups and layers
+      NodeLayer, //!< Leaf node pointing to a layer
+      NodeCustom //!< Leaf node pointing to a custom object
     };
 
     ~QgsLayerTreeNode() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsLayerTreeNode: %1>"_s.arg( sipCpp->name() );
@@ -151,10 +152,14 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
       sipRes = sipConvertFromType( child, sipType_QgsLayerTreeNode, NULL );
     }
     % End
+// clang-format on
 #endif
 
-    //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType() const { return mNodeType; }
+        //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
+        NodeType nodeType() const
+    {
+      return mNodeType;
+    }
     //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
@@ -299,7 +304,6 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void nameChanged( QgsLayerTreeNode *node, QString name );
 
   protected:
-
     //! Constructor
     QgsLayerTreeNode( NodeType t, bool checked = true );
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
@@ -334,10 +338,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
   private:
     QgsLayerTreeNode &operator=( const QgsLayerTreeNode & ) = delete;
-
 };
-
-
 
 
 #endif // QGSLAYERTREENODE_H

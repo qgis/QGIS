@@ -159,9 +159,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     functionsplit->setSizes( QList<int>( { mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(), mHelpAndValuesWidget->minimumWidth() } ) );
     mShowHelpButton->setEnabled( false );
   } );
-  connect( functionsplit, &QSplitter::splitterMoved, this, [this]( int, int ) {
-    mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
-  } );
+  connect( functionsplit, &QSplitter::splitterMoved, this, [this]( int, int ) { mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 ); } );
 
   QgsSettings settings;
   splitter->restoreState( settings.value( u"Windows/QgsExpressionBuilderWidget/splitter"_s ).toByteArray() );
@@ -443,8 +441,10 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   {
     // Create default sample entry.
     newFunctionFile( u"default"_s );
-    txtPython->setText( QStringLiteral( "'''\n#Sample custom function file\n"
-                                        "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" )
+    txtPython->setText( QStringLiteral(
+                          "'''\n#Sample custom function file\n"
+                          "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''"
+    )
                           .arg( txtPython->text() ) );
     saveFunctionFile( u"default"_s );
   }
@@ -502,7 +502,8 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 {
   if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == "project"_L1 )
   {
-    if ( QMessageBox::question( this, tr( "Remove Project Functions" ), tr( "Are you sure you want to remove the project functions?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::question( this, tr( "Remove Project Functions" ), tr( "Are you sure you want to remove the project functions?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         == QMessageBox::No )
       return;
 
     mProject->removeEntry( u"ExpressionFunctions"_s, u"/pythonCode"_s );
@@ -564,9 +565,11 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
     txtPython->blockSignals( false );
 
     btnRun->setText( tr( "Load or update functions" ) );
-    btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
-                            "\n"
-                            "Note the functions will only be stored when saving the project." ) );
+    btnRun->setToolTip( tr(
+      "Loads or updates functions from current script file in QGIS.\n"
+      "\n"
+      "Note the functions will only be stored when saving the project."
+    ) );
   }
   else
   {
@@ -575,16 +578,20 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
     if ( mAutoSave )
     {
       btnRun->setText( tr( "Load or update functions" ) );
-      btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
-                              "\n"
-                              "Saved scripts are auto loaded on QGIS startup." ) );
+      btnRun->setToolTip( tr(
+        "Loads or updates functions from current script file in QGIS.\n"
+        "\n"
+        "Saved scripts are auto loaded on QGIS startup."
+      ) );
     }
     else
     {
       btnRun->setText( tr( "Save and Load Functions" ) );
-      btnRun->setToolTip( tr( "Saves current script file and loads or updates its functions in QGIS.\n"
-                              "\n"
-                              "Saved scripts are auto loaded on QGIS startup." ) );
+      btnRun->setToolTip( tr(
+        "Saves current script file and loads or updates its functions in QGIS.\n"
+        "\n"
+        "Saved scripts are auto loaded on QGIS startup."
+      ) );
     }
   }
 }
@@ -717,7 +724,9 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-void QgsExpressionBuilderWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsExpressionBuilderWidget::setCustomPreviewGenerator(
+  const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator
+)
 {
   mExpressionPreviewWidget->setCustomPreviewGenerator( label, choices, previewContextGenerator );
 }
@@ -1168,7 +1177,8 @@ void QgsExpressionBuilderWidget::removeSelectedUserExpression()
   if ( item->getItemType() == QgsExpressionItem::Header || ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
     return;
 
-  if ( QMessageBox::Yes == QMessageBox::question( this, tr( "Remove Stored Expression" ), tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ), QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::Yes
+       == QMessageBox::question( this, tr( "Remove Stored Expression" ), tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ), QMessageBox::Yes | QMessageBox::No ) )
   {
     mExpressionTreeView->removeFromUserExpressions( item->text() );
   }
@@ -1178,12 +1188,7 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
 {
   QgsSettings settings;
   QString lastSaveDir = settings.value( u"lastExportExpressionsDir"_s, QDir::homePath(), QgsSettings::App ).toString();
-  QString saveFileName = QFileDialog::getSaveFileName(
-    this,
-    tr( "Export User Expressions" ),
-    lastSaveDir,
-    tr( "User expressions" ) + " (*.json)"
-  );
+  QString saveFileName = QFileDialog::getSaveFileName( this, tr( "Export User Expressions" ), lastSaveDir, tr( "User expressions" ) + " (*.json)" );
 
   // return dialog focus on Mac
   activateWindow();
@@ -1217,12 +1222,7 @@ void QgsExpressionBuilderWidget::importUserExpressions_pressed()
 {
   QgsSettings settings;
   QString lastImportDir = settings.value( u"lastImportExpressionsDir"_s, QDir::homePath(), QgsSettings::App ).toString();
-  QString loadFileName = QFileDialog::getOpenFileName(
-    this,
-    tr( "Import User Expressions" ),
-    lastImportDir,
-    tr( "User expressions" ) + " (*.json)"
-  );
+  QString loadFileName = QFileDialog::getOpenFileName( this, tr( "Import User Expressions" ), lastImportDir, tr( "User expressions" ) + " (*.json)" );
 
   if ( loadFileName.isEmpty() )
     return;
