@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     };
 
     /**
-    * The way to add features in the attribute table
+    * The way how to add features in the attribute table
     */
     enum class AddFeatureMethod : int
     {
