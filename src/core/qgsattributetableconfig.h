@@ -77,13 +77,13 @@ class CORE_EXPORT QgsAttributeTableConfig
     };
 
     /**
-    * The way how to add features in the attribute table
+    * The way to add features in the attribute table
     */
     enum class AddFeatureMethod : int
     {
-      Unset,   //!< No method set for current layer
-      Form,    //!< Opens a new Attributeform-Dialog
-      Table    //!< Adds a new row (or a form embedded in the attribute table depending on the view)
+      Unset, //!< No method set for current layer
+      Form,  //!< Opens a new Attributeform-Dialog
+      Table  //!< Adds a new row (or a form embedded in the attribute table depending on the view)
     };
 
     QgsAttributeTableConfig() = default;
@@ -352,7 +352,6 @@ class CORE_EXPORT QgsAttributeTableConfig
     QString mSortExpression;
     Qt::SortOrder mSortOrder = Qt::AscendingOrder;
     AddFeatureMethod mAddFeatureMethod = AddFeatureMethod::Unset;
-
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )
