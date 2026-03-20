@@ -1526,9 +1526,6 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
   ElevationProfileData &data = mElevationProfileData[profile];
 
   QgsCurve *curve = profile->profileCurve();
-  if ( curve )
-    ( void ) curve->removeDuplicateNodes();
-
   if ( !curve )
   {
     data.rubberBandZMin.reset();
@@ -1615,6 +1612,9 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
       const QgsPoint vertexPrevious = curve->vertexAt( QgsVertexId( 0, 0, i - 1 ) );
       const QgsPoint vertexMiddle = curve->vertexAt( QgsVertexId( 0, 0, i ) );
       const QgsPoint vertexNext = curve->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
+
+      if ( vertexMiddle == vertexPrevious || vertexMiddle == vertexNext )
+        continue;
 
       const double averageAngle = QgsGeometryUtilsBase::averageAngle( vertexPrevious.x(), vertexPrevious.y(), vertexMiddle.x(), vertexMiddle.y(), vertexNext.x(), vertexNext.y() ) - M_PI_2;
       const double dx = std::sin( averageAngle );
