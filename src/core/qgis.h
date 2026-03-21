@@ -804,6 +804,27 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( SymbolRenderHints )
 
     /**
+     * Symbol converter capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SymbolConverterCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ReadSymbol = 1 << 0, //!< Allows reading symbols from variants
+      WriteSymbol = 1 << 1, //!< Allows writing symbols to variants
+    };
+
+    Q_ENUM( SymbolConverterCapability )
+
+    /**
+     * Symbol converter capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( SymbolConverterCapabilities, SymbolConverterCapability )
+    Q_FLAG( SymbolConverterCapabilities )
+
+    /**
      * \brief Modes for handling how symbol and text entity rotation is handled when maps are rotated.
      *
      * \since QGIS 3.32
@@ -811,7 +832,7 @@ int QgisEvent = QEvent::User + 1;
     enum class SymbolRotationMode : int
     {
       RespectMapRotation, //!< Entity is rotated along with the map
-      IgnoreMapRotation, //!< Entity ignores map rotation
+      IgnoreMapRotation,  //!< Entity ignores map rotation
     };
     Q_ENUM( SymbolRotationMode )
 
@@ -2217,6 +2238,18 @@ int QgisEvent = QEvent::User + 1;
       CylindersAndSpheres, //!< Cylinders along the linestring segments with spheres at the vertices
     };
     Q_ENUM( JoinStyle3D )
+
+    /**
+     * Geometry backend for QgsGeometry.
+     *
+     * \since QGIS 4.2
+     */
+    enum class GeometryBackend : int
+    {
+      QGIS = 1, //!< Use internal implementation
+      GEOS,     //!< Use GEOS implementation
+    };
+    Q_ENUM( GeometryBackend )
 
     /**
      * Flags which control geos geometry creation behavior.
@@ -6824,6 +6857,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

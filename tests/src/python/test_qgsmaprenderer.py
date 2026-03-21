@@ -29,7 +29,7 @@ from qgis.core import (
     QgsVectorLayerSimpleLabeling,
 )
 from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 
@@ -446,6 +446,19 @@ class TestQgsMapRenderer(QgisTestCase):
 
         self.runRendererChecks(create_job)
         p.end()
+
+    def testOutputFormatBackgroundColor(self):
+        """ensure a custom output format has the correct background color fill"""
+        ms = QgsMapSettings()
+        ms.setOutputImageFormat(QImage.Format.Format_RGBA8888_Premultiplied)
+        ms.setOutputSize(QSize(10, 10))
+        ms.setBackgroundColor(QColor(255, 0, 0))
+
+        job = QgsMapRendererParallelJob(ms)
+        job.start()
+        job.waitForFinished()
+
+        self.assertEqual(job.renderedImage().pixelColor(0, 0), QColor(255, 0, 0))
 
 
 if __name__ == "__main__":

@@ -59,6 +59,7 @@ set(TESTS
   testqgseditorwidgetregistry.cpp
   testqgskeyvaluewidget.cpp
   testqgsfiledownloader.cpp
+  testqgsfileuploader.cpp
   testqgslayoutgui.cpp
   testqgslayoutview.cpp
   testqgsmaptooleditblanksegments.cpp

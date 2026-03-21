@@ -79,6 +79,7 @@ class QgsMemoryProvider final : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsRectangle extent() const override;
+    QgsBox3D extent3D() const override;
     void updateExtents() override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -91,7 +92,7 @@ class QgsMemoryProvider final : public QgsVectorDataProvider
     // fields
     QgsFields mFields;
     Qgis::WkbType mWkbType;
-    mutable QgsRectangle mExtent;
+    mutable QgsBox3D mExtent3D;
 
     // features
     QgsFeatureMap mFeatures;

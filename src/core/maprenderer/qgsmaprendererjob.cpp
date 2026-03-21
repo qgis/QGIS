@@ -1346,7 +1346,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const st
   image.setDevicePixelRatio( settings.devicePixelRatio() );
   image.setDotsPerMeterX( static_cast<int>( settings.outputDpi() * 39.37 ) );
   image.setDotsPerMeterY( static_cast<int>( settings.outputDpi() * 39.37 ) );
-  image.fill( settings.backgroundColor().rgba() );
+  image.fill( settings.backgroundColor() );
 
   const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;

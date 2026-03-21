@@ -33,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
+#include "qgsdirectoryitem.h"
 #include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -45,6 +46,7 @@
 #include "qgslocalizeddatapathregistry.h"
 #include "qgslocatoroptionswidget.h"
 #include "qgslocatorwidget.h"
+#include "qgsmaptool.h"
 #include "qgsmeasuredialog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnewsfeedparser.h"
@@ -252,7 +254,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mSettings = new QgsSettings();
 
-  double identifyValue = mSettings->value( u"/Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  double identifyValue = QgsMapTool::settingSearchRadiusMM->value();
   QgsDebugMsgLevel( u"Standard Identify radius setting read from settings file: %1"_s.arg( identifyValue ), 3 );
   if ( identifyValue <= 0.0 )
     identifyValue = Qgis::DEFAULT_SEARCH_RADIUS_MM;
@@ -438,7 +440,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( QgsNetworkAccessManager::timeout() );
   mNetworkTimeoutSpinBox->setClearValue( QgsNetworkAccessManager::settingsNetworkTimeout->defaultValue() );
-  leUserAgent->setText( mSettings->value( u"/qgis/networkAndProxy/userAgent"_s, "Mozilla/5.0" ).toString() );
+  leUserAgent->setText( QgsNetworkAccessManager::settingsUserAgent->value() );
 
   // WMS capabilities expiry time
   mDefaultCapabilitiesExpirySpinBox->setValue( mSettings->value( u"/qgis/defaultCapabilitiesExpiry"_s, 24 ).toInt() );
@@ -454,17 +456,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // Proxy stored authentication configurations
   mAuthSettings->setDataprovider( u"proxy"_s );
-  QString authcfg = mSettings->value( u"proxy/authcfg"_s ).toString();
+  QString authcfg = QgsNetworkAccessManager::settingsProxyAuthCfg->value();
   mAuthSettings->setConfigId( authcfg );
   mAuthSettings->setWarningText( QgsAuthSettingsWidget::formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
 
   //Web proxy settings
-  grpProxy->setChecked( mSettings->value( u"proxy/proxyEnabled"_s, false ).toBool() );
-  leProxyHost->setText( mSettings->value( u"proxy/proxyHost"_s, QString() ).toString() );
-  leProxyPort->setText( mSettings->value( u"proxy/proxyPort"_s, QString() ).toString() );
+  grpProxy->setChecked( QgsNetworkAccessManager::settingsProxyEnabled->value() );
+  leProxyHost->setText( QgsNetworkAccessManager::settingsProxyHost->value() );
+  leProxyPort->setText( QgsNetworkAccessManager::settingsProxyPort->value() );
 
-  mAuthSettings->setPassword( mSettings->value( u"proxy/proxyPassword"_s, QString() ).toString() );
-  mAuthSettings->setUsername( mSettings->value( u"proxy/proxyUser"_s, QString() ).toString() );
+  mAuthSettings->setPassword( QgsNetworkAccessManager::settingsProxyPassword->value() );
+  mAuthSettings->setUsername( QgsNetworkAccessManager::settingsProxyUser->value() );
 
   //available proxy types
   mProxyTypeComboBox->insertItem( 0, u"DefaultProxy"_s );
@@ -472,11 +474,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mProxyTypeComboBox->insertItem( 2, u"HttpProxy"_s );
   mProxyTypeComboBox->insertItem( 3, u"HttpCachingProxy"_s );
   mProxyTypeComboBox->insertItem( 4, u"FtpCachingProxy"_s );
-  QString settingProxyType = mSettings->value( u"proxy/proxyType"_s, u"DefaultProxy"_s ).toString();
+  QString settingProxyType = QgsNetworkAccessManager::settingsProxyType->value();
   mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
   //url with no proxy at all
-  const QStringList noProxyUrlPathList = mSettings->value( u"proxy/noProxyUrls"_s ).toStringList();
+  const QStringList noProxyUrlPathList = QgsNetworkAccessManager::settingsNoProxyUrls->value();
   for ( const QString &path : noProxyUrlPathList )
   {
     if ( path.trimmed().isEmpty() )
@@ -552,7 +554,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  mCheckMonitorDirectories->setChecked( mSettings->value( u"/qgis/monitorDirectoriesInBrowser"_s, true ).toBool() );
+  mCheckMonitorDirectories->setChecked( QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->value() );
 
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
@@ -755,7 +757,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mNativeColorDialogsChkBx->setChecked( QgsSettingsRegistryGui::settingsNativeColorDialogs->value() );
 
-  cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
+  cbxLegendClassifiers->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
@@ -994,7 +996,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default layout font
   mComposerFontComboBox->blockSignals( true );
 
-  QString layoutFontFamily = mSettings->value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  QString layoutFontFamily = QgsLayout::settingsLayoutDefaultFont->value();
 
   QFont tempLayoutFont( layoutFontFamily );
   // is exact family match returned from system?
@@ -1578,7 +1580,7 @@ void QgsOptions::saveOptions()
 
   //Network timeout
   QgsNetworkAccessManager::setTimeout( mNetworkTimeoutSpinBox->value() );
-  mSettings->setValue( u"/qgis/networkAndProxy/userAgent"_s, leUserAgent->text() );
+  QgsNetworkAccessManager::settingsUserAgent->setValue( leUserAgent->text() );
 
   // WMS capabiltiies expiry time
   mSettings->setValue( u"/qgis/defaultCapabilitiesExpiry"_s, mDefaultCapabilitiesExpirySpinBox->value() );
@@ -1590,15 +1592,15 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/defaultTileMaxRetry"_s, mDefaultTileMaxRetrySpinBox->value() );
 
   // Proxy stored authentication configurations
-  mSettings->setValue( u"proxy/authcfg"_s, mAuthSettings->configId() );
+  QgsNetworkAccessManager::settingsProxyAuthCfg->setValue( mAuthSettings->configId() );
 
   //Web proxy settings
-  mSettings->setValue( u"proxy/proxyEnabled"_s, grpProxy->isChecked() );
-  mSettings->setValue( u"proxy/proxyHost"_s, leProxyHost->text() );
-  mSettings->setValue( u"proxy/proxyPort"_s, leProxyPort->text() );
-  mSettings->setValue( u"proxy/proxyUser"_s, mAuthSettings->username() );
-  mSettings->setValue( u"proxy/proxyPassword"_s, mAuthSettings->password() );
-  mSettings->setValue( u"proxy/proxyType"_s, mProxyTypeComboBox->currentText() );
+  QgsNetworkAccessManager::settingsProxyEnabled->setValue( grpProxy->isChecked() );
+  QgsNetworkAccessManager::settingsProxyHost->setValue( leProxyHost->text() );
+  QgsNetworkAccessManager::settingsProxyPort->setValue( leProxyPort->text() );
+  QgsNetworkAccessManager::settingsProxyUser->setValue( mAuthSettings->username() );
+  QgsNetworkAccessManager::settingsProxyPassword->setValue( mAuthSettings->password() );
+  QgsNetworkAccessManager::settingsProxyType->setValue( mProxyTypeComboBox->currentText() );
 
   if ( !mCacheDirectory->text().isEmpty() )
     QgsSettingsRegistryCore::settingsNetworkCacheDirectory->setValue( mCacheDirectory->text() );
@@ -1616,19 +1618,19 @@ void QgsOptions::saveOptions()
     if ( !host.trimmed().isEmpty() )
       noProxyUrls << host;
   }
-  mSettings->setValue( u"proxy/noProxyUrls"_s, noProxyUrls );
+  QgsNetworkAccessManager::settingsNoProxyUrls->setValue( noProxyUrls );
 
   QgisApp::instance()->namUpdate();
 
   //general settings
-  mSettings->setValue( u"/Map/searchRadiusMM"_s, spinBoxIdentifyValue->value() );
+  QgsMapTool::settingSearchRadiusMM->setValue( spinBoxIdentifyValue->value() );
   mSettings->setValue( u"/Map/highlight/color"_s, mIdentifyHighlightColorButton->color().name() );
   mSettings->setValue( u"/Map/highlight/colorAlpha"_s, mIdentifyHighlightColorButton->color().alpha() );
   mSettings->setValue( u"/Map/highlight/buffer"_s, mIdentifyHighlightBufferSpinBox->value() );
   mSettings->setValue( u"/Map/highlight/minWidth"_s, mIdentifyHighlightMinWidthSpinBox->value() );
 
-  bool showLegendClassifiers = mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool();
-  mSettings->setValue( u"/qgis/showLegendClassifiers"_s, cbxLegendClassifiers->isChecked() );
+  bool showLegendClassifiers = QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value();
+  QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->setValue( cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
@@ -1643,7 +1645,7 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
-  mSettings->setValue( u"/qgis/monitorDirectoriesInBrowser"_s, mCheckMonitorDirectories->isChecked() );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
 
@@ -1868,7 +1870,7 @@ void QgsOptions::saveOptions()
 
   //default font
   QString layoutFont = mComposerFontComboBox->currentFont().family();
-  mSettings->setValue( u"LayoutDesigner/defaultFont"_s, layoutFont, QgsSettings::Gui );
+  QgsLayout::settingsLayoutDefaultFont->setValue( layoutFont );
 
   QgsLayoutItemLegend::settingDefaultLegendSyncMode->setValue( mLegendSyncModeCombo->currentData().value< Qgis::LegendSyncMode >() );
 

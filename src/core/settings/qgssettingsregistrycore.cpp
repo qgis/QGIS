@@ -17,6 +17,7 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
@@ -126,6 +127,9 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsGpsBabelPath = ne
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers
   = new QgsSettingsEntryBool( u"show-feature-count-for-new-layers"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, feature counts will be shown in the layer tree for all newly added layers."_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers
+  = new QgsSettingsEntryBool( u"show-legend-classifiers"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, classification attribute name is shown in the legend."_s );
+
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching
   = new QgsSettingsEntryBool( u"enable_wms_tile_prefetch"_s, QgsSettingsTree::sTreeWms, false, u"Whether to include WMS layers when rendering tiles adjacent to the visible map area"_s );
 
@@ -206,16 +210,23 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 3.30
   QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( u"core/Layout/searchPathsForTemplates"_s, true );
+  QgsLayout::settingsLayoutDefaultFont->copyValueFromKey( u"gui/LayoutDesigner/defaultFont"_s, true );
+  QgsLayout::settingsLayoutDefaultNorthArrow->copyValueFromKey( u"gui/LayoutDesigner/defaultNorthArrow"_s, true );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( u"Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME"_s, true );
   QgsProcessing::settingsTempPath->copyValueFromKey( u"Processing/Configuration/TEMP_PATH2"_s, true );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( u"qgis/networkAndProxy/networkTimeout"_s, true );
+  QgsNetworkAccessManager::settingsUserAgent->copyValueFromKey( u"qgis/networkAndProxy/userAgent"_s, true );
+  QgsNetworkAccessManager::settingsUserAgent->copyValueFromKey( u"/qgis/networkAndProxy/userAgent"_s, true );
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
+  settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"qgis/showLegendClassifiers"_s, true );
+  settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"/qgis/showLegendClassifiers"_s, true );
 
   // single settings - added in 4.2
-  settingsMeasurePlanimetric->copyValueFromKey( u"measure/planimetric"_s, true );
+  // Old code used QgsSettings::Core section, so the actual QSettings key has a "core/" prefix
+  settingsMeasurePlanimetric->copyValueFromKey( u"core/measure/planimetric"_s, true );
   settingsMeasureKeepBaseUnit->copyValueFromKey( u"qgis/measure/keepbaseunit"_s, true );
   settingsMeasureKeepBaseUnit->copyValueFromKey( u"/qgis/measure/keepbaseunit"_s, true );
   settingsMeasureDecimalPlaces->copyValueFromKey( u"qgis/measure/decimalplaces"_s, true );
@@ -226,6 +237,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
@@ -246,6 +259,20 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( u"Raster/defaultOversampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( u"Raster/defaultEarlyResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"Raster/defaultZoomedInResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
+  QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
+  // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
+  QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
+  QgsNetworkAccessManager::settingsProxyHost->copyValueFromKey( u"proxy/proxyHost"_s, true );
+  QgsNetworkAccessManager::settingsProxyPort->copyValueFromKey( u"proxy/proxyPort"_s, true );
+  QgsNetworkAccessManager::settingsProxyUser->copyValueFromKey( u"proxy/proxyUser"_s, true );
+  QgsNetworkAccessManager::settingsProxyPassword->copyValueFromKey( u"proxy/proxyPassword"_s, true );
+  QgsNetworkAccessManager::settingsProxyType->copyValueFromKey( u"proxy/proxyType"_s, true );
+  QgsNetworkAccessManager::settingsProxyExcludedUrls->copyValueFromKey( u"proxy/proxyExcludedUrls"_s, true );
+  QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
+  QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );

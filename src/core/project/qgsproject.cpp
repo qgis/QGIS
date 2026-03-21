@@ -2079,12 +2079,21 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   QgsApplication::profiler()->clear( u"projectload"_s );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), u"projectload"_s );
 
-  const QString localeFileName = u"%1_%2"_s.arg( QFileInfo( mFile ).baseName(), QgsApplication::settingsLocaleUserLocale->value() );
+  const QString locale = QgsApplication::settingsLocaleUserLocale->value();
+  const QString projectBaseName = QFileInfo( mFile ).baseName();
+  const QString projectDir = QFileInfo( mFile ).absolutePath();
+  QString localeFileName = u"%1_%2"_s.arg( projectBaseName, locale );
 
-  if ( QFile( u"%1/%2.qm"_s.arg( QFileInfo( mFile ).absolutePath(), localeFileName ) ).exists() )
+  if ( !QFile( u"%1/%2.qm"_s.arg( projectDir, localeFileName ) ).exists() && locale.contains( '_' ) )
+  {
+    // Fallback: try language-only locale (e.g., "fr" from "fr_CH")
+    localeFileName = u"%1_%2"_s.arg( projectBaseName, locale.left( locale.indexOf( '_' ) ) );
+  }
+
+  if ( QFile( u"%1/%2.qm"_s.arg( projectDir, localeFileName ) ).exists() )
   {
     mTranslator = std::make_unique< QTranslator >();
-    ( void ) mTranslator->load( localeFileName, QFileInfo( mFile ).absolutePath() );
+    ( void ) mTranslator->load( localeFileName, projectDir );
   }
 
   profile.switchTask( tr( "Reading project file" ) );
