@@ -1161,6 +1161,14 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
 
 static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
 {
+  // this is a workaround for removing duplicated points introduced by GEOS when splitting 3d geometries
+  // on topologically added points. It makes no sense to be called for 2d geometries, so it shouldn't.
+  if ( !geom->is3D() )
+  {
+    Q_ASSERT( false );
+    return;
+  }
+
   for ( const QgsPoint &pt : points )
   {
     QgsVertexId vertexId, prevVertexId, nextVertexId;
