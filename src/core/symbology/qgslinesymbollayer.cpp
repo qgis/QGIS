@@ -382,6 +382,61 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
   }
 }
 
+/**
+ * trim \a points according to start and end trim distance based on data defined properties and
+ * render context
+ */
+void trimPoints(
+  QPolygonF &points,
+  double startTrim,
+  double endTrim,
+  Qgis::RenderUnit trimDistanceStartUnit,
+  Qgis::RenderUnit trimDistanceEndUnit,
+  const QgsMapUnitScale &trimDistanceStartMapUnitScale,
+  const QgsMapUnitScale &trimDistanceEndMapUnitScale,
+  const QgsPropertyCollection &mDataDefinedProperties,
+  QgsSymbolRenderContext &context
+)
+{
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::TrimStart ) )
+  {
+    context.setOriginalValueVariable( startTrim );
+    startTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::TrimStart, context.renderContext().expressionContext(), startTrim );
+  }
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::TrimEnd ) )
+  {
+    context.setOriginalValueVariable( endTrim );
+    endTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::TrimEnd, context.renderContext().expressionContext(), endTrim );
+  }
+
+  double totalLength = -1;
+  if ( trimDistanceStartUnit == Qgis::RenderUnit::Percentage )
+  {
+    totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    startTrim = startTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    startTrim = context.renderContext().convertToPainterUnits( startTrim, trimDistanceStartUnit, trimDistanceStartMapUnitScale );
+  }
+  if ( trimDistanceEndUnit == Qgis::RenderUnit::Percentage )
+  {
+    if ( totalLength < 0 ) // only recalculate if we didn't already work this out for the start distance!
+      totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    endTrim = endTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    endTrim = context.renderContext().convertToPainterUnits( endTrim, trimDistanceEndUnit, trimDistanceEndMapUnitScale );
+  }
+  if ( !qgsDoubleNear( startTrim, 0 ) || !qgsDoubleNear( endTrim, 0 ) )
+  {
+    points = QgsSymbolLayerUtils::polylineSubstring( points, startTrim, -endTrim );
+  }
+}
+
+
 void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -391,44 +446,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   }
 
   QPolygonF points = pts;
-
-  double startTrim = mTrimDistanceStart;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::TrimStart ) )
-  {
-    context.setOriginalValueVariable( startTrim );
-    startTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::TrimStart, context.renderContext().expressionContext(), mTrimDistanceStart );
-  }
-  double endTrim = mTrimDistanceEnd;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::TrimEnd ) )
-  {
-    context.setOriginalValueVariable( endTrim );
-    endTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::TrimEnd, context.renderContext().expressionContext(), mTrimDistanceEnd );
-  }
-
-  double totalLength = -1;
-  if ( mTrimDistanceStartUnit == Qgis::RenderUnit::Percentage )
-  {
-    totalLength = QgsSymbolLayerUtils::polylineLength( points );
-    startTrim = startTrim * 0.01 * totalLength;
-  }
-  else
-  {
-    startTrim = context.renderContext().convertToPainterUnits( startTrim, mTrimDistanceStartUnit, mTrimDistanceStartMapUnitScale );
-  }
-  if ( mTrimDistanceEndUnit == Qgis::RenderUnit::Percentage )
-  {
-    if ( totalLength < 0 ) // only recalculate if we didn't already work this out for the start distance!
-      totalLength = QgsSymbolLayerUtils::polylineLength( points );
-    endTrim = endTrim * 0.01 * totalLength;
-  }
-  else
-  {
-    endTrim = context.renderContext().convertToPainterUnits( endTrim, mTrimDistanceEndUnit, mTrimDistanceEndMapUnitScale );
-  }
-  if ( !qgsDoubleNear( startTrim, 0 ) || !qgsDoubleNear( endTrim, 0 ) )
-  {
-    points = QgsSymbolLayerUtils::polylineSubstring( points, startTrim, -endTrim );
-  }
+  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit, mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
 
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.opacity() );
@@ -1209,7 +1227,7 @@ void QgsTemplatedLineSymbolLayerBase::setPlacement( Qgis::MarkerLinePlacement pl
 
 QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
 
-void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context )
 {
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
   if ( mRenderingFeature )
@@ -1306,6 +1324,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       }
     }
   }
+
+  QPolygonF points = pts;
+  trimPoints( points, mTrimDistanceStart, mTrimDistanceEnd, mTrimDistanceStartUnit, mTrimDistanceEndUnit, mTrimDistanceStartMapUnitScale, mTrimDistanceEndMapUnitScale, mDataDefinedProperties, context );
 
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
@@ -1475,6 +1496,12 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
   map[u"average_angle_length"_s] = QString::number( mAverageAngleLength );
   map[u"average_angle_unit"_s] = QgsUnitTypes::encodeUnit( mAverageAngleLengthUnit );
   map[u"average_angle_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mAverageAngleLengthMapUnitScale );
+  map[u"trim_distance_start"_s] = QString::number( mTrimDistanceStart );
+  map[u"trim_distance_start_unit"_s] = QgsUnitTypes::encodeUnit( mTrimDistanceStartUnit );
+  map[u"trim_distance_start_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceStartMapUnitScale );
+  map[u"trim_distance_end"_s] = QString::number( mTrimDistanceEnd );
+  map[u"trim_distance_end_unit"_s] = QgsUnitTypes::encodeUnit( mTrimDistanceEndUnit );
+  map[u"trim_distance_end_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceEndMapUnitScale );
   map[u"blank_segments_unit"_s] = QgsUnitTypes::encodeUnit( mBlankSegmentsUnit );
 
   map[u"placements"_s] = qgsFlagValueToKeys( mPlacements );
@@ -1538,6 +1565,12 @@ void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplated
   destLayer->setBlankSegmentsUnit( mBlankSegmentsUnit );
   destLayer->setRingFilter( mRingFilter );
   destLayer->setPlaceOnEveryPart( mPlaceOnEveryPart );
+  destLayer->setTrimDistanceStart( mTrimDistanceStart );
+  destLayer->setTrimDistanceStartUnit( mTrimDistanceStartUnit );
+  destLayer->setTrimDistanceStartMapUnitScale( mTrimDistanceStartMapUnitScale );
+  destLayer->setTrimDistanceEnd( mTrimDistanceEnd );
+  destLayer->setTrimDistanceEndUnit( mTrimDistanceEndUnit );
+  destLayer->setTrimDistanceEndMapUnitScale( mTrimDistanceEndMapUnitScale );
 
   copyCommonProperties( destLayer );
 }
@@ -1594,6 +1627,19 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   {
     destLayer->setBlankSegmentsUnit( QgsUnitTypes::decodeRenderUnit( properties[u"blank_segments_unit"_s].toString() ) );
   }
+
+  if ( properties.contains( u"trim_distance_start"_s ) )
+    destLayer->setTrimDistanceStart( properties[u"trim_distance_start"_s].toDouble() );
+  if ( properties.contains( u"trim_distance_start_unit"_s ) )
+    destLayer->setTrimDistanceStartUnit( QgsUnitTypes::decodeRenderUnit( properties[u"trim_distance_start_unit"_s].toString() ) );
+  if ( properties.contains( u"trim_distance_start_map_unit_scale"_s ) )
+    destLayer->setTrimDistanceStartMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"trim_distance_start_map_unit_scale"_s].toString() ) );
+  if ( properties.contains( u"trim_distance_end"_s ) )
+    destLayer->setTrimDistanceEnd( properties[u"trim_distance_end"_s].toDouble() );
+  if ( properties.contains( u"trim_distance_end_unit"_s ) )
+    destLayer->setTrimDistanceEndUnit( QgsUnitTypes::decodeRenderUnit( properties[u"trim_distance_end_unit"_s].toString() ) );
+  if ( properties.contains( u"trim_distance_end_map_unit_scale"_s ) )
+    destLayer->setTrimDistanceEndMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"trim_distance_end_map_unit_scale"_s].toString() ) );
 
   if ( properties.contains( u"placement"_s ) )
   {

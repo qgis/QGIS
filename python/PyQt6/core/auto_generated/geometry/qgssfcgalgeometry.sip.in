@@ -472,11 +472,11 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const;
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const;
 %Docstring
 Apply 3D matrix transform ``mat`` to geometry ``geom``
 
-:param mat: 4x4 transformation matrix (translation is defined of the 4th
+:param mat: 4x4 transformation matrix (translation is defined in the 4th
             column)
 :param errorMsg: Error message returned by SFGCAL
 
@@ -700,6 +700,32 @@ null pointer is returned.
                             operation
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const;
+%Docstring
+Converts the geometry to a Solid geometry. The geometry must be of type
+PolyhedralSurface
+
+:return: geometry as a Solid
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const;
+%Docstring
+Converts the geometry to a PolyhedralSurface geometry. The geometry must
+be of type Solid
+
+:return: geometry as a PolyhedralSurface
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
 
 
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
@@ -762,7 +788,7 @@ Converts the current primitive to geometry. Works only with primitives.
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
-    QMatrix4x4 primitiveTransform() const;
+    QgsMatrix4x4 primitiveTransform() const;
 %Docstring
 Returns the primitive transform matrix.
 

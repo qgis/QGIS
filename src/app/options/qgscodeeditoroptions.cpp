@@ -21,6 +21,7 @@
 #include "qgscodeeditorshell.h"
 #include "qgsgui.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QString>
 
@@ -151,7 +152,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   const QFont font = QgsCodeEditor::getMonospaceFont();
   mFontComboBox->setCurrentFont( font );
   mSizeSpin->setValue( font.pointSize() );
-  mOverrideFontGroupBox->setChecked( !settings.value( u"codeEditor/fontfamily"_s, QString(), QgsSettings::Gui ).toString().isEmpty() );
+  mOverrideFontGroupBox->setChecked( !QgsCodeEditor::settingFontFamily->value().isEmpty() );
 
   connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { updatePreview(); } );
   connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [this] { updatePreview(); } );
@@ -395,13 +396,13 @@ void QgsCodeEditorOptionsWidget::apply()
 
   if ( mOverrideFontGroupBox->isChecked() )
   {
-    settings.setValue( u"codeEditor/fontfamily"_s, mFontComboBox->currentFont().family(), QgsSettings::Gui );
-    settings.setValue( u"codeEditor/fontsize"_s, mSizeSpin->value(), QgsSettings::Gui );
+    QgsCodeEditor::settingFontFamily->setValue( mFontComboBox->currentFont().family() );
+    QgsCodeEditor::settingFontSize->setValue( mSizeSpin->value() );
   }
   else
   {
-    settings.remove( u"codeEditor/fontfamily"_s, QgsSettings::Gui );
-    settings.remove( u"codeEditor/fontsize"_s, QgsSettings::Gui );
+    QgsCodeEditor::settingFontFamily->remove();
+    QgsCodeEditor::settingFontSize->remove();
   }
 }
 

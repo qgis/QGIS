@@ -219,14 +219,8 @@ void QgsServerSettings::initSettings()
 
   {
     // API WFS3 root path
-    // TODO: remove when QGIS 4 is released
-#if _QGIS_VERSION_INT > 40000
     const Setting sApiWfs3RootPath
       = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, u"Root path for the OAPIF (WFS3) API"_s, u"/qgis/server_api_wfs3_root_path"_s, QMetaType::Type::QString, QVariant( "/ogcapi" ), QVariant() };
-#else
-    const Setting sApiWfs3RootPath
-      = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, u"Root path for the OAPIF (WFS3) API"_s, u"/qgis/server_api_wfs3_root_path"_s, QMetaType::Type::QString, QVariant( "/wfs3" ), QVariant() };
-#endif
     mSettings[sApiWfs3RootPath.envVar] = sApiWfs3RootPath;
   }
 

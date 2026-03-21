@@ -29,7 +29,8 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -386,8 +387,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
   if ( nodeLayer->customProperty( u"showFeatureCount"_s, 0 ).toBool() )
     mLayer->countSymbolFeatures();
 
-  const QgsSettings settings;
-  if ( settings.value( u"qgis/showLegendClassifiers"_s, false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
+  if ( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() && !r->legendClassificationAttribute().isEmpty() )
   {
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }

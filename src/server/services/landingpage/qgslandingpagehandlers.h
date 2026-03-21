@@ -83,6 +83,7 @@ class QgsLandingPageMapHandler : public QgsServerOgcApiHandler
     std::string description() const override { return "Shows a map"; }
     std::string linkTitle() const override { return "Map Viewer"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
+    const QString templatePath( const QgsServerApiContext &context ) const override;
 
   private:
     const QgsServerSettings *mSettings = nullptr;

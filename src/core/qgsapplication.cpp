@@ -91,6 +91,7 @@
 #include "qgsstyle.h"
 #include "qgsstylemodel.h"
 #include "qgssvgcache.h"
+#include "qgssymbolconverterregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgstaskmanager.h"
@@ -190,6 +191,7 @@ struct QgsApplication::ApplicationMembers
     std::unique_ptr<QgsNetworkContentFetcherRegistry > mNetworkContentFetcherRegistry;
     std::unique_ptr<QgsScaleBarRendererRegistry > mScaleBarRendererRegistry;
     std::unique_ptr<QgsLabelingEngineRuleRegistry > mLabelingEngineRuleRegistry;
+    std::unique_ptr<QgsSymbolConverterRegistry > mSymbolConverterRegistry;
     std::unique_ptr<QgsValidityCheckRegistry > mValidityCheckRegistry;
     std::unique_ptr<QgsMessageLog > mMessageLog;
     std::unique_ptr<QgsPaintEffectRegistry > mPaintEffectRegistry;
@@ -2747,6 +2749,11 @@ QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry()
   return members()->mLabelingEngineRuleRegistry.get();
 }
 
+QgsSymbolConverterRegistry *QgsApplication::symbolConverterRegistry()
+{
+  return members()->mSymbolConverterRegistry.get();
+}
+
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
   return members()->mProjectStorageRegistry.get();
@@ -2935,6 +2942,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup symbol converter registry" ) );
+    mSymbolConverterRegistry = std::make_unique<QgsSymbolConverterRegistry>();
+    mSymbolConverterRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup sensor registry" ) );
     mSensorRegistry = std::make_unique<QgsSensorRegistry>();
     mSensorRegistry->populate();
@@ -3032,6 +3045,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mCalloutRegistry.reset();
   mRecentStyleHandler.reset();
   mLabelingEngineRuleRegistry.reset();
+  mSymbolConverterRegistry.reset();
   mSymbolLayerRegistry.reset();
   mExternalStorageRegistry.reset();
   mProfileSourceRegistry.reset();

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSQLStatement
 {
 %Docstring(signature="appended")
@@ -330,7 +331,13 @@ Unary logical/arithmetical operator ( NOT, - ).
 Constructor
 %End
 
-        QgsSQLStatement::UnaryOperator op() const;
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString str = QStringLiteral( "<QgsSQLStatement.NodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+            QgsSQLStatement::UnaryOperator op() const;
 %Docstring
 Operator
 %End
@@ -347,6 +354,14 @@ Operand
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
+
+        QString text() const;
+%Docstring
+Returns a the name of this operator without the operands. I.e. "NOT" or
+"-"
+
+.. versionadded:: 4.2
+%End
 
       private:
         NodeUnaryOperator( const NodeUnaryOperator &other );
@@ -365,7 +380,13 @@ Binary logical/arithmetical operator (AND, OR, =, +, ...).
 Constructor
 %End
 
-        QgsSQLStatement::BinaryOperator op() const;
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString str = QStringLiteral( "<QgsSQLStatement.NodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+            QgsSQLStatement::BinaryOperator op() const;
 %Docstring
 Operator
 %End
@@ -396,6 +417,14 @@ Precedence
         bool leftAssociative() const;
 %Docstring
 Is left associative ?
+%End
+
+        QString text() const;
+%Docstring
+Returns a the name of this operator without the operands. I.e. "AND",
+"OR", ...
+
+.. versionadded:: 4.2
 %End
 
       private:
@@ -500,7 +529,15 @@ Function with a name and arguments node.
 Constructor
 %End
 
-        QString name() const;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString function;
+        QString str = QStringLiteral( "<QgsSQLStatement.NodeFunction: %1>" ).arg( sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+            QString name() const;
 %Docstring
 Returns function name
 %End
@@ -535,7 +572,13 @@ Literal value (integer, integer64, double, string).
 Constructor
 %End
 
-        QVariant value() const;
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString str = QStringLiteral( "<QgsSQLStatement.NodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+          QVariant value() const;
 %Docstring
 The value of the literal.
 %End
@@ -546,6 +589,14 @@ The value of the literal.
 
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
+
+        QString valueAsString() const;
+%Docstring
+Returns a string representation of the node's literal value.
+
+.. versionadded:: 4.2
+%End
 
 
       protected:
@@ -567,7 +618,30 @@ Constructor with column name only
 Constructor with table and column name
 %End
 
-        void setDistinct( bool distinct = true );
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString columnRef;
+        if ( sipCpp->star() )
+        {
+          columnRef = "*";
+        }
+        else
+        {
+          columnRef = sipCpp->name();
+        }
+        if ( !sipCpp->tableName().isEmpty() )
+        {
+          columnRef = QStringLiteral( "\"%1.%2\"" ).arg( sipCpp->tableName(), columnRef );
+        }
+        if ( sipCpp->distinct() )
+        {
+          columnRef = QStringLiteral( "DISTINCT %1" ).arg( columnRef );
+        }
+        QString str = QStringLiteral( "<QgsSQLStatement.NodeColumnRef: %1>" ).arg( columnRef );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+          void setDistinct( bool distinct = true );
 %Docstring
 Sets whether this is prefixed by DISTINCT
 %End
@@ -663,7 +737,13 @@ CAST operator.
 Constructor
 %End
 
-        QgsSQLStatement::Node *node() const;
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString str = QStringLiteral( "<QgsSQLStatement.NodeCast: AS %1>" ).arg( sipCpp->type() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+            QgsSQLStatement::Node *node() const;
 %Docstring
 Node that is referred to
 %End
@@ -709,7 +789,22 @@ Constructor with schema, table name and alias
 .. versionadded:: 3.28
 %End
 
-        QString name() const;
+        SIP_PYOBJECT __repr__();
+%MethodCode
+QString table;
+        if ( !sipCpp->schema().isEmpty() )
+        {
+          table = QStringLiteral( "%1.%2" ).arg( sipCpp->schema(), sipCpp->name() );
+        }
+        else
+        {
+          table = sipCpp->name();
+        }
+        QString str = QStringLiteral( "<QgsSQLStatement.NodeTableDef: %1>" ).arg( table );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+            QString name() const;
 %Docstring
 Table name
 %End

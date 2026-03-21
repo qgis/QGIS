@@ -492,19 +492,27 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
   // built-in Qt3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
   // They are rotated to have their Z axis goes "up", like the rest of the scene
   // Retrieve the rotation matrix
-  QMatrix4x4 instanceMaterialTransform;
+  const QMatrix4x4 instanceMaterialTransform( 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 );
+
+  QVector3D symbolScale;
+  QVector4D symbolRotation;
   const QList<Qt3DRender::QMaterial *> materials = entity->findChildren<Qt3DRender::QMaterial *>();
-  if ( !materials.isEmpty() )
+  for ( Qt3DRender::QMaterial *material : materials )
   {
-    for ( const Qt3DRender::QParameter *parameter : materials[0]->parameters() )
+    for ( const Qt3DRender::QParameter *parameter : material->parameters() )
     {
-      if ( parameter->name() == "inst"_L1 )
+      if ( parameter->name() == "symbolScale"_L1 )
       {
-        instanceMaterialTransform = parameter->value().value<QMatrix4x4>();
-        break;
+        symbolScale = parameter->value().value<QVector3D>();
+      }
+      else if ( parameter->name() == "symbolRotation"_L1 )
+      {
+        symbolRotation = parameter->value().value<QVector4D>();
       }
     }
   }
+
+  QQuaternion rotationQuat( symbolRotation.w(), symbolRotation.x(), symbolRotation.y(), symbolRotation.z() );
 
   QVector<Qgs3DExportObject *> objects;
   const QList<Qt3DCore::QGeometry *> geometriesList = entity->findChildren<Qt3DCore::QGeometry *>();
@@ -518,6 +526,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       continue;
     }
 
+    Qt3DCore::QAttribute *instanceScaleAttribute = findAttribute( geometry, u"instanceScale"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *instanceRotationAttribute = findAttribute( geometry, u"instanceRotation"_s, Qt3DCore::QAttribute::VertexAttribute );
+
     const QByteArray vertexBytes = positionAttribute->buffer()->data();
     const QByteArray indexBytes = indexAttribute->buffer()->data();
     if ( vertexBytes.isNull() || indexBytes.isNull() )
@@ -529,26 +540,40 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"pos"_s, Qt3DCore::QAttribute::VertexAttribute );
+    const QVector<QVector3D> instanceScaleData = instanceScaleAttribute ? getAttributeData<QVector3D>( instanceScaleAttribute, instanceScaleAttribute->buffer()->data() ) : QVector<QVector3D>();
+    const QVector<QVector4D> instanceRotationData = instanceRotationAttribute ? getAttributeData<QVector4D>( instanceRotationAttribute, instanceRotationAttribute->buffer()->data() )
+                                                                              : QVector<QVector4D>();
+
+    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"instanceTranslation"_s, Qt3DCore::QAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
     {
-      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceTranslation attribute!" ).arg( objectNamePrefix ) );
       continue;
     }
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
     if ( instancePositionBytes.isNull() )
     {
-      QgsDebugError( QString( "Geometry for '%1' has instanceData attribute with empty data!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Geometry for '%1' has instanceTranslation attribute with empty data!" ).arg( objectNamePrefix ) );
       continue;
     }
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
 
-    for ( int i = 0; i < instancePosition.size(); i += 3 )
+    int instanceIndex = 0;
+    for ( int i = 0; i < instancePosition.size(); i += 3, instanceIndex++ )
     {
       Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"instance_point"_s ) );
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
+
+      QQuaternion instanceRotation = rotationQuat;
+      if ( instanceRotationAttribute )
+      {
+        const QVector4D instanceRotationVec = instanceRotationData[instanceIndex];
+        instanceRotation = QQuaternion( instanceRotationVec.w(), instanceRotationVec.x(), instanceRotationVec.y(), instanceRotationVec.z() );
+      }
+      instanceTransform.rotate( instanceRotation );
+      instanceTransform.scale( instanceScaleAttribute ? instanceScaleData[instanceIndex] : symbolScale );
       instanceTransform *= instanceMaterialTransform;
       object->setupTriangle( positionData, indexData, instanceTransform );
 
