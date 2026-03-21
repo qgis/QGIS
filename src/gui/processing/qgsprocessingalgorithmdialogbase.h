@@ -149,7 +149,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     /**
      * Shows and raises the dialog
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     void showDialog();
 
@@ -306,14 +306,20 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     /**
      * Returns if the dialog is considered running an algorithm.
      *
-     * \since QGIS 4.0
+     * \note Unlike the isFinalized method isRunning only provides
+     * information about the state of dialog is not tied to the
+     * deletion mechanisms of the dialog window
+     *
+     * \see isFinalized
+     *
+     * \since QGIS 4.2
      */
     virtual bool isRunning();
 
     /**
      * Forces the dialog to close by detaching any running task of the dialog THEN closing the dialog.
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     void forceClose();
 

@@ -1112,7 +1112,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   }
 
 
-  if ( mAlgorithmDialog && mAlgorithmDialog->isRunning() ) // Switch to is running
+  if ( mAlgorithmDialog && mAlgorithmDialog->isRunning() )
   {
     QMessageBox messageBox;
     messageBox.setWindowTitle( tr( "The model is already running" ) );
@@ -1165,9 +1165,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmDialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmDialog->setParameters( mModel->designerParameterValues() );
 
-    Qt::WindowFlags flags = Qt::Window | Qt::WindowSystemMenuHint
-                            | Qt::WindowMinimizeButtonHint
-                            | Qt::WindowCloseButtonHint;
+    Qt::WindowFlags flags = Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint;
     mAlgorithmDialog->setWindowFlags( flags );
 
     connect( mAlgorithmDialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {

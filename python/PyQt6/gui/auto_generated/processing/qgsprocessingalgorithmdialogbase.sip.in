@@ -83,7 +83,7 @@ algorithm parameters.
 %Docstring
 Shows and raises the dialog
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     void showLog();
@@ -255,7 +255,15 @@ Resets the dialog's gui, ready for another algorithm execution.
 %Docstring
 Returns if the dialog is considered running an algorithm.
 
-.. versionadded:: 4.0
+.. note::
+
+   Unlike the isFinalized method isRunning only provides
+   information about the state of dialog is not tied to the
+   deletion mechanisms of the dialog window
+
+.. seealso:: :py:func:`isFinalized`
+
+.. versionadded:: 4.2
 %End
 
     void forceClose();
@@ -263,7 +271,7 @@ Returns if the dialog is considered running an algorithm.
 Forces the dialog to close by detaching any running task of the dialog
 THEN closing the dialog.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     virtual void reject();

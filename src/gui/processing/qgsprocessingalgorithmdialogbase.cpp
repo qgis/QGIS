@@ -749,7 +749,6 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 void QgsProcessingAlgorithmDialogBase::runAlgorithm()
 {}
 
-
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
   // delay setting maximum progress value until we know algorithm reports progress
@@ -967,13 +966,11 @@ void QgsProcessingAlgorithmDialogBase::reject()
   QDialog::reject();
 }
 
-
 void QgsProcessingAlgorithmDialogBase::forceClose()
 {
   mAlgorithmTask = nullptr;
   close();
 }
-
 
 //
 // QgsProcessingAlgorithmProgressDialog
