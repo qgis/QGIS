@@ -43,6 +43,7 @@ class CORE_EXPORT QgsSettingsTree
 
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( u"app"_s );
+    static inline QgsSettingsTreeNode *sTreeAttributeForm = treeRoot()->createChildNode( u"attribute-form"_s );
     static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( u"connections"_s );
     static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( u"core"_s );
     static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
@@ -59,6 +60,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( u"qgis"_s );
     static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( u"plugins"_s );
     static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( u"processing"_s );
+    static inline QgsSettingsTreeNode *sTreeProxy = treeRoot()->createChildNode( u"proxy"_s );
     static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( u"raster"_s );
     static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( u"rendering"_s );
     static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( u"svg"_s );

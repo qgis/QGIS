@@ -267,9 +267,8 @@ class SERVER_EXPORT QgsServerSettings
     /**
      * Returns the server-wide root path for OAPIF (WFS3) service API.
      *
-     * The default value is "/wfs3", this value can be changed by setting the environment
+     * The default value is "/ogcapi", this value can be changed by setting the environment
      * variable QGIS_SERVER_API_WFS3_ROOT_PATH.
-     * \note The default will be changed to "/ogcapi" for QGIS 4.
      * \since QGIS 3.44.3
      */
     QString apiWfs3RootPath() const;

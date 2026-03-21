@@ -22,6 +22,7 @@
 #include "qgsfeedback.h"
 #include "qgsnetworkreply.h"
 
+#include <QHttpMultiPart>
 #include <QObject>
 #include <QPointer>
 #include <QThread>
@@ -141,6 +142,14 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * Performs a "post" operation on the specified \a request, using the given \a data.
      */
     ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * This is an overloaded function.
+     *
+     * Performs a "post" operation on the specified \a request, using the given \a data.
+     * \since QGIS 4.2
+     */
+    ErrorCode post( QNetworkRequest &request, QHttpMultiPart *data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a "head" operation on the specified \a request.
@@ -277,7 +286,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     Qgis::HttpMethod mMethod = Qgis::HttpMethod::Get;
 
     //! payload data used in PUT/POST request
-    QIODevice *mPayloadData = nullptr;
+    std::variant<QIODevice *, QHttpMultiPart *> mPayloadDataVariant;
 
     //! Authentication configuration ID
     QString mAuthCfg;

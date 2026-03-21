@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 
 class QFileSystemWatcher;
 class QMouseEvent;
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup core
@@ -167,6 +168,15 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \since QGIS 3.20
      */
     static bool pathShouldByMonitoredByDefault( const QString &path );
+
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for monitor directories in browser.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryBool *settingsMonitorDirectoriesInBrowser;
+#endif
 
     /**
      * Returns TRUE if the directory is currently being monitored for changes and the item auto-refreshed

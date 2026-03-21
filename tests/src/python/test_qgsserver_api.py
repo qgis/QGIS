@@ -383,14 +383,12 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
     def setUp(self):
         super().setUp()
-        # TODO: Remove when QGIS 4 is released
-        # Default url will change when QGIS 4 is released, set it to /wfs3 for now
-        if Qgis.versionInt() >= 40000:
-            os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
-            iface = self.server.serverInterface()
-            iface.reloadSettings()
-            iface.serviceRegistry().cleanUp()
-            iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
+        # Default url has changed in QGIS 4 stick to /wfs3 for the tests
+        os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
+        iface = self.server.serverInterface()
+        iface.reloadSettings()
+        iface.serviceRegistry().cleanUp()
+        iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
 
     # Set env context manager
     @contextmanager

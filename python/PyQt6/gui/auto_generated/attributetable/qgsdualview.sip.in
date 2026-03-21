@@ -45,6 +45,7 @@ the currently selected feature are shown in a form.
       ZoomToFeature,
     };
 
+
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

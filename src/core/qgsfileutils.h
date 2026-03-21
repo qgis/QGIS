@@ -269,9 +269,12 @@ class CORE_EXPORT QgsFileUtils
      * Since QGIS 4.0.1 the \a flags argument can be used to specify flags controlling the
      * behavior of the copy operation.
      *
+     * Since QGIS 4.0.1 the \a excludePatterns argument can be used to specify a list of regular expressions. Any files or
+     * folders matching any of these patterns will be excluded from the copy.
+     *
      * \since QGIS 4.0
      */
-    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags() );
+    static bool copyDirectory( const QString &source, const QString &destination, QgsFileUtils::CopyFlags flags = QgsFileUtils::CopyFlags(), const QStringList &excludePatterns = QStringList() );
 
     /**
      * Replaces all occurrences of a given string in a file.

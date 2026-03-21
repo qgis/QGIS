@@ -35,12 +35,7 @@ class QgsWfs3Module : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      // TODO: remove when QGIS 4 is released
-#if _QGIS_VERSION_INT >= 40000
       QString rootPath = u"/ogcapi"_s;
-#else
-      QString rootPath = u"/wfs3"_s;
-#endif
       if ( serverIface && serverIface->serverSettings() && !serverIface->serverSettings()->apiWfs3RootPath().isEmpty() )
       {
         rootPath = serverIface->serverSettings()->apiWfs3RootPath();

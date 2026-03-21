@@ -510,6 +510,16 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+    enum class SymbolConverterCapability /BaseType=IntFlag/
+    {
+      ReadSymbol,
+      WriteSymbol,
+    };
+
+
+    typedef QFlags<Qgis::SymbolConverterCapability> SymbolConverterCapabilities;
+
+
     enum class SymbolRotationMode /BaseType=IntEnum/
     {
       RespectMapRotation,
@@ -1298,6 +1308,12 @@ The development version
       Round,
       Flat,
       CylindersAndSpheres,
+    };
+
+    enum class GeometryBackend /BaseType=IntEnum/
+    {
+      QGIS,
+      GEOS,
     };
 
     enum class GeosCreationFlag /BaseType=IntFlag/
@@ -4001,6 +4017,8 @@ QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::Cur
 QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
 
 QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
+
+QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapability f1, QFlags<Qgis::SymbolConverterCapability> f2);
 
 
 

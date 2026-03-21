@@ -20,6 +20,7 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsexpression.h"
 #include "qgsvariantutils.h"
 
 #include <QRegularExpression>
@@ -330,6 +331,11 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeUnaryOperator::clone() const
   return new NodeUnaryOperator( mOp, mOperand->clone() );
 }
 
+QString QgsSQLStatement::NodeUnaryOperator::text() const
+{
+  return UNARY_OPERATOR_TEXT[mOp];
+}
+
 //
 
 int QgsSQLStatement::NodeBinaryOperator::precedence() const
@@ -410,6 +416,11 @@ bool QgsSQLStatement::NodeBinaryOperator::leftAssociative() const
   }
   Q_ASSERT( false && "unexpected binary operator" );
   return false;
+}
+
+QString QgsSQLStatement::NodeBinaryOperator::text() const
+{
+  return BINARY_OPERATOR_TEXT[mOp];
 }
 
 QString QgsSQLStatement::NodeBinaryOperator::dump() const
@@ -511,6 +522,34 @@ QString QgsSQLStatement::NodeLiteral::dump() const
 QgsSQLStatement::Node *QgsSQLStatement::NodeLiteral::clone() const
 {
   return new NodeLiteral( mValue );
+}
+
+QString QgsSQLStatement::NodeLiteral::valueAsString() const
+{
+  if ( QgsVariantUtils::isNull( mValue ) )
+    return u"NULL"_s;
+
+  switch ( mValue.userType() )
+  {
+    case QMetaType::Type::Int:
+      return QString::number( mValue.toInt() );
+    case QMetaType::Type::Double:
+      return qgsDoubleToString( mValue.toDouble() );
+    case QMetaType::Type::LongLong:
+      return QString::number( mValue.toLongLong() );
+    case QMetaType::Type::QString:
+      return QgsExpression::quotedString( mValue.toString() );
+    case QMetaType::Type::QTime:
+      return QgsExpression::quotedString( mValue.toTime().toString( Qt::ISODate ) );
+    case QMetaType::Type::QDate:
+      return QgsExpression::quotedString( mValue.toDate().toString( Qt::ISODate ) );
+    case QMetaType::Type::QDateTime:
+      return QgsExpression::quotedString( mValue.toDateTime().toString( Qt::ISODate ) );
+    case QMetaType::Type::Bool:
+      return mValue.toBool() ? u"TRUE"_s : u"FALSE"_s;
+    default:
+      return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
+  }
 }
 
 //
