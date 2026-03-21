@@ -33,6 +33,8 @@
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsscrollarea.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
@@ -52,6 +54,9 @@
 #include "moc_qgsdualview.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsDualView::settingsFeatureListHighlightFeature
+  = new QgsSettingsEntryBool( u"feature-list-highlight-feature"_s, QgsSettingsTree::sTreeAttributeTable, true, QObject::tr( "Whether to highlight/flash features in the feature list view" ) );
 
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<
   QgsSettingsEntryVariant>( u"attribute-table-splitter-state"_s, QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), u"State of conditional formatting splitter's layout so it could be restored when opening attribute table view."_s );
@@ -120,7 +125,7 @@ QgsDualView::QgsDualView( QWidget *parent )
   if ( bt )
     bt->setChecked( true );
   connect( buttonGroup, qOverload<QAbstractButton *, bool>( &QButtonGroup::buttonToggled ), this, &QgsDualView::panZoomGroupButtonToggled );
-  mFlashButton->setChecked( QgsSettings().value( u"/qgis/attributeTable/featureListHighlightFeature"_s, true ).toBool() );
+  mFlashButton->setChecked( settingsFeatureListHighlightFeature->value() );
   connect( mFlashButton, &QToolButton::clicked, this, &QgsDualView::flashButtonClicked );
 }
 
@@ -654,7 +659,7 @@ void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool check
 
 void QgsDualView::flashButtonClicked( bool clicked )
 {
-  QgsSettings().setValue( u"/qgis/attributeTable/featureListHighlightFeature"_s, clicked );
+  settingsFeatureListHighlightFeature->setValue( clicked );
   if ( !clicked )
     return;
 

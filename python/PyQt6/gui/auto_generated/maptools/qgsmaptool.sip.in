@@ -224,6 +224,7 @@ currently set in identify tool options (move somewhere else?) and
 defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
 %End
 
+
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
 Gets search radius in map units for given context. Used by identify, tip

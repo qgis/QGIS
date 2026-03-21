@@ -1598,6 +1598,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   {
     showCentroidFrame = currentGeometryType == Qgis::GeometryType::Polygon;
     showDistanceFrame = true;
+    mPlacementDistanceFrame->setEnabled( true );
     showMaximumDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
     showQuadrantFrame = currentGeometryType == Qgis::GeometryType::Point;
@@ -1643,6 +1644,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
             && ( currentPlacement == Qgis::LabelPlacement::OutsidePolygons || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
   {
     showDistanceFrame = true;
+    mPlacementDistanceFrame->setEnabled( true );
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );

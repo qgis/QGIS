@@ -341,6 +341,12 @@ class _3D_EXPORT QgsCameraController : public QObject
     QgsCameraController( const QgsCameraController &other );
 #endif
 
+    /**
+     * Updates orthographic projection plane size based on distance from
+     * view center when orthographic projection is being used.
+     */
+    void updateOrthographicProjectionPlane();
+    //! Sets mCamera parameters based on mCameraPose
     void updateCameraFromPose();
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;

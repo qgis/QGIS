@@ -155,6 +155,8 @@ void TestQgsOverlayExpression::testOverlay()
   const QVariant result = exp.evaluate( &context );
 
   QCOMPARE( result.toBool(), expectedResult );
+  if ( !exp.parserErrorString().isEmpty() || !exp.evalErrorString().isEmpty() )
+    qDebug() << "testOverlay has errors! Parser error:" << exp.parserErrorString() << "/ eval error:" << exp.evalErrorString();
 }
 
 void TestQgsOverlayExpression::testOverlay_data()
@@ -194,10 +196,34 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "equals" ) << "overlay_equals('rectangles')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
   QTest::newRow( "equals [cached]" ) << "overlay_equals('rectangles',cache:=true)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
 
+  QTest::newRow( "equals NOTEXIST" ) << "overlay_equals('rectangles', backend:='NOTEXIST')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << false;
+
+  // topological
+  QTest::newRow( "equals topological GEOS" ) << "overlay_topologically_equals('rectangles', backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+  QTest::newRow( "equals topological GEOS [cached]" ) << "overlay_topologically_equals('rectangles',cache:=true, backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+  QTest::newRow( "equals topological QGIS" ) << "overlay_topologically_equals('rectangles',cache:=true, backend:='QGIS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << false;
+
+  // exact
+  QTest::newRow( "equals exact GEOS" ) << "overlay_exactly_equals('rectangles', backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+  QTest::newRow( "equals exact GEOS [cached]" ) << "overlay_exactly_equals('rectangles',cache:=true, backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+
+  QTest::newRow( "equals exact QGIS" ) << "overlay_exactly_equals('rectangles', backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+  QTest::newRow( "equals exact QGIS [cached]" ) << "overlay_exactly_equals('rectangles',cache:=true, backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
+
+  // fuzzy
+  QTest::newRow( "equals fuzzy GEOS" ) << "overlay_fuzzy_equals('rectangles', epsilon:=0.71, backend:='GEOS')" << "MULTIPOLYGON(((-160.5 50.5, -145 50, -145 35, -160 35, -160.5 50.5)))" << true;
+  QTest::newRow( "equals fuzzy GEOS [cached]" ) << "overlay_fuzzy_equals('rectangles',cache:=true, epsilon:=0.71, backend:='GEOS')" << "MULTIPOLYGON(((-160.5 50.5, -145 50, -145 35, -160 35, -160.5 50.5)))" << true;
+
+  QTest::newRow( "equals fuzzy QGIS" ) << "overlay_fuzzy_equals('rectangles', epsilon:=0.50, backend:='QGIS')" << "MULTIPOLYGON(((-160.5 50.5, -145 50, -145 35, -160 35, -160.5 50.5)))" << true;
+  QTest::newRow( "equals fuzzy QGIS [cached]" ) << "overlay_fuzzy_equals('rectangles',cache:=true, epsilon:=0.50, backend:='QGIS')" << "MULTIPOLYGON(((-160.5 50.5, -145 50, -145 35, -160 35, -160.5 50.5)))" << true;
+
   QTest::newRow( "equals no match" ) << "overlay_equals('rectangles')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
   QTest::newRow( "equals no match [cached]" ) << "overlay_equals('rectangles',cache:=true)" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
   QTest::newRow( "equals no match different vertices order" ) << "overlay_equals('rectangles')" << "POLYGON((-160 50, -160 35, -145 35, -145 50, -160 50))" << false;
   QTest::newRow( "equals no match different vertices order [cached]" ) << "overlay_equals('rectangles',cache:=true)" << "POLYGON((-160 50, -160 35, -145 35, -145 50, -160 50))" << false;
+
+  QTest::newRow( "equals no match GEOS" ) << "overlay_equals('rectangles', backend:='GEOS')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
+  QTest::newRow( "equals no match GEOS [cached]" ) << "overlay_equals('rectangles',cache:=true, backend:='GEOS')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
 
   QTest::newRow( "disjoint" ) << "overlay_disjoint('rectangles')" << "LINESTRING(-155 15, -122 55, -84 4)" << true;
   QTest::newRow( "disjoint [cached]" ) << "overlay_disjoint('rectangles',cache:=true)" << "LINESTRING(-155 15, -122 55, -84 4)" << true;
@@ -634,6 +660,9 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
 
   QTest::newRow( "equals get ids" ) << "overlay_equals('rectangles',id)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
   QTest::newRow( "equals get ids [cached]" ) << "overlay_equals('rectangles',id,cache:=true)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
+
+  QTest::newRow( "equals get ids GEOS" ) << "overlay_equals('rectangles',id, backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
+  QTest::newRow( "equals get ids [cached] GEOS" ) << "overlay_equals('rectangles',id,cache:=true, backend:='GEOS')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
 
   QTest::newRow( "disjoint get ids" ) << "overlay_disjoint('rectangles',id)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2, 3 };
   QTest::newRow( "disjoint get ids [cached]" ) << "overlay_disjoint('rectangles',id,cache:=true)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2, 3 };

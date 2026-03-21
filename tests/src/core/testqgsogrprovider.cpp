@@ -24,6 +24,7 @@ using namespace Qt::StringLiterals;
 //qgis includes...
 #include "qgis.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
@@ -101,12 +102,12 @@ void TestQgsOgrProvider::setupProxy()
 {
   QgsSettings settings;
   {
-    settings.setValue( u"proxy/proxyEnabled"_s, true );
-    settings.setValue( u"proxy/proxyPort"_s, u"38124"_s );
-    settings.setValue( u"proxy/proxyHost"_s, u"myproxyhostname.com"_s );
-    settings.setValue( u"proxy/proxyUser"_s, u"username"_s );
-    settings.setValue( u"proxy/proxyPassword"_s, u"password"_s );
-    settings.setValue( u"proxy/proxyExcludedUrls"_s, u"http://www.myhost.com|http://www.myotherhost.com"_s );
+    QgsNetworkAccessManager::settingsProxyEnabled->setValue( true );
+    QgsNetworkAccessManager::settingsProxyPort->setValue( u"38124"_s );
+    QgsNetworkAccessManager::settingsProxyHost->setValue( u"myproxyhostname.com"_s );
+    QgsNetworkAccessManager::settingsProxyUser->setValue( u"username"_s );
+    QgsNetworkAccessManager::settingsProxyPassword->setValue( u"password"_s );
+    QgsNetworkAccessManager::settingsProxyExcludedUrls->setValue( u"http://www.myhost.com|http://www.myotherhost.com"_s );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     const QgsVectorLayer vl( mTestDataDir + '/' + u"lines.shp"_s, u"proxy_test"_s, "ogr"_L1 );
     QVERIFY( vl.isValid() );
@@ -118,11 +119,11 @@ void TestQgsOgrProvider::setupProxy()
 
   {
     // Test partial config
-    settings.setValue( u"proxy/proxyEnabled"_s, true );
-    settings.remove( u"proxy/proxyPort"_s );
-    settings.setValue( u"proxy/proxyHost"_s, u"myproxyhostname.com"_s );
-    settings.setValue( u"proxy/proxyUser"_s, u"username"_s );
-    settings.remove( u"proxy/proxyPassword"_s );
+    QgsNetworkAccessManager::settingsProxyEnabled->setValue( true );
+    QgsNetworkAccessManager::settingsProxyPort->remove();
+    QgsNetworkAccessManager::settingsProxyHost->setValue( u"myproxyhostname.com"_s );
+    QgsNetworkAccessManager::settingsProxyUser->setValue( u"username"_s );
+    QgsNetworkAccessManager::settingsProxyPassword->remove();
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     const QgsVectorLayer vl( mTestDataDir + '/' + u"lines.shp"_s, u"proxy_test"_s, "ogr"_L1 );
     QVERIFY( vl.isValid() );
