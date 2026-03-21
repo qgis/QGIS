@@ -642,13 +642,13 @@ class PyQgsOGRProvider(QgisTestCase):
     def testSetupProxy(self):
         """Test proxy setup"""
         settings = QgsSettings()
-        settings.setValue("proxy/proxyEnabled", True)
-        settings.setValue("proxy/proxyPort", "1234")
-        settings.setValue("proxy/proxyHost", "myproxyhostname.com")
-        settings.setValue("proxy/proxyUser", "username")
-        settings.setValue("proxy/proxyPassword", "password")
+        settings.setValue("proxy/proxy-enabled", True)
+        settings.setValue("proxy/proxy-port", "1234")
+        settings.setValue("proxy/proxy-host", "myproxyhostname.com")
+        settings.setValue("proxy/proxy-user", "username")
+        settings.setValue("proxy/proxy-password", "password")
         settings.setValue(
-            "proxy/proxyExcludedUrls",
+            "proxy/proxy-excluded-urls",
             "http://www.myhost.com|http://www.myotherhost.com",
         )
         QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
@@ -661,13 +661,13 @@ class PyQgsOGRProvider(QgisTestCase):
             gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username:password"
         )
 
-        settings.setValue("proxy/proxyEnabled", True)
-        settings.remove("proxy/proxyPort")
-        settings.setValue("proxy/proxyHost", "myproxyhostname.com")
-        settings.setValue("proxy/proxyUser", "username")
-        settings.remove("proxy/proxyPassword")
+        settings.setValue("proxy/proxy-enabled", True)
+        settings.remove("proxy/proxy-port")
+        settings.setValue("proxy/proxy-host", "myproxyhostname.com")
+        settings.setValue("proxy/proxy-user", "username")
+        settings.remove("proxy/proxy-password")
         settings.setValue(
-            "proxy/proxyExcludedUrls",
+            "proxy/proxy-excluded-urls",
             "http://www.myhost.com|http://www.myotherhost.com",
         )
         QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
@@ -676,7 +676,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
-        settings.setValue("proxy/proxyEnabled", False)
+        settings.setValue("proxy/proxy-enabled", False)
         QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
         gdal.SetConfigOption("GDAL_HTTP_PROXY", "")
         gdal.SetConfigOption("GDAL_HTTP_PROXYUSERPWD", "")

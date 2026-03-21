@@ -160,6 +160,9 @@ void QgsMssqlProviderConnection::renameTablePrivate( const QString &schema, cons
   sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'geometry_columns' )\n"
          "UPDATE geometry_columns SET f_table_name = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s
            .arg( QgsMssqlUtils::quotedValue( newName ), QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( name ) );
+  sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'layer_styles' )\n"
+         "UPDATE layer_styles SET f_table_name = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s
+           .arg( QgsMssqlUtils::quotedValue( newName ), QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( name ) );
   executeSqlPrivate( sql );
 }
 
@@ -888,6 +891,9 @@ void QgsMssqlProviderConnection::moveTableToSchema( const QString &sourceSchema,
   QString sql = u"ALTER SCHEMA %1 TRANSFER %2.%3;\n"_s.arg( QgsMssqlUtils::quotedIdentifier( targetSchema ), QgsMssqlUtils::quotedIdentifier( sourceSchema ), QgsMssqlUtils::quotedIdentifier( tableName ) );
   sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'geometry_columns' )\n"
          "UPDATE geometry_columns SET f_table_schema = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s
+           .arg( QgsMssqlUtils::quotedValue( targetSchema ), QgsMssqlUtils::quotedValue( sourceSchema ), QgsMssqlUtils::quotedValue( tableName ) );
+  sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'layer_styles' )\n"
+         "UPDATE layer_styles SET f_table_schema = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s
            .arg( QgsMssqlUtils::quotedValue( targetSchema ), QgsMssqlUtils::quotedValue( sourceSchema ), QgsMssqlUtils::quotedValue( tableName ) );
   executeSqlPrivate( sql );
 }

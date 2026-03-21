@@ -41,6 +41,7 @@ class QAction;
 class QAbstractButton;
 class QgsMapMouseEvent;
 class QMenu;
+class QgsSettingsEntryDouble;
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -222,6 +223,16 @@ class GUI_EXPORT QgsMapTool : public QObject
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
     */
     static double searchRadiusMM();
+
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for the search/identify radius in mm.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryDouble *settingSearchRadiusMM;
+
+#endif
 
     /**
      * Gets search radius in map units for given context. Used by identify, tip etc.

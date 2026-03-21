@@ -30,7 +30,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
@@ -53,8 +53,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
   //get default layout font from settings
-  const QgsSettings settings;
-  const QString defaultFontString = settings.value( u"LayoutDesigner/defaultFont"_s, QVariant(), QgsSettings::Gui ).toString();
+  const QString defaultFontString = QgsLayout::settingsLayoutDefaultFont->value();
   if ( !defaultFontString.isEmpty() )
   {
     QFont f = mFormat.font();

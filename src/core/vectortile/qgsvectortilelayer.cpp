@@ -730,7 +730,7 @@ void QgsVectorTileLayer::selectByGeometry(
   else
   {
     // we have a polygon - maybe it is a rectangle - in such case we can avoid costly instersection tests later
-    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isTopologicallyEqual( selectionGeom );
   }
 
   auto addDerivedFields = []( QgsFeature &feature, const int tileZoom, const QString &layer ) {
