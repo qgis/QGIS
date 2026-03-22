@@ -84,7 +84,7 @@ Returns z
 };
 
 
-uint qHash( QgsPointCloudNodeId id );
+size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 );
 %Docstring
 Hash function for indexed nodes
 %End
