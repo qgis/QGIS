@@ -87,11 +87,6 @@ int QgsPointCloudNodeId::z() const
   return mZ;
 }
 
-uint qHash( QgsPointCloudNodeId id )
-{
-  return id.d() + id.x() + id.y() + id.z();
-}
-
 ///@cond PRIVATE
 
 //
@@ -110,10 +105,6 @@ bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) con
   return mNode == other.mNode && mUri == other.mUri && mRequest == other.mRequest && mSubsetString == other.mSubsetString;
 }
 
-uint qHash( const QgsPointCloudCacheKey &key )
-{
-  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.subsetString() );
-}
 
 //
 // QgsPointCloudNode
