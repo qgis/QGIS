@@ -98,7 +98,10 @@ class CORE_EXPORT QgsPointCloudNodeId
 Q_DECLARE_TYPEINFO( QgsPointCloudNodeId, Q_PRIMITIVE_TYPE );
 
 //! Hash function for indexed nodes
-CORE_EXPORT uint qHash( QgsPointCloudNodeId id );
+inline size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 )
+{
+  return qHashMulti( seed, id.d(), id.x(), id.y(), id.z() );
+}
 
 #ifndef SIP_RUN
 
@@ -139,7 +142,10 @@ class CORE_EXPORT QgsPointCloudCacheKey
 };
 
 //! Hash function for QgsPointCloudCacheKey
-uint qHash( const QgsPointCloudCacheKey &key );
+inline size_t qHash( const QgsPointCloudCacheKey &key, size_t seed = 0 )
+{
+  return qHashMulti( seed, key.node(), key.request(), key.uri(), key.subsetString() );
+}
 
 #endif // !SIP_RUN
 
