@@ -423,7 +423,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
     auto outerCc = std::make_unique< QgsCompoundCurve >();
 
     QgsCircle outerCircle = QgsCircle( center, outerRadius );
-    outerCc->addCurve( outerCircle.toCircularString() );
+    outerCc->addCurve( outerCircle.toCircularString().release() );
 
     auto cp = std::make_unique< QgsCurvePolygon >();
     cp->setExteriorRing( outerCc.release() );
@@ -433,7 +433,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
       auto innerCc = std::make_unique< QgsCompoundCurve >();
 
       QgsCircle innerCircle = QgsCircle( center, innerRadius );
-      innerCc->addCurve( innerCircle.toCircularString() );
+      innerCc->addCurve( innerCircle.toCircularString().release() );
 
       cp->setInteriorRings( { innerCc.release() } );
     }
