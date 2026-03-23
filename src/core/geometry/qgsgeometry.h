@@ -1909,12 +1909,13 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * The optional \a feedback argument was added in QGIS 4.2 to support early cancellation.
      *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      *
      * \since QGIS 3.28
      */
-    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const SIP_THROW( QgsNotSupportedException );
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false, QgsFeedback * feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.

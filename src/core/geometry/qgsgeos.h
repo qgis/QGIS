@@ -801,6 +801,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \param targetPercent
      * \param allowHoles
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns concave geometry that encloses the input geometry
      *
@@ -808,7 +809,9 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \see convexHull()
      * \since QGIS 3.28
      */
-    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge

@@ -2919,7 +2919,7 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( std::move( cHull ) );
 }
 
-QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) const
+QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2927,7 +2927,7 @@ QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) co
   }
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError, feedback ) );
   if ( !concaveHull )
   {
     QgsGeometry geom;

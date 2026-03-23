@@ -2010,7 +2010,7 @@ can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the
 returned geometry.
 %End
 
-    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const;
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false, QgsFeedback * feedback = 0 ) const;
 %Docstring
 Returns a possibly concave polygon that contains all the points in the
 geometry.
@@ -2021,6 +2021,9 @@ geometry.
 If an error was encountered while creating the result, more information
 can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the
 returned geometry.
+
+The optional ``feedback`` argument was added in QGIS 4.2 to support
+early cancellation.
 
 :raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or
                                   earlier.
