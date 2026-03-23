@@ -2251,9 +2251,14 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
 
   if ( mPreloadedProvider )
-    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
+  {
+    QgsDebugMsgLevel( u"Attaching map layer %1 to preloaded data provider. Provider belongs to thread %2"_s.arg( id(), QgsThreadingUtils::threadDescription( mPreloadedProvider->thread() ) ), 2 );
+    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() ); 
+  }
   else
+  {
     mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+  }
 
   if ( !mDataProvider )
   {
