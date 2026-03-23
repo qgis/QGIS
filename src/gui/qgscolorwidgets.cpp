@@ -843,7 +843,7 @@ QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-  mBoxImage = std::make_unique<QImage>( width() - mMargin * 2, height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( static_cast<float>( width() ) - mMargin * 2, static_cast<float>( height() ) - mMargin * 2, QImage::Format_RGB32 );
 }
 
 QgsColorBox::~QgsColorBox()
