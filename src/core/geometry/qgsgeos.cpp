@@ -2236,7 +2236,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
   ( void ) allowHoles;
@@ -2251,6 +2251,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercen
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr concaveHull( GEOSConcaveHull_r( QgsGeosContext::get(), mGeos.get(), targetPercent, allowHoles ) );
     std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
     return concaveHullGeom;
