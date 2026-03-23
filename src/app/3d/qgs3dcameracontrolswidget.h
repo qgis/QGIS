@@ -18,6 +18,7 @@
 
 class QStandardItemModel;
 class Qgs3DMapCanvas;
+class QgsSettingsEntryBool;
 
 #include "ui_qgs3dcameracontrolswidget.h"
 
@@ -28,6 +29,8 @@ class APP_EXPORT Qgs3DCameraControlsWidget : public QWidget, Ui::Qgs3DCameraCont
 {
     Q_OBJECT
   public:
+    static const QgsSettingsEntryBool *setting3DCameraControlsLiveUpdate;
+
     explicit Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:

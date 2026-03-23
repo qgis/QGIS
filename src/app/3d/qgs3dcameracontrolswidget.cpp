@@ -22,7 +22,7 @@
 #include "qgscameracontroller.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayoututils.h"
-#include "qgssettings.h"
+#include "qgssettingstree.h"
 
 #include <QPushButton>
 #include <QString>
@@ -31,6 +31,8 @@
 #include "moc_qgs3dcameracontrolswidget.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *Qgs3DCameraControlsWidget::setting3DCameraControlsLiveUpdate = new QgsSettingsEntryBool( u"camera-controls-live-update"_s, QgsSettingsTree::sTree3DMap, true, u"Whether the 3D map is dynamically updated while camera controls are edited"_s );
 
 Qgs3DCameraControlsWidget::Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
@@ -45,8 +47,7 @@ Qgs3DCameraControlsWidget::Qgs3DCameraControlsWidget( Qgs3DMapCanvas *canvas, QW
   connect( mButtonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &Qgs3DCameraControlsWidget::applySettings );
   connect( mLiveApplyCheck, &QCheckBox::toggled, this, &Qgs3DCameraControlsWidget::liveApplyToggled );
 
-  QgsSettings settings;
-  mLiveApplyCheck->setChecked( settings.value( u"UI/3DCameraControlsLiveUpdate"_s, true ).toBool() );
+  mLiveApplyCheck->setChecked( setting3DCameraControlsLiveUpdate->value() );
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !mLiveApplyCheck->isChecked() );
   if ( mLiveApplyCheck->isChecked() )
     connectLiveUpdates();
@@ -104,8 +105,7 @@ void Qgs3DCameraControlsWidget::autoApply()
 
 void Qgs3DCameraControlsWidget::liveApplyToggled( const bool liveUpdateEnabled )
 {
-  QgsSettings settings;
-  settings.setValue( u"UI/3DCameraControlsLiveUpdate"_s, liveUpdateEnabled );
+  setting3DCameraControlsLiveUpdate->setValue( liveUpdateEnabled );
   mButtonBox->button( QDialogButtonBox::Apply )->setEnabled( !liveUpdateEnabled );
   if ( liveUpdateEnabled )
   {
