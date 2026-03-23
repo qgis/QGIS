@@ -93,7 +93,7 @@ int QgsPointCloudNodeId::z() const
 // QgsPointCloudCacheKey
 //
 
-QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri )
+QgsPointCloudCacheKey::QgsPointCloudCacheKey( QgsPointCloudNodeId n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri )
   : mNode( n )
   , mUri( uri )
   , mRequest( request )
@@ -148,13 +148,13 @@ QgsAbstractPointCloudIndex::QgsAbstractPointCloudIndex() = default;
 
 QgsAbstractPointCloudIndex::~QgsAbstractPointCloudIndex() = default;
 
-bool QgsAbstractPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsAbstractPointCloudIndex::hasNode( QgsPointCloudNodeId n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
   return mHierarchy.contains( n );
 }
 
-QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( QgsPointCloudNodeId id ) const
 {
   Q_ASSERT( hasNode( id ) );
 
@@ -278,7 +278,7 @@ void QgsAbstractPointCloudIndex::copyCommonProperties( QgsAbstractPointCloudInde
   destination->mFilterExpression = mFilterExpression;
 }
 
-QgsPointCloudBlock *QgsAbstractPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+QgsPointCloudBlock *QgsAbstractPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
 {
   QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
 
@@ -287,13 +287,13 @@ QgsPointCloudBlock *QgsAbstractPointCloudIndex::getNodeDataFromCache( const QgsP
   return cached ? cached->clone() : nullptr;
 }
 
-void QgsAbstractPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const
+void QgsAbstractPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) const
 {
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }
 
 void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic(
-  QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri
+  QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri
 )
 {
   if ( !data )
@@ -386,13 +386,13 @@ QgsPointCloudNodeId QgsPointCloudIndex::root() const
   return mIndex->root();
 }
 
-bool QgsPointCloudIndex::hasNode( const QgsPointCloudNodeId &id ) const
+bool QgsPointCloudIndex::hasNode( QgsPointCloudNodeId id ) const
 {
   Q_ASSERT( mIndex );
   return mIndex->hasNode( id );
 }
 
-QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsPointCloudIndex::getNode( QgsPointCloudNodeId id ) const
 {
   Q_ASSERT( mIndex );
   return mIndex->getNode( id );
@@ -404,13 +404,13 @@ QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
   return mIndex->attributes();
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   Q_ASSERT( mIndex );
   return mIndex->nodeData( n, request );
 }
 
-QgsPointCloudBlockRequest *QgsPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsPointCloudIndex::asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   Q_ASSERT( mIndex );
   return mIndex->asyncNodeData( n, request );
@@ -481,13 +481,13 @@ QString QgsPointCloudIndex::subsetString() const
   return mIndex->subsetString();
 }
 
-QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
 {
   Q_ASSERT( mIndex );
   return mIndex->getNodeDataFromCache( node, request );
 }
 
-void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request )
 {
   Q_ASSERT( mIndex );
   mIndex->storeNodeDataToCache( data, node, request );

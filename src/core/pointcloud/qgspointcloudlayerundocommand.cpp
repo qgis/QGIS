@@ -132,7 +132,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
     QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( index.get() );
     QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 
-    QtConcurrent::blockingMap( nodesData.keyValueBegin(), nodesData.keyValueEnd(), [editIndex, copcIndex, isUndo, attribute, newValue]( std::pair<const QgsPointCloudNodeId &, PerNodeData &> pair ) {
+    QtConcurrent::blockingMap( nodesData.keyValueBegin(), nodesData.keyValueEnd(), [editIndex, copcIndex, isUndo, attribute, newValue]( std::pair<QgsPointCloudNodeId, PerNodeData &> pair ) {
       QgsPointCloudNodeId node = pair.first;
       PerNodeData &perNodeData = pair.second;
 

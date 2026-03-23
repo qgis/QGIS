@@ -98,7 +98,7 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
 
     QVector<int> selectedPointsInNode(
       const QgsGeos &searchPolygon,
-      const QgsPointCloudNodeId &n,
+      QgsPointCloudNodeId n,
       const MapToPixel3D &mapToPixel3D,
       QgsPointCloudIndex index,
       QgsRectangle mapExtent,
