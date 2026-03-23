@@ -742,7 +742,7 @@ void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle
   QgsDebugMsgLevel( u"Putting oauth2 bundle for authcfg: %1"_s.arg( authcfg ), 2 );
   mOAuth2ConfigCache.insert( authcfg, bundle );
   // Restart the timer so that we have a full interval before the next cleanup
-  mCacheHousekeepingTimer.start();
+  QMetaObject::invokeMethod( &mCacheHousekeepingTimer, qOverload<>( &QTimer::start ), Qt::QueuedConnection );
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
