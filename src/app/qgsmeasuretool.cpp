@@ -225,19 +225,7 @@ void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent *e )
     addPoint( point );
   }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 7, 0 ) && QT_VERSION < QT_VERSION_CHECK( 6, 9, 3 )
-  // Workaround for QTBUG-139291 (Qt 6.7.0 – 6.9.2): QDialog::setVisible() bypasses
-  // QWidget::setVisible(), so WA_WState_ExplicitShowHide is never set. This causes
-  // every show() call on an already-visible dialog to emit QShowEvent, which triggers
-  // QgsWidgetStateHelper::restoreGeometry() and repositions the dialog.
-  // Fixed in Qt 6.9.3 (commit c0abf94edb8).
-  if ( !mDialog->isVisible() )
-    mDialog->show();
-  else
-    mDialog->raise();
-#else
   mDialog->show();
-#endif
 }
 
 void QgsMeasureTool::undo()
