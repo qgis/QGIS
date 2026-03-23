@@ -64,7 +64,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material settings used for shading of the symbol
-    QgsAbstractMaterialSettings *materialSettings() const;
+    QgsAbstractMaterialSettings *materialSettings() const override;
 
     /**
      * Sets the \a material settings used for shading of the symbol.

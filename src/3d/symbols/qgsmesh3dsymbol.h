@@ -109,7 +109,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setHeight( float height ) { mHeight = height; }
 
     //! Returns material settings used for shading of the symbol
-    QgsAbstractMaterialSettings *materialSettings() const;
+    QgsAbstractMaterialSettings *materialSettings() const override;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
