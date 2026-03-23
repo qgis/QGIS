@@ -1632,7 +1632,8 @@ void QgsProject::preloadProviders(
           std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
           Q_ASSERT( provider && provider->isValid() );
 
-          QgsDebugMsgLevel( u"Retrieved created provider for %1 (belongs to thread %2)"_s.arg( layId, QgsThreadingUtils::threadDescription(provider->thread() ) ), 2 );
+          provider->moveToThread( QThread::currentThread() );
+          QgsDebugMsgLevel( u"Retrieved created provider for %1 (belongs to thread %2)"_s.arg( layId, QgsThreadingUtils::threadDescription( provider->thread() ) ), 2 );
 
           loadedProviders.insert( layId, provider.release() );
           emit layerLoaded( i, totalProviderCount );
