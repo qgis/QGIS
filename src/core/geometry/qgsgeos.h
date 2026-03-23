@@ -69,6 +69,42 @@ class CORE_EXPORT QgsGeosContext
 };
 
 /**
+ * \ingroup core
+ *
+ * \brief Scoped object for setting the current thread GEOS context feedback object.
+ *
+ * Temporarily overrides the current thread GEOS context feedback object, resetting it to NULLPTR on destruction.
+ *
+ * \note Not available in Python bindings
+ * \note Requires GEOS 3.14 or later. On earlier GEOS versions this has no effect.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsScopedGeosContextRegisterFeedback
+{
+  public:
+    /**
+   * Registers a \a feedback object for GEOS interruption checking.
+   *
+   * Applies to the current thread only.
+   *
+   * The \a feedback object must exist for the lifetime of this object.
+   */
+    QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback );
+
+    /**
+   * Resets the GEOS interruption checker for the current thread.
+   */
+    ~QgsScopedGeosContextRegisterFeedback();
+
+  private:
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+    static int callback( void *userData );
+#endif
+    QgsFeedback *mFeedback = nullptr;
+};
+
+/**
  * Contains geos related utilities and functions.
  * \note not available in Python bindings.
  */
