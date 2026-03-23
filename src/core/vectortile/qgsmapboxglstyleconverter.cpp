@@ -2120,7 +2120,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     }
 
     spacingProp.setActive( true );
-    ddLabelProperties.setProperty( QgsPalLayerSettings::Property::RemoveDuplicateLabels, spacingProp );
+    ddLabelProperties.setProperty( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance, spacingProp );
   }
 
   if ( textSize >= 0 )

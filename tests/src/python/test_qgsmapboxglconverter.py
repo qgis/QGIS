@@ -2979,7 +2979,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(has_labeling)
         ls = labeling.labelSettings()
         dd = ls.dataDefinedProperties()
-        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
         self.assertTrue(prop.isActive())
         self.assertEqual(prop.asExpression(), "250")
 
@@ -3005,7 +3005,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(has_labeling)
         ls = labeling.labelSettings()
         dd = ls.dataDefinedProperties()
-        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
         self.assertTrue(prop.isActive())
         self.assertEqual(
             prop.asExpression(),
@@ -3037,7 +3037,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         ls = labeling.labelSettings()
         dd = ls.dataDefinedProperties()
-        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabels)
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
 
         self.assertTrue(prop.isActive())
         self.assertEqual(
