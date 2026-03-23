@@ -320,7 +320,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * Returns a circular string from the circle.
      * \param oriented If oriented is TRUE the start point is from azimuth instead from north.
      */
-    QgsCircularString *toCircularString( bool oriented = false ) const;
+    std::unique_ptr< QgsCircularString > toCircularString( bool oriented = false ) const;
 
     //! Returns TRUE if the circle contains the \a point.
     bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;

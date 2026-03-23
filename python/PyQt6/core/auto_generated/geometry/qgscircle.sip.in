@@ -336,7 +336,7 @@ North.
 .. seealso:: :py:func:`quadrant`
 %End
 
-    QgsCircularString *toCircularString( bool oriented = false ) const;
+    std::unique_ptr< QgsCircularString > toCircularString( bool oriented = false ) const;
 %Docstring
 Returns a circular string from the circle.
 
