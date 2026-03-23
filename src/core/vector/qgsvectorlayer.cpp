@@ -2253,7 +2253,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( mPreloadedProvider )
   {
     QgsDebugMsgLevel( u"Attaching map layer %1 to preloaded data provider. Provider belongs to thread %2"_s.arg( id(), QgsThreadingUtils::threadDescription( mPreloadedProvider->thread() ) ), 2 );
-    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() ); 
+    mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
   }
   else
   {
