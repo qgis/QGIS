@@ -106,7 +106,7 @@ Keeps metadata for an indexed point cloud node.
 #include "qgspointcloudindex.h"
 %End
   public:
-    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
+    QgsPointCloudNode( QgsPointCloudNodeId id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
 %Docstring
 Constructs new node object. Should only be called by
 :py:func:`QgsAbstractPointCloudIndex.getNode()`. Bounds should always be
@@ -249,14 +249,14 @@ Returns root node of the index
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.root`
 %End
 
-    bool hasNode( const QgsPointCloudNodeId &id ) const;
+    bool hasNode( QgsPointCloudNodeId id ) const;
 %Docstring
 Returns whether the octree contain given node
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.hasNode`
 %End
 
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+    QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const;
 %Docstring
 Returns object for a given node
 
