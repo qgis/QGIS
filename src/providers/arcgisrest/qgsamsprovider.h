@@ -238,6 +238,7 @@ class QgsAmsProviderMetadata : public QgsProviderMetadata
   public:
     QgsAmsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
