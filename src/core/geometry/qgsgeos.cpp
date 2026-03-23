@@ -3919,12 +3919,17 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
 }
 
 QgsScopedGeosContextRegisterFeedback::QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
   : mFeedback( feedback )
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
   GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), &callback, reinterpret_cast< void * >( mFeedback ) );
-#endif
 }
+#else
+{
+  ( void ) feedback;
+}
+#endif
+
 
 QgsScopedGeosContextRegisterFeedback::~QgsScopedGeosContextRegisterFeedback()
 {
