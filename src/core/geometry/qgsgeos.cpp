@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <memory>
 
 #include "qgsabstractgeometry.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
@@ -45,14 +46,18 @@ using namespace Qt::StringLiterals;
     return r;                  \
   }
 
-#define CATCH_GEOS_WITH_ERRMSG( r ) \
-  catch ( QgsGeosException & e )    \
-  {                                 \
-    if ( errorMsg )                 \
-    {                               \
-      *errorMsg = e.what();         \
-    }                               \
-    return r;                       \
+#define CATCH_GEOS_WITH_ERRMSG( r )                                                 \
+  catch ( QgsGeosException & e )                                                    \
+  {                                                                                 \
+    if ( errorMsg )                                                                 \
+    {                                                                               \
+      *errorMsg = e.what();                                                         \
+      if ( errorMsg->startsWith( "InterruptedException"_L1, Qt::CaseInsensitive ) ) \
+      {                                                                             \
+        errorMsg->clear();                                                          \
+      }                                                                             \
+    }                                                                               \
+    return r;                                                                       \
   }
 
 /// @cond PRIVATE
@@ -3911,3 +3916,29 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
 
   return maxDigits;
 }
+
+QgsScopedGeosContextRegisterFeedback::QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback )
+  : mFeedback( feedback )
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+  GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), &callback, reinterpret_cast< void * >( mFeedback ) );
+#endif
+}
+
+QgsScopedGeosContextRegisterFeedback::~QgsScopedGeosContextRegisterFeedback()
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+  GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), nullptr, nullptr );
+#endif
+}
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+int QgsScopedGeosContextRegisterFeedback::callback( void *userData )
+{
+  if ( !userData )
+    return 0;
+
+  QgsFeedback *feedback = reinterpret_cast< QgsFeedback * >( userData );
+  return feedback && feedback->isCanceled() ? 1 : 0;
+}
+#endif
