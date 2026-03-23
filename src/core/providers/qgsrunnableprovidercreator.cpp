@@ -15,10 +15,10 @@
  ***************************************************************************/
 #include "qgsrunnableprovidercreator.h"
 
+#include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
-#include "qgslogger.h"
 
 #include <QDebug>
 #include <QString>
@@ -51,7 +51,9 @@ void QgsRunnableProviderCreator::run()
 
   QgsDebugMsgLevel( u"Created provider for %1: %2 - %3 belongs to thread %4"_s.arg( mLayerId, mProviderKey, mDataSource, QgsThreadingUtils::threadDescription( mDataProvider->thread() ) ), 2 );
 
-  mDataProvider->moveToThread( QObject::thread() );
+  // detach from thread, so that the creator of QgsRunnableProviderCreator can "pull" the data provider
+  // (we can't push it to a thread here, because we don't know what the target thread for the owner will be)
+  mDataProvider->moveToThread( nullptr );
 
   emit providerCreated( mDataProvider->isValid(), mLayerId );
 }
