@@ -50,9 +50,7 @@ def sanitize(endpoint, x):
         ">", "_"
     ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
         "/", "_"
-    ).replace(
-        "\n", "_"
-    )
+    ).replace("\n", "_")
     # print('Sanitize: ' + x)
     return ret
 
@@ -474,7 +472,9 @@ class TestLayerDependencies(QgisTestCase):
         )
 
         self.assertTrue(
-            self.cachedLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
+            self.cachedLayer.setDependencies(
+                [QgsMapLayerDependency(self.linesLayer.id())]
+            )
         )
 
         spy_cached_provider_data_changed = QSignalSpy(
