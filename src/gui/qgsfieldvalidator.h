@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     // Disables copy constructing
     Q_DISABLE_COPY( QgsFieldValidator )
 
-    QValidator *mValidator = nullptr;
+    std::unique_ptr<QValidator> mValidator;
     QgsField mField;
     QString mNullValue;
     QString mDefaultValue;

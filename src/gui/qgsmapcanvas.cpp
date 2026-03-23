@@ -284,8 +284,6 @@ QgsMapCanvas::~QgsMapCanvas()
   qDeleteAll( mScene->items() );
 
   mScene->deleteLater(); // crashes in python tests on windows
-
-  delete mCache;
 }
 
 void QgsMapCanvas::addOverlayWidget( QWidget *widget, Qt::Edge edge )
@@ -652,19 +650,18 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
 
   if ( enabled )
   {
-    mCache = new QgsMapRendererCache;
+    mCache = std::make_unique<QgsMapRendererCache>();
   }
   else
   {
-    delete mCache;
-    mCache = nullptr;
+    mCache.reset();
   }
   mPreviousRenderedItemResults.reset();
 }
 
 bool QgsMapCanvas::isCachingEnabled() const
 {
-  return nullptr != mCache;
+  return nullptr != mCache.get();
 }
 
 void QgsMapCanvas::clearCache()
@@ -680,7 +677,7 @@ void QgsMapCanvas::clearCache()
 
 QgsMapRendererCache *QgsMapCanvas::cache()
 {
-  return mCache;
+  return mCache.get();
 }
 
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
@@ -858,7 +855,7 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererSequentialJob( renderSettings );
 
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
-  mJob->setCache( mCache );
+  mJob->setCache( mCache.get() );
   mJob->setLayerRenderingTimeHints( mLastLayerRenderTime );
 
   mJob->start();

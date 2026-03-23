@@ -39,7 +39,7 @@ using namespace Qt::StringLiterals;
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )
-  , ui( new Ui::QgsDataSourceManagerDialog )
+  , ui( std::make_unique<Ui::QgsDataSourceManagerDialog>() )
   , mMapCanvas( canvas )
   , mBrowserModel( browserModel )
 {
@@ -115,9 +115,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
-{
-  delete ui;
-}
+{}
 
 void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
