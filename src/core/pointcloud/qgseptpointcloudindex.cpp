@@ -369,7 +369,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -424,7 +424,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPo
   return block;
 }
 
-QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -464,7 +464,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
   return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), mAuthCfg );
 }
 
-bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsEptPointCloudIndex::hasNode( QgsPointCloudNodeId n ) const
 {
   return loadNodeHierarchy( n );
 }
@@ -479,7 +479,7 @@ qint64 QgsEptPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
-QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsEptPointCloudIndex::getNode( QgsPointCloudNodeId id ) const
 {
   QgsPointCloudNode node = QgsAbstractPointCloudIndex::getNode( id );
 
@@ -527,7 +527,7 @@ QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
-bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
+bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( QgsPointCloudNodeId nodeId ) const
 {
   mHierarchyMutex.lock();
   const bool foundInHierarchy = mHierarchy.contains( nodeId );
@@ -605,7 +605,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &
   return true;
 }
 
-QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( const QgsPointCloudNodeId &nodeId ) const
+QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( QgsPointCloudNodeId nodeId ) const
 {
   QVector<QgsPointCloudNodeId> path;
   QgsPointCloudNodeId currentNode = nodeId;
@@ -618,7 +618,7 @@ QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( const QgsPoi
   return path;
 }
 
-bool QgsEptPointCloudIndex::loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
+bool QgsEptPointCloudIndex::loadNodeHierarchy( QgsPointCloudNodeId nodeId ) const
 {
   bool found;
   {

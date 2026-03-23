@@ -352,7 +352,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       pointCount += node.pointCount();
       nodes.push_back( node.id() );
     }
-    for ( const QgsPointCloudNodeId &child : node.children() )
+    for ( QgsPointCloudNodeId child : node.children() )
     {
       queue.push_back( child );
     }
@@ -363,7 +363,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
   qint64 pointsExported = 0;
-  for ( const QgsPointCloudNodeId &node : nodes )
+  for ( QgsPointCloudNodeId node : nodes )
   {
     block = mParent->mIndex.nodeData( node, request );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
