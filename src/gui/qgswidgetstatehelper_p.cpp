@@ -50,10 +50,6 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
     QWidget *widget = qobject_cast<QWidget *>( object );
 
     // Skip geometry restore if the widget has already been shown once.
-    // Workaround for QTBUG-139291 (Qt 6.7.0 – 6.9.2): QDialog::setVisible() bypasses
-    // QWidget::setVisible(), so WA_WState_ExplicitShowHide is never set. This causes
-    // every show() on an already-visible QDialog to emit a spurious QShowEvent, which
-    // would re-restore the saved geometry and reposition the window.
     if ( widget->property( "widgetStateHelperWasShown" ).toBool() )
       return QObject::eventFilter( object, event );
 
