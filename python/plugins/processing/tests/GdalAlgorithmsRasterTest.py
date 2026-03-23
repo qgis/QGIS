@@ -28,6 +28,7 @@ import nose2
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsPointXY,
+    QgsProcessing,
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
@@ -40,6 +41,7 @@ from qgis.core import (
 )
 from qgis.testing import QgisTestCase, start_app, unittest
 
+import processing
 from processing.algs.gdal.aspect import aspect
 from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.buildvrt import buildvrt
@@ -6652,6 +6654,19 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     f"--recursive --detailed --input {indir} --output {outsource}",
                 ],
             )
+
+    def testGdalTranslateRun(self):
+
+        res = processing.run(
+            "gdal:translate",
+            {
+                "DISTANCE": 1,
+                "INPUT": os.path.join(testDataPath, "dem.tif"),
+                "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
+            },
+            context=QgsProcessingContext(),
+        )
+        self.assertIn("OUTPUT", res)
 
 
 if __name__ == "__main__":
