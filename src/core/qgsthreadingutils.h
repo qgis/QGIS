@@ -318,6 +318,13 @@ class CORE_EXPORT QgsThreadingUtils
     //! Mutex protecting sEmittedWarnings
     static QMutex sEmittedWarningMutex;
 #endif
+
+    /**
+     * Returns a descriptive identifier for a \a thread.
+     *
+     * \since QGIS 4.2
+     */
+    static QString threadDescription( QThread *thread );
 };
 
 
