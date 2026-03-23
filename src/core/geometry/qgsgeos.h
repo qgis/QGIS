@@ -100,8 +100,8 @@ class CORE_EXPORT QgsScopedGeosContextRegisterFeedback
   private:
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
     static int callback( void *userData );
-#endif
     QgsFeedback *mFeedback = nullptr;
+#endif
 };
 
 /**
