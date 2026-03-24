@@ -165,7 +165,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       if ( mRemainingFeatureIds.empty() )
         return false;
 
-      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, QgsRectangle(), mInterruptionChecker );
+      bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, mInterruptionChecker );
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
         return false;
 
@@ -196,7 +196,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         bool isDeleted = mSource->sharedData()->isDeleted( mFeatureIterator );
         if ( !isDeleted )
         {
-          success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
+          success = mSource->sharedData()->getFeature( mFeatureIterator, f, mInterruptionChecker );
         }
 
         if ( !mFeatureIdList.empty() )

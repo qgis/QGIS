@@ -108,7 +108,6 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * \param fetchAttributes
      * \param fetchM
      * \param fetchZ
-     * \param filterRect
      * \param errorTitle
      * \param errorText
      * \param requestHeaders
@@ -124,7 +123,6 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
       const QStringList &fetchAttributes,
       bool fetchM,
       bool fetchZ,
-      const QgsRectangle &filterRect,
       QString &errorTitle,
       QString &errorText,
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
