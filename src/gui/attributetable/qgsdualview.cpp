@@ -81,6 +81,7 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   // Set preview icon
   mActionExpressionPreview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionPreview.svg" ) ) );
+  mActionExpressionPreview->setText( tr( "Expression" ) );
 
   // Connect layer list preview signals
   connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
@@ -244,15 +245,20 @@ void QgsDualView::columnBoxInit()
     const QString fieldName = field.name();
     if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldName ).type() != QLatin1String( "Hidden" ) )
     {
-      const QIcon icon = mLayer->fields().iconForField( fieldIndex );
-      const QString text = mLayer->attributeDisplayName( fieldIndex );
+      const QIcon fieldIcon = mLayer->fields().iconForField( fieldIndex );
+      const QString fieldDisplayName = mLayer->attributeDisplayName( fieldIndex );
 
       // Generate action for the preview popup button of the feature list
-      QAction *previewAction = new QAction( icon, text, mFeatureListPreviewButton );
+      QAction *previewAction = new QAction( fieldIcon, fieldDisplayName, mFeatureListPreviewButton );
       connect( previewAction, &QAction::triggered, this, [this, previewAction, fieldName] { previewColumnChanged( previewAction, fieldName ); } );
       mPreviewColumnsMenu->addAction( previewAction );
 
-      if ( text == displayExpression || QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( text ) == displayExpression || QStringLiteral( "\"%1\"" ).arg( text ) == displayExpression )
+      if ( fieldDisplayName == displayExpression
+           || QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( fieldDisplayName ) == displayExpression
+           || QStringLiteral( "\"%1\"" ).arg( fieldDisplayName ) == displayExpression
+           || fieldName == displayExpression
+           || QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( fieldName ) == displayExpression
+           || QStringLiteral( "\"%1\"" ).arg( fieldName ) == displayExpression )
       {
         defaultFieldAction = previewAction;
       }
@@ -294,7 +300,7 @@ void QgsDualView::columnBoxInit()
   }
   else
   {
-    mActionExpressionPreview->setText( displayExpression );
+    mActionExpressionPreview->setToolTip( displayExpression );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
 
     mFeatureListView->setDisplayExpression( displayExpression );
@@ -492,7 +498,9 @@ void QgsDualView::restoreRecentDisplayExpressions()
   const QVariantList previewExpressions = mLayer->customProperty( QStringLiteral( "dualview/previewExpressions" ) ).toList();
 
   for ( const QVariant &previewExpression : previewExpressions )
+  {
     insertRecentlyUsedDisplayExpression( previewExpression.toString() );
+  }
 }
 
 void QgsDualView::saveRecentDisplayExpressions() const
@@ -575,7 +583,8 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   previewAction->setProperty( "previewExpression", expression );
   connect( previewAction, &QAction::triggered, this, [expression, this]( bool ) {
     setDisplayExpression( expression );
-    mFeatureListPreviewButton->setText( expression );
+    mFeatureListPreviewButton->setText( tr( "Expression" ) );
+    mFeatureListPreviewButton->setToolTip( expression );
   } );
 
   mFeatureListPreviewButton->insertAction( mLastDisplayExpressionAction, previewAction );
@@ -771,7 +780,7 @@ void QgsDualView::previewExpressionBuilder()
   if ( dlg.exec() == QDialog::Accepted )
   {
     mFeatureListView->setDisplayExpression( dlg.expressionText() );
-    mActionExpressionPreview->setText( dlg.expressionText() );
+    mActionExpressionPreview->setToolTip( dlg.expressionText() );
 
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
     mFeatureListPreviewButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -788,7 +797,6 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
   }
   else
   {
-    mActionExpressionPreview->setText( tr( "Expression" ) );
     mFeatureListPreviewButton->setText( previewAction->text() );
     mFeatureListPreviewButton->setIcon( previewAction->icon() );
     mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
