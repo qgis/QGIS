@@ -578,33 +578,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             "x": -68.2,
             "y": 70.8
            }
-          },
-          {
-           "attributes": {
-            "OBJECTID": 4,
-            "pk": 4,
-            "cnt": 400,
-            "name": "Honey",
-            "name2":"Honey",
-            "num_char":"4",
-            "dt": """
-                    + str(
-                        QDateTime(
-                            QDate(2021, 5, 4), QTime(13, 13, 14)
-                        ).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "date": """
-                    + str(
-                        QDateTime(QDate(2021, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "time": "13:13:14"
-           },
-           "geometry": {
-            "x": -65.32,
-            "y": 78.3
-           }
           }
          ]
         }"""
