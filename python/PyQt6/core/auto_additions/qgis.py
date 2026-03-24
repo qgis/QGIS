@@ -7729,7 +7729,12 @@ Qgis.MaterialRenderingTechnique.Points.__doc__ = "Point based rendering, require
 Qgis.MaterialRenderingTechnique.TrianglesWithFixedTexture.__doc__ = "Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)"
 Qgis.MaterialRenderingTechnique.TrianglesFromModel.__doc__ = "Triangle based rendering, using a model object source"
 Qgis.MaterialRenderingTechnique.TrianglesDataDefined.__doc__ = "Triangle based rendering with possibility of datadefined color"
-Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques
+Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
 
 .. versionadded:: 4.2
 

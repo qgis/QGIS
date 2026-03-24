@@ -38,6 +38,9 @@ class QgsAbstractMaterial3DHandler;
  * \note It's necessary to implement createMaterialSettings() function.
  * In C++ you can use QgsMaterialSettingsMetadata convenience class.
  *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsMaterialSettingsAbstractMetadata
