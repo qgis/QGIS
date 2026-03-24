@@ -461,10 +461,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
         showMessage( tr( "Geometry errors have been found." ) );
       }
     }
-    if ( allErrors.empty()
-         && QgisApp::instance()->tryCommitChanges( layer )
-         && mLayerChecks[layer].singleFeatureCheckErrors.empty()
-         && mLayerChecks[layer].commitPending )
+    if ( allErrors.empty() && QgisApp::instance()->tryCommitChanges( layer ) && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
     {
       mBypassChecks = true;
       layer->commitChanges( stopEditing );
