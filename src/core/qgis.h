@@ -4297,7 +4297,11 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( Point3DShape )
 
     /**
-     *  Material rendering techniques
+     * Material rendering techniques.
+     *
+     * \warning This is not considered stable API, and may change in future QGIS releases. It is
+     * exposed to the Python bindings as a tech preview only.
+     *
      * \since QGIS 4.2
      */
     enum class MaterialRenderingTechnique : int

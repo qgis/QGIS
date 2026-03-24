@@ -1,3 +1,4 @@
+
 /***************************************************************************
     qgsapplication.h - Accessors for application-wide data
      --------------------------------------
@@ -1041,6 +1042,10 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   /**
    * Returns registry of available 3D materials.
+   *
+   * \warning This is not considered stable API, and may change in future QGIS
+   * releases. It is exposed to the Python bindings as a tech preview only.
+   *
    * \since QGIS 4.2
    */
   static QgsMaterialRegistry *materialRegistry() SIP_KEEPREFERENCE;
