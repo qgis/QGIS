@@ -48,7 +48,7 @@ QgsMultiPoint::QgsMultiPoint( const QVector<QgsPoint> &points )
   const QgsPoint *pointIn = points.data();
   for ( int i = 0; i < pointCount; ++i, ++pointIn )
   {
-    mGeometries[ i ] = pointIn->clone();
+    mGeometries[i] = pointIn->clone();
   }
 }
 
@@ -67,7 +67,7 @@ QgsMultiPoint::QgsMultiPoint( const QVector<QgsPoint *> &points )
 
   for ( int i = 0; i < pointCount; ++i )
   {
-    mGeometries[ i ] = points[i];
+    mGeometries[i] = points[i];
   }
 }
 
@@ -80,7 +80,7 @@ QgsMultiPoint::QgsMultiPoint( const QVector<QgsPointXY> &points )
   const QgsPointXY *pointIn = points.data();
   for ( int i = 0; i < pointCount; ++i, ++pointIn )
   {
-    mGeometries[ i ] = new QgsPoint( pointIn->x(), pointIn->y() );
+    mGeometries[i] = new QgsPoint( pointIn->x(), pointIn->y() );
   }
 }
 
@@ -107,7 +107,7 @@ QgsMultiPoint::QgsMultiPoint( const QVector<double> &x, const QVector<double> &y
 
   for ( int i = 0; i < pointCount; ++i )
   {
-    mGeometries[ i ] = new QgsPoint( *xIn++, *yIn++, zIn ? *zIn++ : std::numeric_limits< double >::quiet_NaN(), mIn ? *mIn++ : std::numeric_limits< double >::quiet_NaN() );
+    mGeometries[i] = new QgsPoint( *xIn++, *yIn++, zIn ? *zIn++ : std::numeric_limits< double >::quiet_NaN(), mIn ? *mIn++ : std::numeric_limits< double >::quiet_NaN() );
   }
 }
 
@@ -206,8 +206,7 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
 
 json QgsMultiPoint::asJsonObject( int precision ) const
 {
-  json j
-  {
+  json j {
     { "type", "MultiPoint" },
     { "coordinates", json::array() },
   };
@@ -215,9 +214,9 @@ json QgsMultiPoint::asJsonObject( int precision ) const
   {
     const QgsPoint *point = static_cast<const QgsPoint *>( geom );
     if ( point->is3D() )
-      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
+      j["coordinates"].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ), qgsRound( point->z(), precision ) } );
     else
-      j[ "coordinates" ].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } );
+      j["coordinates"].push_back( { qgsRound( point->x(), precision ), qgsRound( point->y(), precision ) } );
   }
   return j;
 }
@@ -323,29 +322,34 @@ QgsMultiPoint *QgsMultiPoint::simplifyByDistance( double ) const
   return clone();
 }
 
-void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsMultiPoint::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
-  mGeometries.erase( std::remove_if( mGeometries.begin(), mGeometries.end(), // clazy:exclude=detaching-member
-                                     [&filter]( const QgsAbstractGeometry * part )
-  {
-    if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
-    {
-      if ( !filter( *point ) )
-      {
-        delete point;
-        return true;
+  mGeometries.erase(
+    std::remove_if(
+      mGeometries.begin(),
+      mGeometries.end(), // clazy:exclude=detaching-member
+      [&filter]( const QgsAbstractGeometry *part ) {
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
+        {
+          if ( !filter( *point ) )
+          {
+            delete point;
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
+        else
+        {
+          delete part;
+          return true;
+        }
       }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      delete part;
-      return true;
-    }
-  } ), mGeometries.end() ); // clazy:exclude=detaching-member
+    ),
+    mGeometries.end()
+  ); // clazy:exclude=detaching-member
 }
 
 bool QgsMultiPoint::wktOmitChildType() const

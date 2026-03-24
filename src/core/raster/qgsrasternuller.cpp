@@ -25,8 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsRasterNuller::QgsRasterNuller( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-{
-}
+{}
 
 QgsRasterNuller *QgsRasterNuller::clone() const
 {
@@ -60,17 +59,19 @@ void QgsRasterNuller::setNoData( int bandNo, const QgsRasterRangeList &noData )
 
 int QgsRasterNuller::bandCount() const
 {
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
   return 0;
 }
 
 Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
 {
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
   return Qgis::DataType::UnknownDataType;
 }
 
-QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( !mInput )
@@ -128,4 +129,3 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
   }
   return outputBlock.release();
 }
-

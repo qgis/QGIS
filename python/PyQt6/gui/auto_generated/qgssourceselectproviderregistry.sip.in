@@ -70,12 +70,7 @@ Returns a provider by ``name`` or ``None`` if not found
 Returns a (possibly empty) list of providers by data ``providerkey``
 %End
 
-    QgsAbstractDataSourceWidget *createSelectionWidget(
-      const QString &name,
-      QWidget *parent,
-      Qt::WindowFlags fl,
-      QgsProviderRegistry::WidgetMode widgetMode
-    );
+    QgsAbstractDataSourceWidget *createSelectionWidget( const QString &name, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
 %Docstring
 Gets select widget from provider with ``name``
 

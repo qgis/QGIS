@@ -44,8 +44,7 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
 
   if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
   {
-    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
-    {
+    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this] {
       if ( mRespectLayerColors )
         emit profileGenerationPropertyChanged();
     } );
@@ -264,7 +263,8 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
         for ( QgsPointCloudSubIndex subIndex : virtualProvider->subIndexes() )
         {
           const QgsDoubleRange newRange = subIndex.zRange();
-          if ( newRange.isInfinite() ) continue;
+          if ( newRange.isInfinite() )
+            continue;
           zMin = std::isnan( zMin ) ? newRange.lower() : std::min( zMin, newRange.lower() );
           zMax = std::isnan( zMax ) ? newRange.upper() : std::max( zMax, newRange.upper() );
         }
@@ -284,9 +284,9 @@ QList<double> QgsPointCloudLayerElevationProperties::significantZValues( QgsMapL
 {
   const QgsDoubleRange range = calculateZRange( layer );
   if ( !range.isInfinite() && range.lower() != range.upper() )
-    return {range.lower(), range.upper() };
+    return { range.lower(), range.upper() };
   else if ( !range.isInfinite() )
-    return {range.lower() };
+    return { range.lower() };
   else
     return {};
 }

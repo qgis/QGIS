@@ -3502,7 +3502,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Copy features in an array</string>
+    <string>Copy Features in an Array</string>
    </property>
    <property name="toolTip">
     <string>Copies a feature and distributes the copies at regular intervals along a reference line</string>

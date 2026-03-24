@@ -43,7 +43,8 @@ class QgsWFSItemDelegate : public QItemDelegate
 
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr )
-      : QItemDelegate( parent ) {}
+      : QItemDelegate( parent )
+    {}
 
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };

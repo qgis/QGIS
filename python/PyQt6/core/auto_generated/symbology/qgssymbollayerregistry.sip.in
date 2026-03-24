@@ -25,7 +25,6 @@ Stores metadata about one symbol layer class.
 #include "qgssymbollayerregistry.h"
 %End
   public:
-
     QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type );
 %Docstring
 Constructor for QgsSymbolLayerAbstractMetadata.
@@ -121,7 +120,6 @@ rather accessed through :py:func:`QgsApplication.symbolLayerRegistry()`.
 #include "qgssymbollayerregistry.h"
 %End
   public:
-
     QgsSymbolLayerRegistry();
     ~QgsSymbolLayerRegistry();
 

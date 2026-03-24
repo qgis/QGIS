@@ -33,9 +33,9 @@
 #include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
 QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomeScreen *welcomeScreen, QObject *parent )
-  : QObject( parent ), mWelcomeScreen( welcomeScreen )
-{
-}
+  : QObject( parent )
+  , mWelcomeScreen( welcomeScreen )
+{}
 
 bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event )
 {

@@ -65,8 +65,7 @@ void TestQgsTemporalProperty::init()
 }
 
 void TestQgsTemporalProperty::cleanup()
-{
-}
+{}
 
 void TestQgsTemporalProperty::cleanupTestCase()
 {

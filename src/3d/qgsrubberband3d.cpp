@@ -112,9 +112,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   mLineMaterial->setLineWidth( mWidth );
   mLineMaterial->setLineColor( mColor );
 
-  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] {
-    mLineMaterial->setViewportSize( mEngine->size() );
-  } );
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] { mLineMaterial->setViewportSize( mEngine->size() ); } );
   mLineMaterial->setViewportSize( mEngine->size() );
 
   mLineEntity->addComponent( mLineMaterial );
@@ -495,9 +493,7 @@ void QgsRubberBand3D::updateMarkerMaterial()
       mMarkerMaterial = new QgsPoint3DBillboardMaterial();
       mMarkerEntity->addComponent( mMarkerMaterial );
       //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] {
-        mMarkerMaterial->setViewportSize( mEngine->size() );
-      } );
+      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] { mMarkerMaterial->setViewportSize( mEngine->size() ); } );
     }
 
     mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );

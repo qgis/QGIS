@@ -67,8 +67,7 @@ void QgsTiledSceneElevationPropertiesWidget::apply()
 
   QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast<QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
 
-  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
-                                          || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
+  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() ) || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
 
   properties->setZOffset( mOffsetZSpinBox->value() );
   properties->setZScale( mScaleZSpinBox->value() );

@@ -73,7 +73,15 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
     /**
      * Constructor.
      */
-    QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(), const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsProviderSublayersDialog(
+      const QString &uri,
+      const QString &providerKey,
+      const QString &filePath,
+      const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(),
+      const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(),
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
+      Qt::WindowFlags fl = Qt::WindowFlags()
+    );
 
     /**
      * Set list of non-layer items (e.g. embedded QGIS project items).

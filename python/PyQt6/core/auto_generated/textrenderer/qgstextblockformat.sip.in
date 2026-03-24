@@ -29,7 +29,6 @@ settings from a :py:class:`QgsTextFormat` for individual text blocks.
 #include "qgstextblockformat.h"
 %End
   public:
-
     QgsTextBlockFormat();
 
     QgsTextBlockFormat( const QTextBlockFormat &format );

@@ -68,12 +68,10 @@ void TestQgsTextEditWrapper::cleanupTestCase()
 }
 
 void TestQgsTextEditWrapper::init()
-{
-}
+{}
 
 void TestQgsTextEditWrapper::cleanup()
-{
-}
+{}
 
 void TestQgsTextEditWrapper::defaultValueClause()
 {

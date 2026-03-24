@@ -38,9 +38,7 @@ Q_GLOBAL_STATIC( DefaultTranslator, sDefaultTranslator )
 
 QgsReadWriteContext::QgsReadWriteContext()
   : mProjectTranslator( sDefaultTranslator() )
-{
-
-}
+{}
 
 QgsReadWriteContext::~QgsReadWriteContext()
 {

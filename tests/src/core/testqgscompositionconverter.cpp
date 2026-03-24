@@ -58,7 +58,8 @@ class TestQgsCompositionConverter : public QgsTest
 
   public:
     TestQgsCompositionConverter()
-      : QgsTest( u"Composition Converter Tests"_s, u"compositionconverter"_s ) {}
+      : QgsTest( u"Composition Converter Tests"_s, u"compositionconverter"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -162,12 +163,10 @@ void TestQgsCompositionConverter::initTestCase()
 }
 
 void TestQgsCompositionConverter::init()
-{
-}
+{}
 
 void TestQgsCompositionConverter::cleanup()
-{
-}
+{}
 
 
 void TestQgsCompositionConverter::importComposerTemplateLabel()

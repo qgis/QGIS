@@ -32,8 +32,7 @@ QgsServerLogger *QgsServerLogger::instance()
 
 QgsServerLogger::QgsServerLogger()
   : QgsMessageLogConsole()
-{
-}
+{}
 
 void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {

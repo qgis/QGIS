@@ -107,10 +107,7 @@ class SERVER_EXPORT QgsServer
      * \param parameterMap
      * \param logLevel
      */
-    static void printRequestParameters(
-      const QMap<QString, QString> &parameterMap,
-      Qgis::MessageLevel logLevel
-    );
+    static void printRequestParameters( const QMap<QString, QString> &parameterMap, Qgis::MessageLevel logLevel );
 
     /**
      * Returns the default project file.

@@ -50,10 +50,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot
       setSize( mCanvas->boundingRect().size() );
     }
 
-    void setRenderer( QgsProfilePlotRenderer *renderer )
-    {
-      mRenderer = renderer;
-    }
+    void setRenderer( QgsProfilePlotRenderer *renderer ) { mRenderer = renderer; }
 
     void updateRect()
     {
@@ -484,7 +481,7 @@ void QgsQuickElevationProfileCanvas::setCrs( const QgsCoordinateReferenceSystem 
 
 void QgsQuickElevationProfileCanvas::setProfileCurve( QgsGeometry curve )
 {
-  if ( mProfileCurve.equals( curve ) )
+  if ( mProfileCurve.isExactlyEqual( curve ) )
     return;
 
   mProfileCurve = curve.type() == Qgis::GeometryType::Line ? curve : QgsGeometry();
@@ -523,10 +520,14 @@ void QgsQuickElevationProfileCanvas::populateLayersFromProject()
 
   // filter list, removing null layers and invalid layers
   auto filteredList = sortedLayers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) {
-                        return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots();
-                      } ),
-                      filteredList.end() );
+  filteredList.erase(
+    std::remove_if(
+      filteredList.begin(),
+      filteredList.end(),
+      []( QgsMapLayer *layer ) { return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots(); }
+    ),
+    filteredList.end()
+  );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )

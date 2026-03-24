@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 
 class QFileSystemWatcher;
 class QMouseEvent;
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup core
@@ -38,7 +39,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDirectoryItem, with the specified \a parent item.
      *
@@ -74,13 +74,15 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsDirectoryItem: %1 - %2>"_s.arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
-    void setState( Qgis::BrowserItemState state ) override;
+      void setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -167,6 +169,15 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      */
     static bool pathShouldByMonitoredByDefault( const QString &path );
 
+#ifndef SIP_RUN
+
+    /**
+     * Settings entry for monitor directories in browser.
+     * \since QGIS 4.0.1
+     */
+    static const QgsSettingsEntryBool *settingsMonitorDirectoriesInBrowser;
+#endif
+
     /**
      * Returns TRUE if the directory is currently being monitored for changes and the item auto-refreshed
      * when these occur.
@@ -207,11 +218,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     void directoryChanged();
 
   protected:
-
     QString mDirPath;
 
   private:
-
     void init( const QString &dirName );
 
     void createOrDestroyFileSystemWatcher();
@@ -266,7 +275,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectHomeItem.
      */
@@ -274,7 +282,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
     QIcon icon() override;
     QVariant sortKey() const override;
-
 };
 
 #endif

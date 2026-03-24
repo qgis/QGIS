@@ -23,7 +23,6 @@ direction vector.
 #include "qgsray3d.h"
 %End
   public:
-
     QgsRay3D( const QVector3D &origin, const QVector3D &direction );
 %Docstring
 Constructor

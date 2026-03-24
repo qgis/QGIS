@@ -24,7 +24,6 @@ Represents a relationship between two vector layers.
 
   public:
 
-
     QgsRelation();
 %Docstring
 Default constructor. Creates an invalid relation.

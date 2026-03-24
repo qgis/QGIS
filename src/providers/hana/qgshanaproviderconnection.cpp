@@ -117,24 +117,17 @@ void QgsHanaProviderConnection::setCapabilities()
    *       not have the necessary privileges for one of the objects in the query.
    */
 
-  mCapabilities = {
-    Capability::CreateVectorTable,
-    Capability::DropVectorTable,
-    Capability::RenameVectorTable,
-    Capability::ExecuteSql,
-    Capability::SqlLayers,
-    Capability::Spatial,
-    Capability::AddField,
-    Capability::DeleteField,
-    Capability::DeleteFieldCascade
-  };
+  mCapabilities
+    = { Capability::CreateVectorTable, Capability::DropVectorTable, Capability::RenameVectorTable, Capability::ExecuteSql, Capability::SqlLayers, Capability::Spatial, Capability::AddField, Capability::DeleteField, Capability::DeleteFieldCascade };
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
   if ( !conn.isNull() )
   {
-    const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
-                                        "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
+    const QString sql = QStringLiteral(
+      "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
+      "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'"
+    );
     try
     {
       QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
@@ -177,7 +170,9 @@ void QgsHanaProviderConnection::setCapabilities()
   mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema | Capability::Schemas | Capability::Tables | Capability::TableExists;
 }
 
-void QgsHanaProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
+void QgsHanaProviderConnection::createVectorTable(
+  const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+) const
 {
   checkCapability( Capability::CreateVectorTable );
 
@@ -192,17 +187,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema, const 
   QMap<int, int> map;
   QString errCause;
   QString createdLayerUri;
-  Qgis::VectorExportResult res = QgsHanaProvider::createEmptyLayer(
-    newUri.uri(),
-    fields,
-    wkbType,
-    srs,
-    overwrite,
-    &map,
-    createdLayerUri,
-    &errCause,
-    options
-  );
+  Qgis::VectorExportResult res = QgsHanaProvider::createEmptyLayer( newUri.uri(), fields, wkbType, srs, overwrite, &map, createdLayerUri, &errCause, options );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -247,39 +232,33 @@ void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QS
   checkCapability( Capability::DropVectorTable );
   const TableProperty tableInfo = table( schema, name );
   if ( tableInfo.flags().testFlag( TableFlag::View ) )
-    executeSqlStatement( u"DROP VIEW %1.%2"_s
-                           .arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ) ) );
+    executeSqlStatement( u"DROP VIEW %1.%2"_s.arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ) ) );
   else
-    executeSqlStatement( u"DROP TABLE %1.%2"_s
-                           .arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ) ) );
+    executeSqlStatement( u"DROP TABLE %1.%2"_s.arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameVectorTable );
-  executeSqlStatement( u"RENAME TABLE %1.%2 TO %1.%3"_s
-                         .arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
+  executeSqlStatement( u"RENAME TABLE %1.%2 TO %1.%3"_s.arg( QgsHanaUtils::quotedIdentifier( schema ), QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 void QgsHanaProviderConnection::createSchema( const QString &name ) const
 {
   checkCapability( Capability::CreateSchema );
-  executeSqlStatement( u"CREATE SCHEMA %1"_s
-                         .arg( QgsHanaUtils::quotedIdentifier( name ) ) );
+  executeSqlStatement( u"CREATE SCHEMA %1"_s.arg( QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::dropSchema( const QString &name, bool force ) const
 {
   checkCapability( Capability::DropSchema );
-  executeSqlStatement( u"DROP SCHEMA %1 %2"_s
-                         .arg( QgsHanaUtils::quotedIdentifier( name ), force ? u"CASCADE"_s : QString() ) );
+  executeSqlStatement( u"DROP SCHEMA %1 %2"_s.arg( QgsHanaUtils::quotedIdentifier( name ), force ? u"CASCADE"_s : QString() ) );
 }
 
 void QgsHanaProviderConnection::renameSchema( const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameSchema );
-  executeSqlStatement( u"RENAME SCHEMA %1 TO %2"_s
-                         .arg( QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
+  executeSqlStatement( u"RENAME SCHEMA %1 TO %2"_s.arg( QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -355,8 +334,7 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConnection::tablesWithFilter(
-  const QString &schema,
-  const TableFlags &flags, const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter
+  const QString &schema, const TableFlags &flags, const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter
 ) const
 {
   checkCapability( Capability::Tables );
@@ -420,13 +398,10 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConne
 QgsAbstractDatabaseProviderConnection::TableProperty QgsHanaProviderConnection::table( const QString &schema, const QString &table, QgsFeedback * ) const
 {
   const QString geometryColumn = QgsDataSourceUri( uri() ).geometryColumn();
-  auto layerFilter = [&table, &geometryColumn]( const QgsHanaLayerProperty &layer ) {
-    return layer.tableName == table && ( geometryColumn.isEmpty() || layer.geometryColName == geometryColumn );
-  };
+  auto layerFilter = [&table, &geometryColumn]( const QgsHanaLayerProperty &layer ) { return layer.tableName == table && ( geometryColumn.isEmpty() || layer.geometryColName == geometryColumn ); };
   const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), layerFilter ) };
   if ( constTables.empty() )
-    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                            .arg( table, schema ) );
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" ).arg( table, schema ) );
   return constTables[0];
 }
 
@@ -1876,69 +1851,18 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           u"YEAR"_s,
           u"YTAB"_s,
           u"ZONE"_s,
-        }
-      },
+        } },
       { Qgis::SqlKeywordCategory::Aggregate,
         {
-          u"AUTO_CORR"_s,
-          u"AVG"_s,
-          u"CORR"_s,
-          u"CORR_SPEARMAN"_s,
-          u"COUNT"_s,
-          u"CROSS_CORR"_s,
-          u"DFT"_s,
-          u"FIRST_VALUE"_s,
-          u"LAST_VALUE"_s,
-          u"MAX"_s,
-          u"MEDIAN"_s,
-          u"MIN"_s,
-          u"NTH_VALUE"_s,
-          u"STDDEV"_s,
-          u"STDDEV_POP"_s,
-          u"STDDEV_SAMP"_s,
-          u"STRING_AGG"_s,
-          u"SUM"_s,
-          u"VAR"_s,
-          u"VAR_POP"_s,
-          u"VAR_SAMP"_s,
-        }
-      },
+          u"AUTO_CORR"_s, u"AVG"_s,       u"CORR"_s,   u"CORR_SPEARMAN"_s, u"COUNT"_s,       u"CROSS_CORR"_s, u"DFT"_s, u"FIRST_VALUE"_s, u"LAST_VALUE"_s, u"MAX"_s,      u"MEDIAN"_s,
+          u"MIN"_s,       u"NTH_VALUE"_s, u"STDDEV"_s, u"STDDEV_POP"_s,    u"STDDEV_SAMP"_s, u"STRING_AGG"_s, u"SUM"_s, u"VAR"_s,         u"VAR_POP"_s,    u"VAR_SAMP"_s,
+        } },
       { Qgis::SqlKeywordCategory::Math,
         {
-          u"ABS"_s,
-          u"ACOS"_s,
-          u"ASIN"_s,
-          u"ATAN"_s,
-          u"ATAN2"_s,
-          u"BITAND"_s,
-          u"BITCOUNT"_s,
-          u"BITNOT"_s,
-          u"BITOR"_s,
-          u"BITSET"_s,
-          u"BITUNSET"_s,
-          u"BITXOR"_s,
-          u"CEIL"_s,
-          u"COS"_s,
-          u"COSH"_s,
-          u"COT"_s,
-          u"EXP"_s,
-          u"FLOOR"_s,
-          u"LN"_s,
-          u"LOG"_s,
-          u"MOD"_s,
-          u"NDIV0"_s,
-          u"POWER"_s,
-          u"RAND"_s,
-          u"RAND_SECURE"_s,
-          u"ROUND"_s,
-          u"SIGN"_s,
-          u"SIN"_s,
-          u"SINH"_s,
-          u"SQRT"_s,
-          u"TAN"_s,
-          u"TANH"_s,
-        }
-      },
+          u"ABS"_s,    u"ACOS"_s, u"ASIN"_s,        u"ATAN"_s,  u"ATAN2"_s, u"BITAND"_s, u"BITCOUNT"_s, u"BITNOT"_s, u"BITOR"_s, u"BITSET"_s, u"BITUNSET"_s,
+          u"BITXOR"_s, u"CEIL"_s, u"COS"_s,         u"COSH"_s,  u"COT"_s,   u"EXP"_s,    u"FLOOR"_s,    u"LN"_s,     u"LOG"_s,   u"MOD"_s,    u"NDIV0"_s,
+          u"POWER"_s,  u"RAND"_s, u"RAND_SECURE"_s, u"ROUND"_s, u"SIGN"_s,  u"SIN"_s,    u"SINH"_s,     u"SQRT"_s,   u"TAN"_s,   u"TANH"_s,
+        } },
       { Qgis::SqlKeywordCategory::Geospatial,
         {
           u"ST_AlphaShape"_s,
@@ -2041,9 +1965,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsHanaProviderConnection::sqlD
           u"ST_YMin"_s,
           u"ST_ZMax"_s,
           u"ST_ZMin"_s,
-        }
-      }
-    }
+        } } }
   );
 }
 

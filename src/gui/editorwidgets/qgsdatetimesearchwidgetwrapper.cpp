@@ -33,8 +33,7 @@ using namespace Qt::StringLiterals;
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
 
-{
-}
+{}
 
 bool QgsDateTimeSearchWidgetWrapper::applyDirectly()
 {
@@ -130,8 +129,7 @@ void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
   QString exp = expression;
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  const QString str = u"%1 = '%3'"_s
-                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+  const QString str = u"%1 = '%3'"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   mExpression = str;
 }
 

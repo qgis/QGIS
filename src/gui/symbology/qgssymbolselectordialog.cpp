@@ -102,14 +102,14 @@ void DataDefinedRestorer::save()
 
 void DataDefinedRestorer::restore()
 {
-  if ( mMarker )
+  if ( mMarker && mMarker->symbolLayerCount() > 1 )
   {
     if ( mDDSize && ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
       mMarker->setDataDefinedSize( mDDSize );
     if ( mDDAngle && mAngle != mMarkerSymbolLayer->angle() )
       mMarker->setDataDefinedAngle( mDDAngle );
   }
-  else if ( mLine )
+  else if ( mLine && mLine->symbolLayerCount() > 1 )
   {
     if ( mDDWidth && ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
       mLine->setDataDefinedWidth( mDDWidth );
@@ -162,7 +162,8 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
+        icon = QgsSymbolLayerUtils::
+          symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
       else
       {
         QgsExpressionContext expContext;
@@ -179,15 +180,9 @@ class SymbolLayerItem : public QStandardItem
     bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
-    QgsSymbol *symbol()
-    {
-      return mSymbol;
-    }
+    QgsSymbol *symbol() { return mSymbol; }
 
-    QgsSymbolLayer *layer()
-    {
-      return mLayer;
-    }
+    QgsSymbolLayer *layer() { return mLayer; }
 
     QVariant data( int role ) const override
     {

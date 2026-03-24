@@ -40,7 +40,6 @@ class QgsLineString;
 class CORE_EXPORT QgsGeometryUtils
 {
   public:
-
     /**
      * Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
@@ -78,10 +77,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns TRUE if vertices were successfully retrieved
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      */
-    static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
-                                    double distance,
-                                    QgsVertexId &previousVertex SIP_OUT,
-                                    QgsVertexId &nextVertex SIP_OUT );
+    static bool verticesAtDistance( const QgsAbstractGeometry &geometry, double distance, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT );
 
     /**
      * Returns the distance between a point and an infinite line.
@@ -93,6 +89,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
 
+    // clang-format off
     /**
      * \brief Compute the intersection of a line and a circle.
      * If the intersection has two solutions (points),
@@ -104,9 +101,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection the initial point and the returned intersection point
      * \return TRUE if an intersection has been found
      */
-    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
-                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-                                        QgsPointXY &intersection SIP_INOUT ) SIP_HOLDGIL;
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection SIP_INOUT ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Calculates the intersections points between the circle with center \a center1 and
@@ -156,8 +152,8 @@ class CORE_EXPORT QgsGeometryUtils
       QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
-     * Calculates the inner tangent points for two circles, centered at \a
-     * center1 and \a center2 and with radii of \a radius1 and \a radius2
+     * Calculates the inner tangent points for two circles, centered at
+     * \a center1 and \a center2 and with radii of \a radius1 and \a radius2
      * respectively.
      *
      * The inner tangent points correspond to the points at which the two lines

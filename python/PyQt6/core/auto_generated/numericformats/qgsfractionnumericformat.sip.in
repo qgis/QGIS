@@ -21,7 +21,6 @@ a decimal value (e.g. "1/2" instead of 0.5).
 #include "qgsfractionnumericformat.h"
 %End
   public:
-
     QgsFractionNumericFormat();
 %Docstring
 Default constructor
@@ -167,7 +166,6 @@ equivalents.
 %End
 
   protected:
-
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 %Docstring
 Sets the format's ``configuration``.

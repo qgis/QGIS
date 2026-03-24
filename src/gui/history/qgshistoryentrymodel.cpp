@@ -55,8 +55,7 @@ class QgsHistoryEntryDateGroupNode : public QgsHistoryEntryGroup
     QgsHistoryEntryDateGroupNode( const QString &title, const QString &key )
       : mTitle( title )
       , mKey( key )
-    {
-    }
+    {}
 
     QVariant data( int role = Qt::DisplayRole ) const override
     {
@@ -111,8 +110,7 @@ QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::His
 }
 
 QgsHistoryEntryModel::~QgsHistoryEntryModel()
-{
-}
+{}
 
 int QgsHistoryEntryModel::rowCount( const QModelIndex &parent ) const
 {

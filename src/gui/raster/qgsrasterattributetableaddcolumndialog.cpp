@@ -39,9 +39,7 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
   connect( mStandardColumn, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
   connect( mColor, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
   connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateDialog(); } );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
-  } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s ); } );
 
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );
@@ -160,7 +158,11 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
     // this way
     if ( !it.value().unique || !usages.contains( it.key() ) )
     {
-      if ( ( it.key() == Qgis::RasterAttributeTableFieldUsage::MinMax && !canAddMinMax ) || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Min && !canAddMinAndMax ) || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Max && !canAddMinAndMax ) || ( it.value().isColor ) || ( it.value().isRamp ) )
+      if ( ( it.key() == Qgis::RasterAttributeTableFieldUsage::MinMax && !canAddMinMax )
+           || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Min && !canAddMinAndMax )
+           || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Max && !canAddMinAndMax )
+           || ( it.value().isColor )
+           || ( it.value().isRamp ) )
       {
         continue;
       }

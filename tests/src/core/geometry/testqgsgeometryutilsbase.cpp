@@ -87,74 +87,132 @@ void TestQgsGeometryUtilsBase::testCreateChamferBase_data()
 
   // Test 1: Basic symmetric chamfer on right angle
   QTest::newRow( "symmetric_right_angle" )
-    << 1.0 << 0.0 << -1.0 << 0.0 // segment1: horizontal from (1,0) to (-1,0) passing through (0,0)
-    << 0.0 << 1.0 << 0.0 << -1.0 // segment2: vertical from (0,1) to (0,-1) passing through (0,0)
-    << 0.1 << 0.1                // distances: 0.1 on both segments
-    << true                      // expected success
-    << 0.1 << 0.0                // chamfer start: 0.1 along segment1 from intersection
-    << 0.0 << 0.1;               // chamfer end: 0.1 along segment2 from intersection
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // segment1: horizontal from (1,0) to (-1,0) passing through (0,0)
+    << 0.0
+    << 1.0
+    << 0.0
+    << -1.0 // segment2: vertical from (0,1) to (0,-1) passing through (0,0)
+    << 0.1
+    << 0.1  // distances: 0.1 on both segments
+    << true // expected success
+    << 0.1
+    << 0.0 // chamfer start: 0.1 along segment1 from intersection
+    << 0.0
+    << 0.1; // chamfer end: 0.1 along segment2 from intersection
 
   // Test 2: Asymmetric chamfer with different distances
   QTest::newRow( "asymmetric_chamfer" )
-    << 2.0 << 0.0 << -2.0 << 0.0 // segment1: longer horizontal segment through origin
-    << 0.0 << 2.0 << 0.0 << -2.0 // segment2: longer vertical segment through origin
-    << 0.3 << 0.2                // different distances: 0.3 and 0.2
+    << 2.0
+    << 0.0
+    << -2.0
+    << 0.0 // segment1: longer horizontal segment through origin
+    << 0.0
+    << 2.0
+    << 0.0
+    << -2.0 // segment2: longer vertical segment through origin
+    << 0.3
+    << 0.2 // different distances: 0.3 and 0.2
     << true
-    << 0.3 << 0.0  // 0.3 along segment1
-    << 0.0 << 0.2; // 0.2 along segment2
+    << 0.3
+    << 0.0 // 0.3 along segment1
+    << 0.0
+    << 0.2; // 0.2 along segment2
 
   // Test 3: Default distance2 (negative value should use distance1)
   QTest::newRow( "default_distance2" )
-    << 1.0 << 0.0 << -1.0 << 0.0 // horizontal through origin
-    << 0.0 << 1.0 << 0.0 << -1.0 // vertical through origin
-    << 0.15 << -1.0              // distance2 negative, should use distance1
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // horizontal through origin
+    << 0.0
+    << 1.0
+    << 0.0
+    << -1.0 // vertical through origin
+    << 0.15
+    << -1.0 // distance2 negative, should use distance1
     << true
-    << 0.15 << 0.0
-    << 0.0 << 0.15;
+    << 0.15
+    << 0.0
+    << 0.0
+    << 0.15;
 
   // Test 4: Parallel segments (should fail)
   QTest::newRow( "parallel_segments" )
-    << 0.0 << 0.0 << 1.0 << 0.0 // horizontal segment
-    << 0.0 << 1.0 << 1.0 << 1.0 // parallel horizontal segment
-    << 0.1 << 0.1
-    << false                     // should fail
-    << 0.0 << 0.0 << 0.0 << 0.0; // values irrelevant for failure case
+    << 0.0
+    << 0.0
+    << 1.0
+    << 0.0 // horizontal segment
+    << 0.0
+    << 1.0
+    << 1.0
+    << 1.0 // parallel horizontal segment
+    << 0.1
+    << 0.1
+    << false // should fail
+    << 0.0
+    << 0.0
+    << 0.0
+    << 0.0; // values irrelevant for failure case
 
   // Test 5: Distance larger than available segment (should clamp)
   QTest::newRow( "distance_too_large" )
-    << 0.5 << 0.0 << -0.5 << 0.0 // short horizontal segment through origin, total length 1.0
-    << 0.0 << 0.3 << 0.0 << -0.3 // short vertical segment through origin, total length 0.6
-    << 1.0 << 1.0                // distances larger than available from intersection
+    << 0.5
+    << 0.0
+    << -0.5
+    << 0.0 // short horizontal segment through origin, total length 1.0
+    << 0.0
+    << 0.3
+    << 0.0
+    << -0.3 // short vertical segment through origin, total length 0.6
+    << 1.0
+    << 1.0 // distances larger than available from intersection
     << true
-    << 0.5 << 0.0  // clamped to available length from intersection to segment1Start
-    << 0.0 << 0.3; // clamped to available length from intersection to segment2Start
+    << 0.5
+    << 0.0 // clamped to available length from intersection to segment1Start
+    << 0.0
+    << 0.3; // clamped to available length from intersection to segment2Start
 
   // Test 6: Acute angle chamfer
   QTest::newRow( "acute_angle" )
-    << 1.0 << 0.0 << -1.0 << 0.0  // horizontal segment
-    << 0.2 << 0.1 << -0.2 << -0.1 // shallow angle segment
-    << 0.1 << 0.1
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // horizontal segment
+    << 0.2
+    << 0.1
+    << -0.2
+    << -0.1 // shallow angle segment
+    << 0.1
+    << 0.1
     << true
-    << 0.1 << 0.0
-    << 0.08944 << 0.04472; // calculated: 0.1 * (0.2, 0.1) / ||(0.2, 0.1)||
+    << 0.1
+    << 0.0
+    << 0.08944
+    << 0.04472; // calculated: 0.1 * (0.2, 0.1) / ||(0.2, 0.1)||
 
   // Test 7: Very small coordinates (precision test)
-  QTest::newRow( "precision_small" )
-    << 1e-6 << 0.0 << -1e-6 << 0.0
-    << 0.0 << 1e-6 << 0.0 << -1e-6
-    << 1e-7 << 1e-7
-    << true
-    << 1e-7 << 0.0
-    << 0.0 << 1e-7;
+  QTest::newRow( "precision_small" ) << 1e-6 << 0.0 << -1e-6 << 0.0 << 0.0 << 1e-6 << 0.0 << -1e-6 << 1e-7 << 1e-7 << true << 1e-7 << 0.0 << 0.0 << 1e-7;
 
   // Test 8: Obtuse angle chamfer
   QTest::newRow( "obtuse_angle" )
-    << 1.0 << 0.0 << -1.0 << 0.0  // horizontal segment
-    << -0.8 << 0.6 << 0.8 << -0.6 // obtuse angle (135 degrees)
-    << 0.1 << 0.1
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // horizontal segment
+    << -0.8
+    << 0.6
+    << 0.8
+    << -0.6 // obtuse angle (135 degrees)
+    << 0.1
+    << 0.1
     << true
-    << 0.1 << 0.0
-    << -0.08 << 0.06; // proportional to segment direction
+    << 0.1
+    << 0.0
+    << -0.08
+    << 0.06; // proportional to segment direction
 }
 
 void TestQgsGeometryUtilsBase::testCreateChamferBase()
@@ -183,12 +241,28 @@ void TestQgsGeometryUtilsBase::testCreateChamferBase()
   try
   {
     result = QgsGeometryUtilsBase::createChamfer(
-      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-      distance1, distance2,
-      chamferStartX, chamferStartY, chamferEndX, chamferEndY,
-      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+      segment1StartX,
+      segment1StartY,
+      segment1EndX,
+      segment1EndY,
+      segment2StartX,
+      segment2StartY,
+      segment2EndX,
+      segment2EndY,
+      distance1,
+      distance2,
+      chamferStartX,
+      chamferStartY,
+      chamferEndX,
+      chamferEndY,
+      &trim1StartX,
+      &trim1StartY,
+      &trim1EndX,
+      &trim1EndY,
+      &trim2StartX,
+      &trim2StartY,
+      &trim2EndX,
+      &trim2EndY
     );
   }
   catch ( QgsInvalidArgumentException &e )
@@ -246,71 +320,101 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase_data()
 
   // Test 1: Basic right angle fillet
   QTest::newRow( "right_angle_basic" )
-    << 1.0 << 0.0 << -1.0 << 0.0 // segment1: horizontal from (1,0) to (-1,0) through origin
-    << 0.0 << 1.0 << 0.0 << -1.0 // segment2: vertical from (0,1) to (0,-1) through origin
-    << 0.1                       // radius
-    << true;                     // should succeed
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // segment1: horizontal from (1,0) to (-1,0) through origin
+    << 0.0
+    << 1.0
+    << 0.0
+    << -1.0  // segment2: vertical from (0,1) to (0,-1) through origin
+    << 0.1   // radius
+    << true; // should succeed
 
   // Test 2: Small radius fillet
-  QTest::newRow( "small_radius" )
-    << 2.0 << 0.0 << -2.0 << 0.0
-    << 0.0 << 2.0 << 0.0 << -2.0
-    << 0.01
-    << true;
+  QTest::newRow( "small_radius" ) << 2.0 << 0.0 << -2.0 << 0.0 << 0.0 << 2.0 << 0.0 << -2.0 << 0.01 << true;
 
   // Test 3: Large radius fillet (but within limits)
-  QTest::newRow( "large_radius" )
-    << 5.0 << 0.0 << -5.0 << 0.0
-    << 0.0 << 5.0 << 0.0 << -5.0
-    << 2.0
-    << true;
+  QTest::newRow( "large_radius" ) << 5.0 << 0.0 << -5.0 << 0.0 << 0.0 << 5.0 << 0.0 << -5.0 << 2.0 << true;
 
   // Test 4: Radius too large (should fail) - make segments much shorter
   QTest::newRow( "radius_too_large" )
-    << 0.05 << 0.0 << -0.05 << 0.0 // very short horizontal segment (0.05 from intersection)
-    << 0.0 << 0.03 << 0.0 << -0.03 // very short vertical segment (0.03 from intersection)
-    << 1.0                         // huge radius that definitely won't fit
+    << 0.05
+    << 0.0
+    << -0.05
+    << 0.0 // very short horizontal segment (0.05 from intersection)
+    << 0.0
+    << 0.03
+    << 0.0
+    << -0.03 // very short vertical segment (0.03 from intersection)
+    << 1.0   // huge radius that definitely won't fit
     << false;
 
   // Test 5: Parallel segments (should fail)
-  QTest::newRow( "parallel_segments" )
-    << 0.0 << 0.0 << 1.0 << 0.0
-    << 0.0 << 1.0 << 1.0 << 1.0
-    << 0.1
-    << false;
+  QTest::newRow( "parallel_segments" ) << 0.0 << 0.0 << 1.0 << 0.0 << 0.0 << 1.0 << 1.0 << 1.0 << 0.1 << false;
 
   // Test 6: No intersection (truly non-intersecting segments - parallel with no overlap)
   QTest::newRow( "no_intersection" )
-    << 0.0 << 0.0 << 1.0 << 0.0 // horizontal segment from (0,0) to (1,0)
-    << 0.0 << 1.0 << 1.0 << 1.0 // parallel horizontal segment from (0,1) to (1,1) - parallel, no intersection
+    << 0.0
+    << 0.0
+    << 1.0
+    << 0.0 // horizontal segment from (0,0) to (1,0)
+    << 0.0
+    << 1.0
+    << 1.0
+    << 1.0 // parallel horizontal segment from (0,1) to (1,1) - parallel, no intersection
     << 0.1
     << false;
 
   // Test 7: Simple acute angle - remove complex calculations for now
   QTest::newRow( "acute_angle_30deg" )
-    << 2.0 << 0.0 << -2.0 << 0.0      // horizontal through origin
-    << 1.0 << 1.732 << -1.0 << -1.732 // 60 degree angle through origin (simpler than 30)
+    << 2.0
+    << 0.0
+    << -2.0
+    << 0.0 // horizontal through origin
+    << 1.0
+    << 1.732
+    << -1.0
+    << -1.732 // 60 degree angle through origin (simpler than 30)
     << 0.1
     << true;
 
   // Test 8: Simple obtuse angle
   QTest::newRow( "obtuse_angle_120deg" )
-    << 2.0 << 0.0 << -2.0 << 0.0  // horizontal through origin
-    << -1.0 << 1.0 << 1.0 << -1.0 // 135 degree angle through origin (simpler)
+    << 2.0
+    << 0.0
+    << -2.0
+    << 0.0 // horizontal through origin
+    << -1.0
+    << 1.0
+    << 1.0
+    << -1.0 // 135 degree angle through origin (simpler)
     << 0.1
     << true;
 
   // Test 9: Small coordinates (precision test with reasonable small values)
   QTest::newRow( "precision_test" )
-    << 0.001 << 0.0 << -0.001 << 0.0 // small but not tiny coordinates
-    << 0.0 << 0.001 << 0.0 << -0.001
+    << 0.001
+    << 0.0
+    << -0.001
+    << 0.0 // small but not tiny coordinates
+    << 0.0
+    << 0.001
+    << 0.0
+    << -0.001
     << 0.0001 // small but reasonable radius
     << true;
 
   // Test 10: Nearly parallel segments (should fail)
   QTest::newRow( "nearly_parallel" )
-    << 1.0 << 0.0 << -1.0 << 0.0      // horizontal segment
-    << 1.0 << 0.001 << -1.0 << -0.001 // nearly parallel segment (very small angle)
+    << 1.0
+    << 0.0
+    << -1.0
+    << 0.0 // horizontal segment
+    << 1.0
+    << 0.001
+    << -1.0
+    << -0.001 // nearly parallel segment (very small angle)
     << 0.1
     << false;
 }
@@ -338,12 +442,25 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
   try
   {
     result = QgsGeometryUtilsBase::createFillet(
-      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+      segment1StartX,
+      segment1StartY,
+      segment1EndX,
+      segment1EndY,
+      segment2StartX,
+      segment2StartY,
+      segment2EndX,
+      segment2EndY,
       radius,
-      filletPointsX, filletPointsY,
-      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+      filletPointsX,
+      filletPointsY,
+      &trim1StartX,
+      &trim1StartY,
+      &trim1EndX,
+      &trim1EndY,
+      &trim2StartX,
+      &trim2StartY,
+      &trim2EndX,
+      &trim2EndY
     );
   }
   catch ( QgsInvalidArgumentException &e )
@@ -369,10 +486,16 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
     }
 
     // Verify geometric continuity - trimmed segments should connect to fillet
-    QVERIFY2( qgsDoubleNear( trim1EndX, filletPointsX[0], tolerance ), QString( "Trim1 end (%1,%2) should connect to fillet start (%3,%4)" ).arg( trim1EndX ).arg( trim1EndY ).arg( filletPointsX[0] ).arg( filletPointsY[0] ).toLatin1() );
+    QVERIFY2(
+      qgsDoubleNear( trim1EndX, filletPointsX[0], tolerance ),
+      QString( "Trim1 end (%1,%2) should connect to fillet start (%3,%4)" ).arg( trim1EndX ).arg( trim1EndY ).arg( filletPointsX[0] ).arg( filletPointsY[0] ).toLatin1()
+    );
     QVERIFY2( qgsDoubleNear( trim1EndY, filletPointsY[0], tolerance ), "Trimmed segment 1 end should connect to fillet start" );
 
-    QVERIFY2( qgsDoubleNear( trim2EndX, filletPointsX[2], tolerance ), QString( "Trim2 end (%1,%2) should connect to fillet end (%3,%4)" ).arg( trim2EndX ).arg( trim2EndY ).arg( filletPointsX[2] ).arg( filletPointsY[2] ).toLatin1() );
+    QVERIFY2(
+      qgsDoubleNear( trim2EndX, filletPointsX[2], tolerance ),
+      QString( "Trim2 end (%1,%2) should connect to fillet end (%3,%4)" ).arg( trim2EndX ).arg( trim2EndY ).arg( filletPointsX[2] ).arg( filletPointsY[2] ).toLatin1()
+    );
     QVERIFY2( qgsDoubleNear( trim2EndY, filletPointsY[2], tolerance ), "Trimmed segment 2 end should connect to fillet end" );
 
     // Verify trimmed segments start at original segment starts
@@ -383,12 +506,7 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
 
     // Verify the arc radius using QGIS circle calculation - use relaxed tolerance
     double centerX, centerY, calculatedRadius;
-    QgsGeometryUtilsBase::circleCenterRadius(
-      filletPointsX[0], filletPointsY[0],
-      filletPointsX[1], filletPointsY[1],
-      filletPointsX[2], filletPointsY[2],
-      calculatedRadius, centerX, centerY
-    );
+    QgsGeometryUtilsBase::circleCenterRadius( filletPointsX[0], filletPointsY[0], filletPointsX[1], filletPointsY[1], filletPointsX[2], filletPointsY[2], calculatedRadius, centerX, centerY );
 
     // Use relaxed tolerance for radius comparison due to numerical precision
     QVERIFY2( qgsDoubleNear( calculatedRadius, radius, 0.01 ), QString( "Calculated radius %1 should be close to expected radius %2" ).arg( calculatedRadius ).arg( radius ).toLatin1() );
@@ -436,50 +554,22 @@ void TestQgsGeometryUtilsBase::testInterpolatePointOnCubicBezier()
   //
   // 2D
   //
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 0, 0,
-    1, 1, 0, 0,
-    2, -1, 0, 0,
-    3, 0, 0, 0,
-    0, false, false,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 0, 0, 1, 1, 0, 0, 2, -1, 0, 0, 3, 0, 0, 0, 0, false, false, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 0.0 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
 
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 0, 0,
-    1, 1, 0, 0,
-    2, -1, 0, 0,
-    3, 0, 0, 0,
-    1, false, false,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 0, 0, 1, 1, 0, 0, 2, -1, 0, 0, 3, 0, 0, 0, 1, false, false, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 3.0 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
 
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 0, 0,
-    1, 1, 0, 0,
-    2, -1, 0, 0,
-    3, 0, 0, 0,
-    0.5, false, false,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 0, 0, 1, 1, 0, 0, 2, -1, 0, 0, 3, 0, 0, 0, 0.5, false, false, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 1.5 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
 
   //
   // With Z
   //
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 10, 0,
-    1, 1, 12, 0,
-    2, -1, 14, 0,
-    3, 0, 16, 0,
-    0.5, true, false,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 10, 0, 1, 1, 12, 0, 2, -1, 14, 0, 3, 0, 16, 0, 0.5, true, false, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 1.5 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
   QVERIFY( qgsDoubleNear( outZ, 13.0 ) );
@@ -487,14 +577,7 @@ void TestQgsGeometryUtilsBase::testInterpolatePointOnCubicBezier()
   //
   // With M
   //
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 0, 20,
-    1, 1, 0, 22,
-    2, -1, 0, 24,
-    3, 0, 0, 26,
-    0.5, false, true,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 0, 20, 1, 1, 0, 22, 2, -1, 0, 24, 3, 0, 0, 26, 0.5, false, true, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 1.5 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
   QVERIFY( qgsDoubleNear( outM, 23.0 ) );
@@ -502,14 +585,7 @@ void TestQgsGeometryUtilsBase::testInterpolatePointOnCubicBezier()
   //
   // With Z and M
   //
-  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
-    0, 0, 10, 20,
-    1, 1, 12, 22,
-    2, -1, 14, 24,
-    3, 0, 16, 26,
-    0.5, true, true,
-    outX, outY, outZ, outM
-  );
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( 0, 0, 10, 20, 1, 1, 12, 22, 2, -1, 14, 24, 3, 0, 16, 26, 0.5, true, true, outX, outY, outZ, outM );
   QVERIFY( qgsDoubleNear( outX, 1.5 ) );
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
   QVERIFY( qgsDoubleNear( outZ, 13.0 ) );
@@ -531,55 +607,90 @@ void TestQgsGeometryUtilsBase::testLineByTwoAngles_data()
   // Test 1: Simple right angle intersection
   // Point 1 at (0,0) bearing north, Point 2 at (10,0) bearing west -> intersection at (0,0)
   QTest::newRow( "simple_right_angle" )
-    << 0.0 << 0.0 << 0.0               // point 1 bearing north (0 rad)
-    << 10.0 << 0.0 << 3.0 * M_PI / 2.0 // point 2 bearing west (270 deg = 3π/2 rad)
+    << 0.0
+    << 0.0
+    << 0.0 // point 1 bearing north (0 rad)
+    << 10.0
+    << 0.0
+    << 3.0 * M_PI / 2.0 // point 2 bearing west (270 deg = 3π/2 rad)
     << true
-    << 0.0 << 0.0; // intersection is where line 1 starts (line 2 heads west from (10,0))
+    << 0.0
+    << 0.0; // intersection is where line 1 starts (line 2 heads west from (10,0))
 
   // Test 2: Two lines from different points meeting at center
   // Point 1 at (0,0) bearing NE (45 deg), Point 2 at (10,0) bearing NW (315 deg)
   QTest::newRow( "meet_at_center" )
-    << 0.0 << 0.0 << M_PI / 4.0        // bearing NE (45 deg)
-    << 10.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << 0.0
+    << 0.0
+    << M_PI / 4.0 // bearing NE (45 deg)
+    << 10.0
+    << 0.0
+    << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
     << true
-    << 5.0 << 5.0; // meet at (5,5)
+    << 5.0
+    << 5.0; // meet at (5,5)
 
   // Test 3: Lines meeting at known point
   // Point 1 at (0,0) bearing east (90 deg), Point 2 at (0,5) bearing east (90 deg) -> parallel
   QTest::newRow( "parallel_lines" )
-    << 0.0 << 0.0 << M_PI / 2.0 // bearing east
-    << 0.0 << 5.0 << M_PI / 2.0 // bearing east (parallel)
+    << 0.0
+    << 0.0
+    << M_PI / 2.0 // bearing east
+    << 0.0
+    << 5.0
+    << M_PI / 2.0 // bearing east (parallel)
     << false
-    << 0.0 << 0.0; // no intersection (parallel)
+    << 0.0
+    << 0.0; // no intersection (parallel)
 
   // Test 4: Lines meeting at acute angle - steeper
   // Point 1 at (0,0) bearing north, Point 2 at (5,0) bearing NW (315 deg)
   QTest::newRow( "acute_angle" )
-    << 0.0 << 0.0 << 0.0              // bearing north
-    << 5.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << 0.0
+    << 0.0
+    << 0.0 // bearing north
+    << 5.0
+    << 0.0
+    << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
     << true
-    << 0.0 << 5.0; // intersection at (0,5)
+    << 0.0
+    << 5.0; // intersection at (0,5)
 
   // Test 5: Point 1 looking north, Point 2 looking south (anti-parallel)
   QTest::newRow( "anti_parallel" )
-    << 0.0 << 0.0 << 0.0  // bearing north
-    << 5.0 << 0.0 << M_PI // bearing south
+    << 0.0
+    << 0.0
+    << 0.0 // bearing north
+    << 5.0
+    << 0.0
+    << M_PI // bearing south
     << false
-    << 0.0 << 0.0; // no intersection (parallel directions)
+    << 0.0
+    << 0.0; // no intersection (parallel directions)
 
   // Test 6: Intersection in negative coordinates
   QTest::newRow( "negative_coords" )
-    << 0.0 << 0.0 << 5.0 * M_PI / 4.0   // bearing SW (225 deg)
-    << -10.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << 0.0
+    << 0.0
+    << 5.0 * M_PI / 4.0 // bearing SW (225 deg)
+    << -10.0
+    << 0.0
+    << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
     << true
-    << -5.0 << -5.0; // intersection at (-5,-5)
+    << -5.0
+    << -5.0; // intersection at (-5,-5)
 
   // Test 7: Same point, different bearings
   QTest::newRow( "same_point_different_bearings" )
-    << 0.0 << 0.0 << 0.0        // bearing north
-    << 0.0 << 0.0 << M_PI / 2.0 // bearing east from same point
+    << 0.0
+    << 0.0
+    << 0.0 // bearing north
+    << 0.0
+    << 0.0
+    << M_PI / 2.0 // bearing east from same point
     << true
-    << 0.0 << 0.0; // intersection at the common point
+    << 0.0
+    << 0.0; // intersection at the common point
 }
 
 void TestQgsGeometryUtilsBase::testLineByTwoAngles()

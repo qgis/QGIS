@@ -31,7 +31,13 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
 {
   public:
     //! Constructor
-    QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
+    QgsGeometryDuplicateCheckError(
+      const QgsGeometryCheck *check,
+      const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+      const QgsPointXY &errorLocation,
+      const QMap<QString, QgsFeaturePool *> &featurePools,
+      const QMap<QString, QList<QgsFeatureId>> &duplicates
+    )
       : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( featurePools, duplicates ) )
       , mDuplicates( duplicates )
     {}
@@ -42,7 +48,10 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
     //! Returns if the \a other error is equivalent
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
-      return other->check() == check() && other->layerId() == layerId() && other->featureId() == featureId() &&
+      return other->check() == check()
+             && other->layerId() == layerId()
+             && other->featureId() == featureId()
+             &&
              // static_cast: since other->checker() == checker is only true if the types are actually the same
              static_cast<QgsGeometryDuplicateCheckError *>( other )->duplicates() == duplicates();
     }
@@ -62,8 +71,11 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryDuplicateCheck )
   public:
     explicit QgsGeometryDuplicateCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( context, configuration ) {}
-    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+      : QgsGeometryCheck( context, configuration )
+    {}
+    QgsGeometryCheck::Result collectErrors(
+      const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds()
+    ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
 
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }

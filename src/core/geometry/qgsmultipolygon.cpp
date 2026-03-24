@@ -142,12 +142,12 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiPolygon::asJsonObject( int precision ) const
 {
-  json polygons( json::array( ) );
+  json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
-      json coordinates( json::array( ) );
+      json coordinates( json::array() );
       const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
@@ -166,11 +166,7 @@ json QgsMultiPolygon::asJsonObject( int precision ) const
       polygons.push_back( coordinates );
     }
   }
-  return
-  {
-    { "type", "MultiPolygon" },
-    { "coordinates", polygons }
-  };
+  return { { "type", "MultiPolygon" }, { "coordinates", polygons } };
 }
 
 bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )

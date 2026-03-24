@@ -583,10 +583,7 @@ void QgsColorWheel::resizeEvent( QResizeEvent *event )
   // For some reason the first reported size than that of the parent widget, leading to a cut-off color wheel
   if ( event->size().width() > parentWidget()->size().width() )
   {
-    QSize newSize(
-      std::min( event->size().width(), parentWidget()->size().width() - 2 ),
-      std::min( event->size().height(), parentWidget()->size().height() - 2 )
-    );
+    QSize newSize( std::min( event->size().width(), parentWidget()->size().width() - 2 ), std::min( event->size().height(), parentWidget()->size().height() - 2 ) );
     resize( newSize );
     createImages( newSize );
   }
@@ -1358,23 +1355,19 @@ void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
   {
     setComponentValueF( oldValue - delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageDown )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageUp ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageDown ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageUp ) )
   {
     setComponentValueF( oldValue + 10 * delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageUp )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageDown ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_PageUp ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_PageDown ) )
   {
     setComponentValueF( oldValue - 10 * delta );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_Home )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_End ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_Home ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_End ) )
   {
     setComponentValueF( 0 );
   }
-  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_End )
-            || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_Home ) )
+  else if ( ( mOrientation == QgsColorRampWidget::Horizontal && event->key() == Qt::Key_End ) || ( mOrientation == QgsColorRampWidget::Vertical && event->key() == Qt::Key_Home ) )
   {
     //set to maximum value
     setComponentValueF( 1.f );
@@ -1577,8 +1570,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   setLayout( hLayout );
 
   const int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s
-                              .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
+  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s.arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
   connect( mMenuButton, &QAbstractButton::clicked, this, &QgsColorTextWidget::showMenu );
@@ -1708,8 +1700,7 @@ void QgsColorTextWidget::setAllowOpacity( const bool allowOpacity )
 QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
   : QgsColorWidget( parent )
   , mColor2( QColor() )
-{
-}
+{}
 
 void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter &painter )
 {

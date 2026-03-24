@@ -28,7 +28,6 @@ but rather accessed through
 #include "qgsdataitemproviderregistry.h"
 %End
   public:
-
     QgsDataItemProviderRegistry();
 
     ~QgsDataItemProviderRegistry();

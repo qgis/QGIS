@@ -115,7 +115,9 @@ bool QgsDownloadVectorTilesAlgorithm::prepareAlgorithm( const QVariantMap &param
   mMaxZoom = parameterAsInt( parameters, u"MAX_ZOOM"_s, context );
   if ( mMaxZoom > vtLayer->sourceMaxZoom() )
   {
-    throw QgsProcessingException( QObject::tr( "Requested maximum zoom level is bigger than available zoom level in the source layer. Please, select zoom level lower or equal to %1." ).arg( vtLayer->sourceMaxZoom() ) );
+    throw QgsProcessingException(
+      QObject::tr( "Requested maximum zoom level is bigger than available zoom level in the source layer. Please, select zoom level lower or equal to %1." ).arg( vtLayer->sourceMaxZoom() )
+    );
   }
 
   mTileLimit = static_cast<long long>( parameterAsInt( parameters, u"TILE_LIMIT"_s, context ) );
@@ -147,7 +149,9 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
   }
   if ( tileCount > mTileLimit )
   {
-    throw QgsProcessingException( QObject::tr( "Requested number of tiles %1 exceeds limit of %2 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileCount ).arg( mTileLimit ) );
+    throw QgsProcessingException(
+      QObject::tr( "Requested number of tiles %1 exceeds limit of %2 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileCount ).arg( mTileLimit )
+    );
   }
 
   auto writer = std::make_unique<QgsMbTiles>( outputFile );
@@ -165,11 +169,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     QgsCoordinateTransform ct( mTileMatrixSet.rootMatrix().crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsRectangle wgsExtent = ct.transformBoundingBox( mExtent );
-    QString boundsStr = QString( "%1,%2,%3,%4" )
-                          .arg( wgsExtent.xMinimum() )
-                          .arg( wgsExtent.yMinimum() )
-                          .arg( wgsExtent.xMaximum() )
-                          .arg( wgsExtent.yMaximum() );
+    QString boundsStr = QString( "%1,%2,%3,%4" ).arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() ).arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
     writer->setMetadataValue( "bounds", boundsStr );
   }
   catch ( const QgsCsException & )

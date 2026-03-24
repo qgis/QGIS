@@ -204,10 +204,18 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
      * Label anchor
      */
     bool currentLabelDataDefinedLineAnchorPercent(
-      double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol,
-      QString &lineAnchorClipping, bool &lineAnchorClippingSuccess, int &lineAnchorClippingCol,
-      QString &lineAnchorType, bool &lineAnchorTypeSuccess, int &lineAnchorTypeCol,
-      QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol
+      double &lineAnchorPercent,
+      bool &lineAnchorPercentSuccess,
+      int &lineAnchorPercentCol,
+      QString &lineAnchorClipping,
+      bool &lineAnchorClippingSuccess,
+      int &lineAnchorClippingCol,
+      QString &lineAnchorType,
+      bool &lineAnchorTypeSuccess,
+      int &lineAnchorTypeCol,
+      QString &lineAnchorTextPoint,
+      bool &lineAnchorTextPointSuccess,
+      int &lineAnchorTextPointCol
     ) const;
 
     /**
@@ -253,7 +261,9 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
     bool isPinned();
 
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
-    bool labelAnchorPercentMovable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol, int &lineAnchorTypeCol, int &lineAnchorTextPointCol ) const;
+    bool labelAnchorPercentMovable(
+      QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &lineAnchorPercentCol, int &lineAnchorClippingCol, int &lineAnchorTypeCol, int &lineAnchorTextPointCol
+    ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;

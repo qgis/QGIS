@@ -19,14 +19,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacCatalog::QgsStacCatalog( const QString &id,
-                                const QString &version,
-                                const QString &description,
-                                const QVector< QgsStacLink > &links )
+QgsStacCatalog::QgsStacCatalog( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links )
   : QgsStacObject( id, version, links )
   , mDescription( description )
-{
-}
+{}
 
 Qgis::StacObjectType QgsStacCatalog::type() const
 {
@@ -56,7 +52,7 @@ QString QgsStacCatalog::toHtml() const
     html += "</ul>\n"_L1;
   }
 
-  if ( ! mConformanceClasses.isEmpty() )
+  if ( !mConformanceClasses.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Conformance Classes"_L1 );
     html += "<ul>\n"_L1;

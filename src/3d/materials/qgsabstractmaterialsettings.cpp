@@ -40,7 +40,10 @@ void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCol
   mDataDefinedProperties = collection;
 }
 
-QgsPropertyCollection QgsAbstractMaterialSettings::dataDefinedProperties() const { return mDataDefinedProperties; }
+QgsPropertyCollection QgsAbstractMaterialSettings::dataDefinedProperties() const
+{
+  return mDataDefinedProperties;
+}
 
 const QgsPropertiesDefinition &QgsAbstractMaterialSettings::propertyDefinitions() const
 {

@@ -317,7 +317,18 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param tags tags to find function
      * \param name name of the item
      */
-    QgsExpressionItem *registerItem( const QString &group, const QString &label, const QString &expressionText, const QString &helpText = QString(), QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode, bool highlightedItem = false, int sortOrder = 1, const QIcon &icon = QIcon(), const QStringList &tags = QStringList(), const QString &name = QString() );
+    QgsExpressionItem *registerItem(
+      const QString &group,
+      const QString &label,
+      const QString &expressionText,
+      const QString &helpText = QString(),
+      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+      bool highlightedItem = false,
+      int sortOrder = 1,
+      const QIcon &icon = QIcon(),
+      const QStringList &tags = QStringList(),
+      const QString &name = QString()
+    );
 
     /**
      * Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
@@ -330,7 +341,16 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param sortOrder sort ranking for item
      * \param tags tags to find function
      */
-    void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText, const QString &helpText = QString(), QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode, bool highlightedItem = false, int sortOrder = 1, const QStringList &tags = QStringList() );
+    void registerItemForAllGroups(
+      const QStringList &groups,
+      const QString &label,
+      const QString &expressionText,
+      const QString &helpText = QString(),
+      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+      bool highlightedItem = false,
+      int sortOrder = 1,
+      const QStringList &tags = QStringList()
+    );
 
     void loadExpressionContext();
     void loadRelations();

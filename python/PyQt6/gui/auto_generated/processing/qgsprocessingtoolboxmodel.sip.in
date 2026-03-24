@@ -341,7 +341,12 @@ version of this model.
       ParameterTypeId,
     };
 
-    QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+    QgsProcessingToolboxModel(
+      QObject *parent /TransferThis/ = 0,
+      QgsProcessingRegistry *registry = 0,
+      QgsProcessingRecentAlgorithmLog *recentLog = 0,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0
+    );
 %Docstring
 Constructor for QgsProcessingToolboxModel, with the given ``parent``
 object.
@@ -501,7 +506,12 @@ supports filtering the results.
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
 
-    explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+    explicit QgsProcessingToolboxProxyModel(
+      QObject *parent /TransferThis/ = 0,
+      QgsProcessingRegistry *registry = 0,
+      QgsProcessingRecentAlgorithmLog *recentLog = 0,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0
+    );
 %Docstring
 Constructor for QgsProcessingToolboxProxyModel, with the given
 ``parent`` object.

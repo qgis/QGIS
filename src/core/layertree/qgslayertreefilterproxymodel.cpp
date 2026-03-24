@@ -25,11 +25,15 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [this] // skip-keyword-check
-  {
-    beginResetModel();
-    endResetModel();
-  } );
+  connect(
+    QgsProject::instance(), // skip-keyword-check
+    &QgsProject::readProject,
+    this,
+    [this] {
+      beginResetModel();
+      endResetModel();
+    }
+  );
 }
 
 void QgsLayerTreeFilterProxyModel::setCheckedLayers( const QList<QgsMapLayer *> layers )
@@ -196,7 +200,7 @@ bool QgsLayerTreeFilterProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return false;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-    if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
     {
       return false;
     }
@@ -257,7 +261,7 @@ QVariant QgsLayerTreeFilterProxyModel::data( const QModelIndex &idx, int role ) 
           return Qt::Unchecked;
 
         // both
-        if ( hasChecked &&  hasUnchecked )
+        if ( hasChecked && hasUnchecked )
           return Qt::PartiallyChecked;
 
         if ( hasChecked )
@@ -282,7 +286,7 @@ bool QgsLayerTreeFilterProxyModel::setData( const QModelIndex &index, const QVar
     if ( role == Qt::CheckStateRole )
     {
       int i = 0;
-      for ( i = 0; ; i++ )
+      for ( i = 0;; i++ )
       {
         const QModelIndex child = QgsLayerTreeFilterProxyModel::index( i, 0, index );
         if ( !child.isValid() )

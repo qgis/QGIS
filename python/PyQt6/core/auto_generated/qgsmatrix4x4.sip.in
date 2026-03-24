@@ -37,10 +37,12 @@ translation component has values in order of millions.
 %Docstring
 Initializes identity matrix
 %End
-    QgsMatrix4x4( double m11, double m12, double m13, double m14,
-                  double m21, double m22, double m23, double m24,
-                  double m31, double m32, double m33, double m34,
-                  double m41, double m42, double m43, double m44 );
+    QgsMatrix4x4(
+      double m11, double m12, double m13, double m14,
+      double m21, double m22, double m23, double m24,
+      double m31, double m32, double m33, double m34,
+      double m41, double m42, double m43, double m44
+    );
 %Docstring
 Initializes matrix by setting all values in row-major order
 %End
@@ -73,6 +75,30 @@ Returns whether this matrix is an identity matrix
     void setToIdentity() /HoldGIL/;
 %Docstring
 Sets matrix to be identity matrix
+%End
+
+    void scale( const QgsVector3D &vector );
+%Docstring
+Multiplies this matrix by another that scales coordinates by the
+components of a ``vector``.
+
+.. versionadded:: 4.2
+%End
+
+    void rotate( double angle, double x, double y, double z );
+%Docstring
+Multiples this matrix by another that rotates coordinates through
+``angle`` degrees about the vector (``x``, ``y``, ``z``).
+
+.. versionadded:: 4.2
+%End
+
+    void rotate( double angle, const QgsVector3D &vector );
+%Docstring
+Multiples this matrix by another that rotates coordinates through
+``angle`` degrees about ``vector``.
+
+.. versionadded:: 4.2
 %End
 
     SIP_PYOBJECT __repr__();

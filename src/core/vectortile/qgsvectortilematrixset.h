@@ -30,7 +30,6 @@ class QgsTileMatrix;
 class CORE_EXPORT QgsVectorTileMatrixSet : public QgsTileMatrixSet
 {
   public:
-
     /**
      * Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
      */
@@ -44,7 +43,6 @@ class CORE_EXPORT QgsVectorTileMatrixSet : public QgsTileMatrixSet
      * Optionally, a \a rootTileMap can be specified for indexed vector tile datasets (since QGIS 3.32)
      */
     bool fromEsriJson( const QVariantMap &json, const QVariantMap &rootTileMap = QVariantMap() );
-
 };
 
 #endif // QGSVECTORTILEMATRIXSET_H

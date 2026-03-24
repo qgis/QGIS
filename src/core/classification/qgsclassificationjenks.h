@@ -35,8 +35,7 @@ class CORE_EXPORT QgsClassificationJenks : public QgsClassificationMethod
     QIcon icon() const override;
 
   private:
-    QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses, QString &error ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) override;
 
     int mMaximumSize = 3000;
 };

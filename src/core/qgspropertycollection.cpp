@@ -28,9 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
   : mName( name )
-{
-
-}
+{}
 
 QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
 {
@@ -115,7 +113,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
   QVariant collection = QgsXmlUtils::readVariant( collectionElem.firstChild().toElement() );
   return loadVariant( collection.toMap(), definitions );
 }
-
 
 
 //
@@ -230,7 +227,7 @@ QgsProperty QgsPropertyCollection::property( int key ) const
 QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
-  return mProperties[ key ];
+  return mProperties[key];
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
@@ -380,10 +377,7 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mCount++;
 
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasDynamicProperties = mHasDynamicProperties ||
-                            ( prop.isActive() &&
-                              ( prop.propertyType() == Qgis::PropertyType::Field ||
-                                prop.propertyType() == Qgis::PropertyType::Expression ) );
+    mHasDynamicProperties = mHasDynamicProperties || ( prop.isActive() && ( prop.propertyType() == Qgis::PropertyType::Field || prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }
@@ -398,7 +392,8 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other ), mStack()
+  : QgsAbstractPropertyCollection( other )
+  , mStack()
 {
   clear();
 

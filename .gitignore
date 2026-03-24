@@ -43,6 +43,8 @@ Testing/*
 Thumb.db
 api_doc
 compile_commands.json
+contributors_avatars/*
+contributors_mosaic/*
 debian/qgis.sh
 desktop.ini
 doc/INSTALL.tex

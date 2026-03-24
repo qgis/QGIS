@@ -59,8 +59,7 @@ class GUI_EXPORT QgsSourceSelectProvider
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
 
-    virtual ~QgsSourceSelectProvider()
-      = default;
+    virtual ~QgsSourceSelectProvider() = default;
 
     //! Data Provider key
     virtual QString providerKey() const = 0;
@@ -97,17 +96,17 @@ class GUI_EXPORT QgsSourceSelectProvider
      * Create a new instance of QgsAbstractDataSourceWidget (or NULLPTR).
      * Caller takes responsibility of deleting created.
      */
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget(
+      QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded
+    ) const
+      = 0 SIP_FACTORY;
 
     /**
      * Returns the source select provider capabilities.
      * The default implementation returns no capabilities.
      * \since QGIS 3.38
      */
-    virtual Capabilities capabilities()
-    {
-      return Capability::NoCapabilities;
-    }
+    virtual Capabilities capabilities() { return Capability::NoCapabilities; }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSourceSelectProvider::Capabilities )

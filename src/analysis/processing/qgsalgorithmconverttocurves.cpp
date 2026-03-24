@@ -55,8 +55,10 @@ QString QgsConvertToCurvesAlgorithm::outputName() const
 
 QString QgsConvertToCurvesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm converts a geometry into its curved geometry equivalent.\n\n"
-                      "Already curved geometries will be retained without change." );
+  return QObject::tr(
+    "This algorithm converts a geometry into its curved geometry equivalent.\n\n"
+    "Already curved geometries will be retained without change."
+  );
 }
 
 QString QgsConvertToCurvesAlgorithm::shortDescription() const

@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutSnapper: QgsLayoutSerializableObject
+class QgsLayoutSnapper : QgsLayoutSerializableObject
 {
 %Docstring(signature="appended")
 Manages snapping grids and preset snap lines in a layout, and handles
@@ -21,7 +21,6 @@ snapping points to the nearest grid coordinate/snap line when possible.
 #include "qgslayoutsnapper.h"
 %End
   public:
-
     QgsLayoutSnapper( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutSnapper, attached to the specified ``layout``.
@@ -87,9 +86,9 @@ Sets whether snapping to items is ``enabled``.
 .. seealso:: :py:func:`snapToItems`
 %End
 
-    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
-                       QGraphicsLineItem *verticalSnapLine = 0,
-                       const QList< QgsLayoutItem * > *ignoreItems = 0 ) const;
+    QPointF snapPoint(
+      QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0, const QList< QgsLayoutItem * > *ignoreItems = 0
+    ) const;
 %Docstring
 Snaps a layout coordinate ``point``. If ``point`` was snapped,
 ``snapped`` will be set to ``True``.
@@ -110,9 +109,14 @@ A list of items to ignore during the snapping can be specified via the
 .. seealso:: :py:func:`snapRect`
 %End
 
-    QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
-                     QGraphicsLineItem *verticalSnapLine = 0,
-                     const QList< QgsLayoutItem * > *ignoreItems = 0 ) const;
+    QRectF snapRect(
+      const QRectF &rect,
+      double scaleFactor,
+      bool &snapped /Out/,
+      QGraphicsLineItem *horizontalSnapLine = 0,
+      QGraphicsLineItem *verticalSnapLine = 0,
+      const QList< QgsLayoutItem * > *ignoreItems = 0
+    ) const;
 %Docstring
 Snaps a layout coordinate ``rect``. If ``rect`` was snapped, ``snapped``
 will be set to ``True``.
@@ -203,8 +207,7 @@ shifted by in order to align one of the points to a guide.
 .. seealso:: :py:func:`snapPointToGuides`
 %End
 
-    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/,
-                             QGraphicsLineItem *snapLine = 0 ) const;
+    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/, QGraphicsLineItem *snapLine = 0 ) const;
 %Docstring
 Snaps an ``original`` layout coordinate to the item bounds. If the point
 was snapped, ``snapped`` will be set to ``True``.
@@ -226,8 +229,9 @@ the correct location for the snap.
 .. seealso:: :py:func:`snapPointsToItems`
 %End
 
-    double snapPointsToItems( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/,
-                              QGraphicsLineItem *snapLine = 0 ) const;
+    double snapPointsToItems(
+      const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/, QGraphicsLineItem *snapLine = 0
+    ) const;
 %Docstring
 Snaps a set of ``points`` to the item bounds. If the points were
 snapped, ``snapped`` will be set to ``True``.

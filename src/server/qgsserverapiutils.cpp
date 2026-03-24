@@ -71,11 +71,10 @@ QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporal
   const QgsMapLayerServerProperties *serverProperties = layer->serverProperties();
   QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time
-  dimensions.erase( std::remove_if( dimensions.begin(), dimensions.end(), []( QgsMapLayerServerProperties::WmsDimensionInfo &dim ) {
-                      return dim.name.toLower() != u"time"_s
-                             && dim.name.toLower() != "date"_L1;
-                    } ),
-                    dimensions.end() );
+  dimensions.erase(
+    std::remove_if( dimensions.begin(), dimensions.end(), []( QgsMapLayerServerProperties::WmsDimensionInfo &dim ) { return dim.name.toLower() != "time"_L1 && dim.name.toLower() != "date"_L1; } ),
+    dimensions.end()
+  );
 
   // Automatically pick up the first date/datetime field if dimensions is empty
   if ( dimensions.isEmpty() )
@@ -205,7 +204,8 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   };
 
   // helper to build the interval filter, fieldType is the underlying field type, queryType is the input query type
-  auto makeFilter = [&quoteValue]( const QString &fieldBegin, const QString &fieldEnd, const QString &fieldBeginCasted, const QString &fieldEndCasted, const QString &queryBegin, const QString &queryEnd ) -> QString {
+  auto makeFilter =
+    [&quoteValue]( const QString &fieldBegin, const QString &fieldEnd, const QString &fieldBeginCasted, const QString &fieldEndCasted, const QString &queryBegin, const QString &queryEnd ) -> QString {
     QString result;
 
     // It's a closed interval query, go for overlap
@@ -214,13 +214,11 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       // Overlap of two intervals
       if ( !fieldEndCasted.isEmpty() )
       {
-        result = u"( %1 IS NULL OR %2 <= %6 ) AND ( %4 IS NULL OR %5 >= %3 )"_s
-                   .arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ), fieldEnd, fieldEndCasted, quoteValue( queryEnd ) );
+        result = u"( %1 IS NULL OR %2 <= %6 ) AND ( %4 IS NULL OR %5 >= %3 )"_s.arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ), fieldEnd, fieldEndCasted, quoteValue( queryEnd ) );
       }
       else // Overlap of single value
       {
-        result = u"( %1 IS NULL OR ( %2 <= %3 AND %3 <= %4 ) )"_s
-                   .arg( fieldBegin, quoteValue( queryBegin ), fieldBeginCasted, quoteValue( queryEnd ) );
+        result = u"( %1 IS NULL OR ( %2 <= %3 AND %3 <= %4 ) )"_s.arg( fieldBegin, quoteValue( queryBegin ), fieldBeginCasted, quoteValue( queryEnd ) );
       }
     }
     else if ( !queryBegin.isEmpty() ) // >=
@@ -286,7 +284,9 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         }
         else
         {
-          conditions.push_back( makeFilter( fieldBegin, fieldEnd, fieldBeginCasted, fieldEndCasted, dateInterval.begin().toString( Qt::DateFormat::ISODate ), dateInterval.end().toString( Qt::DateFormat::ISODate ) ) );
+          conditions.push_back(
+            makeFilter( fieldBegin, fieldEnd, fieldBeginCasted, fieldEndCasted, dateInterval.begin().toString( Qt::DateFormat::ISODate ), dateInterval.end().toString( Qt::DateFormat::ISODate ) )
+          );
         }
       }
     }
@@ -383,8 +383,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       }
       else
       {
-        condition = u"( %1 IS NULL OR %2 = %3 )"_s
-                      .arg( fieldBegin, fieldRefBegin, castedValue );
+        condition = u"( %1 IS NULL OR %2 = %3 )"_s.arg( fieldBegin, fieldRefBegin, castedValue );
       }
       conditions.push_back( condition );
     }

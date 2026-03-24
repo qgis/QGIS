@@ -73,7 +73,16 @@ int CPL_STDCALL GdalProgressCallback( double dfComplete, const char *pszMessage,
   return true;
 }
 
-QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+QgsRasterCalculator::QgsRasterCalculator(
+  const QString &formulaString,
+  const QString &outputFile,
+  const QString &outputFormat,
+  const QgsRectangle &outputExtent,
+  int nOutputColumns,
+  int nOutputRows,
+  const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+  const QgsCoordinateTransformContext &transformContext
+)
   : mFormulaString( formulaString )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
@@ -90,7 +99,17 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   }
 }
 
-QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
+QgsRasterCalculator::QgsRasterCalculator(
+  const QString &formulaString,
+  const QString &outputFile,
+  const QString &outputFormat,
+  const QgsRectangle &outputExtent,
+  const QgsCoordinateReferenceSystem &outputCrs,
+  int nOutputColumns,
+  int nOutputRows,
+  const QVector<QgsRasterCalculatorEntry> &rasterEntries,
+  const QgsCoordinateTransformContext &transformContext
+)
   : mFormulaString( formulaString )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
@@ -100,11 +119,12 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
   , mTransformContext( transformContext )
-{
-}
+{}
 
 // Deprecated!
-QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
+QgsRasterCalculator::QgsRasterCalculator(
+  const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries
+)
   : mFormulaString( formulaString )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
@@ -123,7 +143,16 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 
 
 // Deprecated!
-QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
+QgsRasterCalculator::QgsRasterCalculator(
+  const QString &formulaString,
+  const QString &outputFile,
+  const QString &outputFormat,
+  const QgsRectangle &outputExtent,
+  const QgsCoordinateReferenceSystem &outputCrs,
+  int nOutputColumns,
+  int nOutputRows,
+  const QVector<QgsRasterCalculatorEntry> &rasterEntries
+)
   : mFormulaString( formulaString )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
@@ -133,8 +162,7 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
   , mTransformContext( QgsProject::instance()->transformContext() )
-{
-}
+{}
 
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 {
@@ -401,10 +429,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-    if ( GDALDatasetRunCloseWithoutDestroyingEx(
-           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-         )
-         != CE_None )
+    if ( GDALDatasetRunCloseWithoutDestroyingEx( outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
     {
       return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
     }
@@ -503,9 +528,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     }
     entry.bufferSize = entry.dataSize * mNumOutputColumns;
     entry.index = refCounter;
-    entry.varName = u"input_raster_%1_band_%2"_s
-                      .arg( refCounter++ )
-                      .arg( entry.band );
+    entry.varName = u"input_raster_%1_band_%2"_s.arg( refCounter++ ).arg( entry.band );
     inputRefs.push_back( entry );
   }
 
@@ -523,8 +546,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     for ( const auto &ref : inputRefs )
     {
       cExpression.replace( u"\"%1\""_s.arg( ref.name ), u"%1[i]"_s.arg( ref.varName ) );
-      inputArgs.append( u"__global %1 *%2"_s
-                          .arg( ref.typeName, ref.varName ) );
+      inputArgs.append( u"__global %1 *%2"_s.arg( ref.typeName, ref.varName ) );
       inputBuffers.push_back( cl::Buffer( ctx, CL_MEM_READ_ONLY, ref.bufferSize, nullptr, nullptr ) );
     }
 
@@ -676,11 +698,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
         queue.enqueueWriteBuffer( inputBuffers[ref.index], CL_TRUE, 0, ref.bufferSize, block->bits() );
       }
       // Run the kernel
-      queue.enqueueNDRangeKernel(
-        kernel,
-        0,
-        cl::NDRange( mNumOutputColumns )
-      );
+      queue.enqueueNDRangeKernel( kernel, 0, cl::NDRange( mNumOutputColumns ) );
 
       // Write the result
       queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, resultBufferSize, resultLine.get() );
@@ -709,10 +727,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     if ( hasReportsDuringClose && feedback )
     {
       QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
-      if ( GDALDatasetRunCloseWithoutDestroyingEx(
-             outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
-           )
-           != CE_None )
+      if ( GDALDatasetRunCloseWithoutDestroyingEx( outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress ) != CE_None )
       {
         return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
       }

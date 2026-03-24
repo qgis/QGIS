@@ -131,9 +131,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Possible arrow types
     enum ArrowType
     {
-      ArrowPlain,     //< Regular arrow
-      ArrowLeftHalf,  //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
-      ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
+      ArrowPlain,    //< Regular arrow
+      ArrowLeftHalf, //< Halved arrow, only the left side of the arrow is rendered (for straight arrows) or the side toward the exterior (for curved arrows)
+      ArrowRightHalf //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
     };
 
     //! Gets the current arrow type
@@ -203,5 +203,3 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 };
 
 #endif
-
-

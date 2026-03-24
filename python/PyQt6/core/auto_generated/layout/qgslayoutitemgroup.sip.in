@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutItemGroup: QgsLayoutItem
+class QgsLayoutItemGroup : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A container for grouping several :py:class:`QgsLayoutItems`.
@@ -18,7 +18,6 @@ A container for grouping several :py:class:`QgsLayoutItems`.
 #include "qgslayoutitemgroup.h"
 %End
   public:
-
     explicit QgsLayoutItemGroup( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemGroup, belonging to the specified
@@ -86,9 +85,6 @@ Returns a list of items contained by the group.
 
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

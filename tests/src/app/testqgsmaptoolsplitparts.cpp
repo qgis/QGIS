@@ -106,27 +106,12 @@ void TestQgsMapToolSplitParts::testSplitMultiLineString()
   QgsMapToolSplitParts *mapTool = new QgsMapToolSplitParts( mCanvas );
   mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
-    mCanvas,
-    QEvent::MouseButtonRelease,
-    mapToPoint( 4, 7 ),
-    Qt::LeftButton
-  ) );
+  auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 4, 7 ), Qt::LeftButton );
   mapTool->cadCanvasReleaseEvent( event.get() );
-  event = std::make_unique<QgsMapMouseEvent>(
-    mCanvas,
-    QEvent::MouseButtonRelease,
-    mapToPoint( 4, -1 ),
-    Qt::LeftButton
-  );
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 4, -1 ), Qt::LeftButton );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
-  event = std::make_unique<QgsMapMouseEvent>(
-    mCanvas,
-    QEvent::MouseButtonRelease,
-    mapToPoint( 4, -1 ),
-    Qt::RightButton
-  );
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 4, -1 ), Qt::RightButton );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
 

@@ -396,21 +396,23 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   mOutputFieldTypeComboBox->blockSignals( true );
 
   // Standard subset of fields in case of virtual
-  const QList<QgsVectorDataProvider::NativeType> &typelist = mCreateVirtualFieldCheckbox->isChecked() ? ( QList<QgsVectorDataProvider::NativeType>()
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), u"integer"_s, QMetaType::Type::Int, 0, 10 )
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), u"string"_s, QMetaType::Type::QString )
-                                                                                                          // date time
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), u"date"_s, QMetaType::Type::QDate, -1, -1, -1, -1 )
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), u"time"_s, QMetaType::Type::QTime, -1, -1, -1, -1 )
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), u"datetime"_s, QMetaType::Type::QDateTime, -1, -1, -1, -1 )
-                                                                                                          // string types
-                                                                                                          << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), u"text"_s, QMetaType::Type::QString, -1, -1, -1, -1 )
-                                                                                                          // boolean
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), u"bool"_s, QMetaType::Type::Bool )
-                                                                                                          // blob
-                                                                                                          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), u"binary"_s, QMetaType::Type::QByteArray ) )
-                                                                                                      : provider->nativeTypes();
+  const QList<QgsVectorDataProvider::NativeType> &typelist
+    = mCreateVirtualFieldCheckbox->isChecked()
+        ? ( QList<QgsVectorDataProvider::NativeType>()
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), u"integer"_s, QMetaType::Type::Int, 0, 10 )
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), u"string"_s, QMetaType::Type::QString )
+            // date time
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), u"date"_s, QMetaType::Type::QDate, -1, -1, -1, -1 )
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), u"time"_s, QMetaType::Type::QTime, -1, -1, -1, -1 )
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), u"datetime"_s, QMetaType::Type::QDateTime, -1, -1, -1, -1 )
+            // string types
+            << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), u"text"_s, QMetaType::Type::QString, -1, -1, -1, -1 )
+            // boolean
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), u"bool"_s, QMetaType::Type::Bool )
+            // blob
+            << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), u"binary"_s, QMetaType::Type::QByteArray ) )
+        : provider->nativeTypes();
 
   mOutputFieldTypeComboBox->clear();
   for ( int i = 0; i < typelist.size(); i++ )
@@ -579,22 +581,17 @@ void QgsFieldCalculator::populateFields()
 
 void QgsFieldCalculator::setDialogButtonState()
 {
-  QList<QPushButton *> buttons = {
-    mButtonBox->button( QDialogButtonBox::Ok ),
-    mButtonBox->button( QDialogButtonBox::Apply )
-  };
+  QList<QPushButton *> buttons = { mButtonBox->button( QDialogButtonBox::Ok ), mButtonBox->button( QDialogButtonBox::Apply ) };
 
   bool enableButtons = true;
   QString tooltip;
 
-  if ( ( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
-       && mOutputFieldNameLineEdit->text().isEmpty() )
+  if ( ( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() ) && mOutputFieldNameLineEdit->text().isEmpty() )
   {
     tooltip = tr( "Please enter a field name" );
     enableButtons = false;
   }
-  else if ( ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
-            && mExistingFieldComboBox->currentIndex() == -1 )
+  else if ( ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() ) && mExistingFieldComboBox->currentIndex() == -1 )
   {
     tooltip = tr( "Please select a field" );
     enableButtons = false;
@@ -644,7 +641,15 @@ void QgsFieldCalculator::showHelp()
 
 QgsField QgsFieldCalculator::fieldDefinition()
 {
-  return QgsField( mOutputFieldNameLineEdit->text(), static_cast<QMetaType::Type>( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt() ), mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_NAME_IDX ).toString(), mOutputFieldWidthSpinBox->value(), mOutputFieldPrecisionSpinBox->isEnabled() ? mOutputFieldPrecisionSpinBox->value() : 0, QString(), static_cast<QMetaType::Type>( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() ) );
+  return QgsField(
+    mOutputFieldNameLineEdit->text(),
+    static_cast<QMetaType::Type>( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt() ),
+    mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_NAME_IDX ).toString(),
+    mOutputFieldWidthSpinBox->value(),
+    mOutputFieldPrecisionSpinBox->isEnabled() ? mOutputFieldPrecisionSpinBox->value() : 0,
+    QString(),
+    static_cast<QMetaType::Type>( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() )
+  );
 }
 
 void QgsFieldCalculator::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )

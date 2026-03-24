@@ -60,12 +60,10 @@ void TestQgsZipUtils::cleanupTestCase()
 }
 
 void TestQgsZipUtils::init()
-{
-}
+{}
 
 void TestQgsZipUtils::cleanup()
-{
-}
+{}
 
 void TestQgsZipUtils::unzipWithSubdirs()
 {

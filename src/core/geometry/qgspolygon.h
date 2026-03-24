@@ -33,15 +33,15 @@ class QgsLineString;
  * \class QgsPolygon
  * \brief Polygon geometry type.
  */
-class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
 {
   public:
-
-
+    // clang-format off
     /**
      * Constructor for an empty polygon geometry.
      */
     QgsPolygon() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.
@@ -128,6 +128,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -136,6 +137,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     QString str = u"<QgsPolygon: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

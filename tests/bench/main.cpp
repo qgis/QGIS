@@ -57,33 +57,41 @@ typedef SInt32 SRefCon;
  */
 void usage( std::string const &appName )
 {
-  std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
-            << QGSVERSION << ")\n"
-            << "QGIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
-            << "Usage: " << appName << " [options] [FILES]\n"
-            << "  options:\n"
-            << "\t[--iterations iterations]\tnumber of rendering cycles, default 1\n"
-            << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
-            << "\t[--log filename]\twrite log (JSON) to given file\n"
-            << "\t[--width width]\twidth of snapshot to emit\n"
-            << "\t[--height height]\theight of snapshot to emit\n"
-            << "\t[--project projectfile]\tload the given QGIS project\n"
-            << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
-            << "\t[--optionspath path]\tuse the given QSettings path\n"
-            << "\t[--configpath path]\tuse the given path for all user configuration\n"
-            << "\t[--prefix path]\tpath to a different build of qgis, may be used to test old versions\n"
-            << "\t[--quality]\trenderer hint(s), comma separated, possible values: Antialiasing,TextAntialiasing,SmoothPixmapTransform,NonCosmeticDefaultPen\n"
-            << "\t[--parallel]\trender layers in parallel instead of sequentially\n"
-            << "\t[--print type]\twhat kind of time to print, possible values: wall,total,user,sys. Default is total.\n"
-            << "\t[--help]\t\tthis text\n\n"
-            << "  FILES:\n"
-            << "    Files specified on the command line can include rasters,\n"
-            << "    vectors, and QGIS project files (.qgs or .qgz): \n"
-            << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
-            << "        and others supported by GDAL\n"
-            << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
-            << "        and others supported by OGR and PostgreSQL layers using\n"
-            << "        the PostGIS extension\n"; // OK
+  std::cerr
+    << "QGIS Benchmark - "
+    << VERSION
+    << " '"
+    << RELEASE_NAME
+    << "' ("
+    << QGSVERSION
+    << ")\n"
+    << "QGIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
+    << "Usage: "
+    << appName
+    << " [options] [FILES]\n"
+    << "  options:\n"
+    << "\t[--iterations iterations]\tnumber of rendering cycles, default 1\n"
+    << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
+    << "\t[--log filename]\twrite log (JSON) to given file\n"
+    << "\t[--width width]\twidth of snapshot to emit\n"
+    << "\t[--height height]\theight of snapshot to emit\n"
+    << "\t[--project projectfile]\tload the given QGIS project\n"
+    << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
+    << "\t[--optionspath path]\tuse the given QSettings path\n"
+    << "\t[--configpath path]\tuse the given path for all user configuration\n"
+    << "\t[--prefix path]\tpath to a different build of qgis, may be used to test old versions\n"
+    << "\t[--quality]\trenderer hint(s), comma separated, possible values: Antialiasing,TextAntialiasing,SmoothPixmapTransform,NonCosmeticDefaultPen\n"
+    << "\t[--parallel]\trender layers in parallel instead of sequentially\n"
+    << "\t[--print type]\twhat kind of time to print, possible values: wall,total,user,sys. Default is total.\n"
+    << "\t[--help]\t\tthis text\n\n"
+    << "  FILES:\n"
+    << "    Files specified on the command line can include rasters,\n"
+    << "    vectors, and QGIS project files (.qgs or .qgz): \n"
+    << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
+    << "        and others supported by GDAL\n"
+    << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
+    << "        and others supported by OGR and PostgreSQL layers using\n"
+    << "        the PostGIS extension\n"; // OK
 
 
 } // usage()
@@ -405,9 +413,7 @@ int main( int argc, char *argv[] )
   {
     QStringList gdalShares;
     QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
-    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << appResources.append( "/share/gdal" )
-               << appResources.append( "/gdal" );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" ) << appResources.append( "/share/gdal" ) << appResources.append( "/gdal" );
     for ( const QString &gdalShare : std::as_const( gdalShares ) )
     {
       if ( QFile::exists( gdalShare ) )

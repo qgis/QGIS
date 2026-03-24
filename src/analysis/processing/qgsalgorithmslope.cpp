@@ -53,9 +53,11 @@ QString QgsSlopeAlgorithm::groupId() const
 
 QString QgsSlopeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the angle of inclination "
-                      "of the terrain from an input raster layer. The slope "
-                      "is expressed in degrees." );
+  return QObject::tr(
+    "This algorithm calculates the angle of inclination "
+    "of the terrain from an input raster layer. The slope "
+    "is expressed in degrees."
+  );
 }
 
 QString QgsSlopeAlgorithm::shortDescription() const
@@ -74,10 +76,7 @@ void QgsSlopeAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
-  zFactorParam->setMetadata(
-    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
-    }
-  );
+  zFactorParam->setMetadata( { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } ) } );
   addParameter( zFactorParam.release() );
 
   auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );

@@ -38,12 +38,7 @@ using namespace Qt::StringLiterals;
 #include "qgsogrproviderutils.h"
 #include "qgsgeopackagedataitems.h"
 
-void QgsOgrItemGuiProvider::populateContextMenu(
-  QgsDataItem *item,
-  QMenu *menu,
-  const QList<QgsDataItem *> &,
-  QgsDataItemGuiContext context
-)
+void QgsOgrItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
@@ -140,10 +135,16 @@ void QgsOgrItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
   }
   else
   {
-    notify( title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
-                                " remove it from the project and retry." )
-                     .arg( name, projectLayer->name() ),
-            context, Qgis::MessageLevel::Warning );
+    notify(
+      title,
+      QObject::tr(
+        "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+        " remove it from the project and retry."
+      )
+        .arg( name, projectLayer->name() ),
+      context,
+      Qgis::MessageLevel::Warning
+    );
   }
 }
 
@@ -200,10 +201,16 @@ void QgsOgrItemGuiProvider::deleteCollection( QgsDataItemGuiContext context )
   }
   else
   {
-    notify( title, tr( "The %1 '%2' cannot be deleted because it is in the current project as '%3',"
-                       " remove it from the project and retry." )
-                     .arg( type, path, projectLayer->name() ),
-            context, Qgis::MessageLevel::Warning );
+    notify(
+      title,
+      tr(
+        "The %1 '%2' cannot be deleted because it is in the current project as '%3',"
+        " remove it from the project and retry."
+      )
+        .arg( type, path, projectLayer->name() ),
+      context,
+      Qgis::MessageLevel::Warning
+    );
   }
 }
 ///@endcond

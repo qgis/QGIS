@@ -49,20 +49,16 @@ class TestQgsLayoutView : public QObject
 };
 
 void TestQgsLayoutView::initTestCase()
-{
-}
+{}
 
 void TestQgsLayoutView::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsLayoutView::init()
-{
-}
+{}
 
 void TestQgsLayoutView::cleanup()
-{
-}
+{}
 
 void TestQgsLayoutView::basic()
 {
@@ -163,22 +159,13 @@ class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-ma
     }
 
     bool receivedWheelEvent = false;
-    void wheelEvent( QWheelEvent * ) override
-    {
-      receivedWheelEvent = true;
-    }
+    void wheelEvent( QWheelEvent * ) override { receivedWheelEvent = true; }
 
     bool receivedKeyPressEvent = false;
-    void keyPressEvent( QKeyEvent * ) override
-    {
-      receivedKeyPressEvent = true;
-    }
+    void keyPressEvent( QKeyEvent * ) override { receivedKeyPressEvent = true; }
 
     bool receivedKeyReleaseEvent = false;
-    void keyReleaseEvent( QKeyEvent * ) override
-    {
-      receivedKeyReleaseEvent = true;
-    }
+    void keyReleaseEvent( QKeyEvent * ) override { receivedKeyReleaseEvent = true; }
 };
 
 void TestQgsLayoutView::events()
@@ -233,14 +220,14 @@ class TestItem : public QgsLayoutItem // clazy:exclude=missing-qobject-macro
 {
   public:
     TestItem( QgsLayout *layout )
-      : QgsLayoutItem( layout ) {}
+      : QgsLayoutItem( layout )
+    {}
 
     int mFlag = 0;
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-    void draw( QgsLayoutItemRenderContext & ) override
-    {}
+    void draw( QgsLayoutItemRenderContext & ) override {}
 };
 
 void TestQgsLayoutView::guiRegistry()
@@ -260,13 +247,9 @@ void TestQgsLayoutView::guiRegistry()
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
-    return new QgsLayoutItemBaseWidget( nullptr, item );
-  };
+  auto createWidget = []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutItemBaseWidget( nullptr, item ); };
 
-  auto createRubberBand = []( QgsLayoutView *view ) -> QgsLayoutViewRubberBand * {
-    return new QgsLayoutViewRectangularRubberBand( view );
-  };
+  auto createRubberBand = []( QgsLayoutView *view ) -> QgsLayoutViewRubberBand * { return new QgsLayoutViewRectangularRubberBand( view ); };
 
   QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, u"mytype"_s, QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );

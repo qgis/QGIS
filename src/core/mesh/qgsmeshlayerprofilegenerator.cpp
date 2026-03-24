@@ -190,4 +190,3 @@ double QgsMeshLayerProfileGenerator::heightAt( double x, double y )
 {
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
 }
-

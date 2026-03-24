@@ -252,7 +252,9 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       }
 
       textContent = textLines.join( '\n' );
-      htmlContent = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s + htmlLines.join( "</tr><tr>"_L1 ) + u"</tr></table></body></html>"_s;
+      htmlContent = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>"_s
+                    + htmlLines.join( "</tr><tr>"_L1 )
+                    + u"</tr></table></body></html>"_s;
       break;
     }
     case GeoJSON:

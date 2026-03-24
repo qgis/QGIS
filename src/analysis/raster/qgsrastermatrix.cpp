@@ -26,8 +26,7 @@ QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nod
   , mRows( nRows )
   , mData( data )
   , mNodataValue( nodataValue )
-{
-}
+{}
 
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix &m )
 {

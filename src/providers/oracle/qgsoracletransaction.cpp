@@ -34,8 +34,7 @@ using namespace Qt::StringLiterals;
 QgsOracleTransaction::QgsOracleTransaction( const QString &connString )
   : QgsTransaction( connString )
 
-{
-}
+{}
 
 QgsOracleTransaction::~QgsOracleTransaction()
 {

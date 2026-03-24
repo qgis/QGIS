@@ -199,7 +199,6 @@ QVariantList QgsVectorTileUtils::parseStyleSourceContentUrl( const QString &sour
 }
 
 
-
 QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp )
 {
   QgsRectangle r = tm.tileExtent( id );
@@ -231,7 +230,7 @@ double QgsVectorTileUtils::scaleToZoom( double mapScale, double z0Scale )
 {
   double s0 = z0Scale;
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
-  tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
+  tileZoom2 -= 1; // TODO: it seems that map scale is double (is that because of high-dpi screen?)
   return tileZoom2;
 }
 
@@ -308,24 +307,22 @@ QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ
 
 bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
 {
-  return url.contains( u"{x}"_s ) &&
-         ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) &&
-         url.contains( u"{z}"_s );
+  return url.contains( u"{x}"_s ) && ( url.contains( u"{y}"_s ) || url.contains( u"{-y}"_s ) ) && url.contains( u"{z}"_s );
 }
 
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
-  QPointF center;  //!< Center in tile matrix (!) coordinates
-  bool operator()( QgsTileXYZ req1, QgsTileXYZ req2 )
-  {
-    QPointF p1( req1.column() + 0.5, req1.row() + 0.5 );
-    QPointF p2( req2.column() + 0.5, req2.row() + 0.5 );
-    // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
-    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
-    return d1 < d2;
-  }
+    QPointF center; //!< Center in tile matrix (!) coordinates
+    bool operator()( QgsTileXYZ req1, QgsTileXYZ req2 )
+    {
+      QPointF p1( req1.column() + 0.5, req1.row() + 0.5 );
+      QPointF p2( req2.column() + 0.5, req2.row() + 0.5 );
+      // using chessboard distance (loading order more natural than euclidean/manhattan distance)
+      double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+      double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
+      return d1 < d2;
+    }
 };
 
 void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, QPointF center )
@@ -339,8 +336,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
 {
   if ( styleDefinition.contains( u"sprite"_s ) && ( context.spriteCategories().isEmpty() ) )
   {
-    auto prepareSpriteUrl = []( const QString & sprite, const QString & styleUrl )
-    {
+    auto prepareSpriteUrl = []( const QString &sprite, const QString &styleUrl ) {
       if ( sprite.startsWith( "http"_L1 ) )
       {
         return sprite;
@@ -387,8 +383,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
         QUrl spriteUrl = QUrl( spritesIterator.value() );
         spriteUrl.setPath( spriteUrl.path() + u"%1.json"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() ) );
         QNetworkRequest request = QNetworkRequest( spriteUrl );
-        QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
-        QgsBlockingNetworkRequest networkRequest;
+        QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s ) QgsBlockingNetworkRequest networkRequest;
         switch ( networkRequest.get( request ) )
         {
           case QgsBlockingNetworkRequest::NoError:
@@ -400,8 +395,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
             QUrl spriteUrl = QUrl( spritesIterator.value() );
             spriteUrl.setPath( spriteUrl.path() + u"%1.png"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() ) );
             QNetworkRequest request = QNetworkRequest( spriteUrl );
-            QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
-            QgsBlockingNetworkRequest networkRequest;
+            QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s ) QgsBlockingNetworkRequest networkRequest;
             switch ( networkRequest.get( request ) )
             {
               case QgsBlockingNetworkRequest::NoError:
@@ -435,4 +429,3 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
     }
   }
 }
-

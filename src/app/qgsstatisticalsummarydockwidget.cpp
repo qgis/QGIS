@@ -43,19 +43,59 @@ using namespace Qt::StringLiterals;
 typedef QList<Qgis::Statistic> StatsList;
 typedef QList<Qgis::StringStatistic> StringStatsList;
 typedef QList<Qgis::DateTimeStatistic> DateTimeStatsList;
-Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( { Qgis::Statistic::Count, Qgis::Statistic::Sum, Qgis::Statistic::Mean, Qgis::Statistic::Median, Qgis::Statistic::StDev, Qgis::Statistic::StDevSample, Qgis::Statistic::Min, Qgis::Statistic::Max, Qgis::Statistic::Range, Qgis::Statistic::Minority, Qgis::Statistic::Majority, Qgis::Statistic::Variety, Qgis::Statistic::FirstQuartile, Qgis::Statistic::ThirdQuartile, Qgis::Statistic::InterQuartileRange } ) )
-Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( { Qgis::StringStatistic::Count, Qgis::StringStatistic::CountDistinct, Qgis::StringStatistic::CountMissing, Qgis::StringStatistic::Min, Qgis::StringStatistic::Max, Qgis::StringStatistic::Minority, Qgis::StringStatistic::Majority, Qgis::StringStatistic::MinimumLength, Qgis::StringStatistic::MaximumLength, Qgis::StringStatistic::MeanLength } ) )
-Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( { Qgis::DateTimeStatistic::Count, Qgis::DateTimeStatistic::CountDistinct, Qgis::DateTimeStatistic::CountMissing, Qgis::DateTimeStatistic::Min, Qgis::DateTimeStatistic::Max, Qgis::DateTimeStatistic::Range } ) )
+Q_GLOBAL_STATIC_WITH_ARGS(
+  StatsList,
+  sDisplayStats,
+  (
+    { Qgis::Statistic::Count,
+      Qgis::Statistic::Sum,
+      Qgis::Statistic::Mean,
+      Qgis::Statistic::Median,
+      Qgis::Statistic::StDev,
+      Qgis::Statistic::StDevSample,
+      Qgis::Statistic::Min,
+      Qgis::Statistic::Max,
+      Qgis::Statistic::Range,
+      Qgis::Statistic::Minority,
+      Qgis::Statistic::Majority,
+      Qgis::Statistic::Variety,
+      Qgis::Statistic::FirstQuartile,
+      Qgis::Statistic::ThirdQuartile,
+      Qgis::Statistic::InterQuartileRange }
+  )
+)
+Q_GLOBAL_STATIC_WITH_ARGS(
+  StringStatsList,
+  sDisplayStringStats,
+  (
+    { Qgis::StringStatistic::Count,
+      Qgis::StringStatistic::CountDistinct,
+      Qgis::StringStatistic::CountMissing,
+      Qgis::StringStatistic::Min,
+      Qgis::StringStatistic::Max,
+      Qgis::StringStatistic::Minority,
+      Qgis::StringStatistic::Majority,
+      Qgis::StringStatistic::MinimumLength,
+      Qgis::StringStatistic::MaximumLength,
+      Qgis::StringStatistic::MeanLength }
+  )
+)
+Q_GLOBAL_STATIC_WITH_ARGS(
+  DateTimeStatsList,
+  sDisplayDateTimeStats,
+  ( { Qgis::DateTimeStatistic::Count, Qgis::DateTimeStatistic::CountDistinct, Qgis::DateTimeStatistic::CountMissing, Qgis::DateTimeStatistic::Min, Qgis::DateTimeStatistic::Max, Qgis::DateTimeStatistic::Range } )
+)
 
 #define MISSING_VALUES -1
 
 QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-             << QgsExpressionContextUtils::layerScope( mLayer );
+  expContext
+    << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+    << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+    << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
@@ -137,7 +177,8 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
   if ( !rows.isEmpty() )
   {
     const QString text = u"%1\t%2\n%3"_s.arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(), mStatisticsTable->horizontalHeaderItem( 1 )->text(), rows.join( QLatin1Char( '\n' ) ) );
-    QString html = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>"_s.arg( text );
+    QString html = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>"_s
+                     .arg( text );
     html.replace( "\t"_L1, "</td><td>"_L1 ).replace( "\n"_L1, "</td></tr><tr><td>"_L1 );
 
     QgsClipboard clipboard;

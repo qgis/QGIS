@@ -35,7 +35,8 @@ class TestQgsLayoutUtils : public QgsTest
 
   public:
     TestQgsLayoutUtils()
-      : QgsTest( u"Layout Utils Tests"_s, u"composer_utils"_s ) {}
+      : QgsTest( u"Layout Utils Tests"_s, u"composer_utils"_s )
+    {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -588,7 +589,10 @@ void TestQgsLayoutUtils::largestRotatedRect()
     const QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
-    QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) ) || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+    QVERIFY(
+      ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+      || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) )
+    );
 
     //also verify that aspect ratio of rectangle has not changed
     QGSCOMPARENEAR( result.width() / result.height(), wideRect.width() / wideRect.height(), 4 * std::numeric_limits<double>::epsilon() );
@@ -602,7 +606,10 @@ void TestQgsLayoutUtils::largestRotatedRect()
     const QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
-    QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) ) || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+    QVERIFY(
+      ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+      || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) )
+    );
 
     //also verify that aspect ratio of rectangle has not changed
     QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * std::numeric_limits<double>::epsilon() );

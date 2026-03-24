@@ -78,8 +78,7 @@ class FeatureFetcher : public QThread
   public:
     FeatureFetcher( QPointer<QgsVectorLayer> layer )
       : mLayer( layer )
-    {
-    }
+    {}
 
     void run() override
     {
@@ -225,9 +224,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QCOMPARE( valuesAttr.size(), 3 );
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
 
-    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toString() < b.toString();
-    } );
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
 
     QList<QVariant> expectedAttr;
     expectedAttr << u"B52"_s << u"Biplane"_s << u"Jet"_s;
@@ -242,9 +239,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QCOMPARE( valuesAttr.size(), 2 );
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
 
-    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toString() < b.toString();
-    } );
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
 
     QList<QVariant> expectedAttr;
     expectedAttr << u"B52"_s << u"Biplane"_s;
@@ -264,9 +259,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QCOMPARE( valuesAttr.size(), 2 );
     QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
 
-    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toString() < b.toString();
-    } );
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
 
     QList<QVariant> expectedAttr;
     expectedAttr << u"Biplane"_s << u"Jet"_s;
@@ -320,9 +313,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( uniqueLayer.get(), u"name"_s, retrievedValues );
     QVERIFY( retrievedValues );
     QCOMPARE( valuesAttr.size(), 4 );
-    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toString() < b.toString();
-    } );
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
 
     QList<QVariant> expectedAttr;
     expectedAttr << u"Point_0"_s << u"Point_1"_s << u"Point_3"_s << u"Point_4"_s;
@@ -336,9 +327,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 3 );
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
-    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toInt() < b.toInt();
-    } );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) { return a.toInt() < b.toInt(); } );
     QList<QVariant> expectedExp;
     expectedExp << 5 << 6 << 7;
     QCOMPARE( valuesExp, expectedExp );
@@ -351,9 +340,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 2 );
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
-    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toInt() < b.toInt();
-    } );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) { return a.toInt() < b.toInt(); } );
     QList<QVariant> expectedExp;
     expectedExp << 6 << 7;
     QCOMPARE( valuesExp, expectedExp );
@@ -371,9 +358,7 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     QVERIFY( retrievedValues );
     QCOMPARE( valuesExp.size(), 2 );
     QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
-    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
-      return a.toInt() < b.toInt();
-    } );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) { return a.toInt() < b.toInt(); } );
     QList<QVariant> expectedExp;
     expectedExp << 6 << 7;
     QCOMPARE( valuesExp, expectedExp );
@@ -431,11 +416,7 @@ void TestQgsVectorLayerUtils::testObjectsMaskedBySymbolLayers()
   QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
 
   // test first with no masking configured
-  QgsMaskedLayers result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
-    maskingLayer.get(),
-    sets,
-    allLayers
-  );
+  QgsMaskedLayers result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
   QVERIFY( result.isEmpty() );
 
   // configure the set so that maskingLayer is a mask source
@@ -443,11 +424,7 @@ void TestQgsVectorLayerUtils::testObjectsMaskedBySymbolLayers()
   set.setSources( { symbolSource } );
   sets.insert( setId, set );
 
-  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
-    maskingLayer.get(),
-    sets,
-    allLayers
-  );
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
 
   QVERIFY( !result.isEmpty() );
   QVERIFY( result.contains( maskedLayer->id() ) );
@@ -499,11 +476,7 @@ void TestQgsVectorLayerUtils::testObjectsMaskedByLabels()
   QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
 
   // test first with no masking configured
-  QHash<QString, QgsMaskedLayers> labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
-    maskingLayer.get(),
-    sets,
-    allLayers
-  );
+  QHash<QString, QgsMaskedLayers> labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
   QVERIFY( labelResult.isEmpty() );
 
   const QString labelRuleId = u"RuleA"_s;
@@ -512,11 +485,7 @@ void TestQgsVectorLayerUtils::testObjectsMaskedByLabels()
   set.setSources( { labelSource } );
   sets[setId] = set;
 
-  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
-    maskingLayer.get(),
-    sets,
-    allLayers
-  );
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
 
   QVERIFY( !labelResult.isEmpty() );
   QVERIFY( labelResult.contains( labelRuleId ) );

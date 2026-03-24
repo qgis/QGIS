@@ -68,9 +68,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( extractFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::extractFile );
   sourceMenu->addAction( extractFileAction );
 
-  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction] {
-    extractFileAction->setEnabled( mMode == ModeBase64 );
-  } );
+  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction] { extractFileAction->setEnabled( mMode == ModeBase64 ); } );
 
   QAction *enterUrlAction = new QAction( tr( "From URL…" ), sourceMenu );
   connect( enterUrlAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::selectUrl );
@@ -235,7 +233,8 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
 
     if ( mMessageBar )
     {
-      mMessageBar->pushMessage( extractFileTitle(), tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar
+        ->pushMessage( extractFileTitle(), tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Success, 0 );
     }
   }
   else if ( mMessageBar )

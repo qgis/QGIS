@@ -66,8 +66,7 @@ std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownload
 
 
 void QgsOapifSharedData::invalidateCacheBaseUnderLock()
-{
-}
+{}
 
 QgsOapifSharedData *QgsOapifSharedData::clone() const
 {
@@ -149,11 +148,7 @@ static void collectTopLevelAndNodes( const QgsExpressionNode *node, std::vector<
   topAndNodes.push_back( node );
 }
 
-QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
-  const QgsExpressionNode *rootNode,
-  QgsOapifFilterTranslationState &translationState,
-  QString &untranslatedPart
-) const
+QString QgsOapifSharedData::compileExpressionNodeUsingPart1( const QgsExpressionNode *rootNode, QgsOapifFilterTranslationState &translationState, QString &untranslatedPart ) const
 {
   std::vector<const QgsExpressionNode *> topAndNodes;
   collectTopLevelAndNodes( rootNode, topAndNodes );
@@ -310,10 +305,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
   if ( mServerSupportsFilterCql2Text )
   {
     const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
-    QgsOapifCql2TextExpressionCompiler compiler(
-      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
-      mServerSupportsBasicSpatialFunctions, invertAxisOrientation
-    );
+    QgsOapifCql2TextExpressionCompiler compiler( mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI, mServerSupportsBasicSpatialFunctions, invertAxisOrientation );
     QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
     if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
     {
@@ -325,8 +317,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
     serverSideParameters += "&filter-lang=cql2-text"_L1;
     if ( compiler.geometryLiteralUsed() )
     {
-      if ( mSourceCrs
-           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+      if ( mSourceCrs != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
       {
         serverSideParameters += u"&filter-crs=%1"_s.arg( mSourceCrs.toOgcUri() );
       }

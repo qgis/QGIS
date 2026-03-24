@@ -28,7 +28,6 @@ rather accessed through
 %End
   public:
 
-
     QgsBabelFormatRegistry();
 %Docstring
 Constructor for QgsBabelFormatRegistry.

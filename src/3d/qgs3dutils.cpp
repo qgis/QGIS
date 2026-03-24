@@ -197,7 +197,16 @@ double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 }
 
 
-bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback )
+bool Qgs3DUtils::exportAnimation(
+  const Qgs3DAnimationSettings &animationSettings,
+  Qgs3DMapSettings &mapSettings,
+  int framesPerSecond,
+  const QString &outputDirectory,
+  const QString &fileNameTemplate,
+  const QSize &outputSize,
+  QString &error,
+  QgsFeedback *feedback
+)
 {
   if ( animationSettings.keyFrames().size() < 2 )
   {
@@ -513,7 +522,9 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
+void Qgs3DUtils::extractPointPositions(
+  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
+)
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -524,7 +535,9 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator() ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainSettings()->verticalScale() ) : 0.f;
+    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
+                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainSettings()->verticalScale() )
+                             : 0.f;
     float h = 0.0f;
     switch ( altClamp )
     {
@@ -538,11 +551,13 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
         h = terrainZ + geomZ;
         break;
     }
+    // clang-format off
     positions.append( QVector3D(
-      static_cast<float>( pt.x() - chunkOrigin.x() ),
-      static_cast<float>( pt.y() - chunkOrigin.y() ),
-      h
+      static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
+      static_cast<float>( pt.y() - chunkOrigin.y() + translation.y() ),
+      static_cast< float >( h + translation.z() )
     ) );
+    // clang-format on
     QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
@@ -635,13 +650,23 @@ QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const
   return extentMapCrs;
 }
 
-QgsAABB Qgs3DUtils::layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+QgsAABB Qgs3DUtils::layerToWorldExtent(
+  const QgsRectangle &extent,
+  double zMin,
+  double zMax,
+  const QgsCoordinateReferenceSystem &layerCrs,
+  const QgsVector3D &mapOrigin,
+  const QgsCoordinateReferenceSystem &mapCrs,
+  const QgsCoordinateTransformContext &context
+)
 {
   const QgsRectangle extentMapCrs( Qgs3DUtils::tryReprojectExtent2D( extent, layerCrs, mapCrs, context ) );
   return mapToWorldExtent( extentMapCrs, zMin, zMax, mapOrigin );
 }
 
-QgsRectangle Qgs3DUtils::worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+QgsRectangle Qgs3DUtils::worldToLayerExtent(
+  const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context
+)
 {
   const QgsRectangle extentMap = worldToMapExtent( bbox, mapOrigin );
   return Qgs3DUtils::tryReprojectExtent2D( extentMap, mapCrs, layerCrs, context );
@@ -664,7 +689,11 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &
   const QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
   const QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
   // casting to float should be ok, assuming that the map origin is not too far from the box
-  return QgsAABB( static_cast<float>( worldExtentMin3D.x() ), static_cast<float>( worldExtentMin3D.y() ), static_cast<float>( worldExtentMin3D.z() ), static_cast<float>( worldExtentMax3D.x() ), static_cast<float>( worldExtentMax3D.y() ), static_cast<float>( worldExtentMax3D.z() ) );
+  // clang-format off
+  return QgsAABB( static_cast<float>( worldExtentMin3D.x() ), static_cast<float>( worldExtentMin3D.y() ), static_cast<float>( worldExtentMin3D.z() ),
+                 static_cast<float>( worldExtentMax3D.x() ), static_cast<float>( worldExtentMax3D.y() ), static_cast<float>( worldExtentMax3D.z() )
+  );
+  // clang-format on
 }
 
 QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )
@@ -677,7 +706,14 @@ QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3
 }
 
 
-QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
+QgsVector3D Qgs3DUtils::transformWorldCoordinates(
+  const QgsVector3D &worldPoint1,
+  const QgsVector3D &origin1,
+  const QgsCoordinateReferenceSystem &crs1,
+  const QgsVector3D &origin2,
+  const QgsCoordinateReferenceSystem &crs2,
+  const QgsCoordinateTransformContext &context
+)
 {
   const QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
   QgsVector3D mapPoint2 = mapPoint1;
@@ -1049,6 +1085,7 @@ void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float m
   viewCenter = projectionMatrix * viewCenter;
   viewCenter /= viewCenter.w();
   depth = viewCenter.z();
+  // clang-format off
   QVector<QVector3D> viewFrustumPoints = {
     QVector3D( 0.0f, 0.0f, depth ),
     QVector3D( 0.0f, 1.0f, depth ),
@@ -1059,6 +1096,7 @@ void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float m
     QVector3D( 1.0f, 0.0f, 0 ),
     QVector3D( 1.0f, 1.0f, 0 )
   };
+  // clang-format on
   maxX = std::numeric_limits<float>::lowest();
   maxY = std::numeric_limits<float>::lowest();
   maxZ = std::numeric_limits<float>::lowest();

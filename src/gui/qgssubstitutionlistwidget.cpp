@@ -175,8 +175,7 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
   const int row = mTableSubstitutions->rowCount();
   mTableSubstitutions->insertRow( row );
 
-  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                                  | Qt::ItemIsEditable;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 
   QTableWidgetItem *matchItem = new QTableWidgetItem( substitution.match() );
   matchItem->setFlags( itemFlags );

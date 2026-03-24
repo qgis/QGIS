@@ -29,7 +29,6 @@ rather accessed through :py:func:`QgsApplication.authManager()`.
 %End
   public:
 
-
     enum MessageLevel /BaseType=IntEnum/
     {
       INFO,
@@ -37,7 +36,7 @@ rather accessed through :py:func:`QgsApplication.authManager()`.
       CRITICAL
     };
 
- bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated="Since 3.36. Use setup() or ensureInitialized() instead."/;
+ bool init( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() ) /Deprecated="Since 3.36. Use setup() or ensureInitialized() instead."/;
 %Docstring
 init initialize QCA, prioritize qca-ossl plugin and optionally set up
 the authentication database
@@ -56,7 +55,7 @@ the authentication database
    Use :py:func:`~QgsAuthManager.setup` or :py:func:`~QgsAuthManager.ensureInitialized` instead.
 %End
 
-    void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+    void setup( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() );
 %Docstring
 Sets up the authentication manager configuration.
 
@@ -460,8 +459,7 @@ Erase all rows from all tables in authentication database
 
 
 
-    bool updateNetworkRequest( QNetworkRequest &request /In,Out/, const QString &authcfg,
-                               const QString &dataprovider = QString() );
+    bool updateNetworkRequest( QNetworkRequest &request /In,Out/, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Provider call to update a QNetworkRequest with an authentication config
 
@@ -473,8 +471,7 @@ Provider call to update a QNetworkRequest with an authentication config
 :return: Whether operation succeeded
 %End
 
-    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-                             const QString &dataprovider = QString() );
+    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Provider call to update a QNetworkReply with an authentication config
 (used to skip known SSL errors, etc.)
@@ -487,8 +484,7 @@ Provider call to update a QNetworkReply with an authentication config
 :return: Whether operation succeeded
 %End
 
-    bool updateDataSourceUriItems( QStringList &connectionItems /In,Out/, const QString &authcfg,
-                                   const QString &dataprovider = QString() );
+    bool updateDataSourceUriItems( QStringList &connectionItems /In,Out/, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Provider call to update a :py:class:`QgsDataSourceUri` with an
 authentication config
@@ -502,8 +498,7 @@ authentication config
 :return: Whether operation succeeded
 %End
 
-    bool updateNetworkProxy( QNetworkProxy &proxy /In,Out/, const QString &authcfg,
-                             const QString &dataprovider = QString() );
+    bool updateNetworkProxy( QNetworkProxy &proxy /In,Out/, const QString &authcfg, const QString &dataprovider = QString() );
 %Docstring
 Provider call to update a QNetworkProxy with an authentication config
 
@@ -992,7 +987,6 @@ cache
 %End
 
   protected:
-
 
 
   public:

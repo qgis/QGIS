@@ -21,7 +21,7 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutmultiframe.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsvaliditycheckcontext.h"
 
 #include <QString>
@@ -109,8 +109,7 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   if ( !layoutContext )
     return false;
 
-  QgsSettings settings;
-  const QString defaultPath = settings.value( u"LayoutDesigner/defaultNorthArrow"_s, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QgsSettings::Gui ).toString();
+  const QString defaultPath = QgsLayout::settingsLayoutDefaultNorthArrow->value();
 
   QList<QgsLayoutItemPicture *> pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
@@ -236,7 +235,8 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
       const QUrl picUrl = QUrl::fromUserInput( picture->evaluatedPath() );
       const bool isLocalFile = picUrl.isLocalFile();
 
-      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name, isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
+      res.detailedDescription
+        = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name, isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
       mResults.append( res );
     }
   }

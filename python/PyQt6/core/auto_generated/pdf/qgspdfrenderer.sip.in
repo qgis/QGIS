@@ -31,7 +31,6 @@ calling these methods will raise a :py:class:`QgsNotSupportedException`.
 #include "qgspdfrenderer.h"
 %End
   public:
-
     QgsPdfRenderer( const QString &path );
 %Docstring
 Constructs a PDF renderer for the file at the specified ``path``.

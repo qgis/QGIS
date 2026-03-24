@@ -29,10 +29,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
-    const QString &path,
-    const QString &connectionUri,
-    const QString &providerKey )
+QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent, const QString &path, const QString &connectionUri, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Field Domains" ), path, providerKey )
   , mConnectionUri( connectionUri )
 {

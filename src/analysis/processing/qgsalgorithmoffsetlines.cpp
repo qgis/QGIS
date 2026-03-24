@@ -57,12 +57,14 @@ QString QgsOffsetLinesAlgorithm::outputName() const
 
 QString QgsOffsetLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm offsets lines by a specified distance. Positive distances will offset lines to the left, and negative distances "
-                      "will offset to the right of lines.\n\n"
-                      "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.\n\n"
-                      "The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.\n\n"
-                      "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to "
-                      "use when creating a mitered join." );
+  return QObject::tr(
+    "This algorithm offsets lines by a specified distance. Positive distances will offset lines to the left, and negative distances "
+    "will offset to the right of lines.\n\n"
+    "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.\n\n"
+    "The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.\n\n"
+    "The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to "
+    "use when creating a mitered join."
+  );
 }
 
 QString QgsOffsetLinesAlgorithm::shortDescription() const
@@ -96,7 +98,8 @@ void QgsOffsetLinesAlgorithm::initParameters( const QVariantMap & )
   auto segmentParam = std::make_unique<QgsProcessingParameterNumber>( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
   addParameter( segmentParam.release() );
 
-  auto joinStyleParam = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  auto joinStyleParam
+    = std::make_unique<QgsProcessingParameterEnum>( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
   addParameter( joinStyleParam.release() );
 
   auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );

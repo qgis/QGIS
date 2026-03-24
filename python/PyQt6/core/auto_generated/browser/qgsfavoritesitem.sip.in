@@ -10,6 +10,7 @@
 
 
 
+
 class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
@@ -33,7 +34,7 @@ file path associated with the item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     void addDirectory( const QString &directory, const QString &name = QString() );
@@ -67,8 +68,6 @@ Icon for favorites group
 
 
 };
-
-
 
 
 /************************************************************************

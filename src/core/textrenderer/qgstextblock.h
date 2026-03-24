@@ -36,9 +36,7 @@
  */
 class CORE_EXPORT QgsTextBlock
 {
-
   public:
-
     /**
      * Constructor for an empty text block.
      */
@@ -92,6 +90,7 @@ class CORE_EXPORT QgsTextBlock
     void insert( int index, const QgsTextFragment &fragment );
 
 #else
+    // clang-format off
     /**
      * Inserts a \a fragment into the block, at the specified index.
      *
@@ -111,6 +110,7 @@ class CORE_EXPORT QgsTextBlock
       sipCpp->insert( a0, *a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -168,19 +168,22 @@ class CORE_EXPORT QgsTextBlock
     bool hasBackgrounds() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
 
-    /**
+      /**
      * Returns the fragment at the specified \a index.
      */
-    const QgsTextFragment &at( int index ) const SIP_FACTORY;
+      const QgsTextFragment &at( int index ) const SIP_FACTORY;
 #else
+    // clang-format off
 
     /**
      * Returns the fragment at the specified \a index.
@@ -199,6 +202,7 @@ class CORE_EXPORT QgsTextBlock
       sipRes = new QgsTextFragment( sipCpp->at( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -206,6 +210,7 @@ class CORE_EXPORT QgsTextBlock
      */
     QgsTextFragment &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
+    // clang-format off
     % MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
@@ -213,17 +218,17 @@ class CORE_EXPORT QgsTextBlock
     else
       sipRes = new QgsTextFragment( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
-    ///@cond PRIVATE
-    QVector< QgsTextFragment >::const_iterator begin() const;
+        ///@cond PRIVATE
+        QVector< QgsTextFragment >::const_iterator begin() const;
     QVector< QgsTextFragment >::const_iterator end() const;
     ///@endcond
 #endif
 
   private:
-
     QVector< QgsTextFragment > mFragments;
     QgsTextBlockFormat mBlockFormat;
 };

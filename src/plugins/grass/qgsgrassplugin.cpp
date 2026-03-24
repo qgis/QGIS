@@ -74,8 +74,7 @@ static const QString pluginIcon = u":/images/themes/default/grass/grass_tools.pn
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface *qgisInterFace )
   : qGisInterface( qgisInterFace )
-{
-}
+{}
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
@@ -270,7 +269,9 @@ void QgsGrassPlugin::initGui()
   // add edit renderer immediately so that if project was saved during editing, the layer can be loaded
   if ( !QgsApplication::rendererRegistry()->renderersList().contains( u"grassEdit"_s ) )
   {
-    QgsApplication::rendererRegistry()->addRenderer( new QgsRendererMetadata( u"grassEdit"_s, QObject::tr( "GRASS edit" ), QgsGrassEditRenderer::create, QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ), QgsGrassEditRendererWidget::create ) );
+    QgsApplication::rendererRegistry()->addRenderer(
+      new QgsRendererMetadata( u"grassEdit"_s, QObject::tr( "GRASS edit" ), QgsGrassEditRenderer::create, QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ), QgsGrassEditRendererWidget::create )
+    );
   }
 
   onGisbaseChanged();
@@ -594,10 +595,7 @@ void QgsGrassPlugin::newVector()
 
   // Open in GRASS vector provider
 
-  QString uri = QgsGrass::getDefaultGisdbase() + "/"
-                + QgsGrass::getDefaultLocation() + "/"
-                + QgsGrass::getDefaultMapset() + "/"
-                + name + "/0_point";
+  QString uri = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset() + "/" + name + "/0_point";
 
   QgsVectorLayer *layer = new QgsVectorLayer( uri, name, u"grass"_s );
 
@@ -718,20 +716,9 @@ void QgsGrassPlugin::newMapset()
 void QgsGrassPlugin::projectRead()
 {
   bool ok;
-  QString gisdbase = QgsProject::instance()->readPath(
-    QgsProject::instance()->readEntry(
-                            u"GRASS"_s, u"/WorkingGisdbase"_s, QString(), &ok
-    )
-      .trimmed()
-  );
-  QString location = QgsProject::instance()->readEntry(
-                                             u"GRASS"_s, u"/WorkingLocation"_s, QString(), &ok
-  )
-                       .trimmed();
-  QString mapset = QgsProject::instance()->readEntry(
-                                           u"GRASS"_s, u"/WorkingMapset"_s, QString(), &ok
-  )
-                     .trimmed();
+  QString gisdbase = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( u"GRASS"_s, u"/WorkingGisdbase"_s, QString(), &ok ).trimmed() );
+  QString location = QgsProject::instance()->readEntry( u"GRASS"_s, u"/WorkingLocation"_s, QString(), &ok ).trimmed();
+  QString mapset = QgsProject::instance()->readEntry( u"GRASS"_s, u"/WorkingMapset"_s, QString(), &ok ).trimmed();
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
   {
@@ -740,9 +727,7 @@ void QgsGrassPlugin::projectRead()
 
   QgsDebugMsgLevel( "Working mapset specified", 2 );
 
-  QString currentPath = QgsGrass::getDefaultGisdbase() + "/"
-                        + QgsGrass::getDefaultLocation() + "/"
-                        + QgsGrass::getDefaultMapset();
+  QString currentPath = QgsGrass::getDefaultGisdbase() + "/" + QgsGrass::getDefaultLocation() + "/" + QgsGrass::getDefaultMapset();
 
   QString newPath = gisdbase + "/" + location + "/" + mapset;
 

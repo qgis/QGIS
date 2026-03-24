@@ -231,8 +231,7 @@ void QgsActionManager::runAction( const QgsAction &action )
 QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -242,7 +241,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 bool QgsActionManager::writeXml( QDomNode &layer_node ) const
 {
   QDomElement aActions = layer_node.ownerDocument().createElement( u"attributeactions"_s );
-  for ( QMap<QString, QUuid>::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++ defaultAction )
+  for ( QMap<QString, QUuid>::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++defaultAction )
   {
     QDomElement defaultActionElement = layer_node.ownerDocument().createElement( u"defaultAction"_s );
     defaultActionElement.setAttribute( u"key"_s, defaultAction.key() );
@@ -310,7 +309,7 @@ QgsAction QgsActionManager::action( const QString &id ) const
 
 void QgsActionManager::setDefaultAction( const QString &actionScope, QUuid actionId )
 {
-  mDefaultActions[ actionScope ] = actionId;
+  mDefaultActions[actionScope] = actionId;
 }
 
 QgsAction QgsActionManager::defaultAction( const QString &actionScope )

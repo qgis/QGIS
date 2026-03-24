@@ -58,7 +58,8 @@ void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Vector layer representing network" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   addParameter( new QgsProcessingParameterEnum( u"STRATEGY"_s, QObject::tr( "Path type to calculate" ), QStringList() << QObject::tr( "Shortest" ) << QObject::tr( "Fastest" ), false, 0 ) );
 
-  auto directionField = std::make_unique<QgsProcessingParameterField>( u"DIRECTION_FIELD"_s, QObject::tr( "Direction field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto directionField
+    = std::make_unique<QgsProcessingParameterField>( u"DIRECTION_FIELD"_s, QObject::tr( "Direction field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
   directionField->setHelp( QObject::tr( "The attribute field specifying the direction of traffic flow for each segment." ) );
   directionField->setFlags( directionField->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( directionField.release() );
@@ -78,7 +79,8 @@ void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
   bothValue->setFlags( bothValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( bothValue.release() );
 
-  auto directionValue = std::make_unique<QgsProcessingParameterEnum>( u"DEFAULT_DIRECTION"_s, QObject::tr( "Default direction" ), QStringList() << QObject::tr( "Forward direction" ) << QObject::tr( "Backward direction" ) << QObject::tr( "Both directions" ), false, 2 );
+  auto directionValue = std::make_unique<
+    QgsProcessingParameterEnum>( u"DEFAULT_DIRECTION"_s, QObject::tr( "Default direction" ), QStringList() << QObject::tr( "Forward direction" ) << QObject::tr( "Backward direction" ) << QObject::tr( "Both directions" ), false, 2 );
   directionValue->setFlags( directionValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( directionValue.release() );
 
@@ -143,7 +145,9 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
   mBuilder = std::make_unique<QgsGraphBuilder>( mNetwork->sourceCrs(), true, tolerance, context.ellipsoid() );
 }
 
-void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *featureHash )
+void QgsNetworkAnalysisAlgorithmBase::loadPoints(
+  QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *featureHash
+)
 {
   feedback->pushInfo( QObject::tr( "Loading points…" ) );
 

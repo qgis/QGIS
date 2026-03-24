@@ -84,6 +84,16 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   // Sync between billboard height and TZ
   connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
   connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight, &QDoubleSpinBox::setValue );
+
+  connect( mButtonDDScaleX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDScaleY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDScaleZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDTranslationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDTranslationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDTranslationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDRotationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDRotationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDRotationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
 }
 
 Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
@@ -171,6 +181,18 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   spinRX->setValue( QgsLayoutUtils::normalizedAngle( rot.x() ) );
   spinRY->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
   spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
+
+  mButtonDDScaleX->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDScaleY->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDScaleZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+
+  mButtonDDTranslationX->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDTranslationY->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDTranslationZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+
+  mButtonDDRotationX->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDRotationY->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  mButtonDDRotationZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 }
 
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
@@ -226,6 +248,19 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings() );
   sym->setTransform( tr );
+
+  QgsPropertyCollection ddp;
+  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleX, mButtonDDScaleX->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleY, mButtonDDScaleY->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, mButtonDDScaleZ->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationX, mButtonDDTranslationX->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationY, mButtonDDTranslationY->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, mButtonDDTranslationZ->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationX, mButtonDDRotationX->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationY, mButtonDDRotationY->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationZ, mButtonDDRotationZ->toProperty() );
+  sym->setDataDefinedProperties( ddp );
+
   return sym.release();
 }
 
@@ -237,14 +272,25 @@ QString QgsPoint3DSymbolWidget::symbolType() const
 void QgsPoint3DSymbolWidget::onShapeChanged()
 {
   QList<QWidget *> allWidgets;
-  allWidgets << labelSize << spinSize
-             << labelRadius << spinRadius
-             << labelMinorRadius << spinMinorRadius
-             << labelTopRadius << spinTopRadius
-             << labelBottomRadius << spinBottomRadius
-             << labelLength << spinLength
-             << labelModel << lineEditModel
-             << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
+  allWidgets
+    << labelSize
+    << spinSize
+    << labelRadius
+    << spinRadius
+    << labelMinorRadius
+    << spinMinorRadius
+    << labelTopRadius
+    << spinTopRadius
+    << labelBottomRadius
+    << spinBottomRadius
+    << labelLength
+    << spinLength
+    << labelModel
+    << lineEditModel
+    << labelBillboardHeight
+    << spinBillboardHeight
+    << labelBillboardSymbol
+    << btnChangeSymbol;
 
   materialsGroupBox->show();
   transformationWidget->show();

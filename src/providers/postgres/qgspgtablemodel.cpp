@@ -35,17 +35,18 @@ using namespace Qt::StringLiterals;
 QgsPgTableModel::QgsPgTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
 {
-  mColumns << tr( "Schema" )
-           << tr( "Table" )
-           << tr( "Comment" )
-           << tr( "Column" )
-           << tr( "Data Type" )
-           << tr( "Spatial Type" )
-           << tr( "SRID" )
-           << tr( "Feature id" )
-           << tr( "Select at id" )
-           << tr( "Check PK unicity" )
-           << tr( "SQL" );
+  mColumns
+    << tr( "Schema" )
+    << tr( "Table" )
+    << tr( "Comment" )
+    << tr( "Column" )
+    << tr( "Data Type" )
+    << tr( "Spatial Type" )
+    << tr( "SRID" )
+    << tr( "Feature id" )
+    << tr( "Select at id" )
+    << tr( "Check PK unicity" )
+    << tr( "SQL" );
   setHorizontalHeaderLabels( mColumns );
   setHeaderData( Columns::DbtmSelectAtId, Qt::Orientation::Horizontal, tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ), Qt::ToolTipRole );
   setHeaderData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, tr( "Enable check for primary key unicity when loading views and materialized views. This option can make loading of large datasets significantly slower." ), Qt::ToolTipRole );
@@ -375,9 +376,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
       continue;
     }
 
-    if ( itemFromIndex( currentTableIndex )->text() == tableName
-         && itemFromIndex( currentGeomIndex )->text() == geomName
-         && itemFromIndex( currentGeomType )->text() == geomType )
+    if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName && itemFromIndex( currentGeomType )->text() == geomType )
     {
       const QModelIndex sqlIndex = currentChildIndex.sibling( i, DbtmSql );
       if ( sqlIndex.isValid() )
@@ -460,8 +459,9 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
       const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
-      QString connString { u"PG: %1 mode=2 %2schema='%3' column='%4' table='%5'"_s
-                             .arg( connInfo, cols.isEmpty() ? QString() : u"key='%1' "_s.arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
+      QString connString {
+        u"PG: %1 mode=2 %2schema='%3' column='%4' table='%5'"_s.arg( connInfo, cols.isEmpty() ? QString() : u"key='%1' "_s.arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName )
+      };
       const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
       if ( !sql.isEmpty() )
       {

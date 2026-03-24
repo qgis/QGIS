@@ -116,9 +116,28 @@ QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteConnection::nativeTypes()
          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), u"DATE"_s, QMetaType::Type::QDate )
          << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), u"TIMESTAMP"_s, QMetaType::Type::QDateTime )
 
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
+         << QgsVectorDataProvider::
+              NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType(
+              QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ),
+              SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(),
+              QMetaType::Type::QVariantList,
+              0,
+              0,
+              0,
+              0,
+              QMetaType::Type::Double
+            )
+         << QgsVectorDataProvider::NativeType(
+              QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ),
+              SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(),
+              QMetaType::Type::QVariantList,
+              0,
+              0,
+              0,
+              0,
+              QMetaType::Type::LongLong
+            );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
@@ -281,10 +300,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
 
       const QString tableName = QString::fromUtf8( lyr->TableName );
       const QString column = QString::fromUtf8( lyr->GeometryName );
-      ignoreTableNames << u"idx_%1_%2"_s.arg( tableName, column )
-                       << u"idx_%1_%2_node"_s.arg( tableName, column )
-                       << u"idx_%1_%2_parent"_s.arg( tableName, column )
-                       << u"idx_%1_%2_rowid"_s.arg( tableName, column );
+      ignoreTableNames << u"idx_%1_%2"_s.arg( tableName, column ) << u"idx_%1_%2_node"_s.arg( tableName, column ) << u"idx_%1_%2_parent"_s.arg( tableName, column ) << u"idx_%1_%2_rowid"_s.arg( tableName, column );
 
       if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
       {
@@ -583,10 +599,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   tableRaster += "_rasters"_L1;
 
   // checking if the related "_RASTERS" table exists
-  QString sqlStr = QStringLiteral(
-                     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%1'"
-  )
-                     .arg( tableRaster.replace( '\'', "''"_L1 ) );
+  QString sqlStr = u"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%1'"_s.arg( tableRaster.replace( '\'', "''"_L1 ) );
 
   ret = sqlite3_get_table( handle, sqlStr.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -618,8 +631,10 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 *handle, const QString &
   if ( !checkGeometryColumnsAuth( handle ) )
     return false;
   // checking if some Layer has been declared as HIDDEN
-  const QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                               " WHERE f_table_name=%1 and f_geometry_column=%2" )
+  const QString sql = QString(
+                        "SELECT hidden FROM geometry_columns_auth"
+                        " WHERE f_table_name=%1 and f_geometry_column=%2"
+  )
                         .arg( QgsSqliteUtils::quotedString( table ), QgsSqliteUtils::quotedString( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -712,8 +727,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
-    QgsDebugError( u"Failure while connecting to: %1\n%2"_s
-                     .arg( dbPath, QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
+    QgsDebugError( u"Failure while connecting to: %1\n%2"_s.arg( dbPath, QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
   }
 

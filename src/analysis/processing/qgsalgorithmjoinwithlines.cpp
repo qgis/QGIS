@@ -57,12 +57,16 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"HUBS"_s, QObject::tr( "Hub layer" ) ) );
   addParameter( new QgsProcessingParameterField( u"HUB_FIELD"_s, QObject::tr( "Hub ID field" ), QVariant(), u"HUBS"_s ) );
 
-  addParameter( new QgsProcessingParameterField( u"HUB_FIELDS"_s, QObject::tr( "Hub layer fields to copy (leave empty to copy all fields)" ), QVariant(), u"HUBS"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+  addParameter(
+    new QgsProcessingParameterField( u"HUB_FIELDS"_s, QObject::tr( "Hub layer fields to copy (leave empty to copy all fields)" ), QVariant(), u"HUBS"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  );
 
   addParameter( new QgsProcessingParameterFeatureSource( u"SPOKES"_s, QObject::tr( "Spoke layer" ) ) );
   addParameter( new QgsProcessingParameterField( u"SPOKE_FIELD"_s, QObject::tr( "Spoke ID field" ), QVariant(), u"SPOKES"_s ) );
 
-  addParameter( new QgsProcessingParameterField( u"SPOKE_FIELDS"_s, QObject::tr( "Spoke layer fields to copy (leave empty to copy all fields)" ), QVariant(), u"SPOKES"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+  addParameter(
+    new QgsProcessingParameterField( u"SPOKE_FIELDS"_s, QObject::tr( "Spoke layer fields to copy (leave empty to copy all fields)" ), QVariant(), u"SPOKES"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true )
+  );
 
   addParameter( new QgsProcessingParameterBoolean( u"GEODESIC"_s, QObject::tr( "Create geodesic lines" ), false ) );
 
@@ -83,13 +87,15 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsJoinWithLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates hub and spoke diagrams by connecting lines from points on the Spoke layer to matching points in the Hub layer.\n\n"
-                      "Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.\n\n"
-                      "If input layers are not point layers, a point on the surface of the geometries will be taken as the connecting location.\n\n"
-                      "Optionally, geodesic lines can be created, which represent the shortest path on the surface of an ellipsoid. When "
-                      "geodesic mode is used, it is possible to split the created lines at the antimeridian (±180 degrees longitude), which can improve "
-                      "rendering of the lines. Additionally, the distance between vertices can be specified. A smaller distance results in a denser, more "
-                      "accurate line." );
+  return QObject::tr(
+    "This algorithm creates hub and spoke diagrams by connecting lines from points on the Spoke layer to matching points in the Hub layer.\n\n"
+    "Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.\n\n"
+    "If input layers are not point layers, a point on the surface of the geometries will be taken as the connecting location.\n\n"
+    "Optionally, geodesic lines can be created, which represent the shortest path on the surface of an ellipsoid. When "
+    "geodesic mode is used, it is possible to split the created lines at the antimeridian (±180 degrees longitude), which can improve "
+    "rendering of the lines. Additionally, the distance between vertices can be specified. A smaller distance results in a denser, more "
+    "accurate line."
+  );
 }
 
 QString QgsJoinWithLinesAlgorithm::shortDescription() const

@@ -65,11 +65,13 @@ Qgis::ProcessingSourceType QgsRemoveHolesAlgorithm::outputLayerType() const
 
 QString QgsRemoveHolesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector "
-                      "layer in which polygons with holes have been replaced by polygons with only their external ring. "
-                      "Attributes are not modified.\n\n"
-                      "An optional minimum area parameter allows removing only holes which are smaller than a specified "
-                      "area threshold. Leaving this parameter as 0.0 results in all holes being removed." );
+  return QObject::tr(
+    "This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector "
+    "layer in which polygons with holes have been replaced by polygons with only their external ring. "
+    "Attributes are not modified.\n\n"
+    "An optional minimum area parameter allows removing only holes which are smaller than a specified "
+    "area threshold. Leaving this parameter as 0.0 results in all holes being removed."
+  );
 }
 
 QString QgsRemoveHolesAlgorithm::shortDescription() const

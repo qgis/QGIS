@@ -72,9 +72,7 @@ void QgsProviderSublayerModelGroup::populateFromSublayers( const QList<QgsProvid
 
 QgsProviderSublayerModelGroup::QgsProviderSublayerModelGroup( const QString &title )
   : mGroupTitle( title )
-{
-
-}
+{}
 
 QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::unique_ptr<QgsProviderSublayerModelNode> child )
 {
@@ -93,10 +91,7 @@ QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::uniq
 int QgsProviderSublayerModelGroup::indexOf( QgsProviderSublayerModelNode *child ) const
 {
   Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsProviderSublayerModelNode> &p )
-  {
-    return p.get() == child;
-  } );
+  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsProviderSublayerModelNode> &p ) { return p.get() == child; } );
   if ( it != mChildren.end() )
     return std::distance( mChildren.begin(), it );
   return -1;
@@ -105,7 +100,7 @@ int QgsProviderSublayerModelGroup::indexOf( QgsProviderSublayerModelNode *child 
 QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::childAt( int index )
 {
   if ( static_cast< std::size_t >( index ) < mChildren.size() )
-    return mChildren[ index ].get();
+    return mChildren[index].get();
 
   return nullptr;
 }
@@ -190,8 +185,7 @@ QVariant QgsProviderSublayerModelGroup::data( int role, int column ) const
 
 QgsProviderSublayerModelSublayerNode::QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer )
   : mSublayer( sublayer )
-{
-}
+{}
 
 QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) const
 {
@@ -219,13 +213,9 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
                 count = QLocale().toString( mSublayer.featureCount() );
 
               if ( !mSublayer.description().isEmpty() )
-                return u"%1 - %2 (%3)"_s.arg( mSublayer.description(),
-                                              QgsWkbTypes::displayString( mSublayer.wkbType() ),
-                                              count );
+                return u"%1 - %2 (%3)"_s.arg( mSublayer.description(), QgsWkbTypes::displayString( mSublayer.wkbType() ), count );
               else
-                return u"%2 (%3)"_s.arg(
-                         QgsWkbTypes::displayString( mSublayer.wkbType() ),
-                         count );
+                return u"%2 (%3)"_s.arg( QgsWkbTypes::displayString( mSublayer.wkbType() ), count );
             }
 
             case Qgis::LayerType::Raster:
@@ -239,19 +229,16 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
               return mSublayer.description();
           }
           break;
-
         }
       }
       return mSublayer.name();
-
     }
 
     case Qt::DecorationRole:
     {
       if ( column == 0 )
-        return mSublayer.type() == Qgis::LayerType::Vector
-               ? ( mSublayer.wkbType() != Qgis::WkbType::Unknown ? QgsIconUtils::iconForWkbType( mSublayer.wkbType() ) : QVariant() )
-               : QgsIconUtils::iconForLayerType( mSublayer.type() );
+        return mSublayer.type() == Qgis::LayerType::Vector ? ( mSublayer.wkbType() != Qgis::WkbType::Unknown ? QgsIconUtils::iconForWkbType( mSublayer.wkbType() ) : QVariant() )
+                                                           : QgsIconUtils::iconForLayerType( mSublayer.type() );
       else
         return QVariant();
     }
@@ -299,8 +286,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
 
 QgsProviderSublayerModelNonLayerItemNode::QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item )
   : mItem( item )
-{
-}
+{}
 
 QVariant QgsProviderSublayerModelNonLayerItemNode::data( int role, int column ) const
 {
@@ -357,9 +343,7 @@ QVariant QgsProviderSublayerModelNonLayerItemNode::data( int role, int column ) 
 QgsProviderSublayerModel::QgsProviderSublayerModel( QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( std::make_unique< QgsProviderSublayerModelGroup >( QString() ) )
-{
-
-}
+{}
 
 void QgsProviderSublayerModel::setSublayerDetails( const QList<QgsProviderSublayerDetails> &details )
 {
@@ -438,8 +422,7 @@ void QgsProviderSublayerModel::addNonLayerItem( const QgsProviderSublayerModel::
 
 QModelIndex QgsProviderSublayerModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount()
-       || row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount() || row < 0 || row >= rowCount( parent ) )
   {
     // out of bounds
     return QModelIndex();
@@ -558,7 +541,7 @@ QModelIndex QgsProviderSublayerModel::indexOfParentNode( QgsProviderSublayerMode
 
   QgsProviderSublayerModelGroup *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex();  // root node -> invalid index
+    return QModelIndex(); // root node -> invalid index
 
   int row = grandParentNode->indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -635,10 +618,7 @@ void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
 
 bool QgsProviderSublayerModel::NonLayerItem::operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const
 {
-  return mType == other.mType
-         && mName == other.mName
-         && mDescription == other.mDescription
-         && mUri == other.mUri;
+  return mType == other.mType && mName == other.mName && mDescription == other.mDescription && mUri == other.mUri;
 }
 
 bool QgsProviderSublayerModel::NonLayerItem::operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const
@@ -662,7 +642,8 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
 {
   const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
 
-  if ( !mIncludeSystemTables && static_cast< Qgis::SublayerFlags >( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Flags ) ).toInt() ) & Qgis::SublayerFlag::SystemTable )
+  if ( !mIncludeSystemTables
+       && static_cast< Qgis::SublayerFlags >( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Flags ) ).toInt() ) & Qgis::SublayerFlag::SystemTable )
     return false;
 
   if ( !mIncludeEmptyLayers && sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::FeatureCount ) ) == 0 )
@@ -679,7 +660,7 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
   if ( sourceModel()->data( descriptionColumnIndex, static_cast< int >( Qt::DisplayRole ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
-  const QVariant wkbTypeVariant =  sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
+  const QVariant wkbTypeVariant = sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
   if ( wkbTypeVariant.isValid() )
   {
     const Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( wkbTypeVariant.toUInt() );

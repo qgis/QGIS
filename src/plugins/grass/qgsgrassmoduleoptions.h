@@ -51,10 +51,7 @@ class QgsGrassModuleOptions
     };
 
     //! Constructor
-    QgsGrassModuleOptions(
-      QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface, bool direct
-    );
+    QgsGrassModuleOptions( QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, bool direct );
 
     virtual ~QgsGrassModuleOptions() = default;
 
@@ -156,10 +153,7 @@ class QgsGrassModuleStandardOptions : public QWidget, public QgsGrassModuleOptio
   public:
     //! Constructor
     QgsGrassModuleStandardOptions(
-      QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface,
-      QString xname, QDomElement confDocElem,
-      bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()
+      QgsGrassTools *tools, QgsGrassModule *module, QgisInterface *iface, QString xname, QDomElement confDocElem, bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()
     );
 
     //! Gets module options as list of arguments for QProcess

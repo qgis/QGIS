@@ -42,8 +42,7 @@ using namespace Qt::StringLiterals;
 QgsPointCloudClassifiedRendererModel::QgsPointCloudClassifiedRendererModel( QObject *parent )
   : QAbstractItemModel( parent )
   , mMimeFormat( u"application/x-qgspointcloudclassifiedrenderermodel"_s )
-{
-}
+{}
 
 void QgsPointCloudClassifiedRendererModel::setRendererCategories( const QgsPointCloudCategoryList &categories )
 {

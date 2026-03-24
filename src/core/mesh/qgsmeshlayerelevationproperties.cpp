@@ -290,9 +290,9 @@ QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer *
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );

@@ -38,7 +38,9 @@ QgsWfsDescribeFeatureTypeGml::QgsWfsDescribeFeatureTypeGml( const QgsWfsParamete
   : wfsParameters( wfsParams )
 {}
 
-void QgsWfsDescribeFeatureTypeGml::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const
+void QgsWfsDescribeFeatureTypeGml::writeDescribeFeatureType(
+  QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response
+) const
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();

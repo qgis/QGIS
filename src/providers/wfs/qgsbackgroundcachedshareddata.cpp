@@ -40,12 +40,11 @@
 
 using namespace Qt::StringLiterals;
 
-QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
-  const QString &uri, const QString &providerName, const QString &componentTranslated
-)
-  : mURI( uri ), mCacheDirectoryManager( QgsCacheDirectoryManager::singleton( ( providerName ) ) ), mComponentTranslated( componentTranslated )
-{
-}
+QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData( const QString &uri, const QString &providerName, const QString &componentTranslated )
+  : mURI( uri )
+  , mCacheDirectoryManager( QgsCacheDirectoryManager::singleton( ( providerName ) ) )
+  , mComponentTranslated( componentTranslated )
+{}
 
 QgsBackgroundCachedSharedData::~QgsBackgroundCachedSharedData()
 {
@@ -373,9 +372,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   dsURI.setParam( u"pragma"_s, pragmas );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider(
-    u"spatialite"_s, dsURI.uri(), providerOptions
-  ) ) );
+  mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( u"spatialite"_s, dsURI.uri(), providerOptions ) ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     mCacheDataProvider.reset();
@@ -748,9 +745,13 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         mTotalFeaturesAttemptedToBeCached += featureListToCache.size();
         if ( !localComputedExtent.isNull() && mComputedExtent.isNull() && !mTryFetchingOneFeature && !localComputedExtent.intersects( mCapabilityExtent ) )
         {
-          QgsMessageLog::logMessage( QObject::tr( "Layer extent reported by the server is not correct. "
-                                                  "You may need to zoom again on layer while features are being downloaded" ),
-                                     mComponentTranslated );
+          QgsMessageLog::logMessage(
+            QObject::tr(
+              "Layer extent reported by the server is not correct. "
+              "You may need to zoom again on layer while features are being downloaded"
+            ),
+            mComponentTranslated
+          );
         }
         mComputedExtent = localComputedExtent;
       }
@@ -803,8 +804,12 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
           mComputedExtent.grow( 50. * 1000. );
         else if ( mSourceCrs.mapUnits() == Qgis::DistanceUnit::Degrees )
           mComputedExtent.grow( 50. / 110 );
-        pushError( QObject::tr( "Layer extent reported by the server is not correct. "
-                                "You may need to zoom on layer and then zoom out to see all features" ) );
+        pushError(
+          QObject::tr(
+            "Layer extent reported by the server is not correct. "
+            "You may need to zoom on layer and then zoom out to see all features"
+          )
+        );
       }
       mMutex.unlock();
       if ( !mComputedExtent.isNull() )

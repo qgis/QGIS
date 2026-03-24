@@ -95,11 +95,19 @@ namespace QgsWcs
     QDomElement lonLatElem = doc.createElement( u"lonLatEnvelope"_s );
     lonLatElem.setAttribute( u"srsName"_s, u"urn:ogc:def:crs:OGC:1.3:CRS84"_s );
     QDomElement lowerPosElem = doc.createElement( u"gml:pos"_s );
-    const QDomText lowerPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.yMinimum(), wgs84precision ), wgs84precision ) );
+    const QDomText lowerPosText = doc.createTextNode(
+      qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.xMinimum(), wgs84precision ), wgs84precision )
+      + " "
+      + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.yMinimum(), wgs84precision ), wgs84precision )
+    );
     lowerPosElem.appendChild( lowerPosText );
     lonLatElem.appendChild( lowerPosElem );
     QDomElement upperPosElem = doc.createElement( u"gml:pos"_s );
-    const QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
+    const QDomText upperPosText = doc.createTextNode(
+      qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision )
+      + " "
+      + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision )
+    );
     upperPosElem.appendChild( upperPosText );
     lonLatElem.appendChild( upperPosElem );
     layerElem.appendChild( lonLatElem );
@@ -127,11 +135,19 @@ namespace QgsWcs
     QDomElement envelopeElem = doc.createElement( u"gml:Envelope"_s );
     envelopeElem.setAttribute( u"srsName"_s, layerCrs.authid() );
     QDomElement lowerCornerElem = doc.createElement( u"gml:pos"_s );
-    const QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), wgs84precision ), precision ) );
+    const QDomText lowerCornerText = doc.createTextNode(
+      qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), wgs84precision )
+      + " "
+      + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), wgs84precision ), precision )
+    );
     lowerCornerElem.appendChild( lowerCornerText );
     envelopeElem.appendChild( lowerCornerElem );
     QDomElement upperCornerElem = doc.createElement( u"gml:pos"_s );
-    const QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.xMaximum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.yMaximum(), wgs84precision ), precision ) );
+    const QDomText upperCornerText = doc.createTextNode(
+      qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.xMaximum(), precision ), wgs84precision )
+      + " "
+      + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.yMaximum(), wgs84precision ), precision )
+    );
     upperCornerElem.appendChild( upperCornerText );
     envelopeElem.appendChild( upperCornerElem );
     spatialDomainElem.appendChild( envelopeElem );
@@ -165,7 +181,11 @@ namespace QgsWcs
     QDomElement originElem = doc.createElement( u"gml:origin"_s );
     QDomElement originPosElem = doc.createElement( u"gml:pos"_s );
     originElem.appendChild( originPosElem );
-    const QDomText originPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision ) );
+    const QDomText originPosText = doc.createTextNode(
+      qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision )
+      + " "
+      + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision )
+    );
     originPosElem.appendChild( originPosText );
     rectGridElem.appendChild( originElem );
 
@@ -258,12 +278,7 @@ namespace QgsWcs
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
-    static const QSet<QString> sFilter {
-      u"REQUEST"_s,
-      u"VERSION"_s,
-      u"SERVICE"_s,
-      u"_DC"_s
-    };
+    static const QSet<QString> sFilter { u"REQUEST"_s, u"VERSION"_s, u"SERVICE"_s, u"_DC"_s };
 
     QString href = QgsServerProjectUtils::wcsServiceUrl( project ? *project : *QgsProject::instance(), request, settings );
 

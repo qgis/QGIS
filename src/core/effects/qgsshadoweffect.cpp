@@ -28,9 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsShadowEffect::QgsShadowEffect()
   : mColor( Qt::black )
-{
-
-}
+{}
 
 Qgis::PaintEffectFlags QgsShadowEffect::flags() const
 {
@@ -85,9 +83,8 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   const double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
-  const double   angleRad = mOffsetAngle * M_PI / 180; // to radians
-  const QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
-                         -offsetDist * std::sin( angleRad + M_PI_2 ) );
+  const double angleRad = mOffsetAngle * M_PI / 180; // to radians
+  const QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ), -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
   QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity, context.feedback() );
@@ -216,9 +213,7 @@ QgsPaintEffect *QgsDropShadowEffect::create( const QVariantMap &map )
 
 QgsDropShadowEffect::QgsDropShadowEffect()
   : QgsShadowEffect()
-{
-
-}
+{}
 
 QString QgsDropShadowEffect::type() const
 {
@@ -249,9 +244,7 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QVariantMap &map )
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
   : QgsShadowEffect()
-{
-
-}
+{}
 
 QString QgsInnerShadowEffect::type() const
 {

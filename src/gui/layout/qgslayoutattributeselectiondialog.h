@@ -139,10 +139,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel : public QgsLayoutAttributeT
 
     QVector<QgsLayoutTableColumn> &columns() const override;
 
-    QList<Column> displayedColumns() const override
-    {
-      return { Attribute, Heading, Alignment, Width };
-    }
+    QList<Column> displayedColumns() const override { return { Attribute, Heading, Alignment, Width }; }
 
     /**
      * Resets the attribute table's columns to match the source layer's fields. Remove all existing
@@ -174,10 +171,7 @@ class GUI_EXPORT QgsLayoutTableSortModel : public QgsLayoutAttributeTableColumnM
 
     QVector<QgsLayoutTableColumn> &columns() const override;
 
-    QList<Column> displayedColumns() const override
-    {
-      return { Attribute, SortOrder };
-    }
+    QList<Column> displayedColumns() const override { return { Attribute, SortOrder }; }
 };
 
 /**

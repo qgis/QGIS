@@ -20,7 +20,9 @@
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 
-QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids
+) const
 {
   Q_UNUSED( messages )
 
@@ -59,7 +61,9 @@ QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors( const
   return QgsGeometryCheck::Result::Success;
 }
 
-void QgsGeometryDegeneratePolygonCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryDegeneratePolygonCheck::fixError(
+  const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes
+) const
 {
   QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;

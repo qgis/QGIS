@@ -51,8 +51,11 @@ QString QgsDxfExportAlgorithm::groupId() const
 
 QString QgsDxfExportAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports layers to a DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
-                      "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer properties) to layer name." );
+  return QObject::tr(
+    "Exports layers to a DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
+    "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer "
+    "properties) to layer name."
+  );
 }
 
 QString QgsDxfExportAlgorithm::shortDescription() const
@@ -68,7 +71,9 @@ QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
 void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterDxfLayers( u"LAYERS"_s, QObject::tr( "Input layers" ) ) );
-  addParameter( new QgsProcessingParameterEnum( u"SYMBOLOGY_MODE"_s, QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 ) );
+  addParameter(
+    new QgsProcessingParameterEnum( u"SYMBOLOGY_MODE"_s, QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 )
+  );
   addParameter( new QgsProcessingParameterScale( u"SYMBOLOGY_SCALE"_s, QObject::tr( "Symbology scale" ), 1000000 ) );
   auto mapThemeParam = std::make_unique<QgsProcessingParameterMapTheme>( u"MAP_THEME"_s, QObject::tr( "Map theme" ), QVariant(), true );
   mapThemeParam->setHelp( QObject::tr( "Match layer styling to the provided map theme" ) );

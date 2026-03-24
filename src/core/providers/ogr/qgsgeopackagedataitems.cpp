@@ -94,7 +94,7 @@ void QgsGeoPackageRootItem::onConnectionsChanged()
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  if ( QgsOgrProviderUtils::createConnection( u"GeoPackage"_s,  u"GeoPackage Database (*.gpkg)"_s,  u"GPKG"_s ) )
+  if ( QgsOgrProviderUtils::createConnection( u"GeoPackage"_s, u"GeoPackage Database (*.gpkg)"_s, u"GPKG"_s ) )
   {
     refreshConnections();
   }
@@ -251,7 +251,6 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
   }
   const QgsGeoPackageCollectionItem *o = qobject_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
-
 }
 
 bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, QString &errCause )
@@ -348,9 +347,7 @@ bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const
 
 QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsGeoPackageCollectionItem( parent, name, path )
-{
-
-}
+{}
 
 bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 {
@@ -360,12 +357,11 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
   }
   const QgsGeoPackageConnectionItem *o = qobject_cast<const QgsGeoPackageConnectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
-
 }
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
-  , mCollection( qobject_cast<QgsGeoPackageCollectionItem*>( parent ) )
+  , mCollection( qobject_cast<QgsGeoPackageCollectionItem *>( parent ) )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete;
   mToolTip = uri;
@@ -381,12 +377,12 @@ QStringList QgsGeoPackageAbstractLayerItem::tableNames() const
   QgsGeoPackageProviderConnection *conn { static_cast<QgsGeoPackageProviderConnection *>( md->findConnection( parent()->name() ) ) };
   if ( conn )
   {
-    for ( const QgsGeoPackageProviderConnection::TableProperty &p : conn->tables( ) )
+    for ( const QgsGeoPackageProviderConnection::TableProperty &p : conn->tables() )
     {
       names.push_back( p.tableName() );
     }
   }
-  return  names;
+  return names;
 }
 
 
@@ -395,7 +391,7 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
   const auto mapLayers( QgsProject::instance()->mapLayers() ); // skip-keyword-check
-  for ( QgsMapLayer *layer :  mapLayers )
+  for ( QgsMapLayer *layer : mapLayers )
   {
     if ( layer->publicSource() == mUri )
     {
@@ -428,8 +424,7 @@ QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
 
 QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, u"gdal"_s )
-{
-}
+{}
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
@@ -450,9 +445,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
   }
   else
   {
-    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
-               .arg( tableName )
-               .arg( collection()->path() );
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" ).arg( tableName ).arg( collection()->path() );
     return false;
   }
   return true;
@@ -477,8 +470,7 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   }
   else
   {
-    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
-               .arg( tableName, parent()->path() );
+    errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" ).arg( tableName, parent()->path() );
     return false;
   }
   return true;

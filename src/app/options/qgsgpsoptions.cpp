@@ -448,8 +448,7 @@ void QgsGpsOptionsWidget::updateTimeZones()
 //
 QgsGpsOptionsFactory::QgsGpsOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "GPS" ), QIcon(), u"gps"_s )
-{
-}
+{}
 
 QIcon QgsGpsOptionsFactory::icon() const
 {

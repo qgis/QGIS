@@ -35,7 +35,6 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      * \param definition The definition to use for initializing the virtual layer

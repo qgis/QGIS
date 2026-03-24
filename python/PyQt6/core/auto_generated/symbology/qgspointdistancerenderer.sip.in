@@ -12,7 +12,7 @@
 
 
 
-class QgsPointDistanceRenderer: QgsFeatureRenderer
+class QgsPointDistanceRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
 An abstract base class for distance based point renderers (e.g.,
@@ -28,10 +28,8 @@ clusters in the desired style.
 #include "qgspointdistancerenderer.h"
 %End
   public:
-
     struct GroupedFeature
     {
-
         GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol /Transfer/, bool isSelected, const QString &label = QString() );
 %Docstring
 Constructor for GroupedFeature.
@@ -286,7 +284,6 @@ set to :py:class:`QgsUnitTypes`.RenderMapUnits.
 %End
 
   protected:
-
 
 
 

@@ -102,8 +102,7 @@ int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount( parent ) ||
-       row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
   if ( QgsLayerTreeModelLegendNode *nodeLegend = index2legendNode( parent ) )
@@ -140,7 +139,6 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
     Q_ASSERT( false ); // no other node types!
     return QModelIndex();
   }
-
 }
 
 
@@ -150,7 +148,7 @@ QModelIndex QgsLayerTreeModel::indexOfParentLayerTreeNode( QgsLayerTreeNode *par
 
   QgsLayerTreeNode *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex();  // root node -> invalid index
+    return QModelIndex(); // root node -> invalid index
 
   int row = grandParentNode->children().indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -184,9 +182,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         const qlonglong count = vlayer->featureCount();
 
         // if you modify this line, please update QgsSymbolLegendNode::updateLabel
-        name += u" [%1%2]"_s.arg(
-                  estimatedCount ? u"≈"_s : QString(),
-                  count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+        name += u" [%1%2]"_s.arg( estimatedCount ? u"≈"_s : QString(), count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
       }
       return name;
     }
@@ -293,10 +289,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
       {
-        QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() :
-                        !layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->title() :
-                        !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName() :
-                        layer->name();
+        QString title = !layer->metadata().title().isEmpty()                ? layer->metadata().title()
+                        : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
+                        : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
+                                                                            : layer->name();
 
         title = "<b>" + title.toHtmlEscaped() + "</b>";
 
@@ -413,7 +409,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
       return false;
 
     bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
-    if ( checked &&  node->children().isEmpty() )
+    if ( checked && node->children().isEmpty() )
     {
       node->setItemVisibilityCheckedParentRecursive( checked );
     }
@@ -774,9 +770,12 @@ void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, 
 
 void QgsLayerTreeModel::legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const
 {
-  if ( mapUnitsPerPixel ) *mapUnitsPerPixel = mLegendMapViewMupp;
-  if ( dpi ) *dpi = mLegendMapViewDpi;
-  if ( scale ) *scale = mLegendMapViewScale;
+  if ( mapUnitsPerPixel )
+    *mapUnitsPerPixel = mLegendMapViewMupp;
+  if ( dpi )
+    *dpi = mLegendMapViewDpi;
+  if ( scale )
+    *scale = mLegendMapViewScale;
 }
 
 QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const
@@ -1022,7 +1021,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     if ( !mRootNode->customProperty( u"loading"_s ).toBool() )
     {
       // automatic collapse of legend nodes - useful if a layer has many legend nodes
-      if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
+      if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) ) >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
 
       if ( nodeLayer->layer()->type() == Qgis::LayerType::Vector && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
@@ -1368,19 +1367,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           {
             const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
             const bool isDataDefinedSize = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ) ).toBool();
-            const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
-                                 || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+            const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) ) || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
 
             if ( checked )
             {
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 auto it = mHitTestResults.constFind( vl->id() );
-                if ( it != mHitTestResults.constEnd() &&
-                     ( it->contains( ruleKey ) ||
-                       ( !it->isEmpty() && isDataDefinedSize )
-                     )
-                   )
+                if ( it != mHitTestResults.constEnd() && ( it->contains( ruleKey ) || ( !it->isEmpty() && isDataDefinedSize ) ) )
                 {
                   filtered << node;
                 }
@@ -1390,7 +1384,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
                 filtered << node;
               }
             }
-            else  // unknown node type or unchecked
+            else // unknown node type or unchecked
               filtered << node;
             break;
           }
@@ -1405,7 +1399,6 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
 
   return filtered;
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -45,7 +45,6 @@ class QgsRasterLayerRendererFeedback;
 class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelProvider
 {
   public:
-
     /**
      * Constructor for QgsRasterLayerLabelProvider.
      */
@@ -152,11 +151,9 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
     int mResampleOver = 1;
 
     QList<QgsLabelFeature *> mLabels;
-
 };
 
 #endif
-
 
 
 /**
@@ -168,7 +165,6 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
 class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
 {
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == "simple" )
@@ -178,7 +174,8 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     SIP_END
 #endif
 
-    QgsAbstractRasterLayerLabeling() = default;
+    QgsAbstractRasterLayerLabeling()
+      = default;
     virtual ~QgsAbstractRasterLayerLabeling() = default;
 #ifndef SIP_RUN
     //! QgsAbstractRasterLayerLabeling cannot be copied, use clone() instead
@@ -269,11 +266,9 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   private:
-
 #ifdef SIP_RUN
     QgsAbstractRasterLayerLabeling( const QgsAbstractRasterLayerLabeling &rhs );
 #endif
-
 };
 
 
@@ -286,7 +281,6 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
 class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLabeling
 {
   public:
-
     explicit QgsRasterLayerSimpleLabeling();
     ~QgsRasterLayerSimpleLabeling() override;
 
@@ -371,13 +365,18 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setPlacementSettings()
      * \note Not available in Python bindings
      */
-    const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; } SIP_SKIP
+    const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; }
+    SIP_SKIP
 
     /**
      * Returns the label placement settings.
      * \see setPlacementSettings()
      */
-    QgsLabelPlacementSettings &placementSettings() { return mPlacementSettings; }
+    QgsLabelPlacementSettings &
+      placementSettings()
+    {
+      return mPlacementSettings;
+    }
 
     /**
      * Sets the label placement \a settings.
@@ -390,13 +389,18 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setThinningSettings()
      * \note Not available in Python bindings
      */
-    const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; } SIP_SKIP
+    const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; }
+    SIP_SKIP
 
     /**
     * Returns the label thinning settings.
     * \see setThinningSettings()
     */
-    QgsLabelThinningSettings &thinningSettings() { return mThinningSettings; }
+    QgsLabelThinningSettings &
+      thinningSettings()
+    {
+      return mThinningSettings;
+    }
 
     /**
      * Sets the label thinning \a settings.
@@ -554,9 +558,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
 
     Qgis::RasterResamplingMethod mResampleMethod = Qgis::RasterResamplingMethod::Average;
     int mResampleOver = 1;
-
 };
-
 
 
 #endif // QGSRASTERLABELING_H

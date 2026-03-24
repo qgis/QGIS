@@ -29,7 +29,6 @@ A wrapper around the QWebEnginePage class, adding extra functionality.
 #include "qgswebenginepage.h"
 %End
   public:
-
     QgsWebEnginePage( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsWebEnginePage, with the specified ``parent`` widget.

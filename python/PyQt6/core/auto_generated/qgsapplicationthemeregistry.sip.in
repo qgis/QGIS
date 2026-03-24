@@ -25,7 +25,6 @@ A registry of user interface themes. This class should be accessed via
 #include "qgsapplicationthemeregistry.h"
 %End
   public:
-
     QgsApplicationThemeRegistry();
 %Docstring
 Constructor for an empty user interface theme registry
