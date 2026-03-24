@@ -68,6 +68,8 @@ class QgsAfsSharedData
 
     bool hasCachedAllFeatures() const;
 
+    int objectIdFieldIndex() const;
+
   private:
     QVariantMap postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const;
 
