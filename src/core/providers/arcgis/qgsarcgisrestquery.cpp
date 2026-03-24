@@ -110,7 +110,6 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects(
   const QStringList &fetchAttributes,
   bool fetchM,
   bool fetchZ,
-  const QgsRectangle &filterRect,
   QString &errorTitle,
   QString &errorText,
   const QgsHttpHeaders &requestHeaders,
@@ -145,12 +144,6 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects(
 
   query.addQueryItem( u"returnM"_s, fetchM ? u"true"_s : u"false"_s );
   query.addQueryItem( u"returnZ"_s, fetchZ ? u"true"_s : u"false"_s );
-  if ( !filterRect.isNull() )
-  {
-    query.addQueryItem( u"geometry"_s, u"%1,%2,%3,%4"_s.arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 ).arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
-    query.addQueryItem( u"geometryType"_s, u"esriGeometryEnvelope"_s );
-    query.addQueryItem( u"spatialRel"_s, u"esriSpatialRelEnvelopeIntersects"_s );
-  }
   queryUrl.setQuery( query );
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
 }

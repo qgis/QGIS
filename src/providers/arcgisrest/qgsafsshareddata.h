@@ -59,8 +59,18 @@ class QgsAfsSharedData
     // lock must already be obtained by caller, and ensureObjectIdsFetched MUST have been called!
     QgsFeatureId objectIdToFeatureId( quint32 oid );
 
-    // ensureObjectIdsFetched MUST have been called!
-    bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
+    /**
+     * Retrieves a feature by \a id.
+     *
+     * \param id target feature ID
+     * \param f feature to be populated
+     * \param feedback
+     * \returns TRUE if matching feature was retrieved
+     *
+     * \warning ensureObjectIdsFetched() MUST have been called before calling this!
+     */
+    bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
+
     // ensureObjectIdsFetched MUST have been called!
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
