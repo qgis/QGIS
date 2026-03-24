@@ -33,6 +33,7 @@ void QgsAbstractMaterialSettings::writeXml( QDomElement &element, const QgsReadW
   QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( u"data-defined-properties"_s );
   mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   element.appendChild( elemDataDefinedProperties );
+  element.setAttribute( u"type"_s, type() );
 }
 
 void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCollection &collection )
