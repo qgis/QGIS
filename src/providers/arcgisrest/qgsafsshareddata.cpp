@@ -125,23 +125,11 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     errorMessage = QObject::tr( "Failed to determine objectIdFieldName and/or objectIds" );
     return false;
   }
-  mObjectIdFieldName = objectIdData[u"objectIdFieldName"_s].toString();
-  for ( int idx = 0, nIdx = mFields.count(); idx < nIdx; ++idx )
+  if ( objectIdData[u"objectIdFieldName"_s].toString() != mObjectIdFieldName )
   {
-    if ( mFields.at( idx ).name() == mObjectIdFieldName )
-    {
-      mObjectIdFieldIdx = idx;
-
-      // primary key is not null, unique
-      QgsFieldConstraints constraints = mFields.at( idx ).constraints();
-      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      mFields[idx].setConstraints( constraints );
-      mFields[idx].setReadOnly( true );
-
-      break;
-    }
+    QgsDebugError( u"Object ID field name mismatch: %1 vs %2"_s.arg( objectIdData[u"objectIdFieldName"_s].toString(), mObjectIdFieldName ) );
   }
+
   const QVariantList objectIds = objectIdData.value( u"objectIds"_s ).toList();
   mObjectIds.reserve( mObjectIds.size() + objectIds.size() );
   mObjectIdToFeatureId.reserve( mObjectIdToFeatureId.size() + objectIds.size() );
@@ -613,6 +601,12 @@ bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mCache.count() == featureCount();
+}
+
+int QgsAfsSharedData::objectIdFieldIndex() const
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  return mObjectIdFieldIdx;
 }
 
 QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const
