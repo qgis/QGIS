@@ -1,4 +1,16 @@
 # The following has been generated automatically from src/core/pointcloud/qgspointcloudrenderer.h
+# monkey patching scoped based enum
+QgsPointCloudRenderer.Color = QgsPointCloudRenderer.Property.Color
+QgsPointCloudRenderer.Color.is_monkey_patched = True
+QgsPointCloudRenderer.Color.__doc__ = ""
+QgsPointCloudRenderer.Property.__doc__ = """Data-defined properties that can be set on the renderer.
+
+.. versionadded:: 4.2
+
+* ``Color``: 
+
+"""
+# --
 try:
     QgsPointCloudRenderer.load = staticmethod(QgsPointCloudRenderer.load)
     QgsPointCloudRenderer.pointXY = staticmethod(QgsPointCloudRenderer.pointXY)

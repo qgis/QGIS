@@ -92,6 +92,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   int green = 0;
   int blue = 0;
   int alpha = 0;
+
+  bool dataDefinedPropertiesActive = dataDefinedProperties().isActive( QgsPointCloudRenderer::Property::Color );
   for ( int i = 0; i < count; ++i )
   {
     if ( context.renderContext().renderingStopped() )
@@ -135,12 +137,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
 
       QColor color( red, green, blue, alpha );
-      if ( expressionIsValid() )
-      {
+      if ( dataDefinedPropertiesActive )
         color = colorFromExpression( block, i, color, context );
-        if ( !color.isValid() )
-          continue;
-      }
 
       if ( renderAsTriangles() )
       {

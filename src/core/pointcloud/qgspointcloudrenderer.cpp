@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgscircle.h"
 #include "qgselevationmap.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
@@ -33,6 +34,8 @@
 #include <QThread>
 
 using namespace Qt::StringLiterals;
+
+QgsPropertiesDefinition QgsPointCloudRenderer::sPropertyDefinitions;
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback )
   : mRenderContext( context )
@@ -95,7 +98,11 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
   QSet<QString> res;
-  res.unite( mExpression.referencedVariables() );
+  if ( mDataDefinedProperties.isActive( Property::Color ) )
+  {
+    const QgsExpression expression( mDataDefinedProperties.property( Property::Color ).expressionString() );
+    res = expression.referencedVariables();
+  }
   return res;
 }
 
@@ -130,13 +137,10 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
       break;
   }
 
-  mExpression = QgsExpression( mExpressionString );
-  if ( mExpression.hasParserError() )
-    return;
+  mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
 
-  mExpressionContext = QgsExpressionContext();
-  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  mExpressionContext << scope;
+  if ( mDataDefinedProperties.isActive( Property::Color ) )
+    context.renderContext().expressionContext().appendScope( new QgsExpressionContextScope() );
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
@@ -235,6 +239,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setZoomOutBehavior( mZoomOutBehavior );
   destination->setOverviewSwitchingScale( mOverviewSwitchingScale );
   destination->setElevationShadingRenderer( mElevationShadingRenderer );
+  destination->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -267,6 +272,9 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   {
     mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
   }
+  const QDomElement ddElem = element.firstChildElement( u"dataDefinedProperties"_s );
+  if ( !ddElem.isNull() )
+    mDataDefinedProperties.readXml( ddElem, propertyDefinitions() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -305,6 +313,10 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   QDomElement elevationShadingNode = doc.createElement( u"elevation-shading-renderer"_s );
   mElevationShadingRenderer.writeXml( elevationShadingNode, context );
   element.appendChild( elevationShadingNode );
+
+  QDomElement ddElem = doc.createElement( u"dataDefinedProperties"_s );
+  mDataDefinedProperties.writeXml( ddElem, propertyDefinitions() );
+  element.appendChild( ddElem );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
@@ -327,9 +339,20 @@ void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order )
   mDrawOrder2d = order;
 }
 
-void QgsPointCloudRenderer::setExpressionString( const QString &expression )
+void QgsPointCloudRenderer::initPropertyDefinitions()
 {
-  mExpressionString = expression;
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  sPropertyDefinitions = {
+    { static_cast<int>( QgsPointCloudRenderer::Property::Color ), QgsPropertyDefinition( "colorExpression", QObject::tr( "Color expression" ), QgsPropertyDefinition::ColorWithAlpha ) },
+  };
+}
+
+const QgsPropertiesDefinition &QgsPointCloudRenderer::propertyDefinitions()
+{
+  QgsPointCloudRenderer::initPropertyDefinitions();
+  return sPropertyDefinitions;
 }
 
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
@@ -422,6 +445,30 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 QgsElevationShadingRenderer QgsPointCloudRenderer::elevationShadingRenderer() const
 {
   return mElevationShadingRenderer;
+}
+
+QColor QgsPointCloudRenderer::colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context )
+{
+  const char *ptr = block->data();
+  const auto &request = block->attributes();
+  const std::size_t recordSize = request.pointRecordSize();
+  const char *pointData = ptr + pointIndex * recordSize;
+
+  QgsExpressionContext &ctx = context.renderContext().expressionContext();
+
+  QgsExpressionContextScope *scope = ctx.lastScope();
+  int offset = 0;
+  for ( const QgsPointCloudAttribute &att : request.attributes() )
+  {
+    QVariant value;
+    context.getAttribute( pointData, offset, att.type(), value );
+    scope->setVariable( att.name(), value, false );
+    offset += att.size();
+  }
+
+  scope->setVariable( u"point_color"_s, QVariant::fromValue( rendererColor ), false );
+
+  return mDataDefinedProperties.valueAsColor( Property::Color, ctx, rendererColor );
 }
 
 //

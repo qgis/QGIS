@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgspropertycollection.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
@@ -64,6 +65,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void emitWidgetChanged();
 
+    void updateDataDefinedProperty();
+
   private:
     // for 3D rendering, see values in qgspointcloud3dsymbolwidget.h
     const QMap<double, QString> mOverviewSwitchingScaleMap { { 5.0, "Much earlier" }, { 2.0, "Earlier" }, { 1.0, "Normal" }, { 0.5, "Later" } };
@@ -81,6 +84,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mBlockChangedSignal = false;
+
+    QgsPropertyCollection mDataDefinedProperties;
 };
 
 

@@ -21,11 +21,13 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointcloudattribute.h"
+#include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
 #include "qgsstyle.h"
 #include "qgsvector3d.h"
 
 #include <QString>
+#include <QStringList>
 
 using namespace Qt::StringLiterals;
 
@@ -337,6 +339,15 @@ class CORE_EXPORT QgsPointCloudRenderer
 #endif
 
   public:
+
+    /**
+     * Data-defined properties that can be set on the renderer.
+     * \since QGIS 4.2
+     */
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, Property ) : int
+    {
+      Color = 0,
+    };
 
     QgsPointCloudRenderer();
 
@@ -743,6 +754,30 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer ) { mElevationShadingRenderer = renderer; }
 
+    /**
+     * Returns the property definitions for data defined properties used by the renderer.
+     *
+     * \since QGIS 4.2
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
+
+    /**
+     * Returns the renderer's property collection, used for data defined overrides.
+     *
+     * \see setDataDefinedProperties()
+     * \since QGIS 4.2
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /**
+     * Sets the renderer's property collection, used for data defined overrides.
+     *
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 4.2
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
   protected:
     /**
      * Retrieves the x and y coordinate for the point at index \a i.
@@ -855,27 +890,6 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     QColor colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
 
-    /**
-     * Sets scope variable values to the point attributes used in the expression as well as the base renderer color.
-     *
-     * \since QGIS 4.0
-     */
-    void createPointExpressionContext( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
-
-    /**
-     * Calculates color from the expression result.
-     *
-     * \since QGIS 4.0
-     */
-    QColor colorFromExpressionResult( const QVariant &result ) const;
-
-    /**
-     * Returns whether the expression set is valid.
-     *
-     * \since QGIS 4.0
-     */
-    bool expressionIsValid() const { return mExpression.isValid(); }
-
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
@@ -909,6 +923,10 @@ class CORE_EXPORT QgsPointCloudRenderer
     double mOverviewSwitchingScale = 1.0;
 
     QgsElevationShadingRenderer mElevationShadingRenderer;
+
+    static void initPropertyDefinitions();
+    static QgsPropertiesDefinition sPropertyDefinitions;
+    QgsPropertyCollection mDataDefinedProperties;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

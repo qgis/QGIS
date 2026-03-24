@@ -106,6 +106,8 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   double z = 0;
   const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
   const bool reproject = ct.isValid();
+
+  bool dataDefinedPropertiesActive = dataDefinedProperties().isActive( QgsPointCloudRenderer::Property::Color );
   for ( int i = 0; i < count; ++i )
   {
     if ( context.renderContext().renderingStopped() )
@@ -170,12 +172,8 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       blue = std::max( 0, std::min( 255, blue ) );
 
       QColor color( red, green, blue );
-      if ( expressionIsValid() )
-      {
+      if ( dataDefinedPropertiesActive )
         color = colorFromExpression( block, i, color, context );
-        if ( !color.isValid() )
-          continue;
-      }
 
       if ( renderAsTriangles() )
       {

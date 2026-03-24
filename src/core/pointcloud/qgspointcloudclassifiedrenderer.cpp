@@ -99,6 +99,8 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   QHash< int, QColor > colors;
   QHash< int, int > pointSizes;
+
+  bool dataDefinedPropertiesActive = dataDefinedProperties().isActive( QgsPointCloudRenderer::Property::Color );
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( !category.renderState() )
@@ -131,12 +133,8 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
     if ( !color.isValid() )
       continue;
 
-    if ( expressionIsValid() )
-    {
+    if ( dataDefinedPropertiesActive )
       color = colorFromExpression( block, i, color, context );
-      if ( !color.isValid() )
-        continue;
-    }
 
     pointXY( context, ptr, i, x, y );
     if ( visibleExtent.contains( x, y ) )

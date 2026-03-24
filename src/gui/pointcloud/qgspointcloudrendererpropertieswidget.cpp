@@ -17,6 +17,8 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldexpressionwidget.h"
 #include "qgsfontbutton.h"
 #include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
@@ -30,6 +32,7 @@
 #include "qgspointcloudrgbrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgsproperty.h"
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
@@ -138,9 +141,6 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
     { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
   );
 
-  mColorExpressionWidget->setAllowEmptyFieldName( true );
-  mColorExpressionWidget->setAllowEvalErrors( true );
-
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
@@ -155,6 +155,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  connect( mColorExpressionWidget, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty );
   // show virtual point cloud options only when vpc layer is selected
   if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
   {
@@ -298,7 +299,12 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
   }
 
+  mColorExpressionWidget->setLayer( layer );
   mColorExpressionWidget->registerExpressionContextGenerator( this );
+
+  mDataDefinedProperties = mLayer->renderer()->dataDefinedProperties();
+  const QgsProperty colorProperty = mDataDefinedProperties.property( QgsPointCloudRenderer::Property::Color );
+  mColorExpressionWidget->setExpression( colorProperty.expressionString() );
 
   mBlockChangedSignal = false;
 }
@@ -362,6 +368,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
 
   mLayer->renderer()->setElevationShadingRenderer( shadingRenderer );
+  mLayer->renderer()->setDataDefinedProperties( mDataDefinedProperties );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -435,6 +442,16 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
+}
+
+void QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty()
+{
+  const QString expression = mColorExpressionWidget->expression();
+  if ( !expression.isEmpty() )
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty::fromExpression( expression ) );
+  else
+    mDataDefinedProperties.setProperty( QgsPointCloudRenderer::Property::Color, QgsProperty() );
+  emitWidgetChanged();
 }
 
 
