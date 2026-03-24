@@ -181,7 +181,7 @@ QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid )
   return mObjectIdToFeatureId.value( oid, -1 );
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QList<QgsFeatureId> &pendingFeatureIds, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   Q_ASSERT( mHasFetchedObjectIds );
@@ -196,25 +196,66 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *
 
   const QString authcfg = mDataSource.authConfigId();
   bool featureFetched = false;
-  int startId;
-  QList<quint32> objectIds;
+  QSet<quint32> objectIds;
+  objectIds.reserve( mMaximumFetchObjectsCount );
   QVariantMap queryData;
+  QList< QgsFeatureId > requestedFeatureIds;
+  requestedFeatureIds.reserve( mMaximumFetchObjectsCount );
+
+  if ( id < 0 || id >= mFeatureIdsToObjectIds.size() )
+    return false;
+
+  const quint32 targetObjectId = mFeatureIdsToObjectIds.at( id );
   while ( !featureFetched )
   {
-    startId = ( id / mMaximumFetchObjectsCount ) * mMaximumFetchObjectsCount;
-    const int stopId = std::min<size_t>( startId + mMaximumFetchObjectsCount, mFeatureIdsToObjectIds.length() );
     objectIds.clear();
-    objectIds.reserve( stopId - startId );
-    for ( int i = startId; i < stopId; ++i )
+    objectIds.insert( targetObjectId );
+    // first priority is to fill the batch with pending feature IDs, because we know
+    // these are desirable for the caller
+    for ( QgsFeatureId pendingId : pendingFeatureIds )
     {
-      if ( i >= 0 && i < mFeatureIdsToObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
-        objectIds.append( mFeatureIdsToObjectIds.at( i ) );
+      if ( pendingId >= 0 && pendingId < mFeatureIdsToObjectIds.count() && !mDeletedFeatureIds.contains( pendingId ) && !mCache.contains( pendingId ) )
+      {
+        objectIds.insert( mFeatureIdsToObjectIds.at( pendingId ) );
+        if ( objectIds.size() >= mMaximumFetchObjectsCount )
+        {
+          break;
+        }
+      }
+    }
+
+    if ( objectIds.size() < mMaximumFetchObjectsCount )
+    {
+      // if batch isn't yet full, then fill remainder with sequential IDs we haven't yet fetched
+      const int startId = static_cast< int >( ( id / mMaximumFetchObjectsCount ) * mMaximumFetchObjectsCount );
+      const int stopId = static_cast< int >( mFeatureIdsToObjectIds.length() );
+      for ( int i = startId; i < stopId; ++i )
+      {
+        if ( i >= 0 && i < mFeatureIdsToObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
+        {
+          objectIds.insert( mFeatureIdsToObjectIds.at( i ) );
+          if ( objectIds.size() >= mMaximumFetchObjectsCount )
+          {
+            break;
+          }
+        }
+      }
     }
 
     if ( objectIds.empty() )
     {
       QgsDebugMsgLevel( u"No valid features IDs to fetch"_s, 2 );
       return false;
+    }
+
+    // sort requested feature IDs, to make requests more cache friendly
+    // (as opposed to unpredictable set ordering)
+    QList< quint32 > requestedObjectIds = qgis::setToList( objectIds );
+    std::sort( requestedObjectIds.begin(), requestedObjectIds.end() );
+    requestedFeatureIds.clear();
+    for ( quint32 objectId : requestedObjectIds )
+    {
+      requestedFeatureIds.append( mObjectIdToFeatureId[objectId] );
     }
 
     // don't lock while doing the fetch
@@ -225,7 +266,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *
     queryData = QgsArcGisRestQueryUtils::getObjects(
       mDataSource.param( u"url"_s ),
       authcfg,
-      objectIds,
+      requestedObjectIds,
       mDataSource.param( u"crs"_s ),
       true,
       QStringList(),
@@ -274,7 +315,12 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *
   {
     const QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
-    QgsFeatureId featureId = startId + i;
+    if ( i >= requestedFeatureIds.size() )
+    {
+      QgsDebugError( u"Server responded with more features than expected -- results will be unpredictable!" );
+      break;
+    }
+    QgsFeatureId featureId = requestedFeatureIds[i];
 
     // Set attributes
     const QVariantMap attributesData = featureData[u"attributes"_s].toMap();
