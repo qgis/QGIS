@@ -15,12 +15,16 @@
 
 #include "qgspoint3dsymbolwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dutils.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgslayoututils.h"
 #include "qgsmarkersymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgssymbolbutton.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
+#include "vector/qgsvectorelevationpropertieswidget.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -53,6 +57,15 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   spinTopRadius->setClearValue( 0.0 );
   spinBillboardHeight->setClearValue( 0.0 );
 
+  mLabelElevationDescription->hide();
+  mLabelElevationDescription->setOpenExternalLinks( false );
+  connect( mLabelElevationDescription, &QLabel::linkActivated, this, [this] {
+    if ( !mLayer )
+      return;
+
+    QgisApp::instance()->showLayerProperties( mLayer, u"mOptsPage_Elevation"_s );
+  } );
+
   cboShape->addItem( tr( "Sphere" ), QVariant::fromValue( Qgis::Point3DShape::Sphere ) );
   cboShape->addItem( tr( "Cylinder" ), QVariant::fromValue( Qgis::Point3DShape::Cylinder ) );
   cboShape->addItem( tr( "Cube" ), QVariant::fromValue( Qgis::Point3DShape::Cube ) );
@@ -69,6 +82,9 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   setSymbol( &defaultSymbol, nullptr );
   onShapeChanged();
 
+  // hide by default, only shown for symbols with the legacy setting
+  labelAltClamping->hide();
+  cboAltClamping->hide();
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
@@ -96,9 +112,11 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( mButtonDDRotationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
 }
 
-Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
+Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer *layer )
 {
-  return new QgsPoint3DSymbolWidget();
+  auto widget = new QgsPoint3DSymbolWidget();
+  widget->updateUiForLayer( layer );
+  return widget;
 }
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
@@ -107,7 +125,21 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   if ( !pointSymbol )
     return;
 
-  cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
+  updateUiForLayer( layer );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  cboAltClamping->setVisible( pointSymbol->hasLegacyAltitudeClamping() );
+  labelAltClamping->setVisible( pointSymbol->hasLegacyAltitudeClamping() );
+  if ( !cboAltClamping->isHidden() )
+  {
+    cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
+  }
+  if ( pointSymbol->hasLegacyAltitudeClamping() )
+  {
+    mLabelElevationDescription->setText( u"<b>%1</b>"_s.arg( tr( "This symbol uses legacy configuration for altitude clamping and offset, and will ignore the layer's elevation settings." ) ) );
+    mLabelElevationDescription->show();
+  }
+  Q_NOWARN_DEPRECATED_POP
 
   cboShape->setCurrentIndex( cboShape->findData( QVariant::fromValue( pointSymbol->shape() ) ) );
   QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
@@ -243,7 +275,12 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   tr.scale( sca );
   tr.rotate( rot );
 
-  sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  if ( !cboAltClamping->isHidden() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+    Q_NOWARN_DEPRECATED_POP
+  }
   sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings() );
@@ -346,4 +383,28 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   }
 
   emit changed();
+}
+
+void QgsPoint3DSymbolWidget::updateUiForLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+  if ( !layer )
+  {
+    mLabelElevationDescription->hide();
+    return;
+  }
+
+  QgsVectorLayerElevationProperties *elevationProperties = qobject_cast< QgsVectorLayerElevationProperties * >( mLayer->elevationProperties() );
+  if ( !elevationProperties )
+  {
+    mLabelElevationDescription->hide();
+    return;
+  }
+
+  const QString formattedClampingDescription = QgsVectorElevationPropertiesWidget::clampingDescription( elevationProperties->clamping() );
+
+  const QString explanationParagraph = u"<p>%1</p>"_s.arg( QObject::tr( "This can be changed from the layer's <a href=\"#elevprops\">Elevation Properties</a> page." ) );
+
+  mLabelElevationDescription->setText( formattedClampingDescription + explanationParagraph );
+  mLabelElevationDescription->show();
 }

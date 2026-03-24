@@ -48,13 +48,16 @@ QgsPoint3DSymbol::QgsPoint3DSymbol()
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
-  : mAltClamping( other.altitudeClamping() )
-  , mMaterialSettings( other.materialSettings() ? other.materialSettings()->clone() : nullptr )
+  : mMaterialSettings( other.materialSettings() ? other.materialSettings()->clone() : nullptr )
   , mShape( other.shape() )
   , mShapeProperties( other.shapeProperties() )
   , mTransform( other.transform() )
   , mBillboardSymbol( other.billboardSymbol() ? other.billboardSymbol()->clone() : nullptr )
 {
+  Q_NOWARN_DEPRECATED_PUSH
+  mAltClamping = other.altitudeClamping();
+  mHasLegacyClamping = other.hasLegacyAltitudeClamping();
+  Q_NOWARN_DEPRECATED_POP
   setDataDefinedProperties( other.dataDefinedProperties() );
 }
 
@@ -65,7 +68,10 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   QDomDocument doc = elem.ownerDocument();
 
   QDomElement elemDataProperties = doc.createElement( u"data"_s );
-  elemDataProperties.setAttribute( u"alt-clamping"_s, Qgs3DUtils::altClampingToString( mAltClamping ) );
+  if ( mHasLegacyClamping )
+  {
+    elemDataProperties.setAttribute( u"alt-clamping"_s, Qgs3DUtils::altClampingToString( mAltClamping ) );
+  }
   elem.appendChild( elemDataProperties );
 
   elem.setAttribute( u"material_type"_s, mMaterialSettings->type() );
@@ -101,7 +107,15 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   const QDomElement elemDataProperties = elem.firstChildElement( u"data"_s );
-  mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( u"alt-clamping"_s ) );
+  if ( elemDataProperties.hasAttribute( u"alt-clamping"_s ) )
+  {
+    mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( u"alt-clamping"_s ) );
+    mHasLegacyClamping = true;
+  }
+  else
+  {
+    mHasLegacyClamping = false;
+  }
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
   const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
@@ -137,9 +151,18 @@ void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *laye
 {
   const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
 
-  mAltClamping = props->clamping();
-  mTransform.data()[13] = static_cast<float>( props->zOffset() );
   mShapeProperties[u"length"_s] = props->extrusionEnabled() ? static_cast<float>( props->extrusionHeight() ) : 0.0f;
+}
+
+bool QgsPoint3DSymbol::hasLegacyAltitudeClamping() const
+{
+  return mHasLegacyClamping;
+}
+
+void QgsPoint3DSymbol::setAltitudeClamping( Qgis::AltitudeClamping altClamping ) SIP_DEPRECATED
+{
+  mHasLegacyClamping = true;
+  mAltClamping = altClamping;
 }
 
 Qgis::Point3DShape QgsPoint3DSymbol::shapeFromString( const QString &shape )

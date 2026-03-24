@@ -1655,6 +1655,7 @@ double QgsVectorLayerProfileGenerator::featureZToHeight( double x, double y, dou
     case Qgis::AltitudeClamping::Relative:
     case Qgis::AltitudeClamping::Terrain:
     {
+      // make sure these stay consistent with the equations in Qgs3DUtils::extractPointPositions
       const double terrainZ = terrainHeight( x, y );
       if ( !std::isnan( terrainZ ) )
       {
