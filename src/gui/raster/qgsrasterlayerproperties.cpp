@@ -110,6 +110,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   setupUi( this );
 
   mMetadataViewer = new QgsWebView( this );
+  mMetadataViewer->setOpenLinks( false );
+  connect( mMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsRasterLayerProperties::openUrl );
   mOptsPage_Information->layout()->addWidget( mMetadataViewer );
 
   mRasterTransparencyWidget = new QgsRasterTransparencyWidget( mRasterLayer, canvas, this );
@@ -1302,10 +1304,11 @@ bool QgsRasterLayerProperties::rasterIsMultiBandColor()
 
 void QgsRasterLayerProperties::updateInformationContent()
 {
-  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  // Inject the stylesheet
-  const QString html { mRasterLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
-  mMetadataViewer->setHtml( html );
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( u"body { margin: 10px; }\n "_s );
+  mMetadataViewer->clear();
+  mMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  mMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
   mMetadataFilled = true;
 }
 
