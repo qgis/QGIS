@@ -243,7 +243,7 @@ class CORE_EXPORT QgsMaterialRegistry
      *
      * Returns NULLPTR if the specified type is not found in the registry.
      */
-    QgsAbstractMaterialSettings *createMaterialSettings( const QString &type ) const SIP_FACTORY;
+    std::unique_ptr< QgsAbstractMaterialSettings > createMaterialSettings( const QString &type ) const;
 
   private:
 #ifdef SIP_RUN

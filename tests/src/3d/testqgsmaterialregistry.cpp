@@ -153,7 +153,7 @@ void TestQgsMaterialRegistry::createMaterial()
   QVERIFY( dummySymbol );
 
   //try creating a bad material
-  material.reset( registry->createMaterialSettings( u"bad material"_s ) );
+  material = registry->createMaterialSettings( u"bad material"_s );
   QVERIFY( !material.get() );
 }
 
