@@ -122,7 +122,7 @@ Registers a new material settings type. Takes ownership of the
 ``metadata`` instance.
 %End
 
-    QgsAbstractMaterialSettings *createMaterialSettings( const QString &type ) const /Factory/;
+    std::unique_ptr< QgsAbstractMaterialSettings > createMaterialSettings( const QString &type ) const;
 %Docstring
 Creates a new instance of the material settings of the specified
 ``type``.

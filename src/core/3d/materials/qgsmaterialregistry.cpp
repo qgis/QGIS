@@ -72,12 +72,12 @@ bool QgsMaterialRegistry::addMaterialSettingsType( QgsMaterialSettingsAbstractMe
   return true;
 }
 
-QgsAbstractMaterialSettings *QgsMaterialRegistry::createMaterialSettings( const QString &type ) const
+std::unique_ptr< QgsAbstractMaterialSettings > QgsMaterialRegistry::createMaterialSettings( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->create();
+  return std::unique_ptr< QgsAbstractMaterialSettings >( mMetadata[type]->create() );
 }
 
 QgsMaterialSettingsAbstractMetadata *QgsMaterialRegistry::materialSettingsMetadata( const QString &type ) const

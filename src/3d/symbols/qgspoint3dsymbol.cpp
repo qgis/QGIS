@@ -105,9 +105,9 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
   const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
-  mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s ) );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( u"shape"_s ) );
