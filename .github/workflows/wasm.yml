@@ -36,7 +36,7 @@ jobs:
           fetch-depth: 1
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375 # latest
+        uses: lukka/get-cmake@b78306120111dc2522750771cfd09ee7ca723687 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098

@@ -21,7 +21,7 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutmultiframe.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsvaliditycheckcontext.h"
 
 #include <QString>
@@ -109,8 +109,7 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   if ( !layoutContext )
     return false;
 
-  QgsSettings settings;
-  const QString defaultPath = settings.value( u"LayoutDesigner/defaultNorthArrow"_s, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QgsSettings::Gui ).toString();
+  const QString defaultPath = QgsLayout::settingsLayoutDefaultNorthArrow->value();
 
   QList<QgsLayoutItemPicture *> pictureItems;
   layoutContext->layout->layoutItems( pictureItems );

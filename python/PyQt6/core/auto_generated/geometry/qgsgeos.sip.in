@@ -306,7 +306,11 @@ This method requires a QGIS build based on GEOS 3.7 or later.
 
     virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const;
 
+
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = 0 ) const;
+
 
     virtual bool isEmpty( QString *errorMsg = 0 ) const;
 
@@ -690,7 +694,7 @@ This method requires a QGIS build based on GEOS 3.11 or later.
 .. versionadded:: 3.36
 %End
 
-    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg /Out/ = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Returns a possibly concave geometry that encloses the input geometry.
 
@@ -715,6 +719,8 @@ This method requires a QGIS build based on GEOS 3.11 or later.
 
 :param targetPercent: 
 :param allowHoles: 
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: - concave geometry that encloses the input geometry
          - errorMsg: descriptive error string if the operation fails

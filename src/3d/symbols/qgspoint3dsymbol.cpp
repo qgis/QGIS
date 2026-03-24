@@ -86,6 +86,10 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elemTransform.setAttribute( u"matrix"_s, Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
 
+  QDomElement elemDDP = doc.createElement( u"data-defined-properties"_s );
+  mDataDefinedProperties.writeXml( elemDDP, propertyDefinitions() );
+  elem.appendChild( elemDDP );
+
   if ( billboardSymbol() )
   {
     const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( u"symbol"_s, billboardSymbol(), doc, context );
@@ -114,6 +118,10 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement elemTransform = elem.firstChildElement( u"transform"_s );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( u"matrix"_s ) );
+
+  const QDomElement elemDDP = elem.firstChildElement( u"data-defined-properties"_s );
+  if ( !elemDDP.isNull() )
+    mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 
   const QDomElement symbolElem = elem.firstChildElement( u"symbol"_s );
 
@@ -281,6 +289,19 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
     }
 
     case Qgis::Point3DShape::Model:
+    {
+      // defaults are "z" up, "y" forward -- this ensures default rendering matches 3.x appearance
+      if ( property == "upAxis"_L1 )
+      {
+        return mShapeProperties.value( u"upAxis"_s, u"z"_s ).toString();
+      }
+      if ( property == "forwardAxis"_L1 )
+      {
+        return mShapeProperties.value( u"forwardAxis"_s, u"y"_s ).toString();
+      }
+      break;
+    }
+
     case Qgis::Point3DShape::Billboard:
       break;
   }

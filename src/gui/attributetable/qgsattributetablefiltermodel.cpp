@@ -111,6 +111,11 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
       const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
       return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) );
     }
+    else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) )
+    {
+      const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
+      return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) );
+    }
   }
   else if ( role == static_cast<int>( CustomRole::Type ) )
     return ColumnTypeField;

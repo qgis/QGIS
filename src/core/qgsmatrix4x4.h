@@ -92,6 +92,29 @@ class CORE_EXPORT QgsMatrix4x4
     //! Sets matrix to be identity matrix
     void setToIdentity() SIP_HOLDGIL;
 
+    /**
+     * Multiplies this matrix by another that scales coordinates by the components of a \a vector.
+     *
+     * \since QGIS 4.2
+     */
+    void scale( const QgsVector3D &vector );
+
+    /**
+     * Multiples this matrix by another that rotates coordinates through
+     * \a angle degrees about the vector (\a x, \a y, \a z).
+     *
+     * \since QGIS 4.2
+     */
+    void rotate( double angle, double x, double y, double z );
+
+    /**
+     * Multiples this matrix by another that rotates coordinates through
+     * \a angle degrees about \a vector.
+     *
+     * \since QGIS 4.2
+     */
+    void rotate( double angle, const QgsVector3D &vector );
+
 #ifdef SIP_RUN
 // clang-format off
     SIP_PYOBJECT __repr__();
@@ -131,9 +154,9 @@ class CORE_EXPORT QgsMatrix4x4
     explicit QgsMatrix4x4( int ) { }   // cppcheck-suppress uninitMemberVarPrivate
 };
 
-//! Matrix-matrix multiplication (useful to concatenate transforms)
-CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
 //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
+//! Matrix-matrix multiplication (useful to concatenate transforms)
 CORE_EXPORT QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
 
 

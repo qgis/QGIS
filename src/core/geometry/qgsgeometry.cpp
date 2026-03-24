@@ -1630,21 +1630,7 @@ bool QgsGeometry::disjoint( const QgsGeometry &geometry ) const
 
 bool QgsGeometry::equals( const QgsGeometry &geometry ) const
 {
-  if ( !d->geometry || geometry.isNull() )
-  {
-    return false;
-  }
-
-  // fast check - are they shared copies of the same underlying geometry?
-  if ( d == geometry.d )
-    return true;
-
-  // fast check - distinct geometry types?
-  if ( type() != geometry.type() )
-    return false;
-
-  // slower check - actually test the geometries
-  return *d->geometry == *geometry.d->geometry;
+  return isExactlyEqual( geometry );
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const
@@ -2933,7 +2919,7 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( std::move( cHull ) );
 }
 
-QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) const
+QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2941,7 +2927,7 @@ QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) co
   }
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError, feedback ) );
   if ( !concaveHull )
   {
     QgsGeometry geom;
@@ -3725,6 +3711,53 @@ bool QgsGeometry::isAxisParallelRectangle( double maximumDeviation, bool simpleR
 
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
+  return isTopologicallyEqual( g, Qgis::GeometryBackend::GEOS );
+}
+
+bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
+{
+  if ( !d->geometry || g.isNull() )
+  {
+    return false;
+  }
+
+  // fast check - are they shared copies of the same underlying geometry?
+  if ( d == g.d )
+    return true;
+
+  // fast check - distinct geometry types?
+  if ( type() != g.type() )
+    return false;
+
+  mLastError.clear();
+  switch ( backend )
+  {
+    case Qgis::GeometryBackend::GEOS:
+    {
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
+
+      // avoid calling geos for trivial point case
+      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
+        return *d->geometry == *g.d->geometry;
+
+      QgsGeos geos( d->geometry.get() );
+      // fuzzy check call, with near zero epsilon, will behave as an exact comparison
+      return geos.isFuzzyEqual( g.d->geometry.get(), 1e-8, &mLastError );
+    }
+
+    case Qgis::GeometryBackend::QGIS:
+    {
+      // slower check - actually test the geometries
+      return *d->geometry == *g.d->geometry;
+    }
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
+{
   if ( !d->geometry || !g.d->geometry )
   {
     return false;
@@ -3738,19 +3771,60 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   if ( type() != g.type() )
     return false;
 
-  // avoid calling geos for trivial point case
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
-  {
-    return equals( g );
-  }
-
   //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
   if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
     return false;
 
-  QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.isEqual( g.d->geometry.get(), &mLastError );
+  switch ( backend )
+  {
+    case Qgis::GeometryBackend::GEOS:
+    {
+      // avoid calling geos for trivial point case
+      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
+        return *d->geometry == *g.d->geometry;
+
+      QgsGeos geos( d->geometry.get() );
+      return geos.isEqual( g.d->geometry.get(), &mLastError );
+    }
+
+    case Qgis::GeometryBackend::QGIS:
+      throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::GeometryBackend backend ) const
+{
+  if ( !d->geometry || g.isNull() )
+  {
+    return false;
+  }
+
+  // fast check - are they shared copies of the same underlying geometry?
+  if ( d == g.d )
+    return true;
+
+  // fast check - distinct geometry types?
+  if ( type() != g.type() )
+    return false;
+
+  mLastError.clear();
+  switch ( backend )
+  {
+    case Qgis::GeometryBackend::GEOS:
+    {
+      QgsGeos geos( d->geometry.get() );
+      return geos.isFuzzyEqual( g.d->geometry.get(), epsilon, &mLastError );
+    }
+
+    case Qgis::GeometryBackend::QGIS:
+    {
+      // slower check - actually test the geometries
+      return d->geometry->fuzzyEqual( *g.d->geometry, epsilon );
+    }
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )

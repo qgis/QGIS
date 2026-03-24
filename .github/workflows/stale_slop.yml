@@ -1,0 +1,63 @@
+name: 👓 Handle stale issues
+on:
+  schedule:
+  - cron: "30 2 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  stale:
+    permissions:
+      pull-requests: write  # for actions/stale to close stale PRs
+    if: github.repository_owner == 'qgis'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/stale@v10
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        stale-pr-message: >
+          The QGIS project highly values your contribution and would love to see
+          this work merged!
+          Unfortunately this PR has been marked as AI written and has not had any activity
+          in the last 5 days and is being automatically marked as "stale".
+          If you think this pull request should be merged, please check
+
+          - that you have personally verified that the AI driven changes work, fit within
+            existing QGIS architecture and design, and are well-written.
+
+          - that all unit tests are passing
+
+          - that all comments by reviewers have been addressed
+
+          - that there is enough information for reviewers, in particular
+
+            - link to any issues which this pull request fixes
+
+            - add a description of workflows which this pull request fixes
+
+            - add screenshots if applicable
+
+          - that you have written unit tests where possible
+
+          If there is no further activity on this pull request, it will be closed in 5
+          days.
+
+        close-pr-message: >
+          While we hate to see this happen, this PR has been automatically closed because
+          it has not had any activity in the last 10 days. If this pull request should be
+          reconsidered, please follow the guidelines in the previous comment and reopen
+          this pull request. Or, if you have any further questions, just ask! We love to
+          help, and if there's anything the QGIS project can do to help push this PR forward
+          please let us know how we can assist.
+
+        stale-pr-label: 'stale'
+        exempt-pr-labels: 'Merge After Thaw,Frozen'
+        only-pr-labels: 'Slop!⚠️⚠️'
+        days-before-pr-stale: 5
+        days-before-pr-close: 10
+
+        days-before-issue-stale: -1
+        days-before-issue-close: -1
+
+        operations-per-run: 1000

@@ -1,0 +1,180 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/converters/qgssymbolconverter.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSymbolConverterContext
+{
+%Docstring(signature="appended")
+Represents the context in which a :py:class:`QgsSymbolConverter`
+conversion occurs.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssymbolconverter.h"
+%End
+  public:
+    QgsSymbolConverterContext( QgsReadWriteContext &rwContext );
+%Docstring
+Constructor for QgsSymbolConverterContext.
+
+The ``rwContext`` object must exist for the lifetime of this context.
+%End
+
+    QgsReadWriteContext &readWriteContext();
+%Docstring
+Returns the read-write context associated with the context.
+%End
+
+    QStringList errors() const;
+%Docstring
+Returns a list of errors which occurred during the conversion.
+
+.. seealso:: :py:func:`pushError`
+
+.. seealso:: :py:func:`warnings`
+%End
+
+    void pushError( const QString &error );
+%Docstring
+Pushes a ``error`` message generated during the conversion.
+
+.. seealso:: :py:func:`errors`
+
+.. seealso:: :py:func:`pushWarning`
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warnings which occurred during the conversion.
+
+.. seealso:: :py:func:`pushWarning`
+
+.. seealso:: :py:func:`errors`
+%End
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+
+.. seealso:: :py:func:`warnings`
+
+.. seealso:: :py:func:`pushError`
+%End
+
+    Qgis::SymbolType typeHint() const;
+%Docstring
+Returns the symbol type hint, or :py:class:`Qgis`.SymbolType.Hybrid if
+unknown.
+
+.. seealso:: :py:func:`setTypeHint`
+%End
+
+    void setTypeHint( Qgis::SymbolType hint );
+%Docstring
+Sets the symbol type ``hint``.
+
+Set to :py:class:`Qgis`.SymbolType.Hybrid if unknown.
+
+.. seealso:: :py:func:`typeHint`
+%End
+
+  private:
+    QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
+};
+
+class QgsAbstractSymbolConverter
+{
+%Docstring(signature="appended")
+An abstract base class for converting between :py:class:`QgsSymbol`
+objects and QVariant representations.
+
+This interface provides a standard mechanism for serializing QGIS
+symbols to a generic data container (based on QVariant) and
+deserializing them back into native :py:class:`QgsSymbol` objects.
+
+Concrete implementations of this class are intended to handle specific
+external styling formats, such as SLD (Styled Layer Descriptor) or
+Mapbox GL styles.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssymbolconverter.h"
+%End
+  public:
+    virtual ~QgsAbstractSymbolConverter();
+
+    virtual Qgis::SymbolConverterCapabilities capabilities() const = 0;
+%Docstring
+Returns the capabilities of the converter.
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+Returns the unique name for the converter.
+
+This should be an untranslated string identifying the converter.
+
+.. seealso:: :py:func:`formatName`
+%End
+
+    virtual QString formatName() const = 0;
+%Docstring
+Returns a translated, user-friendly name for the converter's data
+format.
+
+E.g. "Styled Layer Descriptor (SLD)" for a converter which handles the
+SLD format.
+
+.. seealso:: :py:func:`name`
+%End
+
+    virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0;
+%Docstring
+Converts a ``symbol`` into a QVariant representation.
+
+The resulting QVariant may be a dictionary (QVariantMap), a JSON string,
+an XML representation of the symbol, or some binary QByteArray value,
+depending on the concrete implementation (e.g., SLD vs. Mapbox GL).
+
+Returns an invalid variant if the ``symbol`` could not be converted, or
+if serialization of symbols is not supported for this converter.
+
+:raises QgsNotSupportedException: if the converter does not support
+                                  serialization of symbols.
+%End
+
+    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0;
+%Docstring
+Creates a new :py:class:`QgsSymbol` from a QVariant representation.
+
+:param variant: The QVariant containing the serialized symbol data.
+:param context: conversion context
+
+:return: A new :py:class:`QgsSymbol` instance representing the data in
+         the variant. The caller takes ownership of the returned object.
+         Returns ``None`` if the variant cannot be converted or parsed.
+
+:raises QgsNotSupportedException: if the converter does not support
+                                  deserialization of symbols.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/converters/qgssymbolconverter.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

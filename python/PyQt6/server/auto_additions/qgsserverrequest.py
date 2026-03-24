@@ -5,6 +5,7 @@ QgsServerRequest.GetMethod = QgsServerRequest.Method.GetMethod
 QgsServerRequest.PostMethod = QgsServerRequest.Method.PostMethod
 QgsServerRequest.DeleteMethod = QgsServerRequest.Method.DeleteMethod
 QgsServerRequest.PatchMethod = QgsServerRequest.Method.PatchMethod
+QgsServerRequest.OptionsMethod = QgsServerRequest.Method.OptionsMethod
 QgsServerRequest.Method.baseClass = QgsServerRequest
 QgsServerRequest.HOST = QgsServerRequest.RequestHeader.HOST
 QgsServerRequest.FORWARDED = QgsServerRequest.RequestHeader.FORWARDED

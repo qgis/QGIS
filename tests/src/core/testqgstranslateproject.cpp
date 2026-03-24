@@ -49,6 +49,7 @@ class TestQgsTranslateProject : public QObject
 
     void createTsFile();
     void translateProject();
+    void translateProjectLocaleFallback();
 
   private:
     QString original_locale;
@@ -405,6 +406,33 @@ void TestQgsTranslateProject::translateProject()
   QString deProjectFileName( TEST_DATA_DIR );
   deProjectFileName = deProjectFileName + "/project_translation/points_translation_de.qgs";
   const QFile deProjectFile( deProjectFileName );
+  QVERIFY( deProjectFile.exists() );
+}
+
+void TestQgsTranslateProject::translateProjectLocaleFallback()
+{
+  // Test that a locale like "de_CH" falls back to using the "de" .qm file
+  // when no "de_CH" .qm file exists
+  QgsApplication::settingsLocaleUserLocale->setValue( "de_CH" );
+  QString projectFileName( TEST_DATA_DIR );
+  projectFileName = projectFileName + "/project_translation/points_translation.qgs";
+  QgsProject::instance()->read( projectFileName );
+
+  // The de.qm file exists but de_CH.qm does not — translation should still work via fallback
+  QgsVectorLayer *points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" );
+  QgsVectorLayer *lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" );
+
+  QVERIFY( points_layer );
+  QVERIFY( lines_layer );
+
+  // Verify translations are applied (same as the "de" locale test)
+  QCOMPARE( lines_layer->name(), u"Linien"_s );  //#spellok
+  QCOMPARE( points_layer->name(), u"Punkte"_s ); //#spellok
+
+  // Also verify a translated project file was created with the fallback locale suffix
+  QString deChProjectFileName( TEST_DATA_DIR );
+  deChProjectFileName = deChProjectFileName + "/project_translation/points_translation_de.qgs";
+  const QFile deProjectFile( deChProjectFileName );
   QVERIFY( deProjectFile.exists() );
 }
 

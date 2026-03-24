@@ -614,6 +614,75 @@ class TestQgsFileUtils(unittest.TestCase):
                 new_content = f.read()
             self.assertEqual(new_content, "this is my TeSt file\nwith some TeSts")
 
+    def test_copy_directory(self):
+        """
+        Test QgsFileUtils.copyDirectory
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # make directory structure to copy
+            src_dir = os.path.join(temp_dir, "src")
+            os.mkdir(src_dir)
+            with open(os.path.join(src_dir, "file1.txt"), "w") as f:
+                f.write("data")
+            with open(os.path.join(src_dir, "exclude_file.dat"), "w") as f:
+                f.write("data")
+
+            sub_dir = os.path.join(src_dir, "sub_dir")
+            os.mkdir(sub_dir)
+            with open(os.path.join(sub_dir, "file2.txt"), "w") as f:
+                f.write("data")
+            with open(os.path.join(sub_dir, "exclude_sub_file.dat"), "w") as f:
+                f.write("data")
+
+            exclude_dir = os.path.join(src_dir, "exclude_dir")
+            os.mkdir(exclude_dir)
+            with open(os.path.join(exclude_dir, "file3.txt"), "w") as f:
+                f.write("data")
+
+            # source directory does not exist:
+            missing_dir = os.path.join(temp_dir, "missing")
+            dest_missing = os.path.join(temp_dir, "dest_missing")
+            self.assertFalse(QgsFileUtils.copyDirectory(missing_dir, dest_missing))
+
+            # copy whole folder:
+            dest_basic = os.path.join(temp_dir, "nested_folder", "dest_basic")
+            self.assertTrue(QgsFileUtils.copyDirectory(src_dir, dest_basic))
+            self.assertTrue(os.path.exists(os.path.join(dest_basic, "file1.txt")))
+            self.assertTrue(
+                os.path.exists(os.path.join(dest_basic, "exclude_file.dat"))
+            )
+            self.assertTrue(
+                os.path.exists(os.path.join(dest_basic, "sub_dir", "file2.txt"))
+            )
+            self.assertTrue(
+                os.path.exists(os.path.join(dest_basic, "exclude_dir", "file3.txt"))
+            )
+
+            # using exclude patterns:
+            dest_exclude = os.path.join(temp_dir, "dest_exclude")
+            self.assertTrue(
+                QgsFileUtils.copyDirectory(
+                    src_dir,
+                    dest_exclude,
+                    excludePatterns=[r".*\.dat$", ".*exclude_dir.*"],
+                )
+            )
+
+            self.assertTrue(os.path.exists(os.path.join(dest_exclude, "file1.txt")))
+            self.assertTrue(
+                os.path.exists(os.path.join(dest_exclude, "sub_dir", "file2.txt"))
+            )
+
+            self.assertFalse(
+                os.path.exists(os.path.join(dest_exclude, "exclude_file.dat"))
+            )
+            self.assertFalse(os.path.exists(os.path.join(dest_exclude, "exclude_dir")))
+            self.assertFalse(
+                os.path.exists(
+                    os.path.join(dest_exclude, "sub_dir", "exclude_sub_file.dat")
+                )
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -441,9 +441,9 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \see isGeosEqual()
+     * \deprecated QGIS 4.2. Will be removed in QGIS 5.0. Use isExactlyEqual which accepts Qgis::GeometryBackend.
      */
-    bool equals( const QgsGeometry &geometry ) const;
+    Q_DECL_DEPRECATED bool equals( const QgsGeometry &geometry ) const SIP_DEPRECATED;
 
     /**
      * Compares the geometry with another geometry using GEOS.
@@ -458,9 +458,67 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \see equals()
+     * \deprecated QGIS 4.2. Will be removed in QGIS 5.0. Use isTopologicallyEqual which accepts Qgis::GeometryBackend.
      */
-    bool isGeosEqual( const QgsGeometry & ) const;
+    Q_DECL_DEPRECATED bool isGeosEqual( const QgsGeometry & ) const SIP_DEPRECATED;
+
+    /**
+     * Compares the geometry with another geometry using the specified \a backend.
+     *
+     * This is a strict equality check, where the underlying geometries must have exactly the same type, component vertices and vertex order.
+     *
+     * Implementations:
+     *
+     * - GEOS
+     * - QGIS
+     *
+     * The QGIS internal implementation is chosen by default.
+     *
+     * \param geometry geometry to compare with
+     * \param backend backend implementation
+     * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
+     * \since QGIS 4.2
+     */
+    bool isExactlyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Compares the geometry with another geometry using the specified \a backend.
+     *
+     * This method performs a slow, topological check, where geometries are considered equal if all of the their component edges overlap. E.g. lines with the same vertex locations but opposite direction will be considered equal by this method.
+     *
+     * Implementations:
+     *
+     * - GEOS
+     *
+     * The GEOS implementation is chosen by default.
+     *
+     * \param geometry geometry to compare with
+     * \param backend backend implementation
+     * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
+     * \since QGIS 4.2
+     */
+    bool isTopologicallyEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::GEOS ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Compares the geometry with another geometry within the tolerance \a epsilon using the specified \a backend.
+     *
+     * Implementations:
+     *
+     * - GEOS
+     * - QGIS
+     *
+     * The QGIS internal implementation is chosen by default.
+     *
+     * \param geometry geometry to compare with
+     * \param epsilon maximum difference for coordinates between the objects
+     * \param backend backend implementation
+     * \note Comparing two null geometries will return FALSE.
+     * \throws QgsNotSupportedException when backend is not supported
+     * \since QGIS 4.2
+     */
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks validity of the geometry using GEOS.
@@ -1851,12 +1909,13 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * The optional \a feedback argument was added in QGIS 4.2 to support early cancellation.
      *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      *
      * \since QGIS 3.28
      */
-    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const SIP_THROW( QgsNotSupportedException );
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false, QgsFeedback * feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.

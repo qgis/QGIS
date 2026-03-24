@@ -40,7 +40,10 @@
 using namespace Qt::StringLiterals;
 
 class QgsFeedback;
+class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
 
 /**
  * \class QgsNetworkRequestParameters
@@ -765,6 +768,26 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     //! Settings entry network timeout
     static const QgsSettingsEntryInteger *settingsNetworkTimeout;
+    //! Settings entry for user agent string
+    static const QgsSettingsEntryString *settingsUserAgent;
+    //! Settings entry for whether proxy is enabled
+    static const QgsSettingsEntryBool *settingsProxyEnabled;
+    //! Settings entry for proxy host
+    static const QgsSettingsEntryString *settingsProxyHost;
+    //! Settings entry for proxy port
+    static const QgsSettingsEntryString *settingsProxyPort;
+    //! Settings entry for proxy user
+    static const QgsSettingsEntryString *settingsProxyUser;
+    //! Settings entry for proxy password
+    static const QgsSettingsEntryString *settingsProxyPassword;
+    //! Settings entry for proxy type
+    static const QgsSettingsEntryString *settingsProxyType;
+    //! Settings entry for proxy excluded URLs (legacy, falls back to system proxy for these)
+    static const QgsSettingsEntryString *settingsProxyExcludedUrls;
+    //! Settings entry for no-proxy URLs
+    static const QgsSettingsEntryStringList *settingsNoProxyUrls;
+    //! Settings entry for proxy authentication configuration
+    static const QgsSettingsEntryString *settingsProxyAuthCfg;
 #endif
 
     /**

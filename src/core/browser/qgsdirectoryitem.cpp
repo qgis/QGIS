@@ -24,6 +24,8 @@
 #include "qgsgdalutils.h"
 #include "qgsprojectitem.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgszipitem.h"
 
 #include <QAction>
@@ -37,6 +39,8 @@
 #include "moc_qgsdirectoryitem.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsDirectoryItem::settingsMonitorDirectoriesInBrowser = new QgsSettingsEntryBool( u"monitor-directories-in-browser"_s, QgsSettingsTree::sTreeQgis, true, QString() );
 
 //
 // QgsDirectoryItem
@@ -460,7 +464,7 @@ bool QgsDirectoryItem::pathShouldByMonitoredByDefault( const QString &path )
 
   // paths are monitored by default if no explicit setting is in place, and the user hasn't
   // completely opted out of all browser monitoring
-  return QgsSettings().value( u"/qgis/monitorDirectoriesInBrowser"_s, true ).toBool();
+  return settingsMonitorDirectoriesInBrowser->value();
 }
 
 void QgsDirectoryItem::childrenCreated()

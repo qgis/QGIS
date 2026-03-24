@@ -84,6 +84,7 @@ using namespace Qt::StringLiterals;
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
@@ -13422,6 +13423,14 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   widget->setMainCanvas( mMapCanvas );
   widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
+  for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+  {
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+    profileWidget->updateCurveIn3D();
+  }
+
   return widget;
 #else
   Q_UNUSED( name );
@@ -13460,6 +13469,16 @@ QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *p
   QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile, mMapCanvas );
 
   connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] { mElevationProfileWidgets.remove( widget ); } );
+
+#ifdef HAVE_3D
+  // Connect the new elevation profile widget's signals to all open 3D map views
+  for ( Qgs3DMapCanvasWidget *canvasWidget : std::as_const( mOpen3DMapViews ) )
+  {
+    connect( widget, &QgsElevationProfileWidget::profileDataChanged, canvasWidget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileDataRemoved, canvasWidget, &Qgs3DMapCanvasWidget::removeProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileCursorMoved, canvasWidget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+  }
+#endif
 
   mElevationProfileWidgets.insert( widget );
 
@@ -16970,8 +16989,7 @@ void QgisApp::namSetup()
 
 void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth )
 {
-  QgsSettings settings;
-  if ( !settings.value( u"proxy/proxyEnabled"_s, false ).toBool() || settings.value( u"proxy/proxyType"_s, "" ).toString() == "DefaultProxy"_L1 )
+  if ( !QgsNetworkAccessManager::settingsProxyEnabled->value() || QgsNetworkAccessManager::settingsProxyType->value() == "DefaultProxy"_L1 )
   {
     auth->setUser( QString() );
     return;

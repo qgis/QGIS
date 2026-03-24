@@ -545,7 +545,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
 
 int QgsFileUtils::openedFileLimit()
 {
-#ifdef Q_OS_UNIX
+#if defined( Q_OS_UNIX ) && !defined( __EMSCRIPTEN__ )
   struct rlimit rescLimit;
   if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
   {
@@ -635,7 +635,7 @@ QString QgsFileUtils::uniquePath( const QString &path )
   return uniquePath;
 }
 
-bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination, CopyFlags flags )
+bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination, CopyFlags flags, const QStringList &excludePatterns )
 {
   QDir sourceDir( source );
   if ( !sourceDir.exists() )
@@ -647,11 +647,18 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   QDir destDir( destination );
   if ( !destDir.exists() )
   {
-    if ( !destDir.mkdir( destination ) )
+    if ( !destDir.mkpath( destination ) )
     {
       QgsDebugError( u"Cannot copy %1 to %2, could not make target directory"_s.arg( source, destination ) );
       return false;
     }
+  }
+
+  QVector< QRegularExpression > excludeRegExs;
+  excludeRegExs.reserve( excludePatterns.size() );
+  for ( const QString &pattern : excludePatterns )
+  {
+    excludeRegExs.append( QRegularExpression( pattern ) );
   }
 
   bool copiedAll = true;
@@ -665,6 +672,23 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   for ( const QString &file : files )
   {
     const QString srcFileName = sourceDir.filePath( file );
+
+    bool skip = false;
+    for ( const QRegularExpression &excludeRegEx : std::as_const( excludeRegExs ) )
+    {
+      const QRegularExpressionMatch match = excludeRegEx.match( srcFileName );
+      if ( match.hasMatch() )
+      {
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcFileName, excludeRegEx.pattern() ), 2 );
+        skip = true;
+        break;
+      }
+    }
+    if ( skip )
+    {
+      continue;
+    }
+
     const QString destFileName = destDir.filePath( file );
     if ( !QFile::copy( srcFileName, destFileName ) )
     {
@@ -682,8 +706,25 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   for ( const QString &dir : dirs )
   {
     const QString srcDirName = sourceDir.filePath( dir );
+
+    bool skip = false;
+    for ( const QRegularExpression &excludeRegEx : std::as_const( excludeRegExs ) )
+    {
+      const QRegularExpressionMatch match = excludeRegEx.match( srcDirName );
+      if ( match.hasMatch() )
+      {
+        QgsDebugMsgLevel( u"Skipping %1, matches exclusion pattern %2"_s.arg( srcDirName, excludeRegEx.pattern() ), 2 );
+        skip = true;
+        break;
+      }
+    }
+    if ( skip )
+    {
+      continue;
+    }
+
     const QString destDirName = destDir.filePath( dir );
-    if ( !copyDirectory( srcDirName, destDirName, flags ) )
+    if ( !copyDirectory( srcDirName, destDirName, flags, excludePatterns ) )
     {
       copiedAll = false;
     }

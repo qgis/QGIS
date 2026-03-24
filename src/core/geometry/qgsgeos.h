@@ -69,6 +69,42 @@ class CORE_EXPORT QgsGeosContext
 };
 
 /**
+ * \ingroup core
+ *
+ * \brief Scoped object for setting the current thread GEOS context feedback object.
+ *
+ * Temporarily overrides the current thread GEOS context feedback object, resetting it to NULLPTR on destruction.
+ *
+ * \note Not available in Python bindings
+ * \note Requires GEOS 3.14 or later. On earlier GEOS versions this has no effect.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsScopedGeosContextRegisterFeedback
+{
+  public:
+    /**
+   * Registers a \a feedback object for GEOS interruption checking.
+   *
+   * Applies to the current thread only.
+   *
+   * The \a feedback object must exist for the lifetime of this object.
+   */
+    QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback );
+
+    /**
+   * Resets the GEOS interruption checker for the current thread.
+   */
+    ~QgsScopedGeosContextRegisterFeedback();
+
+  private:
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+    static int callback( void *userData );
+    QgsFeedback *mFeedback = nullptr;
+#endif
+};
+
+/**
  * Contains geos related utilities and functions.
  * \note not available in Python bindings.
  */
@@ -382,7 +418,10 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
     bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
+
     bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr ) const override;
+
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
@@ -762,6 +801,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \param targetPercent
      * \param allowHoles
      * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \returns concave geometry that encloses the input geometry
      *
@@ -769,7 +809,9 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \see convexHull()
      * \since QGIS 3.28
      */
-    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge

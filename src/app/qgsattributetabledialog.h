@@ -255,6 +255,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QAction *mActionDockUndock = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
 
+    // For testability
+    void addAttribute( const QgsField &field );
+    void removeAttributes( const QList<int> &attributes );
+
     friend class TestQgsAttributeTable;
 };
 

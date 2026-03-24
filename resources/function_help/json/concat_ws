@@ -2,11 +2,11 @@
   "name": "concat_ws",
   "type": "function",
   "groups": ["String"],
-  "description": "Concatenate all but first arguments with separators into a single string. The first parameter is used as a separator. NULL arguments are ignored.",
+  "description": "Concatenates all but first arguments with separators into a single string. The first parameter is used as a separator. NULL arguments are ignored.",
   "variableLenArguments": true,
   "arguments": [{
     "arg": "separator",
-    "description": "seperator to use when concatenating non-null values"
+    "description": "separator to use when concatenating non-null values"
   }, {
     "arg": "string",
     "syntaxOnly": true
