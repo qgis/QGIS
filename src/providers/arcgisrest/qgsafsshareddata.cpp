@@ -38,13 +38,13 @@ using namespace Qt::StringLiterals;
 long long QgsAfsSharedData::objectIdCount() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mObjectIds.size();
+  return mFeatureIdsToObjectIds.size();
 }
 
 long long QgsAfsSharedData::featureCount() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mObjectIds.size() - mDeletedFeatureIds.size();
+  return mFeatureIdsToObjectIds.size() - mDeletedFeatureIds.size();
 }
 
 QgsRectangle QgsAfsSharedData::extent() const
@@ -70,7 +70,7 @@ std::shared_ptr<QgsAfsSharedData> QgsAfsSharedData::clone() const
   copy->mMaximumFetchObjectsCount = mMaximumFetchObjectsCount;
   copy->mObjectIdFieldName = mObjectIdFieldName;
   copy->mObjectIdFieldIdx = mObjectIdFieldIdx;
-  copy->mObjectIds = mObjectIds;
+  copy->mFeatureIdsToObjectIds = mFeatureIdsToObjectIds;
   copy->mObjectIdToFeatureId = mObjectIdToFeatureId;
   copy->mDeletedFeatureIds = mDeletedFeatureIds;
   copy->mCache = mCache;
@@ -96,7 +96,7 @@ void QgsAfsSharedData::clearCache()
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
 
   mCache.clear();
-  mObjectIds.clear();
+  mFeatureIdsToObjectIds.clear();
   mObjectIdToFeatureId.clear();
   mDeletedFeatureIds.clear();
   QString error;
@@ -143,13 +143,13 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     }
   }
   const QVariantList objectIds = objectIdData.value( u"objectIds"_s ).toList();
-  mObjectIds.reserve( mObjectIds.size() + objectIds.size() );
+  mFeatureIdsToObjectIds.reserve( mFeatureIdsToObjectIds.size() + objectIds.size() );
   mObjectIdToFeatureId.reserve( mObjectIdToFeatureId.size() + objectIds.size() );
   for ( const QVariant &objectId : objectIds )
   {
     const int objectIdInt = objectId.toInt();
-    mObjectIdToFeatureId.insert( objectIdInt, mObjectIds.size() );
-    mObjectIds.append( objectIdInt );
+    mObjectIdToFeatureId.insert( objectIdInt, mFeatureIdsToObjectIds.size() );
+    mFeatureIdsToObjectIds.append( objectIdInt );
   }
   return true;
 }
@@ -157,7 +157,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
 quint32 QgsAfsSharedData::featureIdToObjectId( QgsFeatureId id )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mObjectIds.value( id, -1 );
+  return mFeatureIdsToObjectIds.value( id, -1 );
 }
 
 QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid ) const
@@ -343,7 +343,7 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error,
   QStringList stringIds;
   for ( const QgsFeatureId id : ids )
   {
-    stringIds.append( QString::number( mObjectIds[id] ) );
+    stringIds.append( QString::number( mFeatureIdsToObjectIds[id] ) );
   }
   locker.unlock();
 
@@ -417,10 +417,10 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
     const QVariantMap resultMap = result.toMap();
     const long long objectId = resultMap.value( u"objectId"_s ).toLongLong();
 
-    const QgsFeatureId newId = mObjectIds.size();
+    const QgsFeatureId newId = mFeatureIdsToObjectIds.size();
     features[i].setId( newId );
     mObjectIdToFeatureId.insert( objectId, newId );
-    mObjectIds.append( objectId );
+    mFeatureIdsToObjectIds.append( objectId );
 
     i++;
   }

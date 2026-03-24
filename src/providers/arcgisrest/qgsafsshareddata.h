@@ -91,7 +91,9 @@ class QgsAfsSharedData
     QString mObjectIdFieldName;
     int mObjectIdFieldIdx = -1;
 
-    QList<quint32> mObjectIds;
+    // list index is feature id, value is object ID
+    QList<quint32> mFeatureIdsToObjectIds;
+    // hash key is object ID, value is feature ID
     QHash<quint32, QgsFeatureId> mObjectIdToFeatureId;
 
     QSet<QgsFeatureId> mDeletedFeatureIds;
