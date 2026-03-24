@@ -61,10 +61,11 @@ class QgsAfsSharedData
      *
      * \param id target feature ID
      * \param f feature to be populated
+     * \param pendingFeatureIds optional list of other features which are desirable to request in a batch operation, if a network request is required to fetch the target feature.
      * \param feedback
      * \returns TRUE if matching feature was retrieved
      */
-    bool getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback = nullptr );
+    bool getFeature( QgsFeatureId id, QgsFeature &f, const QList<QgsFeatureId> &pendingFeatureIds = QList< QgsFeatureId >(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
     bool deleteFeatures( const QgsFeatureIds &id, QString &error, QgsFeedback *feedback );
