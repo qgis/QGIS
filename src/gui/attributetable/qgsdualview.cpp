@@ -23,6 +23,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturelistmodel.h"
+#include "qgsfieldcalculator.h"
 #include "qgsfieldconditionalformatwidget.h"
 #include "qgsgui.h"
 #include "qgsifeatureselectionmanager.h"
@@ -39,6 +40,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -1019,6 +1021,56 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( sort, &QAction::triggered, this, [this]() { modifySort(); } );
   mHorizontalHeaderMenu->addAction( sort );
 
+  mConfig.update( mLayer->fields() );
+  // get layer field index from column name
+  int fieldIndex = -1;
+  if ( col != -1 )
+    fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
+  const Qgis::FieldOrigin fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+
+  mHorizontalHeaderMenu->addSeparator();
+
+  const QgsVectorLayer *vl = mFilterModel->layer();
+  const QgsVectorDataProvider *dataProvider = vl->dataProvider();
+  const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
+  const bool layerIsReadOnly { vl->readOnly() };
+  const bool canChangeAttributeValue = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+
+  bool fieldCalculatorEnabled = false;
+
+  switch ( fieldOrigin )
+  {
+    case Qgis::FieldOrigin::Provider:
+    case Qgis::FieldOrigin::Edit:
+      fieldCalculatorEnabled = canChangeAttributeValue;
+      break;
+    case Qgis::FieldOrigin::Join:
+    {
+      int srcFieldIndex;
+      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+      const QgsVectorLayer *joinedLayer = info->joinLayer();
+      const QgsVectorDataProvider *joinedDataProvider = joinedLayer->dataProvider();
+      const Qgis::VectorProviderCapabilities joinedCaps = joinedDataProvider->capabilities();
+      const bool joinedLayerIsReadOnly { joinedLayer->readOnly() };
+      const bool joinedLayerCanChangeAttributeValue = !joinedLayerIsReadOnly && ( joinedCaps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+      if ( info && info->isEditable() )
+        fieldCalculatorEnabled = joinedLayerCanChangeAttributeValue;
+      break;
+    }
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Expression:
+      break;
+    default:
+      break;
+  }
+
+  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
+  connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
+  fieldCalculator->setData( fieldIndex );
+  mHorizontalHeaderMenu->addAction( fieldCalculator );
+
+  fieldCalculator->setEnabled( fieldCalculatorEnabled );
+
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
 }
 
@@ -1058,6 +1110,21 @@ void QgsDualView::hideColumn()
   {
     config.setColumnHidden( sourceCol, true );
     setAttributeTableConfig( config );
+  }
+}
+
+void QgsDualView::fieldCalculator()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  const int fieldIndex = action->data().toInt();
+  mConfig.update( mLayer->fields() );
+  QgsFieldCalculator calc( mLayer, this, fieldIndex );
+  if ( calc.exec() == QDialog::Accepted )
+  {
+    int col = mMasterModel->fieldCol( calc.changedAttributeId() );
+
+    if ( col >= 0 )
+      mMasterModel->reload( mMasterModel->index( 0, col ), mMasterModel->index( mMasterModel->rowCount() - 1, col ) );
   }
 }
 
