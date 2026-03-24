@@ -597,30 +597,47 @@ class TestQgsLineString(QgisTestCase):
 
     def test_extend_stacked_vertices(self):
         """
-        Test extend method with stacked vertices - should raise exception instead of producing NaN.
+        Test extend method with stacked vertices - follows PostGIS ST_LineExtend behavior.
+        New vertices are prepended/appended, preserving all existing vertices.
         Addresses issue #62473
         """
 
         linestring = QgsLineString([4, 4, 5, 5], [0, 0, 0, 0])
-        with self.assertRaises(QgsException):
-            linestring.extend(1, 1)
+        linestring.extend(1, 1)
+        self.assertEqual(linestring.numPoints(), 6)
+        self.assertEqual(linestring.pointN(0), QgsPoint(3, 0))
+        self.assertEqual(linestring.pointN(1), QgsPoint(4, 0))
+        self.assertEqual(linestring.pointN(2), QgsPoint(4, 0))
+        self.assertEqual(linestring.pointN(3), QgsPoint(5, 0))
+        self.assertEqual(linestring.pointN(4), QgsPoint(5, 0))
+        self.assertEqual(linestring.pointN(5), QgsPoint(6, 0))
 
-        geom = QgsGeometry.fromWkt("LineString (4 0, 4 0, 5 0, 5 0)")
-        with self.assertRaises(QgsException):
-            geom.extendLine(1, 1)
-
+        # Test stacked vertices at start
         linestring_start = QgsLineString([4, 4, 5], [0, 0, 0])
-        with self.assertRaises(QgsException):
-            linestring_start.extend(1, 0)
+        linestring_start.extend(1, 0)
+        self.assertEqual(linestring_start.numPoints(), 4)
+        self.assertEqual(linestring_start.pointN(0), QgsPoint(3, 0))
+        self.assertEqual(linestring_start.pointN(1), QgsPoint(4, 0))
+        self.assertEqual(linestring_start.pointN(2), QgsPoint(4, 0))
+        self.assertEqual(linestring_start.pointN(3), QgsPoint(5, 0))
 
+        # Test stacked vertices at end
         linestring_end = QgsLineString([4, 5, 5], [0, 0, 0])
-        with self.assertRaises(QgsException):
-            linestring_end.extend(0, 1)
+        linestring_end.extend(0, 1)
+        self.assertEqual(linestring_end.numPoints(), 4)
+        self.assertEqual(linestring_end.pointN(0), QgsPoint(4, 0))
+        self.assertEqual(linestring_end.pointN(1), QgsPoint(5, 0))
+        self.assertEqual(linestring_end.pointN(2), QgsPoint(5, 0))
+        self.assertEqual(linestring_end.pointN(3), QgsPoint(6, 0))
 
         linestring_normal = QgsLineString([0, 1, 1], [0, 0, 1])
         linestring_normal.extend(1, 2)
+        self.assertEqual(linestring_normal.numPoints(), 5)
         self.assertEqual(linestring_normal.pointN(0), QgsPoint(-1, 0))
-        self.assertEqual(linestring_normal.pointN(2), QgsPoint(1, 3))
+        self.assertEqual(linestring_normal.pointN(1), QgsPoint(0, 0))
+        self.assertEqual(linestring_normal.pointN(2), QgsPoint(1, 0))
+        self.assertEqual(linestring_normal.pointN(3), QgsPoint(1, 1))
+        self.assertEqual(linestring_normal.pointN(4), QgsPoint(1, 3))
 
 
 if __name__ == "__main__":
