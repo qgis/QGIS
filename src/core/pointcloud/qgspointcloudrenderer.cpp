@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgscircle.h"
 #include "qgselevationmap.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
@@ -93,7 +94,9 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
-  return QSet< QString >();
+  QSet<QString> res;
+  res.unite( mExpression.referencedVariables() );
+  return res;
 }
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare()
@@ -126,6 +129,14 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
     case Qgis::PointCloudSymbol::Circle:
       break;
   }
+
+  mExpression = QgsExpression( mExpressionString );
+  if ( mExpression.hasParserError() )
+    return;
+
+  mExpressionContext = QgsExpressionContext();
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  mExpressionContext << scope;
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
@@ -314,6 +325,11 @@ Qgis::PointCloudDrawOrder QgsPointCloudRenderer::drawOrder2d() const
 void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order )
 {
   mDrawOrder2d = order;
+}
+
+void QgsPointCloudRenderer::setExpressionString( const QString &expression )
+{
+  mExpressionString = expression;
 }
 
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )

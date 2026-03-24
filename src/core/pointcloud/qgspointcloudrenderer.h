@@ -848,6 +848,34 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Computes color from the expression set, uses expression referenced variables and renderer base color.
+     *
+     * \since QGIS 4.0
+     */
+    QColor colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
+
+    /**
+     * Sets scope variable values to the point attributes used in the expression as well as the base renderer color.
+     *
+     * \since QGIS 4.0
+     */
+    void createPointExpressionContext( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
+
+    /**
+     * Calculates color from the expression result.
+     *
+     * \since QGIS 4.0
+     */
+    QColor colorFromExpressionResult( const QVariant &result ) const;
+
+    /**
+     * Returns whether the expression set is valid.
+     *
+     * \since QGIS 4.0
+     */
+    bool expressionIsValid() const { return mExpression.isValid(); }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
