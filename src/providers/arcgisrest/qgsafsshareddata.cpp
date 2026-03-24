@@ -181,7 +181,7 @@ QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid )
   return mObjectIdToFeatureId.value( oid, -1 );
 }
 
-bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
+bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   Q_ASSERT( mHasFetchedObjectIds );
@@ -191,7 +191,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   if ( it != mCache.constEnd() )
   {
     f = it.value();
-    return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+    return true;
   }
 
   const QString authcfg = mDataSource.authConfigId();
@@ -231,7 +231,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       QStringList(),
       QgsWkbTypes::hasM( mGeometryType ),
       QgsWkbTypes::hasZ( mGeometryType ),
-      filterRect,
       errorTitle,
       errorMessage,
       mDataSource.httpHeaders(),
@@ -326,7 +325,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   if ( it != mCache.constEnd() )
   {
     f = it.value();
-    return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+    return true;
   }
 
   return false;
