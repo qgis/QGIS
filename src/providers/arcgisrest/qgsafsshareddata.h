@@ -34,11 +34,14 @@ class QgsAfsSharedData
   public:
     QgsAfsSharedData( const QgsDataSourceUri &uri );
 
+    bool ensureObjectIdsFetched( QString &errorMessage );
+
     //! Creates a deep copy of this shared data
     std::shared_ptr<QgsAfsSharedData> clone() const;
 
+    // ensureObjectIdsFetched MUST have been called!
     long long objectIdCount() const;
-    long long featureCount() const;
+    long long featureCount( QString &errorMessage );
     bool isDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const;
@@ -51,12 +54,14 @@ class QgsAfsSharedData
 
     bool getObjectIds( QString &errorMessage );
 
-    quint32 featureIdToObjectId( QgsFeatureId id );
+    quint32 featureIdToObjectId( QgsFeatureId id, QString &error );
 
-    // lock must already be obtained by caller!
-    QgsFeatureId objectIdToFeatureId( quint32 oid ) const;
+    // lock must already be obtained by caller, and ensureObjectIdsFetched MUST have been called!
+    QgsFeatureId objectIdToFeatureId( quint32 oid );
 
+    // ensureObjectIdsFetched MUST have been called!
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
+    // ensureObjectIdsFetched MUST have been called!
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
     bool deleteFeatures( const QgsFeatureIds &id, QString &error, QgsFeedback *feedback );
@@ -66,7 +71,7 @@ class QgsAfsSharedData
     bool deleteFields( const QString &adminUrl, const QgsAttributeIds &attributes, QString &error, QgsFeedback *feedback );
     bool addAttributeIndex( const QString &adminUrl, int attribute, QString &error, QgsFeedback *feedback );
 
-    bool hasCachedAllFeatures() const;
+    bool hasCachedAllFeatures();
 
     int objectIdFieldIndex() const;
 
@@ -76,6 +81,7 @@ class QgsAfsSharedData
     friend class QgsAfsProvider;
     mutable QReadWriteLock mReadWriteLock { QReadWriteLock::Recursive };
     QgsDataSourceUri mDataSource;
+    bool mHasFetchedObjectIds = false;
     bool mLimitBBox = false;
     QgsRectangle mExtent;
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;

@@ -312,15 +312,6 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( profile )
     profile->switchTask( tr( "Retrieve object IDs" ) );
 
-  // Read OBJECTIDs of all features: these may not be a continuous sequence,
-  // and we need to store these to iterate through the features. This query
-  // also returns the name of the ObjectID field.
-  if ( !mSharedData->getObjectIds( errorMessage ) )
-  {
-    appendError( QgsErrorMessage( errorMessage, u"AFSProvider"_s ) );
-    return;
-  }
-
   // layer metadata
 
   mLayerMetadata.setIdentifier( mSharedData->mDataSource.param( u"url"_s ) );
@@ -368,7 +359,14 @@ Qgis::WkbType QgsAfsProvider::wkbType() const
 
 long long QgsAfsProvider::featureCount() const
 {
-  return mSharedData->featureCount();
+  QString error;
+  const long long result = mSharedData->featureCount( error );
+  if ( result < 0 )
+  {
+    pushError( error );
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+  }
+  return result;
 }
 
 QgsFields QgsAfsProvider::fields() const
@@ -498,7 +496,13 @@ bool QgsAfsProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
     QgsFeature feature( fields );
     feature.setId( id );
     // we ONLY require the objectId field set here
-    feature.setAttribute( objectIdFieldIndex, mSharedData->featureIdToObjectId( id ) );
+    QString error;
+    feature.setAttribute( objectIdFieldIndex, mSharedData->featureIdToObjectId( id, error ) );
+    if ( !error.isEmpty() )
+    {
+      pushError( tr( "Error while updating features: %1" ).arg( error ) );
+      return false;
+    }
     feature.setGeometry( it.value() );
 
     updatedFeatures.append( feature );
