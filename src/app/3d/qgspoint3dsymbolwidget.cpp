@@ -30,10 +30,18 @@
 
 using namespace Qt::StringLiterals;
 
-QString resolveAxisConflict( const QString &axisWithPossibleConflict, const QString &fixedAxis )
+QString resolveAxisConflict( const QString &axisWithPossibleConflict, const QString &fixedAxis, bool isUpFixed )
 {
   // mapping of original axis which clashes to suggested value, respecting right hand rule
-  static const QMap<QString, QString> rightHandRules = {
+  static const QMap<QString, QString> rightHandRulesUpFixed = {
+    { u"x"_s, u"z"_s },
+    { u"-x"_s, u"-z"_s },
+    { u"y"_s, u"x"_s },
+    { u"-y"_s, u"-x"_s },
+    { u"z"_s, u"y"_s },
+    { u"-z"_s, u"-y"_s },
+  };
+  static const QMap<QString, QString> rightHandRulesForwardFixed = {
     { u"x"_s, u"y"_s },
     { u"-x"_s, u"-y"_s },
     { u"y"_s, u"z"_s },
@@ -44,7 +52,7 @@ QString resolveAxisConflict( const QString &axisWithPossibleConflict, const QStr
 
   if ( fixedAxis.last( 1 ) == axisWithPossibleConflict.last( 1 ) )
   {
-    return rightHandRules.value( axisWithPossibleConflict );
+    return isUpFixed ? rightHandRulesUpFixed.value( axisWithPossibleConflict ) : rightHandRulesForwardFixed.value( axisWithPossibleConflict );
   }
   return QString();
 }
@@ -121,7 +129,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     // ensure up axis is different to forward axis
     const QString upAxis = mComboModelUpAxis->currentData().toString();
     const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
-    const QString resolvedAxisConflict = resolveAxisConflict( forwardAxis, upAxis );
+    const QString resolvedAxisConflict = resolveAxisConflict( forwardAxis, upAxis, true );
     if ( !resolvedAxisConflict.isEmpty() )
     {
       whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( resolvedAxisConflict ) );
@@ -133,7 +141,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     // ensure up axis is different to forward axis
     const QString upAxis = mComboModelUpAxis->currentData().toString();
     const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
-    const QString resolvedAxisConflict = resolveAxisConflict( upAxis, forwardAxis );
+    const QString resolvedAxisConflict = resolveAxisConflict( upAxis, forwardAxis, false );
     if ( !resolvedAxisConflict.isEmpty() )
     {
       whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( resolvedAxisConflict ) );
