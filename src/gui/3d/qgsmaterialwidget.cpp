@@ -216,3 +216,8 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()
 {
   return mWidget->settings();
 }
+
+QDialogButtonBox *QgsMaterialWidgetDialog::buttonBox()
+{
+  return mButtonBox;
+}

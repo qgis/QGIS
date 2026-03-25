@@ -145,9 +145,14 @@ class GUI_EXPORT QgsMaterialWidgetDialog : public QDialog
     QgsMaterialWidgetDialog( const QgsAbstractMaterialSettings *settings, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-   * Returns the current settings defined by the dialog.
-   */
+    * Returns the current settings defined by the dialog.
+    */
     std::unique_ptr< QgsAbstractMaterialSettings > settings();
+
+    /**
+     * Returns the dialog's button box.
+     */
+    QDialogButtonBox *buttonBox();
 
   private:
     QgsMaterialWidget *mWidget = nullptr;

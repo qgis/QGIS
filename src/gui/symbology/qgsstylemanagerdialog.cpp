@@ -18,6 +18,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgscolorbrewercolorrampdialog.h"
 #include "qgscolorramp.h"
@@ -32,6 +33,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmaterialwidget.h"
 #include "qgsmessagebar.h"
 #include "qgspresetcolorrampdialog.h"
 #include "qgsproject.h"
@@ -378,6 +380,11 @@ void QgsStyleManagerDialog::init()
   mMenuBtnAddItemLegendPatchShape->addAction( item );
 
   mMenuBtnAddItemAll->addSeparator();
+  item = new QAction( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "Material…" ), this );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addMaterialSettings(); } );
+  mMenuBtnAddItemAll->addAction( item );
+
+  mMenuBtnAddItemAll->addSeparator();
   item = new QAction( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "3D Point Symbol…" ), this );
   connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol3D( u"point"_s ); } );
   mMenuBtnAddItemAll->addAction( item );
@@ -612,19 +619,21 @@ void QgsStyleManagerDialog::populateTypes()
 void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
-  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4 && currentItemType() != 5 && currentItemType() != 6 && currentItemType() != 7;
+  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4 && currentItemType() != 5 && currentItemType() != 6 && currentItemType() != 7 && currentItemType() != 8;
   const bool isColorRamp = currentItemType() == 3;
   const bool isTextFormat = currentItemType() == 4;
   const bool isLabelSettings = currentItemType() == 5;
   const bool isLegendPatchShape = currentItemType() == 6;
   const bool isSymbol3D = currentItemType() == 7;
+  const bool isMaterialSettings = currentItemType() == 8;
   searchBox->setPlaceholderText(
     isSymbol             ? tr( "Filter symbols…" )
     : isColorRamp        ? tr( "Filter color ramps…" )
     : isTextFormat       ? tr( "Filter text symbols…" )
     : isLabelSettings    ? tr( "Filter label settings…" )
     : isLegendPatchShape ? tr( "Filter legend patch shapes…" )
-                         : tr( "Filter 3D symbols…" )
+    : isSymbol3D         ? tr( "Filter 3D symbols…" )
+                         : tr( "Filter materials…" )
   );
 
   const bool readOnly = isReadOnly();
@@ -636,9 +645,13 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   {
     btnAddItem->setMenu( mMenuBtnAddItemLegendPatchShape );
   }
-  else if ( !readOnly && isSymbol3D ) // legend patch shape tab
+  else if ( !readOnly && isSymbol3D ) // 3d symbol tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemSymbol3D );
+  }
+  else if ( !readOnly && isMaterialSettings ) //  material settings tab
+  {
+    btnAddItem->setMenu( nullptr );
   }
   else if ( !readOnly && isLabelSettings ) // label settings tab
   {
@@ -668,7 +681,8 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
                    : isTextFormat       ? QgsStyle::TextFormatEntity
                    : isLabelSettings    ? QgsStyle::LabelSettingsEntity
                    : isLegendPatchShape ? QgsStyle::LegendPatchShapeEntity
-                                        : QgsStyle::Symbol3DEntity )
+                   : isSymbol3D         ? QgsStyle::Symbol3DEntity
+                                        : QgsStyle::MaterialSettingsEntity )
     );
     mModel->setEntityFilterEnabled( !allTypesSelected() );
     mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
@@ -749,6 +763,7 @@ void QgsStyleManagerDialog::copyItem()
     case QgsStyle::Symbol3DEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+    case QgsStyle::MaterialSettingsEntity:
       return;
   }
 }
@@ -873,6 +888,8 @@ int QgsStyleManagerDialog::selectedItemType()
     return 6;
   else if ( entity == QgsStyle::Symbol3DEntity )
     return 7;
+  else if ( entity == QgsStyle::MaterialSettingsEntity )
+    return 8;
 
   return mModel->data( index, static_cast<int>( QgsStyleModel::CustomRole::SymbolType ) ).toInt();
 }
@@ -929,6 +946,7 @@ int QgsStyleManagerDialog::copyItems(
   const QStringList favoriteLabelSettings = src->symbolsOfFavorite( QgsStyle::LabelSettingsEntity );
   const QStringList favoriteLegendPatchShapes = src->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
   const QStringList favorite3dSymbols = src->symbolsOfFavorite( QgsStyle::Symbol3DEntity );
+  const QStringList favoriteMaterialSettings = src->symbolsOfFavorite( QgsStyle::MaterialSettingsEntity );
 
   for ( auto &details : items )
   {
@@ -989,6 +1007,8 @@ int QgsStyleManagerDialog::copyItems(
               prompt = false;
               overwriteAll = false;
               break;
+            default:
+              break;
           }
         }
 
@@ -1044,6 +1064,8 @@ int QgsStyleManagerDialog::copyItems(
               prompt = false;
               overwriteAll = false;
               break;
+            default:
+              break;
           }
         }
 
@@ -1097,6 +1119,9 @@ int QgsStyleManagerDialog::copyItems(
               prompt = false;
               overwriteAll = false;
               break;
+
+            default:
+              break;
           }
         }
 
@@ -1149,6 +1174,9 @@ int QgsStyleManagerDialog::copyItems(
               prompt = false;
               overwriteAll = false;
               break;
+
+            default:
+              break;
           }
         }
 
@@ -1200,6 +1228,9 @@ int QgsStyleManagerDialog::copyItems(
             case QMessageBox::NoToAll:
               prompt = false;
               overwriteAll = false;
+              break;
+
+            default:
               break;
           }
         }
@@ -1255,6 +1286,9 @@ int QgsStyleManagerDialog::copyItems(
               prompt = false;
               overwriteAll = false;
               break;
+
+            default:
+              break;
           }
         }
 
@@ -1263,6 +1297,64 @@ int QgsStyleManagerDialog::copyItems(
           QgsAbstract3DSymbol *newSymbol = symbol.get();
           dst->addSymbol3D( details.name, symbol.release() );
           dst->saveSymbol3D( details.name, newSymbol, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
+      case QgsStyle::MaterialSettingsEntity:
+      {
+        std::unique_ptr<QgsAbstractMaterialSettings > settings( src->materialSettings( details.name ) );
+        if ( !settings )
+          continue;
+
+        const bool hasDuplicateName = dst->materialSettingsNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteMaterialSettings.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning(
+            parentWidget,
+            isImport ? tr( "Import Material" ) : tr( "Export Material" ),
+            tr( "A material with the name “%1” already exists.\nOverwrite?" ).arg( details.name ),
+            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel
+          );
+          cursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+
+            default:
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          QgsAbstractMaterialSettings *newSettings = settings.get();
+          dst->addMaterialSettings( details.name, settings.release() );
+          dst->saveMaterialSettings( details.name, newSettings, addItemToFavorites, symbolTags );
           count++;
         }
         break;
@@ -1366,6 +1458,8 @@ int QgsStyleManagerDialog::currentItemType()
     case 7:
       return 6;
     case 8:
+      return 8;
+    case 9:
       return 7;
     default:
       return 0;
@@ -1410,6 +1504,10 @@ void QgsStyleManagerDialog::addItem()
   {
     // actually never hit, because we present a submenu when adding 3d symbols
     // changed = addSymbol3D();
+  }
+  else if ( currentItemType() == 8 )
+  {
+    changed = addMaterialSettings();
   }
   else
   {
@@ -1728,6 +1826,10 @@ void QgsStyleManagerDialog::editItem()
   else if ( selectedItemType() == 7 )
   {
     editSymbol3D();
+  }
+  else if ( selectedItemType() == 8 )
+  {
+    editMaterialSettings();
   }
   else
   {
@@ -2149,6 +2251,98 @@ bool QgsStyleManagerDialog::editSymbol3D()
   return true;
 }
 
+bool QgsStyleManagerDialog::addMaterialSettings()
+{
+  QgsMaterialWidgetDialog dialog( nullptr, this );
+  dialog.setWindowTitle( tr( "New Material" ) );
+  if ( isReadOnly() )
+    dialog.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  if ( !dialog.exec() )
+    return false;
+
+  std::unique_ptr< QgsAbstractMaterialSettings > settings = dialog.settings();
+  if ( !settings )
+    return false;
+
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::MaterialSettingsEntity );
+  const QString defaultTag = groupTree->currentIndex().isValid() ? groupTree->currentIndex().data( GroupModelRoles::TagName ).toString() : QString();
+  saveDlg.setDefaultTags( defaultTag );
+  if ( !saveDlg.exec() )
+    return false;
+  QString name = saveDlg.name();
+
+  // request valid/unique name
+  bool nameInvalid = true;
+  while ( nameInvalid )
+  {
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Save Material" ), tr( "Cannot save materials without a name. Enter a name." ) );
+    }
+    else if ( mStyle->materialSettingsNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Save Material" ), tr( "A material with the name '%1' already exists. Overwrite?" ).arg( name ), QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        mStyle->removeEntityByName( QgsStyle::MaterialSettingsEntity, name );
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
+    }
+    if ( nameInvalid )
+    {
+      bool ok;
+      name = QInputDialog::getText( this, tr( "Material Name" ), tr( "Please enter a name for the new material:" ), QLineEdit::Normal, name, &ok );
+      if ( !ok )
+      {
+        return false;
+      }
+    }
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new material to style and re-populate the list
+  QgsAbstractMaterialSettings *newSettings = settings.get();
+  mStyle->addMaterialSettings( name, settings.release() );
+  mStyle->saveMaterialSettings( name, newSettings, saveDlg.isFavorite(), symbolTags );
+
+  mModified = true;
+  return true;
+}
+
+bool QgsStyleManagerDialog::editMaterialSettings()
+{
+  const QString settingsName = currentItemName();
+  if ( settingsName.isEmpty() )
+    return false;
+
+  std::unique_ptr<QgsAbstractMaterialSettings> settings( mStyle->materialSettings( settingsName ) );
+  if ( !settings )
+    return false;
+
+  // let the user edit the settings and update list when done
+  QgsMaterialWidgetDialog dlg( settings.get(), this );
+  dlg.setWindowTitle( settingsName );
+  if ( !dlg.exec() )
+    return false;
+
+  settings = dlg.settings();
+  if ( !settings )
+    return false;
+
+  // by adding the setting to style with the same name the old effectively gets overwritten
+  mStyle->addMaterialSettings( settingsName, settings.release(), true );
+  mModified = true;
+  return true;
+}
+
 void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
 {
   QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder->value();
@@ -2229,6 +2423,12 @@ void QgsStyleManagerDialog::removeItem()
     {
       if ( QMessageBox::Yes
            != QMessageBox::question( this, tr( "Remove 3D Symbols" ), QString( tr( "Do you really want to remove %n 3D symbol(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+        return;
+    }
+    else if ( currentItemType() == 8 )
+    {
+      if ( QMessageBox::Yes
+           != QMessageBox::question( this, tr( "Remove Material" ), QString( tr( "Do you really want to remove %n material(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
   }
