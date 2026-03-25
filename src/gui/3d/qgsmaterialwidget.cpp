@@ -37,17 +37,23 @@ using namespace Qt::StringLiterals;
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-  , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {
   setupUi( this );
 
   const QStringList materialTypes = QgsApplication::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
+    if ( type == "null"_L1 )
+      continue;
+
     mMaterialTypeComboBox->addItem( QgsApplication::materialRegistry()->materialSettingsMetadata( type )->icon(), QgsApplication::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
+  mMaterialTypeComboBox->setCurrentIndex( -1 );
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
+  materialTypeChanged();
+
+  setSettings( new QgsPhongMaterialSettings(), nullptr );
 }
 
 void QgsMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
@@ -67,6 +73,9 @@ void QgsMaterialWidget::rebuildAvailableTypes()
   {
     if ( mFilterByTechnique && !QgsApplication::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( mTechnique ) )
       continue;
+
+    else if ( type == "null"_L1 && !mFilterByTechnique )
+      continue; // don't expose null as an option if we're showing in a generic mode
 
     mMaterialTypeComboBox->addItem( QgsApplication::materialRegistry()->materialSettingsMetadata( type )->icon(), QgsApplication::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
@@ -109,7 +118,7 @@ void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings
 
 std::unique_ptr< QgsAbstractMaterialSettings > QgsMaterialWidget::settings()
 {
-  return std::unique_ptr< QgsAbstractMaterialSettings >( mCurrentSettings->clone() );
+  return mCurrentSettings ? std::unique_ptr< QgsAbstractMaterialSettings >( mCurrentSettings->clone() ) : nullptr;
 }
 
 void QgsMaterialWidget::setType( const QString &type )
