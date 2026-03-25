@@ -34,7 +34,8 @@ using namespace Qt::StringLiterals;
 
 const double ICON_PADDING_FACTOR = 0.16;
 
-const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity, QgsStyle::Symbol3DEntity };
+const auto ENTITIES
+  = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity, QgsStyle::Symbol3DEntity, QgsStyle::MaterialSettingsEntity };
 
 QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
 
@@ -231,6 +232,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               case QgsStyle::TagEntity:
               case QgsStyle::SmartgroupEntity:
               case QgsStyle::Symbol3DEntity:
+              case QgsStyle::MaterialSettingsEntity:
                 break;
             }
             return tooltip;
@@ -387,6 +389,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             }
 
             case QgsStyle::Symbol3DEntity:
+            case QgsStyle::MaterialSettingsEntity:
             {
               // hack for now -- we just use a generic "3d icon" svg file.
               // TODO - render proper thumbnails
@@ -396,10 +399,21 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               if ( !icon.isNull() )
                 return icon;
 
-              if ( sIconGenerator && !mPending3dSymbolIcons.contains( name ) )
+              if ( entityType == QgsStyle::Symbol3DEntity )
               {
-                mPending3dSymbolIcons.insert( name );
-                sIconGenerator->generateIcon( mStyle, QgsStyle::Symbol3DEntity, name );
+                if ( sIconGenerator && !mPending3dSymbolIcons.contains( name ) )
+                {
+                  mPending3dSymbolIcons.insert( name );
+                  sIconGenerator->generateIcon( mStyle, entityType, name );
+                }
+              }
+              else if ( entityType == QgsStyle::MaterialSettingsEntity )
+              {
+                if ( sIconGenerator && !mPendingMaterialSettingsIcons.contains( name ) )
+                {
+                  mPendingMaterialSettingsIcons.insert( name );
+                  sIconGenerator->generateIcon( mStyle, entityType, name );
+                }
               }
 
               // TODO - use hourglass icon
@@ -456,6 +470,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::LabelSettingsEntity:
         case QgsStyle::TextFormatEntity:
         case QgsStyle::Symbol3DEntity:
+        case QgsStyle::MaterialSettingsEntity:
           return QVariant();
       }
       return QVariant();
@@ -475,6 +490,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::ColorrampEntity:
         case QgsStyle::SmartgroupEntity:
         case QgsStyle::TextFormatEntity:
+        case QgsStyle::MaterialSettingsEntity:
           return QVariant();
       }
       return QVariant();
@@ -503,6 +519,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::ColorrampEntity:
         case QgsStyle::SmartgroupEntity:
         case QgsStyle::TextFormatEntity:
+        case QgsStyle::MaterialSettingsEntity:
           return QVariant();
       }
       return QVariant();
@@ -633,7 +650,7 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
   {
     int count = 0;
     for ( QgsStyle::StyleEntity type : ENTITIES )
-      count += mEntityNames[type].size();
+      count += static_cast< int >( mEntityNames[type].size() );
     return count;
   }
   return 0;
@@ -682,7 +699,7 @@ void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &na
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of newly added symbol
-  const int newNameIndex = newSymbolNames.indexOf( name );
+  const int newNameIndex = static_cast< int >( newSymbolNames.indexOf( name ) );
   if ( newNameIndex < 0 )
     return; // shouldn't happen
 
@@ -699,7 +716,7 @@ void QgsStyleModel::onEntityRemoved( QgsStyle::StyleEntity type, const QString &
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
-  const int oldNameIndex = oldSymbolNames.indexOf( name );
+  const int oldNameIndex = static_cast< int >( oldSymbolNames.indexOf( name ) );
   if ( oldNameIndex < 0 )
     return; // shouldn't happen
 
@@ -714,14 +731,14 @@ void QgsStyleModel::onEntityChanged( QgsStyle::StyleEntity type, const QString &
   mIconCache[type].remove( name );
 
   const int offset = offsetForEntity( type );
-  QModelIndex i = index( offset + mEntityNames[type].indexOf( name ), Tags );
+  QModelIndex i = index( offset + static_cast< int >( mEntityNames[type].indexOf( name ) ), Tags );
   emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
 }
 
 void QgsStyleModel::onFavoriteChanged( QgsStyle::StyleEntity type, const QString &name, bool )
 {
   const int offset = offsetForEntity( type );
-  QModelIndex i = index( offset + mEntityNames[type].indexOf( name ), Name );
+  QModelIndex i = index( offset + static_cast< int >( mEntityNames[type].indexOf( name ) ), Name );
   emit dataChanged( i, i, QVector< int >() << static_cast< int >( CustomRole::IsFavorite ) );
 }
 
@@ -732,12 +749,12 @@ void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &o
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
-  const int oldNameIndex = oldSymbolNames.indexOf( oldName );
+  const int oldNameIndex = static_cast< int >( oldSymbolNames.indexOf( oldName ) );
   if ( oldNameIndex < 0 )
     return; // shouldn't happen
 
   // find index of added symbol
-  const int newNameIndex = newSymbolNames.indexOf( newName );
+  const int newNameIndex = static_cast< int >( newSymbolNames.indexOf( newName ) );
   if ( newNameIndex < 0 )
     return; // shouldn't happen
 
@@ -756,7 +773,7 @@ void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &o
 void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStringList & )
 {
   QgsStyle::StyleEntity type = static_cast< QgsStyle::StyleEntity >( entity );
-  int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
+  int row = static_cast< int >( mEntityNames[type].indexOf( name ) ) + offsetForEntity( type );
   switch ( static_cast< QgsStyle::StyleEntity >( entity ) )
   {
     case QgsStyle::TagEntity:
@@ -773,7 +790,7 @@ void QgsStyleModel::rebuildSymbolIcons()
 {
   mIconCache[QgsStyle::SymbolEntity].clear();
   mExpressionContext.reset();
-  const int lastRow = mEntityNames[QgsStyle::SymbolEntity].count() - 1;
+  const int lastRow = static_cast< int >( mEntityNames[QgsStyle::SymbolEntity].count() ) - 1;
   if ( lastRow >= 0 )
   {
     emit dataChanged( index( 0, 0 ), index( lastRow, 0 ), QVector<int>() << Qt::DecorationRole );
@@ -782,13 +799,19 @@ void QgsStyleModel::rebuildSymbolIcons()
 
 void QgsStyleModel::iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon )
 {
-  int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
+  int row = static_cast< int >( mEntityNames[type].indexOf( name ) ) + offsetForEntity( type );
 
   switch ( type )
   {
     case QgsStyle::Symbol3DEntity:
       mPending3dSymbolIcons.remove( name );
       mIconCache[QgsStyle::Symbol3DEntity].insert( name, icon );
+      emit dataChanged( index( row, 0 ), index( row, 0 ) );
+      break;
+
+    case QgsStyle::MaterialSettingsEntity:
+      mPendingMaterialSettingsIcons.remove( name );
+      mIconCache[QgsStyle::MaterialSettingsEntity].insert( name, icon );
       emit dataChanged( index( row, 0 ), index( row, 0 ) );
       break;
 
@@ -808,7 +831,7 @@ QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
   int maxRowForEntity = 0;
   for ( QgsStyle::StyleEntity type : ENTITIES )
   {
-    maxRowForEntity += mEntityNames[type].size();
+    maxRowForEntity += static_cast< int >( mEntityNames[type].size() );
     if ( row < maxRowForEntity )
       return type;
   }
@@ -826,7 +849,7 @@ int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const
     if ( type == entity )
       return offset;
 
-    offset += mEntityNames[type].size();
+    offset += static_cast< int >( mEntityNames[type].size() );
   }
   return 0;
 }
@@ -926,6 +949,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
       case QgsStyle::ColorrampEntity:
       case QgsStyle::SmartgroupEntity:
       case QgsStyle::LegendPatchShapeEntity:
+      case QgsStyle::MaterialSettingsEntity:
         break;
 
       case QgsStyle::LabelSettingsEntity:

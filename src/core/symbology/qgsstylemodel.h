@@ -239,6 +239,7 @@ class CORE_EXPORT QgsStyleModel : public QAbstractItemModel
 
     static QgsAbstractStyleEntityIconGenerator *sIconGenerator;
     mutable QSet< QString > mPending3dSymbolIcons;
+    mutable QSet< QString > mPendingMaterialSettingsIcons;
 
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
