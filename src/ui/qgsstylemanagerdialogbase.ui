@@ -29,7 +29,7 @@
    <item>
     <widget class="QSplitter" name="mSplitter">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="handleWidth">
       <number>3</number>
@@ -119,7 +119,7 @@
           </size>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::DoubleClicked</set>
+          <set>QAbstractItemView::EditTrigger::DoubleClicked</set>
          </property>
         </widget>
        </item>
@@ -257,7 +257,7 @@
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -288,7 +288,7 @@
             <bool>true</bool>
            </property>
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -462,6 +462,15 @@
              <string>Legend Patch Shapes</string>
             </attribute>
            </widget>
+           <widget class="QWidget" name="tabMaterialSettings">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Materials</string>
+            </attribute>
+           </widget>
            <widget class="QWidget" name="tab3DSymbols">
             <attribute name="icon">
              <iconset resource="../../images/images.qrc">
@@ -501,7 +510,7 @@
                 </sizepolicy>
                </property>
                <property name="editTriggers">
-                <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+                <set>QAbstractItemView::EditTrigger::EditKeyPressed|QAbstractItemView::EditTrigger::SelectedClicked</set>
                </property>
                <property name="iconSize">
                 <size>
@@ -510,19 +519,19 @@
                 </size>
                </property>
                <property name="textElideMode">
-                <enum>Qt::ElideNone</enum>
+                <enum>Qt::TextElideMode::ElideNone</enum>
                </property>
                <property name="flow">
-                <enum>QListView::LeftToRight</enum>
+                <enum>QListView::Flow::LeftToRight</enum>
                </property>
                <property name="resizeMode">
-                <enum>QListView::Adjust</enum>
+                <enum>QListView::ResizeMode::Adjust</enum>
                </property>
                <property name="spacing">
                 <number>5</number>
                </property>
                <property name="viewMode">
-                <enum>QListView::IconMode</enum>
+                <enum>QListView::ViewMode::IconMode</enum>
                </property>
                <property name="uniformItemSizes">
                 <bool>false</bool>
@@ -564,10 +573,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::StandardButton::Close|QDialogButtonBox::StandardButton::Help</set>
      </property>
      <property name="centerButtons">
       <bool>false</bool>
@@ -761,7 +770,6 @@
   <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
