@@ -22,18 +22,21 @@
 
 #include "qgis_gui.h"
 
+#include <QDialog>
+#include <QPointer>
 #include <QWidget>
 
 #define SIP_NO_FILE
 
 class QgsAbstractMaterialSettings;
 class QgsVectorLayer;
+class QDialogButtonBox;
 
 /**
  * \ingroup gui
  * \class QgsMaterialWidget
  *
- * \brief A widget allowing users to customize a 3d materials.
+ * \brief A widget allowing users to customize a 3d material.
  *
  * \note Not available in Python bindings
  */
@@ -115,12 +118,41 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
   private:
     void updateMaterialWidget();
     void rebuildAvailableTypes();
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
 
     bool mFilterByTechnique = false;
     Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
+
+
+/**
+ * \ingroup gui
+ * \brief A dialog for configuring a 3D material.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 4.2
+ */
+class GUI_EXPORT QgsMaterialWidgetDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+    /**
+   * Constructor for QgsMaterialWidgetDialog, initially showing the specified material \a settings.
+   */
+    QgsMaterialWidgetDialog( const QgsAbstractMaterialSettings *settings, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+   * Returns the current settings defined by the dialog.
+   */
+    std::unique_ptr< QgsAbstractMaterialSettings > settings();
+
+  private:
+    QgsMaterialWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
+};
+
 
 #endif // QGSMATERIALWIDGET_H
