@@ -314,6 +314,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All 3D Symbols" ) );
       break;
 
+    case QgsStyle::MaterialSettingsEntity:
+      btnSaveSymbol->setText( tr( "Save Material…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save material to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Materials" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -442,6 +449,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::Symbol3DEntity:
         allText = tr( "All 3D Symbols" );
+        break;
+
+      case QgsStyle::MaterialSettingsEntity:
+        allText = tr( "All Materials" );
         break;
 
       case QgsStyle::TagEntity:
