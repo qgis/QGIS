@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GH_PAT_QGIS_BOT }}
+          ssh-key: ${{ secrets.SIPIFY_KEY }}
 
       - name: run sipify
         run: ./scripts/sipify_all.sh -m
