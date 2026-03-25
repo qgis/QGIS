@@ -17,16 +17,23 @@
 
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgsvectorlayer.h"
 
+#include <QDialogButtonBox>
 #include <QString>
 
 #include "moc_qgsmaterialwidget.cpp"
 
 using namespace Qt::StringLiterals;
+
+//
+// QgsMaterialWidget
+//
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -176,4 +183,36 @@ void QgsMaterialWidget::updateMaterialWidget()
   }
   // When anything is not right
   mStackedWidget->setCurrentWidget( mPageDummy );
+}
+
+
+//
+// QgsMaterialWidgetDialog
+//
+
+QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSettings *settings, QWidget *parent )
+  : QDialog( parent )
+{
+  QgsGui::enableAutoGeometryRestore( this );
+
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsMaterialWidget();
+  vLayout->addWidget( mWidget, 1 );
+
+  if ( settings )
+  {
+    mWidget->setSettings( settings, nullptr );
+  }
+
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( mButtonBox );
+  setLayout( vLayout );
+  setWindowTitle( tr( "Material" ) );
+}
+
+std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()
+{
+  return mWidget->settings();
 }
