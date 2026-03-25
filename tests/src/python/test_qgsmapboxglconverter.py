@@ -288,7 +288,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             res.asExpression(),
             """CASE WHEN "class" IS 'scree' THEN '#000000' ELSE '#b26e0e' END""",
         )
-        self.assertTrue(qgsDoubleNear(default_number, 0.0))
+        self.assertTrue(qgsDoubleNear(default_number, 0.0), f"Expected default number to be 0.0, got {default_number}")
+
 
     def testParseStepList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
