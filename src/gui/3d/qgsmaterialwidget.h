@@ -20,33 +20,92 @@
 
 #include <memory>
 
-#include "qgsabstractmaterialsettings.h"
+#include "qgis_gui.h"
 
 #include <QWidget>
 
+#define SIP_NO_FILE
+
+class QgsAbstractMaterialSettings;
 class QgsVectorLayer;
 
-//! Widget for configuration of material settings
-class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
+/**
+ * \ingroup gui
+ * \class QgsMaterialWidget
+ *
+ * \brief A widget allowing users to customize a 3d materials.
+ *
+ * \note Not available in Python bindings
+ */
+class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::MaterialWidgetBase
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor for QgsMaterialWidget.
+     */
     explicit QgsMaterialWidget( QWidget *parent = nullptr );
 
     /**
      * Sets the required rendering \a technique which the material must support.
      *
      * This is used to filter the available material choices in the widget.
+     *
+     * \note This setting is only respected when filterByTechnique() is TRUE.
+     *
+     * \see technique()
+     * \see filterByTechnique()
      */
     void setTechnique( Qgis::MaterialRenderingTechnique technique );
 
-    void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer );
-    QgsAbstractMaterialSettings *settings();
+    /**
+     * Returns the required rendering technique which the material must support.
+     *
+     * This is used to filter the available material choices in the widget.
+     *
+     * \note This setting is only respected when filterByTechnique() is TRUE.
+     *
+     * \see setTechnique()
+     * \see filterByTechnique()
+     */
+    Qgis::MaterialRenderingTechnique technique() const { return mTechnique; }
 
+    /**
+     * Sets whether available materials should be filtered by technique.
+     *
+     * \see filterByTechnique()
+     * \see setTechnique()
+     */
+    void setFilterByTechnique( bool enabled );
+
+    /**
+     * Returns whether available materials are filtered by technique.
+     *
+     * \see setFilterByTechnique()
+     * \see setTechnique()
+     */
+    bool filterByTechnique() const { return mFilterByTechnique; }
+
+    /**
+     * Sets the widget state to match material \a settings.
+     */
+    void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer );
+
+    /**
+     * Returns the current settings defined by the widget.
+     */
+    std::unique_ptr< QgsAbstractMaterialSettings > settings();
+
+    /**
+     * Sets the current material \a type.
+     */
     void setType( const QString &type );
 
   signals:
 
+    /**
+     * Emitted when the material defined by the widget is changed.
+     */
     void changed();
 
   private slots:
@@ -55,9 +114,12 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
 
   private:
     void updateMaterialWidget();
+    void rebuildAvailableTypes();
     QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr<QgsAbstractMaterialSettings> mCurrentSettings;
+
+    bool mFilterByTechnique = false;
     Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
 

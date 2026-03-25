@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgs3dtypes.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgspolygon3dsymbol.h"
 
 #include <QString>
@@ -109,7 +110,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setExtrusionFaces( qgsFlagKeysToValue( cboRenderedFacade->currentData().toString(), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
-  sym->setMaterialSettings( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings().release() );
 
   QgsPropertyCollection ddp;
   ddp.setProperty( QgsAbstract3DSymbol::Property::Height, btnHeightDD->toProperty() );
