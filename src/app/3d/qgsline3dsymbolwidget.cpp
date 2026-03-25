@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbolwidget.h"
 
+#include "qgsabstractmaterialsettings.h"
 #include "qgsline3dsymbol.h"
 
 #include <QString>
@@ -84,7 +85,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentData().toInt() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
-  sym->setMaterialSettings( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings().release() );
   return sym.release();
 }
 

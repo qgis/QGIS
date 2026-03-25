@@ -15,8 +15,8 @@
 
 #include "qgsmaterialwidget.h"
 
-#include "qgs3d.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsapplication.h"
 #include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
 #include "qgsphongmaterialsettings.h"
@@ -29,15 +29,15 @@
 using namespace Qt::StringLiterals;
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {
   setupUi( this );
 
-  const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
+  const QStringList materialTypes = QgsApplication::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( QgsApplication::materialRegistry()->materialSettingsMetadata( type )->icon(), QgsApplication::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
@@ -46,17 +46,22 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
 void QgsMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
 {
   mTechnique = technique;
+  rebuildAvailableTypes();
+}
+
+void QgsMaterialWidget::rebuildAvailableTypes()
+{
   const QString prevType = mMaterialTypeComboBox->currentData().toString();
   mMaterialTypeComboBox->blockSignals( true );
   mMaterialTypeComboBox->clear();
 
-  const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
+  const QStringList materialTypes = QgsApplication::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
-    if ( !Qgs3D::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( technique ) )
+    if ( mFilterByTechnique && !QgsApplication::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( mTechnique ) )
       continue;
 
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( QgsApplication::materialRegistry()->materialSettingsMetadata( type )->icon(), QgsApplication::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
@@ -73,10 +78,18 @@ void QgsMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique
     mMaterialTypeComboBox->setCurrentIndex( prevIndex );
 
   if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
-    w->setTechnique( technique );
+  {
+    w->setTechnique( mTechnique );
+  }
 
   mMaterialTypeComboBox->blockSignals( false );
   materialTypeChanged();
+}
+
+void QgsMaterialWidget::setFilterByTechnique( bool enabled )
+{
+  mFilterByTechnique = enabled;
+  rebuildAvailableTypes();
 }
 
 void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
@@ -87,9 +100,9 @@ void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings
   updateMaterialWidget();
 }
 
-QgsAbstractMaterialSettings *QgsMaterialWidget::settings()
+std::unique_ptr< QgsAbstractMaterialSettings > QgsMaterialWidget::settings()
 {
-  return mCurrentSettings->clone();
+  return std::unique_ptr< QgsAbstractMaterialSettings >( mCurrentSettings->clone() );
 }
 
 void QgsMaterialWidget::setType( const QString &type )
@@ -106,7 +119,7 @@ void QgsMaterialWidget::materialTypeChanged()
   if ( existingType == newType )
     return;
 
-  if ( QgsMaterialSettingsAbstractMetadata *am = Qgs3D::materialRegistry()->materialSettingsMetadata( newType ) )
+  if ( QgsMaterialSettingsAbstractMetadata *am = QgsApplication::materialRegistry()->materialSettingsMetadata( newType ) )
   {
     // change material to a new (with different type)
     // base new layer on existing materials's properties
@@ -148,7 +161,7 @@ void QgsMaterialWidget::updateMaterialWidget()
   }
 
   const QString settingsType = mCurrentSettings->type();
-  if ( QgsMaterialSettingsAbstractMetadata *am = Qgs3D::materialRegistry()->materialSettingsMetadata( settingsType ) )
+  if ( QgsMaterialSettingsAbstractMetadata *am = QgsApplication::materialRegistry()->materialSettingsMetadata( settingsType ) )
   {
     if ( QgsMaterialSettingsWidget *w = am->createWidget() )
     {
