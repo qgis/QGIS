@@ -114,7 +114,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
 
   mDirector = new QgsVectorLayerDirector( mNetwork.get(), directionField, forwardValue, backwardValue, bothValue, defaultDirection );
 
-  const Qgis::DistanceUnit distanceUnits = context.project()->crs().mapUnits();
+  const Qgis::DistanceUnit distanceUnits = context.distanceUnit();
   mMultiplier = QgsUnitTypes::fromUnitToUnitFactor( distanceUnits, Qgis::DistanceUnit::Meters );
 
   if ( strategy )

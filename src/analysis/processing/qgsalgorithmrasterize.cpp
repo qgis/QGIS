@@ -366,16 +366,17 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 {
   Q_UNUSED( feedback )
   // Retrieve and clone layers
+  QgsProject *project = context.project();
   const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
   const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
-  if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+  if ( !mapTheme.isEmpty() && project && project->mapThemeCollection()->hasMapTheme( mapTheme ) )
   {
-    const auto constLayers { context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) };
+    const auto constLayers { project->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) };
     for ( const QgsMapLayer *ml : constLayers )
     {
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone() ) );
     }
-    mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
+    mMapThemeStyleOverrides = project->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
   }
   else if ( !mapLayers.isEmpty() )
   {
@@ -385,10 +386,10 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
     }
   }
   // Still no layers? Get them all from the project
-  if ( mMapLayers.size() == 0 )
+  if ( mMapLayers.empty() && project )
   {
     QList<QgsMapLayer *> layers;
-    QgsLayerTree *root = context.project()->layerTreeRoot();
+    QgsLayerTree *root = project->layerTreeRoot();
     for ( QgsLayerTreeLayer *nodeLayer : root->findLayers() )
     {
       QgsMapLayer *layer = nodeLayer->layer();
@@ -402,11 +403,11 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
     }
   }
 
-  mCrs = context.project()->crs();
+  mCrs = project ? project->crs() : QgsCoordinateReferenceSystem();
 
-  int red = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 );
-  int green = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 );
-  int blue = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorBluePart", 255 );
+  int red = project ? project->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 ) : 255;
+  int green = project ? project->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 ) : 255;
+  int blue = project ? project->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorBluePart", 255 ) : 255;
 
   const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
   QColor bgColor;
@@ -420,7 +421,10 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   }
   mMapSettings.setBackgroundColor( bgColor );
 
-  mMapSettings.setScaleMethod( context.project()->scaleMethod() );
+  if ( project )
+  {
+    mMapSettings.setScaleMethod( project->scaleMethod() );
+  }
 
   return mMapLayers.size() > 0;
 }
