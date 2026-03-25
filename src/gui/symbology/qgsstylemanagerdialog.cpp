@@ -2384,7 +2384,8 @@ void QgsStyleManagerDialog::removeItem()
 
   if ( allTypesSelected() )
   {
-    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Items" ), QString( tr( "Do you really want to remove %n item(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+    if ( QMessageBox::Yes
+         != QMessageBox::question( this, tr( "Remove Items" ), QString( tr( "Do you really want to remove %n item(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
       return;
   }
   else
@@ -2392,43 +2393,48 @@ void QgsStyleManagerDialog::removeItem()
     if ( currentItemType() < 3 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Symbol" ), QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::question( this, tr( "Remove Symbol" ), QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 3 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Color Ramp" ), QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::question( this, tr( "Remove Color Ramp" ), QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 4 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Text Formats" ), QString( tr( "Do you really want to remove %n text format(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::
+             question( this, tr( "Remove Text Formats" ), QString( tr( "Do you really want to remove %n text format(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 5 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Label Settings" ), QString( tr( "Do you really want to remove %n label setting(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::
+             question( this, tr( "Remove Label Settings" ), QString( tr( "Do you really want to remove %n label setting(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 6 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Legend Patch Shapes" ), QString( tr( "Do you really want to remove %n legend patch shape(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::
+             question( this, tr( "Remove Legend Patch Shapes" ), QString( tr( "Do you really want to remove %n legend patch shape(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 7 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove 3D Symbols" ), QString( tr( "Do you really want to remove %n 3D symbol(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::
+             question( this, tr( "Remove 3D Symbols" ), QString( tr( "Do you really want to remove %n 3D symbol(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
     else if ( currentItemType() == 8 )
     {
       if ( QMessageBox::Yes
-           != QMessageBox::question( this, tr( "Remove Material" ), QString( tr( "Do you really want to remove %n material(s)?", nullptr, items.count() ) ), QMessageBox::Yes, QMessageBox::No ) )
+           != QMessageBox::
+             question( this, tr( "Remove Material" ), QString( tr( "Do you really want to remove %n material(s)?", nullptr, static_cast< int >( items.count() ) ) ), QMessageBox::Yes, QMessageBox::No ) )
         return;
     }
   }
