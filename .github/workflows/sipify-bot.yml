@@ -26,6 +26,8 @@ jobs:
         id: comment-branch
 
       - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PAT_QGIS_BOT }}
 
       - name: run sipify
         run: ./scripts/sipify_all.sh -m
@@ -33,7 +35,7 @@ jobs:
       - name: commit
         run: |
           git config user.name qgis-bot
-          git config user.email bot@qgis.org
+          git config user.email qgis-bot@users.noreply.github.com
           git add .
           git commit -m "auto sipify 🍺" || echo "nothing to commit"
           git push
