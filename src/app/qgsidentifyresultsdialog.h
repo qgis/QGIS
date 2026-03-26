@@ -161,6 +161,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     static const QgsSettingsEntryBool *settingHideNullValues;
     static const QgsSettingsEntryBool *settingShowRelations;
     static const QgsSettingsEntryBool *settingIdentifyExpand;
+    static const QgsSettingsEntryBool *settingIdentifyAutoFeatureForm;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes );
