@@ -16,6 +16,7 @@
 #ifndef QGS3DSYMBOLWIDGET_H
 #define QGS3DSYMBOLWIDGET_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
