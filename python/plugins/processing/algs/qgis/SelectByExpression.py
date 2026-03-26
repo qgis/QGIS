@@ -53,6 +53,7 @@ class SelectByExpression(QgisAlgorithm):
             super().flags()
             | QgsProcessingAlgorithm.Flag.FlagNoThreading
             | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
+            | QgsProcessingAlgorithm.Flag.FlagDeprecated
         )
 
     def initAlgorithm(self, config=None):
