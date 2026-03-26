@@ -50,6 +50,7 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return nullptr;
   }
   return nullptr;

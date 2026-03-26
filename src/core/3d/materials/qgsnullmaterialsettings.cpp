@@ -38,6 +38,7 @@ bool QgsNullMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniqu
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }
   return false;

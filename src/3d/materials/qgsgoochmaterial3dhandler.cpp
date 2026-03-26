@@ -58,6 +58,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return nullptr;
   }
   return nullptr;

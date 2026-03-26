@@ -103,6 +103,7 @@ void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
     }
 
     case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       // not supported
       break;
   }

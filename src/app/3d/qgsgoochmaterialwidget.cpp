@@ -95,6 +95,7 @@ void QgsGoochMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
       mSpecularDataDefinedButton->setVisible( true );
       break;
     case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       // not supported
       break;
   }

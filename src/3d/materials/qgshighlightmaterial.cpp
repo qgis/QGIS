@@ -68,6 +68,7 @@ void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechn
     }
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Billboards:
     {
       // Lines are single color and do not need the highlight material
       // Billboards are not supported yet

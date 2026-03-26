@@ -43,6 +43,7 @@ QgsMaterial *QgsSimpleLineMaterial3DHandler::toMaterial( const QgsAbstractMateri
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return nullptr;
 
     case Qgis::MaterialRenderingTechnique::Lines:

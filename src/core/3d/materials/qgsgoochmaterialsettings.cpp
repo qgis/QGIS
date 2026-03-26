@@ -45,6 +45,7 @@ bool QgsGoochMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniq
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }
   return false;
