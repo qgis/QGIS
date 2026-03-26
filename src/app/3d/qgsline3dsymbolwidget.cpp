@@ -52,6 +52,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 
   widgetMaterial->setTechnique( Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setFilterByTechnique( true );
 }
 
 Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )
@@ -73,6 +74,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
   widgetMaterial->setSettings( lineSymbol->materialSettings(), layer );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setFilterByTechnique( true );
   updateGuiState();
 }
 
@@ -99,6 +101,7 @@ void QgsLine3DSymbolWidget::updateGuiState()
   const bool simple = chkSimpleLines->isChecked();
   spinExtrusion->setEnabled( !simple );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setFilterByTechnique( true );
 
   // Altitude binding is not taken into account if altitude clamping is absolute.
   // See: Qgs3DUtils::clampAltitudes()
