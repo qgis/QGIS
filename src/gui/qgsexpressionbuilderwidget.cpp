@@ -76,6 +76,7 @@ bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &f
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
+  , mExpressionTreeMenuProvider( this )
   , mProject( QgsProject::instance() )
 {
   setupUi( this );
@@ -113,8 +114,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mExpressionTreeView, &QgsExpressionTreeView::expressionItemDoubleClicked, this, &QgsExpressionBuilderWidget::insertExpressionText );
   connect( mExpressionTreeView, &QgsExpressionTreeView::currentExpressionItemChanged, this, &QgsExpressionBuilderWidget::expressionTreeItemChanged );
 
-  mExpressionTreeMenuProvider = std::make_unique<ExpressionTreeMenuProvider>( this );
-  mExpressionTreeView->setMenuProvider( mExpressionTreeMenuProvider.get() );
+  mExpressionTreeView->setMenuProvider( &mExpressionTreeMenuProvider );
 
   txtHelpText->setOpenExternalLinks( true );
   mValueGroupBox->hide();

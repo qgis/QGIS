@@ -509,7 +509,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     std::unique_ptr<QStandardItemModel> mValuesModel;
     std::unique_ptr<QSortFilterProxyModel> mProxyValues;
 
-    std::unique_ptr<ExpressionTreeMenuProvider> mExpressionTreeMenuProvider;
+    ExpressionTreeMenuProvider mExpressionTreeMenuProvider;
 
     bool mAutoSave = true;
     QString mFunctionsPath;
