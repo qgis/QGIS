@@ -36,6 +36,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmultipolygon.h"
 #include "qgsnativealgorithms.h"
+#include "qgsogrproviderutils.h"
 #include "qgspallabeling.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingalgorithm.h"
@@ -284,7 +285,7 @@ void TestQgsProcessingAlgsPt1::initTestCase()
    * QgsApplication::initQgis()
    *       as any previously-set value would otherwise disappear.
    */
-  QgsSettings().setValue( "qgis/walForSqlite3", false );
+  QgsOgrProviderUtils::settingsWalForSqlite3->setValue( false );
 }
 
 void TestQgsProcessingAlgsPt1::cleanupTestCase()
