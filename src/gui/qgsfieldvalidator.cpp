@@ -49,11 +49,11 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       if ( mField.length() > 0 )
       {
         const QString re = u"-?\\d{0,%1}"_s.arg( mField.length() );
-        mValidator = std::make_unique<QRegularExpressionValidator>( QRegularExpression( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
       {
-        mValidator = std::make_unique<QIntValidator>( parent );
+        mValidator = new QIntValidator( parent );
       }
     }
     break;
@@ -72,12 +72,12 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         {
           re = u"-?\\d{0,%1}([\\.,]\\d{0,%2})?"_s.arg( mField.length() - mField.precision() ).arg( mField.precision() );
         }
-        mValidator = std::make_unique<QRegularExpressionValidator>( QRegularExpression( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
         const QString re = u"-?\\d{0,%1}"_s.arg( mField.length() );
-        mValidator = std::make_unique<QRegularExpressionValidator>( QRegularExpression( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.precision() > 0 )
       {
@@ -91,21 +91,21 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         {
           re = u"-?\\d*([\\.]\\d{0,%1})?"_s.arg( mField.precision() );
         }
-        mValidator = std::make_unique<QRegularExpressionValidator>( QRegularExpression( re ), parent );
+        mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
       {
-        mValidator = std::make_unique<QDoubleValidator>( parent );
+        mValidator = new QDoubleValidator( parent );
       }
     }
     break;
 
     case QMetaType::Type::LongLong:
-      mValidator = std::make_unique<QgsLongLongValidator>( parent );
+      mValidator = new QgsLongLongValidator( parent );
       break;
 
     default:
-      mValidator.reset();
+      mValidator = nullptr;
   }
 
   mNullValue = QgsApplication::nullRepresentation();
