@@ -341,6 +341,13 @@ void QgsStyleItemsListWidget::setEntityTypes( const QList<QgsStyle::StyleEntity>
     if ( allGroup >= 0 )
       groupsCombo->setItemText( allGroup, tr( "All Settings" ) );
   }
+  else if ( filters.length() == 2 && filters.contains( QgsStyle::Symbol3DEntity ) && filters.contains( QgsStyle::MaterialSettingsEntity ) )
+  {
+    btnSaveSymbol->setText( tr( "Save Symbol" ) );
+    btnSaveSymbol->setToolTip( tr( "Save 3D symbol or material to styles" ) );
+    if ( allGroup >= 0 )
+      groupsCombo->setItemText( allGroup, tr( "All Symbols" ) );
+  }
 }
 
 void QgsStyleItemsListWidget::setSymbolType( Qgis::SymbolType type )
