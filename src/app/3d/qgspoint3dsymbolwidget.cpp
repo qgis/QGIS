@@ -218,7 +218,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       {
         btnChangeSymbol->setSymbol( pointSymbol->billboardSymbol()->clone() );
       }
-      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Points;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Billboards;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;
@@ -405,7 +405,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       // Always hide material and transformationwidget for billboard
       materialsGroupBox->hide();
       transformationWidget->hide();
-      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Points;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Billboards;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;

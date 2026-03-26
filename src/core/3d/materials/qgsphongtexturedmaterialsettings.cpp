@@ -41,6 +41,7 @@ bool QgsPhongTexturedMaterialSettings::supportsTechnique( Qgis::MaterialRenderin
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }
   return false;

@@ -40,6 +40,7 @@ bool QgsSimpleLineMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTe
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }
   return false;

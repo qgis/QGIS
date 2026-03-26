@@ -4313,6 +4313,7 @@ int QgisEvent = QEvent::User + 1;
       TrianglesWithFixedTexture, //!< Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
       TrianglesFromModel,        //!< Triangle based rendering, using a model object source
       TrianglesDataDefined,      //!< Triangle based rendering with possibility of datadefined color
+      Billboards,                //!< Rendering as flat billboards
     };
     Q_ENUM( MaterialRenderingTechnique )
 

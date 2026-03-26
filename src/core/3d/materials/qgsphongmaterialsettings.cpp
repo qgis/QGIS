@@ -40,6 +40,7 @@ bool QgsPhongMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniq
       return true;
 
     case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }
   return false;

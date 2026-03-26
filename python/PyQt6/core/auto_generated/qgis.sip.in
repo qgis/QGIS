@@ -2419,6 +2419,7 @@ The development version
       TrianglesWithFixedTexture,
       TrianglesFromModel,
       TrianglesDataDefined,
+      Billboards,
     };
 
     enum class LightSourceType /BaseType=IntEnum/
