@@ -227,6 +227,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   widgetMaterial->setSettings( pointSymbol->materialSettings(), layer );
   widgetMaterial->setTechnique( mRenderingTechnique );
   widgetMaterial->setFilterByTechnique( true );
+  emit renderingTechniqueChanged();
 
   if ( forceNullMaterial )
   {
@@ -412,6 +413,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
 
   widgetMaterial->setTechnique( mRenderingTechnique );
   widgetMaterial->setFilterByTechnique( true );
+  emit renderingTechniqueChanged();
 
   if ( cboShape->currentIndex() == 6 )
   {
