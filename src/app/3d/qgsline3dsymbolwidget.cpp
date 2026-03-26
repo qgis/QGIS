@@ -51,7 +51,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::simple3DLinesToggled );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 
-  widgetMaterial->setTechnique( Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
 }
 
@@ -73,7 +73,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
   widgetMaterial->setSettings( lineSymbol->materialSettings(), layer );
-  widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
   updateGuiState();
 }
@@ -94,6 +94,11 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 QString QgsLine3DSymbolWidget::symbolType() const
 {
   return u"line"_s;
+}
+
+Qgis::MaterialRenderingTechnique QgsLine3DSymbolWidget::renderingTechnique() const
+{
+  return chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles;
 }
 
 void QgsLine3DSymbolWidget::updateGuiState()
