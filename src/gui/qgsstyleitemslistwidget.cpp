@@ -407,6 +407,11 @@ QgsStyle::StyleEntity QgsStyleItemsListWidget::currentEntityType() const
   return static_cast<QgsStyle::StyleEntity>( mModel->data( index, static_cast<int>( QgsStyleModel::CustomRole::Type ) ).toInt() );
 }
 
+QgsStyleProxyModel *QgsStyleItemsListWidget::proxyModel()
+{
+  return mModel;
+}
+
 void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
 {
   // restore header sizes on show event -- because this widget is used in multiple places simultaneously
