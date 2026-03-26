@@ -119,6 +119,9 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyExpand = new QgsSettingsEntryBool( u"identify-expand"_s, QgsSettingsTree::sTreeMap, false, u"Whether to auto-expand identify results"_s );
 
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm
+  = new QgsSettingsEntryBool( u"identify-auto-feature-form"_s, QgsSettingsTree::sTreeMap, false, u"Whether to auto-open the feature form for single identify results"_s );
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -477,7 +480,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mIdentifyToolbar->addAction( mHelpToolAction );
 
   settingsMenu->addAction( mActionAutoFeatureForm );
-  mActionAutoFeatureForm->setChecked( mySettings.value( u"Map/identifyAutoFeatureForm"_s, false ).toBool() );
+  mActionAutoFeatureForm->setChecked( QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() );
   settingsMenu->addAction( mActionHideDerivedAttributes );
   mActionHideDerivedAttributes->setChecked( mySettings.value( u"Map/hideDerivedAttributes"_s, false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
@@ -1528,7 +1531,7 @@ void QgsIdentifyResultsDialog::show()
     {
       lstResults->setCurrentItem( featItem );
 
-      if ( QgsSettings().value( u"/Map/identifyAutoFeatureForm"_s, false ).toBool() )
+      if ( QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
         if ( layer )
@@ -2689,8 +2692,7 @@ void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
 
 void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/identifyAutoFeatureForm"_s, checked );
+  settingIdentifyAutoFeatureForm->setValue( checked );
   mActionSelectFeaturesOnMouseOver->setEnabled( !checked );
   if ( mSelectModeButton->defaultAction() == mActionSelectFeaturesOnMouseOver )
   {
