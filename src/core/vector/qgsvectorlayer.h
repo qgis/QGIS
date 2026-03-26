@@ -2248,7 +2248,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumValue()
      * \see maximumValue()
      */
-    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
+    Q_INVOKABLE QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -2279,7 +2279,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
-    QVariant minimumValue( int index ) const final;
+    Q_INVOKABLE QVariant minimumValue( int index ) const final;
 
     /**
      * Returns the maximum value for an attribute column or an invalid variant in case of error.
@@ -2295,7 +2295,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
-    QVariant maximumValue( int index ) const final;
+    Q_INVOKABLE QVariant maximumValue( int index ) const final;
 
 
     /**
