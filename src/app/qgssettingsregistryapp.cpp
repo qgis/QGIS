@@ -58,6 +58,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   // single settings - added in 3.30
   QgsIdentifyResultsDialog::settingHideNullValues->copyValueFromKey( u"Map/hideNullValues"_s, true );
   QgsIdentifyResultsDialog::settingIdentifyExpand->copyValueFromKey( u"Map/identifyExpand"_s, true );
+  QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->copyValueFromKey( u"Map/identifyAutoFeatureForm"_s, true );
+  QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->copyValueFromKey( u"/Map/identifyAutoFeatureForm"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
   QgsPluginManager::settingsAllowDeprecated->copyValueFromKey( u"app/plugin_installer/allowDeprecated"_s, true );

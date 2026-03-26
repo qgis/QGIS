@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsstatusbar.h"
 #include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
@@ -149,7 +150,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
-    if ( results.size() != 1 || !QgsSettings().value( u"/Map/identifyAutoFeatureForm"_s, false ).toBool() )
+    if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
