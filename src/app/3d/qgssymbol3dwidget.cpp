@@ -265,6 +265,14 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
       widgetStack->setCurrentWidget( w );
       // start receiving updates from widget
       connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+
+      connect( w, &Qgs3DSymbolWidget::renderingTechniqueChanged, this, [w, this] {
+        mStyleWidget->proxyModel()->setRenderingTechnique( w->renderingTechnique() );
+        mStyleWidget->proxyModel()->setRenderingTechniqueFilterEnabled( true );
+      } );
+
+      mStyleWidget->proxyModel()->setRenderingTechnique( w->renderingTechnique() );
+      mStyleWidget->proxyModel()->setRenderingTechniqueFilterEnabled( true );
       return;
     }
   }

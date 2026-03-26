@@ -933,7 +933,11 @@ Qgis::MaterialRenderingTechnique QgsStyleProxyModel::renderingTechnique() const
 
 void QgsStyleProxyModel::setRenderingTechnique( Qgis::MaterialRenderingTechnique technique )
 {
+  if ( mRenderingTechnique == technique )
+    return;
+
   mRenderingTechnique = technique;
+  invalidateFilter();
 }
 
 QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
