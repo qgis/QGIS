@@ -263,7 +263,37 @@ QgsGui::HigFlags QgsGui::higFlags()
 }
 
 QgsGui::~QgsGui()
-{}
+{
+  // we reset explicit registry because order matters
+  mProcessingGuiRegistry.reset();
+  mDataItemGuiProviderRegistry.reset();
+  mProcessingFavoriteAlgorithmManager.reset();
+  mProcessingRecentAlgorithmLog.reset();
+  mLayoutItemGuiRegistry.reset();
+  mAnnotationItemGuiRegistry.reset();
+  mAdvancedDigitizingToolsRegistry.reset();
+  mLayerTreeEmbeddedWidgetRegistry.reset();
+  mEditorWidgetRegistry.reset();
+  mMapLayerActionRegistry.reset();
+  mSourceSelectProviderRegistry.reset();
+  mHistoryProviderRegistry.reset();
+  mShortcutsManager.reset();
+  mNative.reset();
+  mNumericFormatGuiRegistry.reset();
+  mWidgetStateHelper.reset();
+  mProjectStorageGuiRegistry.reset();
+  mProviderGuiRegistry.reset();
+  mCodeEditorColorSchemeRegistry.reset();
+  mSubsetStringEditorProviderRegistry.reset();
+  mProviderSourceWidgetProviderRegistry.reset();
+  mShapeMapToolRegistry.reset();
+  mRelationEditorRegistry.reset();
+  mInputControllerManager.reset();
+  mSettingsRegistryGui.reset();
+  mSensorGuiRegistry.reset();
+  mStoredQueryManager.reset();
+  mSettingsEditorRegistry.reset();
+}
 
 QColor QgsGui::sampleColor( QPoint point )
 {
