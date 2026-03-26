@@ -2908,7 +2908,7 @@ bool QgsStyle::exportXml( const QString &filename )
     {
       materialSettingEl.setAttribute( u"tags"_s, tags.join( ',' ) );
     }
-    if ( favorite3DSymbols.contains( it.key() ) )
+    if ( favoriteMaterialSettings.contains( it.key() ) )
     {
       materialSettingEl.setAttribute( u"favorite"_s, u"1"_s );
     }
