@@ -812,7 +812,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see selectByExpression()
      * \see selectByIds()
      */
-    Q_INVOKABLE void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -1215,7 +1215,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,
@@ -1708,7 +1708,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see changeAttributeValue()
      * \see updateFeature()
      */
-    Q_INVOKABLE bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value for a feature (but does not immediately commit the changes).
