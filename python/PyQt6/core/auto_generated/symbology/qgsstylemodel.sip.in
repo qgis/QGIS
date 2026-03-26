@@ -50,6 +50,7 @@ performance instead.
       StyleName,
       StyleFileName,
       IsTitle,
+      MaterialType
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
@@ -210,7 +211,7 @@ Returns the symbol type filter.
 
 .. note::
 
-   This filter is only active if :py:class:`Qgis`.SymbolTypeFilterEnabled() is ``True``, and has
+   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``, and has
    no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`setSymbolType`
@@ -222,9 +223,9 @@ Sets the symbol ``type`` filter.
 
 .. note::
 
-   This filter is only active if :py:class:`Qgis`.SymbolTypeFilterEnabled() is ``True``.
+   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``.
 
-.. seealso:: Qgis.SymbolType
+.. seealso:: :py:func:`symbolType`
 %End
 
     bool symbolTypeFilterEnabled() const;
@@ -233,7 +234,7 @@ Returns ``True`` if filtering by symbol type is enabled.
 
 .. seealso:: :py:func:`setSymbolTypeFilterEnabled`
 
-.. seealso:: Qgis.SymbolType
+.. seealso:: :py:func:`symbolType`
 %End
 
     void setSymbolTypeFilterEnabled( bool enabled );
@@ -241,10 +242,11 @@ Returns ``True`` if filtering by symbol type is enabled.
 Sets whether filtering by symbol type is ``enabled``.
 
 If ``enabled`` is ``False``, then the value of
-:py:class:`Qgis`.SymbolType() will have no effect on the model
-filtering. This has no effect on non-symbol entities (i.e. color ramps).
+:py:func:`~QgsStyleProxyModel.symbolType` will have no effect on the
+model filtering. This has no effect on non-symbol entities (i.e. color
+ramps).
 
-.. seealso:: Qgis.SymbolTypeFilterEnabled
+.. seealso:: :py:func:`symbolTypeFilterEnabled`
 
 .. seealso:: :py:func:`setSymbolType`
 %End
@@ -267,6 +269,59 @@ Sets the layer ``type`` filter. Set ``type`` to
 desired.
 
 .. seealso:: :py:func:`layerType`
+%End
+
+    bool renderingTechniqueFilterEnabled() const;
+%Docstring
+Returns ``True`` if filtering by material rendering technique is
+enabled.
+
+.. seealso:: :py:func:`setRenderingTechniqueFilterEnabled`
+
+.. seealso:: :py:func:`renderingTechnique`
+
+.. versionadded:: 4.2
+%End
+
+    void setRenderingTechniqueFilterEnabled( bool enabled );
+%Docstring
+Sets whether filtering by material rendering technique is ``enabled``.
+
+If ``enabled`` is ``False``, then the value of
+:py:func:`~QgsStyleProxyModel.renderingTechnique` will have no effect on
+the model filtering. This has no effect on non-material entities (i.e.
+color ramps).
+
+.. seealso:: :py:func:`renderingTechniqueFilterEnabled`
+
+.. seealso:: :py:func:`setRenderingTechnique`
+
+.. versionadded:: 4.2
+%End
+
+    Qgis::MaterialRenderingTechnique renderingTechnique() const;
+%Docstring
+Returns the rendering technique filter.
+
+.. note::
+
+   This filter is only active if :py:func:`~QgsStyleProxyModel.renderingTechniqueFilterEnabled` is ``True``, and has
+   no effect on non-material entities (i.e. color ramps).
+
+.. versionadded:: 4.2
+%End
+
+    void setRenderingTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Sets the rendering ``technique`` filter.
+
+.. note::
+
+   This filter is only active if :py:func:`~QgsStyleProxyModel.renderingTechniqueFilterEnabled` is ``True``.
+
+.. seealso:: :py:func:`renderingTechnique`
+
+.. versionadded:: 4.2
 %End
 
     void setTagId( int id );

@@ -15,10 +15,12 @@
 
 #include "qgsstylemodel.h"
 
+#include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgscombinedstylemodel.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsimagecache.h"
+#include "qgsmaterialregistry.h"
 #include "qgsstyle.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
@@ -525,6 +527,29 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
+    case static_cast< int >( CustomRole::MaterialType ):
+    {
+      switch ( entityType )
+      {
+        case QgsStyle::MaterialSettingsEntity:
+        {
+          std::unique_ptr< QgsAbstractMaterialSettings > settings = mStyle->materialSettings( name );
+          return settings ? settings->type() : QVariant();
+        }
+
+        case QgsStyle::LegendPatchShapeEntity:
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::LabelSettingsEntity:
+        case QgsStyle::TextFormatEntity:
+        case QgsStyle::Symbol3DEntity:
+        case QgsStyle::SymbolEntity:
+          return QVariant();
+      }
+      return QVariant();
+    }
+
     case static_cast< int >( CustomRole::EntityName ):
       return name;
 
@@ -901,6 +926,16 @@ void QgsStyleProxyModel::initialize()
   }
 }
 
+Qgis::MaterialRenderingTechnique QgsStyleProxyModel::renderingTechnique() const
+{
+  return mRenderingTechnique;
+}
+
+void QgsStyleProxyModel::setRenderingTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mRenderingTechnique = technique;
+}
+
 QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mModel( model )
@@ -920,7 +955,7 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *p
 
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilterString.isEmpty() && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly && mTagFilter.isEmpty() )
+  if ( mFilterString.isEmpty() && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && !mRenderingTechniqueFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly && mTagFilter.isEmpty() )
     return true;
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -1009,6 +1044,19 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     }
   }
 
+  if ( mRenderingTechniqueFilterEnabled && styleEntityType == QgsStyle::MaterialSettingsEntity )
+  {
+    const QString materialType = sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::MaterialType ) ).toString();
+    if ( !materialType.isEmpty() )
+    {
+      if ( const QgsMaterialSettingsAbstractMetadata *metadata = QgsApplication::materialRegistry()->materialSettingsMetadata( materialType ) )
+      {
+        if ( !metadata->supportsTechnique( mRenderingTechnique ) )
+          return false;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -1077,6 +1125,20 @@ Qgis::GeometryType QgsStyleProxyModel::layerType() const
 void QgsStyleProxyModel::setLayerType( Qgis::GeometryType type )
 {
   mLayerType = type;
+  invalidateFilter();
+}
+
+bool QgsStyleProxyModel::renderingTechniqueFilterEnabled() const
+{
+  return mRenderingTechniqueFilterEnabled;
+}
+
+void QgsStyleProxyModel::setRenderingTechniqueFilterEnabled( bool enabled )
+{
+  if ( mRenderingTechniqueFilterEnabled == enabled )
+    return;
+
+  mRenderingTechniqueFilterEnabled = enabled;
   invalidateFilter();
 }
 

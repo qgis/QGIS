@@ -94,11 +94,6 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
   updateSymbolWidget( symbol );
 }
 
-Qgis::MaterialRenderingTechnique QgsSymbol3DWidget::renderingTechnique() const
-{
-  return Qgis::MaterialRenderingTechnique::Triangles;
-}
-
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath )
 {
   if ( name.isEmpty() )

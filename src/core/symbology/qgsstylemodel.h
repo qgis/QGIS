@@ -157,6 +157,7 @@ class CORE_EXPORT QgsStyleModel : public QAbstractItemModel
       StyleName,                                                                          //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
       StyleFileName,                                                                      //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
       IsTitle SIP_MONKEYPATCH_COMPAT_NAME( IsTitleRole ),                                 //!< True if the index corresponds to a title item \since QGIS 3.26
+      MaterialType                                                                        //!< Material type (for material entities) \since QGIS 4.2
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -346,7 +347,7 @@ class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
     /**
      * Returns the symbol type filter.
      *
-     * \note This filter is only active if Qgis::SymbolTypeFilterEnabled() is TRUE, and has
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE, and has
      * no effect on non-symbol entities (i.e. color ramps).
      *
      * \see setSymbolType()
@@ -356,9 +357,9 @@ class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
     /**
      * Sets the symbol \a type filter.
      *
-     * \note This filter is only active if Qgis::SymbolTypeFilterEnabled() is TRUE.
+     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE.
      *
-     * \see Qgis::SymbolType()
+     * \see symbolType()
      */
     void setSymbolType( Qgis::SymbolType type );
 
@@ -366,18 +367,18 @@ class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
      * Returns TRUE if filtering by symbol type is enabled.
      *
      * \see setSymbolTypeFilterEnabled()
-     * \see Qgis::SymbolType()
+     * \see symbolType()
      */
     bool symbolTypeFilterEnabled() const;
 
     /**
      * Sets whether filtering by symbol type is \a enabled.
      *
-     * If \a enabled is FALSE, then the value of Qgis::SymbolType() will have no
+     * If \a enabled is FALSE, then the value of symbolType() will have no
      * effect on the model filtering. This has
      * no effect on non-symbol entities (i.e. color ramps).
      *
-     * \see Qgis::SymbolTypeFilterEnabled()
+     * \see symbolTypeFilterEnabled()
      * \see setSymbolType()
      */
     void setSymbolTypeFilterEnabled( bool enabled );
@@ -399,6 +400,48 @@ class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
      * \see layerType()
      */
     void setLayerType( Qgis::GeometryType type );
+
+    /**
+     * Returns TRUE if filtering by material rendering technique is enabled.
+     *
+     * \see setRenderingTechniqueFilterEnabled()
+     * \see renderingTechnique()
+     * \since QGIS 4.2
+     */
+    bool renderingTechniqueFilterEnabled() const;
+
+    /**
+     * Sets whether filtering by material rendering technique is \a enabled.
+     *
+     * If \a enabled is FALSE, then the value of renderingTechnique() will have no
+     * effect on the model filtering. This has
+     * no effect on non-material entities (i.e. color ramps).
+     *
+     * \see renderingTechniqueFilterEnabled()
+     * \see setRenderingTechnique()
+     * \since QGIS 4.2
+     */
+    void setRenderingTechniqueFilterEnabled( bool enabled );
+
+    /**
+     * Returns the rendering technique filter.
+     *
+     * \note This filter is only active if renderingTechniqueFilterEnabled() is TRUE, and has
+     * no effect on non-material entities (i.e. color ramps).
+     *
+     * \since QGIS 4.2
+     */
+    Qgis::MaterialRenderingTechnique renderingTechnique() const;
+
+    /**
+     * Sets the rendering \a technique filter.
+     *
+     * \note This filter is only active if renderingTechniqueFilterEnabled() is TRUE.
+     *
+     * \see renderingTechnique()
+     * \since QGIS 4.2
+     */
+    void setRenderingTechnique( Qgis::MaterialRenderingTechnique technique );
 
     /**
      * Sets a tag \a id to filter style entities by. Only entities with the given
@@ -538,6 +581,9 @@ class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     Qgis::GeometryType mLayerType = Qgis::GeometryType::Unknown;
+
+    bool mRenderingTechniqueFilterEnabled = false;
+    Qgis::MaterialRenderingTechnique mRenderingTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
 
 #endif //QGSSTYLEMODEL_H
