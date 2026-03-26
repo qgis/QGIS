@@ -29,8 +29,9 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingstree.h"
 #include "qgssqlstatement.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorfilewriter.h"
@@ -45,6 +46,8 @@ email                : nyall dot dawson at gmail dot com
 #include <QTextCodec>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsOgrProviderUtils::settingsWalForSqlite3 = new QgsSettingsEntryBool( u"wal"_s, QgsSettingsTree::sTreeSqlite3, true );
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -1002,7 +1005,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
                             && IsLocalFile( filePath )
                             && !filePath.startsWith( "/vsizip/" )
                             && !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr )
-                            && QgsSettings().value( u"qgis/walForSqlite3"_s, true ).toBool();
+                            && QgsOgrProviderUtils::settingsWalForSqlite3->value();
 
   if ( bIsGpkg )
   {
