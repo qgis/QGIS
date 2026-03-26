@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include "qgis.h"
 #include "qgis_gui.h"
 
 #include <QDialog>
