@@ -39,6 +39,7 @@ class QDialogButtonBox;
  * \brief A widget allowing users to customize a 3d material.
  *
  * \note Not available in Python bindings
+ * \since QGIS 4.2
  */
 class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::MaterialWidgetBase
 {
