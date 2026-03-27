@@ -20,6 +20,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgscodeeditor.h"
+#include "qgscolorwidgets.h"
 #include "qgsdualview.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgradientcolorrampdialog.h"
@@ -115,6 +116,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   QgsGradientColorRampDialog::settingsPlotLightness->copyValueFromKey( u"GradientEditor/plotLightness"_s, true );
   QgsGradientColorRampDialog::settingsPlotSaturation->copyValueFromKey( u"GradientEditor/plotSaturation"_s, true );
   QgsGradientColorRampDialog::settingsPlotAlpha->copyValueFromKey( u"GradientEditor/plotAlpha"_s, true );
+  QgsColorTextWidget::settingsTextFormat->copyValueFromKey( u"ColorWidgets/textWidgetFormat"_s, true );
   QgsHistogramWidget::settingsHistogramShowMean->copyValueFromKey( u"HistogramWidget/showMean"_s, true );
   QgsHistogramWidget::settingsHistogramShowStdev->copyValueFromKey( u"HistogramWidget/showStdev"_s, true );
   settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
