@@ -32,7 +32,7 @@
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsstatusbar.h"
 #include "qgsunittypes.h"
@@ -127,7 +127,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
   if ( mode == DefaultQgsSetting )
-    mode = QgsSettings().enumValue( u"Map/identifyMode"_s, ActiveLayer );
+    mode = QgsMapToolIdentify::settingIdentifyMode->value();
   QList<QgsMapLayer *> layerList;
   if ( mode == ActiveLayer )
   {
