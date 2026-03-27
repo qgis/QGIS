@@ -285,6 +285,24 @@ void QgsEventTracing::addEventToQgisTrace( QgsEventTracing::EventType type, cons
   sTraceEventsMutex()->unlock();
 }
 
+void QgsEventTracing::setFloatVariable( const char *name, double value, bool continuous )
+{
+#ifdef HAVE_TRACY
+  if ( !continuous ) // Disable interpolation
+    TracyPlotConfig( name, tracy::PlotFormatType::Number, true, false, 0 );
+  TracyPlot( name, value );
+#endif
+}
+
+void QgsEventTracing::setIntVariable( const char *name, int64_t value, bool continuous )
+{
+#ifdef HAVE_TRACY
+  if ( !continuous ) // Disable interpolation
+    TracyPlotConfig( name, tracy::PlotFormatType::Number, true, false, 0 );
+  TracyPlot( name, value );
+#endif
+}
+
 size_t QgsEventTracing::ScopedEvent::sNextId = 0;
 
 ///@endcond

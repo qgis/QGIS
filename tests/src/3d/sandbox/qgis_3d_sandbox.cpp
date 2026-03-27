@@ -24,6 +24,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgseventtracing.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -156,9 +157,9 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     }
   }
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] { qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount(); } );
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] { QgsEventTracing::setIntVariable( "Pending jobs", canvas->scene()->totalPendingJobsCount() ); } );
 
-  qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
+  QgsEventTracing::setIntVariable( "Pending jobs", canvas->scene()->totalPendingJobsCount() );
 }
 
 QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
