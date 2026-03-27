@@ -64,7 +64,7 @@ This should be called once at application startup.
 
 :param path: the path to the global settings INI file.
 
-.. versionadded:: 3.44
+.. versionadded:: 4.0.2
 %End
 
 
