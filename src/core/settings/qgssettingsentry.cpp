@@ -57,7 +57,7 @@ QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
 
 QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
 {
-  const QVariant userValue = QgsSettings::get()->value( resolvedKey );
+  const QVariant userValue = QSettings().value( resolvedKey );
   if ( !QgsVariantUtils::isNull( userValue ) )
     return userValue;
 
@@ -162,13 +162,13 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
 bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
   const QString resolvedKey = key( dynamicKeyPart );
-  return QgsSettings::get()->contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
+  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
 }
 
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
   const QString resolvedKey = key( dynamicKeyPartList );
-  return QgsSettings::get()->contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
+  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
 }
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
@@ -178,7 +178,7 @@ Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKey
   if ( sGlobalDefaults.contains( resolvedKey ) )
     return Qgis::SettingsOrigin::Global;
 
-  if ( QgsSettings::get()->contains( resolvedKey ) )
+  if ( QSettings().contains( resolvedKey ) )
     return Qgis::SettingsOrigin::Local;
 
   return Qgis::SettingsOrigin::Any;
