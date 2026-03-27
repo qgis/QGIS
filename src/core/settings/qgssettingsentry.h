@@ -74,6 +74,33 @@ class CORE_EXPORT QgsSettingsEntryBase
   public:
 
     /**
+     * Sets the path to the global settings INI file and loads all keys
+     * into an in-memory hash for use as defaults by QgsSettingsEntry.
+     *
+     * This should be called once at application startup.
+     *
+     * \param path the path to the global settings INI file.
+     *
+     * \since QGIS 3.44
+     */
+    static void setGlobalSettingsPath( const QString &path );
+
+    /**
+     * Returns TRUE if a global default is defined for the given \a key.
+     *
+     * \since QGIS 3.44
+     */
+    static bool hasGlobalDefault( const QString &key ) SIP_SKIP;
+
+    /**
+     * Returns the global default value for the given \a key,
+     * or an invalid QVariant if not found.
+     *
+     * \since QGIS 3.44
+     */
+    static QVariant globalDefault( const QString &key ) SIP_SKIP;
+
+    /**
      * Transforms a dynamic key part string to list
      * \since QGIS 3.26
      */
@@ -354,6 +381,8 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
+
+    static QHash<QString, QVariant> sGlobalDefaults;
 
     QgsSettingsTreeNode *mParentTreeElement = nullptr;
     QString mName;
