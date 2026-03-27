@@ -48,6 +48,7 @@ class TestQgsSettingsEntry : public QObject
     void testGlobalOrigin();
     void testGlobalExists();
     void testLoadGlobalDefaults();
+    void testSetValueGlobalDefaultCleanup();
 };
 
 void TestQgsSettingsEntry::settingsKey()
@@ -364,6 +365,49 @@ void TestQgsSettingsEntry::testLoadGlobalDefaults()
   // Verify hash is empty after non-existent path
   const QgsSettingsEntryInteger entry( u"testkey"_s, u"test"_s, 99 );
   QCOMPARE( entry.value(), 99 );
+}
+
+void TestQgsSettingsEntry::testSetValueGlobalDefaultCleanup()
+{
+  // When setting a value equal to the global default, the user key
+  // should be removed so the global default takes effect naturally.
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/cleanup"_s, 50 );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  const QgsSettingsEntryInteger entry( u"cleanup"_s, u"globaltest"_s, 0 );
+
+  // Set a different value — should write to user QSettings
+  entry.setValue( 999 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 999 );
+
+  // Set value back to the global default — should remove user key
+  entry.setValue( 50 );
+  QVERIFY( !QSettings().contains( entry.key() ) );
+  // Value should still be 50 (from global hash)
+  QCOMPARE( entry.value(), 50 );
+
+  // Set a value when no user key exists and value differs — should write
+  entry.setValue( 123 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 123 );
+
+  // Set the same value again — should not re-write (no change)
+  entry.setValue( 123 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 123 );
+
+  // Clean up
+  entry.remove();
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
 }
 
 
