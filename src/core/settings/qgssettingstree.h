@@ -52,6 +52,8 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( u"geometry_validation"_s );
     static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( u"gps"_s );
     static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( u"gui"_s );
+    static inline QgsSettingsTreeNode *sTreeHistogram = treeRoot()->createChildNode( u"histogram"_s );
+    static inline QgsSettingsTreeNode *sTreeIdentify = treeRoot()->createChildNode( u"identify"_s );
     static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( u"layer-tree"_s );
     static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( u"layout"_s );
     static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( u"locale"_s );
