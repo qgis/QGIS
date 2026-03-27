@@ -303,6 +303,18 @@
       "dependencies": [
         "sfcgal"
       ]
+    },
+    "tracy": {
+      "description": "Add Tracy profiler client support",
+      "dependencies": [
+        {
+          "name": "tracy",
+          "features": [
+            "fibers",
+            "on-demand"
+          ]
+        }
+      ]
     }
   }
 }
