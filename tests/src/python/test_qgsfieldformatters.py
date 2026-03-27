@@ -53,7 +53,7 @@ class TestQgsValueMapFieldFormatter(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
-        QgsSettings().setValue("qgis/nullValue", "NULL")
+        QgsApplication.setNullRepresentation("NULL")
         layer = QgsVectorLayer(
             "none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
             "layer",

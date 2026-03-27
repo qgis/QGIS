@@ -18,7 +18,8 @@
 #include "qgscptcityarchive.h"
 #include "qgsdialog.h"
 #include "qgsgui.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QColorDialog>
 #include <QHeaderView>
@@ -31,6 +32,11 @@
 #include "moc_qgsgradientcolorrampdialog.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsGradientColorRampDialog::settingsPlotHue = new QgsSettingsEntryBool( u"plot-hue"_s, QgsSettingsTree::sTreeGradientEditor, false );
+const QgsSettingsEntryBool *QgsGradientColorRampDialog::settingsPlotLightness = new QgsSettingsEntryBool( u"plot-lightness"_s, QgsSettingsTree::sTreeGradientEditor, true );
+const QgsSettingsEntryBool *QgsGradientColorRampDialog::settingsPlotSaturation = new QgsSettingsEntryBool( u"plot-saturation"_s, QgsSettingsTree::sTreeGradientEditor, false );
+const QgsSettingsEntryBool *QgsGradientColorRampDialog::settingsPlotAlpha = new QgsSettingsEntryBool( u"plot-alpha"_s, QgsSettingsTree::sTreeGradientEditor, false );
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -177,11 +183,10 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mPlotFilter, &QgsGradientPlotEventFilter::mouseRelease, this, &QgsGradientColorRampDialog::plotMouseRelease );
   connect( mPlotFilter, &QgsGradientPlotEventFilter::mouseMove, this, &QgsGradientColorRampDialog::plotMouseMove );
 
-  QgsSettings settings;
-  mPlotHueCheckbox->setChecked( settings.value( u"GradientEditor/plotHue"_s, false ).toBool() );
-  mPlotLightnessCheckbox->setChecked( settings.value( u"GradientEditor/plotLightness"_s, true ).toBool() );
-  mPlotSaturationCheckbox->setChecked( settings.value( u"GradientEditor/plotSaturation"_s, false ).toBool() );
-  mPlotAlphaCheckbox->setChecked( settings.value( u"GradientEditor/plotAlpha"_s, false ).toBool() );
+  mPlotHueCheckbox->setChecked( settingsPlotHue->value() );
+  mPlotLightnessCheckbox->setChecked( settingsPlotLightness->value() );
+  mPlotSaturationCheckbox->setChecked( settingsPlotSaturation->value() );
+  mPlotAlphaCheckbox->setChecked( settingsPlotAlpha->value() );
 
   mHueCurve->setVisible( mPlotHueCheckbox->isChecked() );
   mLightnessCurve->setVisible( mPlotLightnessCheckbox->isChecked() );
@@ -196,11 +201,10 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
 QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 {
-  QgsSettings settings;
-  settings.setValue( u"GradientEditor/plotHue"_s, mPlotHueCheckbox->isChecked() );
-  settings.setValue( u"GradientEditor/plotLightness"_s, mPlotLightnessCheckbox->isChecked() );
-  settings.setValue( u"GradientEditor/plotSaturation"_s, mPlotSaturationCheckbox->isChecked() );
-  settings.setValue( u"GradientEditor/plotAlpha"_s, mPlotAlphaCheckbox->isChecked() );
+  settingsPlotHue->setValue( mPlotHueCheckbox->isChecked() );
+  settingsPlotLightness->setValue( mPlotLightnessCheckbox->isChecked() );
+  settingsPlotSaturation->setValue( mPlotSaturationCheckbox->isChecked() );
+  settingsPlotAlpha->setValue( mPlotAlphaCheckbox->isChecked() );
 }
 
 void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp &ramp )

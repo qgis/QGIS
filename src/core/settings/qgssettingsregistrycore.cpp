@@ -16,12 +16,14 @@
 
 #include "pal.h"
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
@@ -273,6 +275,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsProxyExcludedUrls->copyValueFromKey( u"proxy/proxyExcludedUrls"_s, true );
   QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
+  QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
+  QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );

@@ -100,6 +100,7 @@ using namespace Qt::StringLiterals;
 #include "qgspointcloudlayer.h"
 #include "qgscolorrampimpl.h"
 #include "qgsmaplayeraction.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgsmessagebar.h"
@@ -112,10 +113,22 @@ constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
-  = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeMap, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
+  = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations
-  = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
+  = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeIdentify, true, u"Whether to show relations in the identify feature result"_s );
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyExpand
+  = new QgsSettingsEntryBool( u"identify-expand"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to auto-expand identify results"_s );
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm
+  = new QgsSettingsEntryBool( u"identify-auto-feature-form"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to auto-open the feature form for single identify results"_s );
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideDerivedAttributes = new QgsSettingsEntryBool( u"hide-derived-attributes"_s, QgsSettingsTree::sTreeIdentify, false );
+
+const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidth = new QgsSettingsEntryInteger( u"identify-column-width"_s, QgsSettingsTree::sTreeWindowState, 0 );
+
+const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidthTable = new QgsSettingsEntryInteger( u"identify-column-width-table"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
@@ -401,7 +414,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   }
   mIdentifyToolbar->setIconSize( QSize( size, size ) );
 
-  mExpandNewAction->setChecked( mySettings.value( u"Map/identifyExpand"_s, false ).toBool() );
+  mExpandNewAction->setChecked( QgsIdentifyResultsDialog::settingIdentifyExpand->value() );
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
@@ -409,19 +422,19 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
-  int width = mySettings.value( u"Windows/Identify/columnWidth"_s, "0" ).toInt();
+  int width = settingColumnWidth->value();
   if ( width > 0 )
   {
     lstResults->setColumnWidth( 0, width );
   }
-  width = mySettings.value( u"Windows/Identify/columnWidthTable"_s, "0" ).toInt();
+  width = settingColumnWidthTable->value();
   if ( width > 0 )
   {
     tblResults->setColumnWidth( 0, width );
   }
 
   // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
-  const QgsMapToolIdentify::IdentifyMode identifyMode = mySettings.enumValue( u"Map/identifyMode"_s, QgsMapToolIdentify::ActiveLayer );
+  const QgsMapToolIdentify::IdentifyMode identifyMode = QgsMapToolIdentify::settingIdentifyMode->value();
 
   cmbIdentifyMode->addItem( tr( "Current Layer" ), QgsMapToolIdentify::ActiveLayer );
   cmbIdentifyMode->addItem( tr( "Top Down, Stop at First" ), QgsMapToolIdentify::TopDownStopAtFirst );
@@ -475,9 +488,9 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mIdentifyToolbar->addAction( mHelpToolAction );
 
   settingsMenu->addAction( mActionAutoFeatureForm );
-  mActionAutoFeatureForm->setChecked( mySettings.value( u"Map/identifyAutoFeatureForm"_s, false ).toBool() );
+  mActionAutoFeatureForm->setChecked( QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() );
   settingsMenu->addAction( mActionHideDerivedAttributes );
-  mActionHideDerivedAttributes->setChecked( mySettings.value( u"Map/hideDerivedAttributes"_s, false ).toBool() );
+  mActionHideDerivedAttributes->setChecked( settingHideDerivedAttributes->value() );
   settingsMenu->addAction( mActionHideNullValues );
   mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
   settingsMenu->addAction( mActionShowRelations );
@@ -488,8 +501,7 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
 {
   clearHighlights();
 
-  QgsSettings settings;
-  settings.setValue( u"Windows/Identify/columnWidth"_s, lstResults->columnWidth( 0 ) );
+  settingColumnWidth->setValue( lstResults->columnWidth( 0 ) );
 
   delete mActionPopup;
   qDeleteAll( mPlotCurves );
@@ -690,7 +702,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   featItem->setData( 0, FeatureRole, f );
   parentItem->addChild( featItem );
 
-  if ( !derivedAttributes.empty() && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( !derivedAttributes.empty() && !settingHideDerivedAttributes->value() )
   {
     QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
@@ -708,7 +720,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context );
   const QList<QgsAction> actions = vlayer->actions()->actions( u"Feature"_s );
 
-  if ( ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() ) && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() ) && !settingHideDerivedAttributes->value() )
   {
     QgsTreeWidgetItem *actionItem = new QgsTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -1174,7 +1186,7 @@ void QgsIdentifyResultsDialog::addFeature(
     }
   }
 
-  if ( derivedAttributes.size() >= 0 && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( derivedAttributes.size() >= 0 && !settingHideDerivedAttributes->value() )
   {
     QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
@@ -1244,7 +1256,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsMeshLayer *layer, const QString &l
   }
 
   // for Mesh layers it looks like it is best to hide the 'Geometry' feature, but keep the actual 'derived' attributes
-  if ( label == tr( "Geometry" ) && QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( label == tr( "Geometry" ) && settingHideDerivedAttributes->value() )
   {
     return;
   }
@@ -1302,7 +1314,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer, const QStr
   const QString countSuffix = layItem->childCount() > 1 ? u" [%1]"_s.arg( layItem->childCount() ) : QString();
   layItem->setText( 0, u"%1 %2"_s.arg( layer->name(), countSuffix ) );
 
-  if ( derivedAttributes.size() >= 0 && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( derivedAttributes.size() >= 0 && !settingHideDerivedAttributes->value() )
   {
     QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
@@ -1409,7 +1421,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer, const QStr
   layItem->setText( 0, u"%1 %2"_s.arg( layer->name(), countSuffix ) );
 
   // derived attributes
-  if ( derivedAttributes.size() >= 0 && !QgsSettings().value( u"/Map/hideDerivedAttributes"_s, false ).toBool() )
+  if ( derivedAttributes.size() >= 0 && !settingHideDerivedAttributes->value() )
   {
     QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
     derivedItem->setData( 0, Qt::UserRole, "derived" );
@@ -1526,7 +1538,7 @@ void QgsIdentifyResultsDialog::show()
     {
       lstResults->setCurrentItem( featItem );
 
-      if ( QgsSettings().value( u"/Map/identifyAutoFeatureForm"_s, false ).toBool() )
+      if ( QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
         if ( layer )
@@ -1808,10 +1820,9 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 // Save the current window location (store in ~/.qt/qgisrc)
 void QgsIdentifyResultsDialog::saveWindowLocation()
 {
-  QgsSettings settings;
   // first column width
-  settings.setValue( u"Windows/Identify/columnWidth"_s, lstResults->columnWidth( 0 ) );
-  settings.setValue( u"Windows/Identify/columnWidthTable"_s, tblResults->columnWidth( 0 ) );
+  settingColumnWidth->setValue( lstResults->columnWidth( 0 ) );
+  settingColumnWidthTable->setValue( tblResults->columnWidth( 0 ) );
 }
 
 void QgsIdentifyResultsDialog::setColumnText( int column, const QString &label )
@@ -2676,8 +2687,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
 void QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged( int index )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/identifyMode"_s, cmbIdentifyMode->itemData( index ).toInt() );
+  QgsMapToolIdentify::settingIdentifyMode->setValue( static_cast<QgsMapToolIdentify::IdentifyMode>( cmbIdentifyMode->itemData( index ).toInt() ) );
 }
 
 void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
@@ -2687,8 +2697,7 @@ void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
 
 void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/identifyAutoFeatureForm"_s, checked );
+  settingIdentifyAutoFeatureForm->setValue( checked );
   mActionSelectFeaturesOnMouseOver->setEnabled( !checked );
   if ( mSelectModeButton->defaultAction() == mActionSelectFeaturesOnMouseOver )
   {
@@ -2700,8 +2709,7 @@ void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 
 void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/hideDerivedAttributes"_s, checked );
+  settingHideDerivedAttributes->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
@@ -2716,8 +2724,7 @@ void QgsIdentifyResultsDialog::mActionShowRelations_toggled( bool checked )
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( u"Map/identifyExpand"_s, checked );
+  QgsIdentifyResultsDialog::settingIdentifyExpand->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
