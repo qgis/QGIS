@@ -50,6 +50,7 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
      * Constructor for QgsMaterialWidget.
      */
     explicit QgsMaterialWidget( QWidget *parent = nullptr );
+    ~QgsMaterialWidget() override;
 
     /**
      * Sets the required rendering \a technique which the material must support.
