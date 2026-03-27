@@ -1246,7 +1246,7 @@ which are not wrapped by PyQt:
 
 %If (MOVABLE_MAPPED_TYPE)
 template <TYPE>
-%MappedType std::unique_ptr<TYPE> /Movable,NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
+%MappedType std::unique_ptr<TYPE> /@SIP_MOVABLE_STR@NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
 {
 %TypeHeaderCode
 #include <memory>
@@ -1622,6 +1622,8 @@ template <TYPE>
   return sipGetState(sipTransferObj);
 %End
 };
+
+@SIP_QLIST_QINT64@
 
 %MappedType QVector<long long>
     /TypeHintIn="Iterable[int]",
