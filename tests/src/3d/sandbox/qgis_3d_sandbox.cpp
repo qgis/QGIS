@@ -44,6 +44,11 @@
 #include <QScreen>
 #include <QString>
 #include <QToolBar>
+#include <qlogging.h>
+
+#ifdef HAVE_TRACY
+#include <tracy/Tracy.hpp>
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -211,6 +216,33 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 int main( int argc, char *argv[] )
 {
   QgsApplication myApp( argc, argv, true, QString(), u"desktop"_s );
+
+#ifdef HAVE_TRACY
+  // Forward log messages to Tracy
+  qInstallMessageHandler( []( QtMsgType type, const QMessageLogContext &, const QString &msg ) {
+    const auto encodedMsg = msg.toLocal8Bit();
+    uint32_t color = 0xFFFFFF;
+    switch ( type )
+    {
+      case QtDebugMsg:
+        color = 0xEEEEEE;
+        break;
+      case QtCriticalMsg:
+        color = 0xFF0000;
+        break;
+      case QtWarningMsg:
+        color = 0xEEEE00;
+        break;
+      case QtFatalMsg:
+        color = 0xEE0000;
+        break;
+      default:
+        color = 0xFFFFFF;
+        break;
+    }
+    TracyMessageC( encodedMsg.constData(), encodedMsg.size(), color );
+  } );
+#endif
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
