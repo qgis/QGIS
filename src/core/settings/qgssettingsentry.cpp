@@ -157,7 +157,15 @@ bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
 {
-  return QgsSettings::get()->origin( key( dynamicKeyPartList ) );
+  const QString resolvedKey = key( dynamicKeyPartList );
+
+  if ( sGlobalDefaults.contains( resolvedKey ) )
+    return Qgis::SettingsOrigin::Global;
+
+  if ( QgsSettings::get()->contains( resolvedKey ) )
+    return Qgis::SettingsOrigin::Local;
+
+  return Qgis::SettingsOrigin::Any;
 }
 
 void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
