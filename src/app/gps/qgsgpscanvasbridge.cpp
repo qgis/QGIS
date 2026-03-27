@@ -72,15 +72,29 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+    if ( mEarthCrs )
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    else
+      mCanvasToWgs84Transform = QgsCoordinateTransform();
   } );
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+    if ( mEarthCrs )
+      mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    else
+      mCanvasToWgs84Transform = QgsCoordinateTransform();
   } );
 
   mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] { mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() ); } );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+    if ( mEarthCrs )
+      mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+    else
+      mDistanceCalculator = QgsDistanceArea();
+  } );
 
   connect( mCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsCanvasBridge::cursorCoordinateChanged );
   connect( mCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsCanvasBridge::tapAndHold );
@@ -154,7 +168,7 @@ void QgsGpsCanvasBridge::setMapCenteringMode( Qgis::MapRecenteringMode mode )
 
 void QgsGpsCanvasBridge::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
 {
-  if ( !mConnection->isConnected() )
+  if ( !mConnection->isConnected() || !mEarthCrs )
     return;
 
   try
@@ -229,6 +243,9 @@ void QgsGpsCanvasBridge::gpsDisconnected()
 
 void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
 {
+  if ( !mEarthCrs )
+    return;
+
   const bool validFlag = info.isValid();
   QgsPointXY myNewCenter;
   if ( validFlag )
@@ -401,7 +418,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
 
 void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
 {
-  if ( !mConnection->isConnected() )
+  if ( !mConnection->isConnected() || !mEarthCrs )
     return;
 
   try
@@ -415,7 +432,7 @@ void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
 
 void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
 {
-  if ( !mConnection->isConnected() )
+  if ( !mConnection->isConnected() || !mEarthCrs )
     return;
 
   static constexpr int GPS_DISTANCE_MESSAGE_TIMEOUT_MS = 2000;
