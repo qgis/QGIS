@@ -732,6 +732,34 @@ class TestQgsSettingsEntry(QgisTestCase):
 
             QgsSettingsEntryBase.setGlobalSettingsPath("")
 
+    def test_set_value_global_default_cleanup(self):
+        """Setting a value equal to the global default removes the user key."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/cleanup", 50)
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            entry = QgsSettingsEntryInteger("cleanup", "globaltest", 0)
+
+            # Set a different value — should write to user QSettings
+            entry.setValue(999)
+            self.assertTrue(QSettings().contains(entry.key()))
+            self.assertEqual(entry.value(), 999)
+
+            # Set value back to the global default — should remove user key
+            entry.setValue(50)
+            self.assertFalse(QSettings().contains(entry.key()))
+            # Value should still be 50 (from global hash)
+            self.assertEqual(entry.value(), 50)
+
+            # Clean up
+            entry.remove()
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
+
 
 if __name__ == "__main__":
     unittest.main()
