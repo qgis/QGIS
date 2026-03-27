@@ -1312,6 +1312,33 @@ Returns ``True`` if the CRS has a vertical axis.
 Returns auth id of related geographic CRS
 %End
 
+    bool topocentricOrigin( double &latDeg /Out/, double &lonDeg /Out/ ) const;
+%Docstring
+Returns ``True`` if this CRS is a topocentric compatible CRS. ``latDeg``
+and ``lonDeg`` is the origin latitude and longitude in decimal degrees.
+
+.. versionadded:: 4.2
+%End
+
+    bool isTopocentricCompatible() const;
+%Docstring
+Returns ``True`` if this CRS can serve as a base for building a
+topocentric CRS. This is the case when the horizontal part of the CRS is
+Geocentric, or when the CRS is already topocentric.
+
+.. versionadded:: 4.2
+%End
+
+    QgsCoordinateReferenceSystem topocentricCrs( double latDeg, double lonDeg ) const;
+%Docstring
+Constructs a topocentric CRS derived from this CRS with origin at
+``latDeg``, ``lonDeg`` in decimal degrees.
+
+If the CRS is not topocentric compatible, returns invalid CRS.
+
+.. versionadded:: 4.2
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),

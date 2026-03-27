@@ -421,6 +421,7 @@ using namespace Qt::StringLiterals;
 #include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
+#include "qgstopocentricwidget.h"
 #include "qgsstackeddiagramproperties.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
@@ -14691,16 +14692,69 @@ void QgisApp::updateCrsStatusBar()
   const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
   if ( projectCrs.isValid() )
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+
+    double lat = 0.0, lon = 0.0;
+    const bool isTopocentric = projectCrs.topocentricOrigin( lat, lon );
+
     if ( !projectCrs.authid().isEmpty() )
       mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
+    else if ( isTopocentric )
+      mOnTheFlyProjectionStatusButton->setText( tr( "Topocentric" ) );
     else
       mOnTheFlyProjectionStatusButton->setText( tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionEnabled.svg"_s ) );
+
+    if ( projectCrs.isTopocentricCompatible() )
+    {
+      if ( !isTopocentric )
+      {
+        const QgsCoordinateReferenceSystem topoCrs = projectCrs.topocentricCrs( 0.0, 0.0 );
+        if ( topoCrs.isValid() )
+        {
+          QgsProject::instance()->setCrs( topoCrs );
+          return;
+        }
+      }
+
+      if ( !mTopocentricMenu )
+      {
+        mTopocentricMenu = new QMenu( mOnTheFlyProjectionStatusButton );
+        mTopocentricWidget = new QgsTopocentricWidget( mTopocentricMenu );
+        QWidgetAction *wa = new QWidgetAction( mTopocentricMenu );
+        wa->setDefaultWidget( mTopocentricWidget );
+        mTopocentricMenu->addAction( wa );
+
+        connect( mTopocentricWidget, &QgsTopocentricWidget::originChanged, this, [this]( double latitude, double longitude ) {
+          const QgsCoordinateReferenceSystem newCrs = QgsProject::instance()->crs().topocentricCrs( latitude, longitude );
+
+          if ( !newCrs.isValid() )
+            return;
+
+          const QgsRectangle savedExtent = mMapCanvas->extent();
+          mMapCanvas->freeze( true );
+          QgsProject::instance()->setCrs( newCrs );
+          mMapCanvas->setExtent( savedExtent );
+          mMapCanvas->freeze( false );
+          mMapCanvas->redrawAllLayers(); // this is necessarry because the map doesn't always refresh automatically on topo crs change
+        } );
+      }
+
+      mOnTheFlyProjectionStatusButton->setMenu( mTopocentricMenu );
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::MenuButtonPopup );
+    }
+    else
+    {
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+    }
   }
   else
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+    mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+
     mOnTheFlyProjectionStatusButton->setText( QString() );
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionDisabled.svg"_s ) );
