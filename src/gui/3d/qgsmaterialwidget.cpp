@@ -56,6 +56,8 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   setSettings( new QgsPhongMaterialSettings(), nullptr );
 }
 
+QgsMaterialWidget::~QgsMaterialWidget() = default;
+
 void QgsMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
 {
   mTechnique = technique;
