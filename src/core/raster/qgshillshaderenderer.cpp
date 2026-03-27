@@ -35,6 +35,7 @@ using namespace Qt::StringLiterals;
 #ifdef QGISDEBUG
 #include <chrono>
 #include "qgsmaprendererjob.h"
+#include "qgssettingsentryimpl.h"
 #endif
 #include "qgsexception.h"
 #include "qgsopenclutils.h"
