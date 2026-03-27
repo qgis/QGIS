@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgssettingsproxy.h"
 #include "qgssettingstreenode.h"
+#include "qgsvariantutils.h"
 
 #include <QDir>
 #include <QRegularExpression>
@@ -52,6 +53,19 @@ bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )
 QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
 {
   return sGlobalDefaults.value( key );
+}
+
+QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
+{
+  const QVariant userValue = QgsSettings::get()->value( resolvedKey );
+  if ( !QgsVariantUtils::isNull( userValue ) )
+    return userValue;
+
+  const auto it = sGlobalDefaults.constFind( resolvedKey );
+  if ( it != sGlobalDefaults.constEnd() )
+    return it.value();
+
+  return defaultValue;
 }
 
 QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
@@ -224,7 +238,7 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) c
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const
 {
-  return QgsSettings::get()->value( key( dynamicKeyPartList ), mDefaultValue );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), mDefaultValue );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
@@ -237,19 +251,19 @@ QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bo
 QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
   if ( useDefaultValueOverride )
-    return QgsSettings::get()->value( key( dynamicKeyPartList ), defaultValueOverride );
+    return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), defaultValueOverride );
   else
-    return QgsSettings::get()->value( key( dynamicKeyPartList ), mDefaultValue );
+    return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), mDefaultValue );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart ) const
 {
-  return QgsSettings::get()->value( key( dynamicKeyPart ), defaultValueOverride );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPart ), defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QStringList &dynamicKeyPartList ) const
 {
-  return QgsSettings::get()->value( key( dynamicKeyPartList ), defaultValueOverride );
+  return valueFromSettingsWithGlobalDefault( key( dynamicKeyPartList ), defaultValueOverride );
 }
 
 QVariant QgsSettingsEntryBase::defaultValueAsVariant() const

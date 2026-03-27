@@ -378,6 +378,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool hasChanged() const { return mHasChanged; }
 
   private:
+    QVariant valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const SIP_SKIP;
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
