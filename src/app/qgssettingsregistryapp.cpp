@@ -17,6 +17,7 @@
 
 #include "qgssettingsregistryapp.h"
 
+#include "qgisapp.h"
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
@@ -60,6 +61,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgsIdentifyResultsDialog::settingIdentifyExpand->copyValueFromKey( u"Map/identifyExpand"_s, true );
   QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->copyValueFromKey( u"Map/identifyAutoFeatureForm"_s, true );
   QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->copyValueFromKey( u"/Map/identifyAutoFeatureForm"_s, true );
+  QgisApp::settingsAskToDeleteFeatures->copyValueFromKey( u"app/askToDeleteFeatures"_s, true );
   QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( u"plugins/automatically-check-for-updates"_s, true );
   QgsPluginManager::settingsAllowExperimental->copyValueFromKey( u"app/plugin_installer/allowExperimental"_s, true );
   QgsPluginManager::settingsAllowDeprecated->copyValueFromKey( u"app/plugin_installer/allowDeprecated"_s, true );
