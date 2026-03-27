@@ -22,9 +22,37 @@
 
 #include <QDir>
 #include <QRegularExpression>
+#include <QSettings>
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
+
+void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
+{
+  sGlobalDefaults.clear();
+  if ( path.isEmpty() || !QFile::exists( path ) )
+    return;
+
+  const QSettings globalSettings( path, QSettings::IniFormat );
+  const QStringList keys = globalSettings.allKeys();
+  sGlobalDefaults.reserve( keys.size() );
+  for ( const QString &key : keys )
+  {
+    sGlobalDefaults.insert( key, globalSettings.value( key ) );
+  }
+}
+
+bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )
+{
+  return sGlobalDefaults.contains( key );
+}
+
+QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
+{
+  return sGlobalDefaults.value( key );
+}
 
 QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
   : mParentTreeElement( parent )
