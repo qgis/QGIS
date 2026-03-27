@@ -30,6 +30,8 @@
 
 #include <QRegularExpression>
 #include <QString>
+#include <qgssettingsregistrycore.h>
+#include <qgssettingsentryimpl.h>
 
 using namespace Qt::StringLiterals;
 
@@ -265,7 +267,10 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
     if ( !abstract.isEmpty() )
       parts << "<br/>" + abstract.replace( "\n"_L1, "<br/>"_L1 );
     parts << "<i>" + layer->publicSource() + "</i>";
-    parts << "ID:" + layer->id();
+    if ( !QgsSettingsRegistryCore::settingsLayerTreeHiddenIdInLayerTooltips->value() )
+    {
+      parts << "ID:" + layer->id();
+    }
     return parts.join( "<br/>"_L1 );
   }
   return QString();

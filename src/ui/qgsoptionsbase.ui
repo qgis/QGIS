@@ -2743,14 +2743,21 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
+                  <item row="4" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxHiddenIdInLayerTooltips">
+                    <property name="text">
+                     <string>Hidden ID in layer tooltips</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
                    <widget class="QLabel" name="label_58">
                     <property name="text">
                      <string>WMS getLegendGraphic resolution</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1">
+                  <item row="5" column="1">
                    <widget class="QgsSpinBox" name="mLegendGraphicResolutionSpinBox">
                     <property name="toolTip">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
@@ -2766,14 +2773,14 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0">
+                  <item row="6" column="0">
                    <widget class="QLabel" name="labelLegendSymbolMinimumSize">
                     <property name="text">
                      <string>Minimum legend symbol size</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
+                  <item row="6" column="1">
                    <widget class="QgsDoubleSpinBox" name="mLegendSymbolMinimumSizeSpinBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -2804,14 +2811,14 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
+                  <item row="7" column="0">
                    <widget class="QLabel" name="labelLegendSymbolMaximumSize">
                     <property name="text">
                      <string>Maximum legend symbol size</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="1">
+                  <item row="7" column="1">
                    <widget class="QgsDoubleSpinBox" name="mLegendSymbolMaximumSizeSpinBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -5721,6 +5728,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <tabstop>mLayerTreeInsertionMethod</tabstop>
   <tabstop>mShowFeatureCountByDefaultCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
+  <tabstop>cbxHiddenIdInLayerTooltips</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
   <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
   <tabstop>mLegendSymbolMaximumSizeSpinBox</tabstop>

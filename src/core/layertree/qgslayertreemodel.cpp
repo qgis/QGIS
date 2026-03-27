@@ -340,7 +340,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
         }
 
-        parts << "ID:" + layer->id();
+        if ( !QgsSettingsRegistryCore::settingsLayerTreeHiddenIdInLayerTooltips->value() )
+        {
+          parts << "ID:" + layer->id();
+        }
 
         return parts.join( "<br/>"_L1 );
       }
