@@ -32,8 +32,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsHistogramWidget::settingsHistogramShowMean = new QgsSettingsEntryBool( u"histogram-show-mean"_s, QgsSettingsTree::sTreeGui, false );
-const QgsSettingsEntryBool *QgsHistogramWidget::settingsHistogramShowStdev = new QgsSettingsEntryBool( u"histogram-show-stdev"_s, QgsSettingsTree::sTreeGui, false );
+const QgsSettingsEntryBool *QgsHistogramWidget::settingsHistogramShowMean = new QgsSettingsEntryBool( u"histogram-show-mean"_s, QgsSettingsTree::sTreeHistogram, false );
+const QgsSettingsEntryBool *QgsHistogramWidget::settingsHistogramShowStdev = new QgsSettingsEntryBool( u"histogram-show-stdev"_s, QgsSettingsTree::sTreeHistogram, false );
 
 // QWT Charting widget
 #include <qwt_global.h>
