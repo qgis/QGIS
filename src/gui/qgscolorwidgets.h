@@ -504,7 +504,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     static constexpr float mMargin = 2.;
 
     /*Cached image for color box*/
-    QImage *mBoxImage = nullptr;
+    std::unique_ptr<QImage> mBoxImage;
 
     /*Whether the cached image requires redrawing*/
     bool mDirty = true;

@@ -1448,7 +1448,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     bool mDrawRenderingStats = false;
 
     //! Optionally use cache with rendered map layers for the current map settings
-    QgsMapRendererCache *mCache = nullptr;
+    std::unique_ptr<QgsMapRendererCache> mCache;
 
     QTimer *mResizeTimer = nullptr;
     QTimer *mRefreshTimer = nullptr;

@@ -843,13 +843,11 @@ QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-  mBoxImage = new QImage( width() - mMargin * 2, height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( width() - static_cast<int>( mMargin * 2 ), height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
 }
 
 QgsColorBox::~QgsColorBox()
-{
-  delete mBoxImage;
-}
+{}
 
 QSize QgsColorBox::sizeHint() const
 {
@@ -915,8 +913,8 @@ void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 void QgsColorBox::resizeEvent( QResizeEvent *event )
 {
   mDirty = true;
-  delete mBoxImage;
-  mBoxImage = new QImage( event->size().width() - mMargin * 2, event->size().height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( event->size().width() - static_cast<int>( mMargin * 2 ), event->size().height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
+
   QgsColorWidget::resizeEvent( event );
 }
 
