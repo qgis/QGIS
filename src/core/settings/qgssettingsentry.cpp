@@ -147,12 +147,14 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
 
 bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
-  return QgsSettings::get()->contains( key( dynamicKeyPart ) );
+  const QString resolvedKey = key( dynamicKeyPart );
+  return QgsSettings::get()->contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
 }
 
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
-  return QgsSettings::get()->contains( key( dynamicKeyPartList ) );
+  const QString resolvedKey = key( dynamicKeyPartList );
+  return QgsSettings::get()->contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
 }
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
