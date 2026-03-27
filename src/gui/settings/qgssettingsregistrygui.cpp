@@ -27,6 +27,7 @@
 #include "qgshistogramwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
+#include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -117,6 +118,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   QgsGradientColorRampDialog::settingsPlotSaturation->copyValueFromKey( u"GradientEditor/plotSaturation"_s, true );
   QgsGradientColorRampDialog::settingsPlotAlpha->copyValueFromKey( u"GradientEditor/plotAlpha"_s, true );
   QgsColorTextWidget::settingsTextFormat->copyValueFromKey( u"ColorWidgets/textWidgetFormat"_s, true );
+  QgsRendererMeshPropertiesWidget::settingsTab->copyValueFromKey( u"/Windows/RendererMeshProperties/tab"_s, true );
   QgsHistogramWidget::settingsHistogramShowMean->copyValueFromKey( u"HistogramWidget/showMean"_s, true );
   QgsHistogramWidget::settingsHistogramShowStdev->copyValueFromKey( u"HistogramWidget/showStdev"_s, true );
   settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
