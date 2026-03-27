@@ -231,10 +231,19 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
   const QVariant currentValue = valueAsVariant( dynamicKeyPartList );
   if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
   {
-    QSettings().setValue( resolvedKey, value );
+    // Value is changing — check if new value equals global default
+    const QString sanitizedKey = sanitizeGlobalKey( resolvedKey );
+    if ( sGlobalDefaults.contains( sanitizedKey ) && sGlobalDefaults.value( sanitizedKey ) == value )
+    {
+      // New value matches global default — remove user override instead of writing
+      QSettings().remove( resolvedKey );
+    }
+    else
+    {
+      QSettings().setValue( resolvedKey, value );
+    }
   }
-  // If the new value equals the global default, remove the user override
-  // so the global default takes effect naturally and keeps user QSettings clean
+  // Value unchanged and equals global default — clean up stale user key if present
   else if ( hasGlobalDefault( resolvedKey ) && globalDefault( resolvedKey ) == currentValue )
   {
     QSettings().remove( resolvedKey );
