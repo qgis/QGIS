@@ -20,6 +20,13 @@ import shutil
 # Deterministic XML
 os.environ["QT_HASH_SEED"] = "1"
 
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+)
 from qgis.PyQt import QtCore
 from qgis.server import (
     QgsBufferServerRequest,
@@ -255,6 +262,58 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             response.headers()["Location"],
             "http://server.qgis.org/ows/catalog/index.html",
         )
+
+    def test_project_json_non_earth_crs(self):
+        """Test landing page omits geographic_extent for non-Earth CRS projects"""
+        tmpdir = QtCore.QTemporaryDir()
+
+        # Create a minimal project with a non-Earth (Moon) CRS layer
+        project = QgsProject()
+        layer = QgsVectorLayer(
+            "Point?crs=IAU_2015:30190&field=fid:integer", "moon_layer", "memory"
+        )
+        project.addMapLayers([layer])
+        project.setCrs(QgsCoordinateReferenceSystem("IAU_2015:30190"))
+        project.setTitle("Moon Test Project")
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt("point(0.5 0.5)"))
+        f.setAttributes([1])
+        layer.dataProvider().addFeatures([f])
+        project_path = os.path.join(tmpdir.path(), "moon_project.qgs")
+        project.write(project_path)
+
+        original_dirs = os.environ.get(
+            "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES", ""
+        )
+        try:
+            os.environ["QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES"] = tmpdir.path()
+
+            # Get the project list to find the non-Earth project's ID
+            request = QgsBufferServerRequest("http://server.qgis.org/index.json")
+            request.setHeader("Accept", "application/json")
+            response = QgsBufferServerResponse()
+            self.server.handleRequest(request, response)
+            j = json.loads(bytes(response.body()))
+            self.assertEqual(len(j["projects"]), 1)
+            project_id = j["projects"][0]["id"]
+
+            # Request the project info
+            request = QgsBufferServerRequest(f"http://server.qgis.org/map/{project_id}")
+            request.setHeader("Accept", "application/json")
+            response = QgsBufferServerResponse()
+            self.server.handleRequest(request, response)
+            jdata = json.loads(bytes(response.body()))
+            project_info = jdata["project"]
+
+            # CRS should be the native IAU CRS, not EPSG:4326
+            self.assertNotEqual(project_info["crs"], "EPSG:4326")
+            self.assertIn("IAU_2015:30190", project_info["crs"])
+
+            # geographic_extent must be absent — it is Earth-specific (EPSG:4326)
+            self.assertNotIn("geographic_extent", project_info)
+
+        finally:
+            os.environ["QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES"] = original_dirs
 
 
 if __name__ == "__main__":
