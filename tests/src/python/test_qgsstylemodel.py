@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 import unittest
 
 from qgis.core import (
+    Qgis,
     QgsAbstract3DSymbol,
     QgsFillSymbol,
     QgsGeometry,
@@ -23,6 +24,8 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsPalLayerSettings,
+    QgsPhongMaterialSettings,
+    QgsSimpleLineMaterialSettings,
     QgsStyle,
     QgsStyleModel,
     QgsStyleProxyModel,
@@ -748,7 +751,7 @@ class TestQgsStyleModel(QgisTestCase):
         style.tagSymbol(
             QgsStyle.StyleEntity.MaterialSettingsEntity, "a", ["tag 1", "tag 2"]
         )
-        material_B = QgsGoochMaterialSettings()
+        material_B = QgsPhongMaterialSettings()
         self.assertTrue(style.addMaterialSettings("B ", material_B, True))
         material_b = QgsGoochMaterialSettings()
         self.assertTrue(style.addMaterialSettings("b", material_b, True))
@@ -806,6 +809,19 @@ class TestQgsStyleModel(QgisTestCase):
         self.assertEqual(
             model.data(model.index(4, 0), QgsStyleModel.Role.TypeRole),
             QgsStyle.StyleEntity.MaterialSettingsEntity,
+        )
+
+        self.assertEqual(
+            model.data(model.index(0, 0), QgsStyleModel.Role.MaterialType),
+            "gooch",
+        )
+        self.assertEqual(
+            model.data(model.index(1, 0), QgsStyleModel.Role.MaterialType),
+            "phong",
+        )
+        self.assertEqual(
+            model.data(model.index(4, 0), QgsStyleModel.Role.MaterialType),
+            "gooch",
         )
 
         self.assertEqual(
@@ -4656,7 +4672,7 @@ class TestQgsStyleModel(QgisTestCase):
             "material a",
             ["tag 1", "tag 2"],
         )
-        material_B = QgsGoochMaterialSettings()
+        material_B = QgsSimpleLineMaterialSettings()
         self.assertTrue(style.addMaterialSettings("material BB", material_B, True))
         material_B = QgsGoochMaterialSettings()
         self.assertTrue(style.addMaterialSettings("material c", material_B, True))
@@ -4871,6 +4887,39 @@ class TestQgsStyleModel(QgisTestCase):
 
         model.setFilterString("")
         model.setSymbolTypeFilterEnabled(False)
+        model.setEntityFilterEnabled(False)
+        self.assertEqual(model.rowCount(), 23)
+
+        # rendering technique filter
+        model.setEntityFilter(QgsStyle.StyleEntity.MaterialSettingsEntity)
+        model.setEntityFilterEnabled(True)
+        self.assertEqual(model.rowCount(), 3)
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Lines)
+        self.assertEqual(model.rowCount(), 3)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
+        self.assertEqual(model.data(model.index(1, 0)), "material BB")
+        self.assertEqual(model.data(model.index(2, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(True)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material BB")
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Triangles)
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), "material a")
+        self.assertEqual(model.data(model.index(1, 0)), "material c")
+
+        model.setFilterString("c")
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(False)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material c")
+        model.setRenderingTechniqueFilterEnabled(True)
+        model.setFilterString("")
+        model.setRenderingTechnique(Qgis.MaterialRenderingTechnique.Lines)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), "material BB")
+        model.setFilterString("")
+        model.setRenderingTechniqueFilterEnabled(False)
         model.setEntityFilterEnabled(False)
         self.assertEqual(model.rowCount(), 23)
 
