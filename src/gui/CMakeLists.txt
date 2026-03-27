@@ -963,6 +963,7 @@ set(QGIS_GUI_HDRS
   qgsidentifymenu.h
   qgsimagedroptextedit.h
   qgskeyvaluewidget.h
+  qgslayerchangescommitblockerinterface.h
   qgslayermetadatasearchwidget.h
   qgslayermetadataresultsmodel.h
   qgslayermetadataresultsproxymodel.h
