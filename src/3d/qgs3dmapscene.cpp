@@ -205,6 +205,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
+  connect( mCameraController, &QgsCameraController::depthBufferChanged, this, &Qgs3DMapScene::onViewed2DExtentFrom3DChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
   onSkyboxSettingsChanged();
@@ -289,24 +290,11 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
   for ( int i : pointsOrder )
   {
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : mEngine->size().width(), ( ( i >> 1 ) & 1 ) ? 0 : mEngine->size().height() );
-    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, mEngine->size(), camera );
-    QVector3D dir = ray.direction();
-    if ( dir.z() == 0.0 )
-      dir.setZ( 0.000001 );
-    double t = -ray.origin().z() / dir.z();
-    if ( t < 0 )
-    {
-      // If the projected point is on the back of the camera we choose the farthest point in the front
-      t = camera->farPlane();
-    }
-    else
-    {
-      // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
-      t = std::min<float>( t, camera->farPlane() );
-    }
-    QVector3D planePoint = ray.origin() + t * dir;
-    QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
-    extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
+
+    float depth = mCameraController->sampleDepthBuffer( p.x(), p.y() );
+    QVector3D worldPos = Qgs3DUtils::screenPointToWorldPos( p, depth, mEngine->size(), camera );
+    QgsVector3D mapPos = mMap.worldToMapCoordinates( worldPos );
+    extent.push_back( QgsPointXY( mapPos.x(), mapPos.y() ) );
   }
   return extent;
 }
@@ -339,10 +327,7 @@ void Qgs3DMapScene::onCameraChanged()
   updateCameraNearFarPlanes();
 
   onShadowSettingsChanged();
-
-  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
-  emit viewed2DExtentFrom3DChanged( extent2D );
-  schedule2DMapOverlayUpdate();
+  onViewed2DExtentFrom3DChanged();
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -357,6 +342,13 @@ void Qgs3DMapScene::onCameraChanged()
     QgsDebugMsgLevel( u"Rebasing scene origin from %1 to %2"_s.arg( mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
     mMap.setOrigin( newOrigin );
   }
+}
+
+void Qgs3DMapScene::onViewed2DExtentFrom3DChanged()
+{
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  emit viewed2DExtentFrom3DChanged( extent2D );
+  schedule2DMapOverlayUpdate();
 }
 
 bool Qgs3DMapScene::updateScene( bool forceUpdate )

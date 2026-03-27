@@ -374,6 +374,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     void applyPendingOverlayUpdate();
 
+    void onViewed2DExtentFrom3DChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapScene();
