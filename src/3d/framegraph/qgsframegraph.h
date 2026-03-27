@@ -21,6 +21,7 @@
 #include "qgis_3d.h"
 #include "qgsabstractrenderview.h"
 
+#include <QSize>
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
@@ -42,6 +43,11 @@
 #include <Qt3DRender/QViewport>
 
 #define SIP_NO_FILE
+
+namespace Qt3DRender
+{
+  class QRenderCaptureReply;
+}
 
 class Qgs3DMapSettings;
 class QgsAmbientOcclusionRenderView;
@@ -261,6 +267,11 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
+    // Separate thumbnail capture pass to save scaled-down images of the
+    // rendered view to aid in debugging (e.g., Tracy profiler frame images).
+    Qt3DRender::QRenderCapture *mThumbnailCapture = nullptr;
+    Qt3DRender::QTexture2D *mThumbnailTexture = nullptr;
+
     // Rubber bands pass
     Qt3DRender::QCameraSelector *mRubberBandsCameraSelector = nullptr;
     Qt3DRender::QLayerFilter *mRubberBandsLayerFilter = nullptr;
@@ -295,6 +306,10 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
     Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
+
+    void constructThumbnailCapturePass();
+    void updateThumbnailTextureSize();
+    void onThumbnailCaptureCompleted( Qt3DRender::QRenderCaptureReply *reply );
 
     bool mRenderCaptureEnabled = false;
 

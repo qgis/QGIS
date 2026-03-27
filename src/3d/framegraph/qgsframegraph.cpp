@@ -34,6 +34,7 @@
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QBlitFramebuffer>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -41,6 +42,10 @@
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QTechnique>
+
+#ifdef HAVE_TRACY
+#include "tracy/Tracy.hpp"
+#endif
 
 #include "moc_qgsframegraph.cpp"
 
@@ -99,6 +104,81 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForRenderCapture
   mRenderCapture = new Qt3DRender::QRenderCapture( top );
 
   return top;
+}
+
+void QgsFrameGraph::updateThumbnailTextureSize()
+{
+  // Tracy requires width/height to be multiples of 4, otherwise it will show
+  // just a black rectangle.
+  const int width = ( mSize.width() / 10 ) & ~3;
+  const int height = ( mSize.height() / 10 ) & ~3;
+  mThumbnailTexture->setSize( width, height );
+}
+
+void QgsFrameGraph::constructThumbnailCapturePass()
+{
+  // Diagram of the nodes we're creating:
+  // mMainViewPort
+  // ├── QBlitFramebuffer (copy from forwardRenderView to mThumbnailTexture)
+  // └── QRenderTargetSelector (set to mThumbnailTexture)
+  //     └── QRenderCapture (mThumbnailCapture)
+
+  mThumbnailTexture = new Qt3DRender::QTexture2D( this );
+  mThumbnailTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  updateThumbnailTextureSize();
+
+  Qt3DRender::QRenderTargetOutput *renderTargetOutput = new Qt3DRender::QRenderTargetOutput( this );
+  renderTargetOutput->setTexture( mThumbnailTexture );
+
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( this );
+  renderTarget->addOutput( renderTargetOutput );
+
+  // Copy from forward render pass to thumbnail texture
+  Qt3DRender::QBlitFramebuffer *blit = new Qt3DRender::QBlitFramebuffer( mMainViewPort );
+  blit->setObjectName( "Framebuffer copy for thumbnail" );
+  blit->setSource( forwardRenderView().renderTargetSelector()->target() );
+  blit->setDestination( renderTarget );
+  blit->setSourceRect( QRectF( 0, 0, 1, 1 ) );
+  blit->setDestinationRect( QRectF( 0, 0, 1, 1 ) );
+  blit->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Linear );
+
+  Qt3DRender::QRenderTargetSelector *targetSelector = new Qt3DRender::QRenderTargetSelector( mMainViewPort );
+  targetSelector->setObjectName( "Thumbnail capture target selector" );
+  targetSelector->setTarget( renderTarget );
+
+  mThumbnailCapture = new Qt3DRender::QRenderCapture( targetSelector );
+  mThumbnailCapture->setObjectName( "Thumbnail capture" );
+
+  // Request initial capture
+  // Ugly hack: Requesting just once results in a capture every two frames.
+  // "Buffering" an extra capture like this works around that.
+  Qt3DRender::QRenderCaptureReply *reply1 = mThumbnailCapture->requestCapture();
+  Qt3DRender::QRenderCaptureReply *reply2 = mThumbnailCapture->requestCapture();
+  for ( Qt3DRender::QRenderCaptureReply *reply : { reply1, reply2 } )
+    connect( reply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, reply]() { onThumbnailCaptureCompleted( reply ); } );
+}
+
+void QgsFrameGraph::onThumbnailCaptureCompleted( Qt3DRender::QRenderCaptureReply *reply )
+{
+  reply->deleteLater();
+
+  // Convert to RGBA8888 format (required by Tracy)
+  QImage rgbaImage = reply->image().convertToFormat( QImage::Format_RGBA8888 );
+
+  // Send to Tracy
+#ifdef HAVE_TRACY
+  FrameImage(
+    rgbaImage.constBits(),
+    static_cast<uint16_t>( rgbaImage.width() ),
+    static_cast<uint16_t>( rgbaImage.height() ),
+    0,   // offset: 0 = current frame
+    true // flip Y coord: true for OpenGL
+  );
+#endif
+
+  // Request next frame capture
+  Qt3DRender::QRenderCaptureReply *nextReply = mThumbnailCapture->requestCapture();
+  connect( nextReply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, nextReply]() { onThumbnailCaptureCompleted( nextReply ); } );
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
@@ -280,6 +360,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mMainViewPort );
   postprocessingPass->setObjectName( "PostProcessingPass" );
+
+#ifdef HAVE_TRACY
+  constructThumbnailCapturePass();
+#endif
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
   mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
@@ -479,6 +563,9 @@ void QgsFrameGraph::setSize( QSize s )
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
+
+  if ( mThumbnailTexture )
+    updateThumbnailTextureSize();
 }
 
 Qt3DRender::QRenderCapture *QgsFrameGraph::renderCapture()
