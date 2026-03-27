@@ -112,15 +112,16 @@ constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
 constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues
-  = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeMap, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
+  = new QgsSettingsEntryBool( u"hide-null-values"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to hide attributes with NULL values in the identify feature result"_s );
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations
-  = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeMap, true, u"Whether to show relations in the identify feature result"_s );
+  = new QgsSettingsEntryBool( u"show-relations"_s, QgsSettingsTree::sTreeIdentify, true, u"Whether to show relations in the identify feature result"_s );
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyExpand = new QgsSettingsEntryBool( u"identify-expand"_s, QgsSettingsTree::sTreeMap, false, u"Whether to auto-expand identify results"_s );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyExpand
+  = new QgsSettingsEntryBool( u"identify-expand"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to auto-expand identify results"_s );
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm
-  = new QgsSettingsEntryBool( u"identify-auto-feature-form"_s, QgsSettingsTree::sTreeMap, false, u"Whether to auto-open the feature form for single identify results"_s );
+  = new QgsSettingsEntryBool( u"identify-auto-feature-form"_s, QgsSettingsTree::sTreeIdentify, false, u"Whether to auto-open the feature form for single identify results"_s );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
