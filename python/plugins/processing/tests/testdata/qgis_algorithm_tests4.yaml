@@ -310,6 +310,26 @@ tests:
             precision: 5
             normalize: True
 
+  - algorithm: native:concavehullbyfeature
+    name: Concave hull (polygons)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/concave_hull_polygons.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
+
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Points (k=7)
     params:
