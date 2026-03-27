@@ -383,6 +383,8 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
 
+    static QString sanitizeGlobalKey( const QString &key );
+
     static QHash<QString, QVariant> sGlobalDefaults;
 
     QgsSettingsTreeNode *mParentTreeElement = nullptr;

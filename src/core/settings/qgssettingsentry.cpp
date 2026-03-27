@@ -47,12 +47,19 @@ void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
 
 bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )
 {
-  return sGlobalDefaults.contains( key );
+  return sGlobalDefaults.contains( sanitizeGlobalKey( key ) );
 }
 
 QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
 {
-  return sGlobalDefaults.value( key );
+  return sGlobalDefaults.value( sanitizeGlobalKey( key ) );
+}
+
+QString QgsSettingsEntryBase::sanitizeGlobalKey( const QString &key )
+{
+  if ( key.startsWith( '/' ) )
+    return key.mid( 1 );
+  return key;
 }
 
 QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
@@ -61,7 +68,7 @@ QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString
   if ( !QgsVariantUtils::isNull( userValue ) )
     return userValue;
 
-  const auto it = sGlobalDefaults.constFind( resolvedKey );
+  const auto it = sGlobalDefaults.constFind( sanitizeGlobalKey( resolvedKey ) );
   if ( it != sGlobalDefaults.constEnd() )
     return it.value();
 
@@ -162,20 +169,20 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
 bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
   const QString resolvedKey = key( dynamicKeyPart );
-  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
+  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
   const QString resolvedKey = key( dynamicKeyPartList );
-  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( resolvedKey );
+  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
 {
   const QString resolvedKey = key( dynamicKeyPartList );
 
-  if ( sGlobalDefaults.contains( resolvedKey ) )
+  if ( sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) ) )
     return Qgis::SettingsOrigin::Global;
 
   if ( QSettings().contains( resolvedKey ) )
