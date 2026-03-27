@@ -8,6 +8,16 @@ in vec3 vertexNormal;
 in vec4 vertexTangent;
 in vec2 vertexTexCoord;
 
+#ifdef INSTANCING
+in vec3 instanceTranslation;
+in vec4 instanceRotation;
+in vec3 instanceScale;
+
+vec3 rotateByQuat(vec3 v, vec4 q) {
+    return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
+}
+#endif
+
 out vec3 worldPosition;
 out vec3 worldNormal;
 out vec4 worldTangent;
@@ -25,17 +35,30 @@ uniform float texCoordScale;
 
 void main()
 {
+#ifdef INSTANCING
+    vec3 pos = vertexPosition * instanceScale;
+    pos = rotateByQuat(pos, instanceRotation);
+    pos += instanceTranslation;
+
+    vec3 norm = rotateByQuat(vertexNormal, instanceRotation);
+    vec3 tang = rotateByQuat(vertexTangent.xyz, instanceRotation);
+#else
+    vec3 pos = vertexPosition;
+    vec3 norm = vertexNormal;
+    vec3 tang = vertexTangent.xyz;
+#endif
+
     // Pass through scaled texture coordinates
     texCoord = vertexTexCoord * texCoordScale;
 
     // Transform position, normal, and tangent to world space
-    worldPosition = vec3(modelMatrix * vec4(vertexPosition, 1.0));
-    worldNormal = normalize(modelNormalMatrix * vertexNormal);
-    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(vertexTangent.xyz, 0.0)));
+    worldPosition = vec3(modelMatrix * vec4(pos, 1.0));
+    worldNormal = normalize(modelNormalMatrix * norm);
+    worldTangent.xyz = normalize(vec3(modelMatrix * vec4(tang, 0.0)));
     worldTangent.w = vertexTangent.w;
 
     // Calculate vertex position in clip coordinates
-    gl_Position = mvp * vec4(vertexPosition, 1.0);
+    gl_Position = mvp * vec4(pos, 1.0);
 
 #ifdef CLIPPING
     setClipDistance(worldPosition);

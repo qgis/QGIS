@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsCesiumUtils
 {
 %Docstring(signature="appended")
@@ -61,21 +63,28 @@ Extracts GLTF binary data and other contents from the legacy b3dm
 (Batched 3D Model) tile format. Returns empty byte array on error.
 %End
 
+
     struct TileContents
     {
         QByteArray gltf;
 
         QgsVector3D rtcCenter;
+
     };
 
-    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+    static TileContents extractGltfFromTileContent( const QByteArray &tileContent, const QString &baseUri = QString() );
 %Docstring
 Parses tile content. Returns empty byte array on error.
 
 .. note::
 
-   cmpt, pnts, i3dm tile types are currently not supported
+   cmpt and pnts tile types are currently not supported
+
+.. note::
+
+   baseUri parameter added in 4.0
 %End
+
 };
 
 /************************************************************************

@@ -90,6 +90,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer : public QgsMapLayerRenderer
       const QgsTiledSceneTile &tile,
       const QgsVector3D &tileTranslationEcef,
       const QMatrix4x4 *gltfLocalTransform,
+      Qgis::Axis gltfUpAxis,
       const QString &contentUri,
       QgsTiledSceneRenderContext &context
     );
@@ -100,6 +101,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer : public QgsMapLayerRenderer
       const QgsTiledSceneTile &tile,
       const QgsVector3D &tileTranslationEcef,
       const QMatrix4x4 *gltfLocalTransform,
+      Qgis::Axis gltfUpAxis,
       const QString &contentUri,
       QgsTiledSceneRenderContext &context
     );
@@ -110,6 +112,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer : public QgsMapLayerRenderer
       const QgsTiledSceneTile &tile,
       const QgsVector3D &tileTranslationEcef,
       const QMatrix4x4 *gltfLocalTransform,
+      Qgis::Axis gltfUpAxis,
       const QString &contentUri,
       QgsTiledSceneRenderContext &context
     );

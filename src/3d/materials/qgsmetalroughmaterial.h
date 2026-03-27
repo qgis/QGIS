@@ -71,6 +71,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      */
     bool flatShadingEnabled() const;
 
+    /**
+     * When instancing is enabled, the vertex shader uses per-instance
+     * translation, rotation, and scale attributes for GPU instancing.
+     */
+    void setInstancingEnabled( bool enabled );
+
   public slots:
     void setBaseColor( const QVariant &baseColor );
     void setMetalness( const QVariant &metalness );
@@ -114,6 +120,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingAmbientOcclusionMap = false;
     bool mUsingNormalMap = false;
     bool mFlatShading = false;
+    bool mInstancingEnabled = false;
 };
 
 ///@endcond PRIVATE

@@ -31,6 +31,7 @@
 #include "qgstiledscenetile.h"
 
 #include <QString>
+#include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
@@ -132,11 +133,45 @@ void QgsTiledSceneChunkLoader::start()
     }
     else if ( format == "cesiumtiles"_L1 )
     {
-      const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
+      const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content, uri );
       if ( tileContent.gltf.isEmpty() )
         return;
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
-      mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+
+      // Check for instancing (i3dm or EXT_mesh_gpu_instancing)
+      tinygltf::Model model;
+      QString gltfErrors, gltfWarnings;
+      if ( !QgsGltfUtils::loadGltfModel( tileContent.gltf, model, &gltfErrors, &gltfWarnings ) )
+      {
+        errors.append( u"GLTF load error: "_s + gltfErrors );
+        return;
+      }
+
+      const QgsMatrix4x4 rawTileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
+      const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, tileContent.instancing, entityTransform.gltfUpAxis, rawTileTransform, tileContent.rtcCenter );
+
+      if ( !instancedPrimitives.isEmpty() )
+      {
+        // Create instanced entities
+        auto instancedEntities = QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, entityTransform, uri, &errors );
+
+        mEntity = new Qt3DCore::QEntity;
+        for ( Qt3DCore::QEntity *e : instancedEntities )
+          e->setParent( mEntity );
+
+        // For EXT_mesh_gpu_instancing (not i3dm), also create non-instanced entities
+        // for nodes that don't have the extension
+        if ( !tileContent.instancing.has_value() )
+        {
+          Qt3DCore::QEntity *nonInstancedEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+          if ( nonInstancedEntity )
+            nonInstancedEntity->setParent( mEntity );
+        }
+      }
+      else
+      {
+        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+      }
     }
     else if ( format == "draco"_L1 )
     {

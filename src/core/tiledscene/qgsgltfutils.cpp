@@ -410,7 +410,6 @@ std::size_t QgsGltfUtils::sourceSceneForModel( const tinygltf::Model &model, boo
   return 0;
 }
 
-
 #ifdef HAVE_DRACO
 
 void dumpDracoModelInfo( draco::Mesh *dracoMesh )
