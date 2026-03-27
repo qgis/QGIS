@@ -646,8 +646,8 @@ class TestQgsSettingsEntry(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             ini_path = os.path.join(tmpdir, "global.ini")
             gs = QSettings(ini_path, QSettings.Format.IniFormat)
-            gs.setValue("globaltest/myint", 42)
-            gs.setValue("globaltest/mystring", "hello")
+            gs.setValue("plugins/globaltest/myint", 42)
+            gs.setValue("plugins/globaltest/mystring", "hello")
             gs.sync()
             del gs
 
@@ -666,7 +666,7 @@ class TestQgsSettingsEntry(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             ini_path = os.path.join(tmpdir, "global.ini")
             gs = QSettings(ini_path, QSettings.Format.IniFormat)
-            gs.setValue("globaltest/overridden", 100)
+            gs.setValue("plugins/globaltest/overridden", 100)
             gs.sync()
             del gs
 
@@ -687,8 +687,8 @@ class TestQgsSettingsEntry(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             ini_path = os.path.join(tmpdir, "global.ini")
             gs = QSettings(ini_path, QSettings.Format.IniFormat)
-            gs.setValue("globaltest/globalonly", 1)
-            gs.setValue("globaltest/both", 10)
+            gs.setValue("plugins/globaltest/globalonly", 1)
+            gs.setValue("plugins/globaltest/both", 10)
             gs.sync()
             del gs
 
@@ -718,7 +718,7 @@ class TestQgsSettingsEntry(QgisTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             ini_path = os.path.join(tmpdir, "global.ini")
             gs = QSettings(ini_path, QSettings.Format.IniFormat)
-            gs.setValue("globaltest/existskey", "val")
+            gs.setValue("plugins/globaltest/existskey", "val")
             gs.sync()
             del gs
 
