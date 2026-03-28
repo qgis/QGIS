@@ -389,8 +389,6 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   if ( feedback()->isCanceled() )
     return false;
 
-  tinygltf::Model model;
-  QgsVector3D centerOffset;
   mCurrentModelId++;
   // TODO: Somehow de-hardcode this switch?
   const auto &format = tile.metadata().value( u"contentFormat"_s ).value<QString>();
@@ -400,7 +398,9 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     {
       QgsQuantizedMeshTile qmTile( tileContent );
       qmTile.removeDegenerateTriangles();
-      model = qmTile.toGltf();
+      tinygltf::Model model = qmTile.toGltf();
+      renderModel( model, QgsVector3D(), tile, context );
+      return true;
     }
     catch ( QgsQuantizedMeshParsingException &ex )
     {
@@ -410,34 +410,49 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   }
   else if ( format == "cesiumtiles"_L1 )
   {
-    const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
-    if ( content.gltf.isEmpty() )
+    const QVector<QgsCesiumUtils::TileContents> contents = QgsCesiumUtils::extractTileContent( tileContent );
+    if ( contents.isEmpty() )
     {
       return false;
     }
-    centerOffset = content.rtcCenter;
 
-    QString gltfErrors;
-    QString gltfWarnings;
-    const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model, &gltfErrors, &gltfWarnings );
-    if ( !gltfErrors.isEmpty() )
+    for ( int i = 0; i < contents.size(); ++i )
     {
-      if ( !mErrors.contains( gltfErrors ) )
-        mErrors.append( gltfErrors );
-      QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, gltfErrors ) );
+      const QgsCesiumUtils::TileContents &content = contents[i];
+      if ( content.gltf.isEmpty() )
+        continue;
+
+      tinygltf::Model innerModel;
+      QString gltfErrors;
+      QString gltfWarnings;
+      const bool res = QgsGltfUtils::loadGltfModel( content.gltf, innerModel, &gltfErrors, &gltfWarnings );
+      if ( !gltfErrors.isEmpty() )
+      {
+        if ( !mErrors.contains( gltfErrors ) )
+          mErrors.append( gltfErrors );
+        QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, gltfErrors ) );
+      }
+      if ( !gltfWarnings.isEmpty() )
+      {
+        QgsDebugError( u"Warnings raised reading %1: %2"_s.arg( contentUri, gltfWarnings ) );
+      }
+      if ( !res )
+      {
+        QgsDebugMsgLevel( u"renderTileContent: failed to load glTF model for entry %1"_s.arg( i + 1 ), 2 );
+        continue;
+      }
+
+      renderModel( innerModel, content.rtcCenter, tile, context );
+      mCurrentModelId++;
     }
-    if ( !gltfWarnings.isEmpty() )
-    {
-      QgsDebugError( u"Warnings raised reading %1: %2"_s.arg( contentUri, gltfWarnings ) );
-    }
-    if ( !res )
-      return false;
+    return true;
   }
   else if ( format == "draco"_L1 )
   {
     QgsGltfUtils::I3SNodeContext i3sContext;
     i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
 
+    tinygltf::Model model;
     QString errors;
     if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
     {
@@ -446,9 +461,17 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, errors ) );
       return false;
     }
+
+    renderModel( model, QgsVector3D(), tile, context );
+    return true;
   }
-  else
-    return false;
+
+  return false;
+}
+
+void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsVector3D &centerOffset, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context )
+{
+  const QString contentUri = tile.resources().value( u"content"_s ).toString();
 
   const QgsVector3D tileTranslationEcef = centerOffset
                                           + QgsGltfUtils::extractTileTranslation( model, static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() ) );
@@ -504,7 +527,6 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       traverseNode( nodeIndex, QMatrix4x4() );
     }
   }
-  return true;
 }
 
 void QgsTiledSceneLayerRenderer::renderPrimitive(
