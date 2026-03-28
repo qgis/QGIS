@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsogcutils.h"
 
+#include <functional>
 #include <memory>
 #include <ogr_api.h>
 
@@ -2239,11 +2240,37 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
 
 QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
+  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
+
+  // 1) Special handling for concatenation operator (||)
+  if ( op == QgsExpressionNodeBinaryOperator::boConcat )
+  {
+    QDomElement funcElem = mDoc.createElement( mFilterPrefix + u":Function"_s );
+    funcElem.setAttribute( u"name"_s, u"Concatenate"_s );
+
+    // Recursively append all parts of the concatenation as arguments to the function element.
+    std::function<void( const QgsExpressionNode * )> appendParts = [&]( const QgsExpressionNode *n ) {
+      if ( n->nodeType() == QgsExpressionNode::ntBinaryOperator )
+      {
+        const QgsExpressionNodeBinaryOperator *binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( n );
+        if ( binNode->op() == QgsExpressionNodeBinaryOperator::boConcat )
+        {
+          appendParts( binNode->opLeft() );
+          appendParts( binNode->opRight() );
+          return;
+        }
+      }
+      funcElem.appendChild( expressionNodeToOgcFilter( n, expression, context ) );
+    };
+
+    appendParts( node );
+    return funcElem;
+  }
+
+  // 2) Handle other binary operators
   const QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
-
-  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
 
   // before right operator is parsed: to allow NULL handling
   if ( op == QgsExpressionNodeBinaryOperator::boIs || op == QgsExpressionNodeBinaryOperator::boIsNot )
