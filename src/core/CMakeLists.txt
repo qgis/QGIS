@@ -399,6 +399,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  tiledscene/qgscesiumimplicittiling.cpp
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
   tiledscene/qgsesrii3sdataprovider.cpp
@@ -2126,6 +2127,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  tiledscene/qgscesiumimplicittiling.h
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
   tiledscene/qgsesrii3sdataprovider.h
