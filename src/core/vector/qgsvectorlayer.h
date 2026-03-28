@@ -808,11 +808,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \param rect search rectangle
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * \see invertSelectionInRectangle(QgsRectangle & rect)
+     * \see invertSelectionInRectangle()
      * \see selectByExpression()
      * \see selectByIds()
      */
-    void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    Q_INVOKABLE void selectByRect( const QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -865,7 +865,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \see   invertSelection()
      */
-    Q_INVOKABLE void invertSelectionInRectangle( QgsRectangle &rect );
+    Q_INVOKABLE void invertSelectionInRectangle( const QgsRectangle &rect );
 
     /**
      * Returns a copy of the user-selected features.
