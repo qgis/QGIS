@@ -23,7 +23,7 @@ endif()
 # static library
 add_library(authmethod_maptilerhmacsha256_a STATIC ${AUTH_MAPTILER_HMACSHA256_SRCS} ${AUTH_MAPTILER_HMACSHA256_HDRS} ${AUTH_MAPTILER_HMACSHA256_UIS_H})
 
-target_include_directories(authmethod_maptilerhmacsha256_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/hmacsha256/core)
+target_include_directories(authmethod_maptilerhmacsha256_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/maptiler_hmacsha256/core)
 
 target_link_libraries(authmethod_maptilerhmacsha256_a qgis_core)
 
