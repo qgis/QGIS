@@ -71,7 +71,6 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
   endif()
   ")
   add_custom_command(
-    POST_BUILD
     OUTPUT ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     DEPENDS ${LANDINGPAGE_SOURCE_FILES}
     COMMAND ${CMAKE_COMMAND} -E copy_directory
