@@ -34,7 +34,7 @@
 
 using namespace Qt3DRender;
 
-static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights )
+static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights, Qgis::TileEdges skirtEdges )
 {
   Q_ASSERT( res >= 2 );
   Q_ASSERT( heights.count() == res * res * static_cast<int>( sizeof( float ) ) );
@@ -83,9 +83,17 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
 
       float height;
       if ( i == iBound && j == jBound )
+      {
         height = *zBits++;
+      }
       else
-        height = zData[jBound * resolution.width() + iBound] - skirtHeight;
+      {
+        const bool applySkirtToEdge = ( i < 0 && skirtEdges.testFlag( Qgis::TileEdge::Left ) )
+                                      || ( i > iMax && skirtEdges.testFlag( Qgis::TileEdge::Right ) )
+                                      || ( j < 0 && skirtEdges.testFlag( Qgis::TileEdge::Top ) )
+                                      || ( j > jMax && skirtEdges.testFlag( Qgis::TileEdge::Bottom ) );
+        height = zData[jBound * resolution.width() + iBound] - ( applySkirtToEdge ? skirtHeight : 0 );
+      }
 
       if ( std::isnan( height ) )
         height = noDataHeight;
@@ -213,15 +221,16 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
 class PlaneVertexBufferFunctor : public Qt3DCore::QAbstractFunctor
 {
   public:
-    explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap )
+    explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, Qgis::TileEdges skirtEdges )
       : mResolution( resolution )
       , mSide( side )
       , mVertScale( vertScale )
       , mSkirtHeight( skirtHeight )
       , mHeightMap( heightMap )
+      , mSkirtEdges( skirtEdges )
     {}
 
-    QByteArray operator()() { return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap ); }
+    QByteArray operator()() { return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap, mSkirtEdges ); }
 
     qintptr id() const override { return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id ); }
 
@@ -230,7 +239,12 @@ class PlaneVertexBufferFunctor : public Qt3DCore::QAbstractFunctor
       const PlaneVertexBufferFunctor *otherFunctor = dynamic_cast<const PlaneVertexBufferFunctor *>( &other );
       if ( otherFunctor )
         return (
-          otherFunctor->mResolution == mResolution && otherFunctor->mSide == mSide && otherFunctor->mVertScale == mVertScale && otherFunctor->mSkirtHeight == mSkirtHeight && otherFunctor->mHeightMap == mHeightMap
+          otherFunctor->mResolution == mResolution
+          && otherFunctor->mSide == mSide
+          && otherFunctor->mVertScale == mVertScale
+          && otherFunctor->mSkirtHeight == mSkirtHeight
+          && otherFunctor->mHeightMap == mHeightMap
+          && otherFunctor->mSkirtEdges == mSkirtEdges
         );
       return false;
     }
@@ -241,6 +255,7 @@ class PlaneVertexBufferFunctor : public Qt3DCore::QAbstractFunctor
     float mVertScale;
     float mSkirtHeight;
     QByteArray mHeightMap;
+    Qgis::TileEdges mSkirtEdges;
 };
 
 //! Generates index buffer for DEM terrain tiles
@@ -272,12 +287,13 @@ class PlaneIndexBufferFunctor : public Qt3DCore::QAbstractFunctor
 // ------------
 
 
-DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
+DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, Qgis::TileEdges skirtEdges, DemTerrainTileGeometry::QNode *parent )
   : QGeometry( parent )
   , mResolution( resolution )
   , mSide( side )
   , mVertScale( vertScale )
   , mSkirtHeight( skirtHeight )
+  , mSkirtEdges( skirtEdges )
   , mHeightMap( heightMap )
 {
   init();
@@ -394,7 +410,7 @@ void DemTerrainTileGeometry::init()
   // switched to setting data instead of just setting data generators because we also need the buffers
   // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
 
-  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap )() );
+  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap, mSkirtEdges )() );
   mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
 
   addAttribute( mPositionAttribute );

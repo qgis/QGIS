@@ -28,6 +28,8 @@
 //
 
 
+#include "qgis.h"
+
 #include <QImage>
 #include <QSize>
 #include <Qt3DCore/QGeometry>
@@ -43,6 +45,7 @@ namespace Qt3DCore
 class QgsRay3D;
 class QgsRayCastContext;
 
+
 /**
  * \ingroup qgis_3d
  * \brief Stores attributes and vertex/index buffers for one terrain tile based on DEM.
@@ -54,9 +57,11 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
   public:
     /**
      * Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
-     * heightMap is array of float values with one height value for each vertex
+     * heightMap is array of float values with one height value for each vertex.
+     *
+     * The \a skirtEdges flag controls which edges of the tile get skirts.
      */
-    explicit DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
+    explicit DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, Qgis::TileEdges skirtEdges = Qgis::TileEdge::All, QNode *parent = nullptr );
 
     bool rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
@@ -72,6 +77,7 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
     float mSide;
     float mVertScale;
     float mSkirtHeight;
+    Qgis::TileEdges mSkirtEdges = Qgis::TileEdge::All;
     QByteArray mHeightMap;
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mNormalAttribute = nullptr;
