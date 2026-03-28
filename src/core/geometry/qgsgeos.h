@@ -1018,6 +1018,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      * \param errorMsg Error message returned by GEOS
      * \param op Overlay Operation
      * \param parameters can be used to specify parameters which control the overlay results (since QGIS 3.28)
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      */
     std::unique_ptr< QgsAbstractGeometry > overlay(
       const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = nullptr
