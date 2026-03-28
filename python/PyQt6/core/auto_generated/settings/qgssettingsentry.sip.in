@@ -55,6 +55,21 @@ settings description for the gui.
 %End
   public:
 
+    static void setGlobalSettingsPath( const QString &path );
+%Docstring
+Sets the path to the global settings INI file and loads all keys into an
+in-memory hash for use as defaults by :py:class:`QgsSettingsEntry`.
+
+This should be called once at application startup.
+
+:param path: the path to the global settings INI file.
+
+.. versionadded:: 4.0.2
+%End
+
+
+
+
     static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
 %Docstring
 Transforms a dynamic key part string to list

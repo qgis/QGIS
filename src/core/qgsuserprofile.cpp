@@ -18,6 +18,7 @@
 #include <sqlite3.h>
 
 #include "qgsapplication.h"
+#include "qgssettingsentry.h"
 #include "qgssqliteutils.h"
 
 #include <QDir>
@@ -62,6 +63,10 @@ void QgsUserProfile::initSettings() const
   QSettings::setDefaultFormat( QSettings::IniFormat );
   QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, folder() );
 #endif
+
+  // Signal that QSettings is now configured so each thread's
+  // instance will be recreated with the correct format and path.
+  QgsSettingsEntryBase::initUserSettings();
 }
 
 const QString QgsUserProfile::alias() const

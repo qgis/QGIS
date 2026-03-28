@@ -9,6 +9,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import os
+import tempfile
 import unittest
 
 from qgis import core as qgis_core
@@ -16,6 +18,7 @@ from qgis.core import (
     Qgis,
     QgsMapLayerProxyModel,
     QgsSettings,
+    QgsSettingsEntryBase,
     QgsSettingsEntryBool,
     QgsSettingsEntryColor,
     QgsSettingsEntryDouble,
@@ -29,7 +32,7 @@ from qgis.core import (
     QgsSettingsTree,
     QgsUnitTypes,
 )
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 
@@ -637,6 +640,125 @@ class TestQgsSettingsEntry(QgisTestCase):
         settingsEntrySrc.copyValueToKey(f"plugins/{self.pluginName}/{settingsDestKey}")
         self.assertTrue(settingsEntryDest.exists())
         self.assertEqual(settingsEntryDest.value(), settingsEntryDest.value())
+
+    def test_global_default(self):
+        """Global INI value used when no user value is set."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/myint", 42)
+            gs.setValue("plugins/globaltest/mystring", "hello")
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            int_entry = QgsSettingsEntryInteger("myint", "globaltest", 0)
+            self.assertEqual(int_entry.value(), 42)
+
+            str_entry = QgsSettingsEntryString("mystring", "globaltest", "")
+            self.assertEqual(str_entry.value(), "hello")
+
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
+
+    def test_global_default_overridden_by_user(self):
+        """User value takes precedence over global default."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/overridden", 100)
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            entry = QgsSettingsEntryInteger("overridden", "globaltest", 0)
+            entry.setValue(999)
+            self.assertEqual(entry.value(), 999)
+
+            # Remove user value -> global should return
+            entry.remove()
+            self.assertEqual(entry.value(), 100)
+
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
+
+    def test_global_origin(self):
+        """origin() returns Global/Local/Any correctly."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/globalonly", 1)
+            gs.setValue("plugins/globaltest/both", 10)
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            global_only = QgsSettingsEntryInteger("globalonly", "globaltest", 0)
+            self.assertEqual(global_only.origin([]), Qgis.SettingsOrigin.Global)
+
+            both = QgsSettingsEntryInteger("both", "globaltest", 0)
+            both.setValue(20)
+            self.assertEqual(both.origin([]), Qgis.SettingsOrigin.Global)
+
+            user_only = QgsSettingsEntryInteger("useronly", "globaltest", 0)
+            user_only.setValue(5)
+            self.assertEqual(user_only.origin([]), Qgis.SettingsOrigin.Local)
+
+            absent = QgsSettingsEntryInteger("absent", "globaltest", 0)
+            self.assertEqual(absent.origin([]), Qgis.SettingsOrigin.Any)
+
+            # Clean up
+            both.remove()
+            user_only.remove()
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
+
+    def test_global_exists(self):
+        """exists() returns True for global-only keys."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/existskey", "val")
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            entry = QgsSettingsEntryString("existskey", "globaltest", "")
+            self.assertTrue(entry.exists())
+
+            absent = QgsSettingsEntryString("nope", "globaltest", "")
+            self.assertFalse(absent.exists())
+
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
+
+    def test_set_value_global_default_cleanup(self):
+        """Setting a value equal to the global default removes the user key."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ini_path = os.path.join(tmpdir, "global.ini")
+            gs = QSettings(ini_path, QSettings.Format.IniFormat)
+            gs.setValue("plugins/globaltest/cleanup", 50)
+            gs.sync()
+            del gs
+
+            QgsSettingsEntryBase.setGlobalSettingsPath(ini_path)
+
+            entry = QgsSettingsEntryInteger("cleanup", "globaltest", 0)
+
+            # Set a different value — should write to user QSettings
+            entry.setValue(999)
+            self.assertTrue(QSettings().contains(entry.key()))
+            self.assertEqual(entry.value(), 999)
+
+            # Set value back to the global default — should remove user key
+            entry.setValue(50)
+            self.assertFalse(QSettings().contains(entry.key()))
+            # Value should still be 50 (from global hash)
+            self.assertEqual(entry.value(), 50)
+
+            # Clean up
+            entry.remove()
+            QgsSettingsEntryBase.setGlobalSettingsPath("")
 
 
 if __name__ == "__main__":

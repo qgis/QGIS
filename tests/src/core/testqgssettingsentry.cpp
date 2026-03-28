@@ -19,7 +19,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QSettings>
 #include <QString>
+#include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
 
@@ -41,6 +43,12 @@ class TestQgsSettingsEntry : public QObject
     void flagValue();
     void testFormerValue();
     void testChanged();
+    void testGlobalDefault();
+    void testGlobalDefaultOverriddenByUser();
+    void testGlobalOrigin();
+    void testGlobalExists();
+    void testLoadGlobalDefaults();
+    void testSetValueGlobalDefaultCleanup();
 };
 
 void TestQgsSettingsEntry::settingsKey()
@@ -140,7 +148,7 @@ void TestQgsSettingsEntry::flagValue()
   const Qgis::LayerFilters hasGeometry = Qgis::LayerFilters( Qgis::LayerFilter::HasGeometry );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
 
   const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, Qgis::LayerFilters(), u"Filters"_s );
 
@@ -230,6 +238,176 @@ void TestQgsSettingsEntry::testChanged()
 
   settingsEntryInteger.copyValueToKeyIfChanged( u"testSetting"_s );
   QCOMPARE( QgsSettings().value( u"testSetting"_s ).toInt(), 11111 );
+}
+
+void TestQgsSettingsEntry::testGlobalDefault()
+{
+  // Create a temporary INI file with a known key
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/myint"_s, 42 );
+    globalIni.setValue( u"globaltest/mystring"_s, u"hello"_s );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  // Setting defined only in global INI — no user value set
+  const QgsSettingsEntryInteger intEntry( u"myint"_s, u"globaltest"_s, 0 );
+  QCOMPARE( intEntry.value(), 42 );
+
+  const QgsSettingsEntryString strEntry( u"mystring"_s, u"globaltest"_s, QString() );
+  QCOMPARE( strEntry.value(), u"hello"_s );
+
+  // Clean up
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+}
+
+void TestQgsSettingsEntry::testGlobalDefaultOverriddenByUser()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/overridden"_s, 100 );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  const QgsSettingsEntryInteger entry( u"overridden"_s, u"globaltest"_s, 0 );
+
+  // User overrides the global value
+  entry.setValue( 999 );
+  QCOMPARE( entry.value(), 999 );
+
+  // Clean up
+  entry.remove();
+  // With user value removed, global default should return
+  QCOMPARE( entry.value(), 100 );
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+}
+
+void TestQgsSettingsEntry::testGlobalOrigin()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/globalonly"_s, 1 );
+    globalIni.setValue( u"globaltest/both"_s, 10 );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  // Global-only key
+  const QgsSettingsEntryInteger globalOnly( u"globalonly"_s, u"globaltest"_s, 0 );
+  QCOMPARE( globalOnly.origin( QStringList() ), Qgis::SettingsOrigin::Global );
+
+  // Key in both: Global-first semantics
+  const QgsSettingsEntryInteger both( u"both"_s, u"globaltest"_s, 0 );
+  both.setValue( 20 );
+  QCOMPARE( both.origin( QStringList() ), Qgis::SettingsOrigin::Global );
+
+  // User-only key (not in global)
+  const QgsSettingsEntryInteger userOnly( u"useronly"_s, u"globaltest"_s, 0 );
+  userOnly.setValue( 5 );
+  QCOMPARE( userOnly.origin( QStringList() ), Qgis::SettingsOrigin::Local );
+
+  // Non-existent key
+  const QgsSettingsEntryInteger absent( u"absent"_s, u"globaltest"_s, 0 );
+  QCOMPARE( absent.origin( QStringList() ), Qgis::SettingsOrigin::Any );
+
+  // Clean up
+  both.remove();
+  userOnly.remove();
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+}
+
+void TestQgsSettingsEntry::testGlobalExists()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/existskey"_s, u"val"_s );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  const QgsSettingsEntryString entry( u"existskey"_s, u"globaltest"_s, QString() );
+  // exists() should return true even though no user value is set
+  QVERIFY( entry.exists() );
+
+  const QgsSettingsEntryString absent( u"nope"_s, u"globaltest"_s, QString() );
+  QVERIFY( !absent.exists() );
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+}
+
+void TestQgsSettingsEntry::testLoadGlobalDefaults()
+{
+  // Empty path should not crash
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+
+  // Non-existent file should not crash
+  QgsSettingsEntryBase::setGlobalSettingsPath( u"/nonexistent/path/file.ini"_s );
+
+  // Verify hash is empty after non-existent path
+  const QgsSettingsEntryInteger entry( u"testkey"_s, u"test"_s, 99 );
+  QCOMPARE( entry.value(), 99 );
+}
+
+void TestQgsSettingsEntry::testSetValueGlobalDefaultCleanup()
+{
+  // When setting a value equal to the global default, the user key
+  // should be removed so the global default takes effect naturally.
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"globaltest/cleanup"_s, 50 );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  const QgsSettingsEntryInteger entry( u"cleanup"_s, u"globaltest"_s, 0 );
+
+  // Set a different value — should write to user QSettings
+  entry.setValue( 999 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 999 );
+
+  // Set value back to the global default — should remove user key
+  entry.setValue( 50 );
+  QVERIFY( !QSettings().contains( entry.key() ) );
+  // Value should still be 50 (from global hash)
+  QCOMPARE( entry.value(), 50 );
+
+  // Set a value when no user key exists and value differs — should write
+  entry.setValue( 123 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 123 );
+
+  // Set the same value again — should not re-write (no change)
+  entry.setValue( 123 );
+  QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 123 );
+
+  // Clean up
+  entry.remove();
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
 }
 
 
