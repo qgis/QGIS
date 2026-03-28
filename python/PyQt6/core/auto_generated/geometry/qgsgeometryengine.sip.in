@@ -105,7 +105,9 @@ relation tests against other geometries.
 .. seealso:: :py:func:`geometryChanged`
 %End
 
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *intersection(
+      const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0
+    ) const = 0 /Factory/;
 %Docstring
 Calculate the intersection of this and ``geom``.
 
@@ -113,9 +115,13 @@ Calculate the intersection of this and ``geom``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    intersection results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *difference(
+      const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0
+    ) const = 0 /Factory/;
 %Docstring
 Calculate the difference of this and ``geom``.
 
@@ -123,9 +129,11 @@ Calculate the difference of this and ``geom``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    difference results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geom``.
 
@@ -133,9 +141,13 @@ Calculate the combination of this and ``geom``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    union results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine(
+      const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0
+    ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
 
@@ -143,9 +155,11 @@ Calculate the combination of this and ``geometries``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    combination results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
 
@@ -153,9 +167,13 @@ Calculate the combination of this and ``geometries``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    combination results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *symDifference(
+      const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback *feedback = 0
+    ) const = 0 /Factory/;
 %Docstring
 Calculate the symmetric difference of this and ``geom``.
 
@@ -163,93 +181,167 @@ Calculate the symmetric difference of this and ``geom``.
 :param errorMsg: Error message returned by GEOS
 :param parameters: can be used to specify parameters which control the
                    difference results (since QGIS 3.28)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 %End
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
 
-    virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
+%Docstring
+Buffers the geometry.
+
+:param distance: 
+:param segments: 
+:param errorMsg: Error message returned by GEOS
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
+%End
+
+    virtual QgsAbstractGeometry *buffer(
+      double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0, QgsFeedback *feedback = 0
+    ) const = 0 /Factory/;
 %Docstring
 Buffers a geometry.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
-    virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const = 0 /Factory/;
-    virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0 ) const = 0 /Factory/;
+
+    virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
+%Docstring
+Simplifies the geometery.
+
+:param tolerance: 
+:param errorMsg: Error message returned by GEOS
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
+%End
+
+    virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
+%Docstring
+Interpolates a point by distance along the geometry.
+
+:param distance: 
+:param errorMsg: Error message returned by GEOS
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
+%End
+
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = 0 ) const = 0 /Factory/;
 
-    virtual QgsPoint *centroid( QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsPoint *centroid( QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
-Calculates the centroid of this. May return a ```None```.
+Calculates the centroid of this. May return ``None``.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsPoint *pointOnSurface( QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate a point that is guaranteed to be on the surface of this. May
-return a ```None```.
+return ``None``.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
-Calculate the convex hull of this.
+Calculate the convex hull of this geometry.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Calculates the distance between this and ``geom``.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = 0 ) const = 0;
+    virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is within ``maxdistance`` distance from this geometry
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 
 .. versionadded:: 3.22
 %End
 
-    virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` intersects this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` touches this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` crosses this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is within this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` overlaps this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` contains this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is disjoint from this.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Returns the Dimensional Extended 9 Intersection Model (DE-9IM)
 representation of the relationship between the geometries.
 
 :param geom: geometry to relate to
 :param errorMsg: destination storage for any error message
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: DE-9IM string for relationship, or an empty string if an error
          occurred
 %End
 
-    virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0 ) const = 0;
+    virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Tests whether two geometries are related by a specified Dimensional
 Extended 9 Intersection Model (DE-9IM) pattern.
@@ -257,6 +349,8 @@ Extended 9 Intersection Model (DE-9IM) pattern.
 :param geom: geometry to relate to
 :param pattern: DE-9IM pattern for match
 :param errorMsg: destination storage for any error message
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: ``True`` if geometry relationship matches with pattern
 %End
@@ -264,7 +358,7 @@ Extended 9 Intersection Model (DE-9IM) pattern.
     virtual double area( QString *errorMsg = 0 ) const = 0;
     virtual double length( QString *errorMsg = 0 ) const = 0;
 
-    virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const = 0;
+    virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Returns ``True`` if the geometry is valid.
 
@@ -278,20 +372,25 @@ self-touching holes.
 
 If ``errorLoc`` is specified, it will be set to the geometry of the
 error location.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
+    virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Check if geometries that are topologically equivalent
 
 :param geom: other geom to compare with
 :param errorMsg: will be set to descriptive error string if the
                  operation fails
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: true if topologically equivalent, else false
 %End
 
-    virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = 0 ) const = 0;
+    virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Checks if this is equal to ``geom`` ie. if each vertex of this is within
 the distance tolerance of the corresponding vertex in ``geom``. If both
@@ -302,6 +401,8 @@ are Null geometries, ```False``` is returned.
                 With a near zreo epsilon, this function will behave as
                 an exact comparison.
 :param errorMsg: destination storage for any error message
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: true if fuzzy equivalent, else false
 
@@ -337,9 +438,12 @@ Splits this geometry according to a given line.
            with the split
 %End
 
-    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0, QgsFeedback *feedback = 0 ) const = 0 /Factory/;
 %Docstring
 Offsets a curve.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     void setLogErrors( bool enabled );
