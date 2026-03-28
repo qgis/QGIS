@@ -258,7 +258,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
     std::unique_ptr< QMediaCaptureSession > mSession;
     std::unique_ptr< QMediaRecorder > mRecorder;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
     std::unique_ptr< QVideoFrameInput > mVideoInput;
+#endif
 };
 
 
