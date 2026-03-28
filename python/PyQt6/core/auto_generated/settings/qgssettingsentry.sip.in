@@ -69,6 +69,7 @@ This should be called once at application startup.
 
 
 
+
     static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
 %Docstring
 Transforms a dynamic key part string to list

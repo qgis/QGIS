@@ -27,7 +27,37 @@
 
 using namespace Qt::StringLiterals;
 
+/**
+ * Set to true by initUserSettings() once QSettings::setDefaultFormat()
+ * and setPath() have been called. Each thread's QSettings instance is
+ * (re-)created on first access after this flag becomes true, so it
+ * picks up the correct IniFormat and profile path.
+ *
+ * std::atomic ensures the write is visible to all threads without
+ * undefined behavior (C++ data-race rules).
+ */
+static std::atomic<bool> sSettingsInitialized { false };
+
+static QSettings &sUserSettings()
+{
+  thread_local QSettings *sSettings = nullptr;
+  thread_local bool sCreatedAfterInit = false;
+
+  if ( !sSettings || ( !sCreatedAfterInit && sSettingsInitialized.load( std::memory_order_acquire ) ) )
+  {
+    delete sSettings;
+    sSettings = new QSettings();
+    sCreatedAfterInit = sSettingsInitialized.load( std::memory_order_relaxed );
+  }
+  return *sSettings;
+}
+
 QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
+
+void QgsSettingsEntryBase::initUserSettings()
+{
+  sSettingsInitialized.store( true, std::memory_order_release );
+}
 
 void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
 {
@@ -63,7 +93,7 @@ QString QgsSettingsEntryBase::sanitizeGlobalKey( const QString &key )
 
 QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
 {
-  const QVariant userValue = QSettings().value( resolvedKey );
+  const QVariant userValue = sUserSettings().value( resolvedKey );
   if ( !QgsVariantUtils::isNull( userValue ) )
     return userValue;
 
@@ -168,13 +198,13 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
 bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 {
   const QString resolvedKey = key( dynamicKeyPart );
-  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
+  return sUserSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
   const QString resolvedKey = key( dynamicKeyPartList );
-  return QSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
+  return sUserSettings().contains( resolvedKey ) || sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) );
 }
 
 Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
@@ -184,7 +214,7 @@ Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKey
   if ( sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) ) )
     return Qgis::SettingsOrigin::Global;
 
-  if ( QSettings().contains( resolvedKey ) )
+  if ( sUserSettings().contains( resolvedKey ) )
     return Qgis::SettingsOrigin::Local;
 
   return Qgis::SettingsOrigin::Any;
@@ -192,12 +222,12 @@ Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKey
 
 void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
 {
-  QSettings().remove( key( dynamicKeyPart ) );
+  sUserSettings().remove( key( dynamicKeyPart ) );
 }
 
 void QgsSettingsEntryBase::remove( const QStringList &dynamicKeyPartList ) const
 {
-  QSettings().remove( key( dynamicKeyPartList ) );
+  sUserSettings().remove( key( dynamicKeyPartList ) );
 }
 
 int QgsSettingsEntryBase::section() const
@@ -222,7 +252,7 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
       QVariant currentValue = valueAsVariant( dynamicKeyPartList );
       if ( value != currentValue )
       {
-        QSettings().setValue( formerValuekey( dynamicKeyPartList ), currentValue );
+        sUserSettings().setValue( formerValuekey( dynamicKeyPartList ), currentValue );
       }
     }
   }
@@ -236,17 +266,17 @@ bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString
     if ( sGlobalDefaults.contains( sanitizedKey ) && sGlobalDefaults.value( sanitizedKey ) == value )
     {
       // New value matches global default — remove user override instead of writing
-      QSettings().remove( resolvedKey );
+      sUserSettings().remove( resolvedKey );
     }
     else
     {
-      QSettings().setValue( resolvedKey, value );
+      sUserSettings().setValue( resolvedKey, value );
     }
   }
   // Value unchanged and equals global default — clean up stale user key if present
   else if ( hasGlobalDefault( resolvedKey ) && globalDefault( resolvedKey ) == currentValue )
   {
-    QSettings().remove( resolvedKey );
+    sUserSettings().remove( resolvedKey );
   }
   return true;
 }
@@ -313,12 +343,12 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
 {
   Q_ASSERT( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) );
   QVariant defaultValueOverride = valueAsVariant( dynamicKeyPartList );
-  return QSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride );
+  return sUserSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride );
 }
 
 bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey ) const
 {
-  QSettings settings;
+  QSettings &settings = sUserSettings();
 
   const QString oldCompleteKey = completeKeyPrivate( key, dynamicKeyPartList );
 
@@ -342,7 +372,7 @@ bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringLi
 void QgsSettingsEntryBase::copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList ) const
 {
   const QString completeKey = completeKeyPrivate( key, dynamicKeyPartList );
-  QSettings().setValue( completeKey, valueAsVariant( dynamicKeyPartList ) );
+  sUserSettings().setValue( completeKey, valueAsVariant( dynamicKeyPartList ) );
 }
 
 void QgsSettingsEntryBase::copyValueToKeyIfChanged( const QString &key, const QStringList &dynamicKeyPartList ) const
