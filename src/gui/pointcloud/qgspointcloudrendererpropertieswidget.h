@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgspropertycollection.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
@@ -35,7 +36,7 @@ class QgsMessageBar;
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsPointCloudRendererPropsDialogBase
+class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, public QgsExpressionContextGenerator, private Ui::QgsPointCloudRendererPropsDialogBase
 {
     Q_OBJECT
 
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void syncToLayer( QgsMapLayer *layer ) final;
     void setDockMode( bool dockMode ) final;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
@@ -62,6 +64,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     void rendererChanged();
 
     void emitWidgetChanged();
+
+    void updateDataDefinedProperty();
 
   private:
     // for 3D rendering, see values in qgspointcloud3dsymbolwidget.h
@@ -80,6 +84,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mBlockChangedSignal = false;
+
+    QgsPropertyCollection mDataDefinedProperties;
 };
 
 
