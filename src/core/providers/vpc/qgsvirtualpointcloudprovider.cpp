@@ -17,6 +17,7 @@
 
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <algorithm>
 #include <memory>
 #include <nlohmann/json.hpp>
 
@@ -218,9 +219,9 @@ void QgsVirtualPointCloudProvider::parseFile()
   }
 
   QSet<QString> attributeNames;
+  QSet<QString> overviewUris;
   double subIndexesWidth = 0.0;
   double subIndexesHeight = 0.0;
-  bool noOverviewFound = false;
 
   for ( const auto &f : data["features"] )
   {
@@ -261,25 +262,14 @@ void QgsVirtualPointCloudProvider::parseFile()
       mAllLocalFiles = false;
     }
 
-    // look for vpc overview reference
-    if ( !noOverviewFound && !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
+    for ( const nlohmann::json &ass : f["assets"] )
     {
-      mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
-      const QUrl overviewUrl = url.resolved( QUrl( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
-      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
-    }
-    // if it doesn't exist look for overview file in the directory
-    else if ( !noOverviewFound && !mOverview )
-    {
-      const QString baseName = QFileInfo( url.fileName() ).baseName();
-      const QUrl overviewUrl = url.resolved( QUrl( baseName + u"-overview.copc.laz"_s ) );
-      mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
-      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
-    }
-    if ( !noOverviewFound && !mOverview.isValid() )
-    {
-      mOverview = QgsPointCloudIndex();
-      noOverviewFound = true;
+      if ( ass.contains( "roles" ) && ass.contains( "href" ) )
+      {
+        nlohmann::json roles = ass["roles"];
+        if ( std::find( roles.cbegin(), roles.cend(), "overview" ) != roles.cend() )
+          overviewUris.insert( QString::fromStdString( ass["href"] ) );
+      }
     }
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
@@ -461,6 +451,29 @@ void QgsVirtualPointCloudProvider::parseFile()
     QgsPointCloudSubIndex si( uri, geometry, extent, zRange, count );
     mSubLayers.push_back( si );
   }
+
+  // Load gathered overviews
+  for ( const QString &uri : std::as_const( overviewUris ) )
+  {
+    const QUrl overviewUrl = url.resolved( QUrl( uri ) );
+
+    QgsPointCloudIndex ovIdx( new QgsCopcPointCloudIndex() );
+    ovIdx.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
+    if ( ovIdx.isValid() )
+      mOverviews.append( std::move( ovIdx ) );
+  }
+
+  // if no overviews found, look for a file in the same directory
+  if ( mOverviews.isEmpty() )
+  {
+    const QString baseName = QFileInfo( url.fileName() ).baseName();
+    const QUrl overviewUrl = url.resolved( QUrl( baseName + u"-overview.copc.laz"_s ) );
+    QgsPointCloudIndex ovIdx( new QgsCopcPointCloudIndex() );
+    ovIdx.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
+    if ( ovIdx.isValid() )
+      mOverviews.append( std::move( ovIdx ) );
+  }
+
   mExtent = mPolygonBounds->boundingBox();
   mAverageSubIndexWidth = subIndexesWidth / mSubLayers.size();
   mAverageSubIndexHeight = subIndexesHeight / mSubLayers.size();
@@ -632,7 +645,7 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
   if ( mAttributes.indexOf( "Classification"_L1 ) >= 0 )
   {
     QgsPointCloudClassifiedRenderer *newRenderer = new QgsPointCloudClassifiedRenderer( u"Classification"_s, QgsPointCloudClassifiedRenderer::defaultCategories() );
-    if ( mOverview )
+    if ( !mOverviews.isEmpty() )
     {
       newRenderer->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview );
     }

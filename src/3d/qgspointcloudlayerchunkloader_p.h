@@ -149,6 +149,13 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     void updateIndex();
 
   private:
+    /**
+     * Get the point cloud index from a layer using the index position, according to the following scheme:
+     * Zero or positive \a indexPosition will return the nth zero-based sub index of a VPC layer.
+     * -1 will return the point cloud index of a standard non VPC layer.
+     * -2 will return the first VPC overview index.
+     * -3 will return the second VPC overview index, and so on.
+     */
     static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
 
     QgsPointCloudLayer *mLayer = nullptr;
