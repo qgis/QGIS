@@ -2286,7 +2286,7 @@ Performs a fast, non-robust intersection between the geometry and a
 ``rectangle``. The returned geometry may be invalid.
 %End
 
-    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing all the points in this geometry and
 other (a union geometry operation).
@@ -2304,6 +2304,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the union results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -3044,7 +3047,7 @@ original geometry.
 .. versionadded:: 3.20
 %End
 
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 );
 %Docstring
 Compute the unary union on a list of ``geometries``. May be faster than
 an iterative union on a set of geometries. The returned geometry will be
@@ -3054,6 +3057,9 @@ errors.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the union results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );

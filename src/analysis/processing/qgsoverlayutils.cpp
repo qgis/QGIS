@@ -192,7 +192,7 @@ void QgsOverlayUtils::difference(
 
       if ( !geometriesB.isEmpty() )
       {
-        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB, parameters );
+        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB, parameters, feedback );
         if ( !geomB.lastError().isEmpty() )
         {
           // This may happen if input geometries from a layer do not line up well (for example polygons

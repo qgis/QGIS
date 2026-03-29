@@ -110,7 +110,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   feedback->setProgress( 40 );
 
   feedback->pushInfo( QObject::tr( "Noding lines…" ) );
-  const QgsGeometry lines = QgsGeometry::unaryUnion( linesList );
+  const QgsGeometry lines = QgsGeometry::unaryUnion( linesList, QgsGeometryParameters(), feedback );
   if ( feedback->isCanceled() )
     return QVariantMap();
   feedback->setProgress( 45 );

@@ -317,7 +317,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
     {
       case QgsMergedFeatureRenderer::Merge:
       {
-        QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+        QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries, QgsGeometryParameters(), context.feedback() ) );
         if ( unioned.type() == Qgis::GeometryType::Line )
           unioned = unioned.mergeLines();
         feat.setGeometry( unioned );
@@ -327,7 +327,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
       case QgsMergedFeatureRenderer::MergeAndInvert:
       {
         // compute the unary union on the polygons
-        const QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+        const QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries, QgsGeometryParameters(), context.feedback() ) );
         // compute the difference with the extent
         const QgsGeometry rect = QgsGeometry::fromPolygonXY( mExtentPolygon );
         const QgsGeometry final = rect.difference( unioned );

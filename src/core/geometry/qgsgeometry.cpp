@@ -3234,7 +3234,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeo
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3243,7 +3243,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3827,12 +3827,12 @@ bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::Geom
   BUILTIN_UNREACHABLE
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters, QgsFeedback *feedback )
 {
   QgsGeos geos( nullptr );
 
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters, feedback ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;

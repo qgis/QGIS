@@ -91,7 +91,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
 
     // Create union of allowed gaps
     QString errMsg;
-    allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg ) );
+    allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg, QgsGeometryParameters(), feedback ) );
     allowedGapsGeomEngine.reset( QgsGeometry::createGeometryEngine( allowedGapsGeom.get(), mContext->tolerance ) );
     allowedGapsGeomEngine->prepareGeometry();
   }
@@ -123,7 +123,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
 
   // Create union of geometry
   QString errMsg;
-  const std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg ) );
+  const std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg, QgsGeometryParameters(), feedback ) );
   if ( !unionGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );

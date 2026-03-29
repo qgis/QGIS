@@ -5708,7 +5708,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     }
   }
 
-  const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts ) : geometryParts.at( 0 );
+  const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts, QgsGeometryParameters(), context.feedback() ) : geometryParts.at( 0 );
 
   if ( clipPoints )
   {

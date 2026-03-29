@@ -143,7 +143,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   QgsGeometry combinedClipGeom;
   if ( clipGeoms.length() > 1 )
   {
-    combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms );
+    combinedClipGeom = QgsGeometry::unaryUnion( clipGeoms, QgsGeometryParameters(), feedback );
     if ( combinedClipGeom.isEmpty() )
     {
       throw QgsProcessingException( QObject::tr( "Could not create the combined clip geometry: %1" ).arg( combinedClipGeom.lastError() ) );
@@ -213,7 +213,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
         newGeometry = combinedClipGeom.intersection( currentGeometry, feedback );
         if ( newGeometry.wkbType() == Qgis::WkbType::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
         {
-          const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
+          const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry, QgsGeometryParameters(), feedback );
           const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );
           newGeometry = intCom.difference( intSym );
         }

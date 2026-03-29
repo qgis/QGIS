@@ -2140,8 +2140,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the union results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -2165,8 +2167,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the difference results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -2955,8 +2959,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the union results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent

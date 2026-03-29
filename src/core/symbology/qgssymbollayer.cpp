@@ -1095,7 +1095,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
   if ( !clipGeometries.empty() )
   {
     foundGeometries = true;
-    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
+    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries, QgsGeometryParameters(), renderContext.feedback() );
     if ( renderContext.maskSettings().simplifyTolerance() > 0 )
     {
       QgsGeos geos( mergedGeom.constGet() );
