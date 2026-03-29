@@ -1913,9 +1913,47 @@ class CORE_EXPORT QgsGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      *
+     * \see concaveHullOfPolygons()
      * \since QGIS 3.28
      */
     QgsGeometry concaveHull( double targetPercent, bool allowHoles = false, QgsFeedback * feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Constructs a concave hull of a set of polygons, respecting the polygons as constraints.
+     *
+     * A concave hull is a (possibly) non-convex polygon containing all the input polygons.
+     *
+     * The computed hull "fills the gap" between the polygons, and does not intersect their interior.
+     *
+     * A set of polygons has a sequence of hulls of increasing concaveness,
+     * determined by a numeric target parameter.
+     *
+     * The concave hull is constructed by removing the longest outer edges
+     * of the Delaunay Triangulation of the space between the polygons,
+     * until the target criterion parameter is reached.
+     *
+     * The "Maximum Edge Length" parameter limits the length of the longest edge between polygons
+     * to be no larger than this value. This can be expressed as a ratio between the lengths of the
+     * longest and shortest edges.
+     *
+     * The input geometry must be a valid Polygon or MultiPolygon (i.e. they must be non-overlapping).
+     *
+     * \param lengthRatio specifies the Maximum Edge Length as a
+     *        fraction of the difference between the longest and
+     *        shortest edge lengths between the polygons.
+     *        This normalizes the Maximum Edge Length to be scale-free.
+     *        A value of 1 produces the convex hull; a value of 0 produces
+     *        the original polygons.
+     * \param allowHoles set to TRUE to allow the concave hull to contain holes
+     * \param isTight set to TRUE if the concave hull should follow the outer boundaries of the input polygons
+     * \param feedback optional feedback object for early cancellation.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     *
+     * \see concaveHull()
+     * \since QGIS 4.2
+     */
+    QgsGeometry concaveHullOfPolygons( double lengthRatio, bool allowHoles = false, bool isTight = false, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.

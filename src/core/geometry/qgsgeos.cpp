@@ -2260,6 +2260,30 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercen
 #endif
 }
 
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::concaveHullOfPolygons( double lengthRatio, bool allowHoles, bool isTight, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+  ( void ) allowHoles;
+  ( void ) targetPercent;
+  ( void ) errorMsg;
+  throw QgsNotSupportedException( QObject::tr( "Calculating concaveHullOfPolygons requires a QGIS build based on GEOS 3.11 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr concaveHull( GEOSConcaveHullOfPolygons_r( QgsGeosContext::get(), mGeos.get(), lengthRatio, isTight ? 1 : 0, allowHoles ? 1 : 0 ) );
+    std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
+    return concaveHullGeom;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
 Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::unique_ptr<QgsAbstractGeometry> *invalidEdges, QString *errorMsg ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12

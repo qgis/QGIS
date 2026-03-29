@@ -69,6 +69,7 @@
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconcavehullbyfeature.h"
+#include "qgsalgorithmconcavehullofpolygons.h"
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconvertgeometrytype.h"
@@ -417,6 +418,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConcaveHullAlgorithm() );
   addAlgorithm( new QgsConcaveHullByFeatureAlgorithm() );
+  addAlgorithm( new QgsConcaveHullOfPolygonsAlgorithm() );
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );

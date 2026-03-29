@@ -84,7 +84,7 @@ void QgsConcaveHullByFeatureAlgorithm::initParameters( const QVariantMap & )
 
 QList<int> QgsConcaveHullByFeatureAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsFields QgsConcaveHullByFeatureAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -111,20 +111,38 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
   if ( f.hasGeometry() )
   {
     QgsGeometry outputGeometry;
-    const QgsAbstractGeometry *inputGeometry = f.geometry().constGet();
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( inputGeometry );
-    if ( !collection || collection->numGeometries() == 1 )
+    if ( f.geometry().type() == Qgis::GeometryType::Point )
     {
-      feedback->reportError( QObject::tr( "Cannot calculate convex hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
-      f.clearGeometry();
+      const QgsAbstractGeometry *inputGeometry = f.geometry().constGet();
+      const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( inputGeometry );
+      if ( !collection || collection->numGeometries() == 1 )
+      {
+        feedback->reportError( QObject::tr( "Cannot calculate convex hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
+        f.clearGeometry();
+      }
+      else
+      {
+        outputGeometry = f.geometry().concaveHull( mPercentage, mAllowHoles );
+        if ( outputGeometry.isNull() && !outputGeometry.lastError().isEmpty() )
+          feedback->reportError( outputGeometry.lastError() );
+        f.setGeometry( outputGeometry );
+      }
     }
-    else
+    else if ( f.geometry().type() == Qgis::GeometryType::Line )
     {
       outputGeometry = f.geometry().concaveHull( mPercentage, mAllowHoles );
       if ( outputGeometry.isNull() && !outputGeometry.lastError().isEmpty() )
         feedback->reportError( outputGeometry.lastError() );
       f.setGeometry( outputGeometry );
     }
+    else if ( f.geometry().type() == Qgis::GeometryType::Polygon )
+    {
+      outputGeometry = f.geometry().concaveHullOfPolygons( mPercentage, mAllowHoles );
+      if ( outputGeometry.isNull() && !outputGeometry.lastError().isEmpty() )
+        feedback->reportError( outputGeometry.lastError() );
+      f.setGeometry( outputGeometry );
+    }
+
     if ( outputGeometry.type() == Qgis::GeometryType::Polygon )
     {
       QgsAttributes attrs = f.attributes();
