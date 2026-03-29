@@ -1284,7 +1284,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   return Qgis::GeometryOperationResult::GeometryEngineError;
 }
 
-int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
+int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *feedback )
 {
   if ( !d->geometry || !other.d->geometry )
   {
@@ -1294,7 +1294,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1304,7 +1304,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   return 0;
 }
 
-QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
+QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || other.isNull() )
   {
@@ -1314,7 +1314,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     QgsGeometry result;
@@ -3212,7 +3212,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
   }
 }
 
-QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3222,7 +3222,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeo
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
 
   if ( !resultGeom )
   {

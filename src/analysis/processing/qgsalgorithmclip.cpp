@@ -210,7 +210,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       if ( !engine->contains( inputFeature.geometry().constGet() ) )
       {
         const QgsGeometry currentGeometry = inputFeature.geometry();
-        newGeometry = combinedClipGeom.intersection( currentGeometry );
+        newGeometry = combinedClipGeom.intersection( currentGeometry, feedback );
         if ( newGeometry.wkbType() == Qgis::WkbType::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
         {
           const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );

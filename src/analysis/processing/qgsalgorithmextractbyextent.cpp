@@ -112,7 +112,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
 
     if ( clip )
     {
-      QgsGeometry g = f.geometry().intersection( clipGeom );
+      QgsGeometry g = f.geometry().intersection( clipGeom, feedback );
 
       if ( g.type() != Qgis::GeometryType::Point )
       {

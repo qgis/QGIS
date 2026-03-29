@@ -1303,12 +1303,14 @@ Replaces a part of this geometry with another line
 %End
 
 
-    QgsGeometry makeDifference( const QgsGeometry &other ) const;
+    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns the geometry formed by modifying this geometry such that it does
 not intersect the other geometry.
 
 :param other: geometry that should not be intersect
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: difference geometry, or empty geometry if difference could not
          be calculated
@@ -2257,7 +2259,7 @@ average angle from the segment either side of the node is returned.
 .. seealso:: :py:func:`angleAtVertex`
 %End
 
-    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing the points shared by this geometry and
 other.
@@ -2271,6 +2273,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the intersection results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );

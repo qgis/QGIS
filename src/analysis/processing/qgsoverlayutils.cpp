@@ -329,7 +329,7 @@ void QgsOverlayUtils::intersection(
       if ( !engine->intersects( tmpGeom.constGet() ) )
         continue;
 
-      QgsGeometry intGeom = geom.intersection( tmpGeom, parameters );
+      QgsGeometry intGeom = geom.intersection( tmpGeom, parameters, feedback );
       if ( !sanitizeIntersectionResult( intGeom, geometryType ) )
         continue;
 
@@ -418,7 +418,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       if ( !g1engine->intersects( g2.constGet() ) )
         continue;
 
-      QgsGeometry geomIntersection = g1.intersection( g2, parameters );
+      QgsGeometry geomIntersection = g1.intersection( g2, parameters, feedback );
       if ( !sanitizeIntersectionResult( geomIntersection, geometryType ) )
         continue;
 

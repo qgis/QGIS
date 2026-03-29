@@ -1287,17 +1287,19 @@ class CORE_EXPORT QgsGeometry
     /**
      * Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \note Not available in Python
      */
-    int makeDifferenceInPlace( const QgsGeometry &other ) SIP_SKIP;
+    int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
 
     /**
      * Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.
      * \param other geometry that should not be intersect
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \returns difference geometry, or empty geometry if difference could not be calculated
      */
-    QgsGeometry makeDifference( const QgsGeometry &other ) const;
+    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns the bounding box of the geometry.
@@ -2112,8 +2114,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the intersection results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
