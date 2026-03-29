@@ -900,8 +900,8 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      *        This normalizes the Maximum Edge Length to be scale-free.
      *        A value of 1 produces the convex hull; a value of 0 produces
      *        the original polygons.
-     * \param allowHoles is the concave hull allowed to contain holes?
-     * \param isTight does the hull follow the outer boundaries of the input polygons.
+     * \param allowHoles set to TRUE to allow the concave hull to contain holes
+     * \param isTight set to TRUE if the concave hull should follow the outer boundaries of the input polygons
      * \param errorMsg will be set to descriptive error string if the operation fails
      * \param feedback optional feedback object for early cancellation.
      *
@@ -909,7 +909,7 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      * \see concaveHull()
-     * \since QGIS 3.28
+     * \since QGIS 4.2
      */
     std::unique_ptr< QgsAbstractGeometry > concaveHullOfPolygons(
       double lengthRatio, bool allowHoles = false, bool isTight = false, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
