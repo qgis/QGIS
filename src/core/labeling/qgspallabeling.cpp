@@ -4611,7 +4611,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   if ( mustClip )
   {
     // nice and fast, but can result in invalid geometries. At least it will potentially strip out a bunch of unwanted vertices upfront!
-    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox() );
+    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox(), context.feedback() );
     if ( clipGeom.isEmpty() )
       return QgsGeometry();
 

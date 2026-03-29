@@ -149,7 +149,7 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors(
   // Compute difference between envelope and union to obtain gap polygons
   geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
-  std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg ) );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );

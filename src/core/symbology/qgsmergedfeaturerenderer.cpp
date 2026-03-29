@@ -330,7 +330,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
         const QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries, QgsGeometryParameters(), context.feedback() ) );
         // compute the difference with the extent
         const QgsGeometry rect = QgsGeometry::fromPolygonXY( mExtentPolygon );
-        const QgsGeometry final = rect.difference( unioned );
+        const QgsGeometry final = rect.difference( unioned, QgsGeometryParameters(), context.feedback() );
         feat.setGeometry( final );
         break;
       }

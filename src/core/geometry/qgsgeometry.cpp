@@ -3059,7 +3059,7 @@ QgsGeometry QgsGeometry::sharedPaths( const QgsGeometry &other ) const
   return result;
 }
 
-QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -3076,7 +3076,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &p
 
   QgsGeos geos( geom );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters, feedback ) );
   if ( !result )
   {
     QgsGeometry geom;
@@ -3273,7 +3273,7 @@ QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) c
   return result;
 }
 
-QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3283,7 +3283,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeome
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3909,7 +3909,7 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
   }
 }
 
-QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
+QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle, QgsFeedback *feedback )
 {
   if ( !d->geometry || rectangle.isNull() || rectangle.isEmpty() )
   {
@@ -3918,7 +3918,7 @@ QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom = geos.clip( rectangle, &mLastError );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom = geos.clip( rectangle, &mLastError, feedback );
   if ( !resultGeom )
   {
     QgsGeometry result;
