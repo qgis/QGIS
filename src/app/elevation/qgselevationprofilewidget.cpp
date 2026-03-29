@@ -1032,6 +1032,9 @@ void QgsElevationProfileWidget::clear()
   mNudgeRightAction->setEnabled( false );
   mShowSubsectionsAction->setEnabled( false );
   mProfileCurve = QgsGeometry();
+
+  if ( mProfile )
+    emit profileDataRemoved( mProfile );
 }
 
 void QgsElevationProfileWidget::exportAsPdf()
