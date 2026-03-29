@@ -2781,12 +2781,13 @@ class CORE_EXPORT QgsGeometry
      * The \a method and \a keepCollapsed arguments are available since QGIS 3.28.
      * They require builds based on GEOS 3.10 or later.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \returns new valid QgsGeometry or null geometry on error
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
-     *
      */
-    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QgsFeedback* feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the orientation of the polygon.

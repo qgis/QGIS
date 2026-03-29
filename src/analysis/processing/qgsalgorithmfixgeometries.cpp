@@ -129,7 +129,7 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
 
   QgsFeature outputFeature = feature;
 
-  QgsGeometry outputGeometry = outputFeature.geometry().makeValid( mMethod );
+  QgsGeometry outputGeometry = outputFeature.geometry().makeValid( mMethod, false, feedback );
   if ( outputGeometry.isNull() )
   {
     feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
