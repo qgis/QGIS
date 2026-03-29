@@ -2866,11 +2866,15 @@ if (FORCE_STATIC_LIBS)
 
   if (WITH_AUTH)
     target_link_libraries(qgis_core
+      authmethod_apiheader_a
+      authmethod_awss3_a
       authmethod_basic_a
       authmethod_esritoken_a
       authmethod_identcert_a
+      authmethod_maptilerhmacsha256_a
       authmethod_pkipaths_a
       authmethod_pkcs12_a
+      authmethod_planetary_computer_a
     )
     if(WITH_OAUTH2_PLUGIN)
       target_link_libraries(qgis_core authmethod_oauth2_a)

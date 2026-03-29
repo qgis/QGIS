@@ -29,14 +29,18 @@
 using namespace Qt::StringLiterals;
 
 #ifdef HAVE_STATIC_PROVIDERS
+#include "qgsauthapiheadermethod.h"
+#include "qgsauthawss3method.h"
 #include "qgsauthbasicmethod.h"
 #include "qgsauthesritokenmethod.h"
 #include "qgsauthidentcertmethod.h"
+#include "qgsauthmaptilerhmacsha256method.h"
 #ifdef HAVE_OAUTH2_PLUGIN
 #include "qgsauthoauth2method.h"
 #endif
 #include "qgsauthpkipathsmethod.h"
 #include "qgsauthpkcs12method.h"
+#include "qgsauthplanetarycomputermethod.h"
 #endif
 
 #include <QString>
@@ -104,14 +108,18 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 void QgsAuthMethodRegistry::init()
 {
 #ifdef HAVE_STATIC_PROVIDERS
+  mAuthMethods[QgsAuthApiHeaderMethod::AUTH_METHOD_KEY] = new QgsAuthApiHeaderMethodMetadata();
+  mAuthMethods[QgsAuthAwsS3Method::AUTH_METHOD_KEY] = new QgsAuthAwsS3MethodMetadata();
   mAuthMethods[QgsAuthBasicMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
   mAuthMethods[QgsAuthEsriTokenMethod::AUTH_METHOD_KEY] = new QgsAuthEsriTokenMethodMetadata();
   mAuthMethods[QgsAuthIdentCertMethod::AUTH_METHOD_KEY] = new QgsAuthIdentCertMethodMetadata();
+  mAuthMethods[QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_KEY] = new QgsAuthMapTilerHmacSha256MethodMetadata();
 #ifdef HAVE_OAUTH2_PLUGIN
   mAuthMethods[QgsAuthOAuth2Method::AUTH_METHOD_KEY] = new QgsAuthOAuth2MethodMetadata();
 #endif
   mAuthMethods[QgsAuthPkiPathsMethod::AUTH_METHOD_KEY] = new QgsAuthPkiPathsMethodMetadata();
   mAuthMethods[QgsAuthPkcs12Method::AUTH_METHOD_KEY] = new QgsAuthPkcs12MethodMetadata();
+  mAuthMethods[QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY] = new QgsAuthPlanetaryComputerMethodMetadata();
 #else
   typedef QgsAuthMethodMetadata *factory_function();
 
