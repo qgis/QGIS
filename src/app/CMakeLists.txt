@@ -357,7 +357,7 @@ if (WITH_3D)
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
-    3d/qgs3dmaptoolmeasureline.cpp
+    3d/qgs3dmaptoolmeasure.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
     3d/qgs3dmaptoolpointcloudchangeattribute.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepolygon.cpp
