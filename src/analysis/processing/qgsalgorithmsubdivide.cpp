@@ -99,7 +99,7 @@ QgsFeatureList QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsPr
     if ( mDynamicMaxNodes )
       maxNodes = mMaxNodesProperty.valueAsDouble( context.expressionContext(), maxNodes );
 
-    feature.setGeometry( feature.geometry().subdivide( maxNodes, feedback ) );
+    feature.setGeometry( feature.geometry().subdivide( maxNodes, QgsGeometryParameters(), feedback ) );
     if ( !feature.hasGeometry() )
     {
       feedback->reportError( QObject::tr( "Error calculating subdivision for feature %1" ).arg( feature.id() ) );

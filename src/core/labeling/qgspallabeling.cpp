@@ -2743,7 +2743,7 @@ std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature(
   if ( !context.featureClipGeometry().isEmpty() )
   {
     const Qgis::GeometryType expectedType = geom.type();
-    geom = geom.intersection( context.featureClipGeometry(), context.feedback() );
+    geom = geom.intersection( context.featureClipGeometry(), QgsGeometryParameters(), context.feedback() );
     geom.convertGeometryCollectionToSubclass( expectedType );
   }
 

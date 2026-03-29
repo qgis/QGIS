@@ -985,7 +985,7 @@ bool QgsTriangulatedPointCloudLayerProfileGenerator::generateProfile( const QgsP
     QgsGeos geosPoly( &triangle );
     geosPoly.prepareGeometry();
 
-    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve, nullptr, QgsGeometryParameters(), mFeedback ) );
+    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve, nullptr, QgsGeometryParameters(), mFeedback.get() ) );
     if ( !intersectingGeom )
       continue;
 
