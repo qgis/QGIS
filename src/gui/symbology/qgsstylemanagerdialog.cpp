@@ -645,7 +645,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   {
     btnAddItem->setMenu( mMenuBtnAddItemLegendPatchShape );
   }
-  else if ( !readOnly && isSymbol3D ) // 3d symbol tab
+  else if ( !readOnly && isSymbol3D ) // 3D symbol tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemSymbol3D );
   }

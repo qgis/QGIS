@@ -106,7 +106,7 @@ void QgsLine3DSymbolWidget::updateGuiState()
 {
   const bool simple = chkSimpleLines->isChecked();
   spinExtrusion->setEnabled( !simple );
-  widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? Qgis::MaterialRenderingTechnique::Lines : Qgis::MaterialRenderingTechnique::Triangles );
+  widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
 
   // Altitude binding is not taken into account if altitude clamping is absolute.

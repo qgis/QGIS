@@ -7729,7 +7729,7 @@ Qgis.MaterialRenderingTechnique.Points.__doc__ = "Point based rendering, require
 Qgis.MaterialRenderingTechnique.TrianglesWithFixedTexture.__doc__ = "Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)"
 Qgis.MaterialRenderingTechnique.TrianglesFromModel.__doc__ = "Triangle based rendering, using a model object source"
 Qgis.MaterialRenderingTechnique.TrianglesDataDefined.__doc__ = "Triangle based rendering with possibility of datadefined color"
-Qgis.MaterialRenderingTechnique.Billboards.__doc__ = "Rendering as flat billboards"
+Qgis.MaterialRenderingTechnique.Billboards.__doc__ = "Flat billboard rendering"
 Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 
 .. warning::
@@ -7746,7 +7746,7 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 * ``TrianglesWithFixedTexture``: Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
 * ``TrianglesFromModel``: Triangle based rendering, using a model object source
 * ``TrianglesDataDefined``: Triangle based rendering with possibility of datadefined color
-* ``Billboards``: Rendering as flat billboards
+* ``Billboards``: Flat billboard rendering
 
 """
 # --
