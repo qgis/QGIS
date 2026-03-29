@@ -212,7 +212,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   if ( dissolve && !bufferedGeometriesForDissolve.isEmpty() )
   {
-    QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
+    QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve, QgsGeometryParameters(), feedback );
     finalGeometry.convertToMultiType();
     QgsFeature f;
     f.setAttributes( dissolveAttrs );

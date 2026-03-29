@@ -56,7 +56,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     }
     else
     {
-      result = result.intersection( region.geometry, QgsGeometryParameters(), context.feedback() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
