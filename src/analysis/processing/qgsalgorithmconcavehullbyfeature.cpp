@@ -59,9 +59,12 @@ QString QgsConcaveHullByFeatureAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates the concave hull for each feature in an input layer." )
          + u"\n\n"_s
-         + QObject::tr( "A concave hull is a polygon which contains all the points of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." )
+         + QObject::tr( "For point and line layers, a concave hull is a polygon which contains all the vertices of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." )
          + u"\n\n"_s
-         + QObject::tr( "It is frequently used to convert a multi-point into a polygonal area which contains all the points from the input geometry." )
+         + QObject::tr(
+           "When the input is a polygon layer, the algorithm operates differently: it computes a concave hull that strictly respects the boundaries of the input polygons. The computed hull fills the "
+           "empty space between the polygons within a multi-polygon feature, but does not intersect their interior."
+         )
          + u"\n\n"_s
          + QObject::tr( "See the 'Concave hull (by layer)' algorithm for a concave hull calculation which covers the whole layer or grouped subsets of features." );
 }
@@ -78,8 +81,20 @@ QgsConcaveHullByFeatureAlgorithm *QgsConcaveHullByFeatureAlgorithm::createInstan
 
 void QgsConcaveHullByFeatureAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( u"ALPHA"_s, QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 ) );
-  addParameter( new QgsProcessingParameterBoolean( u"HOLES"_s, QObject::tr( "Allow holes" ), true ) );
+  auto alphaParam
+    = std::make_unique<QgsProcessingParameterNumber>( u"ALPHA"_s, QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 );
+  alphaParam->setHelp(
+    QObject::tr(
+      "Controls the concaveness of the computed hull. A value of 1 produces the convex hull, while a value closer to 0 produces a highly concave hull. For point and line layers, this value "
+      "represents the target percentage of the convex hull area. For polygon layers, it specifies the maximum edge length as a fraction of the difference between the longest and shortest edge "
+      "lengths in the empty space between polygons."
+    )
+  );
+  addParameter( alphaParam.release() );
+
+  auto holesParam = std::make_unique<QgsProcessingParameterBoolean>( u"HOLES"_s, QObject::tr( "Allow holes" ), true );
+  holesParam->setHelp( QObject::tr( "Controls whether the computed concave hull is allowed to contain holes." ) );
+  addParameter( holesParam.release() );
 }
 
 QList<int> QgsConcaveHullByFeatureAlgorithm::inputLayerTypes() const
