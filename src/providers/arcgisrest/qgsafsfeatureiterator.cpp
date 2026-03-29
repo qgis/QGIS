@@ -119,7 +119,15 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
+  QString errorMessage;
+  if ( !mSource->sharedData()->ensureObjectIdsFetched( errorMessage ) )
+  {
+    QgsDebugError( errorMessage );
+    return false;
+  }
+
+  const long long objectIdCount = mSource->sharedData()->objectIdCount();
+  if ( mFeatureIterator >= objectIdCount )
     return false;
 
   if ( mDeferredFeaturesInFilterRectCheck )
@@ -184,7 +192,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     case Qgis::FeatureRequestFilterType::Expression:
     case Qgis::FeatureRequestFilterType::NoFilter:
     {
-      while ( mFeatureIterator < mSource->sharedData()->objectIdCount() )
+      while ( mFeatureIterator < objectIdCount )
       {
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;

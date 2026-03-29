@@ -38,11 +38,18 @@ using namespace Qt::StringLiterals;
 long long QgsAfsSharedData::objectIdCount() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  Q_ASSERT( mHasFetchedObjectIds );
+
   return mObjectIds.size();
 }
 
-long long QgsAfsSharedData::featureCount() const
+long long QgsAfsSharedData::featureCount( QString &errorMessage )
 {
+  if ( !ensureObjectIdsFetched( errorMessage ) )
+  {
+    return -1;
+  }
+
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mObjectIds.size() - mDeletedFeatureIds.size();
 }
@@ -59,10 +66,24 @@ QgsAfsSharedData::QgsAfsSharedData( const QgsDataSourceUri &uri )
   : mDataSource( uri )
 {}
 
+bool QgsAfsSharedData::ensureObjectIdsFetched( QString &errorMessage )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  if ( mHasFetchedObjectIds )
+    return true;
+
+  locker.unlock();
+  // Read OBJECTIDs of all features: these may not be a continuous sequence,
+  // and we need to store these to iterate through the features. This query
+  // also returns the name of the ObjectID field.
+  return getObjectIds( errorMessage );
+}
+
 std::shared_ptr<QgsAfsSharedData> QgsAfsSharedData::clone() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   auto copy = std::make_shared<QgsAfsSharedData>( mDataSource );
+  copy->mHasFetchedObjectIds = mHasFetchedObjectIds;
   copy->mLimitBBox = mLimitBBox;
   copy->mExtent = mExtent;
   copy->mGeometryType = mGeometryType;
@@ -99,8 +120,7 @@ void QgsAfsSharedData::clearCache()
   mObjectIds.clear();
   mObjectIdToFeatureId.clear();
   mDeletedFeatureIds.clear();
-  QString error;
-  getObjectIds( error );
+  mHasFetchedObjectIds = false;
 }
 
 bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
@@ -125,23 +145,11 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     errorMessage = QObject::tr( "Failed to determine objectIdFieldName and/or objectIds" );
     return false;
   }
-  mObjectIdFieldName = objectIdData[u"objectIdFieldName"_s].toString();
-  for ( int idx = 0, nIdx = mFields.count(); idx < nIdx; ++idx )
+  if ( objectIdData[u"objectIdFieldName"_s].toString() != mObjectIdFieldName )
   {
-    if ( mFields.at( idx ).name() == mObjectIdFieldName )
-    {
-      mObjectIdFieldIdx = idx;
-
-      // primary key is not null, unique
-      QgsFieldConstraints constraints = mFields.at( idx ).constraints();
-      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      mFields[idx].setConstraints( constraints );
-      mFields[idx].setReadOnly( true );
-
-      break;
-    }
+    QgsDebugError( u"Object ID field name mismatch: %1 vs %2"_s.arg( objectIdData[u"objectIdFieldName"_s].toString(), mObjectIdFieldName ) );
   }
+
   const QVariantList objectIds = objectIdData.value( u"objectIds"_s ).toList();
   mObjectIds.reserve( mObjectIds.size() + objectIds.size() );
   mObjectIdToFeatureId.reserve( mObjectIdToFeatureId.size() + objectIds.size() );
@@ -151,17 +159,24 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     mObjectIdToFeatureId.insert( objectIdInt, mObjectIds.size() );
     mObjectIds.append( objectIdInt );
   }
+  mHasFetchedObjectIds = true;
   return true;
 }
 
-quint32 QgsAfsSharedData::featureIdToObjectId( QgsFeatureId id )
+quint32 QgsAfsSharedData::featureIdToObjectId( QgsFeatureId id, QString &error )
 {
+  if ( !ensureObjectIdsFetched( error ) )
+  {
+    return 0;
+  }
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mObjectIds.value( id, -1 );
 }
 
-QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid ) const
+QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid )
 {
+  Q_ASSERT( mHasFetchedObjectIds );
+
   // lock must already be obtained by caller!
   return mObjectIdToFeatureId.value( oid, -1 );
 }
@@ -169,6 +184,7 @@ QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid ) const
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  Q_ASSERT( mHasFetchedObjectIds );
 
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.constFind( id );
@@ -326,6 +342,8 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
     getObjectIdsByExtent( mDataSource.param( u"url"_s ), extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql(), mDataSource.param( u"urlprefix"_s ) );
 
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  Q_ASSERT( mHasFetchedObjectIds );
+
   QgsFeatureIds ids;
   for ( const quint32 objectId : objectIdsInRect )
   {
@@ -339,6 +357,10 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error, QgsFeedback *feedback )
 {
   error.clear();
+  if ( !ensureObjectIdsFetched( error ) )
+  {
+    return false;
+  }
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
 
   QStringList stringIds;
@@ -373,6 +395,11 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error,
 bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMessage, QgsFeedback *feedback )
 {
   errorMessage.clear();
+  if ( !ensureObjectIdsFetched( errorMessage ) )
+  {
+    return false;
+  }
+
   QUrl queryUrl( mDataSource.param( u"url"_s ) + "/addFeatures" );
 
   QgsArcGisRestContext context;
@@ -431,6 +458,10 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
 bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool includeGeometries, bool includeAttributes, QString &error, QgsFeedback *feedback )
 {
   error.clear();
+  if ( !ensureObjectIdsFetched( error ) )
+  {
+    return false;
+  }
   QUrl queryUrl( mDataSource.param( u"url"_s ) + "/updateFeatures" );
 
   QgsArcGisRestContext context;
@@ -528,6 +559,10 @@ bool QgsAfsSharedData::addFields( const QString &adminUrl, const QList<QgsField>
 bool QgsAfsSharedData::deleteFields( const QString &adminUrl, const QgsAttributeIds &attributes, QString &error, QgsFeedback *feedback )
 {
   error.clear();
+  if ( !ensureObjectIdsFetched( error ) )
+  {
+    return false;
+  }
   QUrl queryUrl( adminUrl + "/deleteFromDefinition" );
 
   QVariantList fieldsJson;
@@ -577,6 +612,10 @@ bool QgsAfsSharedData::deleteFields( const QString &adminUrl, const QgsAttribute
 bool QgsAfsSharedData::addAttributeIndex( const QString &adminUrl, int attribute, QString &error, QgsFeedback *feedback )
 {
   error.clear();
+  if ( !ensureObjectIdsFetched( error ) )
+  {
+    return false;
+  }
   QUrl queryUrl( adminUrl + "/addToDefinition" );
 
   const QString name = mFields.field( attribute ).name();
@@ -609,10 +648,26 @@ bool QgsAfsSharedData::addAttributeIndex( const QString &adminUrl, int attribute
   return true;
 }
 
-bool QgsAfsSharedData::hasCachedAllFeatures() const
+bool QgsAfsSharedData::hasCachedAllFeatures()
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mCache.count() == featureCount();
+  if ( !mHasFetchedObjectIds )
+    return false;
+
+  QString error;
+  const long long count = featureCount( error );
+  if ( count < 0 )
+  {
+    return false;
+  }
+
+  return mCache.count() == count;
+}
+
+int QgsAfsSharedData::objectIdFieldIndex() const
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  return mObjectIdFieldIdx;
 }
 
 QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const
