@@ -14819,7 +14819,8 @@ class TestQgsGeometry(QgisTestCase):
         g = l1.concaveHullOfPolygons(1, False, True)
         g.normalize()
         self.assertEqual(
-            g.asWkt(), "MultiPolygon (((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9)))"
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9))",
         )
         l1 = QgsGeometry.fromWkt("POLYGON ((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9))")
         g = l1.concaveHullOfPolygons(1, False, False)
@@ -14856,7 +14857,8 @@ class TestQgsGeometry(QgisTestCase):
         g = l1.concaveHullOfPolygons(1, False, True)
         g.normalize()
         self.assertEqual(
-            g.asWkt(), "Polygon ((1 1, 1 6, 1 9, 5 8, 9 9, 9 6, 9 1, 1 1))"
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((1 1, 1 6, 1 9, 5 8, 9 9, 9 6, 9 1, 1 1))",
         )
 
         l1 = QgsGeometry.fromWkt(
@@ -14871,19 +14873,19 @@ class TestQgsGeometry(QgisTestCase):
         g = l1.concaveHullOfPolygons(0.2, False, True)
         g.normalize()
         self.assertEqual(
-            g.asWkt(),
+            g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((0 2, 3 4, 4 5, 0 7, 4 10, 5 9, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 6 3, 5 3, 4 0, 0 2))",
         )
         g = l1.concaveHullOfPolygons(0.5, False, True)
         g.normalize()
         self.assertEqual(
-            g.asWkt(),
+            g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((0 2, 3 4, 4 5, 0 7, 4 10, 5 9, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 4 0, 0 2))",
         )
         g = l1.concaveHullOfPolygons(1, False, True)
         g.normalize()
         self.assertEqual(
-            g.asWkt(),
+            g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((0 2, 0 7, 4 10, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 4 0, 0 2))",
         )
 
@@ -14900,7 +14902,7 @@ class TestQgsGeometry(QgisTestCase):
         g = l1.concaveHullOfPolygons(1, True, False)
         g.normalize()
         self.assertEqual(
-            g.asWkt(),
+            g.constGet().simplifiedTypeRef().asWkt(),
             "Polygon ((1 0, 1 4, 1 5, 1 9, 5 9, 6 9, 8 9, 9 5, 8 0, 6 0, 5 0, 1 0))",
         )
 
