@@ -2841,7 +2841,7 @@ project properties
 .. versionadded:: 3.34
 %End
 
-    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Attempts to make an invalid geometry valid without losing vertices.
 
@@ -2857,6 +2857,9 @@ geometry.
 
 The ``method`` and ``keepCollapsed`` arguments are available since QGIS
 3.28. They require builds based on GEOS 3.10 or later.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 
 :return: new valid QgsGeometry or null geometry on error
 

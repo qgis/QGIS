@@ -4638,7 +4638,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
         QgsGeometry partGeom( ( *it )->clone() );
         if ( !partGeom.isGeosValid() )
         {
-          partGeom = partGeom.makeValid();
+          partGeom = partGeom.makeValid( Qgis::MakeValidMethod::Linework, false, context.feedback() );
         }
         parts.append( partGeom );
       }
@@ -4646,7 +4646,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     else if ( !geom.isGeosValid() )
     {
-      QgsGeometry bufferGeom = geom.makeValid();
+      QgsGeometry bufferGeom = geom.makeValid( Qgis::MakeValidMethod::Linework, false, context.feedback() );
       if ( bufferGeom.isNull() )
       {
         QgsDebugError( u"Could not repair geometry: %1"_s.arg( bufferGeom.lastError() ) );
