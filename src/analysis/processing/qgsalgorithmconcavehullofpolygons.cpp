@@ -37,7 +37,7 @@ QString QgsConcaveHullOfPolygonsAlgorithm::displayName() const
 
 QStringList QgsConcaveHullOfPolygonsAlgorithm::tags() const
 {
-  return QObject::tr( "concave,hull,bounds,bounding,convex,multipolygons,boundary" ).split( ',' );
+  return QObject::tr( "concave,hull,bounds,bounding,convex,multipolygons,boundary,fill,holes,between,space" ).split( ',' );
 }
 
 QString QgsConcaveHullOfPolygonsAlgorithm::group() const
