@@ -789,6 +789,11 @@ QIcon QgsAfsProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( u"mIconAfs.svg"_s );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsAfsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
+}
+
 QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;

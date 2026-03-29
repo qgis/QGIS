@@ -1288,6 +1288,11 @@ QIcon QgsAmsProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( u"mIconAms.svg"_s );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsAmsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
+}
+
 QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsAmsProvider( uri, options, flags );

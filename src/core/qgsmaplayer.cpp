@@ -578,6 +578,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mPreloadedProvider.reset( preloadedProvider );
+  if ( mPreloadedProvider )
+  {
+    QGIS_CHECK_QOBJECT_THREAD_EQUALITY( mPreloadedProvider.get() );
+  }
 
   bool layerError;
   mReadFlags = flags;
