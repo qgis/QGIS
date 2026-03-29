@@ -235,7 +235,7 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
 
       if ( engine->intersects( lineFeature.geometry().constGet() ) )
       {
-        const QgsGeometry outGeom = polyGeom.intersection( lineFeature.geometry() );
+        const QgsGeometry outGeom = polyGeom.intersection( lineFeature.geometry(), feedback );
         try
         {
           length += mDa.measureLength( outGeom );

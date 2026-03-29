@@ -559,7 +559,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
         case JoinToLargestOverlap:
         {
           // calculate area of overlap
-          std::unique_ptr<QgsAbstractGeometry> intersection( engine->intersection( joinFeature.geometry().constGet() ) );
+          std::unique_ptr<QgsAbstractGeometry> intersection( engine->intersection( joinFeature.geometry().constGet(), nullptr, QgsGeometryParameters(), feedback ) );
           double overlap = 0;
           switch ( QgsWkbTypes::geometryType( intersection->wkbType() ) )
           {

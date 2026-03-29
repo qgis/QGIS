@@ -2743,7 +2743,7 @@ std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature(
   if ( !context.featureClipGeometry().isEmpty() )
   {
     const Qgis::GeometryType expectedType = geom.type();
-    geom = geom.intersection( context.featureClipGeometry() );
+    geom = geom.intersection( context.featureClipGeometry(), context.feedback() );
     geom.convertGeometryCollectionToSubclass( expectedType );
   }
 
@@ -4659,7 +4659,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   if ( mustClipExact )
   {
     // now do the real intersection against the actual clip geometry
-    QgsGeometry clipGeom = geom.intersection( clipGeometry );
+    QgsGeometry clipGeom = geom.intersection( clipGeometry, QgsGeometryParameters(), context.feedback() );
     if ( clipGeom.isEmpty() )
     {
       return QgsGeometry();

@@ -3429,7 +3429,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     if ( shapeEngine )
     {
       QgsLineString ls( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ) );
-      std::unique_ptr< QgsAbstractGeometry > intersection( shapeEngine->intersection( &ls ) );
+      std::unique_ptr< QgsAbstractGeometry > intersection( shapeEngine->intersection( &ls, nullptr, QgsGeometryParameters(), context.renderContext().feedback() ) );
       for ( auto it = intersection->const_parts_begin(); it != intersection->const_parts_end(); ++it )
       {
         if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( *it ) )

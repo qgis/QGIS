@@ -229,7 +229,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
         if ( feedback->isCanceled() )
           break;
 
-        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters );
+        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters, feedback );
 
         double overlayArea = 0;
         try
