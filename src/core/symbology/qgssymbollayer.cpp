@@ -1119,7 +1119,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
       {
         exterior = QgsGeometry::fromRect( contextBounds );
       }
-      const QgsGeometry maskGeom = exterior.difference( mergedGeom );
+      const QgsGeometry maskGeom = exterior.difference( mergedGeom, QgsGeometryParameters(), renderContext.feedback() );
       if ( !maskGeom.isNull() )
       {
         return maskGeom.constGet()->asQPainterPath();

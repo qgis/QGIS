@@ -202,7 +202,7 @@ void QgsOverlayUtils::difference(
           // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
           throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
         }
-        geom = geom.difference( geomB, parameters );
+        geom = geom.difference( geomB, parameters, feedback );
       }
 
       if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType, flags ) )
@@ -454,7 +454,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f1
       //
 
-      QgsGeometry g12 = g1.difference( g2, parameters );
+      QgsGeometry g12 = g1.difference( g2, parameters, feedback );
 
       index.deleteFeature( f );
       geometries.remove( fid1 );
@@ -472,7 +472,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f2
       //
 
-      QgsGeometry g21 = g2.difference( g1, parameters );
+      QgsGeometry g21 = g2.difference( g1, parameters, feedback );
 
       QgsFeature f2old( fid2 );
       f2old.setGeometry( g2 );
