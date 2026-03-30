@@ -31,6 +31,11 @@ class QgsSimpleLineMaterialWidget : public QgsMaterialSettingsWidget, private Ui
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
+  public slots:
+    void setPreviewVisible( bool visible ) override;
+
+  private slots:
+    void updatePreview();
 };
 
 #endif // QGSSIMPLELINEMATERIALWIDGET_H

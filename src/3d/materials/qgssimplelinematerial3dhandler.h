@@ -42,6 +42,9 @@ class _3D_EXPORT QgsSimpleLineMaterial3DHandler : public QgsAbstractMaterial3DHa
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
     QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
     void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
+    Qt3DCore::QEntity *createPreviewMesh( Qt3DCore::QEntity *parent ) const override;
+    Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent ) const override;
+    void updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 };
 
 

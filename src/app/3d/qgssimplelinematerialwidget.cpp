@@ -24,12 +24,15 @@ QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
 
   QgsSimpleLineMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsSimpleLineMaterialWidget::changed );
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsSimpleLineMaterialWidget::changed );
+
+  connect( this, &QgsSimpleLineMaterialWidget::changed, this, &QgsSimpleLineMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsSimpleLineMaterialWidget::create()
@@ -47,6 +50,8 @@ void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
   mPropertyCollection = settings->dataDefinedProperties();
   mAmbientDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
+  updatePreview();
 }
 
 QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
@@ -58,4 +63,18 @@ QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();
+}
+
+void QgsSimpleLineMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
+}
+
+void QgsSimpleLineMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
 }
