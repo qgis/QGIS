@@ -878,7 +878,10 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext = QgsRenderContext();
   mRenderContext.setRendererScale( mSymbologyScale );
   mRenderContext.setExtent( mMapSettings.extent() );
-
+  QgsDistanceArea da;
+  da.setSourceCrs( mMapSettings.destinationCrs(), mMapSettings.transformContext() );
+  da.setEllipsoid( mMapSettings.ellipsoid() );
+  mRenderContext.setDistanceArea( da );
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
   mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / mFactor,
                                 mMapSettings.extent().center().x(),

@@ -86,6 +86,7 @@ class TestQgsDxfExport : public QObject
     void testMinimumLineWidthExport();
     void testWritingCodepage();
     void testExpressionContext();
+    void testMetersAtScale();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -2042,6 +2043,55 @@ void TestQgsDxfExport::testExpressionContext()
   const QString file = getTempFileName( "context_dxf" );
   QFile dxfFile( file );
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testMetersAtScale()
+{
+  // This test is aimed at testing whether the render unit "meters in map units" exports
+
+  auto vl = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=id:string"_s, u"vl"_s, u"memory"_s );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << u"1"_s );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (-112.5 44.9, -88.6 44.9)"_s ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+
+  vl->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"represent_value(\"Class\")"_s;
+  settings.isExpression = true;
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
+  format.setSize( 12 );
+  format.setSizeUnit( Qgis::RenderUnit::MetersInMapUnits );
+  format.setNamedStyle( u"Bold"_s );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayerNoSymbols->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerNoSymbols->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+
+  const QString file = getTempFileName( "context_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
