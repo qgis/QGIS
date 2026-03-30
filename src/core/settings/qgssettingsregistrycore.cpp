@@ -34,6 +34,7 @@
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterminmaxorigin.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
@@ -499,6 +500,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
   QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
   QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
+
+  // raster cumulative cut
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
