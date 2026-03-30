@@ -21,7 +21,8 @@
 #include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
 #include <QDir>
@@ -30,6 +31,11 @@
 #include <QTextStream>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryVariant *QgsRecentColorScheme::settingsRecentColors = new QgsSettingsEntryVariant( u"recent"_s, QgsSettingsTree::sTreeColors, QVariant() );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteColors = new QgsSettingsEntryVariant( u"palettecolors"_s, QgsSettingsTree::sTreeColors, QVariant() );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteLabels = new QgsSettingsEntryVariant( u"palettelabels"_s, QgsSettingsTree::sTreeColors, QVariant() );
+const QgsSettingsEntryStringList *QgsUserColorScheme::settingsShowInMenuList = new QgsSettingsEntryStringList( u"showInMenuList"_s, QgsSettingsTree::sTreeColors, QStringList() );
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
@@ -51,8 +57,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   Q_UNUSED( baseColor )
 
   //fetch recent colors
-  const QgsSettings settings;
-  const QList< QVariant > recentColorVariants = settings.value( u"colors/recent"_s ).toList();
+  const QList< QVariant > recentColorVariants = settingsRecentColors->value().toList();
 
   //generate list from recent colors
   QgsNamedColorList colorList;
@@ -80,8 +85,7 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
   QColor opaqueColor = color;
   opaqueColor.setAlpha( 255 );
 
-  QgsSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( u"colors/recent"_s ).toList();
+  QList< QVariant > recentColorVariants = settingsRecentColors->value().toList();
 
   //remove colors by name
   for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
@@ -102,14 +106,13 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
     recentColorVariants.pop_back();
   }
 
-  settings.setValue( u"colors/recent"_s, recentColorVariants );
+  settingsRecentColors->setValue( QVariant( recentColorVariants ) );
 }
 
 QColor QgsRecentColorScheme::lastUsedColor()
 {
   //fetch recent colors
-  const QgsSettings settings;
-  const QList< QVariant > recentColorVariants = settings.value( u"colors/recent"_s ).toList();
+  const QList< QVariant > recentColorVariants = settingsRecentColors->value().toList();
 
   if ( recentColorVariants.isEmpty() )
     return QColor();
@@ -124,10 +127,9 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
 
   //fetch predefined custom colors
   QgsNamedColorList colorList;
-  const QgsSettings settings;
 
   //check if settings contains custom palette
-  if ( !settings.contains( u"/colors/palettecolors"_s ) )
+  if ( !settingsPaletteColors->exists() )
   {
     //no custom palette, return default colors
     colorList.append( qMakePair( QColor( 0, 0, 0 ), QString() ) );
@@ -144,8 +146,8 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
     return colorList;
   }
 
-  QList< QVariant > customColorVariants = settings.value( u"colors/palettecolors"_s ).toList();
-  const QList< QVariant > customColorLabels = settings.value( u"colors/palettelabels"_s ).toList();
+  QList< QVariant > customColorVariants = settingsPaletteColors->value().toList();
+  const QList< QVariant > customColorLabels = settingsPaletteLabels->value().toList();
 
   //generate list from custom colors
   int colorIndex = 0;
@@ -171,7 +173,6 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
   Q_UNUSED( baseColor )
 
   // save colors to settings
-  QgsSettings settings;
   QList< QVariant > customColors;
   QList< QVariant > customColorLabels;
 
@@ -183,8 +184,8 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
     customColors.append( color );
     customColorLabels.append( label );
   }
-  settings.setValue( u"colors/palettecolors"_s, customColors );
-  settings.setValue( u"colors/palettelabels"_s, customColorLabels );
+  settingsPaletteColors->setValue( QVariant( customColors ) );
+  settingsPaletteLabels->setValue( QVariant( customColorLabels ) );
   return true;
 }
 
@@ -342,8 +343,7 @@ QgsColorScheme::SchemeFlags QgsUserColorScheme::flags() const
 {
   QgsColorScheme::SchemeFlags f = QgsGplColorScheme::flags();
 
-  const QgsSettings s;
-  const QStringList showInMenuSchemes = s.value( u"/colors/showInMenuList"_s ).toStringList();
+  const QStringList showInMenuSchemes = settingsShowInMenuList->value();
 
   if ( showInMenuSchemes.contains( mName ) )
   {
@@ -373,8 +373,7 @@ bool QgsUserColorScheme::erase()
 
 void QgsUserColorScheme::setShowSchemeInMenu( bool show )
 {
-  QgsSettings s;
-  QStringList showInMenuSchemes = s.value( u"/colors/showInMenuList"_s ).toStringList();
+  QStringList showInMenuSchemes = settingsShowInMenuList->value();
 
   if ( show && !showInMenuSchemes.contains( mName ) )
   {
@@ -385,7 +384,7 @@ void QgsUserColorScheme::setShowSchemeInMenu( bool show )
     showInMenuSchemes.removeAll( mName );
   }
 
-  s.setValue( u"/colors/showInMenuList"_s, showInMenuSchemes );
+  settingsShowInMenuList->setValue( showInMenuSchemes );
 }
 
 QString QgsUserColorScheme::gplFilePath()
