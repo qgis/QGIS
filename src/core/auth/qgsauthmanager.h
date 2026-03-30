@@ -75,6 +75,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
     static const QgsSettingsEntryBool *settingsUsingGeneratedRandomPassword SIP_SKIP;
 
+    //! Settings entry for insecure fallback for password helper \since QGIS 4.0.1
+    static const QgsSettingsEntryBool *settingsPasswordHelperInsecureFallback SIP_SKIP;
+
+    //! Settings entry for using the system keychain password helper \since QGIS 4.0.1
+    static const QgsSettingsEntryBool *settingsUsePasswordHelper SIP_SKIP;
+
+    //! Settings entry for password helper logging \since QGIS 4.0.1
+    static const QgsSettingsEntryBool *settingsPasswordHelperLogging SIP_SKIP;
+
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
     {
