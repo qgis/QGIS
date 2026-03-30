@@ -42,6 +42,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsreadwritelocker.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsvectorlayer.h"
@@ -59,6 +61,8 @@
 #include <QTextStream>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsVectorFileWriter::settingsDefaultEncoding = new QgsSettingsEntryString( u"encoding"_s, QgsSettingsTree::sTreeQgis, u"System"_s );
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {
@@ -433,8 +437,7 @@ void QgsVectorFileWriter::init(
   {
     QgsDebugError( "error finding QTextCodec for " + fileEncoding );
 
-    QgsSettings settings;
-    QString enc = settings.value( u"UI/encoding"_s, "System" ).toString();
+    QString enc = settingsDefaultEncoding->value();
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
     {
