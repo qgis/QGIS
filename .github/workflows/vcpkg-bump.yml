@@ -19,6 +19,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ssh-key: ${{ secrets.VCPKG_BUMPER_KEY }}
 
       - name: Resolve latest baselines
         id: baselines
