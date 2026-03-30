@@ -26,6 +26,7 @@
 
 class QgsCelestialBody;
 class QgsProjOperation;
+class QgsSettingsEntryStringList;
 
 
 #ifndef SIP_RUN
@@ -282,6 +283,18 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * \since QGIS 3.36
      */
     void recentCrsCleared();
+
+#ifndef SIP_RUN
+
+    //! Settings entry for recent projections auth IDs \since QGIS 4.0.1
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsAuthId SIP_SKIP;
+
+    //! Settings entry for recent projections WKT \since QGIS 4.0.1
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsWkt SIP_SKIP;
+
+    //! Settings entry for recent projections Proj4 \since QGIS 4.0.1
+    static const QgsSettingsEntryStringList *settingsRecentProjectionsProj4 SIP_SKIP;
+#endif
 
   private:
     bool insertProjection( const QString &projectionAcronym );

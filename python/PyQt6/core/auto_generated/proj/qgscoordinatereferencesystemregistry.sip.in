@@ -251,6 +251,7 @@ Emitted when the list of recently used CRS has been cleared.
 .. versionadded:: 3.36
 %End
 
+
 };
 
 
