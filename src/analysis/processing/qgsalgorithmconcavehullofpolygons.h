@@ -62,7 +62,6 @@ class QgsConcaveHullOfPolygonsAlgorithm : public QgsProcessingFeatureBasedAlgori
   private:
     double mPercentage = 0;
     bool mAllowHoles = false;
-    bool mTight = false;
 };
 
 
