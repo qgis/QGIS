@@ -27,9 +27,9 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsrelationshipsitem.h"
-#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingstree.h"
 #include "qgsstyle.h"
 
 #include <QString>
@@ -38,6 +38,8 @@
 #include "moc_qgsfilebaseddataitemprovider.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsFileBasedDataItemProvider::settingsScanItemsInBrowser = new QgsSettingsEntryString( u"scanItemsInBrowser2"_s, QgsSettingsTree::sTreeQgis, u"extension"_s );
 
 //
 // QgsProviderSublayerItem
@@ -620,11 +622,8 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate(
   if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
     return nullptr;
 
-  QgsSettings settings;
-
   // should we fast scan only?
-  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s, "extension" ).toString() == "extension"_L1 )
-       || ( parentItem && QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value().contains( parentItem->path() ) ) )
+  if ( ( settingsScanItemsInBrowser->value() == "extension"_L1 ) || ( parentItem && QgsSettingsRegistryCore::settingsScanItemsFastScanUris->value().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;
   }
