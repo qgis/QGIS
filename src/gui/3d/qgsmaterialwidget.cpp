@@ -232,6 +232,8 @@ QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSetti
   vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
   setWindowTitle( tr( "Material" ) );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 }
 
 std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()
