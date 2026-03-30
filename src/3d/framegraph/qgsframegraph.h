@@ -18,6 +18,8 @@
 
 #include <map>
 
+#include "qgis_3d.h"
+
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
@@ -68,7 +70,7 @@ class QgsShadowSettings;
  *
  * \since QGIS 3.16
  */
-class QgsFrameGraph : public Qt3DCore::QEntity
+class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
