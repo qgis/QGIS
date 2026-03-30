@@ -769,7 +769,7 @@ tests:
         name: expected/geometry_by_expression_layerref.gml
         type: vector
 
-  - algorithm: native:concavehullofpolygons
+  - algorithm: native:tightconcavehullofpolygons
     name: Concave hull of polygons (0.1 ratio)
     condition:
       geos:
@@ -780,7 +780,6 @@ tests:
         name: multipolys.gml|layername=multipolys
         type: vector
       RATIO: 0.1
-      TIGHT: false
     results:
       OUTPUT:
         name: expected/concave_hull_of_polygons.gml
@@ -790,7 +789,7 @@ tests:
             precision: 5
             normalize: True
 
-  - algorithm: native:concavehullofpolygons
+  - algorithm: native:tightconcavehullofpolygons
     name: Concave hull of polygons (0.3 ratio)
     condition:
       geos:
@@ -801,7 +800,6 @@ tests:
         name: multipolys.gml|layername=multipolys
         type: vector
       RATIO: 0.3
-      TIGHT: false
     results:
       OUTPUT:
         name: expected/concave_hull_of_polygons_03.gml

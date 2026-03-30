@@ -17,8 +17,6 @@
 
 #include "qgsalgorithmconcavehullofpolygons.h"
 
-#include "qgsgeometrycollection.h"
-
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -27,17 +25,17 @@ using namespace Qt::StringLiterals;
 
 QString QgsConcaveHullOfPolygonsAlgorithm::name() const
 {
-  return u"concavehullofpolygons"_s;
+  return u"tightconcavehullofpolygons"_s;
 }
 
 QString QgsConcaveHullOfPolygonsAlgorithm::displayName() const
 {
-  return QObject::tr( "Concave hull (of polygons)" );
+  return QObject::tr( "Fill gaps between polygons" );
 }
 
 QStringList QgsConcaveHullOfPolygonsAlgorithm::tags() const
 {
-  return QObject::tr( "concave,hull,bounds,bounding,convex,multipolygons,boundary,fill,holes,between,space" ).split( ',' );
+  return QObject::tr( "concave,hull,bounds,bounding,convex,multipolygons,boundary,fill,holes,between,space,tight,strict" ).split( ',' );
 }
 
 QString QgsConcaveHullOfPolygonsAlgorithm::group() const
@@ -52,7 +50,7 @@ QString QgsConcaveHullOfPolygonsAlgorithm::groupId() const
 
 QString QgsConcaveHullOfPolygonsAlgorithm::outputName() const
 {
-  return QObject::tr( "Concave hulls" );
+  return QObject::tr( "Tight concave hulls" );
 }
 
 QString QgsConcaveHullOfPolygonsAlgorithm::shortHelpString() const
@@ -61,7 +59,8 @@ QString QgsConcaveHullOfPolygonsAlgorithm::shortHelpString() const
          + u"\n\n"_s
          + QObject::tr(
            "Unlike the standard Concave Hull algorithm, a Concave Hull of Polygons is a (possibly) non-convex polygon containing all the input polygons. The computed hull fills the gaps between the "
-           "polygons without intersecting their interiors."
+           "polygons without intersecting their interiors. It strictly follows the outer boundaries of the input polygons, allowing you to fill gaps between them without distorting their original "
+           "shapes."
          )
          + u"\n\n"_s
          + QObject::tr(
@@ -75,7 +74,7 @@ QString QgsConcaveHullOfPolygonsAlgorithm::shortHelpString() const
 
 QString QgsConcaveHullOfPolygonsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Constructs a concave hull for a set of polygons, respecting the polygons as constraints and filling gaps between them." );
+  return QObject::tr( "Constructs a tight concave hull for a set of polygons, filling gaps between them while strictly preserving their original outer boundaries." );
 }
 
 QgsConcaveHullOfPolygonsAlgorithm *QgsConcaveHullOfPolygonsAlgorithm::createInstance() const
@@ -98,12 +97,6 @@ void QgsConcaveHullOfPolygonsAlgorithm::initParameters( const QVariantMap & )
   auto holesParam = std::make_unique<QgsProcessingParameterBoolean>( u"HOLES"_s, QObject::tr( "Allow holes" ), true );
   holesParam->setHelp( QObject::tr( "Controls whether the computed concave hull is allowed to contain holes." ) );
   addParameter( holesParam.release() );
-
-  auto tightParam = std::make_unique<QgsProcessingParameterBoolean>( u"TIGHT"_s, QObject::tr( "Follow the outer boundaries of input polygons tightly" ), false );
-  tightParam->setHelp(
-    QObject::tr( "If checked, the hull follows the outer boundaries of the input polygons tightly. This allows filling gaps between polygons without distorting their original outer boundaries." )
-  );
-  addParameter( tightParam.release() );
 }
 
 QList<int> QgsConcaveHullOfPolygonsAlgorithm::inputLayerTypes() const
@@ -126,7 +119,6 @@ bool QgsConcaveHullOfPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &par
 #endif
   mPercentage = parameterAsDouble( parameters, u"RATIO"_s, context );
   mAllowHoles = parameterAsBool( parameters, u"HOLES"_s, context );
-  mTight = parameterAsBool( parameters, u"TIGHT"_s, context );
   return true;
 }
 
@@ -136,7 +128,7 @@ QgsFeatureList QgsConcaveHullOfPolygonsAlgorithm::processFeature( const QgsFeatu
   if ( f.hasGeometry() )
   {
     QgsGeometry outputGeometry;
-    outputGeometry = f.geometry().concaveHullOfPolygons( mPercentage, mAllowHoles, mTight );
+    outputGeometry = f.geometry().concaveHullOfPolygons( mPercentage, mAllowHoles, true );
     if ( outputGeometry.isNull() && !outputGeometry.lastError().isEmpty() )
       feedback->reportError( outputGeometry.lastError() );
     f.setGeometry( outputGeometry );

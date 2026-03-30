@@ -10,13 +10,13 @@
   <ogr:featureMember>
     <ogr:concave_hull_of_polygons gml:id="concave_hull_of_polygons.0">
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>1 2</gml:lowerCorner><gml:upperCorner>3 4</gml:upperCorner></gml:Envelope></gml:boundedBy>
-      <ogr:geometryProperty><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326" gml:id="concave_hull_of_polygons.geom.0"><gml:exterior><gml:LinearRing><gml:posList>3 3 3 4 1 4 1 2 2 2 3 3</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiSurface srsName="urn:ogc:def:crs:EPSG::4326" gml:id="concave_hull_of_polygons.geom.0"><gml:surfaceMember><gml:Polygon gml:id="concave_hull_of_polygons.geom.0.0"><gml:exterior><gml:LinearRing><gml:posList>1 2 2 2 2 3 3 3 3 4 1 4 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember></gml:MultiSurface></ogr:geometryProperty>
       <ogr:fid>multipolys.0</ogr:fid>
       <ogr:Bname>Test</ogr:Bname>
       <ogr:Bintval>1</ogr:Bintval>
       <ogr:Bfloatval>0.123</ogr:Bfloatval>
-      <ogr:area>3.500000</ogr:area>
-      <ogr:perimeter>7.414214</ogr:perimeter>
+      <ogr:area>3.000000</ogr:area>
+      <ogr:perimeter>8.000000</ogr:perimeter>
     </ogr:concave_hull_of_polygons>
   </ogr:featureMember>
   <ogr:featureMember>
