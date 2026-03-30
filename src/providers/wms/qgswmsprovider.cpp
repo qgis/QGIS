@@ -843,6 +843,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     const QgsWmtsTileMatrix *tm = nullptr;
     std::unique_ptr<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
+    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && dataSourceUri().contains( u"openstreetmap.org"_s );
 
     if ( mSettings.mTiled )
     {
@@ -1018,7 +1019,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     int t0 = t.elapsed();
     // draw other res tiles if preview
     QPainter p( &image );
-    if ( feedback && feedback->isPreviewOnly() && missing.count() > 0 )
+    if ( missing.count() > 0 && ( ( feedback && feedback->isPreviewOnly() ) || drawCacheOnly ) )
     {
       // some tiles are still missing, so let's see if we have any cached tiles
       // from lower or higher resolution available to give the user a bit of context
@@ -1028,7 +1029,10 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 #if 0 // for debugging
       p.fillRect( image->rect(), QBrush( Qt::lightGray, Qt::CrossPattern ) );
 #endif
-      p.setRenderHint( QPainter::SmoothPixmapTransform, false ); // let's not waste time with bilinear filtering
+      if ( feedback && feedback->isPreviewOnly() )
+      {
+        p.setRenderHint( QPainter::SmoothPixmapTransform, false ); // let's not waste time with bilinear filtering
+      }
 
       QList<TileImage> lowerResTiles, lowerResTiles2, higherResTiles;
       // first we check lower resolution tiles: one level back, then two levels back (if there is still some area not covered),
@@ -1095,6 +1099,10 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     {
       QgsDebugMsgLevel( QStringLiteral( "PREVIEW - CACHED: %1 / MISSING: %2" ).arg( tileImages.count() ).arg( requests.count() - tileImages.count() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "PREVIEW - TIME: this res %1 ms | other res %2 ms | TOTAL %3 ms" ).arg( t0 + t2 ).arg( t1 ).arg( t0 + t1 + t2 ), 4 );
+    }
+    else if ( drawCacheOnly )
+    {
+      return image;
     }
     else if ( !requestsFinal.isEmpty() )
     {
