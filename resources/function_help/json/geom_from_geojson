@@ -15,5 +15,5 @@
     "expression": "geom_from_geojson('{\"type\":\"LineString\",\"coordinates\":[[4,5],[6,7]]}')",
     "returns": "a line geometry object"
   }],
-  "tags": ["representation", "conversion"]
+  "tags": ["geojson", "text", "representation", "conversion"]
 }
