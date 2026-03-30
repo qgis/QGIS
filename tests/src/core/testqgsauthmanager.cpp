@@ -19,6 +19,7 @@
 #include "qgsauthmanager.h"
 #include "qgsauthmethodmetadata.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 
 #include <QDesktopServices>
@@ -131,8 +132,7 @@ void TestQgsAuthManager::initTestCase()
 void TestQgsAuthManager::cleanup()
 {
   // Restore password_helper_insecure_fallback value
-  QgsSettings settings;
-  settings.setValue( u"password_helper_insecure_fallback"_s, false, QgsSettings::Section::Auth );
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->setValue( false );
 }
 
 void TestQgsAuthManager::cleanupTempDir()
@@ -426,8 +426,7 @@ void TestQgsAuthManager::testPasswordHelper()
   QgsAuthManager *authm = QgsApplication::authManager();
   authm->clearMasterPassword();
 
-  QgsSettings settings;
-  settings.setValue( u"password_helper_insecure_fallback"_s, true, QgsSettings::Section::Auth );
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->setValue( true );
 
   // Test enable/disable
   // It should be enabled by default

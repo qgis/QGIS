@@ -17,6 +17,7 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdirectoryitem.h"
@@ -493,6 +494,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
+
+  // auth settings
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
+  QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
+  QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
