@@ -29,6 +29,7 @@
 class QgsCptCityColorRamp;
 class QgsCptCityDataItem;
 class QgsCptCitySelectionItem;
+class QgsSettingsEntryString;
 
 #define DEFAULT_CPTCITY_ARCHIVE "cpt-city-qgis-min"
 
@@ -75,6 +76,14 @@ class CORE_EXPORT QgsCptCityArchive
     // items
     QVector< QgsCptCityDataItem * > rootItems() const { return mRootItems; }
     QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
+
+#ifndef SIP_RUN
+    //! Settings entry for CptCity base directory \since QGIS 4.0.1
+    static const QgsSettingsEntryString *settingsCptCityBaseDir SIP_SKIP;
+
+    //! Settings entry for CptCity archive name \since QGIS 4.0.1
+    static const QgsSettingsEntryString *settingsCptCityArchiveName SIP_SKIP;
+#endif
 
   private:
     QString mArchiveName;
