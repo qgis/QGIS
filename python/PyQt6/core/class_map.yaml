@@ -1093,7 +1093,7 @@ QgsApplication.coordinateReferenceSystemRegistry: src/core/qgsapplication.h#L803
 QgsApplication.createDatabase: src/core/qgsapplication.h#L584
 QgsApplication.createThemeFolder: src/core/qgsapplication.h#L587
 QgsApplication.customVariables: src/core/qgsapplication.h#L1146
-QgsApplication.customVariablesChanged: src/core/qgsapplication.h#L1275
+QgsApplication.customVariablesChanged: src/core/qgsapplication.h#L1277
 QgsApplication.dataItemProviderRegistry: src/core/qgsapplication.h#L794
 QgsApplication.databaseQueryLog: src/core/qgsapplication.h#L923
 QgsApplication.defaultStyleModel: src/core/qgsapplication.h#L934
@@ -1128,7 +1128,7 @@ QgsApplication.libexecPath: src/core/qgsapplication.h#L554
 QgsApplication.libraryPath: src/core/qgsapplication.h#L551
 QgsApplication.licenceFilePath: src/core/qgsapplication.h#L330
 QgsApplication.locale: src/core/qgsapplication.h#L525
-QgsApplication.localeChanged: src/core/qgsapplication.h#L1300
+QgsApplication.localeChanged: src/core/qgsapplication.h#L1302
 QgsApplication.localizedDataPathRegistry: src/core/qgsapplication.h#L1111
 QgsApplication.materialRegistry: src/core/qgsapplication.h#L1051
 QgsApplication.maxConcurrentConnectionsPerPool: src/core/qgsapplication.h#L1217
@@ -1138,7 +1138,7 @@ QgsApplication.metadataPath: src/core/qgsapplication.h#L338
 QgsApplication.networkContentFetcherRegistry: src/core/qgsapplication.h#L836
 QgsApplication.notify: src/core/qgsapplication.h#L253
 QgsApplication.nullRepresentation: src/core/qgsapplication.h#L1124
-QgsApplication.nullRepresentationChanged: src/core/qgsapplication.h#L1283
+QgsApplication.nullRepresentationChanged: src/core/qgsapplication.h#L1285
 QgsApplication.numericFormatRegistry: src/core/qgsapplication.h#L1025
 QgsApplication.osName: src/core/qgsapplication.h#L490
 QgsApplication.pageSizeRegistry: src/core/qgsapplication.h#L985
@@ -1167,7 +1167,7 @@ QgsApplication.relativePathToAbsolutePath: src/core/qgsapplication.h#L648
 QgsApplication.renderer3DRegistry: src/core/qgsapplication.h#L1035
 QgsApplication.rendererRegistry: src/core/qgsapplication.h#L764
 QgsApplication.reportStyleSheet: src/core/qgsapplication.h#L626
-QgsApplication.requestForTranslatableObjects: src/core/qgsapplication.h#L1293
+QgsApplication.requestForTranslatableObjects: src/core/qgsapplication.h#L1295
 QgsApplication.resolvePkgPath: src/core/qgsapplication.h#L274
 QgsApplication.restoreGdalDriver: src/core/qgsapplication.h#L681
 QgsApplication.scaleBarRendererRegistry: src/core/qgsapplication.h#L1059
@@ -1210,7 +1210,7 @@ QgsApplication.systemMemorySizeMb: src/core/qgsapplication.h#L500
 QgsApplication.taskManager: src/core/qgsapplication.h#L737
 QgsApplication.temporarilyTrustedProjectsFolders: src/core/qgsapplication.h#L1168
 QgsApplication.temporarilyUntrustedProjectsFolders: src/core/qgsapplication.h#L1185
-QgsApplication.themeChanged: src/core/qgsapplication.h#L1307
+QgsApplication.themeChanged: src/core/qgsapplication.h#L1309
 QgsApplication.themeName: src/core/qgsapplication.h#L283
 QgsApplication.tiledSceneRendererRegistry: src/core/qgsapplication.h#L787
 QgsApplication.translation: src/core/qgsapplication.h#L1231
@@ -1220,7 +1220,7 @@ QgsApplication.userLoginName: src/core/qgsapplication.h#L478
 QgsApplication.userStylePath: src/core/qgsapplication.h#L464
 QgsApplication.userThemesFolder: src/core/qgsapplication.h#L536
 QgsApplication.validityCheckRegistry: src/core/qgsapplication.h#L843
-QgsApplication.x11EventFilter: src/core/qgsapplication.h#L1264
+QgsApplication.x11EventFilter: src/core/qgsapplication.h#L1266
 QgsApplication: src/core/qgsapplication.h#L105
 QgsApplicationThemeRegistry.addTheme: src/core/qgsapplicationthemeregistry.h#L53
 QgsApplicationThemeRegistry.removeTheme: src/core/qgsapplicationthemeregistry.h#L61
@@ -17108,10 +17108,10 @@ QgsSettingsRegistry.removeSubRegistry: src/core/settings/qgssettingsregistry.h#L
 QgsSettingsRegistry.settingsEntry: src/core/settings/qgssettingsregistry.h#L54
 QgsSettingsRegistry: src/core/settings/qgssettingsregistry.h#L38
 QgsSettingsRegistryCore: src/core/settings/qgssettingsregistrycore.h#L42
-QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L90
-QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L85
+QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L95
+QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L90
 QgsSettingsTree.treeRoot: src/core/settings/qgssettingstree.h#L40
-QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L96
+QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L101
 QgsSettingsTree: src/core/settings/qgssettingstree.h#L34
 QgsSettingsTreeNamedListNode.deleteAllItems: src/core/settings/qgssettingstreenode.h#L250
 QgsSettingsTreeNamedListNode.deleteItem: src/core/settings/qgssettingstreenode.h#L242
