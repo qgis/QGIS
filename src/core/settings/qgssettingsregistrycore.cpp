@@ -23,6 +23,8 @@
 #include "qgsimagecache.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslayoutgridsettings.h"
+#include "qgslayoutsnapper.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrproviderutils.h"
@@ -280,6 +282,13 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsOpenClUtils::settingsOpenClEnabled->copyValueFromKey( u"core/OpenClEnabled"_s, true );
   QgsOpenClUtils::settingsOpenClDefaultDevice->copyValueFromKey( u"core/OpenClDefaultDevice"_s, true );
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
+
+  QgsLayoutGridSettings::settingsGridStyle->copyValueFromKey( u"gui/LayoutDesigner/gridStyle"_s, true );
+  QgsLayoutGridSettings::settingsGridColor->copyValueFromKeys( u"gui/LayoutDesigner/gridRed"_s, u"gui/LayoutDesigner/gridGreen"_s, u"gui/LayoutDesigner/gridBlue"_s, u"gui/LayoutDesigner/gridAlpha"_s, true );
+  QgsLayoutGridSettings::settingsGridResolution->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridResolution"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetX->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetX"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetY->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetY"_s, true );
+  QgsLayoutSnapper::settingsSnapTolerance->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapTolerancePixels"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );

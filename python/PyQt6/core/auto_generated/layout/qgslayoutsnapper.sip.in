@@ -267,6 +267,7 @@ node corresponding to the snapper.
 .. seealso:: :py:func:`writeXml`
 %End
 
+  public:
 };
 
 /************************************************************************
