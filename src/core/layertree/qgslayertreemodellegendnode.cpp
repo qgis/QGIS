@@ -35,7 +35,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
@@ -339,6 +340,8 @@ void QgsLayerTreeModelLegendNode::toggleAllItems()
 
 double QgsSymbolLegendNode::MINIMUM_SIZE = -1.0;
 double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize = new QgsSettingsEntryDouble( u"legend-symbol-minimum-size"_s, QgsSettingsTree::sTreeQgis, 0.5 );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize = new QgsSettingsEntryDouble( u"legend-symbol-maximum-size"_s, QgsSettingsTree::sTreeQgis, 20.0 );
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
@@ -351,9 +354,8 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   {
     // it's FAR too expensive to construct a QgsSettings object for every symbol node, especially for complex
     // projects. So only read the valid size ranges once, and store them for subsequent use
-    const QgsSettings settings;
-    MINIMUM_SIZE = settings.value( "/qgis/legendsymbolMinimumSize", 0.5 ).toDouble();
-    MAXIMUM_SIZE = settings.value( "/qgis/legendsymbolMaximumSize", 20.0 ).toDouble();
+    MINIMUM_SIZE = settingsLegendSymbolMinimumSize->value();
+    MAXIMUM_SIZE = settingsLegendSymbolMaximumSize->value();
   }
 
   updateLabel();

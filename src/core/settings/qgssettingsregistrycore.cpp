@@ -21,6 +21,7 @@
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgsimagecache.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
@@ -274,6 +275,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
   QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
   QgsImageCache::settingsMaxImageCacheSize->copyValueFromKey( u"qgis/maxImageCacheSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMinimumSize->copyValueFromKey( u"qgis/legendsymbolMinimumSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->copyValueFromKey( u"qgis/legendsymbolMaximumSize"_s, true );
   QgsOpenClUtils::settingsOpenClEnabled->copyValueFromKey( u"core/OpenClEnabled"_s, true );
   QgsOpenClUtils::settingsOpenClDefaultDevice->copyValueFromKey( u"core/OpenClDefaultDevice"_s, true );
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );

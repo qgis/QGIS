@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring(signature="appended")
@@ -330,6 +332,7 @@ renderer.
   public:
     static double MINIMUM_SIZE;
     static double MAXIMUM_SIZE;
+
 
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
 %Docstring
