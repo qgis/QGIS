@@ -28,7 +28,8 @@
 #include "qgsrastershader.h"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrastertransparency.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
@@ -37,6 +38,12 @@
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultRedBand = new QgsSettingsEntryInteger( u"default-red-band"_s, QgsSettingsTree::sTreeRaster, 1 );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultGreenBand = new QgsSettingsEntryInteger( u"default-green-band"_s, QgsSettingsTree::sTreeRaster, 2 );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultBlueBand = new QgsSettingsEntryInteger( u"default-blue-band"_s, QgsSettingsTree::sTreeRaster, 3 );
+const QgsSettingsEntryBool *QgsRasterRendererRegistry::settingsUseStandardDeviation = new QgsSettingsEntryBool( u"use-standard-deviation"_s, QgsSettingsTree::sTreeRaster, false );
+const QgsSettingsEntryDouble *QgsRasterRendererRegistry::settingsDefaultStandardDeviation = new QgsSettingsEntryDouble( u"default-standard-deviation"_s, QgsSettingsTree::sTreeRaster, 2.0 );
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(
   const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction, QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities
@@ -213,19 +220,17 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     }
     case Qgis::RasterDrawingStyle::MultiBandColor:
     {
-      const QgsSettings s;
-
-      int redBand = s.value( u"/Raster/defaultRedBand"_s, 1 ).toInt();
+      int redBand = settingsDefaultRedBand->value();
       if ( redBand < 0 || redBand > provider->bandCount() )
       {
         redBand = -1;
       }
-      int greenBand = s.value( u"/Raster/defaultGreenBand"_s, 2 ).toInt();
+      int greenBand = settingsDefaultGreenBand->value();
       if ( greenBand < 0 || greenBand > provider->bandCount() )
       {
         greenBand = -1;
       }
-      int blueBand = s.value( u"/Raster/defaultBlueBand"_s, 3 ).toInt();
+      int blueBand = settingsDefaultBlueBand->value();
       if ( blueBand < 0 || blueBand > provider->bandCount() )
       {
         blueBand = -1;
@@ -267,12 +272,11 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   minValue = 0;
   maxValue = 0;
 
-  const QgsSettings s;
-  if ( s.value( u"/Raster/useStandardDeviation"_s, false ).toBool() )
+  if ( settingsUseStandardDeviation->value() )
   {
     const QgsRasterBandStats stats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
 
-    const double stdDevFactor = s.value( u"/Raster/defaultStandardDeviation"_s, 2.0 ).toDouble();
+    const double stdDevFactor = settingsDefaultStandardDeviation->value();
     const double diff = stdDevFactor * stats.stdDev;
     minValue = stats.mean - diff;
     maxValue = stats.mean + diff;

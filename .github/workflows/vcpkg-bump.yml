@@ -23,7 +23,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.VCPKG_BUMPER_KEY }}
           persist-credentials: true  # required to open a PR
- 
+
       - name: Resolve latest baselines
         id: baselines
         run: python3 scripts/bump_vcpkg_baselines.py vcpkg/vcpkg.json
