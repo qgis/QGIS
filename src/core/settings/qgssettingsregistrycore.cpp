@@ -32,6 +32,7 @@
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -289,6 +290,12 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsLayoutGridSettings::settingsGridOffsetX->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetX"_s, true );
   QgsLayoutGridSettings::settingsGridOffsetY->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetY"_s, true );
   QgsLayoutSnapper::settingsSnapTolerance->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapTolerancePixels"_s, true );
+
+  QgsRasterRendererRegistry::settingsDefaultRedBand->copyValueFromKey( u"Raster/defaultRedBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultGreenBand->copyValueFromKey( u"Raster/defaultGreenBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultBlueBand->copyValueFromKey( u"Raster/defaultBlueBand"_s, true );
+  QgsRasterRendererRegistry::settingsUseStandardDeviation->copyValueFromKey( u"Raster/useStandardDeviation"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultStandardDeviation->copyValueFromKey( u"Raster/defaultStandardDeviation"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
