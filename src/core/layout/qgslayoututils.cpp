@@ -25,7 +25,6 @@
 #include "qgslayoutrendercontext.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
-#include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 
 #include <QPainter>
@@ -536,7 +535,6 @@ QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
   if ( !hasProjectScales || mapScales.isEmpty() )
   {
     // default to global map tool scales
-    QgsSettings settings;
     const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
     for ( const QString &scale : scales )
     {
