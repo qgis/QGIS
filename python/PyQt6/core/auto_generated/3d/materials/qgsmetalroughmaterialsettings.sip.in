@@ -57,14 +57,14 @@ Returns the base material color.
 
     double metalness() const;
 %Docstring
-Returns the material's metalness.
+Returns the material's metalness, as a value between 0 and 1.
 
 .. seealso:: :py:func:`setMetalness`
 %End
 
     double roughness() const;
 %Docstring
-Returns the material's roughness.
+Returns the material's roughness, as a value between 0 and 1.
 
 .. seealso:: :py:func:`setRoughness`
 %End
@@ -78,14 +78,14 @@ Sets the base material ``color``.
 
     void setMetalness( double metalness );
 %Docstring
-Returns the material's ``metalness``.
+Sets the material's ``metalness``, as a value between 0 and 1.
 
 .. seealso:: :py:func:`metalness`
 %End
 
     void setRoughness( double roughness );
 %Docstring
-Returns the material's ``roughness``.
+Sets the material's ``roughness``, as a value between 0 and 1.
 
 .. seealso:: :py:func:`roughness`
 %End
