@@ -41,6 +41,10 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsDirectoryItem::settingsMonitorDirectoriesInBrowser = new QgsSettingsEntryBool( u"monitor-directories-in-browser"_s, QgsSettingsTree::sTreeQgis, true, QString() );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsHiddenPaths = new QgsSettingsEntryStringList( u"hiddenPaths"_s, QgsSettingsTree::sTreeBrowser, QStringList() );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsDisableMonitorItemUris = new QgsSettingsEntryStringList( u"disableMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList() );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsAlwaysMonitorItemUris = new QgsSettingsEntryStringList( u"alwaysMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList() );
+const QgsSettingsEntryInteger *QgsDirectoryItem::settingsMinScanInterval = new QgsSettingsEntryInteger( u"minscaninterval"_s, QgsSettingsTree::sTreeBrowser, 10000 );
 
 //
 // QgsDirectoryItem
@@ -65,8 +69,6 @@ void QgsDirectoryItem::init( const QString &dirName )
   mType = Qgis::BrowserItemType::Directory;
   setToolTip( QDir::toNativeSeparators( mDirPath ) );
 
-  QgsSettings settings;
-
   const QFileInfo fi { mDirPath };
   mIsDir = fi.isDir();
   mIsSymLink = fi.isSymLink();
@@ -85,6 +87,7 @@ void QgsDirectoryItem::init( const QString &dirName )
       break;
   }
 
+  QgsSettings settings;
   settings.beginGroup( u"qgis/browserPathColors"_s );
   QString settingKey = mDirPath;
   settingKey.replace( '/', "|||"_L1 );
@@ -199,9 +202,8 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
 {
   mMonitoring = monitoring;
 
-  QgsSettings settings;
-  QStringList noMonitorDirs = settings.value( u"qgis/disableMonitorItemUris"_s, QStringList() ).toStringList();
-  QStringList alwaysMonitorDirs = settings.value( u"qgis/alwaysMonitorItemUris"_s, QStringList() ).toStringList();
+  QStringList noMonitorDirs = settingsDisableMonitorItemUris->value();
+  QStringList alwaysMonitorDirs = settingsAlwaysMonitorItemUris->value();
 
   switch ( mMonitoring )
   {
@@ -209,10 +211,10 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
     {
       // remove disable/always setting for this path, so that default behavior is used
       noMonitorDirs.removeAll( mDirPath );
-      settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
+      settingsDisableMonitorItemUris->setValue( noMonitorDirs );
 
       alwaysMonitorDirs.removeAll( mDirPath );
-      settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
+      settingsAlwaysMonitorItemUris->setValue( alwaysMonitorDirs );
 
       mMonitored = pathShouldByMonitoredByDefault( mDirPath );
       break;
@@ -223,11 +225,11 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
       if ( !noMonitorDirs.contains( mDirPath ) )
       {
         noMonitorDirs.append( mDirPath );
-        settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
+        settingsDisableMonitorItemUris->setValue( noMonitorDirs );
       }
 
       alwaysMonitorDirs.removeAll( mDirPath );
-      settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
+      settingsAlwaysMonitorItemUris->setValue( alwaysMonitorDirs );
 
       mMonitored = false;
       break;
@@ -236,12 +238,12 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
     case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
     {
       noMonitorDirs.removeAll( mDirPath );
-      settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
+      settingsDisableMonitorItemUris->setValue( noMonitorDirs );
 
       if ( !alwaysMonitorDirs.contains( mDirPath ) )
       {
         alwaysMonitorDirs.append( mDirPath );
-        settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
+        settingsAlwaysMonitorItemUris->setValue( alwaysMonitorDirs );
       }
 
       mMonitored = true;
@@ -389,7 +391,7 @@ void QgsDirectoryItem::setState( Qgis::BrowserItemState state )
 void QgsDirectoryItem::directoryChanged()
 {
   // If the last scan was less than 10 seconds ago, skip this
-  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < QgsSettings().value( u"browser/minscaninterval"_s, 10000 ).toInt() )
+  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < settingsMinScanInterval->value() )
   {
     return;
   }
@@ -416,18 +418,16 @@ void QgsDirectoryItem::directoryChanged()
 
 bool QgsDirectoryItem::hiddenPath( const QString &path )
 {
-  const QgsSettings settings;
-  const QStringList hiddenItems = settings.value( u"browser/hiddenPaths"_s, QStringList() ).toStringList();
+  const QStringList hiddenItems = settingsHiddenPaths->value();
   const int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
 }
 
 Qgis::BrowserDirectoryMonitoring QgsDirectoryItem::monitoringForPath( const QString &path )
 {
-  const QgsSettings settings;
-  if ( settings.value( u"qgis/disableMonitorItemUris"_s, QStringList() ).toStringList().contains( path ) )
+  if ( settingsDisableMonitorItemUris->value().contains( path ) )
     return Qgis::BrowserDirectoryMonitoring::NeverMonitor;
-  else if ( settings.value( u"qgis/alwaysMonitorItemUris"_s, QStringList() ).toStringList().contains( path ) )
+  else if ( settingsAlwaysMonitorItemUris->value().contains( path ) )
     return Qgis::BrowserDirectoryMonitoring::AlwaysMonitor;
   return Qgis::BrowserDirectoryMonitoring::Default;
 }

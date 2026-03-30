@@ -414,7 +414,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //paths hidden from browser
-  const QStringList hiddenPathList = mSettings->value( u"/browser/hiddenPaths"_s ).toStringList();
+  const QStringList hiddenPathList = QgsDirectoryItem::settingsHiddenPaths->value();
   for ( const QString &path : hiddenPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
@@ -1565,7 +1565,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListHiddenBrowserPaths->item( i )->text();
   }
-  mSettings->setValue( u"/browser/hiddenPaths"_s, pathsList );
+  QgsDirectoryItem::settingsHiddenPaths->setValue( pathsList );
 
   //QGIS help locations
   QStringList helpPaths;
