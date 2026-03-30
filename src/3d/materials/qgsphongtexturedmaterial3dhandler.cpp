@@ -26,6 +26,7 @@
 
 #include <QMap>
 #include <QString>
+#include <Qt3DCore/QEntity>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QPaintedTextureImage>
@@ -136,4 +137,29 @@ void QgsPhongTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffe
   effect->addParameter( ambientParameter );
   effect->addParameter( specularParameter );
   effect->addParameter( shininessParameter );
+}
+
+void QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+{
+  const QgsPhongTexturedMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongTexturedMaterialSettings * >( settings );
+
+  QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  Qt3DRender::QEffect *effect = material->effect();
+
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"ambientColor"_s ) )
+    p->setValue( phongSettings->ambient() );
+
+  Qt3DRender::QTexture2D *texture = material->findChild<Qt3DRender::QTexture2D *>();
+  bool fitsInCache;
+  texture->addTextureImage( new QgsImageTexture( QgsApplication::imageCache()->pathAsImage( phongSettings->diffuseTexturePath(), QSize(), true, 1.0, fitsInCache ) ) );
+  texture->removeTextureImage( texture->textureImages().at( 0 ) );
+
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordScale"_s ) )
+    p->setValue( phongSettings->textureScale() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"specularColor"_s ) )
+    p->setValue( phongSettings->specular() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )
+    p->setValue( phongSettings->shininess() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"opacity"_s ) )
+    p->setValue( phongSettings->opacity() );
 }
