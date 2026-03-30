@@ -156,6 +156,29 @@ void QgsGoochMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMat
   dataBuffer->setData( data );
 }
 
+void QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+{
+  const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
+
+  QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  Qt3DRender::QEffect *effect = material->effect();
+
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kd"_s ) )
+    p->setValue( goochSettings->diffuse() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"ks"_s ) )
+    p->setValue( goochSettings->specular() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kblue"_s ) )
+    p->setValue( goochSettings->cool() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"kyellow"_s ) )
+    p->setValue( goochSettings->warm() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )
+    p->setValue( goochSettings->shininess() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"alpha"_s ) )
+    p->setValue( goochSettings->alpha() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"beta"_s ) )
+    p->setValue( goochSettings->beta() );
+}
+
 QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
 {
   const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
