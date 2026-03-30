@@ -93,22 +93,22 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based"_L1 )
   {
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
-    mRootRule = rl->rootRule()->clone( false );
+    mRootRule.reset( rl->rootRule()->clone( false ) );
   }
   else if ( mLayer->labeling() && mLayer->labeling()->type() == "simple"_L1 )
   {
     // copy simple label settings to first rule
-    mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
+    mRootRule = std::make_unique<class QgsRuleBasedLabeling::Rule>( nullptr );
     auto newSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
     newSettings->drawLabels = true; // otherwise we may be trying to copy a "blocking" setting to a rule - which is confusing for users!
     mRootRule->appendChild( new QgsRuleBasedLabeling::Rule( newSettings.release() ) );
   }
   else
   {
-    mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
+    mRootRule = std::make_unique<class QgsRuleBasedLabeling::Rule>( nullptr );
   }
 
-  mModel = new QgsRuleBasedLabelingModel( mRootRule );
+  mModel = new QgsRuleBasedLabelingModel( mRootRule.get() );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBasedLabelingWidget::widgetChanged );
@@ -117,9 +117,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
 }
 
 QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
-{
-  delete mRootRule;
-}
+{}
 
 void QgsRuleBasedLabelingWidget::setDockMode( bool dockMode )
 {
@@ -688,12 +686,12 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   if ( mRule->settings() )
   {
     groupSettings->setChecked( true );
-    mSettings = new QgsPalLayerSettings( *mRule->settings() ); // use a clone!
+    mSettings = std::make_unique<QgsPalLayerSettings>( *mRule->settings() ); // use a clone!
   }
   else
   {
     groupSettings->setChecked( false );
-    mSettings = new QgsPalLayerSettings;
+    mSettings = std::make_unique<QgsPalLayerSettings>();
   }
 
   mLabelingGui = new QgsLabelingGui( mMapCanvas, *mSettings, this );
@@ -721,9 +719,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()
-{
-  delete mSettings;
-}
+{}
 
 void QgsLabelingRulePropsWidget::setDockMode( bool dockMode )
 {

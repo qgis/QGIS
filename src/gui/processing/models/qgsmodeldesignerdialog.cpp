@@ -402,7 +402,6 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
   settings.setValue( u"ModelDesigner/state"_s, saveState(), QgsSettings::App );
 
   mIgnoreUndoStackChanges++;
-  delete mSelectTool; // delete mouse handles before everything else
 }
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
