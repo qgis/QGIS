@@ -20,6 +20,7 @@
 #include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgsimagecache.h"
@@ -504,6 +505,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // raster cumulative cut
   QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
   QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
+
+  // CptCity
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
