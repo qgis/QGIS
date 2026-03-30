@@ -26,6 +26,9 @@
 #include <QFileSystemWatcher>
 #include <QSettings>
 
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+
 /**
  * \ingroup core
  * \brief A manager for QGIS user profiles.
@@ -42,6 +45,13 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     Q_OBJECT
 
   public:
+#ifndef SIP_RUN
+    //! Settings entry for overriding local profile \\since QGIS 4.0.1
+    static const QgsSettingsEntryBool *settingsOverrideLocalProfile SIP_SKIP;
+
+    //! Settings entry for default profile name \\since QGIS 4.0.1
+    static const QgsSettingsEntryString *settingsDefaultProfile SIP_SKIP;
+#endif
     /**
      * User profile manager used to manage user profiles for the instance of QGIS.
      */
