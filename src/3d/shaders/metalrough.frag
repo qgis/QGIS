@@ -261,7 +261,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor * texture(envLight.irradiance, l).rgb;
+    vec3 diffuse = diffuseColor * texture(envLight.irradiance, n).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
