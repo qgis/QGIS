@@ -31,7 +31,8 @@
 #include "qgsprojoperation.h"
 #include "qgsprojutils.h"
 #include "qgsruntimeprofiler.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssqliteutils.h"
 
 #include <QFileInfo>
@@ -40,6 +41,12 @@
 #include "moc_qgscoordinatereferencesystemregistry.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId
+  = new QgsSettingsEntryStringList( u"recentProjectionsAuthId"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt = new QgsSettingsEntryStringList( u"recentProjectionsWkt"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4
+  = new QgsSettingsEntryStringList( u"recentProjectionsProj4"_s, QgsSettingsTree::sTreeCrs, QStringList() );
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )
@@ -486,10 +493,9 @@ QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystemRegistry::recent
   QList<QgsCoordinateReferenceSystem> res;
 
   // Read settings from persistent storage
-  QgsSettings settings;
-  QStringList projectionsProj4 = settings.value( u"UI/recentProjectionsProj4"_s ).toStringList();
-  QStringList projectionsWkt = settings.value( u"UI/recentProjectionsWkt"_s ).toStringList();
-  QStringList projectionsAuthId = settings.value( u"UI/recentProjectionsAuthId"_s ).toStringList();
+  QStringList projectionsProj4 = settingsRecentProjectionsProj4->value();
+  QStringList projectionsWkt = settingsRecentProjectionsWkt->value();
+  QStringList projectionsAuthId = settingsRecentProjectionsAuthId->value();
   int max = std::max( projectionsAuthId.size(), std::max( projectionsProj4.size(), projectionsWkt.size() ) );
   res.reserve( max );
   for ( int i = 0; i < max; ++i )
@@ -514,10 +520,9 @@ QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystemRegistry::recent
 
 void QgsCoordinateReferenceSystemRegistry::clearRecent()
 {
-  QgsSettings settings;
-  settings.remove( u"UI/recentProjectionsAuthId"_s );
-  settings.remove( u"UI/recentProjectionsWkt"_s );
-  settings.remove( u"UI/recentProjectionsProj4"_s );
+  settingsRecentProjectionsAuthId->remove();
+  settingsRecentProjectionsWkt->remove();
+  settingsRecentProjectionsProj4->remove();
 
   emit recentCrsCleared();
 }
@@ -578,10 +583,9 @@ void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateRefere
     wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
   }
 
-  QgsSettings settings;
-  settings.setValue( u"UI/recentProjectionsAuthId"_s, authids );
-  settings.setValue( u"UI/recentProjectionsWkt"_s, wkt );
-  settings.setValue( u"UI/recentProjectionsProj4"_s, proj );
+  settingsRecentProjectionsAuthId->setValue( authids );
+  settingsRecentProjectionsWkt->setValue( wkt );
+  settingsRecentProjectionsProj4->setValue( proj );
 
   emit recentCrsPushed( crs );
 }
@@ -605,10 +609,9 @@ void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateRefe
     proj << c.toProj();
     wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
   }
-  QgsSettings settings;
-  settings.setValue( u"UI/recentProjectionsAuthId"_s, authids );
-  settings.setValue( u"UI/recentProjectionsWkt"_s, wkt );
-  settings.setValue( u"UI/recentProjectionsProj4"_s, proj );
+  settingsRecentProjectionsAuthId->setValue( authids );
+  settingsRecentProjectionsWkt->setValue( wkt );
+  settingsRecentProjectionsProj4->setValue( proj );
 
   emit recentCrsRemoved( crs );
 }

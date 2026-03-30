@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
+#include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgsimagecache.h"
@@ -487,6 +488,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
+
+  // recent CRS
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
