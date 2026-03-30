@@ -150,7 +150,7 @@ bool QgsPdalCompareAlgorithm::checkParameterValues( const QVariantMap &parameter
     return false;
   }
 
-  if ( outputName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || outputName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
+  if ( outputName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || outputName.endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
   {
     *message = QObject::tr( "This algorithm does not support VPC files as the Output layer." );
     return false;
