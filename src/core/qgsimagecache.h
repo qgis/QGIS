@@ -26,6 +26,7 @@
 #include <QImage>
 #include <QSize>
 
+class QgsSettingsEntryInteger;
 class QTemporaryDir;
 
 #ifndef SIP_RUN
@@ -183,6 +184,10 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     QgsImageCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsImageCache() override;
+
+#ifndef SIP_RUN
+    static const QgsSettingsEntryInteger *settingsMaxImageCacheSize SIP_SKIP;
+#endif
 
     /**
      * Returns the maximum size of the cache, in bytes.

@@ -20,6 +20,7 @@
 #include "qgsbabelformatregistry.h"
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
+#include "qgsimagecache.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
@@ -271,6 +272,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
   QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
+  QgsImageCache::settingsMaxImageCacheSize->copyValueFromKey( u"qgis/maxImageCacheSize"_s, true );
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
