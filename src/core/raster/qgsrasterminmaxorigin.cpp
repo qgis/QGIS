@@ -19,7 +19,9 @@
 
 #include <cmath>
 
-#include "qgssettings.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -27,15 +29,17 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutLower = new QgsSettingsEntryDouble( u"cumulativeCutLower"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_LOWER );
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutUpper = new QgsSettingsEntryDouble( u"cumulativeCutUpper"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_UPPER );
+
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
   , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
-  const QgsSettings mySettings;
-  mCumulativeCutLower = mySettings.value( u"Raster/cumulativeCutLower"_s, CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( u"Raster/cumulativeCutUpper"_s, CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( u"Raster/defaultStandardDeviation"_s, DEFAULT_STDDEV_FACTOR ).toDouble();
+  mCumulativeCutLower = settingsCumulativeCutLower->value();
+  mCumulativeCutUpper = settingsCumulativeCutUpper->value();
+  mStdDevFactor = QgsRasterRendererRegistry::settingsDefaultStandardDeviation->value();
 }
 
 bool QgsRasterMinMaxOrigin::operator==( const QgsRasterMinMaxOrigin &other ) const

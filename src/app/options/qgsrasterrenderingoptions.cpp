@@ -19,6 +19,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
@@ -71,12 +72,12 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
   initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
 
-  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutLower"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * QgsRasterMinMaxOrigin::settingsCumulativeCutLower->value() );
   mRasterCumulativeCutLowerDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER * 100 );
-  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutUpper"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->value() );
   mRasterCumulativeCutUpperDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER * 100 );
 
-  spnThreeBandStdDev->setValue( settings.value( u"/Raster/defaultStandardDeviation"_s, QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
+  spnThreeBandStdDev->setValue( QgsRasterRendererRegistry::settingsDefaultStandardDeviation->value() );
   spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
 }
 
@@ -107,10 +108,10 @@ void QgsRasterRenderingOptionsWidget::apply()
   saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s );
   saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s );
 
-  settings.setValue( u"/Raster/cumulativeCutLower"_s, mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
-  settings.setValue( u"/Raster/cumulativeCutUpper"_s, mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->setValue( mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->setValue( mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
-  settings.setValue( u"/Raster/defaultStandardDeviation"_s, spnThreeBandStdDev->value() );
+  QgsRasterRendererRegistry::settingsDefaultStandardDeviation->setValue( spnThreeBandStdDev->value() );
 }
 
 void QgsRasterRenderingOptionsWidget::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
