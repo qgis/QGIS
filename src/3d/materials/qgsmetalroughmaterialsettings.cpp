@@ -99,8 +99,8 @@ QgsMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRende
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setBaseColor( context.isSelected() ? context.selectionColor() : mBaseColor );
-      material->setMetalness( mMetalness );
-      material->setRoughness( mRoughness );
+      material->setMetalness( std::clamp( mMetalness, 0.0, 1.0 ) );
+      material->setRoughness( std::clamp( mRoughness, 0.0, 1.0 ) );
       return material;
     }
 

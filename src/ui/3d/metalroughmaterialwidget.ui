@@ -45,9 +45,9 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QgsDoubleSpinBox" name="mSpinMetalness">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
+    <widget class="QgsPercentageWidget" name="mMetalnessWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -59,9 +59,9 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QgsDoubleSpinBox" name="mSpinRoughness">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
+    <widget class="QgsPercentageWidget" name="mRoughnessWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -79,10 +79,15 @@
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsPercentageWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspercentagewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mButtonBaseColor</tabstop>
-  <tabstop>mSpinMetalness</tabstop>
  </tabstops>
  <resources/>
  <connections/>
