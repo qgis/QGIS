@@ -23,6 +23,8 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
 
+#include "moc_qgsmaterialpreviewwidget.cpp"
+
 QgsMaterialPreviewWidget::QgsMaterialPreviewWidget( QWidget *parent )
   : QWidget( parent )
 {
