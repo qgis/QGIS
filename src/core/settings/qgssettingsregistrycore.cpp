@@ -40,6 +40,7 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
@@ -509,6 +510,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // CptCity
   QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
   QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
+
+  // encoding
+  QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
