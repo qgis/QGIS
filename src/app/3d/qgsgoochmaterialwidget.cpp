@@ -24,6 +24,7 @@ QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
 
   QgsGoochMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
@@ -46,6 +47,8 @@ QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   connect( mWarmDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
   connect( mCoolDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
   connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
+
+  connect( this, &QgsGoochMaterialWidget::changed, this, &QgsGoochMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
@@ -72,6 +75,8 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   mWarmDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Warm ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mCoolDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Cool ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mSpecularDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Specular ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
+  updatePreview();
 }
 
 void QgsGoochMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
@@ -119,4 +124,18 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();
+}
+
+void QgsGoochMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
+}
+
+void QgsGoochMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
 }

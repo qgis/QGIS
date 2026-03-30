@@ -38,3 +38,6 @@ QgsAbstractMaterialSettings *QgsNullMaterialWidget::settings()
 {
   return new QgsNullMaterialSettings();
 }
+
+void QgsNullMaterialWidget::setPreviewVisible( bool )
+{}

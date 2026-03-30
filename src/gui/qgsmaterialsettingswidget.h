@@ -63,6 +63,13 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      */
     virtual QgsAbstractMaterialSettings *settings() = 0 SIP_FACTORY;
 
+  public slots:
+
+    /**
+     * Sets whether the material preview widget should be visible.
+     */
+    virtual void setPreviewVisible( bool visible ) = 0;
+
   signals:
 
     /**

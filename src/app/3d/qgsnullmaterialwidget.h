@@ -33,6 +33,8 @@ class QgsNullMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Null
     static QgsMaterialSettingsWidget *create();
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
+  public slots:
+    void setPreviewVisible( bool visible ) override;
 };
 
 #endif // QGSNULLMATERIALWIDGET_H
