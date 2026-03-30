@@ -27,7 +27,7 @@ QgsMaterialPreviewWidget::QgsMaterialPreviewWidget( QWidget *parent )
   : QWidget( parent )
 {
   mView = new Qt3DExtras::Qt3DWindow();
-  mView->defaultFrameGraph()->setClearColor( QColor( 40, 40, 40 ) );
+  mView->defaultFrameGraph()->setClearColor( palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
 
   QWidget *container = QWidget::createWindowContainer( mView, this );
   container->setMinimumSize( 200, 200 );
