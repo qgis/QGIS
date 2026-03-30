@@ -20,17 +20,19 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QString>
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryInteger *QgsLayoutSnapper::settingsSnapTolerance = new QgsSettingsEntryInteger( u"snap-tolerance"_s, QgsSettingsTree::sTreeLayout, 5 );
+
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
 {
-  QgsSettings s;
-  mTolerance = s.value( u"LayoutDesigner/defaultSnapTolerancePixels"_s, 5, QgsSettings::Gui ).toInt();
+  mTolerance = settingsSnapTolerance->value();
 }
 
 QgsLayout *QgsLayoutSnapper::layout()
