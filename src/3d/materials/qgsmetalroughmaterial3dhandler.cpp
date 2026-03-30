@@ -42,8 +42,8 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
-      material->setMetalness( metalRoughSettings->metalness() );
-      material->setRoughness( metalRoughSettings->roughness() );
+      material->setMetalness( std::clamp( metalRoughSettings->metalness(), 0.0, 1.0 ) );
+      material->setRoughness( std::clamp( metalRoughSettings->roughness(), 0.0, 1.0 ) );
       return material;
     }
 

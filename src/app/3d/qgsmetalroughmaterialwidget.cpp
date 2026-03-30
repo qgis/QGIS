@@ -24,18 +24,16 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
-  mSpinMetalness->setClearValue( 0, tr( "None" ) );
-  mSpinRoughness->setClearValue( 0, tr( "None" ) );
 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
+  connect( mMetalnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
     emit changed();
   } );
-  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
+  connect( mRoughnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
     emit changed();
   } );
@@ -55,8 +53,8 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   if ( !material )
     return;
   mButtonBaseColor->setColor( material->baseColor() );
-  mSpinMetalness->setValue( material->metalness() );
-  mSpinRoughness->setValue( material->roughness() );
+  mMetalnessWidget->setValue( material->metalness() );
+  mRoughnessWidget->setValue( material->roughness() );
 
   mPropertyCollection = settings->dataDefinedProperties();
 
@@ -67,8 +65,8 @@ QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsMetalRoughMaterialSettings>();
   m->setBaseColor( mButtonBaseColor->color() );
-  m->setMetalness( static_cast<float>( mSpinMetalness->value() ) );
-  m->setRoughness( static_cast<float>( mSpinRoughness->value() ) );
+  m->setMetalness( mMetalnessWidget->value() );
+  m->setRoughness( mRoughnessWidget->value() );
   m->setDataDefinedProperties( mPropertyCollection );
   return m.release();
 }
