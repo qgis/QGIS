@@ -38,6 +38,10 @@ namespace Qt3DCore
 {
   class QGeometry;
 }
+namespace Qt3DExtras
+{
+  class Qt3DWindow;
+}
 
 /**
  * \ingroup qgis_3d
@@ -152,6 +156,45 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * \since QGIS 3.18
      */
     virtual int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const;
+
+    /**
+     * Creates a new entity representing a suitable preview mesh for this material type.
+     *
+     * The default implementation returns a sphere. This method can be overridden to provide
+     * more appropriate meshes when applicable for a particular material implementation.
+     *
+     * Ownership of the returned entity resides with the \a parent entity.
+     */
+    virtual Qt3DCore::QEntity *createPreviewMesh( Qt3DCore::QEntity *parent ) const;
+
+    /**
+     * Builds a complete self-contained scene for previewing the material.
+     *
+     * The scene contains a mesh with the associated material applied, and appropriate lighting.
+     *
+     * The returned entity is the scene root, parented to \a parent.
+     *
+     * This method can be overridden to customize the lighting or mesh for a specific material.
+     */
+    virtual Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent ) const;
+
+    /**
+     * Updates an existing material preview scene with new material \a settings.
+     *
+     * This method is called on every material setting parameter change while configuring
+     * materials, so the implementation must be cheap (e.g. involve no entity creation, just direct
+     * manipulation of existing attributes).
+     */
+    virtual void updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const = 0;
+
+  protected:
+    /**
+     * Finds an existing parameter in an \a effect by \a name.
+     *
+     * This method searches both parameters which are directly applied \a effect and
+     * also parameters applied to all techniques present in the effect.
+     */
+    static Qt3DRender::QParameter *findParameter( Qt3DRender::QEffect *effect, const QString &name );
 };
 
 
