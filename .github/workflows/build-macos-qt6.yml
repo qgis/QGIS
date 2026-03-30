@@ -35,7 +35,9 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@b78306120111dc2522750771cfd09ee7ca723687 # latest
@@ -79,7 +81,7 @@ jobs:
           sudo mkdir -p /usr/local/gfortran
           sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.11'
 
@@ -89,7 +91,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛍️ Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce  # v1.2.22
         with:
           max-size: 500M
           key: build-ccache-${{ matrix.triplet }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -104,6 +106,7 @@ jobs:
       - name: 🌱 Install dependencies and generate project files
         env:
           X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
 
@@ -126,7 +129,7 @@ jobs:
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
                 -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
                 -D ENABLE_UNITY_BUILDS=ON \
-                -D NUGET_USERNAME=${{ github.actor }} \
+                -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
                 -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
@@ -135,7 +138,7 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -149,7 +152,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: qgis-sdk-${{ matrix.triplet }}
           path: |
@@ -167,7 +170,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -179,7 +182,9 @@ jobs:
     needs: build
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
 
       - name: 🔨 Prepare build env
         run: |
@@ -191,7 +196,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
@@ -200,16 +205,18 @@ jobs:
       - name: Create universal app
         run: |
           mkdir -p x64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release.tar.gz -C x64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-x64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-x64-osx-dynamic-release.tar.gz -C x64
           mkdir -p arm64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release.tar.gz -C arm64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C arm64
 
           pip install lipomerge
           lipomerge ./x64 ./arm64 universal
+        env:
+          STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME: ${{steps.workflow-artifact-ids.outputs.filename}}
 
       - name: Create dmg
         run: |
-          QGIS_APP_NAME=QGIS-"${{steps.workflow-artifact-ids.outputs.display-name}}"
+          QGIS_APP_NAME=QGIS-"${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME}"
           create-dmg --volname "${QGIS_APP_NAME} Installer" \
             --hide-extension ${QGIS_APP_NAME}.app \
             --volicon "$(pwd)/images/icons/mac/qgis.icns" \
@@ -221,9 +228,11 @@ jobs:
             --app-drop-link 400 155 \
             ${QGIS_APP_NAME}-Installer.dmg \
             universal/*/*.app
+        env:
+          STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME: ${{steps.workflow-artifact-ids.outputs.display-name}}
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
@@ -231,7 +240,7 @@ jobs:
             *.dmg
 
       - name: Upload release assets
-        uses: AButler/upload-release-assets@v3.0
+        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
         if: ${{ github.event_name == 'release' }}
         with:
           files: '*.dmg'

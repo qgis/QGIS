@@ -12,6 +12,9 @@ on:
       - queued_ltr_backports
   pull_request:
 
+permissions:
+  content: read
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -31,9 +34,10 @@ jobs:
         run: df . -h
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           fetch-depth: 1
+          persist-credentials: false
 
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@b78306120111dc2522750771cfd09ee7ca723687 # latest
@@ -42,7 +46,7 @@ jobs:
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
           cmakeVersion: 3.30.4
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.13'
 
@@ -51,12 +55,14 @@ jobs:
         uses: ./.github/actions/setup-vcpkg
 
       - name: Set up Emscripten
-        uses: actions/checkout@v6
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
         with:
           repository: emscripten-core/emsdk
           fetch-depth: 0
           ref: 4.0.22
           path: emsdk
+          persist-credentials: false
 
       - name: Install and activate Emscripten
         run: |
@@ -100,10 +106,10 @@ jobs:
           -DWITH_ANALYSIS=OFF \
           -DWITH_QGIS_PROCESS=OFF \
           -DCMAKE_EXE_LINKER_FLAGS_INIT="-s INITIAL_MEMORY=64MB -s ALLOW_MEMORY_GROWTH=1" \
-          -DNUGET_USERNAME=${{ github.actor }} \
+          -DNUGET_USERNAME=${GITHUB_ACTOR} \
           -DNUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
           -DNUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build QGIS for WASM 
+      - name: Build QGIS for WASM
         run: |
           cmake --build build --target qgis_bench
