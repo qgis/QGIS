@@ -496,23 +496,19 @@ QByteArray QgsVirtualPointCloudProvider::readFileContents( const QString &path )
     }
 
     const QDir dir( tmpDir->path() );
-    for ( const QString &f : std::as_const( fileList ) )
-    {
-      if ( f.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
-      {
-        if ( !readFromFilename.isEmpty() )
-        {
-          appendError( QgsErrorMessage( u"VPZ file contains multiple VPCs"_s ) );
-          return {};
-        }
-        readFromFilename = dir.filePath( f );
-      }
-    }
-    if ( readFromFilename.isEmpty() )
+    const QStringList vpcFiles = dir.entryList( QStringList( u"*.vpc"_s ), QDir::Files );
+    if ( vpcFiles.isEmpty() )
     {
       appendError( QgsErrorMessage( u"VPZ file does not contain any VPCs"_s ) );
       return {};
     }
+    else if ( vpcFiles.size() > 1 )
+    {
+      appendError( QgsErrorMessage( u"VPZ file contains multiple VPCs"_s ) );
+      return {};
+    }
+
+    readFromFilename = dir.filePath( vpcFiles.first() );
   }
   else
   {
