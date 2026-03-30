@@ -6,15 +6,59 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>252</height>
+    <width>720</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="1">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="2,1,2">
+   <item row="4" column="2">
+    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="lblTextureRotation">
+     <property name="text">
+      <string>Texture rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsDoubleSpinBox" name="spinShininess">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="lblOpacity">
+     <property name="text">
+      <string>Opacity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="lblAmbient">
+     <property name="toolTip">
+      <string>Color of light that is scattered around the entire scene.</string>
+     </property>
+     <property name="text">
+      <string>Ambient</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="lblShininess">
+     <property name="toolTip">
+      <string>How shiny smooth surfaces are.</string>
+     </property>
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
     <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
      <property name="suffix">
       <string> %</string>
@@ -33,33 +77,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinShininess">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
-    <widget class="QgsColorButton" name="btnSpecular">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
-   </item>
-   <item row="1" column="0">
     <widget class="QLabel" name="lblSpecular">
      <property name="toolTip">
       <string>Color of light reflecting from smooth surfaces.</string>
@@ -69,64 +87,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="lblTextureRotation">
-     <property name="text">
-      <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblAmbient">
-     <property name="toolTip">
-      <string>Color of light that is scattered around the entire scene.</string>
-     </property>
-     <property name="text">
-      <string>Ambient</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblTextureScale">
-     <property name="text">
-      <string>Texture scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblShininess">
-     <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
-     </property>
-     <property name="text">
-      <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsColorButton" name="btnAmbient">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblTextureScale_2">
-     <property name="text">
-      <string>Diffuse texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
+   <item row="6" column="2">
     <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
      <property name="suffix">
       <string> °</string>
@@ -142,15 +103,77 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblOpacity">
-     <property name="text">
-      <string>Opacity</string>
+   <item row="0" column="2">
+    <widget class="QgsColorButton" name="btnAmbient">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="1" column="2">
+    <widget class="QgsColorButton" name="btnSpecular">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
     <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lblTextureScale_2">
+     <property name="text">
+      <string>Diffuse texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" rowspan="8">
+    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -164,6 +187,18 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMaterialPreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaterialpreviewwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

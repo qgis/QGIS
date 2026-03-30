@@ -24,6 +24,7 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
 
   spinShininess->setClearValue( 0, tr( "None" ) );
 
@@ -42,6 +43,8 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
   connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
+
+  connect( this, &QgsPhongTexturedMaterialWidget::changed, this, &QgsPhongTexturedMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsPhongTexturedMaterialWidget::create()
@@ -65,6 +68,7 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   mPropertyCollection = settings->dataDefinedProperties();
 
   updateWidgetState();
+  updatePreview();
 }
 
 QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
@@ -82,6 +86,12 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   return m.release();
 }
 
+void QgsPhongTexturedMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
+}
+
 void QgsPhongTexturedMaterialWidget::updateWidgetState()
 {
   if ( spinShininess->value() > 0 )
@@ -94,4 +104,12 @@ void QgsPhongTexturedMaterialWidget::updateWidgetState()
     btnSpecular->setEnabled( false );
     btnSpecular->setToolTip( tr( "Specular color is disabled because material has no shininess" ) );
   }
+}
+
+void QgsPhongTexturedMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
 }

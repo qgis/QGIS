@@ -129,6 +129,15 @@ void QgsMaterialWidget::setType( const QString &type )
   materialTypeChanged();
 }
 
+void QgsMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewVisible = visible;
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
+  {
+    w->setPreviewVisible( visible );
+  }
+}
+
 void QgsMaterialWidget::materialTypeChanged()
 {
   std::unique_ptr<QgsAbstractMaterialSettings> currentSettings( settings() );
@@ -185,6 +194,7 @@ void QgsMaterialWidget::updateMaterialWidget()
     {
       w->setSettings( mCurrentSettings.get(), mLayer );
       w->setTechnique( mTechnique );
+      w->setPreviewVisible( mPreviewVisible );
       mStackedWidget->addWidget( w );
       mStackedWidget->setCurrentWidget( w );
       // start receiving updates from widget
@@ -208,6 +218,7 @@ QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSetti
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMaterialWidget();
+  mWidget->setPreviewVisible( true );
   vLayout->addWidget( mWidget, 1 );
 
   if ( settings )

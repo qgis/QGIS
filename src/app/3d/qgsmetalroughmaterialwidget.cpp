@@ -24,6 +24,7 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
@@ -41,6 +42,8 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     updateWidgetState();
     emit changed();
   } );
+
+  connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
@@ -63,6 +66,7 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   mPropertyCollection = settings->dataDefinedProperties();
 
   updateWidgetState();
+  updatePreview();
 }
 
 QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
@@ -75,5 +79,19 @@ QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
   return m.release();
 }
 
+void QgsMetalRoughMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
+}
+
 void QgsMetalRoughMaterialWidget::updateWidgetState()
 {}
+
+void QgsMetalRoughMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
+}

@@ -34,10 +34,12 @@ class QgsPhongTexturedMaterialWidget : public QgsMaterialSettingsWidget, private
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
     QgsAbstractMaterialSettings *settings() final;
-
+  public slots:
+    void setPreviewVisible( bool visible ) override;
   private slots:
 
     void updateWidgetState();
+    void updatePreview();
 };
 
 #endif // QGSPHONGTEXTUREDMATERIALWIDGET_H

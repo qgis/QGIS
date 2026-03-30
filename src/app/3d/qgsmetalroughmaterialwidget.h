@@ -36,10 +36,12 @@ class QgsMetalRoughMaterialWidget : public QgsMaterialSettingsWidget, private Ui
     void setTechnique( Qgis::MaterialRenderingTechnique technique ) final;
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
     QgsAbstractMaterialSettings *settings() override;
-
+  public slots:
+    void setPreviewVisible( bool visible ) override;
   private slots:
 
     void updateWidgetState();
+    void updatePreview();
 };
 
 #endif // QGSMETALROUGHMATERIALWIDGET_H
