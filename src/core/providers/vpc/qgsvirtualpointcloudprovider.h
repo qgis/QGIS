@@ -97,7 +97,6 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
     QVector<QgsPointCloudIndex> mOverviews;
 
     double mRedMax = std::numeric_limits<double>::lowest();

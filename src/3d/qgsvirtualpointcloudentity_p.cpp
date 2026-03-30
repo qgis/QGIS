@@ -172,13 +172,11 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
        && rendererBehavior
        && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
+    const bool allSubIndexesVisible = !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size();
     for ( const auto &ovEnt : std::as_const( mOverviewEntities ) )
     {
       // no need to render the overview if all sub indexes are shown
-      if ( !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size() )
-        ovEnt->setEnabled( false );
-      else
-        ovEnt->setEnabled( true );
+      ovEnt->setEnabled( !allSubIndexesVisible );
       ovEnt->handleSceneUpdate( sceneContext );
     }
   }
