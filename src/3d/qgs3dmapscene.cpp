@@ -285,28 +285,48 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
   QVector<QgsPointXY> extent;
+
+  const QSize size = mEngine->size();
+
+  float centerZ;
+  {
+    const QgsDoubleRange zRange = elevationRange( true, true );
+    if ( !zRange.isInfinite() && !zRange.isEmpty() )
+    {
+      const double middleZ = ( zRange.lower() + zRange.upper() ) / 2.0;
+      centerZ = static_cast<float>( mMap.mapToWorldCoordinates( QgsVector3D( 0, 0, middleZ ) ).z() );
+    }
+    else
+    {
+      centerZ = static_cast<float>( mCameraController->cameraPose().centerPoint().z() );
+    }
+  }
+
   QVector<int> pointsOrder = { 0, 1, 3, 2 };
   for ( int i : pointsOrder )
   {
-    const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : mEngine->size().width(), ( ( i >> 1 ) & 1 ) ? 0 : mEngine->size().height() );
-    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, mEngine->size(), camera );
+    const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : size.width(), ( ( i >> 1 ) & 1 ) ? 0 : size.height() );
+
+    const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, size, camera );
+
     QVector3D dir = ray.direction();
-    if ( dir.z() == 0.0 )
-      dir.setZ( 0.000001 );
-    double t = -ray.origin().z() / dir.z();
+    if ( qFuzzyIsNull( dir.z() ) )
+      dir.setZ( 0.000001f );
+    float t = ( centerZ - ray.origin().z() ) / dir.z();
     if ( t < 0 )
     {
-      // If the projected point is on the back of the camera we choose the farthest point in the front
+      // If the projected point is behind the camera, choose the farthest point in the front
       t = camera->farPlane();
     }
     else
     {
-      // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
+      // If the projected point is in front of the camera, clamp to far plane
       t = std::min<float>( t, camera->farPlane() );
     }
-    QVector3D planePoint = ray.origin() + t * dir;
-    QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
-    extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
+    const QVector3D worldPos = ray.origin() + t * dir;
+
+    QgsVector3D mapPos = mMap.worldToMapCoordinates( worldPos );
+    extent.push_back( QgsPointXY( mapPos.x(), mapPos.y() ) );
   }
   return extent;
 }
@@ -1276,7 +1296,7 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
   return mMap.extent();
 }
 
-QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
+QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain, const bool ignoreInactiveLayers ) const
 {
   double zMin = std::numeric_limits<double>::max();
   double zMax = std::numeric_limits<double>::lowest();
@@ -1289,6 +1309,9 @@ QgsDoubleRange Qgs3DMapScene::elevationRange( const bool ignoreTerrain ) const
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
+    if ( ignoreInactiveLayers && !it.value()->isEnabled() )
+      continue;
+
     QgsMapLayer *layer = it.key();
     switch ( layer->type() )
     {
