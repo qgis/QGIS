@@ -488,17 +488,17 @@ class Repositories(QObject):
                     experimental = False
                     if pluginNodes.item(i).firstChildElement(
                         "experimental"
-                    ).text().strip().upper() in ["TRUE", "YES"]:
+                    ).text().strip().upper() in ["TRUE", "YES", "1"]:
                         experimental = True
                     deprecated = False
                     if pluginNodes.item(i).firstChildElement(
                         "deprecated"
-                    ).text().strip().upper() in ["TRUE", "YES"]:
+                    ).text().strip().upper() in ["TRUE", "YES", "1"]:
                         deprecated = True
                     trusted = False
                     if pluginNodes.item(i).firstChildElement(
                         "trusted"
-                    ).text().strip().upper() in ["TRUE", "YES"]:
+                    ).text().strip().upper() in ["TRUE", "YES", "1"]:
                         trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
@@ -668,7 +668,7 @@ class Repositories(QObject):
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement(
                         "disabled"
-                    ).text().strip().upper() in ["TRUE", "YES"]:
+                    ).text().strip().upper() in ["TRUE", "YES", "1"]:
                         if isCompatible(
                             pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion
                         ):
@@ -899,9 +899,9 @@ class Plugins(QObject):
             "library": path,
             "pythonic": True,
             "experimental": pluginMetadata("experimental").strip().upper()
-            in ["TRUE", "YES"],
+            in ["TRUE", "YES", "1"],
             "deprecated": pluginMetadata("deprecated").strip().upper()
-            in ["TRUE", "YES"],
+            in ["TRUE", "YES", "1"],
             "trusted": False,
             "version_available": "",
             "version_available_stable": "",
@@ -1019,7 +1019,7 @@ class Plugins(QObject):
                     if key not in self.mPlugins:
                         self.mPlugins[key] = plugin  # just add a new plugin
                     else:
-                        # update local plugin with remote metadata
+                        # Update local plugin with remote metadata.
                         # description, about, icon: only use remote data if local one not available. Prefer local version because of i18n.
                         # NOTE: don't prefer local name to not desynchronize names if repository doesn't support i18n.
                         # Also prefer local icon to avoid downloading.
@@ -1027,7 +1027,36 @@ class Plugins(QObject):
                             if attrib != "name":
                                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                                     self.mPlugins[key][attrib] = plugin[attrib]
-                        # other remote metadata is preferred:
+
+                        # For version-specific fields, only update if the incoming version
+                        # is strictly higher than what we already have. This ensures that
+                        # when a repository lists multiple versions of the same plugin,
+                        # the highest available version always wins regardless of XML order.
+                        # (Fix for https://github.com/qgis/QGIS/issues/63672)
+                        incoming_stable = plugin.get("version_available_stable", "")
+                        current_stable = self.mPlugins[key].get(
+                            "version_available_stable", ""
+                        )
+                        update_stable = incoming_stable and (
+                            not current_stable
+                            or compareVersions(incoming_stable, current_stable) == 1
+                        )
+
+                        incoming_experimental = plugin.get(
+                            "version_available_experimental", ""
+                        )
+                        current_experimental = self.mPlugins[key].get(
+                            "version_available_experimental", ""
+                        )
+                        update_experimental = incoming_experimental and (
+                            not current_experimental
+                            or compareVersions(
+                                incoming_experimental, current_experimental
+                            )
+                            == 1
+                        )
+
+                        # Non-version remote metadata is always preferred (unchanged behavior)
                         for attrib in [
                             "name",
                             "plugin_id",
@@ -1043,29 +1072,43 @@ class Plugins(QObject):
                             "code_repository",
                             "experimental",
                             "deprecated",
-                            "version_available",
-                            "zip_repository",
-                            "download_url",
-                            "filename",
-                            "downloads",
-                            "average_vote",
-                            "rating_votes",
                             "trusted",
                             "plugin_dependencies",
-                            "version_available_stable",
-                            "version_available_experimental",
-                            "download_url_stable",
-                            "download_url_experimental",
-                            "create_date",
-                            "update_date",
-                            "create_date_stable",
-                            "update_date_stable",
-                            "create_date_experimental",
-                            "update_date_experimental",
                         ]:
                             if (
                                 attrib not in translatableAttributes or attrib == "name"
                             ):  # include name!
+                                if plugin.get(attrib, False):
+                                    self.mPlugins[key][attrib] = plugin[attrib]
+
+                        # Version-specific fields: only overwrite when the incoming version
+                        # is higher than what is already stored.
+                        if update_stable:
+                            for attrib in [
+                                "version_available",
+                                "version_available_stable",
+                                "download_url",
+                                "download_url_stable",
+                                "filename",
+                                "zip_repository",
+                                "downloads",
+                                "average_vote",
+                                "rating_votes",
+                                "create_date",
+                                "update_date",
+                                "create_date_stable",
+                                "update_date_stable",
+                            ]:
+                                if plugin.get(attrib, False):
+                                    self.mPlugins[key][attrib] = plugin[attrib]
+
+                        if update_experimental:
+                            for attrib in [
+                                "version_available_experimental",
+                                "download_url_experimental",
+                                "create_date_experimental",
+                                "update_date_experimental",
+                            ]:
                                 if plugin.get(attrib, False):
                                     self.mPlugins[key][attrib] = plugin[attrib]
 
