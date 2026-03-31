@@ -185,16 +185,16 @@ void TestQgsStringUtils::titleCase_data()
   QTest::newRow( "single character" ) << "a" << "A";
   QTest::newRow( "string 1" ) << "follow step-by-step instructions" << "Follow Step-by-Step Instructions";
   QTest::newRow( "originally uppercase" ) << "FOLLOW STEP-BY-STEP INSTRUCTIONS" << "Follow Step-by-Step Instructions";
-  QTest::newRow( "string 1" ) << "Follow step-by-step instructions" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "string 1 with upper" ) << "Follow step-by-step instructions" << "Follow Step-by-Step Instructions";
   QTest::newRow( "string 2" ) << "this sub-phrase is nice" << "This Sub-Phrase Is Nice";
-  QTest::newRow( "" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
+  QTest::newRow( "with colon" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
   QTest::newRow( "string 3" ) << "all words capitalized" << "All Words Capitalized";
   QTest::newRow( "string 4" ) << "small words are for by and of lowercase" << "Small Words Are for by and of Lowercase";
   QTest::newRow( "string 5" ) << "a small word starts" << "A Small Word Starts";
   QTest::newRow( "last word" ) << "a small word it ends on" << "A Small Word It Ends On";
   QTest::newRow( "last word2" ) << "Ends with small word of" << "Ends With Small Word Of";
   QTest::newRow( "string 6" ) << "Merge VRT(s)" << "Merge VRT(s)";
-  QTest::newRow( "string 6" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
+  QTest::newRow( "string 7" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
   QTest::newRow( "accented" ) << "extraer vértices" << "Extraer Vértices";
 }
 
