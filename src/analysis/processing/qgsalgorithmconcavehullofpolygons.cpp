@@ -58,7 +58,7 @@ QString QgsConcaveHullOfPolygonsAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates a concave hull for each multi-polygon feature in an input layer." )
          + u"\n\n"_s
          + QObject::tr(
-           "Unlike the standard Concave Hull algorithm, a Concave Hull of Polygons is a (possibly) non-convex polygon containing all the input polygons. The computed hull fills the gaps between the "
+           "Unlike the standard Concave Hull algorithm, a tight concave hull is a (possibly) non-convex polygon containing all the input polygons. The computed hull fills the gaps between the "
            "polygons without intersecting their interiors. It strictly follows the outer boundaries of the input polygons, allowing you to fill gaps between them without distorting their original "
            "shapes."
          )
