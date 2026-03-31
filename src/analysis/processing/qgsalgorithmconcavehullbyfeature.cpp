@@ -62,8 +62,8 @@ QString QgsConcaveHullByFeatureAlgorithm::shortHelpString() const
          + QObject::tr( "For point and line layers, a concave hull is a polygon which contains all the vertices of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." )
          + u"\n\n"_s
          + QObject::tr(
-           "When the input is a polygon layer, the algorithm operates differently: it computes a concave hull that strictly respects the boundaries of the input polygons. The computed hull fills the "
-           "empty space between the polygons within a multi-polygon feature, but does not intersect their interior."
+           "When the input is a polygon layer, the algorithm operates differently: it computes a concave hull that respects the interior of the input polygons. The concave hull does not intersect "
+           "the polygon interiors. The computed hull also fills the empty space between the polygons within a multi-polygon feature."
          )
          + u"\n\n"_s
          + QObject::tr( "See the 'Concave hull (by layer)' algorithm for a concave hull calculation which covers the whole layer or grouped subsets of features." );
@@ -132,7 +132,7 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
       const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( inputGeometry );
       if ( !collection || collection->numGeometries() == 1 )
       {
-        feedback->reportError( QObject::tr( "Cannot calculate convex hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
+        feedback->reportError( QObject::tr( "Cannot calculate concave hull for a single point feature (%1) (try 'Concave hull (by layer)' algorithm instead)." ).arg( f.id() ) );
         f.clearGeometry();
       }
       else
