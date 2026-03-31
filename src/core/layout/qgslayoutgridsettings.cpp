@@ -58,9 +58,9 @@ void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint &offset )
 
 const QgsSettingsEntryString *QgsLayoutGridSettings::settingsGridStyle = new QgsSettingsEntryString( u"grid-style"_s, QgsSettingsTree::sTreeLayout, u"Dots"_s );
 const QgsSettingsEntryColor *QgsLayoutGridSettings::settingsGridColor = new QgsSettingsEntryColor( u"grid-color"_s, QgsSettingsTree::sTreeLayout, QColor( 190, 190, 190, 100 ) );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridResolution = new QgsSettingsEntryDouble( u"grid-resolution"_s, QgsSettingsTree::sTreeLayout, 10.0 );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetX = new QgsSettingsEntryDouble( u"grid-offset-x"_s, QgsSettingsTree::sTreeLayout, 0 );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetY = new QgsSettingsEntryDouble( u"grid-offset-y"_s, QgsSettingsTree::sTreeLayout, 0 );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridResolution = new QgsSettingsEntryDouble( u"resolution"_s, QgsSettingsTree::sTreeLayoutGrid, 10.0 );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetX = new QgsSettingsEntryDouble( u"offset-x"_s, QgsSettingsTree::sTreeLayoutGrid, 0 );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetY = new QgsSettingsEntryDouble( u"offset-y"_s, QgsSettingsTree::sTreeLayoutGrid, 0 );
 
 void QgsLayoutGridSettings::loadFromSettings()
 {
