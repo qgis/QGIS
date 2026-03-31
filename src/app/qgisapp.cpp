@@ -5077,6 +5077,8 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  if ( !mLayerTreeView )
+    return;
   QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
   QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
 }
