@@ -18,13 +18,18 @@
 #include "qgis.h"
 #include "qgsmetalroughmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsmetalroughmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
   mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"metalrough"_s );
 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
