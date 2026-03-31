@@ -15,7 +15,7 @@
   }, {
     "arg": "strict",
     "optional": true,
-    "default": false,
+    "default": "false",
     "description": "By default the wavelength argument is treated as a \"maximum wavelength\", where the actual wavelength will be dynamically adjusted so that an exact number of triangular waves are created along the boundaries of the geometry. If the strict argument is set to true then the wavelength will be used exactly and an incomplete pattern may be used for the final waveform."
   }],
   "examples": [{

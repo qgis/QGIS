@@ -12,6 +12,7 @@
   }, {
     "arg": "densify_fraction",
     "description": "densify fraction amount",
+    "default": "1",
     "optional": true
   }],
   "examples": [{
