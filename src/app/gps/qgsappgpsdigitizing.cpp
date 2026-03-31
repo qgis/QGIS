@@ -159,9 +159,7 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
-    setEllipsoid( QgsProject::instance()->ellipsoid() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] { setEllipsoid( QgsProject::instance()->ellipsoid() ); } );
 
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsDigitizing::gpsDisconnected );
