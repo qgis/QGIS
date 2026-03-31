@@ -33,9 +33,9 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryVariant *QgsRecentColorScheme::settingsRecentColors = new QgsSettingsEntryVariant( u"recent"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteColors = new QgsSettingsEntryVariant( u"palettecolors"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteLabels = new QgsSettingsEntryVariant( u"palettelabels"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryStringList *QgsUserColorScheme::settingsShowInMenuList = new QgsSettingsEntryStringList( u"showInMenuList"_s, QgsSettingsTree::sTreeColors, QStringList() );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteColors = new QgsSettingsEntryVariant( u"palette-colors"_s, QgsSettingsTree::sTreeColors, QVariant() );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteLabels = new QgsSettingsEntryVariant( u"palette-labels"_s, QgsSettingsTree::sTreeColors, QVariant() );
+const QgsSettingsEntryStringList *QgsUserColorScheme::settingsShowInMenuList = new QgsSettingsEntryStringList( u"show-in-menu-list"_s, QgsSettingsTree::sTreeColors, QStringList() );
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {

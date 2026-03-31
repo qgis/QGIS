@@ -43,10 +43,11 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId
-  = new QgsSettingsEntryStringList( u"recentProjectionsAuthId"_s, QgsSettingsTree::sTreeCrs, QStringList() );
-const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt = new QgsSettingsEntryStringList( u"recentProjectionsWkt"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+  = new QgsSettingsEntryStringList( u"recent-projections-auth-id"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt
+  = new QgsSettingsEntryStringList( u"recent-projections-wkt"_s, QgsSettingsTree::sTreeCrs, QStringList() );
 const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4
-  = new QgsSettingsEntryStringList( u"recentProjectionsProj4"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+  = new QgsSettingsEntryStringList( u"recent-projections-proj4"_s, QgsSettingsTree::sTreeCrs, QStringList() );
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )

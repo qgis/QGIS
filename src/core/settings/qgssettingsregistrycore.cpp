@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
+#include "qgscolorscheme.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
@@ -309,6 +310,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( u"core/rendering/label_candidates_limit_polygons"_s, true );
 
+  QgsCustomColorScheme::settingsPaletteColors->copyValueFromKey( u"colors/palettecolors"_s, {}, true );
+  QgsCustomColorScheme::settingsPaletteLabels->copyValueFromKey( u"colors/palettelabels"_s, {}, true );
+  QgsUserColorScheme::settingsShowInMenuList->copyValueFromKey( u"colors/showInMenuList"_s, {}, true );
+
   // digitizing settings - added in 3.30
   {
     settingsDigitizingLineColor->copyValueFromKeys( u"qgis/digitizing/line_color_red"_s, u"qgis/digitizing/line_color_green"_s, u"qgis/digitizing/line_color_blue"_s, u"qgis/digitizing/line_color_alpha"_s, true );
@@ -498,8 +503,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // recent CRS
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"crs/recentProjectionsAuthId"_s, {}, true );
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"crs/recentProjectionsWkt"_s, {}, true );
   QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"crs/recentProjectionsProj4"_s, {}, true );
 
   // auth settings
   QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
@@ -508,11 +516,15 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // raster cumulative cut
   QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"raster/cumulativeCutLower"_s, {}, true );
   QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"raster/cumulativeCutUpper"_s, {}, true );
 
   // CptCity
   QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"core/cptcity-base-dir"_s, {}, true );
   QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"core/cptcity-archive-name"_s, {}, true );
 
   // encoding
   QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
