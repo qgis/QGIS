@@ -28,6 +28,10 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
+  // clear has no meaning here
+  mMetalnessWidget->spinBox()->setShowClearButton( false );
+  mRoughnessWidget->spinBox()->setShowClearButton( false );
+
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
   connect( mMetalnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
