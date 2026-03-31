@@ -371,22 +371,22 @@ class QgsFeedback;
     virtual bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
-     * Check if geometries that are topologically equivalent
+     * Check if geometries are topologically equivalent
      * \param geom other geom to compare with
      * \param errorMsg will be set to descriptive error string if the operation fails
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
-     * \return true if topologically equivalent, else false
+     * \return TRUE if topologically equivalent, else FALSE
      */
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Checks if this is equal to \a geom ie. if each vertex of this is within the distance tolerance of the corresponding vertex in \a geom.
-     * If both are Null geometries, `FALSE` is returned.
+     * If both are Null geometries, FALSE is returned.
      * \param geom geometry to compare with
-     * \param epsilon maximum difference for coordinates between the objects. With a near zreo epsilon, this function will behave as an exact comparison.
+     * \param epsilon maximum difference for coordinates between the objects. With a near zero epsilon, this function will behave as an exact comparison.
      * \param errorMsg destination storage for any error message
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
-     * \return true if fuzzy equivalent, else false
+     * \return TRUE if fuzzy equivalent, else FALSE
      * \since QGIS 4.2
      */
     virtual bool isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg = nullptr, QgsFeedback *feedback = nullptr ) const = 0;
