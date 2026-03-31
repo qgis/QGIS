@@ -113,9 +113,10 @@ class ParametersPanel(QgsProcessingParametersWidget):
             layout = QVBoxLayout(widget)
             label = QLabel(widget)
             label.setWordWrap(True)
-            label.setText(
-                f"<i>{self.tr('No additional parameters are required. This algorithm will activate edit mode and modify the features in place.')}</i>"
-            )
+            info_text = self.tr(
+                "<i>No additional parameters are required. This algorithm will activate edit mode and modify the features on layer <b>{layername}</b> in place.</i>"
+            ).format(layername=self.active_layer.name())
+            label.setText(info_text)
             layout.addWidget(label)
             layout.addStretch()
             self.addExtraWidget(widget)
