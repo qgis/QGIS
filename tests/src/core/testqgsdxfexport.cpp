@@ -2052,23 +2052,23 @@ void TestQgsDxfExport::testMetersAtScale()
 {
   // This test is aimed at testing whether the render unit "meters in map units" exports
 
-  auto vl = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=id:string"_s, u"vl"_s, u"memory"_s );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   QgsFeature f;
-  f.setAttributes( QgsAttributes() << u"1"_s );
-  f.setGeometry( QgsGeometry::fromWkt( u"LineString (-112.5 44.9, -88.6 44.9)"_s ) );
+  f.setAttributes( QgsAttributes() << QStringLiteral( "1" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-112.5 44.9, -88.6 44.9)" ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
 
-  vl->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+  vl->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { "color", "#000000" }, { "outline_width", 0.6 } } ).release() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = u"represent_value(\"Class\")"_s;
+  settings.fieldName = QStringLiteral( "represent_value(\"Class\")" );
   settings.isExpression = true;
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
   format.setSize( 12 );
   format.setSizeUnit( Qgis::RenderUnit::MetersInMapUnits );
-  format.setNamedStyle( u"Bold"_s );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
   mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -2091,7 +2091,7 @@ void TestQgsDxfExport::testMetersAtScale()
 
   const QString file = getTempFileName( "context_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
