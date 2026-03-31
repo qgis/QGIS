@@ -105,7 +105,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
   private:
     QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
     double mMetalness = 0.0;
-    double mRoughness = 0.0;
+    double mRoughness = 0.5;
 };
 
 
