@@ -52,7 +52,6 @@ class TestQgsDistanceArea : public QObject
     void regression16820();
     void regression61299();
     void setCrsEllipsoidLogic();
-    void setCrsEllipsoidLogic();
 };
 
 void TestQgsDistanceArea::initTestCase()
