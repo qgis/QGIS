@@ -595,21 +595,14 @@ QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity(
   double zMin,
   double zMax
 )
-  : QgsChunkedEntity(
+  : QgsAbstractFeatureBasedChunkedEntity(
       map,
       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
       new QgsAnnotationLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ),
       true
     )
 {
-  mTransform = new Qt3DCore::QTransform;
-  if ( applyTerrainOffset() )
-  {
-    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
-  }
-  this->addComponent( mTransform );
-
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged );
+  onTerrainElevationOffsetChanged();
 }
 
 QgsAnnotationLayerChunkedEntity::~QgsAnnotationLayerChunkedEntity()
@@ -628,15 +621,11 @@ bool QgsAnnotationLayerChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
-void QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged()
+QList<QgsRayCastHit> QgsAnnotationLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
-  QgsDebugMsgLevel( u"QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
-  float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
-  if ( !applyTerrainOffset() )
-  {
-    newOffset = 0.0;
-  }
-  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
+  Q_UNUSED( ray )
+  Q_UNUSED( context )
+  return {};
 }
 
 

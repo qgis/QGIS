@@ -25,15 +25,10 @@
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature3dhandler_p.h"
-#include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslogger.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgsray3d.h"
-#include "qgsraycastcontext.h"
-#include "qgsraycastingutils.h"
-#include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
@@ -232,17 +227,9 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity(
   Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol
 )
-  : QgsChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
+  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
-  mTransform = new Qt3DCore::QTransform;
-  if ( applyTerrainOffset() )
-  {
-    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
-  }
-  this->addComponent( mTransform );
-
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
-
+  onTerrainElevationOffsetChanged();
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -290,101 +277,6 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
   }
 
   return true;
-}
-
-void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
-{
-  QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
-  float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
-  if ( !applyTerrainOffset() )
-  {
-    newOffset = 0.0;
-  }
-  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
-}
-
-QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
-{
-  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
-}
-
-QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection(
-  const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin
-)
-{
-  QgsDebugMsgLevel( u"Ray cast on vector layer"_s, 2 );
-#ifdef QGISDEBUG
-  int nodeUsed = 0;
-  int nodesAll = 0;
-  int hits = 0;
-  int ignoredGeometries = 0;
-#endif
-  QList<QgsRayCastHit> result;
-
-  float minDist = -1;
-  QVector3D intersectionPoint;
-  QgsFeatureId nearestFid = FID_NULL;
-
-  for ( QgsChunkNode *node : activeNodes )
-  {
-#ifdef QGISDEBUG
-    nodesAll++;
-#endif
-
-    QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), origin );
-
-    if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
-    {
-#ifdef QGISDEBUG
-      nodeUsed++;
-#endif
-      const QList<Qt3DRender::QGeometryRenderer *> rendLst = node->entity()->findChildren<Qt3DRender::QGeometryRenderer *>();
-      for ( const auto &rend : rendLst )
-      {
-        auto *geom = rend->geometry();
-        QgsTessellatedPolygonGeometry *polygonGeom = qobject_cast<QgsTessellatedPolygonGeometry *>( geom );
-        if ( !polygonGeom )
-        {
-#ifdef QGISDEBUG
-          ignoredGeometries++;
-#endif
-          continue; // other QGeometry types are not supported for now
-        }
-
-        QVector3D nodeIntPoint;
-        int triangleIndex = -1;
-
-        // the node geometry has been translated by chunkOrigin
-        // This translation is stored in the QTransform component
-        // this needs to be taken into account to get the whole transformation
-        const QMatrix4x4 nodeTransformMatrix = node->entity()->findChild<QgsGeoTransform *>()->matrix();
-        const QMatrix4x4 fullTransformMatrix = transformMatrix * nodeTransformMatrix;
-        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), fullTransformMatrix, nodeIntPoint, triangleIndex ) )
-        {
-#ifdef QGISDEBUG
-          hits++;
-#endif
-          float dist = ( ray.origin() - nodeIntPoint ).length();
-          if ( minDist < 0 || dist < minDist )
-          {
-            minDist = dist;
-            intersectionPoint = nodeIntPoint;
-            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex );
-          }
-        }
-      }
-    }
-  }
-  if ( !FID_IS_NULL( nearestFid ) )
-  {
-    QgsRayCastHit hit;
-    hit.setDistance( minDist );
-    hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
-    hit.setProperties( { { u"fid"_s, nearestFid } } );
-    result.append( hit );
-  }
-  QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
-  return result;
 }
 
 /// @endcond
