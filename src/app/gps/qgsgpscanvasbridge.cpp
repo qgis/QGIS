@@ -70,7 +70,13 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsCanvasBridge::gpsSettingsChanged );
 
-  mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+
+  if ( mEarthCrs )
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  else
+    mCanvasToWgs84Transform = QgsCoordinateTransform();
+
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
     mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
     if ( mEarthCrs )
