@@ -29,8 +29,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutLower = new QgsSettingsEntryDouble( u"cumulativeCutLower"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_LOWER );
-const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutUpper = new QgsSettingsEntryDouble( u"cumulativeCutUpper"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_UPPER );
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutLower = new QgsSettingsEntryDouble( u"cumulative-cut-lower"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_LOWER );
+const QgsSettingsEntryDouble *QgsRasterMinMaxOrigin::settingsCumulativeCutUpper = new QgsSettingsEntryDouble( u"cumulative-cut-upper"_s, QgsSettingsTree::sTreeRaster, CUMULATIVE_CUT_UPPER );
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )

@@ -43,8 +43,9 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityBaseDir = new QgsSettingsEntryString( u"cptcity-base-dir"_s, QgsSettingsTree::sTreeCore, QString() );
-const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityArchiveName = new QgsSettingsEntryString( u"cptcity-archive-name"_s, QgsSettingsTree::sTreeCore, QStringLiteral( DEFAULT_CPTCITY_ARCHIVE ) );
+const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityBaseDir = new QgsSettingsEntryString( u"cptcity-base-dir"_s, QgsSettingsTree::sTreeColors, QString() );
+const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityArchiveName
+  = new QgsSettingsEntryString( u"cptcity-archive-name"_s, QgsSettingsTree::sTreeColors, QStringLiteral( DEFAULT_CPTCITY_ARCHIVE ) );
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;
