@@ -4635,7 +4635,7 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPat
   if ( isInSvgPaths )
     return path;
 
-  return pathResolver.writePath( path );
+  return pathResolver.writePath( p );
 }
 
 QPolygonF lineStringToQPolygonF( const QgsLineString *line )
