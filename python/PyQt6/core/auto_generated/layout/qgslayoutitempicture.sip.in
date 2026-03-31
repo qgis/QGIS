@@ -333,12 +333,55 @@ bounds.
 %End
 
     bool clipToItem() const;
+%Docstring
+Returns ``True`` if the picture item should by clipped to the associated
+item.
+
+.. seealso:: :py:func:`setClipToItem`
+
+.. seealso:: :py:func:`clippingItem`
+
+.. versionadded:: 4.2
+%End
 
     void setClipToItem( bool clipToItem );
+%Docstring
+Sets whether the picture item should by clipped to the associated item.
+
+.. seealso:: :py:func:`clipToItem`
+
+.. seealso:: :py:func:`setClippingItem`
+
+.. versionadded:: 4.2
+%End
 
     QgsLayoutItem *clippingItem() const;
+%Docstring
+Returns the item that will will provide the clipping path for the
+picture, or ``None`` if no item is set.
+
+.. seealso:: :py:func:`setClippingItem`
+
+.. seealso:: :py:func:`clipToItem`
+
+.. versionadded:: 4.2
+%End
 
     void setClippingItem( QgsLayoutItem *item );
+%Docstring
+Sets the ``item`` that will will provide the clipping path for the
+picture.
+
+.. note::
+
+   The specified item must return the :py:class:`QgsLayoutItem`.FlagProvidesClipPath flag.
+
+.. seealso:: :py:func:`clippingItem`
+
+.. seealso:: :py:func:`setClipToItem`
+
+.. versionadded:: 4.2
+%End
 
     void refreshPicture( const QgsExpressionContext *context = 0 );
 %Docstring

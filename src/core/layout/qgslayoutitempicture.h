@@ -288,12 +288,42 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
      */
     void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
+    /**
+     * Returns TRUE if the picture item should by clipped to the associated item.
+     *
+     * \see setClipToItem
+     * \see clippingItem
+     * \since QGIS 4.2
+     */
     bool clipToItem() const;
 
+    /**
+     * Sets whether the picture item should by clipped to the associated item.
+     *
+     * \see clipToItem
+     * \see setClippingItem
+     * \since QGIS 4.2
+     */
     void setClipToItem( bool clipToItem );
 
+    /**
+     * Returns the item that will will provide the clipping path for the picture, or
+     * NULLPTR if no item is set.
+     *
+     * \see setClippingItem
+     * \see clipToItem
+     * \since QGIS 4.2
+     */
     QgsLayoutItem *clippingItem() const;
 
+    /**
+     * Sets the \a item that will will provide the clipping path for the picture.
+     *
+     * \note The specified item must return the QgsLayoutItem::FlagProvidesClipPath flag.
+     * \see clippingItem
+     * \see setClipToItem
+     * \since QGIS 4.2
+     */
     void setClippingItem( QgsLayoutItem *item );
 
     /**
