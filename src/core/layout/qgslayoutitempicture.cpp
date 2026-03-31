@@ -87,12 +87,40 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
   return new QgsLayoutItemPicture( layout );
 }
 
+QPainterPath QgsLayoutItemPicture::framePath() const
+{
+  QPainterPath customFramePath;
+  if ( mClipToItem && mClippingItem )
+  {
+    QgsGeometry g( mClippingItem->clipPath() );
+    g.transform( sceneTransform().inverted() );
+    if ( !g.isNull() )
+    {
+      customFramePath = g.constGet()->asQPainterPath();
+    }
+  }
+
+  return !customFramePath.isEmpty() ? customFramePath : QgsLayoutItem::framePath();
+}
+
 void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
+
   const QgsScopedQPainterState painterState( painter );
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
+
+  if ( mClipToItem && mClippingItem )
+  {
+    QgsGeometry g( mClippingItem->clipPath() );
+    g.transform( sceneTransform().inverted() );
+    if ( !g.isNull() )
+    {
+      const QPainterPath customFramePath = g.constGet()->asQPainterPath();
+      painter->setClipPath( customFramePath );
+    }
+  }
 
   const bool prevSmoothTransform = painter->testRenderHint( QPainter::RenderHint::SmoothPixmapTransform );
   if ( mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Antialiasing ) )
@@ -788,6 +816,18 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   }
   elem.setAttribute( u"northMode"_s, mNorthArrowHandler->northMode() );
   elem.setAttribute( u"northOffset"_s, mNorthArrowHandler->northOffset() );
+
+  //clipping
+  elem.setAttribute( u"clipToItem"_s, mClipToItem ? u"1"_s : u"0"_s );
+  if ( mClippingItem )
+  {
+    elem.setAttribute( u"clippingItem"_s, mClippingItem->uuid() );
+  }
+  else
+  {
+    elem.setAttribute( u"clippingItem"_s, QString() );
+  }
+
   return true;
 }
 
@@ -853,6 +893,9 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
 
   mNorthArrowHandler->setLinkedMap( nullptr );
   mRotationMapUuid = itemElem.attribute( u"mapUuid"_s );
+
+  mClipToItem = itemElem.attribute( u"clipToItem"_s, u"0"_s ).toInt();
+  mClippingItemUuid = itemElem.attribute( u"clippingItem"_s );
 
   return true;
 }
@@ -927,5 +970,64 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
     mNorthArrowHandler->setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) );
   }
 
+  if ( !mClippingItemUuid.isEmpty() )
+  {
+    if ( QgsLayoutItem *item = mLayout->itemByUuid( mClippingItemUuid, true ) )
+    {
+      setClippingItem( item );
+    }
+  }
+
   refreshPicture();
+}
+
+bool QgsLayoutItemPicture::clipToItem() const
+{
+  return mClipToItem;
+}
+
+void QgsLayoutItemPicture::setClipToItem( bool clipToItem )
+{
+  if ( mClipToItem == clipToItem )
+    return;
+
+  mClipToItem = clipToItem;
+
+  refreshPicture();
+}
+
+QgsLayoutItem *QgsLayoutItemPicture::clippingItem() const
+{
+  return mClippingItem;
+}
+
+void QgsLayoutItemPicture::setClippingItem( QgsLayoutItem *item )
+{
+  if ( mClippingItem == item )
+    return;
+
+  if ( mClippingItem )
+  {
+    disconnect( mClippingItem, &QgsLayoutItem::clipPathChanged, this, &QgsLayoutItemPicture::refresh );
+    disconnect( mClippingItem, &QgsLayoutItem::rotationChanged, this, &QgsLayoutItemPicture::refresh );
+  }
+
+  QgsLayoutItem *oldItem = mClippingItem;
+  mClippingItem = item;
+
+  if ( mClippingItem )
+  {
+    connect( mClippingItem, &QgsLayoutItem::clipPathChanged, this, &QgsLayoutItemPicture::refresh );
+    connect( mClippingItem, &QgsLayoutItem::rotationChanged, this, &QgsLayoutItemPicture::refresh );
+    // trigger a redraw of the clipping item, so that it becomes invisible
+    mClippingItem->refresh();
+  }
+
+  if ( oldItem )
+  {
+    // may need to refresh the previous item in order to get it to render
+    oldItem->refresh();
+  }
+
+  refresh();
 }

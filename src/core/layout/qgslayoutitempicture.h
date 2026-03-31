@@ -288,6 +288,14 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
      */
     void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
+    bool clipToItem() const;
+
+    void setClipToItem( bool clipToItem );
+
+    QgsLayoutItem *clippingItem() const;
+
+    void setClippingItem( QgsLayoutItem *item );
+
     /**
      * Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
@@ -308,6 +316,7 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
+    QPainterPath framePath() const override;
     QSizeF applyItemSizeConstraint( QSizeF targetSize ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -351,6 +360,10 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
     QString mEvaluatedPath;
 
     QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
+
+    bool mClipToItem = false;
+    QPointer< QgsLayoutItem > mClippingItem;
+    QString mClippingItemUuid;
 
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QVariant &data );

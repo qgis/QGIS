@@ -332,6 +332,14 @@ bounds.
 .. seealso:: :py:func:`resizeMode`
 %End
 
+    bool clipToItem() const;
+
+    void setClipToItem( bool clipToItem );
+
+    QgsLayoutItem *clippingItem() const;
+
+    void setClippingItem( QgsLayoutItem *item );
+
     void refreshPicture( const QgsExpressionContext *context = 0 );
 %Docstring
 Recalculates the source image (if using an expression for picture's
@@ -357,6 +365,8 @@ Emitted on picture rotation change
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
+
+    virtual QPainterPath framePath() const;
 
     virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 
