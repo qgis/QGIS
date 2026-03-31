@@ -30,6 +30,9 @@ created, but rather accessed through
 #include "qgscoordinatereferencesystemregistry.h"
 %End
   public:
+
+
+
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsCoordinateReferenceSystemRegistry, with the specified
@@ -250,7 +253,6 @@ Emitted when the list of recently used CRS has been cleared.
 
 .. versionadded:: 3.36
 %End
-
 
 };
 
