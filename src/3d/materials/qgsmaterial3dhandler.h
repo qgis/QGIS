@@ -158,6 +158,22 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
     virtual int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const;
 
     /**
+     * Encapsulates information about available preview meshes.
+     */
+    struct PreviewMeshType
+    {
+        //! Identifier string
+        QString type;
+        //! Translated, user-friendly name
+        QString displayName;
+    };
+
+    /**
+     * Returns a list of available preview mesh types for the material.
+     */
+    virtual QList< PreviewMeshType > previewMeshTypes() const;
+
+    /**
      * Creates a new entity representing a suitable preview mesh for this material type.
      *
      * The default implementation returns a sphere. This method can be overridden to provide
@@ -165,10 +181,10 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * Ownership of the returned entity resides with the \a parent entity.
      */
-    virtual Qt3DCore::QEntity *createPreviewMesh( Qt3DCore::QEntity *parent ) const;
+    virtual Qt3DCore::QEntity *createPreviewMesh( const QString &type, Qt3DCore::QEntity *parent ) const;
 
     /**
-     * Builds a complete self-contained scene for previewing the material.
+     * Builds a complete self-contained scene for previewing the material, using the specified mesh \a type.
      *
      * The scene contains a mesh with the associated material applied, and appropriate lighting.
      *
@@ -176,7 +192,9 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * This method can be overridden to customize the lighting or mesh for a specific material.
      */
-    virtual Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent ) const;
+    virtual Qt3DCore::QEntity *createPreviewScene(
+      const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
+    ) const;
 
     /**
      * Updates an existing material preview scene with new material \a settings.

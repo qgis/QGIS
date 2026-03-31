@@ -18,13 +18,18 @@
 #include "qgis.h"
 #include "qgsgoochmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsgoochmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
   mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"gooch"_s );
 
   QgsGoochMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );

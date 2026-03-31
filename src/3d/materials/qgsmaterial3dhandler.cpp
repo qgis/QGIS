@@ -18,6 +18,8 @@
 #include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QConeMesh>
+#include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPointLight>
@@ -44,6 +46,23 @@ void QgsAbstractMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstract
 int QgsAbstractMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
 {
   return 0;
+}
+
+QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsAbstractMaterial3DHandler::previewMeshTypes() const
+{
+  PreviewMeshType sphere;
+  sphere.type = u"sphere"_s;
+  sphere.displayName = QObject::tr( "Sphere" );
+
+  PreviewMeshType cube;
+  cube.type = u"cube"_s;
+  cube.displayName = QObject::tr( "Cube" );
+
+  PreviewMeshType cone;
+  cone.type = u"cone"_s;
+  cone.displayName = QObject::tr( "Cone" );
+
+  return { sphere, cube, cone };
 }
 
 Qt3DRender::QParameter *QgsAbstractMaterial3DHandler::findParameter( Qt3DRender::QEffect *effect, const QString &name )
@@ -73,22 +92,53 @@ Qt3DRender::QParameter *QgsAbstractMaterial3DHandler::findParameter( Qt3DRender:
   return nullptr;
 }
 
-Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewMesh( Qt3DCore::QEntity *parent ) const
+Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewMesh( const QString &type, Qt3DCore::QEntity *parent ) const
 {
   auto *entity = new Qt3DCore::QEntity( parent );
-  auto *mesh = new Qt3DExtras::QSphereMesh( entity );
-  mesh->setRadius( 1.0f );
-  mesh->setRings( 32 );
-  mesh->setSlices( 32 );
-  entity->addComponent( mesh );
+  if ( type == "sphere"_L1 )
+  {
+    auto *mesh = new Qt3DExtras::QSphereMesh( entity );
+    mesh->setRadius( 1.0f );
+    mesh->setRings( 32 );
+    mesh->setSlices( 32 );
+    entity->addComponent( mesh );
+  }
+  else if ( type == "cube"_L1 )
+  {
+    auto *mesh = new Qt3DExtras::QCuboidMesh( entity );
+    mesh->setXExtent( 1.8f );
+    mesh->setYExtent( 1.8f );
+    mesh->setZExtent( 1.8f );
+
+    auto *transform = new Qt3DCore::QTransform( mesh );
+    transform->setRotation( QQuaternion::fromEulerAngles( 15, 35, 15 ) );
+
+    entity->addComponent( mesh );
+    entity->addComponent( transform );
+  }
+  else if ( type == "cone"_L1 )
+  {
+    auto *mesh = new Qt3DExtras::QConeMesh( entity );
+    mesh->setBottomRadius( 1.2f );
+    mesh->setLength( 1.8f );
+    mesh->setRings( 32 );
+    mesh->setSlices( 32 );
+    auto *transform = new Qt3DCore::QTransform( mesh );
+    transform->setRotation( QQuaternion::fromEulerAngles( 5, 0, 0 ) );
+
+    entity->addComponent( mesh );
+    entity->addComponent( transform );
+  }
   return entity;
 }
 
-Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *, Qt3DCore::QEntity *parent ) const
+Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene(
+  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *, Qt3DCore::QEntity *parent
+) const
 {
   auto *root = new Qt3DCore::QEntity( parent );
 
-  Qt3DCore::QEntity *meshEntity = createPreviewMesh( root );
+  Qt3DCore::QEntity *meshEntity = createPreviewMesh( type, root );
   Q_ASSERT( meshEntity );
   meshEntity->setObjectName( "mesh" );
   if ( QgsMaterial *mat = toMaterial( settings, Qgis::MaterialRenderingTechnique::Triangles, context ) )

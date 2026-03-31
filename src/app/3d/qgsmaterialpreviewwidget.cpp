@@ -16,8 +16,13 @@
 #include "qgsmaterialpreviewwidget.h"
 
 #include "qgs3d.h"
-#include "qgsmaterial3dhandler.h"
+#include "qgsabstractmaterialsettings.h"
+#include "qgsapplication.h"
+#include "qgsmaterialregistry.h"
 
+#include <QActionGroup>
+#include <QMenu>
+#include <QMouseEvent>
 #include <QVBoxLayout>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
@@ -30,6 +35,8 @@ QgsMaterialPreviewWidget::QgsMaterialPreviewWidget( QWidget *parent )
 {
   mView = new Qt3DExtras::Qt3DWindow();
   mView->defaultFrameGraph()->setClearColor( palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
+
+  mView->installEventFilter( this );
 
   QWidget *container = QWidget::createWindowContainer( mView, this );
   container->setMinimumSize( 200, 200 );
@@ -45,6 +52,18 @@ QgsMaterialPreviewWidget::QgsMaterialPreviewWidget( QWidget *parent )
   mView->setRootEntity( mSceneRoot );
 }
 
+void QgsMaterialPreviewWidget::setMaterialType( const QString &type )
+{
+  if ( const QgsMaterialSettingsMetadata *metadata = dynamic_cast< const QgsMaterialSettingsMetadata * >( QgsApplication::materialRegistry()->materialSettingsMetadata( type ) ) )
+  {
+    if ( const QgsAbstractMaterial3DHandler *handler = metadata->handler() )
+    {
+      mMeshTypes = handler->previewMeshTypes();
+      mPreviewSceneType = mMeshTypes.at( 0 ).type;
+    }
+  }
+}
+
 void QgsMaterialPreviewWidget::setupCamera( Qt3DRender::QCamera *camera )
 {
   camera->lens()->setPerspectiveProjection( 45.0f, 1.0f, 0.1f, 100.0f );
@@ -54,17 +73,53 @@ void QgsMaterialPreviewWidget::setupCamera( Qt3DRender::QCamera *camera )
 
 void QgsMaterialPreviewWidget::updatePreview( const QgsAbstractMaterialSettings *settings )
 {
-  const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings );
+  mLastPreviewSettings.reset( settings->clone() );
+  const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mLastPreviewSettings.get() );
   if ( !handler )
     return;
 
   QgsMaterialContext context;
   if ( !mPreviewScene )
   {
-    mPreviewScene = handler->createPreviewScene( settings, context, mView, mSceneRoot );
+    delete mPreviewScene;
+    mPreviewScene = handler->createPreviewScene( mLastPreviewSettings.get(), mPreviewSceneType, context, mView, mSceneRoot );
   }
   else
   {
-    handler->updatePreviewScene( mPreviewScene, settings, context );
+    handler->updatePreviewScene( mPreviewScene, mLastPreviewSettings.get(), context );
   }
+}
+
+bool QgsMaterialPreviewWidget::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mView && event->type() == QEvent::MouseButtonPress )
+  {
+    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    if ( mouseEvent->button() == Qt::RightButton )
+    {
+      QMenu menu( this );
+      auto actionGroup = new QActionGroup( &menu );
+      actionGroup->setExclusive( true );
+      for ( const QgsAbstractMaterial3DHandler::PreviewMeshType &type : mMeshTypes )
+      {
+        QAction *action = new QAction( type.displayName, &menu );
+        action->setCheckable( true );
+        action->setChecked( type.type == mPreviewSceneType );
+        connect( action, &QAction::toggled, this, [this, type]( bool checked ) {
+          if ( checked )
+          {
+            mPreviewSceneType = type.type;
+            mPreviewScene->deleteLater();
+            mPreviewScene = nullptr;
+            updatePreview( mLastPreviewSettings.get() );
+          }
+        } );
+        menu.addAction( action );
+        actionGroup->addAction( action );
+      }
+      menu.exec( mouseEvent->globalPosition().toPoint() );
+      return true;
+    }
+  }
+  return QWidget::eventFilter( watched, event );
 }

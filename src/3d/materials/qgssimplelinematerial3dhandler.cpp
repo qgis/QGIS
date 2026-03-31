@@ -131,7 +131,15 @@ void QgsSimpleLineMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstra
   dataBuffer->setData( data );
 }
 
-Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewMesh( Qt3DCore::QEntity *parent ) const
+QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsSimpleLineMaterial3DHandler::previewMeshTypes() const
+{
+  PreviewMeshType lines;
+  lines.type = u"lines"_s;
+  lines.displayName = QObject::tr( "Lines" );
+  return { lines };
+}
+
+Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewMesh( const QString &, Qt3DCore::QEntity *parent ) const
 {
   auto *entity = new Qt3DCore::QEntity( parent );
   auto *renderer = new Qt3DRender::QGeometryRenderer( entity );
@@ -153,11 +161,11 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewMesh( Qt3DCore::
 }
 
 Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewScene(
-  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
+  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
 ) const
 {
   auto *root = new Qt3DCore::QEntity( parent );
-  Qt3DCore::QEntity *mesh = createPreviewMesh( root );
+  Qt3DCore::QEntity *mesh = createPreviewMesh( type, root );
 
   QgsMaterial *mat = toMaterial( settings, Qgis::MaterialRenderingTechnique::Lines, context );
   QgsLineMaterial *lineMaterial = qobject_cast<QgsLineMaterial *>( mat );

@@ -16,6 +16,8 @@
 #ifndef QGSMATERIALPREVIEWWIDGET_H
 #define QGSMATERIALPREVIEWWIDGET_H
 
+#include "qgsmaterial3dhandler.h"
+
 #include <QWidget>
 
 class QgsAbstractMaterial3DHandler;
@@ -43,13 +45,22 @@ class QgsMaterialPreviewWidget : public QWidget
   public:
     explicit QgsMaterialPreviewWidget( QWidget *parent = nullptr );
 
+    void setMaterialType( const QString &type );
+
     void updatePreview( const QgsAbstractMaterialSettings *settings );
+
+  protected:
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
     void setupCamera( Qt3DRender::QCamera *camera );
 
     Qt3DExtras::Qt3DWindow *mView = nullptr;
     Qt3DCore::QEntity *mSceneRoot = nullptr;
+    QString mPreviewSceneType;
     Qt3DCore::QEntity *mPreviewScene = nullptr;
+
+    QList< QgsAbstractMaterial3DHandler::PreviewMeshType > mMeshTypes;
+    std::unique_ptr< QgsAbstractMaterialSettings > mLastPreviewSettings;
 };
 #endif // QGSMATERIALPREVIEWWIDGET_H

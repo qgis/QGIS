@@ -18,13 +18,18 @@
 #include "qgis.h"
 #include "qgssimplelinematerialsettings.h"
 
+#include <QString>
+
 #include "moc_qgssimplelinematerialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
   mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"simpleline"_s );
 
   QgsSimpleLineMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );

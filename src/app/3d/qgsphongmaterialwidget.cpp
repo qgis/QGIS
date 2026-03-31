@@ -18,7 +18,11 @@
 #include "qgis.h"
 #include "qgsphongmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsphongmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity )
   : QgsMaterialSettingsWidget( parent )
@@ -26,6 +30,8 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
 {
   setupUi( this );
   mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"phong"_s );
+
   mOpacityWidget->setVisible( mHasOpacity );
   mLblOpacity->setVisible( mHasOpacity );
   spinShininess->setClearValue( 0, tr( "None" ) );

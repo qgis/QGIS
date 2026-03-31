@@ -18,13 +18,18 @@
 #include "qgis.h"
 #include "qgsphongtexturedmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsphongtexturedmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
   mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"phongtextured"_s );
 
   spinShininess->setClearValue( 0, tr( "None" ) );
 
