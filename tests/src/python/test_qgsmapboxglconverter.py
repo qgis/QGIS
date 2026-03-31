@@ -2960,6 +2960,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
     def testSymbolSpacingNumeric(self):
         """Test symbol-spacing with a simple numeric value"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Percentage)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -2982,10 +2983,15 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
         self.assertTrue(prop.isActive())
         self.assertEqual(prop.asExpression(), "250")
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Percentage,
+        )
 
     def testSymbolSpacingList(self):
         """Test symbol-spacing with interpolate stops"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.Pixels)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3011,10 +3017,15 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             prop.asExpression(),
             "CASE  WHEN @vector_tile_zoom >= 14 THEN (800)  WHEN @vector_tile_zoom >= 10 THEN (600) ELSE (300) END",
         )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.Pixels,
+        )
 
     def testSymbolSpacingMap(self):
         """Test symbol-spacing with a QVariantMap stops definition"""
         context = QgsMapBoxGlStyleConversionContext()
+        context.setTargetUnit(Qgis.RenderUnit.MapUnits)
         style = {
             "layout": {
                 "text-field": "{name}",
@@ -3043,6 +3054,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(
             prop.asExpression(),
             "scale_linear(@vector_tile_zoom,2,6,0.2,0)",
+        )
+        self.assertEqual(
+            ls.thinningSettings().minimumDistanceToDuplicateUnit(),
+            Qgis.RenderUnit.MapUnits,
         )
 
 
