@@ -26,7 +26,6 @@
 #include "qgsfcgiserverrequest.h"
 #include "qgsfcgiserverresponse.h"
 #include "qgsserver.h"
-#include "qgssettingsentry.h"
 
 #include <QFontDatabase>
 #include <QString>
@@ -77,11 +76,6 @@ int main( int argc, char *argv[] )
   }
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
   const QgsApplication app( argc, argv, withDisplay, QString(), u"server"_s );
-
-  // Load global settings defaults into the in-memory hash
-  const char *globalSettingsFile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
-  if ( globalSettingsFile )
-    QgsSettingsEntryBase::setGlobalSettingsPath( QString::fromLocal8Bit( globalSettingsFile ) );
 
   QgsServer server;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

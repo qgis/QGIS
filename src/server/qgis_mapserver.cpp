@@ -37,7 +37,6 @@ using namespace Qt::StringLiterals;
 #include "qgscommandlineutils.h"
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgssettingsentry.h"
 #include "qgsbufferserverrequest.h"
 #include "qgsbufferserverresponse.h"
 #include "qgsapplication.h"
@@ -499,11 +498,6 @@ int main( int argc, char *argv[] )
 
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
   const QgsApplication app( argc, argv, withDisplay, QString(), u"QGIS Development Server"_s );
-
-  // Load global settings defaults into the in-memory hash
-  const char *globalSettingsFile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
-  if ( globalSettingsFile )
-    QgsSettingsEntryBase::setGlobalSettingsPath( QString::fromLocal8Bit( globalSettingsFile ) );
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
