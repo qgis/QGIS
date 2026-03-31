@@ -461,34 +461,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
-
-  // recent CRS
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"crs/recentProjectionsAuthId"_s, {}, true );
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"crs/recentProjectionsWkt"_s, {}, true );
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
-  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"crs/recentProjectionsProj4"_s, {}, true );
-
-  // auth settings
-  QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
-  QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
-  QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
-
-  // raster cumulative cut
-  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
-  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"raster/cumulativeCutLower"_s, {}, true );
-  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
-  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"raster/cumulativeCutUpper"_s, {}, true );
-
-  // CptCity
-  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
-  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"core/cptcity-base-dir"_s, {}, true );
-  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
-  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"core/cptcity-archive-name"_s, {}, true );
-
-  // encoding
-  QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
