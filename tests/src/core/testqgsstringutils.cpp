@@ -142,6 +142,12 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this http://north-road.com is a link"_s, &found ), u"this <a href=\"http://north-road.com\">http://north-road.com</a> is a link"_s );
   QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this 'http://north-road.com' is a link"_s, &found ), u"this '<a href=\"http://north-road.com\">http://north-road.com</a>' is a link"_s );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this (http://north-road.com) is a link"_s, &found ), u"this (<a href=\"http://north-road.com\">http://north-road.com</a>) is a link"_s );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this \"http://north-road.com\" is a link"_s, &found ), u"this \"<a href=\"http://north-road.com\">http://north-road.com</a>\" is a link"_s );
+  QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this http://north-road.com is a link, so is http://qgis.org, OK?"_s, &found ), u"this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, OK?"_s );
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this north-road.com might not be a link"_s, &found ), u"this north-road.com might not be a link"_s );
@@ -161,6 +167,11 @@ void TestQgsStringUtils::insertLinks()
   QCOMPARE( QgsStringUtils::insertLinks( u"Load file:///this/is/path/to.file?query=1#anchor"_s, &found ), u"Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>"_s );
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"Load https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')"_s, &found ), u"Load <a href=\"https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')\">https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')</a>"_s );
+  QVERIFY( found );
+  QCOMPARE(
+    QgsStringUtils::insertLinks( u"=LIEN_HYPERTEXTE(\"\"http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11\"\" ;\"\"01141X0025\"\")"_s, &found ),
+    u"=LIEN_HYPERTEXTE(\"\"<a href=\"http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11\">http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11</a>\"\" ;\"\"01141X0025\"\")"_s
+  );
   QVERIFY( found );
 }
 
