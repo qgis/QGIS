@@ -39,7 +39,7 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsFileBasedDataItemProvider::settingsScanItemsInBrowser = new QgsSettingsEntryString( u"scanItemsInBrowser2"_s, QgsSettingsTree::sTreeQgis, u"extension"_s );
+const QgsSettingsEntryString *QgsFileBasedDataItemProvider::settingsScanItemsInBrowser = new QgsSettingsEntryString( u"scan-items"_s, QgsSettingsTree::sTreeBrowser, u"extension"_s );
 
 //
 // QgsProviderSublayerItem

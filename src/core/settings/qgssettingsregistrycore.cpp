@@ -22,6 +22,7 @@
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgsgpsdetector.h"
 #include "qgsimagecache.h"
 #include "qgslayertreemodellegendnode.h"
@@ -247,6 +248,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"/qgis/scanItemsInBrowser2"_s, {}, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
