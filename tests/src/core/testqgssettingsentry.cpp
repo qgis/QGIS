@@ -313,10 +313,10 @@ void TestQgsSettingsEntry::testGlobalOrigin()
   const QgsSettingsEntryInteger globalOnly( u"globalonly"_s, u"globaltest"_s, 0 );
   QCOMPARE( globalOnly.origin( QStringList() ), Qgis::SettingsOrigin::Global );
 
-  // Key in both: Local-first
+  // Key in both: Global takes precedence for origin
   const QgsSettingsEntryInteger both( u"both"_s, u"globaltest"_s, 0 );
   both.setValue( 20 );
-  QCOMPARE( both.origin( QStringList() ), Qgis::SettingsOrigin::Local );
+  QCOMPARE( both.origin( QStringList() ), Qgis::SettingsOrigin::Global );
 
   // User-only key (not in global)
   const QgsSettingsEntryInteger userOnly( u"useronly"_s, u"globaltest"_s, 0 );
