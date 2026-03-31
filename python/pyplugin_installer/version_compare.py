@@ -47,7 +47,15 @@ def normalizeVersion(s):
     try:
         return Version(s).public
     except InvalidVersion:
-        return ""
+        # handles bit more things than packaging:
+        #   like "ver. 1.0-201609011405-2690BD9"
+        pattern = r"^(?P<epoch>\D+)?(?P<version>(?P<release>\d+(?:\.\d+)*)(?P<pre>(?:a|alpha|b|beta|rc)\d+?)?((?P<post>\.post\d+))?(?P<dev>\.dev\d+)?)(?P<build>\+|-\S+)?$"
+        m = re.match(pattern, s.lower())
+        if not m:
+            return ""
+        return Version(
+            f"{m.group('release') or ''}{m.group('pre') or ''}{m.group('post') or ''}{m.group('dev') or ''}"
+        ).public
 
 
 # ------------------------------------------------------------------------ #
