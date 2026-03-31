@@ -83,6 +83,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeRasterHistogram = sTreeRaster->createChildNode( u"histogram"_s );
     static inline QgsSettingsTreeNode *sTreeCad = sTreeDigitizing->createChildNode( u"cad"_s );
     static inline QgsSettingsTreeNode *sTreeSqlite3 = sTreeDatabase->createChildNode( u"sqlite3"_s );
+    static inline QgsSettingsTreeNode *sTreeLayoutGrid = sTreeLayout->createChildNode( u"grid"_s );
 
 #endif
 
