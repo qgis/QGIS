@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
+#include <QThread>
 
 using namespace Qt::StringLiterals;
 
@@ -49,6 +50,7 @@ class TestQgsSettingsEntry : public QObject
     void testGlobalExists();
     void testLoadGlobalDefaults();
     void testSetValueGlobalDefaultCleanup();
+    void testThreadSafety();
 };
 
 void TestQgsSettingsEntry::settingsKey()
@@ -311,10 +313,10 @@ void TestQgsSettingsEntry::testGlobalOrigin()
   const QgsSettingsEntryInteger globalOnly( u"globalonly"_s, u"globaltest"_s, 0 );
   QCOMPARE( globalOnly.origin( QStringList() ), Qgis::SettingsOrigin::Global );
 
-  // Key in both: Global-first semantics
+  // Key in both: Local-first
   const QgsSettingsEntryInteger both( u"both"_s, u"globaltest"_s, 0 );
   both.setValue( 20 );
-  QCOMPARE( both.origin( QStringList() ), Qgis::SettingsOrigin::Global );
+  QCOMPARE( both.origin( QStringList() ), Qgis::SettingsOrigin::Local );
 
   // User-only key (not in global)
   const QgsSettingsEntryInteger userOnly( u"useronly"_s, u"globaltest"_s, 0 );
@@ -403,6 +405,48 @@ void TestQgsSettingsEntry::testSetValueGlobalDefaultCleanup()
   // Set the same value again — should not re-write (no change)
   entry.setValue( 123 );
   QVERIFY( QSettings().contains( entry.key() ) );
+  QCOMPARE( entry.value(), 123 );
+
+  // Clean up
+  entry.remove();
+  QgsSettingsEntryBase::setGlobalSettingsPath( QString() );
+}
+
+void TestQgsSettingsEntry::testThreadSafety()
+{
+  // Verify that global defaults populated on the main thread are readable
+  // from a worker thread, and that a value written in a worker thread
+  // is visible from the main thread afterwards.
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  const QString iniPath = tempDir.path() + u"/global.ini"_s;
+  {
+    QSettings globalIni( iniPath, QSettings::IniFormat );
+    globalIni.setValue( u"threadtest/globalval"_s, 77 );
+    globalIni.sync();
+  }
+
+  QgsSettingsEntryBase::setGlobalSettingsPath( iniPath );
+
+  const QgsSettingsEntryInteger entry( u"globalval"_s, u"threadtest"_s, 0 );
+
+  // Main thread sees the global default
+  QCOMPARE( entry.value(), 77 );
+
+  // Worker thread reads global default and writes a user override
+  int workerReadValue = 0;
+  auto *thread = QThread::create( [&] {
+    workerReadValue = entry.value();
+    entry.setValue( 123 );
+  } );
+  thread->start();
+  thread->wait();
+  delete thread;
+
+  // Worker saw the global default
+  QCOMPARE( workerReadValue, 77 );
+
+  // Main thread sees the value written by the worker
   QCOMPARE( entry.value(), 123 );
 
   // Clean up

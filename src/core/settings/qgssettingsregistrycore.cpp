@@ -30,10 +30,10 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QSettings>
 #include <QString>
 #include <QThread>
 
@@ -197,14 +197,6 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
-  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
-  // as it involves writing new values to the underlying ini files.
-  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
-  // so that only a single QgsSettings object is created and destroyed at the end of this method.
-  QgsSettings::holdFlush();
-
-  auto settings = QgsSettings::get();
-
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
@@ -307,9 +299,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // locator filters - added in 3.30
   {
-    settings->beginGroup( u"gui/locator_filters"_s );
-    const QStringList childKeys = settings->childKeys();
-    settings->endGroup();
+    QSettings locatorSettings;
+    locatorSettings.beginGroup( u"gui/locator_filters"_s );
+    const QStringList childKeys = locatorSettings.childKeys();
+    locatorSettings.endGroup();
     for ( const QString &childKey : childKeys )
     {
       if ( childKey.startsWith( "enabled"_L1 ) )
@@ -454,7 +447,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
     {
-      const QStringList deviceNames = settings->value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
+      QSettings babelSettings;
+      const QStringList deviceNames = babelSettings.value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
 
       for ( const QString &device : deviceNames )
       {
@@ -468,7 +462,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     }
   }
 
-  QgsSettings::releaseFlush();
+  // recent CRS
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"crs/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"crs/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"crs/recentProjectionsProj4"_s, {}, true );
+
+  // auth settings
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
+  QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
+  QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
+
+  // raster cumulative cut
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"raster/cumulativeCutUpper"_s, {}, true );
+
+  // CptCity
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"core/cptcity-base-dir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"core/cptcity-archive-name"_s, {}, true );
+
+  // encoding
+  QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()

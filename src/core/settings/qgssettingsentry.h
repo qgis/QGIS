@@ -77,7 +77,8 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Sets the path to the global settings INI file and loads all keys
      * into an in-memory hash for use as defaults by QgsSettingsEntry.
      *
-     * This should be called once at application startup.
+     * This must be called once at application startup, before QgsApplication
+     * initialisation, and only from the main thread.
      *
      * \param path the path to the global settings INI file.
      *
@@ -86,7 +87,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     static void setGlobalSettingsPath( const QString &path );
 
     /**
-     * Returns TRUE if a global default is defined for the given \a key.
+     * Returns TRUE if the global settings INI file contains a value for the given \a key.
      *
      * \since QGIS 4.0.2
      */
@@ -102,7 +103,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      *
      * \since QGIS 4.0.2
      */
-    static void initUserSettings() SIP_SKIP;
+    static void reinitUserSettings() SIP_SKIP;
 
     /**
      * Returns the global default value for the given \a key,

@@ -60,7 +60,9 @@ settings description for the gui.
 Sets the path to the global settings INI file and loads all keys into an
 in-memory hash for use as defaults by :py:class:`QgsSettingsEntry`.
 
-This should be called once at application startup.
+This must be called once at application startup, before
+:py:class:`QgsApplication` initialisation, and only from the main
+thread.
 
 :param path: the path to the global settings INI file.
 

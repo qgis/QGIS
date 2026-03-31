@@ -66,7 +66,7 @@ void QgsUserProfile::initSettings() const
 
   // Signal that QSettings is now configured so each thread's
   // instance will be recreated with the correct format and path.
-  QgsSettingsEntryBase::initUserSettings();
+  QgsSettingsEntryBase::reinitUserSettings();
 }
 
 const QString QgsUserProfile::alias() const

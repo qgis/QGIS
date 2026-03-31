@@ -18,17 +18,17 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingstreenode.h"
-#include "qgsvariantutils.h"
 
 #include <QDir>
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
+#include <QThread>
 
 using namespace Qt::StringLiterals;
 
-/**
- * Set to true by initUserSettings() once QSettings::setDefaultFormat()
+/*
+ * Set to true by reinitUserSettings() once QSettings::setDefaultFormat()
  * and setPath() have been called. Each thread's QSettings instance is
  * (re-)created on first access after this flag becomes true, so it
  * picks up the correct IniFormat and profile path.
@@ -41,26 +41,28 @@ static std::atomic<bool> sSettingsInitialized { false };
 static QSettings &sUserSettings()
 {
   thread_local QSettings *sSettings = nullptr;
-  thread_local bool sCreatedAfterInit = false;
+  thread_local bool sCreatedBeforeInit = true;
 
-  if ( !sSettings || ( !sCreatedAfterInit && sSettingsInitialized.load( std::memory_order_acquire ) ) )
+  if ( !sSettings || ( sCreatedBeforeInit && sSettingsInitialized.load( std::memory_order_acquire ) ) )
   {
     delete sSettings;
     sSettings = new QSettings();
-    sCreatedAfterInit = sSettingsInitialized.load( std::memory_order_relaxed );
+    sCreatedBeforeInit = !sSettingsInitialized.load( std::memory_order_relaxed );
   }
   return *sSettings;
 }
 
 QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
 
-void QgsSettingsEntryBase::initUserSettings()
+void QgsSettingsEntryBase::reinitUserSettings()
 {
   sSettingsInitialized.store( true, std::memory_order_release );
 }
 
 void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
 {
+  Q_ASSERT_X( QThread::isMainThread(), "QgsSettingsEntryBase::setGlobalSettingsPath", "Must be called from the main thread" );
+
   sGlobalDefaults.clear();
   if ( path.isEmpty() || !QFile::exists( path ) )
     return;
@@ -93,10 +95,11 @@ QString QgsSettingsEntryBase::sanitizeGlobalKey( const QString &key )
 
 QVariant QgsSettingsEntryBase::valueFromSettingsWithGlobalDefault( const QString &resolvedKey, const QVariant &defaultValue ) const
 {
-  const QVariant userValue = sUserSettings().value( resolvedKey );
-  if ( !QgsVariantUtils::isNull( userValue ) )
-    return userValue;
+  if ( sUserSettings().contains( resolvedKey ) )
+    return sUserSettings().value( resolvedKey );
 
+  // sGlobalDefaults is populated once on the main thread before any worker
+  // threads start, so concurrent reads are safe (no concurrent modification).
   const auto it = sGlobalDefaults.constFind( sanitizeGlobalKey( resolvedKey ) );
   if ( it != sGlobalDefaults.constEnd() )
     return it.value();
@@ -211,6 +214,8 @@ Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKey
 {
   const QString resolvedKey = key( dynamicKeyPartList );
 
+  // Global takes precedence: if the key was defined in the global INI
+  // its origin is Global regardless of whether the user also overrides it.
   if ( sGlobalDefaults.contains( sanitizeGlobalKey( resolvedKey ) ) )
     return Qgis::SettingsOrigin::Global;
 
