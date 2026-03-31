@@ -2048,10 +2048,10 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
-  if ( jsonLayout.contains( u"symbol-spacing"_s ) )
+  if ( jsonLayout.contains( QStringLiteral( "symbol-spacing" ) ) )
   {
     double spacing;
-    const QVariant jsonSpacing = jsonLayout.value( u"symbol-spacing"_s );
+    const QVariant jsonSpacing = jsonLayout.value( QStringLiteral( "symbol-spacing" ) );
 
     // main checkbox in labeling GUI
     QgsLabelThinningSettings thinningSettings = labelSettings.thinningSettings();
