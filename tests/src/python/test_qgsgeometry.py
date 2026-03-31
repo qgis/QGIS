@@ -14126,6 +14126,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(poly.boundingBox().intersects(bbox))
         self.assertTrue(poly.intersects(bbox))  # was failing here!
 
+        # also test zero width/zero height empty bboxes
+        self.assertTrue(poly.intersects(QgsRectangle(-1, 1, 3, 1)))
+        self.assertTrue(poly.intersects(QgsRectangle(1, -1, 1, 3)))
+
     def testSplitGeometry(self):
         """
         splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
