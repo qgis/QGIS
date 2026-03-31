@@ -843,7 +843,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     const QgsWmtsTileMatrix *tm = nullptr;
     std::unique_ptr<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
-    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && dataSourceUri().contains( u"openstreetmap.org"_s );
+    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) );
 
     if ( mSettings.mTiled )
     {
