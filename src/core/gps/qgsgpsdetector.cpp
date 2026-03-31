@@ -30,7 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if defined( QT_POSITIONING_LIB )
+#if defined( HAVE_QTPOSITIONING )
 #include "qgsqtlocationconnection.h"
 #endif
 
@@ -56,7 +56,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   QList< QPair<QString, QString> > devs;
 
   // try local QtLocation first
-#if defined( QT_POSITIONING_LIB )
+#if defined( HAVE_QTPOSITIONING )
   devs << QPair<QString, QString>( u"internalGPS"_s, tr( "internal GPS" ) );
 #endif
 
@@ -179,7 +179,7 @@ void QgsGpsDetector::advance()
     }
     else if ( mPortList.at( mPortIndex ).first.contains( "internalGPS"_L1 ) )
     {
-#if defined( QT_POSITIONING_LIB )
+#if defined( HAVE_QTPOSITIONING )
       QgsDebugMsgLevel( u"Connecting to QtLocation service device"_s, 2 );
       mConn = std::make_unique< QgsQtLocationConnection >();
 #else

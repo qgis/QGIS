@@ -89,6 +89,8 @@
 
 #cmakedefine HAVE_QTSERIALPORT
 
+#cmakedefine HAVE_QTPOSITIONING
+
 #cmakedefine HAVE_QTGAMEPAD
 
 #cmakedefine HAVE_QTPRINTER
