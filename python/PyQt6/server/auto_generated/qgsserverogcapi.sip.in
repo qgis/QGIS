@@ -64,7 +64,16 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       OPENAPI3,
       JSON,
       HTML,
-      XML
+      XML,
+      FLATGEOBUF
+    };
+
+    enum class Profile
+    {
+      NONE,
+      RFC7946,
+      JSONFG,
+      JSONFG_PLUS
     };
 
     QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
@@ -91,6 +100,8 @@ QgsServerOgcApi constructor
 %Docstring
 Executes a request by passing the given ``context`` to the API handlers.
 %End
+
+
 
 
 

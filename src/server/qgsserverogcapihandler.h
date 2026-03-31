@@ -272,6 +272,24 @@ class SERVER_EXPORT QgsServerOgcApiHandler
       const std::string &title = ""
     ) const;
 
+
+    /**
+     * Builds and returns a header link to the resource.
+     *
+     * \param context request context
+     * \param linkType type of the link (rel attribute), default to SELF
+     * \param contentType content type of the link (default to JSON)
+     * \param title title of the link
+     * \note not available in Python bindings
+     */
+    QString headerLink(
+      const QgsServerApiContext &context,
+      const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
+      const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
+      const QgsServerOgcApi::Profile &profile = QgsServerOgcApi::Profile::NONE,
+      const QString &title = ""
+    ) const;
+
     /**
      * Returns all the links for the given request \a context.
      *
