@@ -94,16 +94,16 @@ class CORE_EXPORT QgsSettingsEntryBase
     static bool hasGlobalDefault( const QString &key ) SIP_SKIP;
 
     /**
-     * Bumps the internal settings generation counter, causing each
-     * thread's QSettings instance to be recreated on next access.
+     * Configures QSettings to use IniFormat at the given \a profilePath
+     * and bumps the internal generation counter so that each thread's
+     * QSettings instance is recreated on next access.
      *
-     * Must be called after QSettings::setDefaultFormat() and
-     * QSettings::setPath() so that new instances pick up the
-     * correct format (IniFormat) and profile path.
+     * This is a convenience wrapper around QSettings::setDefaultFormat(),
+     * QSettings::setPath() and the internal generation bump.
      *
      * \since QGIS 4.0.2
      */
-    static void reinitUserSettings() SIP_SKIP;
+    static void setupUserSettings( const QString &profilePath ) SIP_SKIP;
 
     /**
      * Returns the global default value for the given \a key,

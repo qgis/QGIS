@@ -28,7 +28,7 @@
 using namespace Qt::StringLiterals;
 
 /*
- * Set to true by reinitUserSettings() once QSettings::setDefaultFormat()
+ * Set to true by setupUserSettings() once QSettings::setDefaultFormat()
  * and setPath() have been called. Each thread's QSettings instance is
  * (re-)created on first access after this flag becomes true, so it
  * picks up the correct IniFormat and profile path.
@@ -54,8 +54,10 @@ static QSettings &sUserSettings()
 
 QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
 
-void QgsSettingsEntryBase::reinitUserSettings()
+void QgsSettingsEntryBase::setupUserSettings( const QString &profilePath )
 {
+  QSettings::setDefaultFormat( QSettings::IniFormat );
+  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, profilePath );
   sSettingsInitialized.store( true, std::memory_order_release );
 }
 
