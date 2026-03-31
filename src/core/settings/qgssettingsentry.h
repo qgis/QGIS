@@ -82,14 +82,14 @@ class CORE_EXPORT QgsSettingsEntryBase
      *
      * \param path the path to the global settings INI file.
      *
-     * \since QGIS 4.0.2
+     * \since QGIS 4.2
      */
     static void setGlobalSettingsPath( const QString &path );
 
     /**
      * Returns TRUE if the global settings INI file contains a value for the given \a key.
      *
-     * \since QGIS 4.0.2
+     * \since QGIS 4.2
      */
     static bool hasGlobalDefault( const QString &key ) SIP_SKIP;
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * This is a convenience wrapper around QSettings::setDefaultFormat(),
      * QSettings::setPath() and the internal generation bump.
      *
-     * \since QGIS 4.0.2
+     * \since QGIS 4.2
      */
     static void setupUserSettings( const QString &profilePath ) SIP_SKIP;
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Returns the global default value for the given \a key,
      * or an invalid QVariant if not found.
      *
-     * \since QGIS 4.0.2
+     * \since QGIS 4.2
      */
     static QVariant globalDefault( const QString &key ) SIP_SKIP;
 
