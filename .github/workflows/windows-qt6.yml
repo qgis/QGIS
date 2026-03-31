@@ -94,7 +94,7 @@ jobs:
                 -D USE_CCACHE=ON \
                 -D WITH_QTWEBENGINE=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
-                -D NUGET_USERNAME=${GITHUB_ACTOR} \
+                -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
       - name: 🌋 Build

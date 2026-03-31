@@ -106,7 +106,7 @@ jobs:
           -DWITH_ANALYSIS=OFF \
           -DWITH_QGIS_PROCESS=OFF \
           -DCMAKE_EXE_LINKER_FLAGS_INIT="-s INITIAL_MEMORY=64MB -s ALLOW_MEMORY_GROWTH=1" \
-          -DNUGET_USERNAME=${GITHUB_ACTOR} \
+          "-DNUGET_USERNAME=${GITHUB_ACTOR}" \
           -DNUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
           -DNUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 

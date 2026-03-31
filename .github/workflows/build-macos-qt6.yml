@@ -106,7 +106,6 @@ jobs:
       - name: 🌱 Install dependencies and generate project files
         env:
           X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
-          GITHUB_ACTOR: ${{ github.actor }}
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
 
