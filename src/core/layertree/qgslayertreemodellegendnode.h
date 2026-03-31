@@ -23,10 +23,6 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
-
-#include <QString>
-
-class QgsSettingsEntryDouble;
 #include "qgspallabeling.h"
 
 #include <QIcon>
@@ -41,6 +37,7 @@ class QgsLegendSettings;
 class QgsMapSettings;
 class QgsSymbol;
 class QgsRenderContext;
+class QgsSettingsEntryDouble;
 class QgsTextFormat;
 class QgsTextDocument;
 class QgsTextDocumentMetrics;

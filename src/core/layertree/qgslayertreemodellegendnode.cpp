@@ -340,8 +340,8 @@ void QgsLayerTreeModelLegendNode::toggleAllItems()
 
 double QgsSymbolLegendNode::MINIMUM_SIZE = -1.0;
 double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
-const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize = new QgsSettingsEntryDouble( u"legend-symbol-minimum-size"_s, QgsSettingsTree::sTreeQgis, 0.5 );
-const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize = new QgsSettingsEntryDouble( u"legend-symbol-maximum-size"_s, QgsSettingsTree::sTreeQgis, 20.0 );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize = new QgsSettingsEntryDouble( u"symbol-minimum-size"_s, QgsSettingsTree::sTreeLayerTree, 0.5 );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize = new QgsSettingsEntryDouble( u"symbol-maximum-size"_s, QgsSettingsTree::sTreeLayerTree, 20.0 );
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
