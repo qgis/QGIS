@@ -11,7 +11,7 @@
     "expression": "extract_degrees(135.334)",
     "returns": "135"
   }, {
-    "expression": "extract_degrees(-135.998)",
+    "expression": "extract_degrees(135.998)",
     "returns": "135"
   }, {
     "expression": "extract_degrees(-135.334)",
