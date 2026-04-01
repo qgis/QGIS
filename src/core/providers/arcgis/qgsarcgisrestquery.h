@@ -17,6 +17,7 @@
 
 
 #include "qgis_core.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgshttpheaders.h"
 #include "qgsrectangle.h"
 
@@ -187,22 +188,41 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     );
 
     /**
+     * Encapsulates details relating to a layer item.
+     *
+     * \since QGIS 4.2
+     */
+    struct LayerItemDetails
+    {
+        //! Parent layer ID
+        QString parentLayerId;
+        //! Service type
+        ServiceTypeFilter serviceType = ServiceTypeFilter::AllTypes;
+        //! Geometry type
+        Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown;
+        //! Layer ID
+        QString layerId;
+        //! Layer name
+        QString name;
+        //! Description
+        QString description;
+        //! URL
+        QString url;
+        //! TRUE if layer item represents a parent layer
+        bool isParentLayer = false;
+        //! Coordinate reference system
+        QgsCoordinateReferenceSystem crs;
+        //! Map server image format
+        QString format;
+        //! TRUE if layer is a map server with the query capability
+        bool isMapServerWithQueryCapability = false;
+    };
+
+    /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
     static void addLayerItems(
-      const std::function<void(
-        const QString &parentLayerId,
-        ServiceTypeFilter serviceType,
-        Qgis::GeometryType geometryType,
-        const QString &layerId,
-        const QString &name,
-        const QString &description,
-        const QString &url,
-        bool isParentLayer,
-        const QgsCoordinateReferenceSystem &crs,
-        const QString &format,
-        bool isMapServerWithQueryCapability
-      )> &visitor,
+      const std::function<void( const LayerItemDetails &details )> &visitor,
       const QVariantMap &serviceData,
       const QString &parentUrl,
       const QString &parentSupportedFormats,
