@@ -215,6 +215,8 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
         QString format;
         //! TRUE if layer is a map server with the query capability
         bool isMapServerWithQueryCapability = false;
+        //! TRUE if layer is the special map server "all layers" layer
+        bool isMapServerSpecialAllLayersOption = false;
     };
 
     /**

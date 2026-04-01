@@ -169,13 +169,32 @@ void addLayerItems(
 {
   QMultiMap<QString, QgsDataItem *> layerItems;
   QMap<QString, QString> parents;
+  QMap<QString, QgsMimeDataUtils::Uri> mapServerUrisForAllLayersRender;
 
   QgsArcGisRestQueryUtils::addLayerItems(
-    [parent, &layerItems, &parents, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats, forceRefresh]( const QgsArcGisRestQueryUtils::LayerItemDetails &details ) {
+    [parent, &layerItems, &parents, &mapServerUrisForAllLayersRender, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats, forceRefresh](
+      const QgsArcGisRestQueryUtils::LayerItemDetails &details
+    ) {
       Q_UNUSED( forceRefresh )
 
       if ( !details.parentLayerId.isEmpty() )
         parents.insert( details.layerId, details.parentLayerId );
+
+      if ( details.isMapServerSpecialAllLayersOption )
+      {
+        QgsMimeDataUtils::Uri uri;
+        uri.layerType = QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster );
+        uri.providerKey = u"arcgismapserver"_s;
+        uri.name = details.name;
+        uri.uri = u"format='%1' layer='' url='%3'"_s.arg( details.format, details.url );
+        if ( !authcfg.isEmpty() )
+          uri.uri += u" authcfg='%1'"_s.arg( authcfg );
+        if ( !urlPrefix.isEmpty() )
+          uri.uri += u" urlprefix='%1'"_s.arg( urlPrefix );
+        uri.uri += headers.toSpacedString();
+        mapServerUrisForAllLayersRender.insert( details.url, uri );
+        return;
+      }
 
       const Qgis::BrowserLayerType browserLayerGeometryType = details.geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon
                                                               : details.geometryType == Qgis::GeometryType::Line  ? Qgis::BrowserLayerType::Line
@@ -236,6 +255,34 @@ void addLayerItems(
       layerParent->addChildItem( item );
     else
       items.append( item );
+  }
+
+  for ( auto it = mapServerUrisForAllLayersRender.constBegin(); it != mapServerUrisForAllLayersRender.constEnd(); ++it )
+  {
+    for ( auto layerItemsIt = layerItems.constBegin(); layerItemsIt != layerItems.constEnd(); ++layerItemsIt )
+    {
+      if ( auto parentLayerItem = qobject_cast< QgsArcGisRestParentLayerItem * >( layerItemsIt.value() ) )
+      {
+        if ( parentLayerItem->path() == it.key() )
+        {
+          parentLayerItem->setAllLayersMapServerUri( it.value() );
+        }
+      }
+    }
+    if ( auto parentItem = qobject_cast< QgsArcGisRestParentLayerItem * >( parent ) )
+    {
+      if ( parentItem->path() == it.key() )
+      {
+        parentItem->setAllLayersMapServerUri( it.value() );
+      }
+    }
+    if ( auto parentItem = qobject_cast< QgsArcGisMapServiceItem * >( parent ) )
+    {
+      if ( parentItem->path() == it.key() )
+      {
+        parentItem->setAllLayersMapServerUri( it.value() );
+      }
+    }
   }
 }
 

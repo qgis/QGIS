@@ -569,10 +569,7 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   if ( filter != ServiceTypeFilter::Vector && layerInfoList.count() > 1 && serviceData.contains( u"supportedImageFormatTypes"_s ) )
   {
     LayerItemDetails details;
-    details.layerId = QString();
     details.parentLayerId = QString();
-    details.name = u"(%1)"_s.arg( QObject::tr( "All layers" ) );
-    details.description = serviceData.value( u"Comments"_s ).toString();
     details.serviceType = ServiceTypeFilter::Raster;
     details.geometryType = Qgis::GeometryType::Unknown;
     details.url = parentUrl;
@@ -580,6 +577,7 @@ void QgsArcGisRestQueryUtils::addLayerItems(
     details.crs = crs;
     details.format = format;
     details.isMapServerWithQueryCapability = false;
+    details.isMapServerSpecialAllLayersOption = true;
     visitor( details );
   }
 
