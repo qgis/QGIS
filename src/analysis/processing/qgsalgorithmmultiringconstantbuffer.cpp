@@ -169,7 +169,7 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
 
     if ( distance < 0.0 )
     {
-      out.setGeometry( previousGeometry.symDifference( outputGeometry ) );
+      out.setGeometry( previousGeometry.symDifference( outputGeometry, QgsGeometryParameters(), feedback ) );
     }
     else if ( i == 1 )
     {
@@ -177,7 +177,7 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
     }
     else
     {
-      out.setGeometry( outputGeometry.symDifference( previousGeometry ) );
+      out.setGeometry( outputGeometry.symDifference( previousGeometry, QgsGeometryParameters(), feedback ) );
     }
     previousGeometry = outputGeometry;
     QgsAttributes attrs = feature.attributes();

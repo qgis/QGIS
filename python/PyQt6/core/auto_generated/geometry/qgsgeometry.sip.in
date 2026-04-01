@@ -2352,7 +2352,7 @@ The optional ``feedback`` argument allows for early cancellation (since
 QGIS 4.2).
 %End
 
-    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that
 do not make up other.
@@ -2366,6 +2366,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the difference results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry extrude( double x, double y );
