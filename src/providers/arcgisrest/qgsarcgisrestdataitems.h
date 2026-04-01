@@ -236,6 +236,8 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
+    const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
 
   private:
     QString mFolder;
@@ -245,6 +247,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QString mUrlPrefix;
     Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
     bool mForceRefresh = false;
+    QgsMimeDataUtils::Uri mAllLayersMapServerUri;
 };
 
 /**
@@ -284,10 +287,14 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
     QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     bool equal( const QgsDataItem *other ) override;
 
+    void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
+    const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
+
   private:
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
+    QgsMimeDataUtils::Uri mAllLayersMapServerUri;
 };
 
 /**
