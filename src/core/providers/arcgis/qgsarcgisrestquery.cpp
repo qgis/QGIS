@@ -527,7 +527,7 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   {
     const QString name = u"(%1)"_s.arg( QObject::tr( "All layers" ) );
     const QString description = serviceData.value( u"Comments"_s ).toString();
-    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
+    visitor( QString(), ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
   }
 
   // Add root ImageServer as layer
@@ -535,7 +535,7 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   {
     const QString name = serviceData.value( u"name"_s ).toString();
     const QString description = serviceData.value( u"description"_s ).toString();
-    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
+    visitor( QString(), ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
   }
 }
 
