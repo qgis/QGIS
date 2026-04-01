@@ -1731,8 +1731,12 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
 
-    //! Returns a simplified version of this geometry using a specified tolerance value
-    QgsGeometry simplify( double tolerance ) const;
+    /**
+     * Returns a simplified version of this geometry using a specified \a tolerance value.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     */
+    QgsGeometry simplify( double tolerance, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a copy of the geometry which has been densified by adding the specified

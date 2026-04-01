@@ -1806,10 +1806,13 @@ the line by a specified distance. Lines are extended using the bearing
 of the first or last segment in the line.
 %End
 
-    QgsGeometry simplify( double tolerance ) const;
+    QgsGeometry simplify( double tolerance, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a simplified version of this geometry using a specified
-tolerance value
+``tolerance`` value.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;

@@ -2757,7 +2757,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   }
 }
 
-QgsGeometry QgsGeometry::simplify( double tolerance ) const
+QgsGeometry QgsGeometry::simplify( double tolerance, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2766,7 +2766,7 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( tolerance, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( tolerance, &mLastError, feedback ) );
   if ( !simplifiedGeom )
   {
     QgsGeometry result;
