@@ -618,6 +618,14 @@ The development version
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
 
+    enum class BrowserItemFilterFlag /BaseType=IntFlag/
+    {
+      HideWhenNotFilteringByLayerType,
+    };
+
+    typedef QFlags<Qgis::BrowserItemFilterFlag> BrowserItemFilterFlags;
+
+
     enum class DataItemProviderCapability /BaseType=IntFlag/
     {
       NoCapabilities,
@@ -3875,6 +3883,8 @@ QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis:
 QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
+
+QFlags<Qgis::BrowserItemFilterFlag> operator|(Qgis::BrowserItemFilterFlag f1, QFlags<Qgis::BrowserItemFilterFlag> f2);
 
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
