@@ -5523,9 +5523,10 @@ QgsPercentageNumericFormatWidget.format: src/gui/numericformats/qgsnumericformat
 QgsPercentageNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L285
 QgsPercentageNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L274
 QgsPercentageWidget.QgsPercentageWidget: src/gui/qgspercentagewidget.h#L42
-QgsPercentageWidget.setValue: src/gui/qgspercentagewidget.h#L59
+QgsPercentageWidget.setValue: src/gui/qgspercentagewidget.h#L66
+QgsPercentageWidget.spinBox: src/gui/qgspercentagewidget.h#L56
 QgsPercentageWidget.value: src/gui/qgspercentagewidget.h#L49
-QgsPercentageWidget.valueChanged: src/gui/qgspercentagewidget.h#L69
+QgsPercentageWidget.valueChanged: src/gui/qgspercentagewidget.h#L76
 QgsPercentageWidget: src/gui/qgspercentagewidget.h#L33
 QgsPictureSourceLineEditBase.setMode: src/gui/qgsfilecontentsourcelineedit.h#L209
 QgsPictureSourceLineEditBase: src/gui/qgsfilecontentsourcelineedit.h#L186
