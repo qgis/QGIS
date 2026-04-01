@@ -2555,6 +2555,18 @@ The development version
       SceneServer,
     };
 
+    enum class ArcGisRestServiceCapability /BaseType=IntFlag/
+    {
+      Map,
+      Query,
+      Update,
+      Delete,
+      Create,
+    };
+
+    typedef QFlags<Qgis::ArcGisRestServiceCapability> ArcGisRestServiceCapabilities;
+
+
     enum class RelationshipType /BaseType=IntEnum/
     {
       Normal,
@@ -4031,6 +4043,8 @@ QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::Extru
 QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
 
 QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapability f1, QFlags<Qgis::SymbolConverterCapability> f2);
+
+QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
 
 

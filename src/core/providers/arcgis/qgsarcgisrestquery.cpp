@@ -430,12 +430,13 @@ void QgsArcGisRestQueryUtils::addLayerItems(
     if ( found )
       break;
   }
-  const QStringList capabilities = serviceData.value( u"capabilities"_s ).toString().split( ',' );
+  const Qgis::ArcGisRestServiceCapabilities capabilities = QgsArcGisRestUtils::serviceCapabilitiesFromString( serviceData.value( u"capabilities"_s ).toString() );
 
   // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
-  const bool serviceMayHaveQueryCapability = capabilities.contains( u"Query"_s ) || serviceData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 );
+  const bool serviceMayHaveQueryCapability = capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Query )
+                                             || serviceData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 );
 
-  const bool serviceMayRenderMaps = capabilities.contains( u"Map"_s ) || serviceData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 );
+  const bool serviceMayRenderMaps = capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Map ) || serviceData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 );
 
   const QVariantList layerInfoList = serviceData.value( u"layers"_s ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
