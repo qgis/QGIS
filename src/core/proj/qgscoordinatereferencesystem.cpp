@@ -1662,7 +1662,18 @@ QString QgsCoordinateReferenceSystem::toOgcUrn() const
     }
     else if ( parts[0].startsWith( "IAU"_L1 ) )
     {
-      return u"urn:ogc:def:crs:%1::%2"_s.arg( parts[0], parts[1] );
+      if ( parts[0].contains( "_"_L1 ) )
+      {
+        const auto subParts = parts[0].split( '_' );
+        if ( subParts.length() == 2 )
+        {
+          return u"urn:ogc:def:crs:%1:%2:%3"_s.arg( subParts[0], subParts[1], parts[1] );
+        }
+      }
+      else
+      {
+        return u"urn:ogc:def:crs:%1::%2"_s.arg( parts[0], parts[1] );
+      }
     }
     else
     {

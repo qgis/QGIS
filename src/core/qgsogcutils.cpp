@@ -3913,11 +3913,14 @@ QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, 
     return CRSFlavor::HTTP_EPSG_DOT_XML;
   }
 
-  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+):([^:]*):([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
   if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
   {
     authority = match.captured( 1 );
-    code = match.captured( 2 );
+    const QString version = match.captured( 2 );
+    code = match.captured( 3 );
+    if ( authority.compare( u"IAU"_s, Qt::CaseInsensitive ) == 0 && !version.isEmpty() )
+      authority = u"%1_%2"_s.arg( authority, version );
     return CRSFlavor::OGC_URN;
   }
 
