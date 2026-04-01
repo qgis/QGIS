@@ -4713,7 +4713,7 @@ static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionC
 static QVariant fcnGeomFromGeoJSON( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString geojson = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  QgsGeometry geom = QgsJsonUtils::geometryFromGeoJson ( geojson );
+  QgsGeometry geom = QgsJsonUtils::geometryFromGeoJson( geojson );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -9924,7 +9924,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"y_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMin, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymin"_s )
       << new QgsStaticExpressionFunction( u"y_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMax, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymax"_s )
       << new QgsStaticExpressionFunction( u"geom_from_wkt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s ), fcnGeomFromWKT, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromWKT"_s )
-      << new QgsStaticExpressionFunction( u"geom_from_geojson"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s ), fcnGeomFromGeoJSON, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromGeoJSON"_s )
+      << new QgsStaticExpressionFunction(
+           u"geom_from_geojson"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s ),
+           fcnGeomFromGeoJSON,
+           u"GeometryGroup"_s,
+           QString(),
+           false,
+           QSet<QString>(),
+           false,
+           QStringList() << u"geomFromGeoJSON"_s
+         )
       << new QgsStaticExpressionFunction( u"geom_from_wkb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary"_s ), fcnGeomFromWKB, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false )
       << new QgsStaticExpressionFunction( u"geom_from_gml"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"gml"_s ), fcnGeomFromGML, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromGML"_s )
       << new QgsStaticExpressionFunction( u"flip_coordinates"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnFlipCoordinates, u"GeometryGroup"_s )
