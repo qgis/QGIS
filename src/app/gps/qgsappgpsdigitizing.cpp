@@ -190,7 +190,8 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   connect( this, &QgsGpsLogger::trackVertexAdded, this, &QgsAppGpsDigitizing::addVertex );
   connect( this, &QgsGpsLogger::trackReset, this, &QgsAppGpsDigitizing::onTrackReset );
 
-  mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
+  if ( mCanvas->mapSettings().destinationCrs().isValid() )
+    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
 }
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
