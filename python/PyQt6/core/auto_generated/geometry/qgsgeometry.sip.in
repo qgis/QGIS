@@ -1690,17 +1690,20 @@ Returns ``True`` if the geometry crosses another ``geometry``.
    :py:class:`QgsGeometryEngine` class.
 %End
 
-    QgsGeometry buffer( double distance, int segments ) const;
+    QgsGeometry buffer( double distance, int segments, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a buffer region around this geometry having the given width and
-with a specified number of segments used to approximate curves
+with a specified number of segments used to approximate curves.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
 %End
 
-    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a buffer region around the geometry, with additional style
 options.
@@ -1712,6 +1715,8 @@ options.
 :param joinStyle: join style for corners in geometry
 :param miterLimit: limit on the miter ratio used for very sharp corners
                    (JoinStyleMiter only)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 .. seealso:: :py:func:`singleSidedBuffer`
 

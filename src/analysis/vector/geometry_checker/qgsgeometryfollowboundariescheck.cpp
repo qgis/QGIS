@@ -104,7 +104,7 @@ QgsGeometryCheck::Result QgsGeometryFollowBoundariesCheck::collectErrors(
 
         const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
         std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometry::createGeometryEngine( refGeom, mContext->tolerance ) );
-        const QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
+        const QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0, nullptr, feedback ) );
         if ( !( geomEngine->contains( reducedRefGeom.constGet() ) || geomEngine->disjoint( reducedRefGeom.constGet() ) ) )
         {
           errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( geom->centroid() ) ) );

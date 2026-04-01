@@ -1223,7 +1223,7 @@ void QgsSymbol::drawPreviewIcon(
         break;
     }
 
-    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2, context->feedback() );
     const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
 
     mBufferSettings->fillSymbol()->startRender( *context );
@@ -2135,7 +2135,7 @@ void QgsSymbol::renderFeature(
         break;
     }
 
-    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2, context.feedback() );
     const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
     for ( const QList< QPolygonF > &polygon : polygons )
     {
