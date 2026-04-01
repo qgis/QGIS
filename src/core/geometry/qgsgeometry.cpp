@@ -2564,7 +2564,7 @@ QgsGeometryConstPartIterator QgsGeometry::constParts() const
   return QgsGeometryConstPartIterator( d->geometry.get() );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2573,7 +2573,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 
   QgsGeos g( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr<QgsAbstractGeometry> geom( g.buffer( distance, segments, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> geom( g.buffer( distance, segments, &mLastError, feedback ) );
   if ( !geom )
   {
     QgsGeometry result;
@@ -2583,7 +2583,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   return QgsGeometry( std::move( geom ) );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2592,7 +2592,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyl
 
   QgsGeos g( d->geometry.get() );
   mLastError.clear();
-  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, miterLimit, &mLastError );
+  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, miterLimit, &mLastError, feedback );
   if ( !geom )
   {
     QgsGeometry result;

@@ -1641,12 +1641,14 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
-     * of segments used to approximate curves
+     * of segments used to approximate curves.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      *
      * \see singleSidedBuffer()
      * \see taperedBuffer()
      */
-    QgsGeometry buffer( double distance, int segments ) const;
+    QgsGeometry buffer( double distance, int segments, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a buffer region around the geometry, with additional style options.
@@ -1655,11 +1657,12 @@ class CORE_EXPORT QgsGeometry
      * \param endCapStyle end cap style
      * \param joinStyle   join style for corners in geometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \see singleSidedBuffer()
      * \see taperedBuffer()
      */
-    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns an offset line at a given distance and side from an input line.

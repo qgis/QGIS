@@ -268,7 +268,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
       // fix the polygon if it is not valid
       if ( !geom.isGeosValid() )
       {
-        geom = geom.buffer( 0, 0 );
+        geom = geom.buffer( 0, 0, context.feedback() );
       }
       break;
 

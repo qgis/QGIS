@@ -292,7 +292,7 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
 
   std::unique_ptr< QgsCurve > substring( mProfileCurve->curveSubstring( distanceRange.lower(), distanceRange.upper() ) );
   QgsGeos substringGeos( substring.get() );
-  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   if ( !searchGeometry )
     return {};
 
@@ -386,7 +386,7 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
     return false;
 
   std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
-  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
 
   try

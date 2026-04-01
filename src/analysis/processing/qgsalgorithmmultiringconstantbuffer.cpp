@@ -152,14 +152,14 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
 
   // Set previous geometry to a zero-distance buffer of the original geometry,
   // this is needed for negative distance values
-  previousGeometry = feature.geometry().buffer( 0.0, 40 );
+  previousGeometry = feature.geometry().buffer( 0.0, 40, feedback );
   previousGeometry.convertToMultiType();
 
   for ( int i = 1; i <= rings; ++i )
   {
     QgsFeature out;
     currentDistance = i * distance;
-    outputGeometry = feature.geometry().buffer( currentDistance, 40 );
+    outputGeometry = feature.geometry().buffer( currentDistance, 40, feedback );
     outputGeometry.convertToMultiType();
     if ( outputGeometry.isNull() )
     {

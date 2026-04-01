@@ -5694,7 +5694,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
     }
     if ( !geom.isGeosValid() )
     {
-      geom = geom.buffer( 0, 0 );
+      geom = geom.buffer( 0, 0, context.feedback() );
     }
     geometryParts << geom;
 
