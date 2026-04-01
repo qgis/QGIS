@@ -1081,7 +1081,7 @@
         <file>themes/default/interpolation/OutCirc.svg</file>
         <file>themes/default/interpolation/Linear.svg</file>
         <file>themes/default/interpolation/InSine.svg</file>
-        <file>themes/default/interpolation/InQuint.svg</file    >
+        <file>themes/default/interpolation/InQuint.svg</file>
         <file>themes/default/interpolation/InQuart.svg</file>
         <file>themes/default/interpolation/InQuad.svg</file>
         <file>themes/default/interpolation/InOutSine.svg</file>
@@ -1094,6 +1094,7 @@
         <file>themes/default/interpolation/InExpo.svg</file>
         <file>themes/default/interpolation/InCubic.svg</file>
         <file>themes/default/interpolation/InCirc.svg</file>
+        <file>themes/default/mIconRasterVector.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

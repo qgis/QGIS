@@ -1061,10 +1061,32 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( !menu->isEmpty() )
     menu->addSeparator();
 
-  const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" ) : tr( "Add Selected Layers to Project" );
-  QAction *addAction = new QAction( addText, menu );
-  connect( addAction, &QAction::triggered, this, [this, selectedItems] { addLayersFromItems( selectedItems ); } );
-  menu->addAction( addAction );
+  QList<QgsLayerItem::LayerUriWithDetails> layerUrisWithDetails;
+  if ( selectedItems.count() == 1 )
+  {
+    if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( selectedItems.at( 0 ) ) )
+    {
+      layerUrisWithDetails = layerItem->layerUrisWithDetails();
+    }
+  }
+
+  if ( !layerUrisWithDetails.isEmpty() )
+  {
+    for ( const QgsLayerItem::LayerUriWithDetails &uri : std::as_const( layerUrisWithDetails ) )
+    {
+      const QString addText = tr( "Add %1 to Project" ).arg( uri.userFriendlyDescription );
+      QAction *addAction = new QAction( addText, menu );
+      connect( addAction, &QAction::triggered, this, [uri] { QgisApp::instance()->handleDropUriList( { uri.uri } ); } );
+      menu->addAction( addAction );
+    }
+  }
+  else
+  {
+    const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" ) : tr( "Add Selected Layers to Project" );
+    QAction *addAction = new QAction( addText, menu );
+    connect( addAction, &QAction::triggered, this, [this, selectedItems] { addLayersFromItems( selectedItems ); } );
+    menu->addAction( addAction );
+  }
 
   for ( QAction *action : menu->actions() )
   {
