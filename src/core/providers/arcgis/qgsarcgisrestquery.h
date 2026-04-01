@@ -200,7 +200,8 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
         const QString &url,
         bool isParentLayer,
         const QgsCoordinateReferenceSystem &crs,
-        const QString &format
+        const QString &format,
+        bool isMapServerWithQueryCapability
       )> &visitor,
       const QVariantMap &serviceData,
       const QString &parentUrl,
