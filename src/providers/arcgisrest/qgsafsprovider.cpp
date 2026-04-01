@@ -72,11 +72,11 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   const bool isTable = layerData.value( u"type"_s ).toString().compare( "table"_L1, Qt::CaseInsensitive ) == 0;
   mLayerName = layerData[u"name"_s].toString();
   mLayerDescription = layerData[u"description"_s].toString();
-  mCapabilityStrings = layerData[u"capabilities"_s].toString().split( ',' );
+  mCapabilities = QgsArcGisRestUtils::serviceCapabilitiesFromString( layerData[u"capabilities"_s].toString() );
 
   mSharedData->mObjectIdFieldName = layerData[u"objectIdField"_s].toString();
 
-  if ( mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive ) )
+  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update ) )
   {
     // if the user has update capability, see if this extends to field definition modification
     QString adminUrl = mSharedData->mDataSource.param( u"url"_s );
@@ -98,7 +98,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   mServerSupportsCurvedUpdates = layerData.value( u"allowTrueCurvesUpdates"_s, false ).toBool();
 
-  const bool useCurvedTypes = mServerSupportsCurvedUpdates || !mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive );
+  const bool useCurvedTypes = mServerSupportsCurvedUpdates || !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update );
   if ( !isTable )
   {
     // Set extent
@@ -381,7 +381,7 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
 
 bool QgsAfsProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
-  if ( !mCapabilityStrings.contains( "delete"_L1, Qt::CaseInsensitive ) )
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Delete ) )
     return false;
 
   QString error;
@@ -397,7 +397,7 @@ bool QgsAfsProvider::deleteFeatures( const QgsFeatureIds &ids )
 
 bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
 {
-  if ( !mCapabilityStrings.contains( "create"_L1, Qt::CaseInsensitive ) )
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Create ) )
     return false;
 
   if ( flist.isEmpty() )
@@ -430,7 +430,7 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
 
 bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrMap )
 {
-  if ( !mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive ) )
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update ) )
     return false;
 
   QgsFeatureIds ids;
@@ -479,7 +479,7 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
 
 bool QgsAfsProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 {
-  if ( !mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive ) )
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update ) )
     return false;
 
   const QgsFields fields = mSharedData->mFields;
@@ -520,7 +520,7 @@ bool QgsAfsProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 
 bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap )
 {
-  if ( !mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive ) )
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update ) )
     return false;
 
   QgsFeatureIds ids;
@@ -648,15 +648,15 @@ Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
   if ( mServerSupportsCurvedUpdates )
     c |= Qgis::VectorProviderCapability::CircularGeometries;
 
-  if ( mCapabilityStrings.contains( "delete"_L1, Qt::CaseInsensitive ) )
+  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Delete ) )
   {
     c |= Qgis::VectorProviderCapability::DeleteFeatures;
   }
-  if ( mCapabilityStrings.contains( "create"_L1, Qt::CaseInsensitive ) )
+  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Create ) )
   {
     c |= Qgis::VectorProviderCapability::AddFeatures;
   }
-  if ( mCapabilityStrings.contains( "update"_L1, Qt::CaseInsensitive ) )
+  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Update ) )
   {
     c |= Qgis::VectorProviderCapability::ChangeAttributeValues;
     c |= Qgis::VectorProviderCapability::ChangeFeatures;

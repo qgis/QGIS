@@ -4579,6 +4579,32 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( ArcGisRestServiceType )
 
     /**
+     * Available ArcGIS REST service capabilities.
+     *
+     * This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
+     * extended in future with additional capabilities when required.
+     *
+     * \since QGIS 4.2
+     */
+    enum class ArcGisRestServiceCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Map = 1 << 0,    //!< Render map
+      Query = 1 << 1,  //!< Query features
+      Update = 1 << 2, //!< Update features
+      Delete = 1 << 3, //!< Delete features
+      Create = 1 << 4, //!< Create features
+    };
+    Q_ENUM( ArcGisRestServiceCapability )
+
+    /**
+     * Available ArcGIS REST service capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( ArcGisRestServiceCapabilities, ArcGisRestServiceCapability )
+    Q_FLAG( ArcGisRestServiceCapabilities )
+
+    /**
      * Relationship types.
      *
      * \note Prior to QGIS 3.28 this was available as QgsRelation::RelationType.
@@ -6879,6 +6905,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

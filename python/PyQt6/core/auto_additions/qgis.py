@@ -8152,6 +8152,31 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 """
 # --
 Qgis.ArcGisRestServiceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ArcGisRestServiceCapability.Map.__doc__ = "Render map"
+Qgis.ArcGisRestServiceCapability.Query.__doc__ = "Query features"
+Qgis.ArcGisRestServiceCapability.Update.__doc__ = "Update features"
+Qgis.ArcGisRestServiceCapability.Delete.__doc__ = "Delete features"
+Qgis.ArcGisRestServiceCapability.Create.__doc__ = "Create features"
+Qgis.ArcGisRestServiceCapability.__doc__ = """Available ArcGIS REST service capabilities.
+
+This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
+extended in future with additional capabilities when required.
+
+.. versionadded:: 4.2
+
+* ``Map``: Render map
+* ``Query``: Query features
+* ``Update``: Update features
+* ``Delete``: Delete features
+* ``Create``: Create features
+
+"""
+# --
+Qgis.ArcGisRestServiceCapability.baseClass = Qgis
+Qgis.ArcGisRestServiceCapabilities = lambda flags=0: Qgis.ArcGisRestServiceCapability(flags)
+Qgis.ArcGisRestServiceCapabilities.baseClass = Qgis
+ArcGisRestServiceCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRelation.RelationType = Qgis.RelationshipType
 # monkey patching scoped based enum
 QgsRelation.Normal = Qgis.RelationshipType.Normal
