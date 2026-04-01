@@ -4101,7 +4101,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
       {
         auto inputPoly = std::make_unique< QgsPolygon >( static_cast< QgsLineString * >( ls.release() ) );
         geos::unique_ptr g( QgsGeos::asGeos( inputPoly.get() ) );
-        lineGeom = QgsGeos::buffer( g.get(), -scaledOffset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2, context.renderContext().feedback() );
+        lineGeom = QgsGeos::buffer( g.get(), -scaledOffset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2, nullptr, context.renderContext().feedback() );
         // the result is a polygon => extract line work
         QgsGeometry polygon( QgsGeos::fromGeos( lineGeom.get() ) );
         QVector<QgsGeometry> parts = polygon.coerceToType( Qgis::WkbType::MultiLineString );
@@ -4128,7 +4128,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     if ( lineGeom )
     {
       geos::unique_ptr buffered = QgsGeos::
-        buffer( lineGeom.get(), scaledWidth / 2, 8, QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ), QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8, context.renderContext().feedback() );
+        buffer( lineGeom.get(), scaledWidth / 2, 8, QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ), QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8, nullptr, context.renderContext().feedback() );
       if ( buffered )
       {
         // convert to rings

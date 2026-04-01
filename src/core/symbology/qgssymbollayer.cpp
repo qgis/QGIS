@@ -1099,7 +1099,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
     if ( renderContext.maskSettings().simplifyTolerance() > 0 )
     {
       QgsGeos geos( mergedGeom.constGet() );
-      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), renderContext.feedback() ) );
+      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), nullptr, renderContext.feedback() ) );
     }
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
     // structure would be better, but too old GEOS

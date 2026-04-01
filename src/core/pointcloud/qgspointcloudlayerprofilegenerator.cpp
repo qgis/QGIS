@@ -292,7 +292,7 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
 
   std::unique_ptr< QgsCurve > substring( mProfileCurve->curveSubstring( distanceRange.lower(), distanceRange.upper() ) );
   QgsGeos substringGeos( substring.get() );
-  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
+  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   if ( !searchGeometry )
     return {};
 
