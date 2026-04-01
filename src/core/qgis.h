@@ -1013,6 +1013,25 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( BrowserItemCapabilities )
 
     /**
+     * Browser item filter flags.
+     *
+     * \since QGIS 4.2
+     */
+    enum class BrowserItemFilterFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      HideWhenNotFilteringByLayerType = 1 << 0, //!< Item should be hidden from the view when no layer type filter is in place
+    };
+    Q_ENUM( BrowserItemFilterFlag )
+
+    /**
+     * Browser item filter flags.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( BrowserItemFilterFlags, BrowserItemFilterFlag )
+    Q_FLAG( BrowserItemFilterFlags )
+
+    /**
      * Capabilities for data item providers.
      *
      * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapability
@@ -1022,10 +1041,10 @@ int QgisEvent = QEvent::User + 1;
     enum class DataItemProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, DataCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities SIP_MONKEYPATCH_COMPAT_NAME( NoDataCapabilities ) = 0, //!< No capabilities
-      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1, //!< Can provides items which corresponds to files
-      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1, //!< Can provides items which corresponds to directories
-      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2, //!< Can provides items which corresponds to databases
-      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3, //!< Network/internet source
+      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1,                        //!< Can provides items which corresponds to files
+      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1,              //!< Can provides items which corresponds to directories
+      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2,           //!< Can provides items which corresponds to databases
+      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3,           //!< Network/internet source
     };
     Q_ENUM( DataItemProviderCapability )
 
@@ -6821,6 +6840,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemFilterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderTableImportCapabilities )

@@ -336,6 +336,13 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED void setCapabilities( int capabilities ) SIP_DEPRECATED;
 
+    /**
+     * Returns the filter flags for the data item.
+     *
+     * \since QGIS 4.2
+     */
+    virtual Qgis::BrowserItemFilterFlags filterFlags() const;
+
     // static methods
 
     // Find child index in vector of items using '==' operator

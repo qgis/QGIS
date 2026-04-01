@@ -41,6 +41,7 @@ class TestQgsBrowserProxyModel : public QObject
 
     void testModel();
     void testShowLayers();
+    void testLayerFiltering();
 };
 
 class TestCollectionItem : public QgsDataCollectionItem
@@ -51,6 +52,28 @@ class TestCollectionItem : public QgsDataCollectionItem
       : QgsDataCollectionItem( parent, name, path, providerKey ) {};
 
     bool layerCollection() const override { return true; };
+};
+
+class TestLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    TestLayerItem(
+      QgsDataItem *parent,
+      const QString &name,
+      const QString &path,
+      Qgis::BrowserLayerType type,
+      const QString &providerKey = QString(),
+      Qgis::BrowserItemFilterFlags filterFlags = Qgis::BrowserItemFilterFlags()
+    )
+      : QgsLayerItem( parent, name, path, QString(), type, providerKey )
+      , mFilterFlags( filterFlags )
+    {}
+
+    Qgis::BrowserItemFilterFlags filterFlags() const override { return mFilterFlags; }
+
+  private:
+    Qgis::BrowserItemFilterFlags mFilterFlags;
 };
 
 
@@ -321,6 +344,54 @@ void TestQgsBrowserProxyModel::testShowLayers()
 
   proxy.setShowLayers( false );
   QVERIFY( !proxy.hasChildren( container1Index ) );
+}
+
+void TestQgsBrowserProxyModel::testLayerFiltering()
+{
+  QgsBrowserModel model;
+  QgsBrowserProxyModel proxy;
+  proxy.setBrowserModel( &model );
+
+  // add a root child to model
+  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, u"Test"_s, u"root1"_s );
+  model.setupItemConnections( rootItem1 );
+  model.beginInsertRows( QModelIndex(), 0, 0 );
+  model.mRootItems.append( rootItem1 );
+  model.endInsertRows();
+
+  TestLayerItem *raster1 = new TestLayerItem( nullptr, u"raster1"_s, u"raster1"_s, Qgis::BrowserLayerType::Raster );
+  rootItem1->addChildItem( raster1 );
+
+  TestLayerItem *vector1 = new TestLayerItem( nullptr, u"vector1"_s, u"vector1"_s, Qgis::BrowserLayerType::Vector );
+  rootItem1->addChildItem( vector1 );
+
+  TestLayerItem *vector2 = new TestLayerItem( nullptr, u"vector2"_s, u"vector2"_s, Qgis::BrowserLayerType::Vector, QString(), Qgis::BrowserItemFilterFlag::HideWhenNotFilteringByLayerType );
+  rootItem1->addChildItem( vector2 );
+
+  QCOMPARE( proxy.rowCount(), 1 );
+  const QModelIndex root1Index = proxy.index( 0, 0 );
+  QVERIFY( root1Index.isValid() );
+  // vector2 should be hidden, it has HideWhenNotFilteringByLayerType filter flag
+  QCOMPARE( proxy.rowCount( root1Index ), 2 );
+  QModelIndex layer1Index = proxy.mapToSource( proxy.index( 0, 0, root1Index ) );
+  QModelIndex layer2Index = proxy.mapToSource( proxy.index( 1, 0, root1Index ) );
+  QCOMPARE( model.dataItem( layer1Index ), raster1 );
+  QCOMPARE( model.dataItem( layer2Index ), vector1 );
+
+  proxy.setLayerType( Qgis::LayerType::Raster );
+  QCOMPARE( proxy.rowCount( root1Index ), 2 );
+  proxy.setFilterByLayerType( true );
+  QCOMPARE( proxy.rowCount( root1Index ), 1 );
+  layer1Index = proxy.mapToSource( proxy.index( 0, 0, root1Index ) );
+  QCOMPARE( model.dataItem( layer1Index ), raster1 );
+
+  proxy.setLayerType( Qgis::LayerType::Vector );
+  // vector2 should be shown, although it has HideWhenNotFilteringByLayerType filter flag we ARE filtering by layer type
+  QCOMPARE( proxy.rowCount( root1Index ), 2 );
+  layer1Index = proxy.mapToSource( proxy.index( 0, 0, root1Index ) );
+  QCOMPARE( model.dataItem( layer1Index ), vector1 );
+  layer2Index = proxy.mapToSource( proxy.index( 1, 0, root1Index ) );
+  QCOMPARE( model.dataItem( layer2Index ), vector2 );
 }
 
 QGSTEST_MAIN( TestQgsBrowserProxyModel )

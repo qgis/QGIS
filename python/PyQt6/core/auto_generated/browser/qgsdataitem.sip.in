@@ -342,6 +342,13 @@ Sets the capabilities for the data item.
    Use :py:func:`~QgsDataItem.setCapabilitiesV2` instead.
 %End
 
+    virtual Qgis::BrowserItemFilterFlags filterFlags() const;
+%Docstring
+Returns the filter flags for the data item.
+
+.. versionadded:: 4.2
+%End
+
 
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 
