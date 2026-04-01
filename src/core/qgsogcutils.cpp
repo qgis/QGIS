@@ -3913,6 +3913,16 @@ QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, 
     return CRSFlavor::HTTP_EPSG_DOT_XML;
   }
 
+  // urn with AUTHORITY:CODE - this skips version and does not even have empty space for it
+  const thread_local QRegularExpression re_ogc_urn_without_version( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+):([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_ogc_urn_without_version.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::OGC_URN;
+  }
+
+  // urn with AUTHORITY:[VERSION]:CODE
   const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+):([^:]*):([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
   if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
   {
