@@ -266,6 +266,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmselectbyattribute.cpp
   processing/qgsalgorithmselectbyexpression.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
