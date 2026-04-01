@@ -53,6 +53,7 @@ class GUI_EXPORT QgsHighlightableComboBox : public QComboBox
     void setHighlighted( bool highlighted );
 
   protected:
+    void wheelEvent( QWheelEvent *event ) override;
     void paintEvent( QPaintEvent *e ) override;
 
   private:

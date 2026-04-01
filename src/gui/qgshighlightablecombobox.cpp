@@ -16,6 +16,7 @@
 #include "qgshighlightablecombobox.h"
 
 #include <QPainter>
+#include <QWheelEvent>
 
 #include "moc_qgshighlightablecombobox.cpp"
 
@@ -40,4 +41,16 @@ void QgsHighlightableComboBox::setHighlighted( bool highlighted )
 {
   mHighlight = highlighted;
   update();
+}
+
+void QgsHighlightableComboBox::wheelEvent( QWheelEvent *event )
+{
+  if ( event->modifiers() & Qt::ControlModifier || isHighlighted() )
+  {
+    QComboBox::wheelEvent( event );
+  }
+  else
+  {
+    event->ignore();
+  }
 }
