@@ -214,7 +214,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
         if ( newGeometry.wkbType() == Qgis::WkbType::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == Qgis::WkbType::GeometryCollection )
         {
           const QgsGeometry intCom = inputFeature.geometry().combine( newGeometry, QgsGeometryParameters(), feedback );
-          const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );
+          const QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry, QgsGeometryParameters(), feedback );
           newGeometry = intCom.difference( intSym, QgsGeometryParameters(), feedback );
         }
       }
