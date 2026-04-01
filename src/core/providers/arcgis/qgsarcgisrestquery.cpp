@@ -401,13 +401,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void( const
 }
 
 void QgsArcGisRestQueryUtils::addLayerItems(
-  const std::function<
-    void( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QgsCoordinateReferenceSystem &, const QString &, bool )>
-    &visitor,
-  const QVariantMap &serviceData,
-  const QString &parentUrl,
-  const QString &parentSupportedFormats,
-  const ServiceTypeFilter filter
+  const std::function< void( const LayerItemDetails &details )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter
 )
 {
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( u"spatialReference"_s ).toMap() );
@@ -446,10 +440,12 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   for ( const QVariant &layerInfo : layerInfoList )
   {
     const QVariantMap layerInfoMap = layerInfo.toMap();
-    const QString id = layerInfoMap.value( u"id"_s ).toString();
-    const QString parentLayerId = layerInfoMap.value( u"parentLayerId"_s ).toString();
-    const QString name = layerInfoMap.value( u"name"_s ).toString();
-    const QString description = layerInfoMap.value( u"description"_s ).toString();
+
+    LayerItemDetails details;
+    details.layerId = layerInfoMap.value( u"id"_s ).toString();
+    details.parentLayerId = layerInfoMap.value( u"parentLayerId"_s ).toString();
+    details.name = layerInfoMap.value( u"name"_s ).toString();
+    details.description = layerInfoMap.value( u"description"_s ).toString();
 
     const QString geometryType = layerInfoMap.value( u"geometryType"_s ).toString();
 #if 0
@@ -471,7 +467,14 @@ void QgsArcGisRestQueryUtils::addLayerItems(
 
     if ( filter == ServiceTypeFilter::Scene )
     {
-      visitor( parentLayerId, ServiceTypeFilter::Scene, Qgis::GeometryType::Unknown, id, name, description, parentUrl, false, crs, format, false );
+      details.serviceType = ServiceTypeFilter::Scene;
+      details.geometryType = Qgis::GeometryType::Unknown;
+      details.url = parentUrl;
+      details.isParentLayer = false;
+      details.crs = crs;
+      details.format = format;
+      details.isMapServerWithQueryCapability = false;
+      visitor( details );
       continue;
     }
 
@@ -481,14 +484,22 @@ void QgsArcGisRestQueryUtils::addLayerItems(
     {
       exposedAsVector = true;
       const Qgis::WkbType wkbType = QgsArcGisRestUtils::convertGeometryType( geometryType );
-
+      details.serviceType = ServiceTypeFilter::Vector;
+      details.geometryType = QgsWkbTypes::geometryType( wkbType );
+      details.url = parentUrl + '/' + details.layerId;
+      details.format = format;
+      details.isMapServerWithQueryCapability = capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Map );
       if ( !layerInfoMap.value( u"subLayerIds"_s ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format, capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Map ) );
+        details.isParentLayer = true;
+        details.crs = QgsCoordinateReferenceSystem();
+        visitor( details );
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, crs, format, capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Map ) );
+        details.isParentLayer = false;
+        details.crs = crs;
+        visitor( details );
       }
     }
 
@@ -498,13 +509,25 @@ void QgsArcGisRestQueryUtils::addLayerItems(
       if ( capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Query ) )
         wkbType = QgsArcGisRestUtils::convertGeometryType( geometryType );
 
+      details.serviceType = ServiceTypeFilter::Raster;
+      details.geometryType = QgsWkbTypes::geometryType( wkbType );
+      details.url = parentUrl + '/' + details.layerId;
+      details.format = format;
+      details.isMapServerWithQueryCapability = exposedAsVector;
       if ( !layerInfoMap.value( u"subLayerIds"_s ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Raster, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format, exposedAsVector );
+        if ( !exposedAsVector )
+        {
+          details.isParentLayer = true;
+          details.crs = QgsCoordinateReferenceSystem();
+          visitor( details );
+        }
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Raster, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, crs, format, exposedAsVector );
+        details.isParentLayer = false;
+        details.crs = crs;
+        visitor( details );
       }
     }
   }
@@ -513,20 +536,31 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   for ( const QVariant &tableInfo : tableInfoList )
   {
     const QVariantMap tableInfoMap = tableInfo.toMap();
-    const QString id = tableInfoMap.value( u"id"_s ).toString();
-    const QString parentLayerId = tableInfoMap.value( u"parentLayerId"_s ).toString();
-    const QString name = tableInfoMap.value( u"name"_s ).toString();
-    const QString description = tableInfoMap.value( u"description"_s ).toString();
+
+    LayerItemDetails details;
+    details.layerId = tableInfoMap.value( u"id"_s ).toString();
+    details.parentLayerId = tableInfoMap.value( u"parentLayerId"_s ).toString();
+    details.name = tableInfoMap.value( u"name"_s ).toString();
+    details.description = tableInfoMap.value( u"description"_s ).toString();
 
     if ( capabilities.testFlag( Qgis::ArcGisRestServiceCapability::Query ) && ( filter == ServiceTypeFilter::Vector || filter == ServiceTypeFilter::AllTypes ) )
     {
+      details.serviceType = ServiceTypeFilter::Vector;
+      details.geometryType = Qgis::GeometryType::Null;
+      details.url = parentUrl + '/' + details.layerId;
+      details.format = format;
+      details.isMapServerWithQueryCapability = false;
       if ( !tableInfoMap.value( u"subLayerIds"_s ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format, false );
+        details.isParentLayer = true;
+        details.crs = QgsCoordinateReferenceSystem();
+        visitor( details );
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, false, crs, format, false );
+        details.isParentLayer = false;
+        details.crs = crs;
+        visitor( details );
       }
     }
   }
@@ -534,17 +568,37 @@ void QgsArcGisRestQueryUtils::addLayerItems(
   // Add root MapServer as raster layer when multiple layers are listed
   if ( filter != ServiceTypeFilter::Vector && layerInfoList.count() > 1 && serviceData.contains( u"supportedImageFormatTypes"_s ) )
   {
-    const QString name = u"(%1)"_s.arg( QObject::tr( "All layers" ) );
-    const QString description = serviceData.value( u"Comments"_s ).toString();
-    visitor( QString(), ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format, false );
+    LayerItemDetails details;
+    details.layerId = QString();
+    details.parentLayerId = QString();
+    details.name = u"(%1)"_s.arg( QObject::tr( "All layers" ) );
+    details.description = serviceData.value( u"Comments"_s ).toString();
+    details.serviceType = ServiceTypeFilter::Raster;
+    details.geometryType = Qgis::GeometryType::Unknown;
+    details.url = parentUrl;
+    details.isParentLayer = false;
+    details.crs = crs;
+    details.format = format;
+    details.isMapServerWithQueryCapability = false;
+    visitor( details );
   }
 
   // Add root ImageServer as layer
   if ( serviceData.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1 ) )
   {
-    const QString name = serviceData.value( u"name"_s ).toString();
-    const QString description = serviceData.value( u"description"_s ).toString();
-    visitor( QString(), ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format, false );
+    LayerItemDetails details;
+    details.layerId = QString();
+    details.parentLayerId = QString();
+    details.name = serviceData.value( u"name"_s ).toString();
+    details.description = serviceData.value( u"description"_s ).toString();
+    details.serviceType = ServiceTypeFilter::Raster;
+    details.geometryType = Qgis::GeometryType::Unknown;
+    details.url = parentUrl;
+    details.isParentLayer = false;
+    details.crs = crs;
+    details.format = format;
+    details.isMapServerWithQueryCapability = false;
+    visitor( details );
   }
 }
 

@@ -171,62 +171,52 @@ void addLayerItems(
   QMap<QString, QString> parents;
 
   QgsArcGisRestQueryUtils::addLayerItems(
-    [parent, &layerItems, &parents, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats, forceRefresh](
-      const QString &parentLayerId,
-      QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType,
-      Qgis::GeometryType geometryType,
-      const QString &id,
-      const QString &name,
-      const QString &description,
-      const QString &url,
-      bool isParent,
-      const QgsCoordinateReferenceSystem &crs,
-      const QString &format,
-      bool isMapServerWithQueryCapability
-    ) {
-      Q_UNUSED( description )
+    [parent, &layerItems, &parents, authcfg, headers, urlPrefix, serviceTypeFilter, supportedFormats, forceRefresh]( const QgsArcGisRestQueryUtils::LayerItemDetails &details ) {
       Q_UNUSED( forceRefresh )
 
-      if ( !parentLayerId.isEmpty() )
-        parents.insert( id, parentLayerId );
+      if ( !details.parentLayerId.isEmpty() )
+        parents.insert( details.layerId, details.parentLayerId );
 
-      const Qgis::BrowserLayerType browserLayerGeometryType = geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon
-                                                              : geometryType == Qgis::GeometryType::Line  ? Qgis::BrowserLayerType::Line
-                                                              : geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point
-                                                              : geometryType == Qgis::GeometryType::Null  ? Qgis::BrowserLayerType::TableLayer
-                                                                                                          : Qgis::BrowserLayerType::Vector;
+      const Qgis::BrowserLayerType browserLayerGeometryType = details.geometryType == Qgis::GeometryType::Polygon ? Qgis::BrowserLayerType::Polygon
+                                                              : details.geometryType == Qgis::GeometryType::Line  ? Qgis::BrowserLayerType::Line
+                                                              : details.geometryType == Qgis::GeometryType::Point ? Qgis::BrowserLayerType::Point
+                                                              : details.geometryType == Qgis::GeometryType::Null  ? Qgis::BrowserLayerType::TableLayer
+                                                                                                                  : Qgis::BrowserLayerType::Vector;
 
-      if ( isParent && serviceType != QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster )
+      if ( details.isParentLayer && details.serviceType != QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster )
       {
-        if ( !layerItems.value( id ) )
+        if ( !layerItems.value( details.layerId ) )
         {
-          auto layerItem = std::make_unique<QgsArcGisRestParentLayerItem>( parent, name, url, authcfg, headers, urlPrefix );
-          layerItems.insert( id, layerItem.release() );
+          auto layerItem = std::make_unique<QgsArcGisRestParentLayerItem>( parent, details.name, details.url, authcfg, headers, urlPrefix );
+          layerItems.insert( details.layerId, layerItem.release() );
         }
       }
       else
       {
         std::unique_ptr<QgsDataItem> layerItem;
-        switch ( serviceTypeFilter == QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes ? serviceType : serviceTypeFilter )
+        switch ( serviceTypeFilter == QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes ? details.serviceType : serviceTypeFilter )
         {
           case QgsArcGisRestQueryUtils::ServiceTypeFilter::Vector:
-            layerItem = std::make_unique<QgsArcGisFeatureServiceLayerItem>( parent, url, name, crs, authcfg, headers, urlPrefix, browserLayerGeometryType, isMapServerWithQueryCapability, format, id );
+            layerItem = std::make_unique<QgsArcGisFeatureServiceLayerItem>(
+              parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix, browserLayerGeometryType, details.isMapServerWithQueryCapability, details.format, details.layerId
+            );
             break;
 
           case QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster:
-            layerItem = std::make_unique< QgsArcGisMapServiceLayerItem>( parent, url, id, name, crs, format, authcfg, headers, urlPrefix, isMapServerWithQueryCapability );
+            layerItem = std::make_unique<
+              QgsArcGisMapServiceLayerItem>( parent, details.url, details.layerId, details.name, details.crs, details.format, authcfg, headers, urlPrefix, details.isMapServerWithQueryCapability );
             static_cast<QgsArcGisMapServiceLayerItem *>( layerItem.get() )->setSupportedFormats( supportedFormats );
             break;
 
           case QgsArcGisRestQueryUtils::ServiceTypeFilter::Scene:
-            layerItem = std::make_unique<QgsArcGisSceneServiceLayerItem>( parent, url, name, crs, authcfg, headers, urlPrefix );
+            layerItem = std::make_unique<QgsArcGisSceneServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix );
             break;
 
           case QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes:
             break;
         }
         if ( layerItem )
-          layerItems.insert( id, layerItem.release() );
+          layerItems.insert( details.layerId, layerItem.release() );
       }
     },
     serviceData,
