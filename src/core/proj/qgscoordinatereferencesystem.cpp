@@ -3382,6 +3382,9 @@ void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
 
 bool QgsCoordinateReferenceSystem::isEarthCrs() const
 {
+  if ( !isValid() )
+    return true;
+
   return celestialBodyName() == "Earth"_L1;
 }
 
