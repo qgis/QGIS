@@ -366,7 +366,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         # Test default values
         self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
-        self.assertEqual(settings.roughness(), 0.0)
+        self.assertEqual(settings.roughness(), 0.5)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))
