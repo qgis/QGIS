@@ -312,7 +312,6 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection(
   const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin
 )
 {
-  Q_UNUSED( context )
   QgsDebugMsgLevel( u"Ray cast on vector layer"_s, 2 );
 #ifdef QGISDEBUG
   int nodeUsed = 0;
