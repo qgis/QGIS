@@ -308,15 +308,13 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( naturalSort )
     {
-      std::stable_sort( pairs.begin(), pairs.end(), [&collator]( const QPair<const QVariant, QgsPoint> &pair1, const QPair<const QVariant, QgsPoint> &pair2 ) {
+      std::stable_sort( pairs.begin(), pairs.end(), [&collator]( const QPair<QVariant, QgsPoint> &pair1, const QPair<QVariant, QgsPoint> &pair2 ) {
         return collator.compare( pair1.first.toString(), pair2.first.toString() ) < 0;
       } );
     }
     else
     {
-      std::stable_sort( pairs.begin(), pairs.end(), []( const QPair<const QVariant, QgsPoint> &pair1, const QPair<const QVariant, QgsPoint> &pair2 ) {
-        return qgsVariantLessThan( pair1.first, pair2.first );
-      } );
+      std::stable_sort( pairs.begin(), pairs.end(), []( const QPair<QVariant, QgsPoint> &pair1, const QPair<QVariant, QgsPoint> &pair2 ) { return qgsVariantLessThan( pair1.first, pair2.first ); } );
     }
 
 
