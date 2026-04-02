@@ -2248,8 +2248,12 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
     QDomElement funcElem = mDoc.createElement( mFilterPrefix + u":Function"_s );
     funcElem.setAttribute( u"name"_s, u"Concatenate"_s );
 
-    // Recursively append all parts of the concatenation as arguments to the function element.
-    std::function<void( const QgsExpressionNode * )> appendParts = [&]( const QgsExpressionNode *n ) {
+    bool ok = true;
+    std::function<void( const QgsExpressionNode * )> appendParts = [&]( const QgsExpressionNode * n )
+    {
+      if ( !ok )
+        return;
+
       if ( n->nodeType() == QgsExpressionNode::ntBinaryOperator )
       {
         const QgsExpressionNodeBinaryOperator *binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( n );
@@ -2260,13 +2264,29 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
           return;
         }
       }
-      funcElem.appendChild( expressionNodeToOgcFilter( n, expression, context ) );
+
+      // Try to convert the expression node to an OGC filter element
+      QDomElement subElem = expressionNodeToOgcFilter( n, expression, context );
+      
+      if ( !subElem.isNull() )
+      {
+        funcElem.appendChild( subElem );
+      }
+      else
+      {
+        // If any part of the concatenation cannot be converted,
+        // we should mark the entire operation as unsuccessful.
+        ok = false;
+      }
     };
 
     appendParts( node );
+
+    if ( !ok )
+      return QDomElement(); // Return empty element if any part of the concatenation could not be converted
+
     return funcElem;
   }
-
   // 2) Handle other binary operators
   const QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), expression, context );
   if ( !mErrorMessage.isEmpty() )

@@ -1443,10 +1443,10 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QString sld = doc.toString();
 
       // 4) Verify that the concatenation is correctly represented in the SLD as a Function with the correct arguments
-      QVERIFY( sld.contains( u"<ogc:Function name=\"Concatenate\">"_s ) );
-      QVERIFY( sld.contains( u"<ogc:PropertyName>name</ogc:PropertyName>"_s ) );
-      QVERIFY( sld.contains( u"<ogc:Literal> - </ogc:Literal>"_s ) );
-      QVERIFY( sld.contains( u"<ogc:PropertyName>status</ogc:PropertyName>"_s ) );
+      QVERIFY2( sld.contains( u"<ogc:Function name=\"Concatenate\">"_s ), sld.toUtf8().constData() );
+      QVERIFY2( sld.contains( u"<ogc:PropertyName>name</ogc:PropertyName>"_s ), sld.toUtf8().constData() );
+      QVERIFY2( sld.contains( u"<ogc:Literal> - </ogc:Literal>"_s ), sld.toUtf8().constData() );
+      QVERIFY2( sld.contains( u"<ogc:PropertyName>status</ogc:PropertyName>"_s ), sld.toUtf8().constData() );
 
       // Verify that it is "flat" (only one Concatenate)
       QCOMPARE( sld.count( u"name=\"Concatenate\""_s ), 1 );
