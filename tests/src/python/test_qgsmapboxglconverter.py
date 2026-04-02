@@ -925,6 +925,14 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             """sqrt("sizerank")""",
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["pitch"],
+                conversion_context,
+            ),
+            """0""",
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
