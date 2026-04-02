@@ -3683,6 +3683,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     }
     return caseString;
   }
+  else if ( op == "pitch"_L1 )
+  {
+    return u"0"_s;
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );
