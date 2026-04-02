@@ -3595,6 +3595,18 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"@vector_tile_zoom"_s;
   }
+  else if ( op == "coalesce"_L1 )
+  {
+    QString coalesceString = u"coalesce("_s;
+    for ( int i = 1; i < expression.size(); i++ )
+    {
+      if ( i > 1 )
+        coalesceString += ", "_L1;
+      coalesceString += parseValue( expression.value( i ), context );
+    }
+    coalesceString += ')'_L1;
+    return coalesceString;
+  }
   else if ( op == "concat"_L1 )
   {
     QString concatString = u"concat("_s;

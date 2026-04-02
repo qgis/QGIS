@@ -932,6 +932,14 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             """0""",
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["coalesce", ["get", "name_en"], ["get", "name"]],
+                conversion_context,
+            ),
+            """coalesce("name_en", "name")""",
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
