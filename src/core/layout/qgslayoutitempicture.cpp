@@ -87,20 +87,25 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
   return new QgsLayoutItemPicture( layout );
 }
 
-QPainterPath QgsLayoutItemPicture::framePath() const
+QPainterPath QgsLayoutItemPicture::customFramePath() const
 {
-  QPainterPath customFramePath;
+  QPainterPath painterPath;
   if ( mClipToItem && mClippingItem )
   {
     QgsGeometry g( mClippingItem->clipPath() );
     g.transform( sceneTransform().inverted() );
     if ( !g.isNull() )
     {
-      customFramePath = g.constGet()->asQPainterPath();
+      painterPath = g.constGet()->asQPainterPath();
     }
   }
+  return painterPath;
+}
 
-  return !customFramePath.isEmpty() ? customFramePath : QgsLayoutItem::framePath();
+QPainterPath QgsLayoutItemPicture::framePath() const
+{
+  QPainterPath custumPainterPath = customFramePath();
+  return !custumPainterPath.isEmpty() ? custumPainterPath : QgsLayoutItem::framePath();
 }
 
 void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
@@ -111,15 +116,10 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
-  if ( mClipToItem && mClippingItem )
+  const QPainterPath custumPainterPath = customFramePath();
+  if ( !custumPainterPath.isEmpty() )
   {
-    QgsGeometry g( mClippingItem->clipPath() );
-    g.transform( sceneTransform().inverted() );
-    if ( !g.isNull() )
-    {
-      const QPainterPath customFramePath = g.constGet()->asQPainterPath();
-      painter->setClipPath( customFramePath );
-    }
+    painter->setClipPath( custumPainterPath );
   }
 
   const bool prevSmoothTransform = painter->testRenderHint( QPainter::RenderHint::SmoothPixmapTransform );
@@ -818,14 +818,13 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( u"northOffset"_s, mNorthArrowHandler->northOffset() );
 
   //clipping
-  elem.setAttribute( u"clipToItem"_s, mClipToItem ? u"1"_s : u"0"_s );
+  if ( mClipToItem )
+  {
+    elem.setAttribute( u"clipToItem"_s, u"1"_s );
+  }
   if ( mClippingItem )
   {
     elem.setAttribute( u"clippingItem"_s, mClippingItem->uuid() );
-  }
-  else
-  {
-    elem.setAttribute( u"clippingItem"_s, QString() );
   }
 
   return true;
