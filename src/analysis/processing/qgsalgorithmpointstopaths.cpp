@@ -144,11 +144,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
               << QPair<QString, QString>( "%G", "yyyy" )
               << QPair<QString, QString>( "%u", "" )  // day of the week 1-7
               << QPair<QString, QString>( "%V", "" ); // week number
-      for ( const auto &pair : codeMap )
+      for ( const auto &pair : std::as_const( codeMap ) )
       {
         dateFormat.replace( pair.first, pair.second );
       }
-      orderExpressionString = QString( "to_datetime(%1, '%2')" ).arg( orderExpressionString ).arg( dateFormat );
+      orderExpressionString = QString( "to_datetime(%1, '%2')" ).arg( orderExpressionString, dateFormat );
     }
   }
   else if ( orderExpressionString.isEmpty() )
