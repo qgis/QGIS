@@ -27,7 +27,7 @@ using namespace Qt::StringLiterals;
 
 QString QgsSelectByAttributeAlgorithm::name() const
 {
-  return u"selectbyattributeV2"_s;
+  return u"selectbyattribute"_s;
 }
 
 QString QgsSelectByAttributeAlgorithm::displayName() const
@@ -92,12 +92,24 @@ void QgsSelectByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   ) );
   addParameter( new QgsProcessingParameterString( u"VALUE"_s, QObject::tr( "Value" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterEnum(
-    u"METHOD"_s,
+    u"SELECTION_METHOD"_s,
     QObject::tr( "Modify current selection by" ),
     QStringList() << QObject::tr( "creating new selection" ) << QObject::tr( "adding to current selection" ) << QObject::tr( "selecting within current selection" ) << QObject::tr( "removing from current selection" ),
     false,
     0
   ) );
+
+  // backwards compatibility parameters
+  // TODO QGIS 5: remove compatibility parameters and their logic
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
+    u"METHOD"_s,
+    QObject::tr( "Modify current selection by" ),
+    QStringList() << QObject::tr( "creating new selection" ) << QObject::tr( "adding to current selection" ) << QObject::tr( "removing from current selection" ) << QObject::tr( "selecting within current selection" ),
+    false,
+    0
+  );
+  methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
+  addParameter( std::move( methodParam ) );
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Selected (attribute)" ) ) );
 }
@@ -113,7 +125,21 @@ bool QgsSelectByAttributeAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   const QString fieldName = parameterAsString( parameters, u"FIELD"_s, context );
   const Operation op = static_cast<Operation>( parameterAsEnum( parameters, u"OPERATOR"_s, context ) );
   const QString value = parameterAsString( parameters, u"VALUE"_s, context );
-  const Qgis::SelectBehavior method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
+  Qgis::SelectBehavior method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, u"SELECTION_METHOD"_s, context ) );
+
+  // handle backwards compatibility parameter
+  if ( parameters.value( u"METHOD"_s ).isValid() )
+  {
+    method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
+    if ( method == Qgis::SelectBehavior::IntersectSelection )
+    {
+      method = Qgis::SelectBehavior::RemoveFromSelection;
+    }
+    else if ( method == Qgis::SelectBehavior::RemoveFromSelection )
+    {
+      method = Qgis::SelectBehavior::IntersectSelection;
+    }
+  }
 
   mLayerId = layer->id();
 

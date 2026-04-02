@@ -49,7 +49,6 @@ from .RasterLayerHistogram import RasterLayerHistogram
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .SelectByAttribute import SelectByAttribute
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .StatisticsByCategories import StatisticsByCategories
@@ -100,7 +99,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             RectanglesOvalsDiamondsVariable(),
             RegularPoints(),
             Relief(),
-            SelectByAttribute(),
             SetRasterStyle(),
             SetVectorStyle(),
             StatisticsByCategories(),
