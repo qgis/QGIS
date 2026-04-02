@@ -52,7 +52,6 @@ from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .SelectByAttribute import SelectByAttribute
-from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .StatisticsByCategories import StatisticsByCategories
@@ -106,7 +105,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             RegularPoints(),
             Relief(),
             SelectByAttribute(),
-            SelectByExpression(),
             SetRasterStyle(),
             SetVectorStyle(),
             StatisticsByCategories(),

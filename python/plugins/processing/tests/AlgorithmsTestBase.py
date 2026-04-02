@@ -594,7 +594,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:regularpoints",
                 "qgis:relief",
                 "qgis:scatter3dplot",
-                "qgis:selectbyexpression",
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
                 "qgis:texttofloat",
