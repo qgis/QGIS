@@ -5,7 +5,7 @@ name: 📖 PR needs documentation
 # an issue is automatically created in the QGIS-Documentation repository when the PR gets merged
 
 on:
-  pull_request_target:
+  pull_request_target:   # zizmor: ignore[dangerous-triggers]
     types:
       - opened
       - closed
