@@ -1092,13 +1092,15 @@ int main( int argc, char *argv[] )
 
   if ( !globalsettingsfile.isEmpty() )
   {
-    if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    bool ok1 = QgsSettingsEntryBase::setGlobalSettingsPath( globalsettingsfile );
+    bool ok2 = QgsSettings::setGlobalSettingsPath( globalsettingsfile );
+
+    if ( !ok1 || !ok2 )
     {
       preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), u"QGIS"_s;
     }
     else
     {
-      QgsSettingsEntryBase::setGlobalSettingsPath( globalsettingsfile );
       preApplicationLogMessages << QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), u"QGIS"_s;
     }
   }

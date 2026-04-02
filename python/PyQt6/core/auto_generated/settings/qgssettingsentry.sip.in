@@ -55,16 +55,19 @@ settings description for the gui.
 %End
   public:
 
-    static void setGlobalSettingsPath( const QString &path );
+    static bool setGlobalSettingsPath( const QString &path );
 %Docstring
 Sets the path to the global settings INI file and loads all keys into an
 in-memory hash for use as defaults by :py:class:`QgsSettingsEntry`.
 
 This must be called once at application startup, before
-:py:class:`QgsApplication` initialisation, and only from the main
+:py:class:`QgsApplication` initialization, and only from the main
 thread.
 
 :param path: the path to the global settings INI file.
+
+:return: true if the file was successfully loaded, false if the path was
+         empty or the file did not exist.
 
 .. versionadded:: 4.2
 %End

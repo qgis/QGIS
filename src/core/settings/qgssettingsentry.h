@@ -78,13 +78,14 @@ class CORE_EXPORT QgsSettingsEntryBase
      * into an in-memory hash for use as defaults by QgsSettingsEntry.
      *
      * This must be called once at application startup, before QgsApplication
-     * initialisation, and only from the main thread.
+     * initialization, and only from the main thread.
      *
      * \param path the path to the global settings INI file.
+     * \return true if the file was successfully loaded, false if the path was empty or the file did not exist.
      *
      * \since QGIS 4.2
      */
-    static void setGlobalSettingsPath( const QString &path );
+    static bool setGlobalSettingsPath( const QString &path );
 
     /**
      * Returns TRUE if the global settings INI file contains a value for the given \a key.
@@ -95,11 +96,15 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     /**
      * Configures QSettings to use IniFormat at the given \a profilePath
-     * and bumps the internal generation counter so that each thread's
-     * QSettings instance is recreated on next access.
+     * so that each thread's QSettings instance is recreated on next access
+     * with the correct format and path.
      *
-     * This is a convenience wrapper around QSettings::setDefaultFormat(),
-     * QSettings::setPath() and the internal generation bump.
+     * This is a convenience wrapper around QSettings::setDefaultFormat()
+     * and QSettings::setPath().
+     *
+     * It should be called once at application startup,
+     * before QgsApplication initialization,
+     * and only from the main thread.
      *
      * \since QGIS 4.2
      */

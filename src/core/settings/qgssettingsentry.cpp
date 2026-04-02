@@ -32,42 +32,41 @@ using namespace Qt::StringLiterals;
  * and setPath() have been called. Each thread's QSettings instance is
  * (re-)created on first access after this flag becomes true, so it
  * picks up the correct IniFormat and profile path.
- *
- * std::atomic ensures the write is visible to all threads without
- * undefined behavior (C++ data-race rules).
  */
-static std::atomic<bool> sSettingsInitialized { false };
+static bool sSettingsInitialized = false;
 
 static QSettings &sUserSettings()
 {
   thread_local QSettings *sSettings = nullptr;
   thread_local bool sCreatedBeforeInit = true;
 
-  if ( !sSettings || ( sCreatedBeforeInit && sSettingsInitialized.load( std::memory_order_acquire ) ) )
+  if ( !sSettings || ( sCreatedBeforeInit && sSettingsInitialized ) )
   {
     delete sSettings;
     sSettings = new QSettings();
-    sCreatedBeforeInit = !sSettingsInitialized.load( std::memory_order_relaxed );
+    sCreatedBeforeInit = !sSettingsInitialized;
   }
   return *sSettings;
 }
 
-QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
-
 void QgsSettingsEntryBase::setupUserSettings( const QString &profilePath )
 {
+  Q_ASSERT_X( !sSettingsInitialized, "setupUserSettings", "Must only be called once" );
+  Q_ASSERT_X( QThread::isMainThread(), "setupUserSettings", "Must be called from the main thread" );
   QSettings::setDefaultFormat( QSettings::IniFormat );
   QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, profilePath );
-  sSettingsInitialized.store( true, std::memory_order_release );
+  sSettingsInitialized = true;
 }
 
-void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
+QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
+
+bool QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
 {
   Q_ASSERT_X( QThread::isMainThread(), "QgsSettingsEntryBase::setGlobalSettingsPath", "Must be called from the main thread" );
 
   sGlobalDefaults.clear();
   if ( path.isEmpty() || !QFile::exists( path ) )
-    return;
+    return false;
 
   const QSettings globalSettings( path, QSettings::IniFormat );
   const QStringList keys = globalSettings.allKeys();
@@ -76,6 +75,8 @@ void QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
   {
     sGlobalDefaults.insert( key, globalSettings.value( key ) );
   }
+
+  return true;
 }
 
 bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )

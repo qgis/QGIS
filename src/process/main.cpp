@@ -46,6 +46,8 @@ typedef SInt32 SRefCon;
 #include "qgsprocess.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgssettingsentry.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -119,6 +121,14 @@ int main( int argc, char *argv[] )
   }
 
   QgsApplication app( argc, argv, false, QString(), u"qgis_process"_s );
+
+  const char *globalSettingsFile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  if ( globalSettingsFile )
+  {
+    const QString path = QString::fromLocal8Bit( globalSettingsFile );
+    QgsSettings::setGlobalSettingsPath( path );
+    QgsSettingsEntryBase::setGlobalSettingsPath( path );
+  }
 
   // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
