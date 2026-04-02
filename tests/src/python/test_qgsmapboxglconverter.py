@@ -917,6 +917,14 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "((10 + 10) * (1 + 2))",
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["sqrt", ["get", "sizerank"]],
+                conversion_context,
+            ),
+            """sqrt("sizerank")""",
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
