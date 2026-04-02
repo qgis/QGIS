@@ -115,7 +115,7 @@ jobs:
 
       # get commits from the PR
       - name: Get PR commits
-        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
+        uses: octokit/request-action@b91aabaa861c777dcdb14e2387e30eddf04619ae # v3.0.0
         id: get_pr_commits
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
