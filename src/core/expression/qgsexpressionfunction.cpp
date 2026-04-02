@@ -9869,9 +9869,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       { u"overlay_contains"_s, fcnGeomOverlayContains },
       { u"overlay_crosses"_s, fcnGeomOverlayCrosses },
       { u"overlay_equals"_s, fcnGeomOverlayEquals },
-      { u"overlay_exactly_equals"_s, fcnGeomOverlayExactlyEqual },
-      { u"overlay_topologically_equals"_s, fcnGeomOverlayTopologicallyEqual },
-      { u"overlay_fuzzy_equals"_s, fcnGeomOverlayFuzzyEqual },
+      { u"overlay_equals_exact"_s, fcnGeomOverlayExactlyEqual },
+      { u"overlay_equals_topological"_s, fcnGeomOverlayTopologicallyEqual },
+      { u"overlay_equals_fuzzy"_s, fcnGeomOverlayFuzzyEqual },
       { u"overlay_touches"_s, fcnGeomOverlayTouches },
       { u"overlay_disjoint"_s, fcnGeomOverlayDisjoint },
       { u"overlay_within"_s, fcnGeomOverlayWithin },
@@ -10057,7 +10057,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnWithin, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnEquals, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
-           u"exactly_equals"_s,
+           u"equals_exact"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
@@ -10066,7 +10066,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"topologically_equals"_s,
+           u"equals_topological"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
@@ -10075,7 +10075,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"fuzzy_equals"_s,
+           u"equals_fuzzy"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
