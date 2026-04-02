@@ -106,6 +106,8 @@ class CORE_EXPORT QgsSettingsEntryBase
      * before QgsApplication initialization,
      * and only from the main thread.
      *
+     * If called a second time, it will have no effect.
+     *
      * \since QGIS 4.2
      */
     static void setupUserSettings( const QString &profilePath ) SIP_SKIP;

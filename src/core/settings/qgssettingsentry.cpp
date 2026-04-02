@@ -51,8 +51,9 @@ static QSettings &sUserSettings()
 
 void QgsSettingsEntryBase::setupUserSettings( const QString &profilePath )
 {
-  Q_ASSERT_X( !sSettingsInitialized, "setupUserSettings", "Must only be called once" );
   Q_ASSERT_X( QThread::isMainThread(), "setupUserSettings", "Must be called from the main thread" );
+  if ( sSettingsInitialized )
+    return;
   QSettings::setDefaultFormat( QSettings::IniFormat );
   QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, profilePath );
   sSettingsInitialized = true;
