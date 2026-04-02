@@ -3448,7 +3448,11 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"to_real(%1)"_s.arg( parseValue( expression.value( 1 ), context ) );
   }
-  if ( op == "literal"_L1 )
+  else if ( op == "sqrt"_L1 )
+  {
+    return u"sqrt(%1)"_s.arg( parseValue( expression.value( 1 ), context ) );
+  }
+  else if ( op == "literal"_L1 )
   {
     return expression.value( 1 ).toString();
   }
