@@ -3762,13 +3762,13 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
   {
     case Qgis::GeometryBackend::GEOS:
     {
-      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
-      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
-        return false;
-
       // avoid calling geos for trivial point case
       if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
         return *d->geometry == *g.d->geometry;
+
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
 
       QgsGeos geos( d->geometry.get() );
       // fuzzy check call, with near zero epsilon, will behave as an exact comparison
@@ -3777,6 +3777,10 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
 
     case Qgis::GeometryBackend::QGIS:
     {
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( ( !d->geometry->is3D() && d->geometry->boundingBox() != g.d->geometry->boundingBox() ) || ( d->geometry->is3D() && d->geometry->boundingBox3D() != g.d->geometry->boundingBox3D() ) )
+        return false;
+
       // slower check - actually test the geometries
       return *d->geometry == *g.d->geometry;
     }
@@ -3799,18 +3803,14 @@ bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBack
   if ( type() != g.type() )
     return false;
 
-  //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
-  if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
-    return false;
-
   mLastError.clear();
   switch ( backend )
   {
     case Qgis::GeometryBackend::GEOS:
     {
-      // avoid calling geos for trivial point case
-      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
-        return *d->geometry == *g.d->geometry;
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
 
       QgsGeos geos( d->geometry.get() );
       return geos.isEqual( g.d->geometry.get(), &mLastError );
