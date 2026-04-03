@@ -61764,7 +61764,7 @@ Por favor, cancele estas tareas y vuelva a probar.</translation>
     <message>
         <location filename="../src/3d/qgs3daxis.cpp" line="454"/>
         <source>&amp;Off</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Apagado</translation>
     </message>
     <message>
         <location filename="../src/3d/qgs3daxis.cpp" line="456"/>
@@ -61789,7 +61789,7 @@ Por favor, cancele estas tareas y vuelva a probar.</translation>
     <message>
         <location filename="../src/3d/qgs3daxis.cpp" line="472"/>
         <source>Cube 3D axis</source>
-        <translation type="unfinished"/>
+        <translation>Eje 3D del cubo</translation>
     </message>
     <message>
         <location filename="../src/3d/qgs3daxis.cpp" line="495"/>
@@ -62888,7 +62888,7 @@ Delete these features?</source>
     <message numerus="yes">
         <location filename="../src/gui/qgsabstractrelationeditorwidget.cpp" line="436"/>
         <source>%n feature(s) deleted: %2</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>%n objeto borrado: %2</numerusform><numerusform>%n objeto(s) borrado(s): %2</numerusform><numerusform>%n objeto(s) borrado(s): %2</numerusform></translation>
     </message>
     <message>
         <location filename="../src/gui/qgsabstractrelationeditorwidget.cpp" line="460"/>
@@ -65952,7 +65952,7 @@ Errors: %2
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="483"/>
         <source>Load user fonts</source>
-        <translation type="unfinished"/>
+        <translation>Cargar fuentes de usuario</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="493"/>
@@ -66049,7 +66049,7 @@ Errors: %2
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="2714"/>
         <source>Create project storage registry</source>
-        <translation type="unfinished"/>
+        <translation>Crear registro de almacenamiento de proyectos</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="2719"/>
@@ -72979,7 +72979,7 @@ Server response: %1</source>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1107"/>
         <source>Rename Bookmark Group…</source>
-        <translation type="unfinished"/>
+        <translation>Cambiar nombre del grupo de marcadores...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1113"/>
@@ -72989,7 +72989,7 @@ Server response: %1</source>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1118"/>
         <source>Rename Bookmark Group</source>
-        <translation type="unfinished"/>
+        <translation>Cambiar nombre del grupo de marcadores</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1120"/>
@@ -86398,7 +86398,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregate,combine,features,calculated,merge,concatenate,sum,mean,median,count,quartile,minimum,maximum,minority,majority,standard,deviation,length,unique</source>
-        <translation type="unfinished"/>
+        <translation>aggregate,combine,features,calculated,merge,concatenate,sum,mean,median,count,quartile,minimum,maximum,minority,majority,standard,deviation,length,unique</translation>
     </message>
     <message>
         <source>angles,specified,clockwise,angle,linestring,degrees,bisector,north,average,vertex</source>
@@ -86430,7 +86430,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>concatenated,arrays,containing</source>
-        <translation type="unfinished"/>
+        <translation>concatenated,arrays,containing</translation>
     </message>
     <message>
         <source>array,search,contains</source>
@@ -99057,7 +99057,7 @@ Este campo es una columna de geometría, ¡su eliminación podría hacer que la 
     <message>
         <location filename="../src/app/georeferencer/qgsgcplistmodel.cpp" line="358"/>
         <source>Enabled</source>
-        <translation type="unfinished"/>
+        <translation>Habilitado</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgcplistmodel.cpp" line="360"/>
@@ -106508,7 +106508,7 @@ en la línea %2 columna %3</translation>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="120"/>
         <source>Rename Table…</source>
-        <translation type="unfinished"/>
+        <translation>Renombrar Tabla</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="136"/>
@@ -106616,7 +106616,7 @@ Are you sure you want to delete the schema and all these objects?</source>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="373"/>
         <source>Rename Table</source>
-        <translation type="unfinished"/>
+        <translation>Renombrar Tabla</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="374"/>
@@ -106712,17 +106712,17 @@ which can be found at https://tools.hana.ondemand.com/#hanatools.</source>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="113"/>
         <source>Connection name cannot be empty.</source>
-        <translation type="unfinished"/>
+        <translation>El nombre de la conexión no puede estar vacío.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="122"/>
         <source>Driver field cannot be empty.</source>
-        <translation type="unfinished"/>
+        <translation>El campo Driver no puede estar vacío.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="128"/>
         <source>Host field cannot be empty.</source>
-        <translation type="unfinished"/>
+        <translation>El campo Host no puede estar vacío.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="136"/>
@@ -139856,7 +139856,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;If this function is enabled, QGIS will inform you every 3 days when a plugin update is available.&lt;/span&gt; Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Si esta función está habilitada, QGIS le informará cada 3 días cuando haya una actualización disponible para un complemento.&lt;/span&gt; De lo contrario, la recuperación de los repositorios se realizará durante la apertura de la ventana del Administrador de complementos.&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -164580,7 +164580,7 @@ Por favor seleccione un grupo o un grupo inteligente que usted pueda borrar.</tr
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>If enabled, a subset of HTML formatting tags can be used to style text</source>
-        <translation type="unfinished"/>
+        <translation>Si está habilitado, se puede utilizar un subconjunto de etiquetas de formato HTML para dar estilo al texto.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -176851,7 +176851,7 @@ Frase de motivo: %2</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
         <source>If enabled, the dash pattern sizes will be dynamically tweaked to ensure that the end of the line is represented by a complete dash element</source>
-        <translation type="unfinished"/>
+        <translation>Si se habilita, los tamaños de los patrones de guiones se ajustarán dinámicamente para garantizar que el final de la línea se represente con un elemento de guión completo.</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
@@ -176861,7 +176861,7 @@ Frase de motivo: %2</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
         <source>If enabled, the dash pattern for the line will be dynamically refined over sharp corners</source>
-        <translation type="unfinished"/>
+        <translation>Si se habilita, el patrón de guiones de la línea se refinará dinámicamente en las esquinas pronunciadas.</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>

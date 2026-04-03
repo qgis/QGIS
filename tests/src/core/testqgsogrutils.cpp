@@ -203,6 +203,14 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint ZM ((1.1 2.2 3 4),(3.3 4.4 4 5))" ) );
   OGR_G_DestroyGeometry( ogrGeom );
+  ogrGeom = nullptr;
+
+  wkt = QByteArray( "POLYHEDRALSURFACE Z (((0.2 0 0, 1 0 0, 1 1 0, 0 1 0, 0.2 0 0)))" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PolyhedralSurface Z (((0.2 0 0, 1 0 0, 1 1 0, 0 1 0, 0.2 0 0)))" ) );
+  OGR_G_DestroyGeometry( ogrGeom );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
@@ -227,6 +235,12 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString Z ((1.1 2.2 3, 3.3 4.4 6),(5 5 3, 6 6 1))" ) << static_cast<int>( Qgis::WkbType::MultiLineStringZ );
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString M ((1.1 2.2 4, 3.3 4.4 7),(5 5 4, 6 6 2))" ) << static_cast<int>( Qgis::WkbType::MultiLineStringM );
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ZM ((1.1 2.2 4 5, 3.3 4.4 8 9),(5 5 7 1, 6 6 2 3))" ) << static_cast<int>( Qgis::WkbType::MultiLineStringZM );
+
+  QTest::newRow( "polyhedralsurface" ) << QStringLiteral( "PolyhedralSurface (((0.2 0, 1 0, 1 1, 0 1, 0.2 0)))" ) << static_cast<int>( Qgis::WkbType::PolyhedralSurface );
+  QTest::newRow( "polyhedralsurfacez" ) << QStringLiteral( "PolyhedralSurface Z (((0.2 0 0, 1 0 0, 1 1 0, 0 1 0, 0.2 0 0)))" ) << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceZ );
+  QTest::newRow( "polyhedralsurfacez2" ) << QStringLiteral( "PolyhedralSurface Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)),((0 0 0, 0 1 0, 0 0 1, 0 0 0)))" ) << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceZ );
+  QTest::newRow( "polyhedralsurfacem" ) << QStringLiteral( "PolyhedralSurface M (((0.2 0 1, 1 0 1, 1 1 1, 0 1 1, 0.2 0 1)))" ) << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceM );
+  QTest::newRow( "polyhedralsurfacezm" ) << QStringLiteral( "PolyhedralSurface ZM (((0.2 0 0 1, 1 0 0 1, 1 1 0 1, 0 1 0 1, 0.2 0 0 1)))" ) << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceZM );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()

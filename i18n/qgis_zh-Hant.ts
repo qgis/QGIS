@@ -314,7 +314,7 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
         <source> + </source>
-        <translation> + </translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
@@ -324,7 +324,7 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
         <source> - </source>
-        <translation> - </translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
@@ -489,7 +489,7 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/animation3dwidget.ui"/>
@@ -735,7 +735,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Open Batch</source>
-        <translation>開啟批次</translation>
+        <translation>開啟批次執行</translation>
     </message>
     <message>
         <source>Load Batch Parameters</source>
@@ -755,15 +755,15 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Wrong or missing parameter value: {0} (row {1})</source>
-        <translation>錯誤或缺失的引數值:  {0} (列 {1})</translation>
+        <translation>錯誤或缺少參數值: {0} (列 {1})</translation>
     </message>
     <message>
         <source>Wrong or missing output value: {0} (row {1})</source>
-        <translation>錯誤或缺失的輸出值:  {0} (列 {1})</translation>
+        <translation>錯誤或缺少輸出值: {0} (列 {1})</translation>
     </message>
     <message>
         <source>Save Batch</source>
-        <translation>儲存批次</translation>
+        <translation>儲存批次程序</translation>
     </message>
 </context>
 <context>
@@ -932,7 +932,7 @@ Open the results dialog to check it.</source>
     <message>
         <location filename="../src/gui/symbology/characterwidget.cpp" line="220"/>
         <source>Decimal</source>
-        <translation>十進位制</translation>
+        <translation>小數</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/characterwidget.cpp" line="222"/>
@@ -995,11 +995,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Assign a specified NoData value to output bands</source>
-        <translation>將指定的無資料值指派給輸出波段</translation>
+        <translation>於輸出波段中指定一個代表無數據的值</translation>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -1086,11 +1086,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Assign a specified NoData value to output bands</source>
-        <translation>將指定的無資料值指派給輸出波段</translation>
+        <translation>於輸出波段中指定一個代表無數據的值</translation>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -1996,7 +1996,7 @@ Query:
     </message>
     <message>
         <source>&lt;warning&gt; Not connected</source>
-        <translation>&lt;warning&gt; 未連線</translation>
+        <translation>&lt;warning&gt; 未連接</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn't match version of released scripts!
@@ -2005,29 +2005,31 @@ This is probably a result of incorrect PostgreSQL upgrade.</source>
     </message>
     <message>
         <source>Oracle Spatial:</source>
-        <translation>Oracle 空間:</translation>
+        <translation>Oracle 空間資料庫：</translation>
     </message>
     <message>
         <source>&lt;warning&gt; ALL_SDO_GEOM_METADATA view doesn't exist!
 This view is essential for many GIS applications for enumeration of tables.</source>
-        <translation>&lt;warning&gt; ALL_SDO_GEOM_METADATA 檢視不存在！這個檢視對於許多 GIS 應用在列舉資料表時是必不可少的。</translation>
+        <translation>&lt;warning&gt;ALL_SDO_GEOM_METADATA 視觀表不存在
+這個視觀表對於許多地理資訊系統應用程式中的表格列舉是必要的。</translation>
     </message>
     <message>
         <source>&lt;warning&gt; ALL_SDO_GEOM_METADATA table doesn't exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation>&lt;warning&gt; ALL_SDO_GEOM_METADATA 表不存在！這個表對於許多 GIS 應用在列舉資料表時是必不可少的。</translation>
+        <translation>&lt;warning&gt;ALL_SDO_GEOM_METADATA 資料表不存在
+這個資料表對於許多地理資訊系統應用程式中的表格列舉是必要的。</translation>
     </message>
     <message>
         <source>Refresh the materialized view</source>
-        <translation>重新整理物化檢視</translation>
+        <translation>更新實質化視觀表</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Metadata extent is different from real extent. You should &lt;a href=&quot;action:extent/update&quot;&gt;update it&lt;/a&gt;!</source>
-        <translation>&lt;warning&gt; 詮釋資料範圍與實際範圍不同。您應該&lt;a href=&quot;action:extent/update&quot;&gt;更新它&lt;/a&gt;！</translation>
+        <translation>&lt;warning&gt;詮釋資料的範圍和實際範圍不同。您應該&lt;a href=&quot;action:extent/update&quot;&gt;更新它&lt;/a&gt;！</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;).</source>
-        <translation>&lt;warning&gt; 未定義空間索引(&lt;a href=&quot;action:spatialindex/create&quot;&gt;建立它&lt;/a&gt;)。</translation>
+        <translation>&lt;warning&gt;未定義空間索引 (&lt;a href=&quot;action:spatialindex/create&quot;&gt;建立空間索引&lt;/a&gt;)。</translation>
     </message>
 </context>
 <context>
@@ -2108,7 +2110,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Virtual string</source>
-        <translation>虛擬字串</translation>
+        <translation>虛擬字元串（Virtual string）</translation>
     </message>
 </context>
 <context>
@@ -2306,7 +2308,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui"/>
@@ -2377,7 +2379,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui"/>
@@ -3591,7 +3593,7 @@ columns</source>
     </message>
     <message>
         <source>LineString</source>
-        <translation>線串</translation>
+        <translation>線</translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -3599,7 +3601,7 @@ columns</source>
     </message>
     <message>
         <source>MultiPoint</source>
-        <translation>多點</translation>
+        <translation>多重點</translation>
     </message>
     <message>
         <source>MultiLineString</source>
@@ -3611,7 +3613,7 @@ columns</source>
     </message>
     <message>
         <source>Input data sources (called input1, .., inputN in the query)</source>
-        <translation>輸入資料來源(在查詢中稱為 input1, .., inputN)</translation>
+        <translation>輸入資料來源 (於查詢之中稱為input1, .., inputN)</translation>
     </message>
 </context>
 <context>
@@ -4069,7 +4071,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
         <location filename="../python/plugins/processing/ui/widgetBatchPanel.ui"/>
         <location filename="../python/plugins/processing/ui/widgetNumberSelector.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/algs/qgis/ui/RasterCalculatorWidget.ui"/>
@@ -4255,7 +4257,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     </message>
     <message>
         <source>Processing</source>
-        <translation>處理</translation>
+        <translation>處理中</translation>
     </message>
     <message>
         <source>Failed to load: {0}
@@ -4386,7 +4388,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Multiplicative factor to convert elevation units to meters</source>
         <extracomment>r.slope.aspect</extracomment>
-        <translation>將高程單位轉換為米的乘數因子</translation>
+        <translation>用來將高程單位轉換為公尺的相乘係數</translation>
     </message>
     <message>
         <source>Random vector</source>
@@ -4651,7 +4653,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>day</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation>天</translation>
+        <translation>日</translation>
     </message>
     <message>
         <source>Spline smoothing parameter</source>
@@ -5001,7 +5003,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Rescaled</source>
         <extracomment>r.rescale</extracomment>
-        <translation>已重新縮放</translation>
+        <translation>重設縮放的輸出結果</translation>
     </message>
     <message>
         <source>Converts raster maps into the VTK-ASCII format</source>
@@ -5676,7 +5678,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Overlay</source>
         <extracomment>v.overlay</extracomment>
-        <translation>疊合</translation>
+        <translation>疊加</translation>
     </message>
     <message>
         <source>Lake</source>
@@ -6106,7 +6108,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>r.li.simpson.ascii - Calculates Simpson&apos;s diversity index on a raster map</source>
         <extracomment>r.li.simpson.ascii</extracomment>
-        <translation>r.li.simpson.ascii - 計算網格地圖上的辛普森多樣性指數</translation>
+        <translation>r.li.simpson.ascii - 計算網格地圖的Simpson多樣性指標</translation>
     </message>
     <message>
         <source>Imports SPOT VGT NDVI data into a raster map.</source>
@@ -6166,7 +6168,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Do not create attribute table</source>
         <extracomment>v.voronoi</extracomment>
-        <translation>不建立屬性表</translation>
+        <translation>不建立屬性資料表</translation>
     </message>
     <message>
         <source>From Category values</source>
@@ -6431,7 +6433,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Aggregated</source>
         <extracomment>r.series</extracomment>
-        <translation>已聚合</translation>
+        <translation>聚集</translation>
     </message>
     <message>
         <source>Name of the elevation raster map [m]</source>
@@ -6446,7 +6448,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Exports a vector map to SVG file.</source>
         <extracomment>v.out.svg</extracomment>
-        <translation>將向量圖匯出為 SVG 檔案。</translation>
+        <translation>將向量地圖匯出為 SVG 檔案</translation>
     </message>
     <message>
         <source>Do not build topology</source>
@@ -6766,7 +6768,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Switch the compression off</source>
         <extracomment>v.pack</extracomment>
-        <translation>關閉壓縮</translation>
+        <translation>停用壓縮</translation>
     </message>
     <message>
         <source>Scale factor for converting horizontal units to elevation units</source>
@@ -6951,7 +6953,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Attribute(s) to include in output SVG</source>
         <extracomment>v.out.svg</extracomment>
-        <translation>要包含在輸出 SVG 中的屬性</translation>
+        <translation>納入輸出SVG的屬性</translation>
     </message>
     <message>
         <source>Report for cats floating-point ranges (floating-point maps only)</source>
@@ -7761,7 +7763,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Neighborhood size (must be odd)</source>
         <extracomment>r.neighbors</extracomment>
-        <translation>鄰域大小(必須為奇數)</translation>
+        <translation>邻域大小 (必须為奇数)</translation>
     </message>
     <message>
         <source>Filter radius (horizontal) for each filter (comma separated list of float if multiple)</source>
@@ -8021,7 +8023,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Evapotranspiration</source>
         <extracomment>i.evapo.pt</extracomment>
-        <translation>蒸發散</translation>
+        <translation>蒸發散量</translation>
     </message>
     <message>
         <source>Column prefix for new attribute columns</source>
@@ -8166,7 +8168,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Clustered</source>
         <extracomment>v.cluster</extracomment>
-        <translation>群聚</translation>
+        <translation>群聚的輸出結果</translation>
     </message>
     <message>
         <source>Name of the single-way atmospheric transmissivitymap [-]</source>
@@ -8236,7 +8238,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Watershed basin analysis program.</source>
         <extracomment>r.watershed</extracomment>
-        <translation>集水區盆地分析程式。</translation>
+        <translation>分水嶺流域分析程式</translation>
     </message>
     <message>
         <source>File containing reclass rules</source>
@@ -8626,7 +8628,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of input elevation raster map</source>
         <extracomment>r.walk.rast</extracomment>
-        <translation>輸入高程網格地圖的名稱</translation>
+        <translation>輸入海拔網格地圖的名稱</translation>
     </message>
     <message>
         <source>Tests for normality for points.</source>
@@ -8841,7 +8843,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Vector based generalization.</source>
         <extracomment>v.generalize</extracomment>
-        <translation>基於向量的概括化。</translation>
+        <translation>基於向量的概括化</translation>
     </message>
     <message>
         <source>Residual Map</source>
@@ -9306,7 +9308,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>r.quantile.plain - Compute quantiles using two passes and save them as plain text.</source>
         <extracomment>r.quantile.plain</extracomment>
-        <translation>r.quantile.plain - 使用兩次處理計算分位數並將其儲存為純文字。</translation>
+        <translation>r.quantile.plain - 使用二次掃描計算分位数並儲存為纯文字。</translation>
     </message>
     <message>
         <source>Converts vector polygons or points to lines.</source>
@@ -9386,7 +9388,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>minute</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation>分鐘</translation>
+        <translation>分</translation>
     </message>
     <message>
         <source>Distance zone(s) (e.g. 100,200,300)</source>
@@ -9671,7 +9673,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of column to use for buffer distances</source>
         <extracomment>v.buffer</extracomment>
-        <translation>用於緩衝距離的欄位名稱</translation>
+        <translation>作為緩衝距離的欄位名稱</translation>
     </message>
     <message>
         <source>Name of soil sand fraction raster map [0.0-1.0]</source>
@@ -9956,7 +9958,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Do not create attribute tables</source>
         <extracomment>v.in.dxf</extracomment>
-        <translation>不建立屬性表</translation>
+        <translation>不建立屬性資料表</translation>
     </message>
     <message>
         <source>Random seed (SEED_MIN &gt;= value &gt;= SEED_MAX) (default [random])</source>
@@ -10116,7 +10118,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Calculates shape index on a raster map</source>
         <extracomment>r.li.shape</extracomment>
-        <translation>計算網格地圖上的形狀指標</translation>
+        <translation>計算網格地圖的形狀指數</translation>
     </message>
     <message>
         <source>Name of raster map to be used for high resolution panchromatic channel</source>
@@ -10246,7 +10248,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Output raster map as integer</source>
         <extracomment>i.atcorr</extracomment>
-        <translation>將輸出網格地圖設為整數</translation>
+        <translation>以整數輸出網格地圖</translation>
     </message>
     <message>
         <source>Creates a raster layer and vector point map containing randomly located points.</source>
@@ -10421,7 +10423,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Do not report no data cells</source>
         <extracomment>r.report</extracomment>
-        <translation>不報告無資料單元</translation>
+        <translation>不要列印無資料網格</translation>
     </message>
     <message>
         <source>Creates topographic index layer from elevation raster layer</source>
@@ -10526,7 +10528,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Use maximum likelihood estimation (instead of smap)</source>
         <extracomment>i.smap</extracomment>
-        <translation>使用最大概似估計 (取代 smap)</translation>
+        <translation>使用最大概似法估計（而非 smap）</translation>
     </message>
     <message>
         <source>Threshold for the outliers</source>
@@ -11516,7 +11518,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Prints vector map attributes</source>
         <extracomment>v.db.select</extracomment>
-        <translation>列印向量圖屬性</translation>
+        <translation>列印向量的屬性</translation>
     </message>
     <message>
         <source>Scale factor sampled raster values</source>
@@ -11656,7 +11658,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Random raster</source>
         <extracomment>r.random</extracomment>
-        <translation>隨機光柵</translation>
+        <translation>隨機網格的輸出結果</translation>
     </message>
     <message>
         <source>Reject Threshold</source>
@@ -11681,7 +11683,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Do not copy attribute table</source>
         <extracomment>v.to.3d</extracomment>
-        <translation>不複製屬性表</translation>
+        <translation>不複製屬性資料表</translation>
     </message>
     <message>
         <source>Raster map containing the 10-hour fuel moisture (%)</source>
@@ -13216,7 +13218,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>r.sunmask.datetime - Calculates cast shadow areas from sun position and elevation raster map.</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation>r.sunmask.datetime - 根據太陽位置和高程網格圖計算投影陰影區域。</translation>
+        <translation>r.sunmask.datetime - 根據太陽位置及影像高程地圖計算陰影區域。</translation>
     </message>
     <message>
         <source>Row value of the dry pixel</source>
@@ -13291,7 +13293,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>r.li.shape.ascii - Calculates shape index on a raster map</source>
         <extracomment>r.li.shape.ascii</extracomment>
-        <translation>r.li.shape.ascii - 計算網格地圖上的形狀指數</translation>
+        <translation>r.li.shape.ascii - 計算網格地圖的形狀指數</translation>
     </message>
     <message>
         <source>Sink WHERE conditions of SQL statement without &apos;where&apos; keyword</source>
@@ -13516,7 +13518,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Value of nearest cell</source>
         <extracomment>r.grow.distance</extracomment>
-        <translation>最近鄰格點的值</translation>
+        <translation>最近像元的值</translation>
     </message>
     <message>
         <source>Raster map containing aspect (degree, CCW from E)</source>
@@ -14408,7 +14410,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14503,7 +14505,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14582,7 +14584,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14653,7 +14655,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14708,7 +14710,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14771,7 +14773,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -15261,7 +15263,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui"/>
@@ -17403,7 +17405,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui"/>
         <source>Toggle Comment</source>
-        <translation>切換註釋</translation>
+        <translation>切換註解</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17458,12 +17460,12 @@ Shift+O to turn segments into straight or curve lines.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add WFS / OGC API - Features Layer…</source>
-        <translation>新增 WFS / OGC API - 圖徵圖層…</translation>
+        <translation>新增 WFS / OGC API - 要素圖層…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add WFS / OGC API - Features Layer</source>
-        <translation>新增 WFS / OGC API - 圖徵圖層</translation>
+        <translation>新增 WFS / OGC API - 要素圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17507,7 +17509,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add GPX Layer...</source>
-        <translation>新增 GPX 圖層...</translation>
+        <translation>新增 GPX 圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17844,7 +17846,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Show visible camera area in 2D map view</source>
-        <translation>在 2D 地圖檢視中顯示可見攝影機區域</translation>
+        <translation>在 2D 地圖檢視中顯示可見的攝影機視角</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17957,7 +17959,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Executing algorithm &lt;i&gt;{}&lt;/i&gt;</source>
-        <translation>執行演算法 &lt;i&gt;{}&lt;/i&gt;</translation>
+        <translation>正在執行演算法&lt;i&gt;{}&lt;/i&gt;</translation>
     </message>
 </context>
 <context>
@@ -18238,7 +18240,7 @@ Shift+click on existing inner ring to fill.</source>
     <message numerus="yes">
         <source>Showing {0} - {1} of %n result(s)</source>
         <comment>number of results</comment>
-        <translation><numerusform>顯示 {0} - {1}，共 %n 筆結果</numerusform></translation>
+        <translation><numerusform>呈現 {0} - {1} 的 %n 成果</numerusform></translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -18463,7 +18465,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Processing models (*.model3 *.MODEL3)</source>
-        <translation>處理模式 (*.model3 *.MODEL3)</translation>
+        <translation>處理模型檔（*.model3, *MODEL3)</translation>
     </message>
     <message>
         <source>model</source>
@@ -18476,7 +18478,8 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <source>Unable to save edits. Reason:
  {0}</source>
-        <translation>無法儲存編輯。原因:  {0}</translation>
+        <translation>無法儲存編輯。理由:
+ {0}</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
@@ -19308,11 +19311,11 @@ Shift+click on existing inner ring to fill.</source>
     <name>ParametersPanel</name>
     <message>
         <source> (xmin, xmax, ymin, ymax)</source>
-        <translation>(xmin, xmax, ymin, ymax)</translation>
+        <translation> (xmin, xmax, ymin, ymax)</translation>
     </message>
     <message>
         <source> [optional]</source>
-        <translation>[可選]</translation>
+        <translation>[選項]</translation>
     </message>
 </context>
 <context>
@@ -19373,7 +19376,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
@@ -19388,7 +19391,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
@@ -19786,7 +19789,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
@@ -19919,7 +19922,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>3D library is not available, can&apos;t assign a 3d renderer to a layer.</source>
-        <translation>3D 函式庫不可用，無法將 3d 彩現器指派給圖層。</translation>
+        <translation>3D 庫無法使用，無法將 3D 渲染器分配給圖層</translation>
     </message>
 </context>
 <context>
@@ -19980,7 +19983,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1755"/>
@@ -20410,7 +20413,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="3023"/>
         <source>A point cloud attribute parameter, for selecting an attribute from a point cloud source.</source>
-        <translation>一個點雲屬性引數，用於從點雲來源選擇屬性。</translation>
+        <translation>點雲屬性參數，從點雲資料源中選取屬性</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="3028"/>
@@ -20420,12 +20423,12 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="3090"/>
         <source>A vector tiles layer destination parameter.</source>
-        <translation>一個向量圖磚圖層目的地引數。</translation>
+        <translation>向量圖磚圖層目標參數</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="3095"/>
         <source>Vector Tile Destination</source>
-        <translation>向量圖磚目的地</translation>
+        <translation>向量圖磚目標</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="270"/>
@@ -21208,11 +21211,11 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Toggle Comment</source>
-        <translation>切換註釋</translation>
+        <translation>切換註解</translation>
     </message>
     <message>
         <source>Reformat Code</source>
-        <translation>重新格式化程式碼</translation>
+        <translation>重新設定程式代碼</translation>
     </message>
     <message>
         <source>Context Help</source>
@@ -21220,7 +21223,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Untitled-0</source>
-        <translation>未命名-0</translation>
+        <translation>無標題-0</translation>
     </message>
     <message>
         <source>QGIS Python Console
@@ -22626,32 +22629,32 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1854"/>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1898"/>
         <source>Function `raster_attributes` requires a valid raster layer.</source>
-        <translation>功能 `raster_attributes` 需要有效的網格圖層。</translation>
+        <translation>函數 `raster_attributes` 需要有效的網格網格圖層</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1860"/>
         <source>Function `raster_attributes` requires a valid raster band number.</source>
-        <translation>功能 `raster_attributes` 需要有效的網格波段號碼。</translation>
+        <translation>函數 `raster_attributes` 需要有效的網格影像波段數</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1866"/>
         <source>Function `raster_attributes` requires a valid raster value.</source>
-        <translation>功能 `raster_attributes` 需要有效的網格值。</translation>
+        <translation>函數 `raster_attributes` 需要有效的網格影像值</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1931"/>
         <source>Function `attribute` requires one or two parameters. %n given.</source>
-        <translation><numerusform>函式 `attribute` 需要一或兩個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`attribute` （屬性）功能需要一或兩個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1956"/>
         <source>Function `map_to_html_table` requires one parameter. %n given.</source>
-        <translation><numerusform>功能 `map_to_html_table` 需要一個引數。給定 %n。</numerusform></translation>
+        <translation><numerusform>函數 `map_to_html_table` 需要一個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1990"/>
         <source>Function `map_to_html_dl` requires one parameter. %n given.</source>
-        <translation><numerusform>函式 `map_to_html_dl` 需要一個引數。 %n 已給予。</numerusform></translation>
+        <translation><numerusform>函數 `map_to_html_dl`  需要一個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2052"/>
@@ -22668,7 +22671,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2194"/>
         <source>Function `represent_attributes` requires no more than two parameters. %n given.</source>
-        <translation><numerusform>函式 `represent_attributes` 最多接受兩個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`represent_attributes`  功能不可超過兩個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2201"/>
@@ -22683,12 +22686,12 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2288"/>
         <source>Function `maptip` requires no more than three parameters. %n given.</source>
-        <translation><numerusform>函式 `maptip` 最多接受三個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`maptip` 功能不可超過三個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2292"/>
         <source>Function `display` requires no more than three parameters. %n given.</source>
-        <translation><numerusform>函式 `display` 最多接受三個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`display` （顯示）功能不可超過三個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2299"/>
@@ -22703,12 +22706,12 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2369"/>
         <source>Function `is_selected` requires no more than two parameters. %n given.</source>
-        <translation><numerusform>函式 `is_selected` 最多接受兩個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`is_selected` （已選擇）功能不可超過兩個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2400"/>
         <source>Function `num_selected` requires no more than one parameter. %n given.</source>
-        <translation><numerusform>函式 `num_selected` 最多只能有一個參數。已給定 %n 個。</numerusform></translation>
+        <translation><numerusform>`num_selected` （已選的數目）功能不可超過一個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2438"/>
@@ -22873,7 +22876,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message numerus="yes">
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5409"/>
         <source>Function `azimuth` requires exactly two parameters. %n given.</source>
-        <translation><numerusform>函式 `azimuth` 需要正好兩個參數。提供了 %n 個。</numerusform></translation>
+        <translation><numerusform>`azimuth` 功能只需要兩個參數。已給定 %n 個。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5442"/>
@@ -22963,12 +22966,12 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6875"/>
         <source>Function `decode_uri` requires a valid layer.</source>
-        <translation>函式 `decode_uri` 需要有效的圖層。</translation>
+        <translation>函數 `decode_uri` 需要有效的圖層</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6898"/>
         <source>Invalid band number %1 for layer</source>
-        <translation>圖層的波段號碼 %1 無效。</translation>
+        <translation>圖層波段編號%1無效</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6387"/>
@@ -22999,7 +23002,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6946"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
-        <translation>函式 `raster_statistic` 需要有效的網格圖層。</translation>
+        <translation>函數 `raster_statistic` 需要有效的網格網格圖層</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7163"/>
@@ -23208,7 +23211,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="183"/>
         <source>line %1 contains %n duplicate node(s) starting at vertex %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation><numerusform>線 %1 包含從頂點 %2 開始的 %n 個重複節點</numerusform></translation>
+        <translation><numerusform>線段 %1 從頂點 %2 開始包含 %n 筆重複的節點</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="202"/>
@@ -23244,7 +23247,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message numerus="yes">
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="381"/>
         <source>Geometry has %n error(s).</source>
-        <translation><numerusform>幾何有 %n 個錯誤。</numerusform></translation>
+        <translation><numerusform>幾何圖形有 %n 筆錯誤。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="385"/>
@@ -24201,7 +24204,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2263"/>
         <source>Set layer name alias.</source>
-        <translation>設定圖層名稱別名。</translation>
+        <translation>設定圖層名稱別名</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2273"/>
@@ -24216,7 +24219,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2300"/>
         <source>XML documentation for the layer.</source>
-        <translation>圖層的 XML 檔案。</translation>
+        <translation>圖層的XML文檔</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="2304"/>
@@ -24420,7 +24423,7 @@ Only %1 of %2 features written.</source>
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmrepairshapefile.cpp" line="90"/>
         <source>Successfully repaired, found %n feature(s)</source>
-        <translation><numerusform>成功修復，找到 %n 個圖徵</numerusform></translation>
+        <translation><numerusform>成功修正，找到 %n 筆圖徵</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="304"/>
@@ -25056,7 +25059,7 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
-        <translation><numerusform>在 %n 個錯誤後停止</numerusform></translation>
+        <translation><numerusform>%n 筆錯誤之後停止</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
@@ -26012,12 +26015,12 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3574"/>
         <source>GDAL error setting the table type, raster attribute table could not be saved.</source>
-        <translation>GDAL 設定表格型別時出錯，無法儲存網格屬性表。</translation>
+        <translation>建立表格類型時GDAL發生錯誤，網格影像屬性表無法儲存</translation>
     </message>
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3608"/>
         <source>GDAL error creating column &apos;%1, raster attribute table could not be saved.</source>
-        <translation>GDAL 建立欄位 &apos;%1&apos; 時出錯，無法儲存網格屬性表。</translation>
+        <translation>建立列&apos;%1時GDAL發生錯誤，網格影像屬性表無法儲存</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="38"/>
@@ -28569,33 +28572,33 @@ The additional attributes and their values are taken from a second vector layer.
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1378"/>
         <source>Invalid arguments for load_layer function</source>
-        <translation>load_layer 函式的引數無效</translation>
+        <translation>load_layer 函數的引數無效</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1392"/>
         <source>load_layer cannot be used in this context</source>
-        <translation>load_layer 在此脈絡中無法使用</translation>
+        <translation>load_layer 無法在此環境脈絡下使用</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1400"/>
         <source>load_layer requires a static value for the uri argument</source>
-        <translation>load_layer 需要 uri 引數的靜態值</translation>
+        <translation>load_layer 需要 uri 參數的靜態變數</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1405"/>
         <source>load_layer requires a static value for the provider argument</source>
-        <translation>load_layer 需要 provider 引數的靜態值</translation>
+        <translation>load_layer 需要供應者參數的靜態變數</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1412"/>
         <source>Invalid uri argument for load_layer</source>
-        <translation>load_layer 的 uri 引數無效</translation>
+        <translation>load_layer 的 uri 參數無效</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1419"/>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1431"/>
         <source>Invalid provider argument for load_layer</source>
-        <translation>load_layer 的 provider 引數無效</translation>
+        <translation>load_layer 的供應者參數無效</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1437"/>
@@ -28899,7 +28902,7 @@ Response was:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyattribute.cpp" line="51"/>
         <source>≠</source>
-        <translation>不等于（≠）</translation>
+        <translation>≠</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyattribute.cpp" line="51"/>
@@ -28914,12 +28917,12 @@ Response was:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyattribute.cpp" line="51"/>
         <source>≥</source>
-        <translation>大于等于（≥）</translation>
+        <translation>≥</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyattribute.cpp" line="51"/>
         <source>≤</source>
-        <translation>小于等于（≤）</translation>
+        <translation>≤</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyattribute.cpp" line="51"/>
@@ -29269,7 +29272,7 @@ If desired, a maximum distance to use when aligning points can be set, to avoid 
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmangletonearest.cpp" line="263"/>
         <source>Multiple matching features found at same distance from search feature, found %n feature(s)</source>
-        <translation><numerusform>在搜尋圖徵的相同距離處找到多個匹配圖徵，找到 %n 個圖徵</numerusform></translation>
+        <translation><numerusform>在距離搜尋圖徵相同距離處找到多筆符合的圖徵，共找到 %n 筆圖徵</numerusform></translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlogicalop.cpp" line="48"/>
@@ -29290,7 +29293,7 @@ If desired, a maximum distance to use when aligning points can be set, to avoid 
         <location filename="../src/analysis/processing/qgsalgorithmrasterlogicalop.cpp" line="96"/>
         <location filename="../src/analysis/processing/qgsalgorithmreclassifybylayer.cpp" line="85"/>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlogicalop.cpp" line="231"/>
@@ -31501,7 +31504,7 @@ Z and M values at the start and end of the new line substrings are linearly inte
     <message numerus="yes">
         <location filename="../src/gui/qgssqlcomposerdialog.cpp" line="440"/>
         <source>%n argument(s) or more</source>
-        <translation><numerusform>%n 個參數或以上</numerusform></translation>
+        <translation><numerusform>%n 個或更多參數</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="989"/>
@@ -31788,7 +31791,7 @@ The sort order for features may be specified, if so, then the incremental field 
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalassignprojection.cpp" line="68"/>
         <source>Desired CRS</source>
-        <translation>所需的 CRS</translation>
+        <translation>預期的座標參考系統</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmassignprojection.cpp" line="34"/>
@@ -31859,7 +31862,7 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdaldensity.cpp" line="37"/>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalfilter.cpp" line="38"/>
         <source>Point cloud extraction</source>
-        <translation>點雲萃取</translation>
+        <translation>提取點雲</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalboundary.cpp" line="47"/>
@@ -31909,7 +31912,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundary.cpp" line="124"/>
         <source>No boundary for feature %1 (possibly a closed linestring?)</source>
-        <translation>特徵 %1 沒有邊界(可能是封閉的線串？)</translation>
+        <translation>圖徵%1沒有邊界(或許是閉合的linestring?)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundingbox.cpp" line="29"/>
@@ -32255,7 +32258,7 @@ Output attributes are computed depending on each given aggregate definition.</so
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="67"/>
         <source>Keep disjoint results separate</source>
-        <translation>保持不相交的結果分開</translation>
+        <translation>保持不相交的結果分離</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="69"/>
@@ -33227,12 +33230,12 @@ The additional attributes and their values are taken from a second vector layer.
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="260"/>
         <source>%n feature(s) from input layer were successfully matched</source>
-        <translation><numerusform>%n 個來自輸入圖層的圖徵已成功配對</numerusform></translation>
+        <translation><numerusform>輸入圖層中的 %n 筆圖徵已成功匹配</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="262"/>
         <source>%n feature(s) from input layer could not be matched</source>
-        <translation><numerusform>%n 個來自輸入圖層的圖徵無法匹配</numerusform></translation>
+        <translation><numerusform>輸入圖層中的 %n 筆圖徵無法匹配</numerusform></translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="32"/>
@@ -33498,12 +33501,12 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="114"/>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="247"/>
         <source>Creating spatial index</source>
-        <translation>正在建立空間索引</translation>
+        <translation>建立空間索引</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="136"/>
         <source>Calculating difference</source>
-        <translation>正在計算差異</translation>
+        <translation>計算差集</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="190"/>
@@ -33513,7 +33516,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="264"/>
         <source>Calculating intersection</source>
-        <translation>正在計算交集</translation>
+        <translation>計算交集</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="71"/>
@@ -33584,7 +33587,7 @@ If an attribute is selected in the &lt;Unique ID field&gt; parameter, features w
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalmerge.cpp" line="32"/>
         <source>Merge</source>
-        <translation>合併</translation>
+        <translation>接合</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalmerge.cpp" line="47"/>
@@ -33638,7 +33641,7 @@ If any parts of the input MultiLineString geometries are not connected, the resu
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="32"/>
         <source>Build virtual point cloud (VPC)</source>
-        <translation>建立虛擬點雲 (VPC)</translation>
+        <translation>建構虛擬點雲 (VPC)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="47"/>
@@ -33672,7 +33675,7 @@ If any parts of the input MultiLineString geometries are not connected, the resu
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="63"/>
         <source>Calculate boundary polygons</source>
-        <translation>計算邊界多邊形</translation>
+        <translation>計算多邊形邊界</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="64"/>
@@ -35387,7 +35390,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="115"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="72"/>
         <source>Pixel size must be greater than 0.</source>
-        <translation>畫素大小必須大於 0。</translation>
+        <translation>像素大小必須大於0</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="129"/>
@@ -35414,7 +35417,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalreproject.cpp" line="32"/>
         <source>Reproject</source>
-        <translation>再投影</translation>
+        <translation>重新投影</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalreproject.cpp" line="47"/>
@@ -36381,7 +36384,7 @@ Extracted label information include: position (served as point geometries), the 
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="489"/>
         <source>Writing %n label(s) to output layer</source>
-        <translation><numerusform>正在寫入 %n 個標註至輸出圖層</numerusform></translation>
+        <translation><numerusform>將 %n 個標籤寫入輸出圖層</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="98"/>
@@ -37066,7 +37069,7 @@ Extracted label information include: position (served as point geometries), the 
     <message numerus="yes">
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
-        <translation><numerusform>完成。執行花費 %1 秒（%n 個輸出）。</numerusform></translation>
+        <translation><numerusform>完成。執行過程花費 %1 秒(輸出 %n 個)</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
@@ -37076,7 +37079,7 @@ Extracted label information include: position (served as point geometries), the 
     <message numerus="yes">
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
-        <translation><numerusform>模型處理完成。共執行 %n 個演算法，耗時 %1 秒。</numerusform></translation>
+        <translation><numerusform>模型完成處理。在 %1 秒中總共執行 %n 個演算法</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
@@ -37345,12 +37348,12 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1002"/>
         <source>%1: Aliases are not compatible with scratch layers</source>
-        <translation>%1:別名與暫存圖層不相容</translation>
+        <translation>%1: 別名與暫存圖層不相容</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1004"/>
         <source>%1: Comments are not compatible with scratch layers</source>
-        <translation>%1: 註釋與暫存圖層不相容</translation>
+        <translation>%1: 注解與暫存圖層不相容</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1123"/>
@@ -37427,7 +37430,7 @@ Extracted label information include: position (served as point geometries), the 
     <message numerus="yes">
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2070"/>
         <source>%n feature(s) could not be written to %1: %2</source>
-        <translation><numerusform>%n 個圖徵無法寫入 %1：%2</numerusform></translation>
+        <translation><numerusform>%n 個圖徵無法寫入 %1: %2</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2072"/>
@@ -38670,13 +38673,13 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="559"/>
         <source>mm</source>
         <comment>render</comment>
-        <translation>mm</translation>
+        <translation>毫米</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="565"/>
         <source>px</source>
         <comment>render</comment>
-        <translation>px</translation>
+        <translation>畫素</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="568"/>
@@ -38706,13 +38709,13 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="580"/>
         <source>m</source>
         <comment>render</comment>
-        <translation>m</translation>
+        <translation>米</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="592"/>
         <source>m</source>
         <comment>distance</comment>
-        <translation>m</translation>
+        <translation>米</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="595"/>
@@ -38724,7 +38727,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="611"/>
         <source>ft</source>
         <comment>distance</comment>
-        <translation>ft</translation>
+        <translation>英尺</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="623"/>
@@ -38754,7 +38757,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="636"/>
         <source>mm</source>
         <comment>distance</comment>
-        <translation>mm</translation>
+        <translation>毫米</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="639"/>
@@ -38934,7 +38937,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="1066"/>
         <source>in²</source>
         <comment>area</comment>
-        <translation>平方英寸</translation>
+        <translation>平方英吋</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="1747"/>
@@ -39352,7 +39355,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="3487"/>
         <source>inches</source>
         <comment>render</comment>
-        <translation>英吋</translation>
+        <translation>英寸</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="3490"/>
@@ -40609,7 +40612,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/core/project/qgsprojectbadlayerhandler.cpp" line="31"/>
         <source> * %1</source>
-        <translation> * %1</translation>
+        <translation>* %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiringconstantbuffer.cpp" line="30"/>
@@ -40969,7 +40972,7 @@ Non-curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="124"/>
         <source>Minimum distance</source>
-        <translation>最小距離</translation>
+        <translation>最短距離</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="91"/>
@@ -40984,7 +40987,7 @@ Non-curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="60"/>
         <source>Top margin</source>
-        <translation>上邊距</translation>
+        <translation>頂部邊距</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="61"/>
@@ -41675,7 +41678,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/qgsstringutils.cpp" line="73"/>
         <source>.|:</source>
-        <translation>.|：</translation>
+        <translation>.|:</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutlegendwidget.cpp" line="1517"/>
@@ -44909,32 +44912,32 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1254"/>
         <source>Could not create relationship: %1</source>
-        <translation>無法建立關係: %1</translation>
+        <translation>無法建立關聯性：%1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1265"/>
         <source>Adding relationships for datasets requires GDAL 3.6 or later</source>
-        <translation>為資料集新增關係需要 GDAL 3.6 或更高版本</translation>
+        <translation>建立資料集間的關聯需要GDAL 3.6 或較新版本</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1299"/>
         <source>Could not update relationship: %1</source>
-        <translation>無法更新關係: %1</translation>
+        <translation>無法更新關聯性：%1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1310"/>
         <source>Updating relationships for datasets requires GDAL 3.6 or later</source>
-        <translation>更新資料集的關係需要 GDAL 3.6 或更高版本</translation>
+        <translation>更新資料集間的關聯需要GDAL 3.6 或較新版本</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1329"/>
         <source>Could not delete relationship: %1</source>
-        <translation>無法刪除關係: %1</translation>
+        <translation>關聯性無法刪除：%1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1340"/>
         <source>Deleting relationships for datasets requires GDAL 3.6 or later</source>
-        <translation>刪除資料集的關係需要 GDAL 3.6 或更高版本</translation>
+        <translation>刪除資料集間的關聯需要GDAL 3.6 或較新版本</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="183"/>
@@ -48786,13 +48789,13 @@ Optional GDAL-defined dataset and layer options can be specified. For more infor
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="133"/>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1072"/>
         <source>%1: Aliases are not supported by %2</source>
-        <translation>%1: 別名不被 %2 支援</translation>
+        <translation>%1: %2不支援別名</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="135"/>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1074"/>
         <source>%1: Comments are not supported by %2</source>
-        <translation>%1: 註釋不被 %2 支援</translation>
+        <translation>%1: %2不支援注解</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavelog.cpp" line="35"/>
@@ -55583,13 +55586,13 @@ The output layer is a copy of the input layer with additional fields that contai
         <location filename="../src/analysis/processing/qgsalgorithmclimb.cpp" line="76"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="126"/>
         <source>Minimum elevation</source>
-        <translation>最小高程</translation>
+        <translation>最低高程</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmclimb.cpp" line="77"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="127"/>
         <source>Maximum elevation</source>
-        <translation>最大高程</translation>
+        <translation>最高高程</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmclimb.cpp" line="90"/>
@@ -58061,12 +58064,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="299"/>
         <source>Raster Attribute Table is not set for this model.</source>
-        <translation>此模型未設定網格屬性表。</translation>
+        <translation>此模型尚未設置網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="308"/>
         <source>Raster Attribute Table is not editable.</source>
-        <translation>網格屬性表無法編輯。</translation>
+        <translation>網格影像屬性表無法編輯</translation>
     </message>
     <message>
         <location filename="../src/gui/stac/qgsstacsourceselectprovider.cpp" line="37"/>
@@ -58109,7 +58112,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetabledialogbase.ui"/>
         <source>Raster Attribute Table</source>
-        <translation>網格屬性表</translation>
+        <translation>網格影像屬性表</translation>
     </message>
 </context>
 <context>
@@ -58432,7 +58435,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4045"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4089"/>
@@ -58488,7 +58491,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="5400"/>
         <location filename="../src/app/qgisapp.cpp" line="6031"/>
         <source>&lt; Blank &gt;</source>
-        <translation>&lt; 空白 &gt;</translation>
+        <translation>&lt; Blank &gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5482"/>
@@ -58681,13 +58684,13 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <location filename="../src/app/qgisapp.cpp" line="11683"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
-        <translation><numerusform>確定要移除 %n 個圖例項目嗎？</numerusform></translation>
+        <translation><numerusform>移除 %n 圖層項目?</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="11714"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
-        <translation><numerusform>%n 個圖例項目已移除。</numerusform></translation>
+        <translation><numerusform>%n 圖層已移除。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="11794"/>
@@ -59507,7 +59510,7 @@ instead?</source>
         <location filename="../src/app/qgisapp.cpp" line="8723"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
-        <translation><numerusform>%n 個圖徵已刪除。</numerusform></translation>
+        <translation><numerusform>%n 圖徵已刪除。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6191"/>
@@ -59562,7 +59565,7 @@ instead?</source>
         <location filename="../src/app/qgisapp.cpp" line="11629"/>
         <location filename="../src/app/qgisapp.cpp" line="13711"/>
         <source> • %1</source>
-        <translation> • %1</translation>
+        <translation>• %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5759"/>
@@ -60577,7 +60580,7 @@ Please cancel these tasks and retry.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13612"/>
         <source>Save Raster Attribute Table</source>
-        <translation>儲存網格屬性表</translation>
+        <translation>儲存網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13612"/>
@@ -60588,7 +60591,7 @@ Please cancel these tasks and retry.</source>
         <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>Error Saving Raster Attribute Table</source>
-        <translation>儲存網格屬性表時發生錯誤</translation>
+        <translation>網格影像屬性表儲存錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13623"/>
@@ -61005,7 +61008,7 @@ Please cancel these tasks and retry.</source>
     <message>
         <location filename="../src/ui/symbollayer/qgs25drendererwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgs25drendererwidgetbase.ui"/>
@@ -62999,7 +63002,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/qgsadvanceddigitizingdockwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsadvanceddigitizingdockwidgetbase.ui"/>
@@ -64861,17 +64864,17 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="241"/>
         <source>Open Raster Attribute Table</source>
-        <translation>開啟網格屬性表</translation>
+        <translation>開啟網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="245"/>
         <source>Create Raster Attribute Table</source>
-        <translation>建立網格屬性表</translation>
+        <translation>建立網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="248"/>
         <source>Load Raster Attribute Table from VAT.DBF</source>
-        <translation>從 VAT.DBF 載入網格屬性表</translation>
+        <translation>從VAT.DBF載入網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="258"/>
@@ -66024,7 +66027,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/symbollayer/qgsarrowsymbollayerwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsarrowsymbollayerwidgetbase.ui"/>
@@ -66404,7 +66407,7 @@ Errors: %2
     <message>
         <location filename="../src/gui/vector/qgsattributeactionpropertiesdialog.cpp" line="255"/>
         <source>Open URL</source>
-        <translation>開啟 URL</translation>
+        <translation>開啟URL</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributeactionpropertiesdialog.cpp" line="256"/>
@@ -66457,7 +66460,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsattributeactionpropertiesdialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactionpropertiesdialogbase.ui"/>
@@ -66760,17 +66763,17 @@ Clicking the button will let you select an application to use as the action</sou
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributeformcontaineredit.ui"/>
         <source>Horizontal stretch</source>
-        <translation>水平拉伸</translation>
+        <translation>水平延伸</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributeformcontaineredit.ui"/>
         <source>Vertical stretch</source>
-        <translation>垂直拉伸</translation>
+        <translation>垂直延伸</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributeformcontaineredit.ui"/>
         <source>Type</source>
-        <translation>型別</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributeformcontaineredit.cpp" line="28"/>
@@ -66781,7 +66784,7 @@ Clicking the button will let you select an application to use as the action</sou
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributeformcontaineredit.cpp" line="59"/>
         <source>Tab</source>
-        <translation>標籤</translation>
+        <translation>定位鍵</translation>
     </message>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributeformcontaineredit.cpp" line="61"/>
@@ -67613,12 +67616,12 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributewidgeteditgroupbox.ui"/>
         <source>Horizontal stretch</source>
-        <translation>水平拉伸</translation>
+        <translation>水平延伸</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributewidgeteditgroupbox.ui"/>
         <source>Vertical stretch</source>
-        <translation>垂直拉伸</translation>
+        <translation>垂直延伸</translation>
     </message>
 </context>
 <context>
@@ -68054,7 +68057,7 @@ def my_form_open(dialog, layer, feature):
     <message>
         <location filename="../src/ui/qgsattributesformproperties.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributesformproperties.ui"/>
@@ -68133,7 +68136,7 @@ def my_form_open(dialog, layer, feature):
     <message>
         <location filename="../src/ui/auth/qgsauthauthoritieseditor.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthauthoritieseditor.ui"/>
@@ -68900,7 +68903,7 @@ Operation can NOT be undone!</source>
     <message>
         <location filename="../src/ui/auth/qgsauthconfigidedit.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -69604,7 +69607,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/auth/qgsauthidentitieseditor.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthidentitieseditor.ui"/>
@@ -69684,7 +69687,7 @@ Operation can NOT be undone!</source>
     <message>
         <location filename="../src/ui/auth/qgsauthimportcertdialog.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthimportcertdialog.ui"/>
@@ -69774,7 +69777,7 @@ Authorities/Issuers: %1%2</source>
     <message>
         <location filename="../src/ui/auth/qgsauthimportidentitydialog.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthimportidentitydialog.ui"/>
@@ -70687,7 +70690,7 @@ Description: %3</source>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
@@ -70883,7 +70886,7 @@ Description: %3</source>
     <message>
         <location filename="../src/auth/pkipkcs12/gui/qgsauthpkcs12edit.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/auth/pkipkcs12/gui/qgsauthpkcs12edit.ui"/>
@@ -71009,7 +71012,7 @@ Description: %3</source>
     <message>
         <location filename="../src/auth/pkipaths/gui/qgsauthpkipathsedit.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/auth/pkipaths/gui/qgsauthpkipathsedit.ui"/>
@@ -71131,7 +71134,7 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/auth/qgsauthserverseditor.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthserverseditor.cpp" line="79"/>
@@ -71521,7 +71524,7 @@ Operation can NOT be undone!</source>
     <message>
         <location filename="../src/ui/auth/qgsauthsslimportdialog.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -71539,7 +71542,7 @@ Operation can NOT be undone!</source>
     <message>
         <location filename="../src/ui/auth/qgsauthtrustedcasdialog.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthtrustedcasdialog.ui"/>
@@ -72089,7 +72092,7 @@ Server response: %1</source>
         <location filename="../src/app/qgsbookmarks.cpp" line="129"/>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation><numerusform>您確定要刪除 %n 個書籤嗎？</numerusform></translation>
+        <translation><numerusform>您確定要刪除%n書籤?</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="181"/>
@@ -72185,12 +72188,12 @@ Server response: %1</source>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui"/>
         <source>&amp;Export</source>
-        <translation>&amp;匯出</translation>
+        <translation>匯出(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui"/>
         <source>&amp;Import</source>
-        <translation>&amp;匯入</translation>
+        <translation>匯入(&amp;I)</translation>
     </message>
 </context>
 <context>
@@ -72983,7 +72986,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="301"/>
         <source>Reformat Code</source>
-        <translation>重新格式化程式碼</translation>
+        <translation>重新設定程式代碼</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="311"/>
@@ -72993,12 +72996,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="319"/>
         <source>Toggle Comment</source>
-        <translation>切換註釋</translation>
+        <translation>切換註解</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="336"/>
         <source>Command History</source>
-        <translation>指令歷史</translation>
+        <translation>命令歷史記錄</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="338"/>
@@ -73013,7 +73016,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="340"/>
         <source>Clear Session</source>
-        <translation>清除會話</translation>
+        <translation>清除工作階段</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="345"/>
@@ -73033,7 +73036,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="537"/>
         <source>Expression</source>
-        <translation>表達式</translation>
+        <translation>表示式</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="539"/>
@@ -73115,7 +73118,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditorhtml.cpp" line="131"/>
         <source>Reformat Code</source>
-        <translation>重新格式化程式碼</translation>
+        <translation>重新設定程式代碼</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditorhtml.cpp" line="131"/>
@@ -73151,7 +73154,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscodeditorhistorydialogbase.ui"/>
         <source>Run</source>
-        <translation>執行</translation>
+        <translation>運行</translation>
     </message>
 </context>
 <context>
@@ -73248,7 +73251,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="503"/>
         <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="508"/>
         <source>Reformat Code</source>
-        <translation>重新格式化程式碼</translation>
+        <translation>重新設定程式代碼</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditorpython.cpp" line="457"/>
@@ -74586,7 +74589,7 @@ Negative rounds to powers of 10</source>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
@@ -75562,17 +75565,17 @@ and current file is [%3]</source>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="154"/>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="164"/>
         <source>Error Saving Raster Attribute Table</source>
-        <translation>儲存網格屬性表時出錯</translation>
+        <translation>網格影像屬性表儲存錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>Raster Attribute Table Saved</source>
-        <translation>網格屬性表已儲存</translation>
+        <translation>儲存網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="172"/>
         <source>The new Raster Attribute Table was successfully created.</source>
-        <translation>新的網格屬性表已成功建立。</translation>
+        <translation>成功建立新的網格影像屬性表</translation>
     </message>
 </context>
 <context>
@@ -75580,22 +75583,22 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>New Raster Attribute Table</source>
-        <translation>新的網格屬性表</translation>
+        <translation>新建網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new Raster Attribute Table from the current symbology.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;從當前符號學建立新的網格屬性表。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;從目前的符號中建立新的網格影像屬性表&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>Raster Attribute Table Storage</source>
-        <translation>網格屬性表儲存</translation>
+        <translation>儲存網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table into a sidecar VAT.DBF file.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The resulting file will not be associated with any particular band.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;此方法將屬性表儲存到側邊 VAT.DBF 檔案中。&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;結果檔案將不會與任何特定波段關聯。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;此種方法會將屬性資料表儲存至VAT.DBF附屬檔&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;產出的檔案不會與任何特定波段相關聯&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
@@ -75615,7 +75618,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>Open the newly created attribute table</source>
-        <translation>開啟新建立的屬性表</translation>
+        <translation>開啟新建的屬性資料表</translation>
     </message>
 </context>
 <context>
@@ -76439,7 +76442,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/ui/qgsdatadefinedsizelegendwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatadefinedsizelegendwidget.ui"/>
@@ -76462,7 +76465,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_set_dd_value.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_set_dd_value.ui"/>
@@ -76970,7 +76973,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsdatetimeeditconfig.ui"/>
@@ -77100,7 +77103,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdatumtransformtablewidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -77307,7 +77310,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbrelationshipwidgetbase.ui"/>
         <source>Tables</source>
-        <translation>資料表</translation>
+        <translation>表格</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbrelationshipwidgetbase.ui"/>
@@ -77833,7 +77836,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/decorations/qgsdecorationlayoutextent.cpp" line="166"/>
         <source>%1: %2</source>
-        <translation>%1：%2</translation>
+        <translation>%1: %2</translation>
     </message>
 </context>
 <context>
@@ -77897,7 +77900,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationnortharrowdialog.ui"/>
@@ -79307,7 +79310,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui"/>
@@ -79683,7 +79686,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdirectionallightwidget.ui"/>
         <source>Altitude</source>
-        <translation>高度</translation>
+        <translation>海拔</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdirectionallightwidget.ui"/>
@@ -80037,7 +80040,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdualviewbase.ui"/>
@@ -80173,7 +80176,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsdwgimportbase.ui"/>
         <source>Select DWG/DXF file</source>
-        <translation>選擇 DWG/DXF 檔案</translation>
+        <translation>選取DWG/DXF檔案</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdwgimportbase.ui"/>
@@ -81076,7 +81079,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgseditconditionalformatrulewidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -81619,7 +81622,7 @@ Error: %2</source>
     <message>
         <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="337"/>
         <source>Export Distance/Elevation Table…</source>
-        <translation>輸出距離/高程表…</translation>
+        <translation>匯出距離/高度表格...</translation>
     </message>
     <message>
         <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="343"/>
@@ -83277,19 +83280,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ 2, 10 ]</source>
-        <translation>[2,10]</translation>
+        <translation>[ 2, 10 ]</translation>
     </message>
     <message>
         <source>[ 1, 2, 3, 4 ]</source>
-        <translation>[1,2,3,4]</translation>
+        <translation>[ 1, 2, 3, 4 ]</translation>
     </message>
     <message>
         <source>[ 1, 2, 2, 3 ]</source>
-        <translation>[1,2,2,3]</translation>
+        <translation>[ 1, 2, 2, 3 ]</translation>
     </message>
     <message>
         <source>[ 1, 2, 3 ]</source>
-        <translation>[1,2,3]</translation>
+        <translation>[ 1, 2, 3 ]</translation>
     </message>
     <message>
         <source>Returns an array with only the items for which the expression evaluates to true.</source>
@@ -83309,7 +83312,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ 1, 2 ]</source>
-        <translation>[1,2]</translation>
+        <translation>[ 1, 2 ]</translation>
     </message>
     <message>
         <source>Returns an array with the given expression evaluated on each item.</source>
@@ -87214,7 +87217,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>raster value</source>
-        <translation>網格值</translation>
+        <translation>網格數值</translation>
     </message>
     <message>
         <source>raster_attributes(&apos;vegetation&apos;, 1, raster_value(&apos;vegetation&apos;, 1, make_point(1,1)))</source>
@@ -87294,7 +87297,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Calculates how close a polygon shape is to a circle. The function returns 1 when the polygon shape is a perfect circle and 0 when it is completely flat.</source>
-        <translation>計算多邊形形狀與圓的接近程度。當多邊形形狀為完美圓形時，函式返回 1，當它完全平坦時返回 0。</translation>
+        <translation>计算多边形形状与圆的接近程度。当多边形形状是完美的圆形时，该函数返回 1；当它完全水平时，返回 0。</translation>
     </message>
     <message>
         <source>Removes the longest string containing only the specified characters (a space by default) from the end of string.</source>
@@ -90742,7 +90745,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bearing</source>
-        <translation>方向角</translation>
+        <translation>方位</translation>
     </message>
     <message>
         <source>an optional string or CRS object representing the source CRS of the points. By default the current layer&apos;s CRS is used.</source>
@@ -91378,7 +91381,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Merge map elements into a HTML table string.</source>
-        <translation>將地圖元素合併成一個 HTML 表格字串。</translation>
+        <translation>接合地圖元素至HTML表格字串</translation>
     </message>
     <message>
         <source>map_to_html_table</source>
@@ -95898,7 +95901,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui"/>
@@ -96118,7 +96121,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsextentgroupboxwidget.ui"/>
@@ -96204,7 +96207,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
@@ -98139,7 +98142,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui"/>
@@ -98636,7 +98639,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3645"/>
         <source>GDAL error saving raster attribute table, raster attribute table could not be saved.</source>
-        <translation>GDAL 儲存網格屬性表時出錯，無法儲存網格屬性表。</translation>
+        <translation>儲存網格影像屬性資料表時出現 GDAL 錯誤，網格影像屬性資料表無法儲存。</translation>
     </message>
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3774"/>
@@ -98893,7 +98896,7 @@ Check file and directory permissions on
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="497"/>
         <source>%1: %2</source>
-        <translation>%1：%2</translation>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="520"/>
@@ -100445,7 +100448,7 @@ The geometry check can be performed, but it will not be possible to fix any erro
         <location filename="../src/app/qgsgeometryvalidationmodel.cpp" line="92"/>
         <location filename="../src/app/qgsgeometryvalidationmodel.cpp" line="168"/>
         <source>%1: %2</source>
-        <translation>%1：%2</translation>
+        <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsgeometryvalidationmodel.cpp" line="166"/>
@@ -101143,7 +101146,7 @@ The geometry check can be performed, but it will not be possible to fix any erro
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1437"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="1443"/>
@@ -101584,7 +101587,7 @@ The geometry check can be performed, but it will not be possible to fix any erro
     <message>
         <location filename="../src/core/gps/qgsgpsdetector.cpp" line="61"/>
         <source>%1: %2</source>
-        <translation>%1：%2</translation>
+        <translation>%1: %2</translation>
     </message>
 </context>
 <context>
@@ -101939,7 +101942,7 @@ gray = no data
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
@@ -102485,7 +102488,7 @@ gray = no data
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="48"/>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="49"/>
         <source>GPS Toolbar</source>
-        <translation>GPS 工具列</translation>
+        <translation>GPS工具列</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="53"/>
@@ -102855,7 +102858,7 @@ Please select a valid file.</source>
     <message>
         <location filename="../src/ui/qgsgradientcolorrampdialogbase.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgradientcolorrampdialogbase.ui"/>
@@ -105193,7 +105196,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui"/>
@@ -108129,12 +108132,12 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/ui/labeling/qgslabellineanchorwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/labeling/qgslabellineanchorwidgetbase.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/labeling/qgslabellineanchorwidgetbase.ui"/>
@@ -108205,7 +108208,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/ui/labeling/qgslabelobstaclesettingswidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/labeling/qgslabelobstaclesettingswidgetbase.ui"/>
@@ -109629,7 +109632,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="249"/>
         <source>Raster Attribute Tables</source>
-        <translation>網格屬性表</translation>
+        <translation>網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayerstylingwidget.cpp" line="308"/>
@@ -109657,7 +109660,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/ui/qgsmapstylingwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmapstylingwidgetbase.ui"/>
@@ -109757,7 +109760,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="297"/>
         <source> (%1 - %2)</source>
-        <translation> (%1 - %2)</translation>
+        <translation>(%1 - %2)</translation>
     </message>
     <message>
         <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="299"/>
@@ -110119,7 +110122,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/ui/layout/qgslayout3dmapwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayout3dmapwidgetbase.ui"/>
@@ -110361,7 +110364,7 @@ Parser error:
     <message>
         <location filename="../src/ui/layout/qgslayoutatlaswidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutatlaswidgetbase.ui"/>
@@ -110866,7 +110869,7 @@ Parser error:
     <message>
         <location filename="../src/ui/layout/qgslayoutattributetablewidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutattributetablewidgetbase.ui"/>
@@ -113815,7 +113818,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayouthtmlwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayouthtmlwidgetbase.ui"/>
@@ -114557,7 +114560,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutitemwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutitemwidgetbase.ui"/>
@@ -114597,7 +114600,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutitemwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutitemwidgetbase.ui"/>
@@ -115431,7 +115434,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutlegendwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutlegendwidgetbase.ui"/>
@@ -117108,7 +117111,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -117208,7 +117211,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -117294,7 +117297,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmaplabelingwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmaplabelingwidgetbase.ui"/>
@@ -117626,12 +117629,12 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapwidgetbase.ui"/>
@@ -118027,7 +118030,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmarkerwidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmarkerwidgetbase.ui"/>
@@ -118249,7 +118252,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutpagepropertieswidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutpagepropertieswidget.ui"/>
@@ -118550,7 +118553,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutpicturewidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutpicturewidgetbase.ui"/>
@@ -118605,7 +118608,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutpicturewidgetbase.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutpicturewidgetbase.ui"/>
@@ -118797,7 +118800,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutpolylinewidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutpolylinewidgetbase.ui"/>
@@ -119275,7 +119278,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutscalebarwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutscalebarwidgetbase.ui"/>
@@ -120235,18 +120238,19 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>Error Loading Raster Attribute Table </source>
-        <translation>載入網格屬性表時出錯</translation>
+        <translation>載入網格影像屬性資料表錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>The raster attribute table could not be loaded.
 %1</source>
-        <translation>無法載入網格屬性表。%1</translation>
+        <translation>無法載入網格影像屬性資料表
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
         <source>Invalid Raster Attribute Table</source>
-        <translation>無效的網格屬性表</translation>
+        <translation>無效的網格影像屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
@@ -120268,12 +120272,12 @@ Load anyway?</source>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>Raster Attribute Table Loaded</source>
-        <translation>網格屬性表已載入</translation>
+        <translation>網格影像屬性資料表已載入</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>The new raster attribute table was successfully loaded.</source>
-        <translation>新的網格屬性表已成功載入。</translation>
+        <translation>新建網格影像屬性資料表儲存成功</translation>
     </message>
 </context>
 <context>
@@ -120281,12 +120285,12 @@ Load anyway?</source>
     <message>
         <location filename="../src/ui/raster/qgsloadrasterattributetabledialogbase.ui"/>
         <source>Load Raster Attribute Table</source>
-        <translation>載入網格屬性表</translation>
+        <translation>載入網格影像屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsloadrasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load a new Raster Attribute Table from a VAT.DBF file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;從 VAT.DBF 檔案載入新的網格屬性表。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;從VAT.DBF檔中載入新的網格影像屬性表&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsloadrasterattributetabledialogbase.ui"/>
@@ -122205,7 +122209,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmapcanvasdockwidget.cpp" line="604"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmapcanvasdockwidget.cpp" line="605"/>
@@ -127012,7 +127016,7 @@ If the terrain has no value for the point, the default elevation will be used.</
         <location filename="../src/gui/qgsmessagebar.cpp" line="442"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation><numerusform>還有 %n 條</numerusform></translation>
+        <translation><numerusform>%n更多</numerusform></translation>
     </message>
 </context>
 <context>
@@ -130951,7 +130955,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui"/>
@@ -131505,7 +131509,7 @@ Error message: %1</source>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="442"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation><numerusform>座標參考系統 (%n 可用)</numerusform></translation>
+        <translation><numerusform>坐標参考系統(%n個可用)</numerusform></translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="487"/>
@@ -132394,7 +132398,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoffsetuserinputwidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -133039,7 +133043,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/gui/qgsopacitywidget.cpp" line="47"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
 </context>
 <context>
@@ -134167,7 +134171,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -136869,7 +136873,7 @@ Should the existing classes be deleted?</source>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui"/>
@@ -140504,7 +140508,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudsourceselectbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudsourceselectbase.ui"/>
@@ -143280,7 +143284,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingdestinationwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -143318,7 +143322,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingalgorithmdialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -143501,7 +143505,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingenummodelerwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingenummodelerwidgetbase.ui"/>
@@ -144534,7 +144538,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingmatrixmodelerwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingmatrixmodelerwidgetbase.ui"/>
@@ -145597,7 +145601,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingtinmeshdatawidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingtinmeshdatawidgetbase.ui"/>
@@ -147335,7 +147339,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
@@ -148368,7 +148372,7 @@ Proceed?</source>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="547"/>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="552"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="555"/>
@@ -148384,7 +148388,7 @@ Proceed?</source>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="567"/>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="572"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/gui/qgspropertyassistantwidget.cpp" line="573"/>
@@ -149250,7 +149254,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
         <source>!=</source>
-        <translation>!=</translation>
+        <translation>!= !=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
@@ -149270,12 +149274,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
         <source>&gt;=</source>
-        <translation>&gt;=</translation>
+        <translation>&gt;= 大於等於</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
         <source>&lt;=</source>
-        <translation>&lt;=</translation>
+        <translation>&lt;= 小於等於</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
@@ -150294,7 +150298,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>Add a new row to the attribute table.</source>
-        <translation>將新列加入屬性表。</translation>
+        <translation>加入新列至屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
@@ -150304,12 +150308,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>Before current row </source>
-        <translation>在當前列之前</translation>
+        <translation>在此列之前</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
         <source>After current row </source>
-        <translation>在當前列之後</translation>
+        <translation>在此列之後</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetableaddrowdialogbase.ui"/>
@@ -150322,7 +150326,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetabledialog.cpp" line="27"/>
         <source>Raster Attribute Table for %1</source>
-        <translation>%1 的網格屬性表</translation>
+        <translation>%1的網格屬性資料表</translation>
     </message>
 </context>
 <context>
@@ -150364,17 +150368,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="43"/>
         <source>&amp;Edit Attribute Table</source>
-        <translation>編輯屬性表 (  )(&amp;E)</translation>
+        <translation>編輯屬性資料表(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="51"/>
         <source>Add &amp;Column…</source>
-        <translation>新增欄位… (  )(&amp;C)</translation>
+        <translation>加入欄位(&amp;C)...</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="55"/>
         <source>&amp;Add Row…</source>
-        <translation>新增列… (  )(&amp;A)</translation>
+        <translation>加入列(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="59"/>
@@ -150386,52 +150390,52 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="63"/>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="380"/>
         <source>Remove Column</source>
-        <translation>移除欄位</translation>
+        <translation>移除欄</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="67"/>
         <source>&amp;Save Changes</source>
-        <translation>儲存變更 (  )(&amp;S)</translation>
+        <translation>儲存變更(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="157"/>
         <source>No Attribute Tables Available</source>
-        <translation>沒有可用的屬性表</translation>
+        <translation>沒有可用的屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="157"/>
         <source>The raster layer has no associated attribute tables, you can create a new attribute table or load one from a VAT.DBF file.</source>
-        <translation>該網格圖層沒有關聯的屬性表，您可以建立一個新的屬性表或從 VAT.DBF 檔案中載入一個。</translation>
+        <translation>此網格網格圖層無屬性資料表，你可以建立一個新屬性資料表或是從VAT.DBF檔中載入。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="204"/>
         <source>Save Attribute Table</source>
-        <translation>儲存屬性表</translation>
+        <translation>儲存屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="204"/>
         <source>Attribute table contains unsaved changes, do you want to save the changes?</source>
-        <translation>屬性表包含未儲存的變更，您要儲存這些變更嗎？</translation>
+        <translation>屬性資料表中含有為儲存的改變，您是否要儲存這個改變?</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="259"/>
         <source>Save Raster Attribute Table (band %1) To File</source>
-        <translation>將網格屬性表(波段 %1)儲存至檔案</translation>
+        <translation>儲存網格影像屬性資料表 (band %1) 至檔案</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="286"/>
         <source>Attribute Table Write Success</source>
-        <translation>屬性表寫入成功</translation>
+        <translation>屬性資料表成功寫入</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="286"/>
         <source>The raster attribute table has been successfully saved.</source>
-        <translation>網格屬性表已成功儲存。</translation>
+        <translation>網格影像屬性資料表儲存成功。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="290"/>
         <source>Attribute Table Write Error</source>
-        <translation>屬性表寫入錯誤</translation>
+        <translation>屬性資料表寫入錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="308"/>
@@ -150443,12 +150447,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="308"/>
         <source>The raster attribute table is not set.</source>
-        <translation>網格屬性表未設定。</translation>
+        <translation>網格影像屬性資料表尚未設置。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="314"/>
         <source>The raster layer is not set.</source>
-        <translation>網格圖層未設定。</translation>
+        <translation>網格網格圖層尚未設置。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="323"/>
@@ -150458,7 +150462,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="326"/>
         <source>Apply Style From Attribute Table</source>
-        <translation>從屬性表套用樣式</translation>
+        <translation>將樣式應用至屬性表</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="326"/>
@@ -150483,32 +150487,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="367"/>
         <source>Error adding new column</source>
-        <translation>新增欄位時發生錯誤</translation>
+        <translation>新增欄時錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="380"/>
         <source>Do you want to remove the selected column? This action cannot be undone.</source>
-        <translation>您確定要移除所選的欄位嗎？此操作無法撤銷。</translation>
+        <translation>您是否要移除選取的欄?此動作無法復原。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="385"/>
         <source>Error removing column</source>
-        <translation>移除欄位時發生錯誤</translation>
+        <translation>移除欄時錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="430"/>
         <source>Error adding row</source>
-        <translation>新增列時發生錯誤</translation>
+        <translation>新增列時錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="443"/>
         <source>Do you want to remove the selected row? This action cannot be undone.</source>
-        <translation>您確定要移除所選的列嗎？此操作無法撤銷。</translation>
+        <translation>您是否要移除選取的列?此動作無法復原。</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="448"/>
         <source>Error removing row</source>
-        <translation>移除列時發生錯誤</translation>
+        <translation>移除列時錯誤</translation>
     </message>
 </context>
 <context>
@@ -150516,12 +150520,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetablewidgetbase.ui"/>
         <source>Raster Attribute Table</source>
-        <translation>網格屬性表</translation>
+        <translation>網格影像屬性表</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetablewidgetbase.ui"/>
         <source>Raster band</source>
-        <translation>網格波段</translation>
+        <translation>網格影像波段</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterattributetablewidgetbase.ui"/>
@@ -151050,7 +151054,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/raster/qgsrasterelevationpropertieswidget.cpp" line="54"/>
         <location filename="../src/app/raster/qgsrasterelevationpropertieswidget.cpp" line="66"/>
         <source>Not set</source>
-        <translation>未設定</translation>
+        <translation>未指定</translation>
     </message>
     <message>
         <location filename="../src/app/raster/qgsrasterelevationpropertieswidget.cpp" line="63"/>
@@ -151065,7 +151069,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/raster/qgsrasterelevationpropertieswidget.cpp" line="65"/>
         <source>Fill Above</source>
-        <translation>填充上方</translation>
+        <translation>向上填滿</translation>
     </message>
     <message>
         <location filename="../src/app/raster/qgsrasterelevationpropertieswidget.cpp" line="202"/>
@@ -151251,13 +151255,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="95"/>
         <source>Use Simple Interface</source>
-        <translation>使用簡單介面</translation>
+        <translation>使用簡單界面</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="97"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="548"/>
         <source>Use Table Interface</source>
-        <translation>使用表格介面</translation>
+        <translation>使用表格界面</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="268"/>
@@ -151491,7 +151495,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui"/>
@@ -151754,7 +151758,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="456"/>
         <source>Int8 - Eight bit signed integer</source>
-        <translation>Int8 - 八位元有符號整數</translation>
+        <translation>Int8 - 8 位元有號整數型態</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="459"/>
@@ -151834,17 +151838,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
-        <translation>讀取網格屬性表時出錯: 無效的波段 %1。</translation>
+        <translation>讀取網格影像屬性資料表錯誤：無效波段 %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
-        <translation>載入網格屬性表時出錯，找不到檔案: %1。</translation>
+        <translation>讀取網格影像屬性資料表錯誤：找不到文件 %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
         <source>Error loading raster attribute table from path %1: %2</source>
-        <translation>從路徑 %1 載入網格屬性表時出錯: %2</translation>
+        <translation>讀取網格影像屬性資料表路徑錯誤 %1:%2</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
@@ -152353,17 +152357,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui"/>
         <source>Attribute Tables</source>
-        <translation>屬性表</translation>
+        <translation>屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui"/>
         <source>Manage Raster Attribute Tables</source>
-        <translation>管理網格屬性表</translation>
+        <translation>管理網格影像屬性資料表</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui"/>
         <source>Indicates whether map tips are displayed for this layer or not</source>
-        <translation>指示此圖層是否顯示地圖提示</translation>
+        <translation>是否在此圖層顯示地圖提示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui"/>
@@ -153234,7 +153238,7 @@ standard de&amp;viation ×</source>
     <message>
         <location filename="../src/ui/raster/qgsrastertransparencywidget.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrastertransparencywidget.ui"/>
@@ -153503,7 +153507,7 @@ standard de&amp;viation ×</source>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
@@ -154365,7 +154369,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrendererpropsdialogbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererpropsdialogbase.ui"/>
@@ -155965,7 +155969,7 @@ and only the geometry column of the main typename can be used as the geometry co
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="198"/>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation><numerusform>找到 %n 個匹配的特徵。</numerusform></translation>
+        <translation><numerusform>找到%n符合的圖徵。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="274"/>
@@ -156968,7 +156972,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssettingstreewidgetold.cpp" line="187"/>
         <source>Delete Setting…</source>
-        <translation>刪除設定…</translation>
+        <translation>刪除設定...</translation>
     </message>
     <message>
         <location filename="../src/app/qgssettingstreewidgetold.cpp" line="189"/>
@@ -157503,12 +157507,12 @@ enhancement</source>
     <message>
         <location filename="../src/app/qgssnappinglayertreemodel.cpp" line="601"/>
         <source>, …</source>
-        <translation>, …</translation>
+        <translation>, … 翻譯為「， …」正確，注意省略號後有空格。</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappinglayertreemodel.cpp" line="605"/>
         <source>, </source>
-        <translation>, </translation>
+        <translation>,  翻譯為「，」較佳，去除多餘空格。</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappinglayertreemodel.cpp" line="677"/>
@@ -157985,7 +157989,7 @@ Beware that this option will be applied on all vertices of the edited geometries
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitemguiprovider.cpp" line="177"/>
         <source>%1: %2</source>
-        <translation>%1：%2</translation>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitemguiprovider.cpp" line="204"/>
@@ -159061,7 +159065,7 @@ please provide a new name:</source>
     <message>
         <location filename="../src/ui/qgsstatisticalsummarybase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -160939,7 +160943,7 @@ Kindly select a group or smart group you might want to delete.</source>
     <message>
         <location filename="../src/ui/qgssubstitutionlistwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -161989,7 +161993,7 @@ Kindly select a group or smart group you might want to delete.</source>
     <message>
         <location filename="../src/ui/qgstablewidgetuibase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstablewidgetuibase.ui"/>
@@ -162785,7 +162789,7 @@ Kindly select a group or smart group you might want to delete.</source>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -163222,7 +163226,7 @@ Kindly select a group or smart group you might want to delete.</source>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -163888,7 +163892,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/qgstiledsceneconnectiondialog.ui"/>
         <source>URL</source>
-        <translation>網址</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstiledsceneconnectiondialog.ui"/>
@@ -163911,7 +163915,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/gui/tiledscene/qgstiledscenedataitemguiprovider.cpp" line="39"/>
         <source>Edit Connection…</source>
-        <translation>編輯連線…</translation>
+        <translation>編輯連線...</translation>
     </message>
     <message>
         <location filename="../src/gui/tiledscene/qgstiledscenedataitemguiprovider.cpp" line="43"/>
@@ -163941,12 +163945,12 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/gui/tiledscene/qgstiledscenedataitemguiprovider.cpp" line="67"/>
         <source>Save Connections…</source>
-        <translation>儲存連線…</translation>
+        <translation>儲存連線...</translation>
     </message>
     <message>
         <location filename="../src/gui/tiledscene/qgstiledscenedataitemguiprovider.cpp" line="71"/>
         <source>Load Connections…</source>
-        <translation>載入連線…</translation>
+        <translation>載入連線</translation>
     </message>
     <message>
         <location filename="../src/gui/tiledscene/qgstiledscenedataitemguiprovider.cpp" line="132"/>
@@ -164046,7 +164050,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/core/tiledscene/qgstiledscenelayer.cpp" line="528"/>
         <source>History</source>
-        <translation>歷史</translation>
+        <translation>歷程</translation>
     </message>
 </context>
 <context>
@@ -164054,7 +164058,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/3d/qgstiledscenelayer3dpropertieswidget.ui"/>
         <source> px</source>
-        <translation>px</translation>
+        <translation>像素</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgstiledscenelayer3dpropertieswidget.ui"/>
@@ -164106,24 +164110,24 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="80"/>
         <source>Load Style…</source>
-        <translation>載入樣式…</translation>
+        <translation>載入樣式...</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="81"/>
         <source>Save Style…</source>
-        <translation>儲存樣式…</translation>
+        <translation>儲存樣式...</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="83"/>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="95"/>
         <source>Save as Default</source>
-        <translation>儲存為預設值</translation>
+        <translation>儲存為預設</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="84"/>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="96"/>
         <source>Restore Default</source>
-        <translation>還原預設值</translation>
+        <translation>還原預設</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="90"/>
@@ -164133,12 +164137,12 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="92"/>
         <source>Load Metadata…</source>
-        <translation>載入詮釋資料…</translation>
+        <translation>載入詮釋資料...</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="93"/>
         <source>Save Metadata…</source>
-        <translation>儲存詮釋資料…</translation>
+        <translation>儲存詮釋資料...</translation>
     </message>
     <message>
         <location filename="../src/app/tiledscene/qgstiledscenelayerproperties.cpp" line="188"/>
@@ -164166,7 +164170,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/qgstiledscenelayerpropertiesbase.ui"/>
         <source>Rendering</source>
-        <translation>彩現</translation>
+        <translation>渲染</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstiledscenelayerpropertiesbase.ui"/>
@@ -164204,7 +164208,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenerendererpropsdialogbase.ui"/>
         <source>Renderer Settings</source>
-        <translation>彩現器設定</translation>
+        <translation>渲染器設定</translation>
     </message>
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenerendererpropsdialogbase.ui"/>
@@ -164214,7 +164218,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenerendererpropsdialogbase.ui"/>
         <source>Layer Rendering</source>
-        <translation>圖層彩現</translation>
+        <translation>圖層渲染</translation>
     </message>
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenerendererpropsdialogbase.ui"/>
@@ -164293,7 +164297,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/qgstiledscenesourceselectbase.ui"/>
         <source>F&amp;ile</source>
-        <translation>檔案</translation>
+        <translation>檔案(&amp;F)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstiledscenesourceselectbase.ui"/>
@@ -164353,7 +164357,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/qgstiledscenesourceselectbase.ui"/>
         <source>&amp;New</source>
-        <translation>&amp;新建(&amp;N)</translation>
+        <translation>新增(&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstiledscenesourceselectbase.ui"/>
@@ -164381,7 +164385,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenetexturerendererwidgetbase.ui"/>
         <source>Change…</source>
-        <translation>變更…</translation>
+        <translation>變更...</translation>
     </message>
 </context>
 <context>
@@ -164399,7 +164403,7 @@ This limit is exclusive, that means the label will not be displayed on this scal
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenewireframerendererwidgetbase.ui"/>
         <source>Change…</source>
-        <translation>變更…</translation>
+        <translation>變更...</translation>
     </message>
     <message>
         <location filename="../src/ui/tiledscene/qgstiledscenewireframerendererwidgetbase.ui"/>
@@ -164790,7 +164794,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsuserprofilemanager.cpp" line="170"/>
         <source>Cannot write &apos;%1&apos;</source>
-        <translation>無法寫入 &apos;%1&apos;</translation>
+        <translation>無法寫入%1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsuserprofilemanager.cpp" line="187"/>
@@ -165993,25 +165997,25 @@ Error was: %2</source>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="665"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation><numerusform>成功: %n 個屬性已刪除。</numerusform></translation>
+        <translation><numerusform>成功: %n 屬性已刪除。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="674"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation><numerusform>錯誤: %n 個屬性未刪除。</numerusform></translation>
+        <translation><numerusform>錯誤: %n 屬性未刪除。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="724"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation><numerusform>成功: %n 個屬性已新增。</numerusform></translation>
+        <translation><numerusform>成功: %n 屬性已加入。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="731"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation><numerusform>錯誤: %n 個新屬性未新增</numerusform></translation>
+        <translation><numerusform>錯誤: %n 新屬性未加入</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="699"/>
@@ -166087,44 +166091,44 @@ Error was: %2</source>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="853"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation><numerusform>成功: %n 個屬性值已變更。</numerusform></translation>
+        <translation><numerusform>成功：更改了%n個屬性值。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="860"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation><numerusform>錯誤: %n 個屬性值變更未應用。</numerusform></translation>
+        <translation><numerusform>錯誤：未能更改%n個屬性值。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="892"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation><numerusform>成功: %n 個圖徵已刪除。</numerusform></translation>
+        <translation><numerusform>成功：删除了%n個圖徵。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="907"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation><numerusform>錯誤: %n 個圖徵未刪除。</numerusform></translation>
+        <translation><numerusform>錯誤：未能删除%n個圖徵。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="948"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation><numerusform>成功: %n 個圖徵已新增。</numerusform></translation>
+        <translation><numerusform>成功：增加了%n個圖徵。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="972"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation><numerusform>錯誤: %n 個圖徵未新增。</numerusform></translation>
+        <translation><numerusform>錯誤：未能增加%n個圖徵。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="649"/>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="992"/>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation><numerusform>錯誤: %n 個圖徵未新增 - 提供者不支援新增圖徵。</numerusform></translation>
+        <translation><numerusform>錯誤：未能增加%n個圖徵——資料源不支持增加圖徵。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="641"/>
@@ -166136,13 +166140,13 @@ Error was: %2</source>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="828"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation><numerusform>成功: %n 個幾何形狀已變更。</numerusform></translation>
+        <translation><numerusform>成功：更改了%n個幾何圖形。</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="835"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation><numerusform>錯誤: %n 幾何圖形未變更。</numerusform></translation>
+        <translation><numerusform>錯誤：未能更改%n個幾何圖形。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="457"/>
@@ -168705,7 +168709,7 @@ Error was: %2</source>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayerprovider.cpp" line="539"/>
         <source>QGIS expression</source>
-        <translation>QGIS 表示式</translation>
+        <translation>QGIS 表示</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayerprovider.cpp" line="614"/>
@@ -168880,7 +168884,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselectbase.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselectbase.ui"/>
@@ -169695,7 +169699,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1001"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation><numerusform>座標參考系統 (%n 可用)</numerusform></translation>
+        <translation><numerusform>坐標參考系統 (%n可使用)</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="933"/>
@@ -169721,7 +169725,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1024"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation><numerusform>已選擇 %n 圖層</numerusform></translation>
+        <translation><numerusform>%n 個圖層已選取</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1030"/>
@@ -170429,7 +170433,7 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1287"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation><numerusform>(和 %n 更多)</numerusform></translation>
+        <translation><numerusform>(和额外的%n)</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1282"/>
@@ -171085,7 +171089,7 @@ Reason phrase: %2</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1138"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation><numerusform>,%n 快取未命中。</numerusform></translation>
+        <translation><numerusform>，%n快取遺失。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1156"/>
@@ -171368,7 +171372,7 @@ Reason phrase: %2</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2460"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation><numerusform>(還有 %n 個)</numerusform></translation>
+        <translation><numerusform>(和额外的%n)</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2468"/>
@@ -171822,7 +171826,7 @@ Reason phrase: %2</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4685"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation><numerusform>,，%n 快取未命中。</numerusform></translation>
+        <translation><numerusform>，%n快取遺失。</numerusform></translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4706"/>
@@ -172523,7 +172527,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Raster calculator</source>
-        <translation>網格計算器</translation>
+        <translation>影像計算</translation>
     </message>
     <message>
         <source>No reference layer selected nor CRS provided</source>
@@ -173371,7 +173375,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
 </context>
 <context>
@@ -173578,12 +173582,12 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
 </context>
 <context>
@@ -174206,7 +174210,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/callouts/widget_ballooncallout.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/callouts/widget_ballooncallout.ui"/>
@@ -174413,7 +174417,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/callouts/widget_curvedlinecallout.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/callouts/widget_curvedlinecallout.ui"/>
@@ -174448,7 +174452,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/callouts/widget_curvedlinecallout.ui"/>
         <source> %</source>
-        <translation> %</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/callouts/widget_curvedlinecallout.ui"/>
@@ -174534,7 +174538,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui"/>
@@ -174594,7 +174598,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui"/>
@@ -174650,12 +174654,12 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_filledmarker.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_filledmarker.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_filledmarker.ui"/>
@@ -174698,7 +174702,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui"/>
@@ -174748,7 +174752,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui"/>
@@ -174859,7 +174863,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui"/>
@@ -174919,7 +174923,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientfill.ui"/>
@@ -174937,7 +174941,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientline.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_gradientline.ui"/>
@@ -174980,7 +174984,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_hashline.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_hashline.ui"/>
@@ -174990,7 +174994,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_hashline.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_hashline.ui"/>
@@ -175078,7 +175082,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui"/>
@@ -175093,7 +175097,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui"/>
@@ -175116,7 +175120,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui"/>
@@ -175219,7 +175223,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui"/>
@@ -175287,7 +175291,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_randommarkerfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_randommarkerfill.ui"/>
@@ -175320,7 +175324,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_rasterfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_rasterfill.ui"/>
@@ -175403,7 +175407,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_rasterline.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_rasterline.ui"/>
@@ -175456,7 +175460,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_rastermarker.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_rastermarker.ui"/>
@@ -175496,7 +175500,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_rastermarker.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>無筆劃</translation>
     </message>
 </context>
 <context>
@@ -175504,7 +175508,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui"/>
@@ -175539,7 +175543,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
 </context>
 <context>
@@ -175618,7 +175622,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_shapeburstfill.ui"/>
@@ -175696,7 +175700,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui"/>
@@ -175739,7 +175743,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
@@ -175837,7 +175841,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/callouts/widget_simplelinecallout.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/callouts/widget_simplelinecallout.ui"/>
@@ -175935,7 +175939,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui"/>
@@ -175980,7 +175984,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui"/>
@@ -176003,7 +176007,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui"/>
         <source>…</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui"/>
@@ -176063,7 +176067,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui"/>
         <source> °</source>
-        <translation> °</translation>
+        <translation>Fill color: 填充顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui"/>
@@ -176294,7 +176298,8 @@ Reason phrase: %2</source>
     <message>
         <source>&lt;p&gt;QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.&lt;/p&gt;
   </source>
-        <translation>&lt;p&gt;QGIS 是一個使用者友善的開放原始碼地理資訊系統 (GIS)，依據 GNU 通用公共授權條款授權。QGIS 是開放原始碼地理空間基金會 (OSGeo) 的官方專案。它可以在 Linux、Unix、Mac OSX、Windows 和 Android 上執行，並支援眾多向量、網格和資料庫格式及功能。&lt;/p&gt;</translation>
+        <translation>QGIS是根据GNU通用公共许可证许可的，用户友好的开源地理信息系统（GIS）。 QGIS是开源地理空间基金会（OSGeo）的官方專案。 它可以在Linux，Unix，Mac OSX，Windows和Android上运行，并支持多种向量、栅格以及数据库格式和众多功能的软件。
+</translation>
     </message>
 </context>
 <context>
@@ -176404,7 +176409,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Allow projection difference</source>
-        <translation>允許投影差異</translation>
+        <translation>允許不一樣的座標投影方式</translation>
     </message>
     <message>
         <source>Add alpha mask band to VRT when source raster has none</source>
@@ -177263,7 +177268,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>The custom output extent option (--projwin) is only available on GDAL 3.3 or later</source>
@@ -179673,7 +179678,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -180049,7 +180054,7 @@ Supported output formats for this option are:
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -180136,7 +180141,7 @@ Supported output formats for this option are:
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -180267,7 +180272,7 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -180387,7 +180392,7 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高版本</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
 </context>
 <context>
@@ -180529,7 +180534,7 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui"/>
         <source>New Rule</source>
-        <translation>完整列</translation>
+        <translation>新規則</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui"/>
@@ -180539,7 +180544,7 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui"/>
         <source>Delete selected rules</source>
-        <translation>刪除選定的規則</translation>
+        <translation>刪除選取規則</translation>
     </message>
 </context>
 <context>
@@ -180953,7 +180958,7 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -181840,11 +181845,11 @@ The algorithm also makes it possible to reorder the bands for the newly-created 
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation>Int8 資料型態需要 GDAL 版本 3.7 或更高。</translation>
+        <translation>Int8 資料類型需要 GDAL 3.7 或較新版本</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
-        <translation>輸出格式無效</translation>
+        <translation>輸出無效的格式</translation>
     </message>
 </context>
 </TS>

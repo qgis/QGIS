@@ -16790,12 +16790,12 @@ Per favore, controlla che GRASS sia correttamente installato e disponibile sul t
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add Vector Layer…</source>
-        <translation>Aggiungi Layer Vettore...</translation>
+        <translation>Aggiungi Vettore...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add Raster Layer…</source>
-        <translation>Aggiungi Layer Raster...</translation>
+        <translation>Aggiungi Raster...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -21799,8 +21799,7 @@ Il valore percentuale/numero non è applicato all&apos;intero layer, ma a ciascu
         <source>Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 </source>
         <extracomment>qgis:pointsdisplacement</extracomment>
-        <translation>Compensa i punti vicini spostando altrettanti punti vicini di una quantità preimpostata per ridurre al minimo gli elementi sovrapposti.
-</translation>
+        <translation>Sposta gli elementi puntuali spostando i punti vicini di una distanza predefinita per ridurre al minimo la sovrapposizione degli elementi.</translation>
     </message>
     <message>
         <source>This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
@@ -21868,7 +21867,7 @@ Due campi devono essere inseriti come parametri: uno che definisce la categoria 
         <source>This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
 </source>
         <extracomment>qgis:hypsometriccurves</extracomment>
-        <translation>Calcola curve isometriche da un Modello Digitale del Terreno in ingresso. Le curve sono prodotte come file tabellari in una cartella di uscita specificata dall&apos;utente.
+        <translation>Calcola le curve ipsometriche per un modello digitale di elevazione (DEM) fornito in ingresso. Le curve vengono salvate come file di tabella in una cartella di destinazione specificata dall&apos;utente.
 </translation>
     </message>
     <message>
@@ -32443,7 +32442,7 @@ Gli attributi di output vengono calcolati in base a ciascuna definizione di aggr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaggregate.cpp" line="45"/>
         <source>Aggregates features based on a group by expression, combining geometries (if present) into one multipart geometry for each group.</source>
-        <translation>Aggrega le caratteristiche in base a una espressione di raggruppamento, combinando le geometrie (se presenti) in una singola geometria multiparte per ciascun gruppo.</translation>
+        <translation>Aggrega gli elementi in base a una espressione di raggruppamento, combinando le geometrie (se presenti) in una singola geometria multi parte per ciascun gruppo.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaggregate.cpp" line="71"/>
@@ -33207,7 +33206,7 @@ Opzionalmente, gli elementi geometrici possono anche essere tagliati sull&apos;e
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="395"/>
         <source>Creates a selection in a vector layer based on the spatial relationship with features in an additional layer.</source>
-        <translation>Crea una selezione in un livello vettoriale basata sulla relazione spaziale con le caratteristiche di un livello aggiuntivo.</translation>
+        <translation>Crea una selezione in un layer vettoriale basata sulla relazione spaziale con gli elementi di un livello aggiuntivo.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="500"/>
@@ -34173,7 +34172,7 @@ Opzionalmente, si può impostare il sistema di riferimento delle coordinate di d
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="191"/>
         <source>%1 field in layer %2 has different field precision than the destination layer (%3 vs %4). %1 field precision will be extended to match the larger of the two.</source>
-        <translation>Il campo %1 nel layer %2 ha una precisione del campo diversa rispetto al layer di destinazione (%3 vs %4). La precisione del campo %1 sarà estesa per corrispondere a quella più grande delle due.</translation>
+        <translation>Il campo %1 nel layer %2 ha una precisione del campo diversa rispetto al layer di destinazione (%3 vs %4). La precisione del campo %1 sarà estesa per farla corrispondere a quella più grande delle due.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="247"/>
@@ -46553,7 +46552,7 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="30"/>
         <source>Add field to attributes table</source>
-        <translation>Aggiungi un campo alla tabella degli attributi</translation>
+        <translation>Aggiungi un campo alla tabella attributi</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="35"/>
@@ -55061,7 +55060,7 @@ Sono state generate solo le prime 999 classi.</translation>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1311"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation>%1 non è un layer valido e non può essere caricato. Controlla il &lt;a href=&quot;#messageLog&quot;&gt;log messaggi&lt;/a&gt; per ulteriori informazioni.</translation>
+        <translation>%1 non è un layer valido e non può essere caricato. Controlla il &lt;a href=&quot;#messageLog&quot;&gt;registro&lt;/a&gt; per ulteriori informazioni.</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1670"/>
@@ -75641,7 +75640,7 @@ Il negativo viene arrotondato alle potenze di 10</translation>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui"/>
         <location filename="../src/gui/qgsconfigureshortcutsdialog.cpp" line="696"/>
         <source>Action</source>
-        <translation>Comando</translation>
+        <translation>Azione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui"/>
@@ -96708,7 +96707,7 @@ Cambia il nome dello script e salva per permettere a QGIS di caricarlo in automa
     <message>
         <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="1610"/>
         <source>[unsupported type: %1; value: %2]</source>
-        <translation>[tipo: %1 non consentito; valore: %2]</translation>
+        <translation>[tipo non supportato: %1; valore: %2]</translation>
     </message>
 </context>
 <context>
@@ -101934,7 +101933,7 @@ La verifica delle geometrie può essere eseguita, ma non sarà possibile corregg
     <message>
         <location filename="../src/ui/georeferencer/qgsgeorefpluginguibase.ui"/>
         <source>Add GCP point</source>
-        <translation>Aggiungi punto GCP</translation>
+        <translation>Aggiungi Punto GCP</translation>
     </message>
     <message>
         <location filename="../src/ui/georeferencer/qgsgeorefpluginguibase.ui"/>
@@ -105803,7 +105802,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="182"/>
         <source>Add Point</source>
-        <translation>Aggiunge un nuovo punto</translation>
+        <translation>Aggiungi Punto</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="186"/>
@@ -120556,7 +120555,7 @@ Valutazione errore: %1</translation>
     <message>
         <location filename="../src/gui/layout/qgslayoutviewtooladditem.cpp" line="33"/>
         <source>Add item</source>
-        <translation>Aggiungi Oggetto</translation>
+        <translation>Aggiungi oggetto</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutviewtooladditem.cpp" line="91"/>
@@ -120574,7 +120573,7 @@ Valutazione errore: %1</translation>
     <message>
         <location filename="../src/gui/layout/qgslayoutviewtooladdnodeitem.cpp" line="37"/>
         <source>Add item</source>
-        <translation>Aggiungi Oggetto</translation>
+        <translation>Aggiungi oggetto</translation>
     </message>
 </context>
 <context>
@@ -144731,7 +144730,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/ui/processing/qgsprocessingenummodelerwidgetbase.ui"/>
         <source>Add item</source>
-        <translation>Aggiungi Oggetto</translation>
+        <translation>Aggiungi oggetto</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingenummodelerwidgetbase.ui"/>
@@ -145278,7 +145277,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2461"/>
         <source>%1 files</source>
-        <translation>file %1</translation>
+        <translation>%1 file</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="2496"/>
@@ -158710,7 +158709,7 @@ contrasto</translation>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui"/>
         <source>Add Condition</source>
-        <translation>Aggiungi condizione</translation>
+        <translation>Aggiungi Condizione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui"/>
@@ -168581,7 +168580,7 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="266"/>
         <source>&lt;Default&gt;</source>
-        <translation>&lt;Predefinito&gt;</translation>
+        <translation>&lt;Default&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="179"/>
@@ -179503,7 +179502,7 @@ Controlla il log dei processi per vedere gli errori.</translation>
     </message>
     <message>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation>Dissolvi i confini tra aree adiacenti che condividono una categoria comune o un attributo</translation>
+        <translation>Dissolve i confini tra aree adiacenti che condividono una categoria comune o un attributo</translation>
     </message>
     <message>
         <source>Download and import data from WMS server</source>

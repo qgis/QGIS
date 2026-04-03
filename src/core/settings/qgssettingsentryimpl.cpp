@@ -259,7 +259,8 @@ bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QStr
       settings->remove( redKey );
       settings->remove( greenKey );
       settings->remove( blueKey );
-      settings->remove( alphaKey );
+      if ( !alphaKey.isNull() )
+        settings->remove( alphaKey );
     }
 
     if ( value() != oldValue )

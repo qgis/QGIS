@@ -276,11 +276,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Execution completed in {}</source>
-        <translation type="unfinished"/>
+        <translation>اكتمل التنفيذ في ()</translation>
     </message>
     <message>
         <source>Execution failed after {}</source>
-        <translation type="unfinished"/>
+        <translation>فشل التنفيذ بعد {}</translation>
     </message>
 </context>
 <context>
@@ -93264,7 +93264,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the calculated third quartile from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>أعد الربع الثالث من المجال او التعبير</translation>
     </message>
     <message>
         <source>q3</source>

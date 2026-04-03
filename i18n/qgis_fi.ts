@@ -47254,7 +47254,7 @@ If a coverage layer is set, the selected layout&apos;s atlas settings exposed in
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="102"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="75"/>
         <source>Generate world file</source>
-        <translation type="unfinished"/>
+        <translation>Luo world-tiedosto</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="106"/>
@@ -97694,7 +97694,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1563"/>
         <source>Delete all related objects (CASCADE)?</source>
-        <translation type="unfinished"/>
+        <translation>Poistetaanko kaikki liittyvät kohteet (CASCADE)?</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1582"/>
@@ -97923,7 +97923,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="103"/>
         <source>No URL specified</source>
-        <translation type="unfinished"/>
+        <translation>URL-osoitetta ei määritetty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="117"/>
@@ -146845,7 +146845,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/qgsprojectelevationsettingswidgetbase.ui"/>
         <source>When set, these heights define the upper and lower elevation limits for the area of interest in this project.</source>
-        <translation type="unfinished"/>
+        <translation>Kun nämä korkeusarvot on asetettu, ne määrittävät projektin kohdealueen ylä‑ ja alapuoliset korkeusrajat.</translation>
     </message>
 </context>
 <context>

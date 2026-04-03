@@ -662,7 +662,7 @@ Deschide dialogul rezultatelor pentru verificare.</translation>
     </message>
     <message>
         <source>Select from Open Layers…</source>
-        <translation>Selectare din Open Layers...</translation>
+        <translation>Selectare din straturile deschise</translation>
     </message>
     <message>
         <source>Select Files…</source>
@@ -20760,7 +20760,7 @@ Acest lucru poate conduce la rezultate neașteptate.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"/>
+        <translation>Instrumente de &amp;Analiză</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
@@ -20780,31 +20780,31 @@ Acest lucru poate conduce la rezultate neașteptate.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"/>
+        <translation>Proiecții</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished"/>
+        <translation>Conversie</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"/>
+        <translation>Extragere</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Analiză</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"/>
+        <translation>Diverse</translation>
     </message>
     <message>
         <source>Invalid algorithm ID for menu: {}</source>
-        <translation type="unfinished"/>
+        <translation>ID-ul algoritmului nu este nevalid pentru meniu: {}</translation>
     </message>
     <message>
         <source>Missing Algorithm</source>
-        <translation type="unfinished"/>
+        <translation>Algoritm Lipsă</translation>
     </message>
     <message>
         <source>The algorithm &quot;{}&quot; is no longer available. (Perhaps a plugin was uninstalled?)</source>
@@ -20812,7 +20812,7 @@ Acest lucru poate conduce la rezultate neașteptate.</translation>
     </message>
     <message>
         <source>Missing Dependency</source>
-        <translation type="unfinished"/>
+        <translation>Dependență Lipsă </translation>
     </message>
     <message>
         <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
@@ -25695,7 +25695,7 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpackage.cpp" line="35"/>
         <source>Package layers</source>
-        <translation>Straturile pachetului</translation>
+        <translation>Împachetare straturi</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpackage.cpp" line="40"/>
@@ -154796,7 +154796,7 @@ abaterea standard ×</translation>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="732"/>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="743"/>
         <source>Opacity [%]</source>
-        <translation type="unfinished"/>
+        <translation>Opacitate [%]</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="741"/>

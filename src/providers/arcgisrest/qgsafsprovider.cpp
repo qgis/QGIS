@@ -25,10 +25,12 @@
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
+#include "qgsrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsfeedback.h"
 #include "qgsreadwritelocker.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayerlabeling.h"
 
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -85,8 +87,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
   }
 
-  mServerSupportsCurves = layerData.value( QStringLiteral( "allowTrueCurvesUpdates" ), false ).toBool();
+  mServerSupportsCurvedUpdates = layerData.value( QStringLiteral( "allowTrueCurvesUpdates" ), false ).toBool();
 
+  const bool useCurvedTypes = mServerSupportsCurvedUpdates || !mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive );
   if ( !isTable )
   {
     // Set extent
@@ -228,6 +231,11 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
     const bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
     mSharedData->mGeometryType = QgsArcGisRestUtils::convertGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
+    if ( useCurvedTypes )
+      mSharedData->mGeometryType = QgsWkbTypes::curveType( mSharedData->mGeometryType );
+    else
+      mSharedData->mGeometryType = QgsWkbTypes::linearType( mSharedData->mGeometryType );
+
     if ( mSharedData->mGeometryType == Qgis::WkbType::Unknown )
     {
       if ( layerData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
@@ -612,7 +620,7 @@ Qgis::VectorProviderCapabilities QgsAfsProvider::capabilities() const
     c = c | Qgis::VectorProviderCapability::CreateLabeling;
   }
 
-  if ( mServerSupportsCurves )
+  if ( mServerSupportsCurvedUpdates )
     c |= Qgis::VectorProviderCapability::CircularGeometries;
 
   if ( mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
@@ -753,12 +761,12 @@ void QgsAfsProvider::reloadProviderData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap );
+  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap ).release();
 }
 
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList );
+  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList ).release();
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )

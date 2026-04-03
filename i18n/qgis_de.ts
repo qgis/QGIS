@@ -28526,7 +28526,7 @@ Die zusätzlichen Attribute und ihre Werte werden aus einem zweiten Layer entnom
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="372"/>
         <source>Can store result in cache</source>
-        <translation>Kann Ergebnis nicht in Cache speichern</translation>
+        <translation>Kann Ergebnis in Cache speichern</translation>
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="372"/>
@@ -28575,7 +28575,7 @@ Die zusätzlichen Attribute und ihre Werte werden aus einem zweiten Layer entnom
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="478"/>
         <source>Read from network</source>
-        <translation>Aus Netzwerk laden</translation>
+        <translation>Aus Netzwerk geladen</translation>
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="512"/>

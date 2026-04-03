@@ -6909,7 +6909,7 @@ Feltkodeblok returnerer ikke variablen &apos;{0}&apos;! Denne variable skal dekl
     <message>
         <source>Mode</source>
         <extracomment>r.mode</extracomment>
-        <translation type="unfinished"/>
+        <translation>Opsætning</translation>
     </message>
     <message>
         <source>Creates a raster map containing concentric rings around a given point.</source>
@@ -18676,7 +18676,7 @@ Shift + klik på en eksisterende indre ring for at udfylde denne.</translation>
     </message>
     <message>
         <source>Dependencies</source>
-        <translation type="unfinished"/>
+        <translation>Afhængigheder</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
@@ -18687,7 +18687,7 @@ Shift + klik på en eksisterende indre ring for at udfylde denne.</translation>
     <name>ModelerParametersWidget</name>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"/>
+        <translation>Egenskaber</translation>
     </message>
     <message>
         <source>Color</source>
@@ -18703,7 +18703,7 @@ Shift + klik på en eksisterende indre ring for at udfylde denne.</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="unfinished"/>
+        <translation>Kommentarer</translation>
     </message>
 </context>
 <context>
@@ -91320,7 +91320,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))</source>
-        <translation type="unfinished"/>
+        <translation>color_grayscale_average(color_cmykf(0.6,0.5,0.1,0.8))</translation>
     </message>
     <message>
         <source>CMYKA: 0.40,0.40,0.40,0.80,1.00</source>
@@ -91332,7 +91332,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>color_hslf</source>
-        <translation type="unfinished"/>
+        <translation>color_hslf</translation>
     </message>
     <message>
         <source>hue of the color, as a float value from 0.0 to 1.0</source>
@@ -91388,7 +91388,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>color_mix</source>
-        <translation type="unfinished"/>
+        <translation>color_mix</translation>
     </message>
     <message>
         <source>a color string or a color object</source>
@@ -92248,7 +92248,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>length3D</source>
-        <translation type="unfinished"/>
+        <translation>length3D</translation>
     </message>
     <message>
         <source>length3D(geom_from_wkt(&apos;LINESTRINGZ(0 0 0, 3 0 4)&apos;))</source>
@@ -128410,7 +128410,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="1314"/>
         <source>%1 dependencies selected</source>
-        <translation type="unfinished"/>
+        <translation>%1 afhængigheder valgt</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="1341"/>
@@ -129073,7 +129073,7 @@ Se loggen for yderligere information.</translation>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
         <source>Toolbox</source>
-        <translation type="unfinished"/>
+        <translation>Værktøjskasse</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
@@ -129103,12 +129103,12 @@ Se loggen for yderligere information.</translation>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
         <source>Select/Move/Link Item</source>
-        <translation type="unfinished"/>
+        <translation>Vælg/flyt/link element</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
         <source>Select/Move/link item</source>
-        <translation type="unfinished"/>
+        <translation>Vælg/flyt/link element</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
@@ -138456,7 +138456,7 @@ b) Brug konfigurations-menuen til at tilføje dine adgangsoplysninger i en HTTP 
     </message>
     <message>
         <source>Plugin dependencies for &lt;b&gt;%s&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Pluginafhængigheder for &lt;b&gt;%s&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Name</source>

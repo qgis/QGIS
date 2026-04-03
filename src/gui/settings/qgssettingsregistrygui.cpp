@@ -16,6 +16,7 @@
 #include "qgssettingsregistrygui.h"
 
 #include "qgsapplication.h"
+#include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsabstractdbsourceselect.h"
@@ -28,6 +29,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
+  QgsSettings::holdFlush();
+
   // single settings - added in 3.30
   settingsRespectScreenDPI->copyValueFromKey( QStringLiteral( "gui/qgis/respect_screen_dpi" ), {}, true );
 
@@ -36,6 +39,8 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), { QStringLiteral( "MSSQLSourceSelect" ) }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), { QStringLiteral( "PgSourceSelect" ) }, true );
   QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), { QStringLiteral( "SpatiaLiteSourceSelect" ) }, true );
+
+  QgsSettings::releaseFlush();
 }
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()

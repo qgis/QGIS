@@ -568,22 +568,27 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 {
   // Retrieve and clone layers
   const QString mapTheme = parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context );
-  if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+
+  QgsProject *project = context.project();
+  if ( project )
   {
-    const QList<QgsMapLayer *> constLayers = context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme );
-    for ( const QgsMapLayer *l : constLayers )
+    if ( !mapTheme.isEmpty() && project->mapThemeCollection()->hasMapTheme( mapTheme ) )
     {
-      // only copy vector layers as other layer types aren't actors in the labeling process
-      if ( l->type() == Qgis::LayerType::Vector )
-        mMapLayers.push_back( l->clone() );
+      const QList<QgsMapLayer *> constLayers = project->mapThemeCollection()->mapThemeVisibleLayers( mapTheme );
+      for ( const QgsMapLayer *l : constLayers )
+      {
+        // only copy vector layers as other layer types aren't actors in the labeling process
+        if ( l->type() == Qgis::LayerType::Vector )
+          mMapLayers.push_back( l->clone() );
+      }
+      mMapThemeStyleOverrides = project->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
     }
-    mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
   }
 
-  if ( mMapLayers.isEmpty() )
+  if ( project && mMapLayers.isEmpty() )
   {
     QList<QgsMapLayer *> layers;
-    QgsLayerTree *root = context.project()->layerTreeRoot();
+    QgsLayerTree *root = project->layerTreeRoot();
     const QList<QgsLayerTreeLayer *> layerTreeLayers = root->findLayers();
     layers.reserve( layerTreeLayers.size() );
     for ( QgsLayerTreeLayer *nodeLayer : layerTreeLayers )
@@ -606,15 +611,18 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   }
 
   mCrs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
-  if ( !mCrs.isValid() )
-    mCrs = context.project()->crs();
+  if ( project && !mCrs.isValid() )
+    mCrs = project->crs();
 
   bool includeUnplaced = parameterAsBoolean( parameters, QStringLiteral( "INCLUDE_UNPLACED" ), context );
-  mLabelSettings = context.project()->labelingEngineSettings();
+  mLabelSettings = project ? project->labelingEngineSettings() : QgsLabelingEngineSettings();
   mLabelSettings.setFlag( Qgis::LabelingFlag::DrawUnplacedLabels, includeUnplaced );
   mLabelSettings.setFlag( Qgis::LabelingFlag::CollectUnplacedLabels, includeUnplaced );
 
-  mScaleMethod = context.project()->scaleMethod();
+  if ( project )
+  {
+    mScaleMethod = project->scaleMethod();
+  }
 
   return true;
 }

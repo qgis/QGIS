@@ -101,7 +101,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
     QgsHttpHeaders mRequestHeaders;
-    bool mServerSupportsCurves = false;
+    bool mServerSupportsCurvedUpdates = false;
     QString mAdminUrl;
     QVariantMap mAdminData;
     QStringList mAdminCapabilityStrings;

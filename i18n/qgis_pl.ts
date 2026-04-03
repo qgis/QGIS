@@ -6776,7 +6776,7 @@ Blok kodu dla pola nie zwraca zmiennej &apos;{0}&apos;! Proszę nadać wartość
     <message>
         <source>Elevation raster map for height extraction</source>
         <extracomment>v.drape</extracomment>
-        <translation type="unfinished"/>
+        <translation>Rastrowy numeryczny model terenu</translation>
     </message>
     <message>
         <source>Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).</source>
@@ -20747,43 +20747,43 @@ Może to skutkować nieoczekiwanymi rezultatami.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia &amp;analizy</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia &amp;badawcze</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia &amp;geoprzetwarzania</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia g&amp;eometrii</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia zarządzania &amp;danymi</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"/>
+        <translation>Odwzorowania</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished"/>
+        <translation>Konwersja</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"/>
+        <translation>Cięcie</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Analiza</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"/>
+        <translation>Różne</translation>
     </message>
     <message>
         <source>Invalid algorithm ID for menu: {}</source>
@@ -27594,7 +27594,7 @@ SQL: %1</translation>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="361"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="440"/>
         <source>Metadata tools</source>
-        <translation type="unfinished"/>
+        <translation>Narzędzia metadanych</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="49"/>
@@ -56665,7 +56665,7 @@ The algorithm operates by testing the layer&apos;s extent in every known referen
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfindprojection.cpp" line="177"/>
         <source>No matching projections found.</source>
-        <translation type="unfinished"/>
+        <translation>Nie znaleziono pasującego odwzorowania</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="35"/>
@@ -56694,7 +56694,7 @@ The algorithm operates by testing the layer&apos;s extent in every known referen
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="50"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryselfintersection.cpp" line="49"/>
         <source>Fix geometry</source>
-        <translation type="unfinished"/>
+        <translation>Napraw geometrie</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="60"/>
@@ -64250,7 +64250,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationcommonpropertieswidgetbase.ui"/>
         <source>Annotation Properties</source>
-        <translation type="unfinished"/>
+        <translation>Właściwości adnotacji</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationcommonpropertieswidgetbase.ui"/>
@@ -64479,7 +64479,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationlinetextwidgetbase.ui"/>
         <source>Point Text Annotation</source>
-        <translation type="unfinished"/>
+        <translation>Adnotacja tekstowa w punkcie</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationlinetextwidgetbase.ui"/>
@@ -64544,7 +64544,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpicturewidgetbase.ui"/>
         <source>Point Text Annotation</source>
-        <translation type="unfinished"/>
+        <translation>Adnotacja tekstowa w punkcie</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpicturewidgetbase.ui"/>
@@ -64620,7 +64620,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpointtextwidgetbase.ui"/>
         <source>Point Text Annotation</source>
-        <translation type="unfinished"/>
+        <translation>Adnotacja tekstowa w punkcie</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpointtextwidgetbase.ui"/>
@@ -64691,7 +64691,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationrectangulartextwidgetbase.ui"/>
         <source>Rectangle Text Annotation</source>
-        <translation type="unfinished"/>
+        <translation>Adnotacja tekstowa w prostokącie</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationrectangulartextwidgetbase.ui"/>
@@ -68536,7 +68536,7 @@ Referencja w nazwie funkcji: my_form_open
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1073"/>
         <source>Base configuration</source>
-        <translation type="unfinished"/>
+        <translation>Konfiguracja podstawowa</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1097"/>
@@ -142325,7 +142325,7 @@ Rezultat: %3 (%4)</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="157"/>
         <source>Export Project to File…</source>
-        <translation type="unfinished"/>
+        <translation>Eksportuj projekt do pliku...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="161"/>
@@ -142485,7 +142485,7 @@ Rezultat: %3 (%4)</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="822"/>
         <source>Export Project to File</source>
-        <translation type="unfinished"/>
+        <translation>Eksportuj projekt do pliku</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="822"/>

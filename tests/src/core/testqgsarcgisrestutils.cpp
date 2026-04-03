@@ -166,9 +166,14 @@ void TestQgsArcGisRestUtils::testParseEsriGeometryPolygon()
                                      "]"
                                      "}" );
   QCOMPARE( map[QStringLiteral( "rings" )].isValid(), true );
-  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::convertGeometryPolygon( map, Qgis::WkbType::Point );
+  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::convertGeometryPolygon( map, Qgis::WkbType::Point, true );
   QVERIFY( geometry.get() );
   QCOMPARE( geometry->asWkt(), QStringLiteral( "MultiSurface (CurvePolygon (CompoundCurve ((0 0, 10 0, 10 10, 0 10, 0 0)),CompoundCurve ((3 3, 9 3, 6 9, 3 3))),CurvePolygon (CompoundCurve ((12 0, 13 0, 13 10, 12 10, 12 0))))" ) );
+
+  // force straight geometry type
+  geometry = QgsArcGisRestUtils::convertGeometryPolygon( map, Qgis::WkbType::Point, false );
+  QVERIFY( geometry.get() );
+  QCOMPARE( geometry->asWkt(), QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0),(3 3, 9 3, 6 9, 3 3)),((12 0, 13 0, 13 10, 12 10, 12 0)))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriFillStyle()
@@ -704,7 +709,7 @@ QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) con
 void TestQgsArcGisRestUtils::testParseCompoundCurve()
 {
   const QVariantMap map = jsonStringToMap( "{\"curvePaths\": [[[6,3],[5,3],{\"c\": [[3,3],[1,4]]}]]}" );
-  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point, true ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3),CircularString (5 3, 1 4, 3 3)))" ) );
 }
@@ -712,33 +717,53 @@ void TestQgsArcGisRestUtils::testParseCompoundCurve()
 void TestQgsArcGisRestUtils::testParsePolyline()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3],[5,3]]]}" );
-  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point, true ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3)))" ) );
+
+  // force straight geometry type
+  curve = QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point, false );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiLineString ((6 3, 5 3))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParsePolylineZ()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
-  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZ ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZ, true ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve Z (CompoundCurve Z ((6 3 1, 5 3 2)))" ) );
+
+  // force straight geometry type
+  curve = QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZ, false );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiLineString Z ((6 3 1, 5 3 2))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParsePolylineM()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
-  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointM ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointM, true ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve M (CompoundCurve M ((6 3 1, 5 3 2)))" ) );
+
+  // force straight geometry type
+  curve = QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointM, false );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiLineString M ((6 3 1, 5 3 2))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParsePolylineZM()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1,11],[5,3,2,12]]]}" );
-  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZM ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZM, true ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve ZM (CompoundCurve ZM ((6 3 1 11, 5 3 2 12)))" ) );
+
+  // force straight geometry type
+  curve = QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZM, false );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiLineString ZM ((6 3 1 11, 5 3 2 12))" ) );
 }
 
 QGSTEST_MAIN( TestQgsArcGisRestUtils )

@@ -20812,7 +20812,8 @@ This can cause unexpected results.</source>
     <message>
         <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
 {0}</source>
-        <translation type="unfinished"/>
+        <translation>&lt;h3&gt;Saknade beroenden. Algoritmen kan inte köras :-( &lt;/h3&gt;
+{0}</translation>
     </message>
 </context>
 <context>
@@ -93824,7 +93825,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns whether the current feature&apos;s geometry is exactly equal to at least one feature&apos;s geometry from a target layer, or an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature&apos;s geometry. Note that the order of vertices matters.</source>
-        <translation type="unfinished"/>
+        <translation>Returnerar huruvida aktuellt objekts geometri är exakt lika med åtminstone ett objekts geometri  från mållagret, eller en array av uttrycksbaserade resultat för objekten i mållagret vars geometri är exakt lika med aktuellt objekts geometri. Observera att ordningen på brytpunkter har betydelse.</translation>
     </message>
     <message>
         <source>overlay_equals</source>
@@ -93836,7 +93837,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region</source>
-        <translation type="unfinished"/>
+        <translation>TRUE om aktuellt objekts geometri är exakt samma som geometrin för en region</translation>
     </message>
     <message>
         <source>overlay_equals(&apos;regions&apos;, filter:= population &gt; 10000)</source>
@@ -93844,7 +93845,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature&apos;s geometry is exactly the same as the geometry of a region whose population is greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>TRUE om aktuellt objekts geometri är exakt samma som geometrin för en region vars befolkning är större än 10000</translation>
     </message>
     <message>
         <source>overlay_equals(&apos;regions&apos;, name)</source>
@@ -93860,7 +93861,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This function requires exact equality of geometries, meaning that the geometries &apos;LINESTRING( 0 0, 1 1 )&apos; and &apos;LINESTRING( 1 1, 0 0 )&apos; are different.</source>
-        <translation type="unfinished"/>
+        <translation>Denna funktion kräver exakt likhet av geometrier vilket innebär att geometrierna &apos;LINESTRING( 0 0, 1 1 )&apos; och &apos;LINESTRING( 1 1, 0 0 )&apos; är olika.</translation>
     </message>
     <message>
         <source>Returns whether the current feature spatially intersects at least one feature from a target layer, or an array of expression-based results for the features in the target layer intersected by the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Intersects&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Intersects.html&apos;&gt;ST_Intersects&lt;/a&gt; function.</source>
@@ -137505,7 +137506,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2793"/>
         <source>Could not determine geometry column name: No SDO_GEOMETRY results found for %1.%2 in ALL_TAB_COLUMNS</source>
-        <translation type="unfinished"/>
+        <translation>Kunde inte bestämma namnet på geometrikolumnen: Inga SDO_GEOMETRY resultat hittades för %1.%2 i ALL_TAB_COLUMNS</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2798"/>
@@ -137513,12 +137514,15 @@ SQL: %3</translation>
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished"/>
+        <translation>Kunde inte bestämma geometrikolumnens namn.
+Felmeddelandet från databasen var:
+%1.
+SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2856"/>
         <source>Could not retrieve SRID of %1.%2 (%3): No matches found in all_sdo_geom_metadata</source>
-        <translation type="unfinished"/>
+        <translation>Kunde inte hämta SRID för %1.%2 (%3): Inga matchningar hittades i all_sdo_geom_metadata</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3018"/>
@@ -154783,7 +154787,7 @@ standardavvikelse ×</translation>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="732"/>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="743"/>
         <source>Opacity [%]</source>
-        <translation type="unfinished"/>
+        <translation>Opacitet [%]</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="741"/>
@@ -159636,7 +159640,7 @@ Detta kan ta lång tid (beroende på storleken på databasen), men innebär bät
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="436"/>
         <source>Error when creating a layer. Check message log for more details.</source>
-        <translation type="unfinished"/>
+        <translation>Fel vid skapande av lager. Kontrollera meddelandeloggen för mer detaljer.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="522"/>

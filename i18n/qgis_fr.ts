@@ -56123,7 +56123,7 @@ To fix sliver polygons, use the &quot;Fix small polygons&quot; algorithm.</sourc
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="31"/>
         <source>Check validity</source>
-        <translation type="unfinished"/>
+        <translation>Vérifier la validité</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="36"/>
@@ -56144,7 +56144,7 @@ The GEOS method is faster and performs better on larger geometries, but is limit
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="65"/>
         <source>Performs a validity check on the geometries of a vector layer and classifies them in three groups (valid, invalid and error).</source>
-        <translation type="unfinished"/>
+        <translation>Effectue un contrôle de validité sur les géométries d&apos;une couche vectoriel et les classe en trois groupes (valides, non valides et erronées).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcheckvalidity.cpp" line="79"/>
@@ -56519,7 +56519,7 @@ L&apos;invalidité comprend les polygones qui se chevauchent ou dont les espaces
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="32"/>
         <source>Add geometry attributes</source>
-        <translation type="unfinished"/>
+        <translation>Ajouter les attributs de géométrie</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="37"/>
@@ -62008,12 +62008,12 @@ Annulez ces tâches et réessayez.</translation>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="88"/>
         <source>Editing Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Barre d&apos;outils d&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="93"/>
         <source>Toggle editing</source>
-        <translation type="unfinished"/>
+        <translation>Basculer en mode édition</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="99"/>
@@ -62028,7 +62028,7 @@ Annulez ces tâches et réessayez.</translation>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="107"/>
         <source>Select Editing Tool</source>
-        <translation type="unfinished"/>
+        <translation>Sélectionner l&apos;outil d&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="112"/>
@@ -68591,7 +68591,7 @@ Référence dans le nom de la fonction: my_form_open
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1128"/>
         <source>Free Text…</source>
-        <translation type="unfinished"/>
+        <translation>Texte libre...</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1129"/>
@@ -68601,12 +68601,12 @@ Référence dans le nom de la fonction: my_form_open
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1130"/>
         <source>Pie Chart</source>
-        <translation type="unfinished"/>
+        <translation>Diagramme en camembert</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1131"/>
         <source>Bar Chart</source>
-        <translation type="unfinished"/>
+        <translation>Diagramme à barres</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1213"/>
@@ -68628,7 +68628,7 @@ Référence dans le nom de la fonction: my_form_open
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1460"/>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1511"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1238"/>
@@ -68653,7 +68653,7 @@ Référence dans le nom de la fonction: my_form_open
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1462"/>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Texte</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1508"/>
@@ -68663,7 +68663,7 @@ Référence dans le nom de la fonction: my_form_open
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="1520"/>
         <source>Draw horizontal line</source>
-        <translation type="unfinished"/>
+        <translation>Tracer une ligne horizontale</translation>
     </message>
 </context>
 <context>
@@ -77986,7 +77986,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>Add new field</source>
-        <translation type="unfinished"/>
+        <translation>Ajouter un nouveau champ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -78036,7 +78036,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>edits</source>
-        <translation type="unfinished"/>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -80473,7 +80473,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/vector/qgsdiagramwidget.cpp" line="51"/>
         <source>Stacked Bars</source>
-        <translation type="unfinished"/>
+        <translation>Barres empilées</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsdiagramwidget.cpp" line="52"/>
@@ -122526,7 +122526,7 @@ Charger quand même ?</translation>
     <message>
         <location filename="../src/ui/qgsmaplayerserverpropertieswidgetbase.ui"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmaplayerserverpropertieswidgetbase.ui"/>
@@ -129494,7 +129494,7 @@ Vérifiez le fichier journal pour plus d&apos;information.</translation>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
         <source>Toolbox</source>
-        <translation type="unfinished"/>
+        <translation>Boîte à outils</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsmodeldesignerdialogbase.ui"/>
@@ -146751,12 +146751,12 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingtoolboxmodel.cpp" line="461"/>
         <source>Input parameters</source>
-        <translation type="unfinished"/>
+        <translation>Paramètres en entrée</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingtoolboxmodel.cpp" line="482"/>
         <source>Input parameters used in the modeler</source>
-        <translation type="unfinished"/>
+        <translation>Paramètres en entrée utilisés par le modeleur</translation>
     </message>
 </context>
 <context>
@@ -150510,7 +150510,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="222"/>
         <source>Load Layer</source>
-        <translation type="unfinished"/>
+        <translation>Charger la couche</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="226"/>
@@ -150663,7 +150663,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsqueryresultpanelwidgetbase.ui"/>
         <source>Load Layer</source>
-        <translation type="unfinished"/>
+        <translation>Charger la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsqueryresultpanelwidgetbase.ui"/>
@@ -157629,7 +157629,7 @@ et seule la colonne géométrique du type principal peut être utilisée comme c
     <message>
         <location filename="../src/ui/qgssensorthingssourceselectbase.ui"/>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssourceselectbase.ui"/>
@@ -157639,7 +157639,7 @@ et seule la colonne géométrique du type principal peut être utilisée comme c
     <message>
         <location filename="../src/ui/qgssensorthingssourceselectbase.ui"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Charger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssourceselectbase.ui"/>
@@ -157659,7 +157659,7 @@ et seule la colonne géométrique du type principal peut être utilisée comme c
     <message>
         <location filename="../src/ui/qgssensorthingssourceselectbase.ui"/>
         <source>&amp;New</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Nouveau</translation>
     </message>
 </context>
 <context>
@@ -159645,7 +159645,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/gui/stac/qgsstacdataitemguiprovider.cpp" line="37"/>
         <source>New STAC Connection…</source>
-        <translation type="unfinished"/>
+        <translation>Nouvelle connexion STAC</translation>
     </message>
     <message>
         <location filename="../src/gui/stac/qgsstacdataitemguiprovider.cpp" line="43"/>
@@ -159720,7 +159720,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/ui/stac/qgsstacdownloadassetsdialog.ui"/>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../src/ui/stac/qgsstacdownloadassetsdialog.ui"/>
@@ -159983,7 +159983,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>&amp;New</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -159993,7 +159993,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Edit</source>
-        <translation type="unfinished"/>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -160013,7 +160013,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Charger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -160084,7 +160084,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/ui/qgsstackeddiagrampropertiesbase.ui"/>
         <source>Spacing</source>
-        <translation type="unfinished"/>
+        <translation>Espacement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstackeddiagrampropertiesbase.ui"/>
@@ -160112,7 +160112,7 @@ merci d&apos;indiquer un nouveau nom:</translation>
     <message>
         <location filename="../src/gui/vector/qgsstackeddiagramproperties.cpp" line="532"/>
         <source>Stacked Bars</source>
-        <translation type="unfinished"/>
+        <translation>Barres empilées</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsstackeddiagramproperties.cpp" line="536"/>
@@ -164894,7 +164894,7 @@ Actuellement, il n&apos;existe qu&apos;un seul style. Vous pouvez ajuster l&apos
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>Maximum distance</source>
-        <translation type="unfinished"/>
+        <translation>Distance maximale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -164904,7 +164904,7 @@ Actuellement, il n&apos;existe qu&apos;un seul style. Vous pouvez ajuster l&apos
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>Label Spacing</source>
-        <translation type="unfinished"/>
+        <translation>Espacement des étiquettes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -175232,15 +175232,15 @@ Veuillez installer cette bibliothèque et réessayer.</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titre</translation>
     </message>
     <message>
         <source>X-axis title</source>
-        <translation type="unfinished"/>
+        <translation>Titre de l&apos;axe X</translation>
     </message>
     <message>
         <source>Y-axis title</source>
-        <translation type="unfinished"/>
+        <translation>Titre de l&apos;axe Y</translation>
     </message>
     <message>
         <source>Use logarithmic scale for x-axis</source>
@@ -175292,19 +175292,19 @@ Veuillez installer cette bibliothèque et réessayer.</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"/>
+        <translation>Titre</translation>
     </message>
     <message>
         <source>X-axis title</source>
-        <translation type="unfinished"/>
+        <translation>Titre de l&apos;axe X</translation>
     </message>
     <message>
         <source>Y-axis title</source>
-        <translation type="unfinished"/>
+        <translation>Titre de l&apos;axe Y</translation>
     </message>
     <message>
         <source>Z-axis title</source>
-        <translation type="unfinished"/>
+        <translation>Titre de l&apos;axe Z</translation>
     </message>
     <message>
         <source>Scatterplot 3D</source>

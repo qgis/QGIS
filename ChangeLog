@@ -1,3 +1,390 @@
+Jürgen E. Fischer <jef@norbit.de>	2026-04-03
+
+    translation update for 3.44.9 from transifex
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-03-31
+
+    fix(DBManager): don't set role if there is none
+
+    fix #65358
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-03-31
+
+    u""_s -> QStringLiteral
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-03-30
+
+    [wms] Only draw cached openstreetmap.org tiles when rendering canvas preview jobs
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-31
+
+    Fix warnings when running test
+
+    (cherry picked from commit 02639da737ad4cec704c97d4f4ed03e38c2e56b0)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-31
+
+    Fix insertion of links when text ends with a quote
+
+    Fixes #65571
+
+    (cherry picked from commit b2868d3a0965e9bb7d9d7e8adf78e3de18f10f33)
+
+Till Frankenbach <till.frankenbach@gmail.com>	2026-03-31
+
+    Backport 65498 to release 3 44 (#65637)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-03-24
+
+    [dual view][ui] Fix feature list preview button size issue when using preview expressions
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-25
+
+    Fix crash in export geometry info algorithm when no project available
+
+    And add safeguards for project access to other algorithms
+
+    (cherry picked from commit f04b834a13238c343c6174213f8ee5dcb167f48f)
+
+Stefanos Natsis <uclaros@gmail.com>	2026-03-14
+
+    Simplify terrain elevation offset handling
+
+    Removed previous terrain elevation offset check before setting new offset.
+
+Merge: a6686f8d476 b8b31094f00
+Alexander Bruy <alexander.bruy@gmail.com>	2026-03-15
+
+    Merge pull request #65402 from qgis/backport-65355-to-release-3_44
+
+    [Backport release-3_44] [processing] Add renderer usage detail when using the rasterize map and create XYZ tiles algorithms
+
+Tudor Bărăscu <tudor.barascu@qtibia.ro>	2026-03-13
+
+    add reverse tag to flip coordinates
+
+Merge: 9fcc273fd08 24b4d60fb05
+Alexander Bruy <alexander.bruy@gmail.com>	2026-03-15
+
+    Merge pull request #65382 from qgis/backport-65316-to-release-3_44
+
+    [Backport release-3_44] qgsrulebasedchunkloader: Fix check in onTerrainElevationOffsetChanged
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-03-12
+
+    [processing] Add renderer usage detail when using the rasterize map and create XYZ tiles algorithms
+
+Merge: c7597aaa41e 307649f20ec
+Alexander Bruy <alexander.bruy@gmail.com>	2026-03-15
+
+    Merge pull request #65371 from nyalldawson/backport_65330_344
+
+    Fix user settings are completely wiped on migration (3.44 backport)
+
+github-actions[bot] <github-actions[bot]@users.noreply.github.com>	2026-03-14
+
+    auto-fix pre-commit issues
+
+Merge: 5c3ac42dcc6 202754d5147
+Even Rouault <even.rouault@spatialys.com>	2026-03-14
+
+    Merge pull request #65388 from qgis/backport-65367-to-release-3_44
+
+    [Backport release-3_44] Fix handling of raster OpenFileGDB layer paths on windows
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-13
+
+    Fix handling of raster OpenFileGDB layer paths on windows
+
+    Fixes #65345
+
+Jean Felder <jean.felder@oslandia.com>	2026-03-10
+
+    qgsrulebasedchunkloader: Fix check in onTerrainElevationOffsetChanged
+
+    Offset is along the Z axis.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-12
+
+    Add debug error message when all settings are about to be wiped
+
+    (cherry picked from commit ba5c8ed4c890e917ad2a5baf0f55262d444b0ecf)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-11
+
+    Speed up gui settings migration by holding the ini flush till we've migrated all settings
+
+    (cherry picked from commit cc295ecf5b397f5d0eed80955c0c4b2d16ef6548)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-11
+
+    Fix user settings are completely wiped on migration
+
+    Fixes QgsSettingsEntryColor::copyValueFromKeys deletes all settings
+    when the removeSettingAtKey option is true, and no alphaKey is
+    specified.
+
+    This is because the QSettings::remove API is absolutely ridiculous
+    and WIPES THE ENTIRE QSettings store if the requested key is an
+    empty string.
+
+    (cherry picked from commit 1a77f1758a08cf4df79be1f10daa7fcbbcbfc1de)
+
+Merge: 41eafdbaa25 5b33c00946b
+David Signer <david@opengis.ch>	2026-03-11
+
+    Merge pull request #65318 from qgis/backport-65308-to-release-3_44
+
+    [Backport release-3_44] Fix: Avoid the scientific notation (exponential form) for large values
+
+David Signer <david@opengis.ch>	2026-03-10
+
+    Avoid the scientific notation (exponential form) for large values in the createExpression function. This finally fixes #64682 and fixes #65284
+
+Even Rouault <even.rouault@spatialys.com>	2026-02-10
+
+    QgsVectorFileWriter.writeAsVectorFormat(): fix writing into a GeoPackage file with FID column name equal to a non-first source field
+
+    Fixes #63320 and regression of #61459
+
+Even Rouault <even.rouault@spatialys.com>	2026-02-18
+
+    [GDAL provider] Fix handling of GDAL Float16 data type
+
+    Fixes #64923
+
+Jean Felder <jean.felder@oslandia.com>	2026-01-30
+
+    qgsogrutils: Fix ogrGeometryToQgsGeometry for 3d/m wkb case
+
+    `OGR_G_ExportToWkb` returns wkb types with bit 31 set to 1 for 3d
+    geometries. However, QGIS uses the OGC/ISO standard which uses the
+    `+1000` encoding for 3d types.
+
+    This issue can be reproduced when import 3d polyhedralsurface for
+    example.
+    This is fixed by using `OGR_G_ExportToIsoWkb` instead.
+
+qgis-bot <bot@qgis.org>	2026-03-07
+
+    auto sipify 🍺
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-05
+
+    Fix fragile failing test
+
+    Ensure replies are cleaned up BEFORE application terminates
+
+    (cherry picked from commit 1965fa7034235f984c8e6d56a370bd5c9d3a68a1)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-04
+
+    Update tests/src/python/test_qgsnetworkaccessmanager.py
+
+    Co-authored-by: Alexander Bruy <alexander.bruy@gmail.com>
+    (cherry picked from commit b1868c18e4a7211115524b365143b0dc41a1af66)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-03
+
+    Remove redundant default ports from http/https requests
+
+    When creating requests, if an explicit port number is present for
+    the url which matches the default port for that scheme, remove
+    it.
+
+    Fixes #29475
+
+    (cherry picked from commit 366a402b20badf2b4e442b7ef1243e5496427475)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-03
+
+    Cleanup QgsNetworkAccessManager::createRequest
+
+    Remove ugly const_cast hack
+
+    (cherry picked from commit 075c2dd1543402d1596e2046234c1832e25a602f)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Update test
+
+    Now that QGIS_SERVER_WFS_SERVICE_URL actually works, remove it from
+    the test so that the previous behavior is still tested
+
+    (cherry picked from commit d9ce3daf40a55150665cd9b82ed38fbb2f941a8b)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Actually run test_qgsserver_service_url_env.py
+
+    (cherry picked from commit 8e31041fd3ace5606750259d7891de96d4094fda)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Fix test
+
+    (cherry picked from commit a7b7ae84595d377b0688c2416f644df284655399)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    [server] Fix broken WMS/WFS/WCS/WMTS service url setting handling
+
+    And make code less likely to be broken in future
+
+    (cherry picked from commit 8de734f70468f71e59c464b235e875b47cc38fd4)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Fix ineffecient map iteration
+
+    (cherry picked from commit 65f47907f54b9a7160606e00725b62bb0d1d066e)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    [server] Fix incorrect service URL setting retrieved
+
+    Fix broken QString compare logic when retrieving service URLs
+
+    (cherry picked from commit f6b241afb79a84f11a961d5ffb24cd4eb03ffd9b)
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-03-03
+
+    [app] Use _wputenv_s on Windows
+
+    in order to correctly handle non ASCII chars in custom environment variables' name and value
+
+Stefanos Natsis <uclaros@gmail.com>	2026-02-26
+
+    Avoid crash when edit-in-place layer is removed
+    Update run button text when selection changes
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-06
+
+    Sipify
+
+Nicolas Godet <nicolas.godet@outlook.fr>	2026-02-17
+
+    Return an empty list if rectangle is null
+
+Nicolas Godet <nicolas.godet@outlook.fr>	2026-02-17
+
+    Skip moving faces validity checks if a single vertex is selected
+
+Harrissou Sant-anna <delazj@gmail.com>	2025-12-25
+
+    Hide schema entries when not compatible
+
+Harrissou Sant-anna <delazj@gmail.com>	2025-11-27
+
+    Also grey out the schema label when combobox is unavailable
+
+    and adjust navigation with tab key
+
+Jean Felder <jean.felder@oslandia.com>	2026-02-26
+
+    qgsprofilerenderer: Fix subsection indicator in image and pdf export
+
+    `QgsProfilePlotRenderer::renderSubsectionsIndicator` is only called by
+    `QgsProfilePlotRenderer::renderToImage`. This means that the
+    subsections indicator are correctly rendered in the canvas, but they
+    are not rendered on export because only
+    `QgsProfilePlotRenderer::render` is called.
+
+    This issue is fixed by directly calling
+    `QgsProfilePlotRenderer::renderSubsectionsIndicator` in
+    `QgsProfilePlotRenderer::render`.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-03
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    Fix clang-tidy warnings
+
+    (cherry picked from commit b00e71df24274a1a572c9454d55f3bf2a1b68e72)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    [afs] Use linear geometries if service doesn't support curved geometry updates
+
+    Fixes #55620
+
+    (cherry picked from commit a30ce7e3229f47b56e0a3aede8b91d89ea1aff1d)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    Adjust geometry conversion from ESRI rest to explicitly allow curves or not
+
+    The actual JSON objects don't explicitly state if a geometry is curved
+    type or not so we were previously always returning the curved
+    geometry types.
+
+    This can break feature updates though, because if the service doesn't
+    support curved geometries then we need to make sure the feature's
+    geometry is a straight geometry.
+
+    (cherry picked from commit 410d6e17e8480407d4c484c33d197e91ab3c51d7)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    Improve memory safety in QgsArcGisRestUtils
+
+    Return unique_ptr instead of raw pointer
+
+    (cherry picked from commit a21a8fa689a54791562a4c5e75814d948ffe4ae4)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-27
+
+    Indentation fix
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    [browser] Fix refreshing ArcGIS REST services just uses cached response
+
+    This fix follows the same behavior as the WMS provider implements -
+    the initial population of the connection's children MAY use
+    cached responses, but as soon as the user manually triggers a
+    refresh on the connection item, the population will force
+    a network retrieval ignoring any local cached response.
+
+    Fixes #63010
+
+    (cherry picked from commit e947adc79cb1fdd09cfcd93fdf7a528e306fb4a6)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    [api] Add forceRefresh option to methods in QgsArcGisPortalUtils
+
+    (cherry picked from commit 368239f631ac211fdefdf1f293593e98f86abe7f)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-26
+
+    [api] Add optional forceRefresh bool to ArcGIS REST query utility functions
+
+    Follows similar pattern to elsewhere, this disables retrieval from network cache
+
+    (cherry picked from commit 0cafda3737ce6da02b251ad3f2d0d5e93eeac43c)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-25
+
+    Fix mdb files not shown in browser for non-windows platforms
+
+    This ifdef is decades old, but the GDAL mdb driver can work perfectly on linux/mac
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-02-25
+
+    [gdal] Fix openfilegdb raster path decoding/encoding
+
+    Ensure that path and layername are correctly decoded from
+    OpenFileGDB raster paths
+
+    (cherry picked from commit e33f424ee22a609f005ee850fa0dc8f3744cfdd6)
+
+Jürgen E. Fischer <jef@norbit.de>	2026-03-06
+
+    Release of 3.44.8
+
 Jürgen E. Fischer <jef@norbit.de>	2026-03-06
 
     translation update for 3.44.8 from transifex

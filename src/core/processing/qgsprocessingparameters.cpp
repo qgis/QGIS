@@ -9410,7 +9410,7 @@ QString QgsProcessingParameterAnnotationLayer::valueAsPythonString( const QVaria
   QVariantMap p;
   p.insert( name(), val );
   QgsAnnotationLayer *layer = QgsProcessingParameters::parameterAsAnnotationLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( layer == context.project()->mainAnnotationLayer() ? QStringLiteral( "main" ) : layer->id() )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( context.project() && layer == context.project()->mainAnnotationLayer() ? QStringLiteral( "main" ) : layer->id() )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 

@@ -11236,7 +11236,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>r.li.shannon.ascii - Calculates Shannon&apos;s diversity index on a raster map</source>
         <extracomment>r.li.shannon.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>r.li.shannon.ascii - Vypočítá Shannonův index diverzity na rastrové mapě</translation>
     </message>
     <message>
         <source>Extract skeletons for input areas</source>
@@ -20762,7 +20762,7 @@ To může způsobit neočekávané výsledky.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"/>
+        <translation>Projekce</translation>
     </message>
     <message>
         <source>Conversion</source>
@@ -20774,7 +20774,7 @@ To může způsobit neočekávané výsledky.</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Analýza</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
@@ -26352,7 +26352,7 @@ This algorithm is a port of the SAGA &apos;DTM Filter (slope-based)&apos; tool.<
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="85"/>
         <source>Amplify</source>
-        <translation type="unfinished"/>
+        <translation>Zesilovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="86"/>
@@ -29867,7 +29867,7 @@ Depending on the input geometry attributes and the filters used, the resultant g
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="193"/>
         <source>cell,pixel,statistic,count,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum</source>
-        <translation type="unfinished"/>
+        <translation>buňka, pixel, statistika, počet, průměr, součet, většina, menšina, rozptyl, rozmanitost, rozsah, medián, minimum, maximum</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="198"/>
@@ -29974,7 +29974,7 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="412"/>
         <source>cell,pixel,statistic,percentile,quantile,quartile</source>
-        <translation type="unfinished"/>
+        <translation>buňka, pixel, statistika, percentil, kvantil, kvartil</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="448"/>
@@ -30004,7 +30004,7 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="562"/>
         <source>cell,pixel,statistic,percentrank,rank,percent,value</source>
-        <translation type="unfinished"/>
+        <translation>buňka, pixel, statistika, procentuální pořadí, hodnocení, procento, hodnota</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="595"/>
@@ -30026,7 +30026,7 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="704"/>
         <source>cell,pixel,statistic,percentrank,rank,percent,value,raster</source>
-        <translation type="unfinished"/>
+        <translation>buňka, pixel, statistika, procentuální pořadí, pořadí, procento, hodnota, rastr</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="738"/>
@@ -30114,7 +30114,9 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
         <source>Are you sure you want to truncate [%1].[%2]?
 
 This will delete all data within the table.</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete zkrátit [%1].[%2]?
+
+Tímto smažete všechna data v tabulce.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="447"/>
@@ -30159,14 +30161,16 @@ Opravdu chcete smazat schéma a všechny tyto objekty?</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="405"/>
         <source>Are you sure you want to delete schema &apos;%1&apos;?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat schéma &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="519"/>
         <source>Are you sure you want to truncate &quot;%1.%2&quot;?
 
 This will delete all data within the table.</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete zkrátit „%1.%2“?
+
+Tímto se smažou všechna data v tabulce.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="556"/>
@@ -30343,7 +30347,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/core/auth/qgsauthcertutils.cpp" line="810"/>
         <source>Path length from the root CA to this certificate is too long.</source>
-        <translation type="unfinished"/>
+        <translation>Cesta od kořenové certifikační autority k tomuto certifikátu je příliš dlouhá.</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthcertutils.cpp" line="812"/>
@@ -30691,7 +30695,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/core/auth/qgsauthcertutils.cpp" line="1397"/>
         <source>Private key does not match client certificate public key.</source>
-        <translation type="unfinished"/>
+        <translation>Soukromý klíč neodpovídá veřejnému klíči klientského certifikátu.</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="67"/>
@@ -30806,7 +30810,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="73"/>
         <source>DISABLED. Resources authenticating via the system can not be accessed</source>
-        <translation type="unfinished"/>
+        <translation>ZAKÁZÁNO. Nelze přistupovat k prostředkům ověřovaným prostřednictvím systému</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="81"/>
@@ -30865,7 +30869,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="168"/>
         <source>Master password cleared (NOTE: network connections may be cached).</source>
-        <translation type="unfinished"/>
+        <translation>Hlavní heslo vymazáno (POZN: síťová připojení mohou být v mezipaměti).</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="171"/>
@@ -30880,7 +30884,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="191"/>
         <source>Master password reset: NO current password hash in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla: V databázi NENÍ aktuální hash hesla</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="213"/>
@@ -30913,7 +30917,9 @@ This will update all data within the table.</source>
         <source>Are you sure you want to remove ALL authentication configurations?
 
 Operation can NOT be undone!</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit VŠECHNY konfigurace ověřování?
+
+Operaci NELZE vrátit zpět!</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="272"/>
@@ -31043,7 +31049,7 @@ Operation can NOT be undone!
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmannotations.cpp" line="35"/>
         <source>annotations,drawing,cosmetic,objects</source>
-        <translation type="unfinished"/>
+        <translation>anotace, kresba, kosmetika, objekty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmannotations.cpp" line="55"/>
@@ -31121,7 +31127,7 @@ Operation can NOT be undone!
     <message>
         <location filename="../src/gui/editorwidgets/qgshiddenwidgetfactory.cpp" line="33"/>
         <source>A hidden field will be invisible - the user is not able to see its contents.</source>
-        <translation type="unfinished"/>
+        <translation>Skryté pole bude neviditelné – uživatel nebude moci vidět jeho obsah.</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayerfeatureiterator.cpp" line="234"/>
@@ -31197,7 +31203,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="3601"/>
         <source>&apos;%1&apos; is an invalid or not supported content for %2:Literal</source>
-        <translation type="unfinished"/>
+        <translation>&apos;%1&apos; je neplatný nebo nepodporovaný obsah pro %2:Literal.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="3674"/>
@@ -31252,12 +31258,12 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2402"/>
         <source>Unable to translate spatial operator: at least one must refer to geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze přeložit prostorový operátor: alespoň jeden musí odkazovat na geometrii.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2411"/>
         <source>spatial operator: the other operator must be a geometry constructor function</source>
-        <translation type="unfinished"/>
+        <translation>prostorový operátor: druhý operátor musí být konstruktorová funkce geometrie</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2422"/>
@@ -31282,7 +31288,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2465"/>
         <source>geom from static value: unable to generate GML from static variable</source>
-        <translation type="unfinished"/>
+        <translation>geom ze statické hodnoty: nelze generovat GML ze statické proměnné</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2472"/>
@@ -31297,7 +31303,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2922"/>
         <source>%1: Last argument must be string or integer literal</source>
-        <translation type="unfinished"/>
+        <translation>%1: Poslední argument musí být řetězec nebo celočíselný literál</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="2967"/>
@@ -31409,7 +31415,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
         <location filename="../src/core/qgsinterval.cpp" line="253"/>
         <source>month|months|mon</source>
         <comment>list of words separated by | which reference months</comment>
-        <translation type="unfinished"/>
+        <translation>měsíc|měsíce|měs</translation>
     </message>
     <message>
         <location filename="../src/core/qgsinterval.cpp" line="254"/>
@@ -31431,7 +31437,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitlinesbylength.cpp" line="39"/>
         <source>segments,parts,distance,cut,chop</source>
-        <translation type="unfinished"/>
+        <translation>segmenty, části, vzdálenost, řez, sekání</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitlinesbylength.cpp" line="54"/>
@@ -31664,7 +31670,7 @@ Z and M values at the start and end of the new line substrings are linearly inte
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="346"/>
         <source>Function &apos;%1&apos; is not declared by the WFS server</source>
-        <translation type="unfinished"/>
+        <translation>Funkce &apos;%1&apos; není deklarována serverem WFS</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="410"/>
@@ -31837,7 +31843,7 @@ Z and M values at the start and end of the new line substrings are linearly inte
     <message>
         <location filename="../src/3d/processing/qgsalgorithmtessellate.cpp" line="161"/>
         <source>Feature ID %1 could not be divided into triangular components.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek s ID %1 se nepodařilo rozdělit na trojúhelníkové komponenty.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrectanglesovalsdiamonds.cpp" line="117"/>
@@ -31881,7 +31887,7 @@ The sort order for features may be specified, if so, then the incremental field 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddincrementalfield.cpp" line="54"/>
         <source>add,create,serial,primary,key,unique,fields</source>
-        <translation type="unfinished"/>
+        <translation>přidat, vytvořit, sériové, primární, klíč, jedinečné, pole</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddincrementalfield.cpp" line="59"/>
@@ -31996,7 +32002,7 @@ The sort order for features may be specified, if so, then the incremental field 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmassignprojection.cpp" line="34"/>
         <source>assign,set,transform,reproject,crs,srs,warp</source>
-        <translation type="unfinished"/>
+        <translation>přiřadit, nastavit, transformovat, znovu promítnout, crs, srs, deformovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmassignprojection.cpp" line="39"/>
@@ -32097,7 +32103,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundary.cpp" line="35"/>
         <source>boundary,ring,border,exterior</source>
-        <translation type="unfinished"/>
+        <translation>hranice, kruh, okraj, vnější</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundary.cpp" line="55"/>
@@ -32112,7 +32118,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundary.cpp" line="124"/>
         <source>No boundary for feature %1 (possibly a closed linestring?)</source>
-        <translation type="unfinished"/>
+        <translation>Žádné hranice pro prvek %1 (možná uzavřený linestring?)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundingbox.cpp" line="29"/>
@@ -32153,7 +32159,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="36"/>
         <source>buffer,grow,fixed,variable,distance</source>
-        <translation type="unfinished"/>
+        <translation>vyrovnávací paměť, růst, pevná, proměnná, vzdálenost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaggregate.cpp" line="31"/>
@@ -32651,7 +32657,7 @@ The attributes associated to each point in the output layer are the same ones as
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="207"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="307"/>
         <source>No spatial index exists for input layer, performance will be severely degraded</source>
-        <translation type="unfinished"/>
+        <translation>Pro vstupní vrstvu neexistuje prostorový index, výkon bude výrazně snížen</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmclip.cpp" line="138"/>
@@ -32676,7 +32682,7 @@ The attributes associated to each point in the output layer are the same ones as
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconvexhull.cpp" line="54"/>
         <source>This algorithm calculates the convex hull for each feature in an input layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítá konvexní obal pro každý prvek ve vstupní vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconvexhull.cpp" line="54"/>
@@ -32691,7 +32697,7 @@ The attributes associated to each point in the output layer are the same ones as
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconvexhull.cpp" line="83"/>
         <source>Cannot calculate convex hull for a single Point feature (try &apos;Minimum bounding geometry&apos; algorithm instead).</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vypočítat konvexní obal pro jednotlivý bodový prvek (zkuste místo toho algoritmus „Minimální ohraničující geometrie“).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="218"/>
@@ -32793,7 +32799,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="326"/>
         <source>union,combine,collect,multipart,parts,single</source>
-        <translation type="unfinished"/>
+        <translation>spojení,kombinovat,shromažďovat,vícedílný,části,jeden</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdissolve.cpp" line="350"/>
@@ -32828,7 +32834,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropgeometry.cpp" line="35"/>
         <source>remove,drop,delete,geometry,objects</source>
-        <translation type="unfinished"/>
+        <translation>odstranit, pustit, smazat, geometrie, objekty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropgeometry.cpp" line="50"/>
@@ -32853,7 +32859,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="34"/>
         <source>drop,set,convert,m,measure,z,25d,3d,values</source>
-        <translation type="unfinished"/>
+        <translation>přetáhnout, nastavit, převést, m, změřit, z, 25d, 3d, hodnoty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="49"/>
@@ -32863,7 +32869,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="54"/>
         <source>This algorithm can remove any measure (M) or Z values from input geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus dokáže ze vstupních geometrií odstranit jakékoli hodnoty míry (M) nebo Z.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropmzvalues.cpp" line="59"/>
@@ -32976,7 +32982,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyextent.cpp" line="34"/>
         <source>clip,extract,intersect,intersection,mask,extent</source>
-        <translation type="unfinished"/>
+        <translation>oříznout,extrahovat,průnik,průsečík,maska,rozsah</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbyextent.cpp" line="50"/>
@@ -33077,7 +33083,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="93"/>
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="106"/>
         <source>No spatial index exists for intersect layer, performance will be severely degraded</source>
-        <translation type="unfinished"/>
+        <translation>Pro protínající se vrstvu neexistuje prostorový index, výkon bude výrazně snížen</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="192"/>
@@ -33131,7 +33137,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="222"/>
         <source>select,by,maximum,buffer</source>
-        <translation type="unfinished"/>
+        <translation>vybrat,podle,maximální,vyrovnávací paměti</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="243"/>
@@ -33141,7 +33147,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="308"/>
         <source>extract,by,filter,select,maximum,buffer</source>
-        <translation type="unfinished"/>
+        <translation>extrahovat, pomocí, filtru, vybrat, maximum, vyrovnávací paměti</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="330"/>
@@ -33226,7 +33232,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="94"/>
         <source>The data to add in the body if the request is a POST</source>
-        <translation type="unfinished"/>
+        <translation>Data, která se mají přidat do těla požadavku, pokud je požadavek typu POST</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="95"/>
@@ -33276,7 +33282,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometries.cpp" line="37"/>
         <source>repair,invalid,geometry,make,valid,error</source>
-        <translation type="unfinished"/>
+        <translation>oprava, neplatný, geometrie, výroba, platný, chyba</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometries.cpp" line="57"/>
@@ -33303,7 +33309,7 @@ NOTE: M values will be dropped from the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometries.cpp" line="100"/>
         <source>Linework</source>
-        <translation type="unfinished"/>
+        <translation>Linework</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometries.cpp" line="100"/>
@@ -33318,7 +33324,7 @@ NOTE: M values will be dropped from the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometries.cpp" line="165"/>
         <source>Fixing geometry for feature %1 resulted in %2, geometry has been dropped.</source>
-        <translation type="unfinished"/>
+        <translation>Oprava geometrie pro prvek %1 vedla k chybě %2, geometrie byla odstraněna.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="30"/>
@@ -33340,7 +33346,7 @@ NOTE: M values will be dropped from the output.</source>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="46"/>
         <source>Take attributes of the first matching feature only (one-to-one)</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte atributy pouze prvního odpovídajícího prvku (jedna k jedné)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="55"/>
@@ -33362,7 +33368,7 @@ NOTE: M values will be dropped from the output.</source>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="60"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="56"/>
         <source>Layer 2 fields to copy (leave empty to copy all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Pole vrstvy 2, která se mají kopírovat (ponechte prázdné pro kopírování všech polí)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="62"/>
@@ -33458,7 +33464,7 @@ The additional attributes and their values are taken from a second vector layer.
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="38"/>
         <source>vector,overlay,area,percentage,intersection</source>
-        <translation type="unfinished"/>
+        <translation>vektor, překrytí, plocha, procento, průnik</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="43"/>
@@ -33539,7 +33545,7 @@ New attributes are added to the output layer reporting the total area of overlap
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="37"/>
         <source>join,connect,lines,points,hub,spoke,geodesic,great,circle</source>
-        <translation type="unfinished"/>
+        <translation>spojit, propojit, čáry, body, náboj, paprsek, geodetický, velký, kruh</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="52"/>
@@ -33554,7 +33560,7 @@ New attributes are added to the output layer reporting the total area of overlap
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="55"/>
         <source>Hub layer fields to copy (leave empty to copy all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Pole centrální vrstvy, která se mají kopírovat (ponechte prázdné pro kopírování všech polí)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="57"/>
@@ -33569,7 +33575,7 @@ New attributes are added to the output layer reporting the total area of overlap
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="60"/>
         <source>Spoke layer fields to copy (leave empty to copy all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Pole vrstvy paprsků, která se mají kopírovat (ponechte prázdné pro kopírování všech polí)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="62"/>
@@ -33610,7 +33616,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="92"/>
         <source>Creates lines joining two point layers, based on a common attribute value.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří čáry spojující dvě bodové vrstvy na základě společné hodnoty atributu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinwithlines.cpp" line="108"/>
@@ -33667,7 +33673,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="79"/>
         <source>Overlay fields to keep (leave empty to keep all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Překryvná pole, která chcete zachovat (ponechte prázdné, pokud chcete zachovat všechna pole)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="83"/>
@@ -33682,12 +33688,12 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
         <location filename="../src/analysis/processing/qgsalgorithmintersection.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="56"/>
         <source>Input fields to keep (leave empty to keep all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Vstupní pole, která chcete zachovat (ponechte prázdné, pokud chcete zachovat všechna pole)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="62"/>
         <source>Intersect fields to keep (leave empty to keep all fields)</source>
-        <translation type="unfinished"/>
+        <translation>Prolínání polí, která chcete zachovat (ponechte prázdné, chcete-li zachovat všechna pole)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsoverlayutils.cpp" line="32"/>
@@ -33744,7 +33750,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmeancoordinates.cpp" line="34"/>
         <source>mean,average,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>průměr, průměrný, souřadnice</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmeancoordinates.cpp" line="50"/>
@@ -33844,7 +33850,7 @@ If any parts of the input MultiLineString geometries are not connected, the resu
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="35"/>
         <source>vector,layers,collect,merge,combine</source>
-        <translation type="unfinished"/>
+        <translation>vektor, vrstvy, shromažďovat, sloučit, kombinovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="32"/>
@@ -33946,7 +33952,7 @@ Optionally, the destination coordinate reference system (CRS) for the merged lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="60"/>
         <source>Combines multiple vector layers of the same geometry type into a single one.</source>
-        <translation type="unfinished"/>
+        <translation>Spojí více vektorových vrstev stejného geometrického typu do jedné.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="118"/>
@@ -34021,7 +34027,7 @@ Optionally, the destination coordinate reference system (CRS) for the merged lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmminimumenclosingcircle.cpp" line="35"/>
         <source>minimum,circle,ellipse,extent,bounds,bounding</source>
-        <translation type="unfinished"/>
+        <translation>minimum,kruh,elipsa,rozsah,hranice,ohraničení</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmminimumenclosingcircle.cpp" line="60"/>
@@ -34076,7 +34082,7 @@ Optionally, the destination coordinate reference system (CRS) for the merged lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="37"/>
         <source>orderby,sort,expression,field</source>
-        <translation type="unfinished"/>
+        <translation>řazení, seřazení, výraz, pole</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="57"/>
@@ -34133,7 +34139,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpromotetomultipart.cpp" line="35"/>
         <source>multi,single,multiple,convert,force,parts</source>
-        <translation type="unfinished"/>
+        <translation>více,jednoduchý,vícenásobný,převést,síla,části</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpromotetomultipart.cpp" line="50"/>
@@ -34153,7 +34159,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpromotetomultipart.cpp" line="59"/>
         <source>See the &apos;Collect geometries&apos; or &apos;Aggregate&apos; algorithms for alternative options.</source>
-        <translation type="unfinished"/>
+        <translation>Alternativní možnosti naleznete v algoritmech „Shromažďování geometrií“ nebo „Agregace“.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpromotetomultipart.cpp" line="64"/>
@@ -34168,7 +34174,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="38"/>
         <source>count,area,statistics</source>
-        <translation type="unfinished"/>
+        <translation>počet, plocha, statistika</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcellstatistics.cpp" line="28"/>
@@ -34251,12 +34257,12 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="262"/>
         <source>Sets the M value for vertices to values sampled from a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Nastaví hodnotu M pro vrcholy na hodnoty vzorkované z rastrové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="187"/>
         <source>3d,vertex,vertices,elevation,height,sample,dem,update,feature</source>
-        <translation type="unfinished"/>
+        <translation>3D, vrchol, vrcholy, výška, vzorek, demografický, aktualizace, prvek</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="36"/>
@@ -34277,12 +34283,12 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="199"/>
         <source>Sets the z value for vertices to values sampled from a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Nastaví hodnotu z pro vrcholy na hodnoty vzorkované z rastrové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="250"/>
         <source>drape,vertex,vertices,sample,dem,update,feature,measure</source>
-        <translation type="unfinished"/>
+        <translation>zakrýt, vrchol, vrcholy, vzorek, demo, aktualizace, prvek, měření</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="55"/>
@@ -34370,7 +34376,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatistics.cpp" line="100"/>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatisticsfeaturebased.cpp" line="119"/>
         <source>Invalid band number for BAND (%1): Valid values for input raster are 1 to %2</source>
-        <translation type="unfinished"/>
+        <translation>Neplatné číslo pásma pro BAND (%1): Platné hodnoty pro vstupní rastr jsou 1 až %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="63"/>
@@ -34479,7 +34485,7 @@ Note that duplicate vertices are not tested between different parts of a multipa
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="35"/>
         <source>furthest,point,distant,extreme,maximum,centroid,center,centre</source>
-        <translation type="unfinished"/>
+        <translation>nejvzdálenější,bod,vzdálený,extrémní,maximální,centroid,střed,středový</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="50"/>
@@ -34837,7 +34843,7 @@ Angles below the minimum angle are errors.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatevertices.cpp" line="34"/>
         <source>points,valid,overlapping,vertex,nodes,invalid,error,repair</source>
-        <translation type="unfinished"/>
+        <translation>body, platné, překrývající se, vrcholy, uzly, neplatné, chyba, oprava</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatevertices.cpp" line="68"/>
@@ -34955,7 +34961,7 @@ If the selected layer has no selected features, the newly created layer will be 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsimplify.cpp" line="37"/>
         <source>simplify,generalize,douglas,peucker,visvalingam</source>
-        <translation type="unfinished"/>
+        <translation>zjednodušit, zobecnit, douglas, peucker, visvalingam</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcoveragesimplify.cpp" line="33"/>
@@ -35161,7 +35167,7 @@ The miter limit parameter is only applicable for miter join styles, and controls
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnaptogrid.cpp" line="34"/>
         <source>snapped,grid,simplify,round,precision</source>
-        <translation type="unfinished"/>
+        <translation>přichyceno, mřížka, zjednodušení, zaoblení, přesnost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnaptogrid.cpp" line="49"/>
@@ -35246,12 +35252,12 @@ Snapping can be performed on the X, Y, Z or M axis. A grid spacing of 0 for any 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitlineantimeridian.cpp" line="39"/>
         <source>break,cut,dateline,180,-180,longitude,geographic,ellipsoid</source>
-        <translation type="unfinished"/>
+        <translation>přerušení, řez, datová hranice, 180, -180, zeměpisná délka, zeměpisný, elipsoid</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitlineantimeridian.cpp" line="54"/>
         <source>Splits lines into multiple geodesic segments when the line crosses the antimeridian (±180 degrees longitude).</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělí čáry na více geodetických segmentů, když čára protne antimeridián (±180 stupňů zeměpisné délky).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitlineantimeridian.cpp" line="59"/>
@@ -35272,7 +35278,7 @@ If the input geometry contains M or Z values, these will be linearly interpolate
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp" line="40"/>
         <source>separate,attribute,value,string</source>
-        <translation type="unfinished"/>
+        <translation>samostatný,atribut,hodnota,řetězec</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp" line="55"/>
@@ -35288,7 +35294,7 @@ Optionally, the separator string can be a regular expression for added flexibili
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp" line="64"/>
         <source>Splits features into multiple output features by splitting a field by a character.</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělí prvky na více výstupních prvků rozdělením pole podle znaku.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp" line="79"/>
@@ -35321,7 +35327,7 @@ Optionally, the separator string can be a regular expression for added flexibili
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmstringconcatenation.cpp" line="39"/>
         <source>string,concatenation,merge</source>
-        <translation type="unfinished"/>
+        <translation>řetězec, zřetězení, sloučení</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmstringconcatenation.cpp" line="54"/>
@@ -35362,7 +35368,7 @@ Optionally, the separator string can be a regular expression for added flexibili
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsubdivide.cpp" line="44"/>
         <source>subdivide,segmentize,split,tessellate</source>
-        <translation type="unfinished"/>
+        <translation>rozdělit, segmentovat, rozpůlit, mozaikovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsubdivide.cpp" line="59"/>
@@ -35479,7 +35485,8 @@ The segments parameter controls the number of line segments to use to approximat
         <location filename="../src/analysis/processing/qgsalgorithmtransect.cpp" line="73"/>
         <source>Field(s) from feature(s) are returned in the transect with these new fields:
 </source>
-        <translation type="unfinished"/>
+        <translation>Pole(a) z prvku(ů) se v transektu vrátí s těmito novými poli:
+</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtransect.cpp" line="74"/>
@@ -35536,7 +35543,7 @@ The segments parameter controls the number of line segments to use to approximat
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="37"/>
         <source>raster,create,constant</source>
-        <translation type="unfinished"/>
+        <translation>rastr, vytvořit, konstanta</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="42"/>
@@ -35613,7 +35620,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="143"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="157"/>
         <source>Raster datasets of type %3 only accept positive values between %1 and %2</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové datové sady typu %3 akceptují pouze kladné hodnoty mezi %1 a %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="131"/>
@@ -35628,7 +35635,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="136"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="150"/>
         <source>Raster datasets of type %3 only accept values between %1 and %2</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové datové sady typu %3 akceptují pouze hodnoty mezi %1 a %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalreproject.cpp" line="32"/>
@@ -35675,7 +35682,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtransform.cpp" line="65"/>
         <source>transform,reprojection,crs,srs,warp</source>
-        <translation type="unfinished"/>
+        <translation>transformace, reprojekce, crs, srs, deformace</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtransform.cpp" line="80"/>
@@ -35704,7 +35711,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="35"/>
         <source>move,shift,transform,z,m,values,add</source>
-        <translation type="unfinished"/>
+        <translation>přesunout, posunout, transformovat, z, m, hodnoty, přidat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="62"/>
@@ -35725,7 +35732,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="57"/>
         <source>Z and M values present in the geometry can also be translated.</source>
-        <translation type="unfinished"/>
+        <translation>Hodnoty Z a M přítomné v geometrii lze také převést.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="29"/>
@@ -35735,7 +35742,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="34"/>
         <source>translate,parallel,offset,duplicate,grid,spaced,moved,copy,features,objects,step,repeat</source>
-        <translation type="unfinished"/>
+        <translation>posunout, rovnoběžně, odsadit, duplikovat, mřížka, rozmístěno, přesunout, kopírovat, prvky, objekty, krok, opakovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="54"/>
@@ -35745,7 +35752,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="60"/>
         <source>Creates multiple translated copies of features in a layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří více přeložených kopií prvků ve vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarrayoffsetlines.cpp" line="75"/>
@@ -35768,7 +35775,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="35"/>
         <source>move,shift,transform,affine,scale,rotate,resize,matrix</source>
-        <translation type="unfinished"/>
+        <translation>přesunout, posunout, transformovat, afinní, změnit měřítko, otočit, změnit velikost, matice</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="50"/>
@@ -35783,7 +35790,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="58"/>
         <source>Z and M values present in the geometry can also be translated and scaled independently.</source>
-        <translation type="unfinished"/>
+        <translation>Hodnoty Z a M přítomné v geometrii lze také nezávisle překládat a škálovat.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="63"/>
@@ -36135,7 +36142,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/core/callouts/qgscallout.cpp" line="68"/>
         <source>string of four doubles &apos;&lt;b&gt;top,right,bottom,left&lt;/b&gt;&apos; or array of doubles &lt;b&gt;[top, right, bottom, left]&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>řetězec čtyř dvojitých čísel &apos;&lt;b&gt;nahoře,vpravo,dole,vlevo&lt;/b&gt;&apos; nebo pole dvojitých čísel &lt;b&gt;[nahoře,vpravo,dole,vlevo]&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/callouts/qgscallout.cpp" line="70"/>
@@ -36400,12 +36407,12 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlayoutmapextent.cpp" line="39"/>
         <source>layout,composer,composition,visible</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, skladatel, kompozice, viditelné</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlayoutmapextent.cpp" line="54"/>
         <source>Creates a polygon layer containing the extent of a print layout map item.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří polygonovou vrstvu obsahující rozsah položky mapy pro tisk.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlayoutmapextent.cpp" line="59"/>
@@ -36477,7 +36484,7 @@ Optionally, a specific output CRS can be specified. If it is not specified, the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="51"/>
         <source>map themes,font,position</source>
-        <translation type="unfinished"/>
+        <translation>témata map, písmo, pozice</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="73"/>
@@ -36515,7 +36522,7 @@ Optionally, a specific output CRS can be specified. If it is not specified, the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="113"/>
         <source>Converts map labels to a point layer with relevant details saved as attributes.</source>
-        <translation type="unfinished"/>
+        <translation>Převede popisky mapy na bodovou vrstvu s relevantními detaily uloženými jako atributy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="123"/>
@@ -36529,12 +36536,12 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="168"/>
         <source>Curved placement not supported, skipping labels from layer %1</source>
-        <translation type="unfinished"/>
+        <translation>Zakřivené umístění není podporováno, přeskakují se popisky z vrstvy %1</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="347"/>
         <source>Invalid scale value, a number greater than 0 is required</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná hodnota stupnice, je vyžadováno číslo větší než 0</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="419"/>
@@ -36835,12 +36842,12 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="227"/>
         <source>Ignoring custom image size because aspect ratio %1 does not match paper ratio %2</source>
-        <translation type="unfinished"/>
+        <translation>Ignorování vlastní velikosti obrázku, protože poměr stran %1 neodpovídá poměru stran papíru %2</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="321"/>
         <source>Error: output width or height is larger than 32768 pixel, result will be clipped</source>
-        <translation type="unfinished"/>
+        <translation>Chyba: šířka nebo výška výstupu je větší než 32768 pixelů, výsledek bude oříznut</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="514"/>
@@ -37247,7 +37254,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="148"/>
         <source>Could not evaluate expression for parameter %1 for %2: %3</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vyhodnotit výraz pro parametr %1 pro %2: %3</translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="422"/>
@@ -37343,17 +37350,17 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota pro &lt;i&gt;%1&lt;/i&gt; není pro tento parametr přijatelná.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Vstup modelu &lt;i&gt;%1&lt;/i&gt; použitý pro parametr &lt;i&gt;%2&lt;/i&gt; neexistuje</translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Podřízený algoritmus &lt;i&gt;%1 &lt;/i&gt;použitý pro parametr &lt;i&gt;%2&lt;/i&gt; neexistuje.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
@@ -37452,7 +37459,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatisticsfeaturebased.cpp" line="169"/>
         <location filename="../src/core/processing/qgsprocessingcontext.cpp" line="35"/>
         <source>Encountered a transform error when reprojecting feature with id %1.</source>
-        <translation type="unfinished"/>
+        <translation>Při opětovném promítání prvku s ID %1 došlo k chybě transformace.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="716"/>
@@ -37549,7 +37556,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/qgsprocessingparameters.cpp" line="8636"/>
         <source>Invalid datetime parameter &quot;%1&quot;: min value %2 is &gt;= max value %3!</source>
-        <translation type="unfinished"/>
+        <translation>Neplatný parametr data a času &quot;%1&quot;: minimální hodnota %2 je &gt;= maximální hodnota %3!</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="993"/>
@@ -37566,12 +37573,12 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1002"/>
         <source>%1: Aliases are not compatible with scratch layers</source>
-        <translation type="unfinished"/>
+        <translation>%1: Aliasy nejsou kompatibilní s pomocnými vrstvami</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1004"/>
         <source>%1: Comments are not compatible with scratch layers</source>
-        <translation type="unfinished"/>
+        <translation>%1: Komentáře nejsou kompatibilní s pomocnými vrstvami</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1123"/>
@@ -37633,7 +37640,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1703"/>
         <source>Invalid data defined parameter for %1, requires &apos;expression&apos; or &apos;field&apos; values.</source>
-        <translation type="unfinished"/>
+        <translation>Neplatný parametr definovaný daty pro %1, vyžaduje hodnoty &apos;výraz&apos; nebo &apos;pole&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2056"/>
@@ -38304,7 +38311,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/labeling/qgspallabeling.cpp" line="212"/>
         <source>Line anchor percentage, as fraction from 0.0 to 1.0</source>
-        <translation type="unfinished"/>
+        <translation>Procento kotvy linky, jako zlomek od 0,0 do 1,0</translation>
     </message>
     <message>
         <location filename="../src/core/labeling/qgspallabeling.cpp" line="213"/>
@@ -38580,12 +38587,12 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/qgsproperty.cpp" line="123"/>
         <source>string of doubles &apos;&lt;b&gt;width,height&lt;/b&gt;&apos; or array of doubles &lt;b&gt;[width, height]&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>řetězec dvojciferných čísel &apos;&lt;b&gt;width,height&lt;/b&gt;&apos; nebo pole dvojciferných čísel &lt;b&gt;[width, height]&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproperty.cpp" line="167"/>
         <source>string of doubles &apos;&lt;b&gt;x,y&lt;/b&gt;&apos; or array of doubles &lt;b&gt;[x, y]&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>řetězec dvojciferných čísel &apos;&lt;b&gt;x,y&lt;/b&gt;&apos; nebo pole dvojciferných čísel &lt;b&gt;[x, y]&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="402"/>
@@ -39689,7 +39696,10 @@ Extracted label information include: position (served as point geometries), the 
 Iterated layers:
 %1
 ...</source>
-        <translation type="unfinished"/>
+        <translation>Přetečení zásobníku, příliš mnoho vnořených iterátorů prvků.
+Iterované vrstvy:
+%1
+...</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayerfeatureiterator.cpp" line="848"/>
@@ -39697,7 +39707,10 @@ Iterated layers:
 Last frames:
 %3
 ...</source>
-        <translation type="unfinished"/>
+        <translation>Přetečení zásobníku při přípravě pole %1 vrstvy %2.
+Poslední snímky:
+%3
+...</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayerfeatureiterator.cpp" line="1011"/>
@@ -40122,7 +40135,7 @@ Last frames:
     <message>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="106"/>
         <source>integer &gt; 0, or 0 for completely random sequence</source>
-        <translation type="unfinished"/>
+        <translation>celé číslo &gt; 0, nebo 0 pro zcela náhodnou sekvenci</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="107"/>
@@ -40217,7 +40230,7 @@ Last frames:
     <message>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="30"/>
         <source>string of variable length representing root path to attachment</source>
-        <translation type="unfinished"/>
+        <translation>řetězec proměnné délky představující kořenovou cestu k přílohám</translation>
     </message>
     <message>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="31"/>
@@ -40232,7 +40245,7 @@ Last frames:
     <message>
         <location filename="../src/gui/editorwidgets/core/qgswidgetwrapper.cpp" line="32"/>
         <source>String of variable length representing the URL used to store document with an external storage</source>
-        <translation type="unfinished"/>
+        <translation>Řetězec proměnné délky představující URL adresu použitou k uložení dokumentu do externího úložiště</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
@@ -40575,7 +40588,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="320"/>
         <source>The layer &lt;b&gt;%1&lt;/b&gt; was successfully deleted. Compact database (VACUUM) &lt;b&gt;%2&lt;/b&gt; now?</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva &lt;b&gt;%1&lt;/b&gt; byla úspěšně smazána. Zkomprimovat databázi (VACUUM) &lt;b&gt;%2&lt;/b&gt; nyní?</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackagerasterwriter.cpp" line="38"/>
@@ -40587,14 +40600,18 @@ The algorithm calculates a statistical summary for the values from matching feat
         <source>Failed to open source layer %1! See the OGR panel in the message logs for details.
 
 </source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se otevřít zdrojovou vrstvu %1! Podrobnosti naleznete v panelu OGR v protokolech zpráv.
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackagerasterwriter.cpp" line="61"/>
         <source>Failed to import layer %1! See the OGR panel in the message logs for details.
 
 </source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se importovat vrstvu %1! Podrobnosti naleznete v panelu OGR v protokolech zpráv.
+
+</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsogritemguiprovider.cpp" line="63"/>
@@ -40655,7 +40672,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmuniquevalueindex.cpp" line="34"/>
         <source>categorize,categories,category,reclassify,classes,create</source>
-        <translation type="unfinished"/>
+        <translation>kategorizovat, kategorie, kategorii, překlasifikovat, třídy, vytvořit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointsinpolygon.cpp" line="32"/>
@@ -40778,7 +40795,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/gui/qgshelp.cpp" line="85"/>
         <source>Trying to open help using key &apos;%1&apos;. Full URI is &apos;%2&apos;…</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o otevření nápovědy pomocí klíče &apos;%1&apos;. Úplný URI je &apos;%2&apos;…</translation>
     </message>
     <message>
         <location filename="../src/core/qgstessellator.cpp" line="650"/>
@@ -40788,7 +40805,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/core/qgstessellator.cpp" line="658"/>
         <source>geometry&apos;s coordinates are too close to each other and simplification failed - skipping</source>
-        <translation type="unfinished"/>
+        <translation>souřadnice geometrie jsou si příliš blízko a zjednodušení selhalo - přeskakuji</translation>
     </message>
     <message>
         <location filename="../src/core/qgstessellator.cpp" line="778"/>
@@ -40838,7 +40855,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiringconstantbuffer.cpp" line="35"/>
         <source>buffer,grow,multiple,rings,distance,donut</source>
-        <translation type="unfinished"/>
+        <translation>vyrovnávací paměť, růst, více, kroužků, vzdálenost, kobliha</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiringconstantbuffer.cpp" line="55"/>
@@ -40870,7 +40887,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointonsurface.cpp" line="35"/>
         <source>centroid,inside,within</source>
-        <translation type="unfinished"/>
+        <translation>těžiště, uvnitř, v rámci</translation>
     </message>
     <message>
         <location filename="../src/3d/qgs3d.cpp" line="72"/>
@@ -40898,12 +40915,12 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointonsurface.cpp" line="128"/>
         <source>Error calculating point on surface for feature %1 part %2: %3</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při výpočtu bodu na povrchu pro prvek %1, součást %2: %3</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointonsurface.cpp" line="139"/>
         <source>Error calculating point on surface for feature %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při výpočtu bodu na povrchu pro prvek %1: %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrotate.cpp" line="29"/>
@@ -40964,7 +40981,7 @@ Optionally, a separate table can be output which contains a summary of the class
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsegmentize.cpp" line="34"/>
         <source>straighten,linearize,densify,curves,curved,circular</source>
-        <translation type="unfinished"/>
+        <translation>narovnat, linearizovat, zhustit, zakřivit, zakřivený, kruhový</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsegmentize.cpp" line="49"/>
@@ -41000,7 +41017,7 @@ Non-curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsegmentize.cpp" line="129"/>
         <source>straighten,linearize,densify,curves,curved,circular,angle</source>
-        <translation type="unfinished"/>
+        <translation>narovnat, linearizovat, zhustit, zakřivit, zakřivený, kruhový, úhlový</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsegmentize.cpp" line="149"/>
@@ -41267,7 +41284,7 @@ Non-curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="116"/>
         <source>Number of subdivisions in segments to the right of 0</source>
-        <translation type="unfinished"/>
+        <translation>Počet dělení v segmentech napravo od 0</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveholes.cpp" line="29"/>
@@ -41421,7 +41438,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilter.cpp" line="35"/>
         <source>filter,proxy,redirect,route</source>
-        <translation type="unfinished"/>
+        <translation>filtr, proxy, přesměrování, trasa</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilter.cpp" line="55"/>
@@ -41441,7 +41458,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="35"/>
         <source>invert,flip,swap,switch,latitude,longitude</source>
-        <translation type="unfinished"/>
+        <translation>invertovat, převrátit, prohodit, přepnout, zeměpisná šířka, délka</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="50"/>
@@ -41468,7 +41485,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="66"/>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="121"/>
         <source>There was an error opening the database &lt;b&gt;%1&lt;/b&gt;: %2</source>
-        <translation type="unfinished"/>
+        <translation>Při otevírání databáze &lt;b&gt;%1 došlo&lt;/b&gt; k chybě: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="81"/>
@@ -41477,7 +41494,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="185"/>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="193"/>
         <source>There was an error querying the database &lt;b&gt;%1&lt;/b&gt;: %2</source>
-        <translation type="unfinished"/>
+        <translation>Při dotazování databáze &lt;b&gt;%1&lt;/b&gt; došlo k chybě: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="152"/>
@@ -41499,7 +41516,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="265"/>
         <source>Unable to insert or update project (project=%1) in the destination table on the database: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vložit nebo aktualizovat projekt (project=%1) v cílové tabulce v databázi: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="335"/>
@@ -41538,12 +41555,12 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/providers/oracle/qgsoracleprojectstorage.cpp" line="130"/>
         <source>The project &apos;%1&apos; does not exist for owner &apos;%2&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Projekt &apos;%1&apos; pro vlastníka &apos;%2&apos; neexistuje.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprojectstorage.cpp" line="121"/>
         <source>The project &apos;%1&apos; does not exist in schema &apos;%2&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Projekt &apos;%1&apos; neexistuje ve schématu &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="967"/>
@@ -41568,7 +41585,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="36"/>
         <location filename="../src/analysis/processing/qgsalgorithmmultidifference.cpp" line="38"/>
         <source>difference,erase,not overlap</source>
-        <translation type="unfinished"/>
+        <translation>rozdíl, smazání, nepřekrývání</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="51"/>
@@ -41595,7 +41612,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsymmetricaldifference.cpp" line="34"/>
         <source>difference,symdiff,not overlap</source>
-        <translation type="unfinished"/>
+        <translation>rozdíl, symdiff, ne překrývání</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsymmetricaldifference.cpp" line="49"/>
@@ -41729,7 +41746,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmwedgebuffers.cpp" line="36"/>
         <source>arc,segment,circular,circle,slice</source>
-        <translation type="unfinished"/>
+        <translation>oblouk, úsečka, kružnice, kružnice, řez</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmwedgebuffers.cpp" line="51"/>
@@ -41784,7 +41801,7 @@ The native output from this algorithm are CurvePolygon geometries, but these may
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalhistogram.cpp" line="36"/>
         <source>raster,unique,values,count,area,statistics</source>
-        <translation type="unfinished"/>
+        <translation>rastr,jedinečné,hodnoty,počet,plocha,statistiky</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalhistogram.cpp" line="68"/>
@@ -41839,7 +41856,7 @@ Please use Round raster or Reclassify by table tools to reduce number of decimal
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractzmvalues.cpp" line="173"/>
         <source>add,z,value,elevation,height,attribute,statistics,stats</source>
-        <translation type="unfinished"/>
+        <translation>přidat,z,hodnota,nadmořská výška,výška,atribut,statistika,statistik</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractzmvalues.cpp" line="178"/>
@@ -41861,7 +41878,7 @@ By default only the z value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractzmvalues.cpp" line="221"/>
         <source>add,m,value,measure,attribute,statistics,stats</source>
-        <translation type="unfinished"/>
+        <translation>přidat,m,hodnota,měřit,atribut,statistika,statistik</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractzmvalues.cpp" line="226"/>
@@ -41873,7 +41890,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractzmvalues.cpp" line="233"/>
         <source>Extracts m values (or m value statistics) from geometries into feature attributes.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje m hodnoty (nebo statistiky m hodnot) z geometrií do atributů prvků.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalhistogram.cpp" line="58"/>
@@ -41903,7 +41920,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparameterdxflayers.h" line="119"/>
         <source>list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs</source>
-        <translation type="unfinished"/>
+        <translation>list[dict]: seznam vstupních vrstev jako slovníků, viz dokumentace k QgsProcessingParameterDxfLayers</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparameteralignrasterlayers.h" line="122"/>
@@ -42048,7 +42065,7 @@ By default only the m value from the first vertex of each feature is extracted, 
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2390"/>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2589"/>
         <source>expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression</source>
-        <translation type="unfinished"/>
+        <translation>výraz:NĚJAKÝ VÝRAZ pro použití hodnoty definované daty vypočítané pomocí vlastního výrazu QGIS</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="542"/>
@@ -42073,7 +42090,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="557"/>
         <source>Path to a layer. The CRS of the layer is used.</source>
-        <translation type="unfinished"/>
+        <translation>Cesta k vrstvě. Používá se SRS vrstva.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="625"/>
@@ -42133,7 +42150,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="896"/>
         <source>str: as comma delimited list of x min, x max, y min, y max. E.g. &apos;4,10,101,105&apos;</source>
-        <translation type="unfinished"/>
+        <translation>str: jako seznam hodnot x min, x max, y min, y max oddělených čárkami. Např. &apos;4,10,101,105&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="897"/>
@@ -42163,7 +42180,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="910"/>
         <source>A comma delimited string of x min, x max, y min, y max. E.g. &apos;4,10,101,105&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Řetězec hodnot x min, x max, y min, y max oddělený čárkami. Např. &apos;4,10,101,105&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="911"/>
@@ -42388,7 +42405,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2381"/>
         <source>str: string representation of color, e.g #ff0000 or rgba(200,100,50,0.8)</source>
-        <translation type="unfinished"/>
+        <translation>str: řetězcová reprezentace barvy, např. #ff0000 nebo rgba(200,100,50,0.8)</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2388"/>
@@ -42437,12 +42454,12 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdbscanclustering.cpp" line="36"/>
         <source>Clusters point features using a density based scan algorithm.</source>
-        <translation type="unfinished"/>
+        <translation>Klastry identifikují prvky pomocí algoritmu skenování založeného na hustotě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdbscanclustering.cpp" line="41"/>
         <source>clustering,clusters,density,based,points,distance</source>
-        <translation type="unfinished"/>
+        <translation>shlukování, shluky, hustota, na základě, bodů, vzdálenost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdbscanclustering.cpp" line="57"/>
@@ -42574,7 +42591,7 @@ Bhattacharya, Anup &amp; Eube, Jan &amp; Röglin, Heiko &amp; Schmidt, Melanie. 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="151"/>
         <source>vectorize,polygonize,raster,convert,pixels</source>
-        <translation type="unfinished"/>
+        <translation>vektorizace, polygonizace, rastr, převod, pixely</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="156"/>
@@ -42586,7 +42603,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="163"/>
         <source>Creates a vector layer of polygons corresponding to each pixel in a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří vektorovou vrstvu polygonů odpovídajících každému pixelu v rastrové vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="173"/>
@@ -42601,7 +42618,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="210"/>
         <source>vectorize,polygonize,raster,convert,pixels,centers</source>
-        <translation type="unfinished"/>
+        <translation>vektorizace, polygonizace, rastr, převod, pixely, středy</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="215"/>
@@ -42613,7 +42630,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="222"/>
         <source>Creates a vector layer of points corresponding to each pixel in a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří vektorovou vrstvu bodů odpovídajících každému pixelu v rastrové vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvectorize.cpp" line="232"/>
@@ -42633,7 +42650,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextendlines.cpp" line="34"/>
         <source>linestring,continue,grow,extrapolate</source>
-        <translation type="unfinished"/>
+        <translation>linestring, pokračovat, růst, extrapolovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextendlines.cpp" line="49"/>
@@ -42648,7 +42665,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextendlines.cpp" line="61"/>
         <source>Extends LineString geometries by extrapolating the start and end segments.</source>
-        <translation type="unfinished"/>
+        <translation>Rozšiřuje geometrie LineString extrapolací počátečních a koncových segmentů.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextendlines.cpp" line="81"/>
@@ -42679,7 +42696,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="36"/>
         <source>swap,reverse,switch,flip,linestring,orientation</source>
-        <translation type="unfinished"/>
+        <translation>prohodit, obrátit, přepnout, převrátit, čárový řetězec, orientace</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="51"/>
@@ -42689,7 +42706,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="56"/>
         <source>This algorithm reverses the direction of curve or LineString geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus obrací směr geometrií křivek nebo LineString.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmreverselinedirection.cpp" line="61"/>
@@ -42831,7 +42848,7 @@ Any NoData pixels are skipped in the output.</source>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="270"/>
         <location filename="../src/analysis/processing/qgsalgorithmmeshsurfacetopolygon.cpp" line="86"/>
         <source>Input mesh layer in edit mode is not supported</source>
-        <translation type="unfinished"/>
+        <translation>Vstupní síťová vrstva v režimu úprav není podporována</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="285"/>
@@ -42927,7 +42944,7 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="962"/>
         <source>This algorithm creates contours as a vector layer from a mesh scalar dataset.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří kontury jako vektorovou vrstvu ze síťové skalární datové sady.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="180"/>
@@ -43007,12 +43024,12 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1052"/>
         <source>Invalid format for level values, must be numbers separated with comma</source>
-        <translation type="unfinished"/>
+        <translation>Neplatný formát pro hodnoty úrovně, musí být čísla oddělená čárkou</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1056"/>
         <source>Invalid format for level values, must be different numbers and in increasing order</source>
-        <translation type="unfinished"/>
+        <translation>Neplatný formát pro hodnoty úrovní, musí se jednat o různá čísla a vzestupně seřazená</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1068"/>
@@ -43022,7 +43039,7 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1071"/>
         <source>Invalid minimum and maximum values, minimum must be lesser than maximum</source>
-        <translation type="unfinished"/>
+        <translation>Neplatné minimální a maximální hodnoty, minimum musí být menší než maximum</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1074"/>
@@ -43060,7 +43077,7 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1248"/>
         <source>Export cross section dataset values on lines from mesh</source>
-        <translation type="unfinished"/>
+        <translation>Export hodnot datové sady průřezů na čarách ze sítě</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1263"/>
@@ -43137,7 +43154,7 @@ Each line is discretized with a resolution distance parameter for extraction of 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1471"/>
         <source>Export time series values from points of a mesh dataset</source>
-        <translation type="unfinished"/>
+        <translation>Export hodnot časových řad z bodů datové sady sítě</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1486"/>
@@ -43269,7 +43286,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarrayoffsetlines.cpp" line="34"/>
         <source>offset,parallel,duplicate,create,spaced,copy,features,objects,step,repeat</source>
-        <translation type="unfinished"/>
+        <translation>odsazení, rovnoběžné, duplikovat, vytvořit, rozmístěné, kopírovat, prvky, objekty, krok, opakovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarrayoffsetlines.cpp" line="54"/>
@@ -43301,7 +43318,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtolayer.cpp" line="38"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="36"/>
         <source>network,path,shortest,fastest</source>
-        <translation type="unfinished"/>
+        <translation>síť, cesta, nejkratší, nejrychlejší</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathlayertopoint.cpp" line="43"/>
@@ -43328,7 +43345,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafromlayer.cpp" line="37"/>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafrompoint.cpp" line="37"/>
         <source>network,service,area,shortest,fastest</source>
-        <translation type="unfinished"/>
+        <translation>síť, služba, oblast, nejkratší, nejrychlejší</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafromlayer.cpp" line="42"/>
@@ -43576,7 +43593,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
     <message>
         <location filename="../src/core/qgsopenclutils.cpp" line="71"/>
         <source>Error %1 on platform %3 searching for OpenCL device: %2</source>
-        <translation type="unfinished"/>
+        <translation>Chyba %1 na platformě %3 při hledání zařízení OpenCL: %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsopenclutils.cpp" line="81"/>
@@ -43682,7 +43699,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithminterpolatepoint.cpp" line="36"/>
         <source>linestring,reference,referencing,distance,interpolate</source>
-        <translation type="unfinished"/>
+        <translation>čárový řetězec, reference, odkazování, vzdálenost, interpolace</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithminterpolatepoint.cpp" line="51"/>
@@ -43714,7 +43731,7 @@ If the specified distance is greater than the curve&apos;s length, the resultant
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlinesubstring.cpp" line="36"/>
         <source>linestring,curve,split,shorten,shrink,portion,part,reference,referencing,distance,interpolate</source>
-        <translation type="unfinished"/>
+        <translation>čárový řetězec, křivka, rozdělení, zkrácení, zmenšení, část, reference, odkazování, vzdálenost, interpolace</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlinesubstring.cpp" line="51"/>
@@ -43733,7 +43750,7 @@ If a multipart geometry is encountered, only the first part is considered when c
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlinesubstring.cpp" line="66"/>
         <source>Returns the substring of lines which fall between start and end distances.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí podřetězec čar, které spadají mezi počáteční a koncovou vzdálenost.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayout3dmapwidget.cpp" line="48"/>
@@ -43789,7 +43806,7 @@ If a multipart geometry is encountered, only the first part is considered when c
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="70"/>
         <source>file,database,symbols,names,category,categories</source>
-        <translation type="unfinished"/>
+        <translation>soubor, databáze, symboly, názvy, kategorie, kategorii</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="85"/>
@@ -43842,7 +43859,7 @@ If desired, tables can also be output containing lists of the categories which c
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="101"/>
         <source>Sets a vector layer&apos;s renderer to a categorized renderer using symbols from a style database.</source>
-        <translation type="unfinished"/>
+        <translation>Nastaví renderer vektorové vrstvy na kategorizovaný renderer pomocí symbolů z databáze stylů.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcategorizeusingstyle.cpp" line="174"/>
@@ -43907,17 +43924,17 @@ If desired, tables can also be output containing lists of the categories which c
     <message>
         <location filename="../debian/build/src/core/qgsexpressionparser.cpp" line="1991"/>
         <source>Expected between %1 and %2 parameters but %3 were provided.</source>
-        <translation type="unfinished"/>
+        <translation>Očekávalo se mezi %1 a %2 parametry, ale bylo zadáno %3.</translation>
     </message>
     <message>
         <location filename="../debian/build/src/core/qgsexpressionparser.cpp" line="1993"/>
         <source>%1 function is called with wrong number of arguments. %2</source>
-        <translation type="unfinished"/>
+        <translation>funkce %1 je volána s nesprávným počtem argumentů. %2</translation>
     </message>
     <message>
         <location filename="../debian/build/src/core/qgsexpressionparser.cpp" line="2024"/>
         <source>%1 function is called with wrong number of arguments</source>
-        <translation type="unfinished"/>
+        <translation>funkce %1 je volána s nesprávným počtem argumentů</translation>
     </message>
     <message>
         <location filename="../debian/build/src/core/qgsexpressionparser.cpp" line="2089"/>
@@ -43927,7 +43944,7 @@ If desired, tables can also be output containing lists of the categories which c
     <message>
         <location filename="../debian/build/src/core/qgsexpressionparser.cpp" line="2158"/>
         <source>All parameters following a named parameter must also be named.</source>
-        <translation type="unfinished"/>
+        <translation>Všechny parametry následující za pojmenovaným parametrem musí být také pojmenovány.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="420"/>
@@ -43965,7 +43982,7 @@ If desired, tables can also be output containing lists of the categories which c
         <location filename="../src/3d/qgs3dutils.cpp" line="228"/>
         <location filename="../src/core/qgstemporalutils.cpp" line="84"/>
         <source>Filename template must contain all # placeholders in one continuous group.</source>
-        <translation type="unfinished"/>
+        <translation>Šablona názvu souboru musí obsahovat všechna # zástupná slova v jedné souvislé skupině.</translation>
     </message>
     <message>
         <location filename="../src/3d/qgs3dutils.cpp" line="236"/>
@@ -43991,12 +44008,12 @@ If desired, tables can also be output containing lists of the categories which c
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddxyfields.cpp" line="40"/>
         <source>Adds X and Y (or latitude/longitude) fields to a point layer.</source>
-        <translation type="unfinished"/>
+        <translation>Přidá pole X a Y (nebo zeměpisná šířka/délka) do bodové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddxyfields.cpp" line="45"/>
         <source>add,create,latitude,longitude,columns,attributes</source>
-        <translation type="unfinished"/>
+        <translation>přidat, vytvořit, zeměpisná šířka, délka, sloupce, atributy</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddxyfields.cpp" line="60"/>
@@ -44167,7 +44184,7 @@ Filenames can be generated using values taken from an attribute in the source ta
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbinary.cpp" line="47"/>
         <source>blob,binaries,save,file,contents,field,column</source>
-        <translation type="unfinished"/>
+        <translation>blob, binární soubory, uložit, soubor, obsah, pole, sloupec</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbinary.cpp" line="69"/>
@@ -44213,7 +44230,7 @@ Filenames can be generated using values taken from an attribute in the source ta
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmforcerhr.cpp" line="37"/>
         <source>clockwise,counter,orientation,ring,repair,invalid,geometry,make,valid</source>
-        <translation type="unfinished"/>
+        <translation>ve směru hodinových ručiček, proti směru, orientace, prstenec, oprava, neplatný, geometrie, značka, platný</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmforcerhr.cpp" line="57"/>
@@ -44238,7 +44255,7 @@ Filenames can be generated using values taken from an attribute in the source ta
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="38"/>
         <source>join,connect,attributes,values,fields,tables,proximity,closest,neighbour,neighbor,n-nearest,distance</source>
-        <translation type="unfinished"/>
+        <translation>spojení, propojení, atributy, hodnoty, pole, tabulky, blízkost, nejbližší, soused, sousedi, n-nejbližších, vzdálenost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="62"/>
@@ -44330,7 +44347,7 @@ It can be used in models to convert a point into a layer which can be used for o
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointtolayer.h" line="38"/>
         <source>point,layer,polygon,create,new</source>
-        <translation type="unfinished"/>
+        <translation>bod, vrstva, mnohoúhelník, vytvořit, nový</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonstolines.cpp" line="33"/>
@@ -44366,7 +44383,7 @@ It can be used in models to convert a point into a layer which can be used for o
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastersurfacevolume.cpp" line="38"/>
         <source>sum,volume,area,height,terrain,dem,elevation</source>
-        <translation type="unfinished"/>
+        <translation>součet, objem, plocha, výška, terén, demografické rozmezí, nadmořská výška</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastersurfacevolume.cpp" line="55"/>
@@ -44457,7 +44474,7 @@ Units of the calculated volume are dependent on the coordinate reference system 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterzonalstats.cpp" line="38"/>
         <source>count,area,statistics,stats,zones,categories,minimum,maximum,mean,sum,total</source>
-        <translation type="unfinished"/>
+        <translation>počet, plocha, statistiky, statistik, kategorie, minimum, maximum, průměr, součet, celek</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterzonalstats.cpp" line="55"/>
@@ -44489,7 +44506,7 @@ If either the source raster layer or the zone raster layer value is NoData for a
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstatistics.cpp" line="35"/>
         <source>raster,stats,statistics,maximum,minimum,range,sum,mean,standard,deviation,summary</source>
-        <translation type="unfinished"/>
+        <translation>rastr, statistik, statistiky, maximum, minimum, rozsah, součet, průměr, směrodatná odchylka, souhrn</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstatistics.cpp" line="50"/>
@@ -44594,7 +44611,7 @@ If either the source raster layer or the zone raster layer value is NoData for a
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterzonalstats.cpp" line="74"/>
         <source>Calculates statistics for a raster layer&apos;s values, categorized by zones defined in another raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítá statistiky pro hodnoty rastrové vrstvy, kategorizované podle zón definovaných v jiné rastrové vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterzonalstats.cpp" line="113"/>
@@ -44609,7 +44626,7 @@ If either the source raster layer or the zone raster layer value is NoData for a
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatesbyattribute.cpp" line="34"/>
         <source>drop,remove,field,value,same,filter</source>
-        <translation type="unfinished"/>
+        <translation>zrušit,odebrat,pole,hodnota,stejný,filtr</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatesbyattribute.cpp" line="50"/>
@@ -44641,7 +44658,7 @@ Optionally, these duplicate records can be saved to a separate output for analys
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="37"/>
         <source>drop,remove,same,points,coincident,overlapping,filter</source>
-        <translation type="unfinished"/>
+        <translation>zrušit, odstranit, stejné, body, shodné, překrývající se, filtr</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="54"/>
@@ -44665,7 +44682,7 @@ Attributes are not checked, so in case two features have identical geometries bu
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="67"/>
         <source>Finds duplicated geometries in a layer and removes them.</source>
-        <translation type="unfinished"/>
+        <translation>Najde duplicitní geometrie ve vrstvě a odstraní je.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmdeleteduplicategeometries.cpp" line="190"/>
@@ -44675,7 +44692,7 @@ Attributes are not checked, so in case two features have identical geometries bu
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatesbyattribute.cpp" line="69"/>
         <source>Removes duplicate rows by a field value (or multiple field values).</source>
-        <translation type="unfinished"/>
+        <translation>Odstraní duplicitní řádky podle hodnoty pole (nebo více hodnot polí).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmremoveduplicatesbyattribute.cpp" line="90"/>
@@ -44770,7 +44787,7 @@ Attributes are not checked, so in case two features have identical geometries bu
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="141"/>
         <source>symbols,color,ramps,colors,formats,labels,text,fonts</source>
-        <translation type="unfinished"/>
+        <translation>symboly, barva, rampy, barvy, formáty, popisky, text, písma</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="156"/>
@@ -44813,7 +44830,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="57"/>
         <source>symbols,colors,ramps,formats,labels,text,fonts,merge</source>
-        <translation type="unfinished"/>
+        <translation>symboly, barvy, rampy, formáty, popisky, text, písma, sloučení</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsstylealgorithms.cpp" line="72"/>
@@ -44854,7 +44871,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="67"/>
         <source>The scalebar “%1” is not linked to a map item. This scale will be misleading.</source>
-        <translation type="unfinished"/>
+        <translation>Měřítko „%1“ není propojeno s položkou mapy. Toto měřítko bude zavádějící.</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="122"/>
@@ -44884,7 +44901,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="236"/>
         <source>The source for picture “%1” could not be loaded or is corrupt:&lt;p&gt;%2</source>
-        <translation type="unfinished"/>
+        <translation>Zdroj obrázku „%1“ se nepodařilo načíst nebo je poškozen: &lt;p&gt;%2</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="285"/>
@@ -44986,7 +45003,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="188"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="111"/>
         <source>An error occurred while creating the vector layer: %1</source>
-        <translation type="unfinished"/>
+        <translation>Při vytváření vektorové vrstvy došlo k chybě: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="369"/>
@@ -44997,7 +45014,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="240"/>
         <source>An error occurred while retrieving table properties: %1</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání vlastností tabulky došlo k chybě: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="316"/>
@@ -45014,12 +45031,12 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1306"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1336"/>
         <source>There was an error opening the dataset %1!</source>
-        <translation type="unfinished"/>
+        <translation>Při otevírání datové sady %1 došlo k chybě!</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="854"/>
         <source>Listing field domains for datasets requires GDAL 3.5 or later</source>
-        <translation type="unfinished"/>
+        <translation>Výpis domén polí pro datové sady vyžaduje GDAL 3.5 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="911"/>
@@ -45029,7 +45046,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="919"/>
         <source>Retrieving field domains for datasets requires GDAL 3.3 or later</source>
-        <translation type="unfinished"/>
+        <translation>Načítání domén polí pro datové sady vyžaduje GDAL 3.3 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="938"/>
@@ -45037,12 +45054,12 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1065"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1105"/>
         <source>There was an error opening the dataset: %1</source>
-        <translation type="unfinished"/>
+        <translation>Při otevírání datové sady došlo k chybě: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="948"/>
         <source>Could not set field domain for %1 - field does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Nelze nastavit doménu pole pro %1 - pole neexistuje</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="952"/>
@@ -45052,7 +45069,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="959"/>
         <source>Setting field domains for datasets requires GDAL 3.3 or later</source>
-        <translation type="unfinished"/>
+        <translation>Nastavení domén polí pro datové sady vyžaduje GDAL 3.3 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="982"/>
@@ -45067,7 +45084,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="999"/>
         <source>Creating field domains for datasets requires GDAL 3.3 or later</source>
-        <translation type="unfinished"/>
+        <translation>Vytváření domén polí pro datové sady vyžaduje GDAL 3.3 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1031"/>
@@ -45077,7 +45094,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1042"/>
         <source>Could not rename %1 - field does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Nelze přejmenovat %1 - pole neexistuje</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1046"/>
@@ -45097,7 +45114,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1086"/>
         <source>Setting field aliases for datasets requires GDAL 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>Nastavení aliasů polí pro datové sady vyžaduje GDAL 3.7 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1115"/>
@@ -45117,7 +45134,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1220"/>
         <source>Retrieving relationships for datasets requires GDAL 3.6 or later</source>
-        <translation type="unfinished"/>
+        <translation>Načítání vztahů pro datové sady vyžaduje GDAL 3.6 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1235"/>
@@ -45141,7 +45158,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1265"/>
         <source>Adding relationships for datasets requires GDAL 3.6 or later</source>
-        <translation type="unfinished"/>
+        <translation>Přidávání vztahů pro datové sady vyžaduje GDAL 3.6 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1299"/>
@@ -45151,7 +45168,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1310"/>
         <source>Updating relationships for datasets requires GDAL 3.6 or later</source>
-        <translation type="unfinished"/>
+        <translation>Aktualizace vztahů pro datové sady vyžaduje GDAL 3.6 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1329"/>
@@ -45161,19 +45178,19 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="1340"/>
         <source>Deleting relationships for datasets requires GDAL 3.6 or later</source>
-        <translation type="unfinished"/>
+        <translation>Smazání vztahů pro datové sady vyžaduje GDAL 3.6 nebo novější</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="183"/>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="683"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="288"/>
         <source>Geometry column name not specified while creating spatial index</source>
-        <translation type="unfinished"/>
+        <translation>Při vytváření prostorového indexu nebyl zadán název sloupce geometrie</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="244"/>
         <source>Error listing tables from %1: wrong number of columns returned by query</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při výpisu tabulek z %1: dotaz vrátil nesprávný počet sloupců</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="279"/>
@@ -45243,42 +45260,42 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1256"/>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1281"/>
         <source>Could not create a vector layer for table &apos;%1&apos; in schema &apos;%2&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit vektorovou vrstvu pro tabulku &apos;%1&apos; ve schématu &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1236"/>
         <source>Could not find field &apos;%1&apos; in table &apos;%2&apos; in schema &apos;%3&apos;</source>
-        <translation type="unfinished"/>
+        <translation>V tabulce &apos;%2&apos; ve schématu &apos;%3&apos; se nepodařilo najít pole &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1242"/>
         <source>Unknown error deleting field &apos;%1&apos; in table &apos;%2&apos; in schema &apos;%3&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Neznámá chyba při mazání pole &apos;%1&apos; v tabulce &apos;%2&apos; ve schématu &apos;%3&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1261"/>
         <source>Field &apos;%1&apos; in table &apos;%2&apos; in schema &apos;%3&apos; already exists</source>
-        <translation type="unfinished"/>
+        <translation>Pole &apos;%1&apos; v tabulce &apos;%2&apos; ve schématu &apos;%3&apos; již existuje</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1267"/>
         <source>Unknown error adding field &apos;%1&apos; in table &apos;%2&apos; in schema &apos;%3&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Neznámá chyba při přidávání pole &apos;%1&apos; do tabulky &apos;%2&apos; ve schématu &apos;%3&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1287"/>
         <source>Field &apos;%1&apos; in table &apos;%2&apos; in does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Pole &apos;%1&apos; v tabulce &apos;%2&apos; neexistuje</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1293"/>
         <source>A field with name &apos;%1&apos; already exists in table &apos;%2&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Pole s názvem &apos;%1&apos; již v tabulce &apos;%2&apos; existuje.</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1299"/>
         <source>Unknown error renaming field &apos;%1&apos; in table &apos;%2&apos; to &apos;%3&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Neznámá chyba při přejmenování pole &apos;%1&apos; v tabulce &apos;%2&apos; na &apos;%3&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="82"/>
@@ -45334,7 +45351,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="298"/>
         <source>Could not use operation specified in project between %1 and %2. (Wanted to use: %3).</source>
-        <translation type="unfinished"/>
+        <translation>Nelze použít operaci zadanou v projektu mezi %1 a %2. (Chtělo použít: %3).</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="397"/>
@@ -45351,12 +45368,12 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="381"/>
         <source>Cannot create transform between %1 and %2, missing required grid %3</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit transformaci mezi %1 a %2, chybí požadovaná mřížka %3</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="443"/>
         <source>Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4.</source>
-        <translation type="unfinished"/>
+        <translation>Používá se nepreferovaná souřadnicová operace mezi %1 a %2. Používá se %3, preferuje se %4.</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="498"/>
@@ -45404,22 +45421,22 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/qgsfield.cpp" line="621"/>
         <source>Value &quot;%1&quot; is too large for long long field</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota „%1“ je pro pole long příliš velká</translation>
     </message>
     <message>
         <location filename="../src/core/qgsfield.cpp" line="666"/>
         <source>Could not convert value &quot;%1&quot; to target list type</source>
-        <translation type="unfinished"/>
+        <translation>Nelze převést hodnotu „%1“ na typ cílového seznamu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsfield.cpp" line="707"/>
         <source>Could not convert value &quot;%1&quot; to target type &quot;%2&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze převést hodnotu „%1“ na cílový typ „%2“</translation>
     </message>
     <message>
         <location filename="../src/core/qgsfield.cpp" line="728"/>
         <source>String of length %1 exceeds maximum field length (%2)</source>
-        <translation type="unfinished"/>
+        <translation>Řetězec délky %1 překračuje maximální délku pole (%2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsimagecache.cpp" line="94"/>
@@ -45527,7 +45544,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="909"/>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="133"/>
         <source>Could not create a SQL vector layer: SQL expression is empty.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit vektorovou vrstvu SQL: Výraz SQL je prázdný.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="271"/>
@@ -45730,7 +45747,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportlayersinformation.cpp" line="35"/>
         <source>metadata,details,extent</source>
-        <translation type="unfinished"/>
+        <translation>metadata,podrobnosti,rozsah</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportlayersinformation.cpp" line="40"/>
@@ -45838,7 +45855,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
     <message>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="52"/>
         <source>save,extract</source>
-        <translation type="unfinished"/>
+        <translation>uložit, extrahovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="67"/>
@@ -45896,7 +45913,7 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="55"/>
         <source>create,lines,points,connect,convert,join,path</source>
-        <translation type="unfinished"/>
+        <translation>vytvořit, čáry, body, připojit, převést, spojit, cesta</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="71"/>
@@ -45982,12 +45999,12 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="193"/>
         <source>save,extract,store</source>
-        <translation type="unfinished"/>
+        <translation>uložit, extrahovat, zachovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="208"/>
         <source>This algorithm creates spatial bookmarks corresponding to the extent of features contained in a layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří prostorové záložky odpovídající rozsahu prvků obsažených ve vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="213"/>
@@ -46032,7 +46049,7 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1061"/>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat záložku %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1068"/>
@@ -46173,12 +46190,12 @@ An attribute or expression can be selected to group points having the same value
         <location filename="../src/core/fieldformatter/qgsrelationreferencefieldformatter.cpp" line="62"/>
         <location filename="../src/core/fieldformatter/qgsrelationreferencefieldformatter.cpp" line="129"/>
         <source>Layer %1, field %2: representValue() with inconsistent layer parameter w.r.t relation referencingLayer</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva %1, pole %2: representValue() s nekonzistentním parametrem vrstvy vzhledem k relaci referencingLayer</translation>
     </message>
     <message>
         <location filename="../src/core/fieldformatter/qgsrelationreferencefieldformatter.cpp" line="68"/>
         <source>Layer %1, field %2: representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva %1, pole %2: representValue() s nekonzistentním parametrem fieldIndex vzhledem k relaci odkazující na FieldIdx</translation>
     </message>
     <message>
         <location filename="../src/core/fieldformatter/qgsrelationreferencefieldformatter.cpp" line="74"/>
@@ -46189,7 +46206,7 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/core/fieldformatter/qgsrelationreferencefieldformatter.cpp" line="142"/>
         <source>Layer %1, field %2: Invalid referenced field (%3) configured in relation %4</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva %1, pole %2: V relaci %4 je nakonfigurováno neplatné odkazované pole (%3)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="30"/>
@@ -46211,7 +46228,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="47"/>
         <source>add,create,new,attribute,fields</source>
-        <translation type="unfinished"/>
+        <translation>přidat, vytvořit, nová, atribut, pole</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="62"/>
@@ -46318,7 +46335,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaspect.cpp" line="51"/>
         <source>This algorithm calculates the aspect of the Digital Terrain Model in input.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává aspekt vstupního digitálního modelu terénu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaspect.cpp" line="53"/>
@@ -46354,7 +46371,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmattributeindex.cpp" line="36"/>
         <source>table,attribute,index,create,vector</source>
-        <translation type="unfinished"/>
+        <translation>tabulka, atribut, index, vytvořit, vektor</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmattributeindex.cpp" line="57"/>
@@ -46408,7 +46425,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconverttocurves.cpp" line="34"/>
         <source>straight,segmentize,curves,curved,circular</source>
-        <translation type="unfinished"/>
+        <translation>rovný, segmentovaný, křivkový, zakřivený, kruhový</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconverttocurves.cpp" line="49"/>
@@ -46447,7 +46464,7 @@ Already curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="38"/>
         <source>new,make,folder</source>
-        <translation type="unfinished"/>
+        <translation>nová,vytvořit,složka</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="53"/>
@@ -46474,7 +46491,7 @@ No errors will be raised if the directory already exists.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="83"/>
         <source>A file with the name %1 already exists -- cannot create a new directory here.</source>
-        <translation type="unfinished"/>
+        <translation>Soubor s názvem %1 již existuje -- nelze zde vytvořit nový adresář.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="85"/>
@@ -46499,7 +46516,7 @@ No errors will be raised if the directory already exists.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="36"/>
         <source>added,dropped,new,deleted,features,geometries,difference,delta,revised,original,version</source>
-        <translation type="unfinished"/>
+        <translation>přidáno, odstraněno, nové, smazáno, prvky, geometrie, rozdíl, delta, revidováno, původní, verze</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="51"/>
@@ -46577,7 +46594,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="94"/>
         <source>Calculates features which are unchanged, added or deleted between two dataset versions.</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává prvky, které zůstaly nezměněny, přidány nebo odstraněny mezi dvěma verzemi datové sady.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="118"/>
@@ -46587,7 +46604,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="123"/>
         <source>Geometry type of revised layer (%1) does not match the original layer (%2)</source>
-        <translation type="unfinished"/>
+        <translation>Typ geometrie revidované vrstvy (%1) neodpovídá původní vrstvě (%2)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="128"/>
@@ -46633,7 +46650,7 @@ The algorithm outputs three layers, one containing all features which are consid
         <location filename="../src/analysis/processing/qgsalgorithmexecutespatialitequery.cpp" line="38"/>
         <location filename="../src/analysis/processing/qgsalgorithmexecutespatialitequeryregistered.cpp" line="37"/>
         <source>database,sql,spatialite,execute</source>
-        <translation type="unfinished"/>
+        <translation>databáze,sql,spatialite,vykonat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexecutespatialitequery.cpp" line="53"/>
@@ -46678,7 +46695,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextentfromlayer.cpp" line="36"/>
         <source>polygon,vector,raster,extent,envelope,bounds,bounding,boundary,layer,round,rounded</source>
-        <translation type="unfinished"/>
+        <translation>polygon, vektor, rastr, rozsah, obálka, hranice, ohraničení, hranice, vrstva, kulatý, zaoblený</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextentfromlayer.cpp" line="51"/>
@@ -46703,7 +46720,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="37"/>
         <source>field,calculator,vector</source>
-        <translation type="unfinished"/>
+        <translation>pole, kalkulačka, vektor</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="52"/>
@@ -46755,7 +46772,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="215"/>
         <source>Field name %1 already exists and will be replaced</source>
-        <translation type="unfinished"/>
+        <translation>Název pole %1 již existuje a bude nahrazen</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfieldcalculator.cpp" line="232"/>
@@ -46770,7 +46787,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="35"/>
         <source>data,cells,fill,set</source>
-        <translation type="unfinished"/>
+        <translation>data, buňky, výplň, sada</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignrasters.cpp" line="47"/>
@@ -46812,7 +46829,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="116"/>
         <source>Input raster has no NoData values. There exist no NoData cells to fill.</source>
-        <translation type="unfinished"/>
+        <translation>Vstupní rastr neobsahuje žádné hodnoty NoData. Neexistují žádné buňky NoData k vyplnění.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="29"/>
@@ -46822,7 +46839,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="34"/>
         <source>extract,filter,geometry,linestring,point,polygon</source>
-        <translation type="unfinished"/>
+        <translation>extrahovat, filtr, geometrie, čárový řetězec, bod, mnohoúhelník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="51"/>
@@ -46887,7 +46904,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="239"/>
         <source>filter,vector,raster,select</source>
-        <translation type="unfinished"/>
+        <translation>filtr, vektor, rastr, výběr</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="263"/>
@@ -46913,7 +46930,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="37"/>
         <source>join,export,single,table</source>
-        <translation type="unfinished"/>
+        <translation>spojení, export, jedna, tabulka</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="52"/>
@@ -46974,7 +46991,7 @@ The algorithm outputs three layers, one containing all features which are consid
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="253"/>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="387"/>
         <source>Please choose varying values for the high and low membership parameters</source>
-        <translation type="unfinished"/>
+        <translation>Zvolte prosím různé hodnoty pro parametry vysokého a nízkého členství</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="278"/>
@@ -46994,7 +47011,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="416"/>
         <source>fuzzy logic,fuzzify,fuzzy,logic,large,membership</source>
-        <translation type="unfinished"/>
+        <translation>fuzzy logika, fuzzifikace, fuzzy, logika, velké, členství</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="157"/>
@@ -47046,7 +47063,7 @@ This function is typically used when larger input raster values should become me
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="528"/>
         <source>fuzzy logic,fuzzify,fuzzy,logic,small,membership</source>
-        <translation type="unfinished"/>
+        <translation>fuzzy logika, fuzzifikace, fuzzy, logika, malé, členství</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfuzzifyraster.cpp" line="533"/>
@@ -47118,7 +47135,7 @@ This function is typically used when a certain range of raster values near a pre
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="35"/>
         <source>geometry,expression,create,modify,update</source>
-        <translation type="unfinished"/>
+        <translation>geometrie, výraz, vytvořit, upravit, aktualizovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgeometrybyexpression.cpp" line="50"/>
@@ -47175,12 +47192,12 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="43"/>
         <source>layout,atlas,composer,composition,save,png,jpeg,jpg</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, atlas, skladatel, kompozice, uložit, png, jpeg, jpg</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="58"/>
         <source>Exports an atlas layout as a set of images.</source>
-        <translation type="unfinished"/>
+        <translation>Exportuje rozvržení atlasu jako sadu obrázků.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="63"/>
@@ -47213,7 +47230,7 @@ If a coverage layer is set, the selected layout&apos;s atlas settings exposed in
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="76"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="58"/>
         <source>Reverse sort order (used when a sort expression is provided)</source>
-        <translation type="unfinished"/>
+        <translation>Obrácené pořadí řazení (používá se, když je zadán třídicí výraz)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="78"/>
@@ -47338,7 +47355,7 @@ Please try a lower resolution or a smaller paper size.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="33"/>
         <source>layout,atlas,composer,composition,save</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, atlas, skladatel, kompozice, uložit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="245"/>
@@ -47437,7 +47454,7 @@ Please try a lower resolution or a smaller paper size.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="231"/>
         <source>Exports an atlas layout as a single PDF file.</source>
-        <translation type="unfinished"/>
+        <translation>Exportuje rozvržení atlasu jako jeden soubor PDF.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="236"/>
@@ -47495,7 +47512,7 @@ If a coverage layer is set, the selected layout's atlas settings exposed in this
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="40"/>
         <source>layout,composer,composition,save,png,jpeg,jpg</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, skladatel, kompozice, uložit, png, jpeg, jpg</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="55"/>
@@ -47505,7 +47522,7 @@ If a coverage layer is set, the selected layout's atlas settings exposed in this
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="60"/>
         <source>This algorithm outputs a print layout as an image file (e.g. PNG or JPEG images).</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vygeneruje tiskovou šablonu jako obrazový soubor (např. obrázky PNG nebo JPEG).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="94"/>
@@ -47525,7 +47542,7 @@ If a coverage layer is set, the selected layout's atlas settings exposed in this
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="39"/>
         <source>layout,composer,composition,save</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, skladatel, kompozice, uložit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="54"/>
@@ -47535,7 +47552,7 @@ If a coverage layer is set, the selected layout's atlas settings exposed in this
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="59"/>
         <source>This algorithm outputs a print layout as a PDF file.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vygeneruje tiskovou šablonu ve formátu PDF.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="117"/>
@@ -47616,7 +47633,7 @@ Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="38"/>
         <source>point,node,vertex,nearest,neighbour,distance</source>
-        <translation type="unfinished"/>
+        <translation>bod, uzel, vrchol, nejbližší, soused, vzdálenost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="53"/>
@@ -47728,7 +47745,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
         <location filename="../src/analysis/processing/qgsalgorithmorthogonalize.cpp" line="35"/>
         <location filename="../src/analysis/processing/qgsalgorithmsinglesidedbuffer.cpp" line="35"/>
         <source>rectangle,perpendicular,right,angles,square,quadrilateralise</source>
-        <translation type="unfinished"/>
+        <translation>obdélník, kolmý, pravý, úhly, čtverec, čtyřúhelník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmorthogonalize.cpp" line="50"/>
@@ -47773,7 +47790,7 @@ The algorithm is iterative. Setting a larger number for the maximum iterations w
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpixelcentroidsfrompolygons.cpp" line="36"/>
         <source>raster,polygon,centroid,pixel,create</source>
-        <translation type="unfinished"/>
+        <translation>rastr, polygon, těžiště, pixel, vytvořit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpixelcentroidsfrompolygons.cpp" line="51"/>
@@ -47868,7 +47885,7 @@ The algorithm is iterative. Setting a larger number for the maximum iterations w
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="40"/>
         <source>Creates a polygon layer from the input lines layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří polygonovou vrstvu z vrstvy vstupních čar.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="45"/>
@@ -47914,7 +47931,7 @@ The algorithm is iterative. Setting a larger number for the maximum iterations w
         <location filename="../src/analysis/processing/qgsalgorithmraiseexception.cpp" line="43"/>
         <location filename="../src/analysis/processing/qgsalgorithmraiseexception.cpp" line="122"/>
         <source>abort,warn,error,cancel</source>
-        <translation type="unfinished"/>
+        <translation>přerušit, varovat, chyba, zrušit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmraiseexception.cpp" line="58"/>
@@ -48004,7 +48021,7 @@ The message can be customized, and optionally an expression based condition can 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="36"/>
         <source>extract,filter,random,number,percentage</source>
-        <translation type="unfinished"/>
+        <translation>extrahovat, filtrovat, náhodné, číslo, procento</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="51"/>
@@ -48046,7 +48063,7 @@ The subset is defined randomly, using a percentage or count value to define the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="106"/>
         <source>Percentage can&apos;t be greater than 100. Choose a lower value and try again.</source>
-        <translation type="unfinished"/>
+        <translation>Procento nemůže být větší než 100. Vyberte nižší hodnotu a zkuste to znovu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="118"/>
@@ -48076,7 +48093,7 @@ The subset is defined randomly, using a percentage or count value to define the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsextent.cpp" line="39"/>
         <source>random,points,extent,create</source>
-        <translation type="unfinished"/>
+        <translation>náhodné,body,rozsah,vytvořit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsextent.cpp" line="54"/>
@@ -48126,7 +48143,7 @@ The subset is defined randomly, using a percentage or count value to define the 
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="38"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="38"/>
         <source>seed,attributes,create</source>
-        <translation type="unfinished"/>
+        <translation>semeno, atributy, vytvořit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="53"/>
@@ -48152,12 +48169,12 @@ The subset is defined randomly, using a percentage or count value to define the 
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="70"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="73"/>
         <source>Maximum number of search attempts (for Min. dist. &gt; 0)</source>
-        <translation type="unfinished"/>
+        <translation>Maximální počet pokusů o vyhledávání (pro Min. vzdálenost &gt; 0)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="73"/>
         <source>Maximum number of attempts per point (for Min. dist. &gt; 0)</source>
-        <translation type="unfinished"/>
+        <translation>Maximální počet pokusů na bod (pro min. vzdálenost &gt; 0)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="77"/>
@@ -48220,7 +48237,7 @@ Features with empty or missing geometries: %4</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="62"/>
         <source>Minimum distance between points (per feature)</source>
-        <translation type="unfinished"/>
+        <translation>Minimální vzdálenost mezi body (na prvek)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="81"/>
@@ -48258,7 +48275,7 @@ Features with empty or missing geometries: %4</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="243"/>
         <source>raster,create,random</source>
-        <translation type="unfinished"/>
+        <translation>rastr, vytvořit, náhodný</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="248"/>
@@ -48298,7 +48315,7 @@ By default, the values will range between the minimum and maximum value of the s
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="442"/>
         <source>raster,create,binomial,random</source>
-        <translation type="unfinished"/>
+        <translation>rastrový, vytvořit, binomický, náhodný</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="447"/>
@@ -48385,7 +48402,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="546"/>
         <source>raster,create,random,exponential</source>
-        <translation type="unfinished"/>
+        <translation>rastr,vytvořit,náhodný,exponenciální</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="626"/>
@@ -48395,7 +48412,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="631"/>
         <source>raster,create,random,gamma</source>
-        <translation type="unfinished"/>
+        <translation>rastr, vytvořit, náhodný, gama</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="716"/>
@@ -48405,7 +48422,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="721"/>
         <source>raster,create,random,geometric</source>
-        <translation type="unfinished"/>
+        <translation>rastrový, vytvořit, náhodný, geometrický</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="815"/>
@@ -48415,7 +48432,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="820"/>
         <source>raster,create,random,negative,binomial,negative-binomial</source>
-        <translation type="unfinished"/>
+        <translation>rastrový, vytvořit, náhodný, negativní, binomický, negativní-binomický</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="920"/>
@@ -48425,7 +48442,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="925"/>
         <source>raster,create,normal,distribution,random</source>
-        <translation type="unfinished"/>
+        <translation>rastr, vytvořit, normální, rozdělení, náhodné</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="1010"/>
@@ -48435,7 +48452,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="1015"/>
         <source>raster,create,random,poisson</source>
-        <translation type="unfinished"/>
+        <translation>rastr,vytvořit,náhodný,poisson</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="41"/>
@@ -48472,7 +48489,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="262"/>
         <source>cell,equal,frequency,pixel,stack</source>
-        <translation type="unfinished"/>
+        <translation>buňka, rovná, frekvence, pixel, zásobník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="267"/>
@@ -48515,7 +48532,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="311"/>
         <source>cell,greater,frequency,pixel,stack</source>
-        <translation type="unfinished"/>
+        <translation>buňka, větší, frekvence, pixel, zásobník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="350"/>
@@ -48525,7 +48542,7 @@ By default, the values will be chosen given a mean of 1.0. This can be overridde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp" line="360"/>
         <source>cell,less,lower,frequency,pixel,stack</source>
-        <translation type="unfinished"/>
+        <translation>buňka, méně, nižší, frekvence, pixel, zásobník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="47"/>
@@ -48640,7 +48657,7 @@ The minimum extent entered will internally be extended to a multiple of the tile
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastersampling.cpp" line="35"/>
         <source>extract,point,pixel,value</source>
-        <translation type="unfinished"/>
+        <translation>extrahovat, bod, pixel, hodnota</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastersampling.cpp" line="50"/>
@@ -48682,7 +48699,7 @@ If the raster layer has more than one band, all the band values are sampled.</so
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstackposition.cpp" line="243"/>
         <source>cell,lowest,position,pixel,stack</source>
-        <translation type="unfinished"/>
+        <translation>buňka, nejnižší, pozice, pixel, zásobník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstackposition.cpp" line="248"/>
@@ -48714,7 +48731,7 @@ If the raster layer has more than one band, all the band values are sampled.</so
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstackposition.cpp" line="352"/>
         <source>cell,highest,position,pixel,stack</source>
-        <translation type="unfinished"/>
+        <translation>buňka, nejvyšší, pozice, pixel, zásobník</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="30"/>
@@ -48754,7 +48771,7 @@ Rows in orange have constraints in the template layer from which these fields we
         <location filename="../src/analysis/processing/qgsalgorithmrefactorfields.cpp" line="138"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="418"/>
         <source>Parser error for field &quot;%1&quot; with expression &quot;%2&quot;: %3</source>
-        <translation type="unfinished"/>
+        <translation>Chyba zpracování pro pole &quot;%1&quot; s výrazem &quot;%2&quot;: %3</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrenametablefield.cpp" line="29"/>
@@ -48774,7 +48791,7 @@ Rows in orange have constraints in the template layer from which these fields we
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrenametablefield.cpp" line="44"/>
         <source>rename,attribute,fields,table,change</source>
-        <translation type="unfinished"/>
+        <translation>přejmenovat,atribut,pole,tabulka,změnit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrenametablefield.cpp" line="59"/>
@@ -48809,7 +48826,7 @@ Rows in orange have constraints in the template layer from which these fields we
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrescaleraster.cpp" line="37"/>
         <source>raster,rescale,minimum,maximum,range</source>
-        <translation type="unfinished"/>
+        <translation>rastr, změna měřítka, minimum, maximum, rozsah</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrescaleraster.cpp" line="75"/>
@@ -48861,7 +48878,7 @@ By default the algorithm preserves the original NoData value, but there is an op
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="35"/>
         <source>data,cells,round,truncate</source>
-        <translation type="unfinished"/>
+        <translation>data, buňky, zaokrouhlit, zkrátit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="52"/>
@@ -48918,12 +48935,12 @@ The algorithm preserves the data type of the input raster. Therefore byte/intege
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmruggedness.cpp" line="36"/>
         <source>dem,ruggedness,index,terrain</source>
-        <translation type="unfinished"/>
+        <translation>dem, robustnost, index, terén</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmruggedness.cpp" line="51"/>
         <source>This algorithm calculates the quantitative measurement of terrain heterogeneity described by Riley et al. (1999).</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává kvantitativní měření heterogenity terénu popsané Riley et al. (1999).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmruggedness.cpp" line="54"/>
@@ -48948,7 +48965,7 @@ The algorithm preserves the data type of the input raster. Therefore byte/intege
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="36"/>
         <source>save,write,export</source>
-        <translation type="unfinished"/>
+        <translation>uložit, zapsat, exportovat</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="51"/>
@@ -49003,12 +49020,12 @@ Optional GDAL-defined dataset and layer options can be specified. For more infor
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="82"/>
         <source>Append features to existing layer, but do not create new fields</source>
-        <translation type="unfinished"/>
+        <translation>Přidat prvky k existující vrstvě, ale nevytvářet nová pole</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="82"/>
         <source>Append features to existing layer, and create new fields if needed</source>
-        <translation type="unfinished"/>
+        <translation>Přidat prvky k existující vrstvě a v případě potřeby vytvořit nová pole</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="86"/>
@@ -49035,7 +49052,7 @@ Optional GDAL-defined dataset and layer options can be specified. For more infor
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavelog.cpp" line="40"/>
         <source>record,messages,logged</source>
-        <translation type="unfinished"/>
+        <translation>záznam, zprávy, zaznamenáno</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavelog.cpp" line="55"/>
@@ -49076,7 +49093,7 @@ Optionally, the log can be saved in a HTML formatted version.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetlayerencoding.cpp" line="36"/>
         <source>change,alter,attribute,codepage</source>
-        <translation type="unfinished"/>
+        <translation>změnit, upravit, atribut, kódová stránka</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetlayerencoding.cpp" line="51"/>
@@ -49093,7 +49110,7 @@ Changing the encoding is only supported for some vector layer data sources.</sou
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetlayerencoding.cpp" line="92"/>
         <source>Layer&apos;s data provider does not support changing the attribute encoding</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel dat vrstvy nepodporuje změnu kódování atributů</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetmvalue.cpp" line="30"/>
@@ -49103,7 +49120,7 @@ Changing the encoding is only supported for some vector layer data sources.</sou
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetmvalue.cpp" line="35"/>
         <source>set,add,m,measure,values</source>
-        <translation type="unfinished"/>
+        <translation>nastavit, přidat, m, změřit, hodnoty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetmvalue.cpp" line="50"/>
@@ -49146,7 +49163,7 @@ If M values already exist in the layer, they will be overwritten with the new va
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetvariable.cpp" line="62"/>
         <source>This algorithm sets an expression variable for the current project.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus nastavuje proměnný výraz pro aktuální projekt.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetvariable.cpp" line="77"/>
@@ -49176,7 +49193,7 @@ If M values already exist in the layer, they will be overwritten with the new va
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetzvalue.cpp" line="35"/>
         <source>set,add,z,25d,3d,values</source>
-        <translation type="unfinished"/>
+        <translation>nastavit, přidat, z, 25d, 3d, hodnoty</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsetzvalue.cpp" line="50"/>
@@ -49209,7 +49226,7 @@ If Z values already exist in the layer, they will be overwritten with the new va
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshpencodinginfo.cpp" line="35"/>
         <source>shp,codepage,cpg,ldid,information,list,show</source>
-        <translation type="unfinished"/>
+        <translation>shp,kódová stránka,cpg,ldid,informace,seznam,zobrazit</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshpencodinginfo.cpp" line="50"/>
@@ -49221,7 +49238,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshpencodinginfo.cpp" line="57"/>
         <source>Extracts the attribute encoding information embedded in a Shapefile.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje informace o kódování atributů vložené do souboru Shapefile.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshpencodinginfo.cpp" line="67"/>
@@ -49272,7 +49289,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmslope.cpp" line="36"/>
         <source>dem,slope,terrain</source>
-        <translation type="unfinished"/>
+        <translation>dem, svah, terén</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmslope.cpp" line="51"/>
@@ -49307,7 +49324,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="47"/>
         <source>Vertices will be inserted or removed as required to make the geometries match the reference geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Vrcholy budou vkládány nebo odebírány podle potřeby, aby geometrie odpovídaly referenčním geometriím.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="53"/>
@@ -49317,7 +49334,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="58"/>
         <source>geometry,snap,tolerance</source>
-        <translation type="unfinished"/>
+        <translation>geometrie, uchopení, tolerance</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="100"/>
@@ -49382,7 +49399,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexporttopostgresql.cpp" line="38"/>
         <source>export,import,postgis,table,layer,into,copy</source>
-        <translation type="unfinished"/>
+        <translation>export, import, postgis, tabulka, vrstva, do, kopírování</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexporttopostgresql.cpp" line="53"/>
@@ -49397,7 +49414,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexporttopostgresql.cpp" line="56"/>
         <source>Table to export to (leave blank to use layer name)</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka k exportu (ponechte prázdné pro použití názvu vrstvy)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexporttopostgresql.cpp" line="57"/>
@@ -49472,7 +49489,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="36"/>
         <source>table,spatial,geometry,index,create,vector</source>
-        <translation type="unfinished"/>
+        <translation>tabulka, prostorová, geometrie, index, vytvořit, vektor</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="57"/>
@@ -49498,7 +49515,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="60"/>
         <location filename="../src/analysis/processing/qgsalgorithmsplitvectorlayer.cpp" line="37"/>
         <source>vector,split,field,unique</source>
-        <translation type="unfinished"/>
+        <translation>vektor, rozdělení, pole, jedinečný</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsplitvectorlayer.cpp" line="52"/>
@@ -49611,7 +49628,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsumlinelength.cpp" line="38"/>
         <source>line,intersects,intersecting,sum,length,count</source>
-        <translation type="unfinished"/>
+        <translation>přímka,protíná,protínající,součet,délka,počet</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsumlinelength.cpp" line="63"/>
@@ -49660,7 +49677,7 @@ The resulting layer has the same features as the input polygon layer, but with t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtinmeshcreation.cpp" line="46"/>
         <source>This algorithm creates a TIN mesh layer from vector layers.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří vrstvu sítě TIN z vektorových vrstev.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmb3dmtogltf.cpp" line="38"/>
@@ -49790,7 +49807,7 @@ The resulting layer has the same features as the input polygon layer, but with t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtruncatetable.cpp" line="35"/>
         <source>empty,delete,layer,clear,features</source>
-        <translation type="unfinished"/>
+        <translation>prázdná, smazat, vrstva, vymazat, prvky</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtruncatetable.cpp" line="50"/>
@@ -49918,7 +49935,7 @@ The resulting layer has the same features as the input polygon layer, but with t
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatistics.cpp" line="37"/>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatisticsfeaturebased.cpp" line="36"/>
         <source>stats,statistics,zones,layer,sum,maximum,minimum,mean,count,standard,deviation,median,range,majority,minority,variety,variance,summary,raster</source>
-        <translation type="unfinished"/>
+        <translation>statistik, statistiky, zóny, vrstva, součet, maximum, minimum, průměr, počet, směrodatná odchylka, medián, rozsah, většina, menšina, variace, rozptyl, souhrn, rastr</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatistics.cpp" line="32"/>
@@ -50143,7 +50160,7 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1849"/>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1922"/>
         <source>There was an error retrieving the connection to %1</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání připojení %1 došlo k chybě</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2298"/>
@@ -50203,7 +50220,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2679"/>
         <source>Relationships cannot be created in an empty database</source>
-        <translation type="unfinished"/>
+        <translation>Vztahy nelze vytvářet v prázdné databázi</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2692"/>
@@ -50360,12 +50377,12 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1166"/>
         <source>Unable to start editing of mesh layer &quot;%1&quot;: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze spustit úpravy vrstvy sítě „%1“: %2</translation>
     </message>
     <message>
         <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1211"/>
         <source>Edited mesh layer &quot;%1&quot; can&apos;t be save due to an error: %2</source>
-        <translation type="unfinished"/>
+        <translation>Upravenou síťovou vrstvu „%1“ nelze uložit kvůli chybě: %2</translation>
     </message>
     <message>
         <location filename="../src/core/numericformats/qgsbasicnumericformat.cpp" line="54"/>
@@ -50416,17 +50433,17 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertininputlayers.h" line="111"/>
         <source>list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs</source>
-        <translation type="unfinished"/>
+        <translation>list[dict]: seznam vstupních vrstev jako slovníků, viz dokumentace k QgsProcessingParameterTinInputLayers</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametervectortilewriterlayers.h" line="117"/>
         <source>list[dict]: list of input layers as dictionaries, see QgsProcessingParameterVectorTileWriterLayers docs</source>
-        <translation type="unfinished"/>
+        <translation>list[dict]: seznam vstupních vrstev jako slovníků, viz dokumentace k QgsProcessingParameterVectorTileWriterLayers</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="31"/>
         <source>Encoding is not correctly set. A non &apos;System&apos; encoding is required</source>
-        <translation type="unfinished"/>
+        <translation>Kódování není správně nastaveno. Je vyžadováno jiné kódování než „System“</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="33"/>
@@ -50728,14 +50745,14 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2768"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2776"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
-        <translation type="unfinished"/>
+        <translation>%1: Výrazy v interpolační funkci nejsou podporovány, přeskakuji.</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1362"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1376"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1428"/>
         <source>%1: Referenced font %2 is not available on system</source>
-        <translation type="unfinished"/>
+        <translation>%1: Odkazované písmo %2 není v systému k dispozici</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1452"/>
@@ -50827,7 +50844,7 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2811"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2831"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
-        <translation type="unfinished"/>
+        <translation>%1: Seznamy ve funkci interpolace popisků nejsou podporovány, přeskakuji.</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2882"/>
@@ -50850,7 +50867,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3140"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
-        <translation type="unfinished"/>
+        <translation>%1: Kubicko-bezierova interpolace není podporována, používá se lineární.</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3145"/>
@@ -50899,7 +50916,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3872"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
-        <translation type="unfinished"/>
+        <translation>%1: Seznam hodnot spritu se nepodařilo interpretovat metodou %2</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3786"/>
@@ -50920,7 +50937,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4229"/>
         <source>%1 scheme is not supported for raster source %2</source>
-        <translation type="unfinished"/>
+        <translation>Schéma %1 není podporováno pro rastrový zdroj %2</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsvectortilelayer.cpp" line="440"/>
@@ -51062,13 +51079,15 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="887"/>
         <source>Algorithms depend on the selected input.
 Remove them before trying to remove it.</source>
-        <translation type="unfinished"/>
+        <translation>Algoritmy závisí na vybraném vstupu.
+Před pokusem o jeho odstranění je odstraňte.</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="892"/>
         <source>Other inputs depend on the selected input.
 Remove them before trying to remove it.</source>
-        <translation type="unfinished"/>
+        <translation>Ostatní vstupy závisí na vybraném vstupu.
+Před pokusem o odstranění vstupu je odstraňte.</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="935"/>
@@ -51109,7 +51128,8 @@ Remove them before trying to remove it.</source>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1192"/>
         <source>Other algorithms depend on the selected one.
 Remove them before trying to remove it.</source>
-        <translation type="unfinished"/>
+        <translation>Ostatní algoritmy závisí na vybraném algoritmu.
+Před pokusem o odstranění algoritmu je odstraňte.</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1222"/>
@@ -51131,12 +51151,13 @@ Activate them them before trying to activate it..</source>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="883"/>
         <source>Components depend on the selected items.
 Try to remove them before trying deleting these components.</source>
-        <translation type="unfinished"/>
+        <translation>Komponenty závisí na vybraných položkách.
+Před odstraněním těchto komponent zkuste nejprve odebrat vybrané položky.</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4969"/>
         <source>Name of field (separate field names with ; for multiple field parameters)</source>
-        <translation type="unfinished"/>
+        <translation>Název pole (oddělte názvy polí znakem ; pro více parametrů pole)</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5119"/>
@@ -51161,7 +51182,7 @@ Try to remove them before trying deleting these components.</source>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7021"/>
         <source>Could not load selected layer/table. Dependent bands could not be populated</source>
-        <translation type="unfinished"/>
+        <translation>Nelze načíst vybranou vrstvu/tabulku. Nelze naplnit závislé pásma</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7880"/>
@@ -51176,7 +51197,7 @@ Try to remove them before trying deleting these components.</source>
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="35"/>
         <source>Inserts the relation ID for the relation named &apos;%1&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Vloží ID relace pro relaci s názvem &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="38"/>
@@ -51188,7 +51209,7 @@ Try to remove them before trying deleting these components.</source>
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="48"/>
         <source>Inserts the layer ID for the layer named &apos;%1&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Vloží ID vrstvy s názvem &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmasksourceselectionwidget.cpp" line="153"/>
@@ -51224,12 +51245,12 @@ Try to remove them before trying deleting these components.</source>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2537"/>
         <source>Parent and child table must be from the same dataset</source>
-        <translation type="unfinished"/>
+        <translation>Nadřazená a podřízená tabulka musí pocházet ze stejné datové sady</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogrutils.cpp" line="2548"/>
         <source>Parent and mapping table must be from the same dataset</source>
-        <translation type="unfinished"/>
+        <translation>Nadřazená a mapovací tabulka musí pocházet ze stejné datové sady</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvariantutils.cpp" line="47"/>
@@ -51514,7 +51535,8 @@ Try to remove them before trying deleting these components.</source>
         <location filename="../src/providers/mssql/qgsmssqlproviderconnection.cpp" line="521"/>
         <source>Error retrieving geometry type for '%1' on table %2.%3:
 %4</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při načítání typu geometrie pro &apos;%1&apos; v tabulce %2.%3:
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlproviderconnection.cpp" line="560"/>
@@ -51543,19 +51565,24 @@ Try to remove them before trying deleting these components.</source>
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze získat data dlaždic.
+Chybová zpráva z databáze byla:
+%1.
+SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrastershareddata.cpp" line="112"/>
         <source>Missing tiles were not found while fetching tile data from backend.
 SQL: %1</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání dat dlaždic z backendu nebyly nalezeny chybějící dlaždice.
+SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrastershareddata.cpp" line="121"/>
         <source>Tile with ID (%1) is empty while fetching tile data from backend.
 SQL: %2</source>
-        <translation type="unfinished"/>
+        <translation>Dlaždice s ID (%1) je prázdná při načítání dat dlaždic z backendu.
+SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrastershareddata.cpp" line="132"/>
@@ -51604,12 +51631,12 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1145"/>
         <source>Could not create a valid layer for table &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit platnou vrstvu pro tabulku &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1149"/>
         <source>Could not delete field &apos;%1&apos; of table &apos;%2&apos;: field does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Nelze smazat pole &apos;%1&apos; tabulky &apos;%2&apos;: pole neexistuje</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteproviderconnection.cpp" line="1153"/>
@@ -51731,7 +51758,10 @@ QGIS_SERVER_ADDRESS a QGIS_SERVER_PORT.</translation>
 0: INFO
 1: WARNING
 2: CRITICAL</source>
-        <translation type="unfinished"/>
+        <translation>Úroveň protokolu (výchozí: 0)
+0: INFO
+1: VAROVÁNÍ
+2: KRITICKÉ</translation>
     </message>
     <message>
         <location filename="../src/server/qgis_mapserver.cpp" line="557"/>
@@ -51745,7 +51775,7 @@ a proměnnou prostředí QGIS_PROJECT_FILE.</translation>
     <message>
         <location filename="../src/server/qgis_mapserver.cpp" line="597"/>
         <source>Project file not found, the option will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Soubor projektu nebyl nalezen, možnost bude ignorována.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsshareddata.cpp" line="441"/>
@@ -51877,7 +51907,7 @@ a proměnnou prostředí QGIS_PROJECT_FILE.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbatchnominatimgeocode.cpp" line="44"/>
         <source>geocode,nominatim,batch,bulk,address,match</source>
-        <translation type="unfinished"/>
+        <translation>geokód, nominatim, dávka, hromadně, adresa, shoda</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbatchnominatimgeocode.cpp" line="60"/>
@@ -51950,7 +51980,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="182"/>
         <source>drop,delete,remove,retain,keep,other,fields,columns,attributes</source>
-        <translation type="unfinished"/>
+        <translation>zrušit, smazat, odebrat, zachovat, ponechat, ostatní, pole, sloupce, atributy</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="197"/>
@@ -51970,7 +52000,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="47"/>
         <source>gps,tools,babel,tracks,waypoints,routes</source>
-        <translation type="unfinished"/>
+        <translation>gps, nástroje, babel, stopy, body trasy, trasy</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="52"/>
@@ -52119,7 +52149,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="406"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="627"/>
         <source>Resulting file is not a valid GPX layer</source>
-        <translation type="unfinished"/>
+        <translation>Výsledný soubor není platnou vrstvou GPX</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="233"/>
@@ -52129,7 +52159,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="238"/>
         <source>gps,tools,babel,tracks,waypoints,routes,gpx,import,export</source>
-        <translation type="unfinished"/>
+        <translation>gps, nástroje, babel, stopy, body trasy, trasy, gpx, import, export</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="255"/>
@@ -52177,25 +52207,25 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="320"/>
         <source>Unknown GPSBabel format “%1”. Valid formats are: %2</source>
-        <translation type="unfinished"/>
+        <translation>Neznámý formát GPSBabel &quot;%1&quot;. Platné formáty jsou: %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="329"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="550"/>
         <source>The GPSBabel format “%1” does not support converting waypoints.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel „%1“ nepodporuje převod bodů trasy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="337"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="558"/>
         <source>The GPSBabel format “%1” does not support converting routes.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel „%1“ nepodporuje převod tras.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="345"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="566"/>
         <source>The GPSBabel format “%1” does not support converting tracks.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel „%1“ nepodporuje převod stop.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="432"/>
@@ -52206,7 +52236,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="437"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="659"/>
         <source>gps,tools,babel,tracks,waypoints,routes,gpx,import,export,export,device,serial</source>
-        <translation type="unfinished"/>
+        <translation>gps, nástroje, babel, stopy, body trasy, trasy, gpx, import, export, exportovat, zařízení, sériové</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="452"/>
@@ -52234,7 +52264,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="523"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="742"/>
         <source>Unknown GPSBabel device “%1”. Valid devices are: %2</source>
-        <translation type="unfinished"/>
+        <translation>Neznámé zařízení GPSBabel „%1“. Platná zařízení jsou: %2</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="541"/>
@@ -52265,17 +52295,17 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="770"/>
         <source>The GPSBabel format “%1” does not support waypoints.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel &quot;%1&quot; nepodporuje body trasy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="778"/>
         <source>The GPSBabel format “%1” does not support routes.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel &quot;%1&quot; nepodporuje trasy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="786"/>
         <source>The GPSBabel format “%1” does not support tracks.</source>
-        <translation type="unfinished"/>
+        <translation>Formát GPSBabel &quot;%1&quot; nepodporuje stopy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="796"/>
@@ -52290,7 +52320,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayerproperties.cpp" line="35"/>
         <source>extent,pixel,size,width,height</source>
-        <translation type="unfinished"/>
+        <translation>rozsah, pixel, velikost, šířka, výška</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayerproperties.cpp" line="53"/>
@@ -52358,7 +52388,7 @@ If an optional band number is specified then the NoData value for the selected b
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmroundness.cpp" line="35"/>
         <source>roundness,circle</source>
-        <translation type="unfinished"/>
+        <translation>kulatost, kruh</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmroundness.cpp" line="55"/>
@@ -52380,7 +52410,7 @@ The roundness of a polygon is defined as 4π × polygon area / perimeter². The 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshortestline.cpp" line="38"/>
         <source>distance,shortest,minimum,nearest,closest,proximity</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, nejkratší, minimální, nejbližší, blízko, blízkost</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmshortestline.cpp" line="53"/>
@@ -52433,12 +52463,12 @@ This algorithm uses purely Cartesian calculations for distance, and does not con
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmstdbscanclustering.cpp" line="34"/>
         <source>Clusters spatiotemporal point features using a time and density based scan algorithm.</source>
-        <translation type="unfinished"/>
+        <translation>Seskupuje časoprostorové bodové prvky pomocí algoritmu skenování založeného na čase a hustotě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmstdbscanclustering.cpp" line="39"/>
         <source>clustering,clusters,density,based,points,temporal,time,interval,duration,distance</source>
-        <translation type="unfinished"/>
+        <translation>shlukování, shluky, hustota, na základě, bodů, časových, intervalů, trvání, vzdálenosti</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmstdbscanclustering.cpp" line="55"/>
@@ -52463,7 +52493,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/app/georeferencer/qgsgcplist.cpp" line="164"/>
         <source>Could not write to GCP points file %1.</source>
-        <translation type="unfinished"/>
+        <translation>Nemohu zapisovat do souboru s GCP body %1.</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgcplist.cpp" line="175"/>
@@ -52488,7 +52518,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="305"/>
         <source>layer is not valid, check the log messages for more information</source>
-        <translation type="unfinished"/>
+        <translation>vrstva není platná, zkontrolujte zprávy protokolu pro více informací</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="307"/>
@@ -52531,12 +52561,12 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/geocoding/qgsgooglemapsgeocoder.cpp" line="132"/>
         <source>Request denied -- the API key was rejected</source>
-        <translation type="unfinished"/>
+        <translation>Žádost zamítnuta -- klíč API byl zamítnut</translation>
     </message>
     <message>
         <location filename="../src/core/geometry/qgscircularstring.cpp" line="576"/>
         <source>CircularString has less than 3 points and is not empty.</source>
-        <translation type="unfinished"/>
+        <translation>Kruhový řetězec má méně než 3 body a není prázdný.</translation>
     </message>
     <message>
         <location filename="../src/core/geometry/qgscompoundcurve.cpp" line="434"/>
@@ -52546,7 +52576,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/geometry/qgslinestring.cpp" line="323"/>
         <source>LineString has less than 2 points and is not empty.</source>
-        <translation type="unfinished"/>
+        <translation>LineString má méně než 2 body a není prázdný.</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayout.cpp" line="44"/>
@@ -52903,7 +52933,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/processing/qgsprocessingparametermeshdataset.h" line="125"/>
         <source>list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs</source>
-        <translation type="unfinished"/>
+        <translation>list[int]: seznam indexů skupin datových sad, viz dokumentace QgsProcessingParameterMeshDatasetGroups</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametermeshdataset.h" line="270"/>
@@ -52998,17 +53028,17 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/symbology/qgslinesymbollayer.cpp" line="3096"/>
         <source>Could not allocate sufficient memory for raster line symbol</source>
-        <translation type="unfinished"/>
+        <translation>Nelze alokovat dostatek paměti pro rastrový čárový symbol</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgsmapinfosymbolconverter.cpp" line="282"/>
         <source>The line style is not supported in QGIS</source>
-        <translation type="unfinished"/>
+        <translation>Styl čáry není v QGIS podporován</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgsmapinfosymbolconverter.cpp" line="1350"/>
         <source>The brush style is not supported in QGIS</source>
-        <translation type="unfinished"/>
+        <translation>Styl štětce není v QGIS podporován</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgsmapinfosymbolconverter.cpp" line="1512"/>
@@ -53114,7 +53144,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="325"/>
         <source>Are you sure you want to remove the connection to %1?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete vymazat spojení na %1?</translation>
     </message>
     <message>
         <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="658"/>
@@ -53134,7 +53164,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="106"/>
         <source>Keys for view/query undefined. Some functionality might not be available.</source>
-        <translation type="unfinished"/>
+        <translation>Klíče pro zobrazení/dotaz nejsou definovány. Některé funkce nemusí být k dispozici.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprimarykeys.cpp" line="115"/>
@@ -53183,7 +53213,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/app/georeferencer/qgstransformsettingsdialog.cpp" line="31"/>
         <source>Last used folder for georeferencer PDF report files</source>
-        <translation type="unfinished"/>
+        <translation>Naposledy použitá složka pro soubory PDF reportů georeferencerů</translation>
     </message>
     <message>
         <location filename="../src/app/maptools/qgsmaptoolsdigitizingtechniquemanager.cpp" line="37"/>
@@ -53223,7 +53253,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/app/maptools/qgsmaptoolshapecirclecenterpoint.cpp" line="34"/>
         <source>Circle by a center point and another point</source>
-        <translation type="unfinished"/>
+        <translation>Kružnice ze středového bodu a dalšího bodu</translation>
     </message>
     <message>
         <location filename="../src/app/maptools/qgsmaptoolshapecircularstringradius.cpp" line="40"/>
@@ -53290,7 +53320,7 @@ For more details, please see the following papers:
         <location filename="../src/core/settings/qgssettingsentryimpl.cpp" line="137"/>
         <location filename="../src/core/settings/qgssettingsentryimpl.cpp" line="180"/>
         <source>Can&apos;t set value for setting. Value &apos;%1&apos; is less than minimum value &apos;%2&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze nastavit hodnotu pro nastavení. Hodnota &apos;%1&apos; je menší než minimální hodnota &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/settings/qgssettingsentryimpl.cpp" line="104"/>
@@ -53332,7 +53362,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/vectortile/qgsvtpktiles.cpp" line="277"/>
         <source>Error reading layer metadata (line %1, col %2): %3</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při čtení metadat vrstvy (řádek %1, sloupec %2): %3</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsvtpktiles.cpp" line="335"/>
@@ -54398,7 +54428,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/network/qgsrangerequestcache.cpp" line="117"/>
         <source>Unable to write to cache file &quot;%1&quot;, error: &quot;%2&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapisovat do souboru cache „%1“, chyba: „%2“</translation>
     </message>
     <message>
         <location filename="../src/core/network/qgsrangerequestcache.cpp" line="130"/>
@@ -54433,7 +54463,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiintersection.cpp" line="38"/>
         <source>intersection,extract,overlap</source>
-        <translation type="unfinished"/>
+        <translation>průnik, výňatek, překrytí</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultiintersection.cpp" line="53"/>
@@ -54470,27 +54500,27 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/core/pointcloud/qgspointcloudlayer.cpp" line="856"/>
         <location filename="../src/core/pointcloud/qgspointcloudlayer.cpp" line="919"/>
         <source>Failed to calculate statistics of the point cloud %1</source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se vypočítat statistiky mračna bodů %1</translation>
     </message>
     <message>
         <location filename="../src/core/pointcloud/qgspointcloudlayer.cpp" line="861"/>
         <source>A statistics calculation task for the point cloud %1 is already in progress</source>
-        <translation type="unfinished"/>
+        <translation>Úloha statistického výpočtu pro mračno bodů %1 již probíhá</translation>
     </message>
     <message>
         <location filename="../src/core/pointcloud/qgspointcloudstatscalculator.cpp" line="88"/>
         <source>Unable to calculate statistics for node %1, error: &quot;%2&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vypočítat statistiky pro uzel %1, chyba: &quot;%2&quot;</translation>
     </message>
     <message>
         <location filename="../src/core/pointcloud/qgspointcloudstatscalculator.cpp" line="211"/>
         <source>Unable to calculate statistics of an invalid index</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vypočítat statistiky neplatného indexu</translation>
     </message>
     <message>
         <location filename="../src/core/pointcloud/qgspointcloudstatistics.cpp" line="172"/>
         <source>Failed to load statistics JSON from COPC file, reason: %1</source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se načíst statistiky ve formátu JSON ze souboru COPC, důvod: %1</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="151"/>
@@ -54525,7 +54555,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1054"/>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1387"/>
         <source>%1 is not a valid or recognized data source.</source>
-        <translation type="unfinished"/>
+        <translation>%1 není platný nebo rozpoznaný zdroj dat.</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
@@ -54544,7 +54574,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="566"/>
         <source>%1 is not a valid or recognized data source, error: &quot;%2&quot;</source>
-        <translation type="unfinished"/>
+        <translation>%1 není platný nebo rozpoznaný zdroj dat, chyba: &quot;%2&quot;</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1052"/>
@@ -54554,7 +54584,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1169"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"/>
+        <translation>%1 není podporovaný zdroj rastrových dat</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1173"/>
@@ -54564,7 +54594,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1193"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva není platnou vrstvou a nemůže být přidána do mapy</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1194"/>
@@ -54600,7 +54630,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1675"/>
         <source>Layer dependency &apos;%2&apos; required by &apos;%1&apos; was automatically loaded.</source>
-        <translation type="unfinished"/>
+        <translation>Automaticky byla načtena závislost vrstvy &apos;%2&apos; vyžadovaná &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1706"/>
@@ -54655,7 +54685,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/core/providers/ogr/qgsogrlayermetadataprovider.cpp" line="56"/>
         <location filename="../src/providers/postgres/qgspostgreslayermetadataprovider.cpp" line="57"/>
         <source>An error occurred while searching for metadata in connection %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Při hledání metadat v připojení %1 došlo k chybě: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsprovidersublayermodel.cpp" line="211"/>
@@ -54707,12 +54737,12 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="480"/>
         <source>Field %1 does not exist in referencing layer %2</source>
-        <translation type="unfinished"/>
+        <translation>Pole %1 neexistuje v odkazující vrstvě %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="487"/>
         <source>Field %1 does not exist in referenced layer %2</source>
-        <translation type="unfinished"/>
+        <translation>Pole %1 neexistuje v odkazované vrstvě %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrelation.cpp" line="529"/>
@@ -57859,12 +57889,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="758"/>
         <source>Raster has no Raster Attribute Table for band %1</source>
-        <translation type="unfinished"/>
+        <translation>Rastr nemá tabulku atributů rastru pro pásmo %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="772"/>
         <source>Raster data provider has no native Raster Attribute Table support.</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel rastrových dat nemá nativní podporu pro tabulky rastrových atributů.</translation>
     </message>
     <message>
         <location filename="../src/core/sensor/qgssensorregistry.cpp" line="40"/>
@@ -58819,7 +58849,7 @@ Kontaktujte prosím vývojáře.
         <location filename="../src/app/qgisapp.cpp" line="9678"/>
         <location filename="../src/app/qgisapp.cpp" line="9736"/>
         <source>Resulting geometry type (multipart) is incompatible with layer type (singlepart).</source>
-        <translation type="unfinished"/>
+        <translation>Výsledný typ geometrie (vícedílná) není kompatibilní s typem vrstvy (jednodílná).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9687"/>
@@ -58882,7 +58912,7 @@ Alternatively, you can create a new mesh layer from that one.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10801"/>
         <source>Unable to start mesh editing for layer &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze spustit úpravy sítě pro vrstvu „%1“</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10827"/>
@@ -58918,7 +58948,8 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <location filename="../src/app/qgisapp.cpp" line="11692"/>
         <source>The following hidden layers will be removed:
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Následující skryté vrstvy budou odstraněny:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="11695"/>
@@ -59563,7 +59594,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6246"/>
         <source>Mesh calculator with mesh layer in edit mode is not supported.</source>
-        <translation type="unfinished"/>
+        <translation>Kalkulačka sítě s vrstvou sítě v režimu úprav není podporována.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6255"/>
@@ -59938,7 +59969,8 @@ Chyba: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="8378"/>
         <source>Export to vector file %1 failed.
 Error: %2</source>
-        <translation type="unfinished"/>
+        <translation>Export do vektorového souboru %1 selhal.
+Chyba: %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8649"/>
@@ -60313,7 +60345,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2514"/>
         <source>The following warnings were generated while converting the vector tile style:</source>
-        <translation type="unfinished"/>
+        <translation>Při převodu stylu vektorové dlaždice byla vygenerována následující varování:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2525"/>
@@ -60520,7 +60552,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10663"/>
         <source>Do you want to save the changes to layers %1?</source>
-        <translation type="unfinished"/>
+        <translation>Chcete uložit změny do vrstvev %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10663"/>
@@ -60794,7 +60826,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
         <location filename="../src/app/qgisapp.cpp" line="12734"/>
         <location filename="../src/app/qgisapp.cpp" line="12741"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
-        <translation type="unfinished"/>
+        <translation>Pro změnu gama korekce je nutné mít vybranou rastrovou vrstvu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="12921"/>
@@ -60872,7 +60904,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13623"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
-        <translation type="unfinished"/>
+        <translation>Při ukládání tabulky atributů rastru pro vrstvu &apos;%1&apos; došlo k chybě: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13631"/>
@@ -61692,7 +61724,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="251"/>
         <source>Show Visible Camera Area in 2D Map View</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit viditelnou oblast kamery v 2D zobrazení mapy</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dmapcanvaswidget.cpp" line="258"/>
@@ -62251,7 +62283,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/3d/qgs3dviewsmanagerdialog.cpp" line="106"/>
         <source>Do you really want to remove selected 3D view?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit vybraný 3D pohled?</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dviewsmanagerdialog.cpp" line="124"/>
@@ -62539,7 +62571,7 @@ Smazat tyto prvky?</numerusform></translation>
         <location filename="../src/gui/qgsabstractrelationeditorwidget.cpp" line="460"/>
         <location filename="../src/gui/qgsabstractrelationeditorwidget.cpp" line="553"/>
         <source>For 1:n relations is not possible to link to multiple features</source>
-        <translation type="unfinished"/>
+        <translation>U relací 1:n není možné propojit více prvků</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsabstractrelationeditorwidget.cpp" line="471"/>
@@ -62672,7 +62704,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/gui/qgsaddattrdialog.cpp" line="138"/>
         <source>%1 is an illegal field name for this format and cannot be used.</source>
-        <translation type="unfinished"/>
+        <translation>%1 je neplatný název pole pro tento formát a nelze jej použít.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsaddattrdialog.cpp" line="145"/>
@@ -63164,32 +63196,32 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1220"/>
         <source>Snapping must be enabled to utilize perpendicular mode.</source>
-        <translation type="unfinished"/>
+        <translation>Pro použití kolmého režimu musí být povoleno přitahování.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1221"/>
         <source>Snapping must be enabled to utilize parallel mode.</source>
-        <translation type="unfinished"/>
+        <translation>Přichytávání musí být zapnuto pro použití paralelního režimu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1222"/>
         <source>Snapping must be enabled to utilize line extension mode.</source>
-        <translation type="unfinished"/>
+        <translation>Pro použití režimu prodlužování čáry musí být povoleno přitahování.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1223"/>
         <source>Snapping must be enabled to utilize xy point mode.</source>
-        <translation type="unfinished"/>
+        <translation>Pro použití režimu bodů xy musí být povoleno přichytávání.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1227"/>
         <source>A first vertex should be drawn to utilize perpendicular mode.</source>
-        <translation type="unfinished"/>
+        <translation>Pro použití kolmého módu by měl být nakreslen první vrchol.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1228"/>
         <source>A first vertex should be drawn to utilize parallel mode.</source>
-        <translation type="unfinished"/>
+        <translation>Pro využití paralelního režimu by měl být nakreslen první vrchol.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1232"/>
@@ -63235,7 +63267,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2132"/>
         <source>Lat</source>
-        <translation type="unfinished"/>
+        <translation>Lat</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2144"/>
@@ -63636,7 +63668,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="24"/>
         <source>The strength of the shading applied, bigger values means more pronounced and darker colors.</source>
-        <translation type="unfinished"/>
+        <translation>Síla použitého stínování, vyšší hodnoty znamenají výraznější a tmavší barvy.</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="25"/>
@@ -63646,7 +63678,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="26"/>
         <source>Only apply occlusion effect when at least the specified amount of neighboring points is occluded.</source>
-        <translation type="unfinished"/>
+        <translation>Efekt okluze aplikujte pouze tehdy, když je zakryt alespoň zadaný počet sousedních bodů.</translation>
     </message>
 </context>
 <context>
@@ -63864,7 +63896,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/ui/qgsanimationexportdialogbase.ui"/>
         <source>Set to the project fixed time extent or the extent from the project&apos;s layers</source>
-        <translation type="unfinished"/>
+        <translation>Nastavit na pevný časový rozsah projektu nebo rozsah z vrstev projektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsanimationexportdialogbase.ui"/>
@@ -64839,7 +64871,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="851"/>
         <source>Cannot rename to “%1”: A file with this name already exists</source>
-        <translation type="unfinished"/>
+        <translation>Nelze přejmenovat na „%1“: Soubor s tímto názvem již existuje</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="868"/>
@@ -64863,7 +64895,7 @@ Smazat tyto prvky?</numerusform></translation>
         <location filename="../src/app/gps/qgsappgpsconnection.cpp" line="136"/>
         <location filename="../src/app/gps/qgsappgpsconnection.cpp" line="137"/>
         <source>No path to the GPS port is specified. Please set a path then try again.</source>
-        <translation type="unfinished"/>
+        <translation>Není zadána cesta k portu GPS. Zadejte prosím cestu a zkuste to znovu.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsconnection.cpp" line="154"/>
@@ -64878,7 +64910,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/gps/qgsappgpsconnection.cpp" line="192"/>
         <source>TIMEOUT - Failed to connect to GPS device.</source>
-        <translation type="unfinished"/>
+        <translation>TIMEOUT - Selhalo připojení k zařízení GPS.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsconnection.cpp" line="223"/>
@@ -64926,7 +64958,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="313"/>
         <source>Cannot create feature — the layer “%2” could not be made editable</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit prvek – vrstvu „%2“ nelze nastavit jako upravitelnou</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="328"/>
@@ -64946,13 +64978,16 @@ Smazat tyto prvky?</numerusform></translation>
 
 Errors: %2
 </source>
-        <translation type="unfinished"/>
+        <translation>Nemohu provést změny ve vrstvě %1
+
+Chyby: %2
+</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="357"/>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="398"/>
         <source>Could not create new feature in layer %1</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit nový prvek ve vrstvě %1</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="368"/>
@@ -65300,7 +65335,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="872"/>
         <source>Are you sure you want to remove all notes for the layer “%1”?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit všechny poznámky pro vrstvu „%1“?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="906"/>
@@ -65493,12 +65528,12 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="151"/>
         <source>&lt;p&gt;Current transform “&lt;i&gt;%1&lt;/i&gt;” has an unknown accuracy, while the preferred transformation “&lt;i&gt;%2&lt;/i&gt;” has accuracy %3 meters.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Proudová transformace „&lt;i&gt;%1&lt;/i&gt;“ má neznámou přesnost, zatímco preferovaná transformace „&lt;i&gt;%2&lt;/i&gt;“ má přesnost %3 metrů.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="153"/>
         <source>&lt;p&gt;The preferred transform between &lt;i&gt;%1&lt;/i&gt; and &lt;i&gt;%2&lt;/i&gt; is not available for use on the system.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Preferovaná transformace mezi &lt;i&gt;%1&lt;/i&gt; a &lt;i&gt;%2&lt;/i&gt; není v systému k dispozici pro použití.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="162"/>
@@ -65508,7 +65543,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="181"/>
         <source>&lt;p&gt;No transform is available between &lt;i&gt;%1&lt;/i&gt; and &lt;i&gt;%2&lt;/i&gt;.&lt;/p&gt;&lt;p style=&quot;color: red&quot;&gt;%3&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Mezi &lt;i&gt;%1&lt;/i&gt; a &lt;i&gt;%2&lt;/i&gt; není k dispozici žádná transformace.&lt;/p&gt;&lt;p style=&quot;color: red&quot;&gt;%3&lt;/p nie je k dispozícii žiadna transformácia&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="203"/>
@@ -65523,7 +65558,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="235"/>
         <source>&lt;p&gt;The operation specified for use in the project is:&lt;/p&gt;&lt;p&gt;&lt;code&gt;%1&lt;/code&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Operace určená pro použití v projektu je:&lt;/p&gt;&lt;p&gt;&lt;kód&gt;%1&lt;/kód&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="243"/>
@@ -65548,7 +65583,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="284"/>
         <source>Cannot transform between dynamic CRS at difference coordinate epochs</source>
-        <translation type="unfinished"/>
+        <translation>Nelze transformovat mezi dynamickými SRS v epochách rozdílových souřadnic</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="285"/>
@@ -66472,7 +66507,7 @@ Errors: %2
     <message>
         <location filename="../src/gui/vector/qgsattributeactiondialog.cpp" line="346"/>
         <source>Display the feature id in the message bar</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit ID funkce v panelu zpráv</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributeactiondialog.cpp" line="347"/>
@@ -66834,7 +66869,7 @@ Clicking the button will let you select an application to use as the action</sou
     <message>
         <location filename="../src/gui/qgsattributeform.cpp" line="373"/>
         <source>JSON value for %1 is invalid and has not been saved</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota JSON pro %1 je neplatná a nebyla uložena</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeform.cpp" line="738"/>
@@ -66880,7 +66915,7 @@ Clicking the button will let you select an application to use as the action</sou
     <message>
         <location filename="../src/gui/qgsattributeform.cpp" line="2176"/>
         <source>Open the attribute table editor with the filtered features</source>
-        <translation type="unfinished"/>
+        <translation>Otevřít editor tabulky atributů s filtrovanými funkcemi</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeform.cpp" line="2184"/>
@@ -67753,12 +67788,12 @@ Delete these features?</source>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="278"/>
         <source>The provider for this layer has a NOT NULL constraint set on the field.</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel pro tuto vrstvu má na poli nastaveno omezení NOT NULL.</translation>
     </message>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="285"/>
         <source>The provider for this layer has a UNIQUE constraint set on the field.</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel pro tuto vrstvu má na poli nastaveno omezení UNIQUE.</translation>
     </message>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="559"/>
@@ -67957,7 +67992,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributewidgetrelationeditwidget.ui"/>
         <source>If left empty the relation name is used.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud se ponechá prázdné, použije se název relace.</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributewidgetrelationeditwidget.ui"/>
@@ -68344,12 +68379,12 @@ def my_form_open(dialog, layer, feature):
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="548"/>
         <source>This configuration is available in the Drag and Drop Designer</source>
-        <translation type="unfinished"/>
+        <translation>Tato konfigurace je k dispozici v návrháři Drag and Drop</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="582"/>
         <source>This configuration is available with double-click in the Drag and Drop Designer</source>
-        <translation type="unfinished"/>
+        <translation>Tato konfigurace je k dispozici dvojitým kliknutím v nástroji Drag and Drop Designer</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformproperties.cpp" line="586"/>
@@ -68389,7 +68424,7 @@ def my_form_open(dialog, layer, feature):
     <message>
         <location filename="../src/ui/qgsattributesformproperties.ui"/>
         <source>Add a new tab or group to the form layout</source>
-        <translation type="unfinished"/>
+        <translation>Přidání nové karty nebo skupiny do rozvržení formuláře</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributesformproperties.ui"/>
@@ -68540,7 +68575,7 @@ Operation can NOT be undone!</source>
     <message>
         <location filename="../src/gui/auth/qgsauthauthoritieseditor.cpp" line="564"/>
         <source>Changing the default certificate authority trust policy to &apos;Untrusted&apos; can cause unexpected SSL network connection results.</source>
-        <translation type="unfinished"/>
+        <translation>Změna výchozí zásady důvěryhodnosti certifikační autority na „Nedůvěryhodný“ může způsobit neočekávané výsledky síťového připojení SSL.</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthauthoritieseditor.cpp" line="573"/>
@@ -69204,7 +69239,9 @@ Operation can NOT be undone!</source>
         <source>Are you sure you want to remove '%1'?
 
 Operation can NOT be undone!</source>
-        <translation type="unfinished"/>
+        <translation>Jste si jisti, že chcete odstranit &apos;%1&apos;?
+
+Operaci NELZE vrátit zpět!</translation>
     </message>
 </context>
 <context>
@@ -69866,7 +69903,7 @@ Error: %2</source>
     <message>
         <location filename="../src/auth/maptiler_hmacsha256/gui/qgsauthmaptilerhmacsha256edit.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Secure Token from &lt;a href=&quot;https://cloud.maptiler.com/account/credentials/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;MapTiler Account Credentials&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zabezpečený token z &lt;a href=&quot;https://cloud.maptiler.com/account/credentials/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;přihlašovacích údajů účtu MapTiler&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -70299,7 +70336,7 @@ Autority/Vydavatelé: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="537"/>
         <source>Master password set: FAILED to verify, reset to previous</source>
-        <translation type="unfinished"/>
+        <translation>Nastavení hlavního hesla: Ověření se nezdařilo, reset na předchozí</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="557"/>
@@ -70312,13 +70349,13 @@ Autority/Vydavatelé: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="569"/>
         <source>Master password: FAILED to find just one master password record in database</source>
-        <translation type="unfinished"/>
+        <translation>Hlavní heslo: V databázi se nepodařilo najít pouze jeden záznam hlavního hesla</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="582"/>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="625"/>
         <source>Master password: FAILED to verify against hash in database</source>
-        <translation type="unfinished"/>
+        <translation>Hlavní heslo: Ověření oproti hashu v databázi se NEZDAŘILO</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="594"/>
@@ -70328,42 +70365,42 @@ Autority/Vydavatelé: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="611"/>
         <source>Master password: hash FAILED to be stored in database</source>
-        <translation type="unfinished"/>
+        <translation>Hlavní heslo: hash se nepodařilo uložit do databáze</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="687"/>
         <source>Master password reset FAILED: could not clear current password from database</source>
-        <translation type="unfinished"/>
+        <translation>Obnovení hlavního hesla je NEÚSPĚŠNÉ: aktuální heslo se nepodařilo vymazat z databáze</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="703"/>
         <source>Master password reset FAILED: could not store new password in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SELHAL: nové heslo se nepodařilo uložit do databáze</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="716"/>
         <source>Master password reset FAILED: could not verify new password in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SELHAL: nové heslo se nepodařilo ověřit v databázi</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="725"/>
         <source>Master password reset FAILED: could not re-encrypt configs in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SE NEÚSPĚŠNĚ OBNOVIL: konfigurace v databázi se nepodařilo znovu zašifrovat</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="738"/>
         <source>Master password reset FAILED: could not verify password can decrypt re-encrypted configs</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SE NEÚSPĚŠNĚ OBJEVIL: heslo se nepodařilo ověřit, lze dešifrovat znovu zašifrované konfigurace</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="746"/>
         <source>Master password reset FAILED: could not re-encrypt settings in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SE NEÚSPĚŠNĚ OBNOVIL: nastavení v databázi se nepodařilo znovu zašifrovat</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="754"/>
         <source>Master password reset FAILED: could not re-encrypt identities in database</source>
-        <translation type="unfinished"/>
+        <translation>Reset hlavního hesla SE NEÚSPĚŠNĚ KONČIL: identity v databázi se nepodařilo znovu zašifrovat</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="762"/>
@@ -70373,7 +70410,7 @@ Autority/Vydavatelé: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="789"/>
         <source>Master password reset: could not remove old database backup</source>
-        <translation type="unfinished"/>
+        <translation>Obnovení hlavního hesla: nepodařilo se odstranit starou zálohu databáze</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="821"/>
@@ -70679,7 +70716,7 @@ Autority/Vydavatelé: %1%2</translation>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="1155"/>
         <source>Store config: FAILED because pre-defined config ID %1 is not unique</source>
-        <translation type="unfinished"/>
+        <translation>Uložení konfigurace: NEÚSPĚŠNÉ, protože předdefinované ID konfigurace %1 není jedinečné</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthmanager.cpp" line="3484"/>
@@ -71126,7 +71163,7 @@ Popis: %3</translation>
     <message>
         <location filename="../src/auth/oauth2/core/qgsauthoauth2method.cpp" line="428"/>
         <source>Linking apparently succeeded, but authenticator FAILED to verify it is linked</source>
-        <translation type="unfinished"/>
+        <translation>Propojení se zřejmě povedlo, ale ověřovateli se nepodařilo ověřit, zda je propojení provedeno</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/core/qgsauthoauth2method.cpp" line="432"/>
@@ -71186,7 +71223,7 @@ Popis: %3</translation>
     <message>
         <location filename="../src/auth/oauth2/core/qgsauthoauth2method.cpp" line="535"/>
         <source>Background token refresh FAILED for authcfg %1: could not get authenticator object</source>
-        <translation type="unfinished"/>
+        <translation>Aktualizace tokenu na pozadí se NEZDÁLA pro authcfg %1: Nepodařilo se získat objekt ověřovacího kódu</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/core/qgsauthoauth2method.cpp" line="552"/>
@@ -72620,7 +72657,7 @@ Server response: %1</source>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1120"/>
         <source>Group name already exists, overwriting will merge the bookmark groups.</source>
-        <translation type="unfinished"/>
+        <translation>Název skupiny již existuje, přepsáním se skupiny záložek sloučí.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1128"/>
@@ -73235,7 +73272,7 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui"/>
         <source>Display the checkbox state as a plain text value (e.g. in an attribute table) using</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit stav zaškrtávacího políčka jako hodnotu prostého textu (např. v tabulce atributů) pomocí</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui"/>
@@ -73802,7 +73839,7 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     <message>
         <location filename="../src/ui/qgscodeditorsettings.ui"/>
         <source>Caretline</source>
-        <translation type="unfinished"/>
+        <translation>Řádek stříšky</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscodeditorsettings.ui"/>
@@ -74386,7 +74423,7 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     <message>
         <location filename="../src/ui/qgscolorramplegendnodewidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(Applies to print layout legends only)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;(Platí pouze pro legendy rozvržení tisku)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolorramplegendnodewidgetbase.ui"/>
@@ -75397,7 +75434,7 @@ Záporná místa na mocniny 10</translation>
     <message>
         <location filename="../src/gui/proj/qgscoordinateoperationwidget.cpp" line="591"/>
         <source>&lt;p&gt;This transformation requires the grid file “%1”, which is not available for use on the system.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Tato transformace vyžaduje soubor mřížky &quot;%1&quot;, který není v systému k dispozici.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinateoperationwidget.cpp" line="595"/>
@@ -75443,7 +75480,7 @@ file are transformed).</source>
     <message>
         <location filename="../src/ui/qgscoordinateoperationwidgetbase.ui"/>
         <source>If checked, the selected transformation will become the default choice in all new projects</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zaškrtnuto, vybraná transformace se stane výchozí volbou ve všech nových projektech</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscoordinateoperationwidgetbase.ui"/>
@@ -75803,7 +75840,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="74"/>
         <source>This user script &lt;b&gt;%1&lt;/b&gt; caused QGIS to crash.</source>
-        <translation type="unfinished"/>
+        <translation>Tento uživatelský skript &lt;b&gt;%1&lt;/b&gt; způsobil pád QGISu.</translation>
     </message>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="74"/>
@@ -75823,7 +75860,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="81"/>
         <source>Please report this issue to the author of this plugin.</source>
-        <translation type="unfinished"/>
+        <translation>Nahlaste prosím tento problém autorovi tohoto pluginu.</translation>
     </message>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="87"/>
@@ -75833,7 +75870,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="88"/>
         <source>A command entered in the Python console caused QGIS to crash.</source>
-        <translation type="unfinished"/>
+        <translation>Příkaz zadaný v konzoli Pythonu způsobil pád QGIS.</translation>
     </message>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.ui"/>
@@ -75890,12 +75927,12 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="57"/>
         <source>Raster band %1 already has an associated attribute table at %2.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrový pás %1 již má přidruženou tabulku atributů na %2.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="61"/>
         <source>Raster band %1 already has an associated attribute table.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrový pás %1 již má přidruženou tabulku atributů.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="138"/>
@@ -75915,7 +75952,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="149"/>
         <source>Are you sure you want to overwrite the existing attribute table at &apos;%1&apos;?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete přepsat existující tabulku atributů na adrese &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="154"/>
@@ -75944,7 +75981,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new Raster Attribute Table from the current symbology.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vytvořit novou tabulku atributů rastru z aktuální symbologie.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
@@ -76189,7 +76226,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/gui/proj/qgscrsdefinitionwidget.cpp" line="213"/>
         <source>Latitude and Longitude must be in decimal form.</source>
-        <translation type="unfinished"/>
+        <translation>Zeměpisná šířka a délka musí být v desetinném tvaru.</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscrsdefinitionwidget.cpp" line="232"/>
@@ -76218,7 +76255,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgscrsdefinitionwidgetbase.ui"/>
         <source>Validate the current CRS definition and test whether it is an acceptable projection definition</source>
-        <translation type="unfinished"/>
+        <translation>Ověřit aktuální definici SRS a otestovat, zda se jedná o přijatelnou definici projekce</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscrsdefinitionwidgetbase.ui"/>
@@ -76490,7 +76527,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/app/options/qgscustomprojectionoptions.cpp" line="324"/>
         <source>Cannot save &apos;%1&apos; — the definition is equivalent to %2.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit &apos;%1&apos; – definice je ekvivalentní %2.</translation>
     </message>
 </context>
 <context>
@@ -78920,7 +78957,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="555"/>
         <source>Column types detection in progress: %L1 records read</source>
-        <translation type="unfinished"/>
+        <translation>Probíhá detekce typů sloupců: přečteno %L1 záznamů</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="737"/>
@@ -78990,7 +79027,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="807"/>
         <source>Custom boolean values for &quot;true&quot; or &quot;false&quot; is missing.</source>
-        <translation type="unfinished"/>
+        <translation>Chybí vlastní booleovské hodnoty pro „true“ nebo „false“.</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="108"/>
@@ -79393,7 +79430,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Additional custom value that will be interpreted as TRUE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Dodatočná vlastní hodnota, která bude interpretována jako TRUE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
@@ -79403,7 +79440,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Additional custom value that will be interpreted as FALSE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Dodatočná vlastní hodnota, která bude interpretována jako FALSE&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
@@ -80972,7 +81009,7 @@ Chyba: %2</translation>
     <message>
         <location filename="../src/app/dwg/qgsdwgimporter.cpp" line="1412"/>
         <source>Could not create circular string from %2 [%1]</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit kružnici z %2 [%1]</translation>
     </message>
     <message>
         <location filename="../src/app/dwg/qgsdwgimporter.cpp" line="1413"/>
@@ -82142,7 +82179,7 @@ Chyba: %2</translation>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Hillshading</source>
-        <translation type="unfinished"/>
+        <translation>Stínování kopců</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
@@ -83273,7 +83310,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the first non-NULL value from the expression list.&lt;br&gt;This function can take any number of arguments.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí první hodnotu nehodnotu NULL ze seznamu výrazů.&lt;br&gt;Tato funkce může přijímat libovolný počet argumentů.</translation>
     </message>
     <message>
         <source>coalesce</source>
@@ -83669,7 +83706,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with only the items for which the expression evaluates to true.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole pouze s položkami, pro které je výraz vyhodnocen jako true.</translation>
     </message>
     <message>
         <source>array_filter</source>
@@ -83689,7 +83726,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the given expression evaluated on each item.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, jehož daný výraz je vyhodnocen pro každou položku.</translation>
     </message>
     <message>
         <source>array_foreach</source>
@@ -83933,7 +83970,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the interval in milliseconds between the unix epoch and a given date value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí interval v milisekundách mezi unixovou epochou a zadanou hodnotou data.</translation>
     </message>
     <message>
         <source>Formats a date type or string into a custom string format. Uses Qt date/time format strings. See &lt;a href=&apos;https://doc.qt.io/qt-5/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;.</source>
@@ -84009,11 +84046,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((0 5, 5 -0, -0 -5, -5 0, 0 5))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 5, 5 -0, -0 -5, -5 0, 0 5))&apos;</translation>
     </message>
     <message>
         <source>&apos;Polygon ((3 4, 3 2, 1 2, 1 4, 3 4))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((3 4, 3 2, 1 2, 1 4, 3 4))&apos;</translation>
     </message>
     <message>
         <source>Extracts the minutes part from a datetime or time, or the number of minutes from an interval.</source>
@@ -84021,7 +84058,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the minutes part from a time or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s minutami z data nebo data/času.</translation>
     </message>
     <message>
         <source>minute( to_datetime(&apos;2012-07-22 13:24:57&apos;) )</source>
@@ -84037,11 +84074,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the month part from a date, or the number of months from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Z data extrahuje část označující měsíc nebo z intervalu počet měsíců.</translation>
     </message>
     <message>
         <source>Extracts the month part from a date or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s měsícem z data nebo data/času.</translation>
     </message>
     <message>
         <source>Calculates the length in months of an interval.</source>
@@ -84169,7 +84206,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>point geometry (for multipart geometries having more than one part, a NULL value will be returned)</source>
-        <translation type="unfinished"/>
+        <translation>bodová geometrie (u vícedílných geometrií, které mají více než jednu část, bude vrácena hodnota NULL)</translation>
     </message>
     <message>
         <source>raster_value(&apos;dem&apos;, 1, make_point(1,1))</source>
@@ -84249,7 +84286,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string with the supplied string, array, or map of strings replaced.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec, který nahradí zadaný řetězec, pole nebo mapu řetězců.</translation>
     </message>
     <message>
         <source>String &amp; array variant</source>
@@ -84265,7 +84302,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the string or array of strings to use as a replacement</source>
-        <translation type="unfinished"/>
+        <translation>řetězec nebo pole řetězců, které se mají použít jako náhrada</translation>
     </message>
     <message>
         <source>replace(&apos;QGIS ABC&apos;,array(&apos;A&apos;,&apos;B&apos;,&apos;C&apos;),array(&apos;X&apos;,&apos;Y&apos;,&apos;Z&apos;))</source>
@@ -84337,15 +84374,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>rotation center point. If not specified, the center of the geometry&apos;s bounding box is used.</source>
-        <translation type="unfinished"/>
+        <translation>Středový bod otáčení. Pokud není zadán, použije se střed ohraničujícího rámečku geometrie.</translation>
     </message>
     <message>
         <source>geometry rotated 45 degrees clockwise around the (4, 5) point</source>
-        <translation type="unfinished"/>
+        <translation>geometrie otočená o 45 stupňů ve směru hodinových ručiček kolem bodu (4, 5)</translation>
     </message>
     <message>
         <source>geometry rotated 45 degrees clockwise around the center of its bounding box</source>
-        <translation type="unfinished"/>
+        <translation>geometrie otočená o 45 stupňů ve směru hodinových ručiček kolem středu svého ohraničujícího rámečku</translation>
     </message>
     <message>
         <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
@@ -84365,7 +84402,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the seconds part from a time or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část se sekundami z data nebo data/času.</translation>
     </message>
     <message>
         <source>second( to_datetime(&apos;2012-07-22 13:24:57&apos;) )</source>
@@ -84505,7 +84542,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Splits string into an array using supplied delimiter and optional string for empty values.</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělí řetězec do pole pomocí zadaného oddělovače a volitelného řetězce pro prázdné hodnoty.</translation>
     </message>
     <message>
         <source>string_to_array</source>
@@ -84533,11 +84570,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the week number from a date, or the number of weeks from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje číslo týdne z data, nebo počet týdnů z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the week number from a date or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje číslo týdne z data nebo data/času.</translation>
     </message>
     <message>
         <source>Calculates the length in weeks of an interval.</source>
@@ -85217,7 +85254,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>format used to convert the string into a date</source>
-        <translation type="unfinished"/>
+        <translation>formát použitý k převodu řetězce na datum</translation>
     </message>
     <message>
         <source>to_date(&apos;June 29, 2019&apos;,&apos;MMMM d, yyyy&apos;)</source>
@@ -85237,7 +85274,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Optional delimiter string to wrap to a new line.</source>
-        <translation type="unfinished"/>
+        <translation>Volitelný oddělovací řetězec pro zalomení na nový řádek.</translation>
     </message>
     <message>
         <source>Returns the x coordinate of a point geometry, or the x coordinate of the centroid for a non-point geometry.</source>
@@ -85249,11 +85286,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the year part from a date, or the number of years from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s rokem z data, nebo počet let z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the year part from a date or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s rokem z data nebo data/času.</translation>
     </message>
     <message>
         <source>Calculates the length in years of an interval.</source>
@@ -85273,7 +85310,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an aggregate value calculated using features from another layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou hodnotu vypočítanou s použitím prvků z jiné vrstvy.</translation>
     </message>
     <message>
         <source>aggregate</source>
@@ -85285,7 +85322,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>optional string to use to join values for &apos;concatenate&apos; aggregate</source>
-        <translation type="unfinished"/>
+        <translation>Volitelný řetězec pro spojení hodnot pro agregaci &apos;concatenate&apos;</translation>
     </message>
     <message>
         <source>aggregate(layer:=&apos;rail_stations&apos;,aggregate:=&apos;sum&apos;,expression:=&quot;passengers&quot;)</source>
@@ -85337,7 +85374,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Contains functions which aggregate values over layers and fields.</source>
-        <translation type="unfinished"/>
+        <translation>Obsahuje funkce, které agregují hodnoty přes vrstvy a pole.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="1001"/>
@@ -85437,7 +85474,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The country code of an intersecting country on the layer &apos;countries&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Kód země protínající se na vrstvě „země“</translation>
     </message>
     <message>
         <source>Returns the bisector angle (average angle) to the geometry for a specified vertex on a linestring geometry. Angles are in degrees clockwise from north.</source>
@@ -85461,7 +85498,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array containing all the values passed as parameter.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole obsahující všechny hodnoty předané jako parametr.</translation>
     </message>
     <message>
         <source>array</source>
@@ -85477,7 +85514,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array of aggregated values from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole agregovaných hodnot z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>array_agg</source>
@@ -85501,7 +85538,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the given value added at the end.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole s danou hodnotou přidanou na konci.</translation>
     </message>
     <message>
         <source>array_append</source>
@@ -85590,7 +85627,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array containing distinct values of the given array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole obsahující odlišné hodnoty daného pole.</translation>
     </message>
     <message>
         <source>array_distinct</source>
@@ -85638,7 +85675,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the given value added at the given position.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole s danou hodnotou přidanou na dané pozici.</translation>
     </message>
     <message>
         <source>array_insert</source>
@@ -85690,11 +85727,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If &lt;i&gt;condition&lt;/i&gt; evaluates to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud se &lt;i&gt;podmínka&lt;/i&gt; vyhodnotí jako True, pak se vyhodnotí a vrátí &lt;i&gt;výsledek&lt;/i&gt;.</translation>
     </message>
     <message>
         <source>If none of the above conditions evaluated to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud žádná z výše uvedených podmínek není vyhodnocena jako True, je vyhodnocen a vrácen &lt;i&gt;výsledek&lt;/i&gt;.</translation>
     </message>
     <message>
         <source>CASE WHEN &quot;name&quot; IS NULL THEN &apos;None&apos; END</source>
@@ -85702,7 +85739,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the string &apos;None&apos; if the &quot;name&quot; field is NULL</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec &apos;None&apos;, pokud je pole „name“ NULL</translation>
     </message>
     <message>
         <source>CASE WHEN $area &gt; 10000 THEN &apos;Big property&apos; WHEN $area &gt; 5000 THEN &apos;Medium property&apos; ELSE &apos;Small property&apos; END</source>
@@ -85722,7 +85759,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This group contains functions to manipulate print layout items properties.</source>
-        <translation type="unfinished"/>
+        <translation>Tato skupina obsahuje funkce pro manipulaci s vlastnostmi položek rozvržení tisku.</translation>
     </message>
     <message>
         <source>Layout</source>
@@ -85738,7 +85775,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This group contains functions that are available in the processing algorithms context.</source>
-        <translation type="unfinished"/>
+        <translation>Tato skupina obsahuje funkce, které jsou dostupné v kontextu algoritmů zpracování.</translation>
     </message>
     <message>
         <source>Processing</source>
@@ -85746,7 +85783,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This group contains expressions stored in the user profile.</source>
-        <translation type="unfinished"/>
+        <translation>Tato skupina obsahuje výrazy uložené v uživatelském profilu.</translation>
     </message>
     <message>
         <source>UserGroup</source>
@@ -85786,7 +85823,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the given value added at the beginning.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole s danou hodnotou přidanou na začátek.</translation>
     </message>
     <message>
         <source>array_prepend</source>
@@ -85798,7 +85835,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with all the entries of the given value removed.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, ze kterého jsou odstraněny všechny položky dané hodnoty.</translation>
     </message>
     <message>
         <source>array_remove_all</source>
@@ -85822,7 +85859,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the given array with array values in reversed order.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí dané pole s hodnotami pole v obráceném pořadí.</translation>
     </message>
     <message>
         <source>array_reverse</source>
@@ -85890,7 +85927,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>set this parameter to false to sort the array in descending order</source>
-        <translation type="unfinished"/>
+        <translation>nastavením tohoto parametru na hodnotu false seřadíte pole sestupně</translation>
     </message>
     <message>
         <source>array_sort(array(3,2,1))</source>
@@ -85906,255 +85943,255 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>planimetric,current,area,surface,project,settings,ellipsoid,setting,calculated</source>
-        <translation type="unfinished"/>
+        <translation>planimetrický, aktuální, plocha, povrch, projekt, nastavení, elipsoid, nastavení, vypočítaný</translation>
     </message>
     <message>
         <source>evaluated,attribute,current,evaluate</source>
-        <translation type="unfinished"/>
+        <translation>vyhodnocený, atribut, aktuální, vyhodnotit</translation>
     </message>
     <message>
         <source>planimetric,mesh,current,area,surface,project,settings,face,ellipsoid,setting,calculated,set</source>
-        <translation type="unfinished"/>
+        <translation>planimetrický, síť, aktuální, plocha, povrch, projekt, nastavení, plocha, elipsoid, nastavení, vypočítaný, sada</translation>
     </message>
     <message>
         <source>index,mesh,face,current</source>
-        <translation type="unfinished"/>
+        <translation>index, síť, plocha, aktuální</translation>
     </message>
     <message>
         <source>current,processing,functions</source>
-        <translation type="unfinished"/>
+        <translation>aktuální,zpracovací,funkce</translation>
     </message>
     <message>
         <source>row,current</source>
-        <translation type="unfinished"/>
+        <translation>řádek, aktuální</translation>
     </message>
     <message>
         <source>distance,planimetric,length,perimeter,current,linestring,project,settings,ellipsoid,border,setting,calculated</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, planimetrický, délka, obvod, aktuální, čárový řetězec, projekt, nastavení, elipsoid, okraj, nastavení, vypočítané</translation>
     </message>
     <message>
         <source>distance,planimetric,length,perimeter,current,polygon,project,settings,ellipsoid,setting,calculated</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, planimetrický, délka, obvod, aktuální, polygon, projekt, nastavení, elipsoid, nastavení, vypočítaný</translation>
     </message>
     <message>
         <source>denominator,contexts,current,scale,canvas,map</source>
-        <translation type="unfinished"/>
+        <translation>jmenovatel, kontexty, aktuální, měřítko, plátno, mapa</translation>
     </message>
     <message>
         <source>point,mesh,vertex,current</source>
-        <translation type="unfinished"/>
+        <translation>bod, síť, vrchol, aktuální</translation>
     </message>
     <message>
         <source>index,mesh,vertex,current</source>
-        <translation type="unfinished"/>
+        <translation>index, síť, vrchol, aktuální</translation>
     </message>
     <message>
         <source>coordinate,mesh,vertex,current</source>
-        <translation type="unfinished"/>
+        <translation>souřadnice, síť, vrchol, aktuální</translation>
     </message>
     <message>
         <source>mesh,vertex,current</source>
-        <translation type="unfinished"/>
+        <translation>síť, vrchol, aktuální</translation>
     </message>
     <message>
         <source>first,point,coordinate,current,multipoint</source>
-        <translation type="unfinished"/>
+        <translation>první,bod,souřadnice,aktuální,vícebodový</translation>
     </message>
     <message>
         <source>current,retrieves,feature,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>aktuální, načte, prvek, souřadnice</translation>
     </message>
     <message>
         <source>first,point,current,multipoint,altitude,3D</source>
-        <translation type="unfinished"/>
+        <translation>první,bod,aktuální,vícebodový,nadmořská výška,3D</translation>
     </message>
     <message>
         <source>casewhen,clause,series,met,first,corresponding,end,none,evaluated,components,conditions,optional,marks,return,evaluation,else,case,evaluate,result,stops,condition,set</source>
-        <translation type="unfinished"/>
+        <translation>casewhen, klauzule, série, splněno, první, odpovídající, konec, žádný, vyhodnoceno, komponenty, podmínky, volitelné, značky, vrátit, vyhodnocení, jinak, když, vyhodnotit, výsledek, zastaví, podmínka, nastavit</translation>
     </message>
     <message>
         <source>compare,numbers,insensitive,first,match,sensitive,supplied,parameter,case,matches,pattern</source>
-        <translation type="unfinished"/>
+        <translation>porovnat,čísla,necitlivá,první,shoda,citlivá,dodaná,parametr,velká,shody,vzor</translation>
     </message>
     <message>
         <source>list,contained,found</source>
-        <translation type="unfinished"/>
+        <translation>seznam,obsažené,nalezeno</translation>
     </message>
     <message>
         <source>compare,same,equal,identical</source>
-        <translation type="unfinished"/>
+        <translation>porovnat, stejný, rovný, identický</translation>
     </message>
     <message>
         <source>compare,same,different</source>
-        <translation type="unfinished"/>
+        <translation>porovnat, stejné, odlišné</translation>
     </message>
     <message>
         <source>compare,sensitive,numbers,first,end,start,begin,works,supplied,parameter,matches,pattern</source>
-        <translation type="unfinished"/>
+        <translation>porovnat, citlivá, čísla, první, konec, začátek, počátek, funguje, dodaný, parametr, shody, vzor</translation>
     </message>
     <message>
         <source>calculate,functions,return,mesh,related,contains</source>
-        <translation type="unfinished"/>
+        <translation>vypočítat, funkce, vrátit, síť, související, obsahuje</translation>
     </message>
     <message>
         <source>negates,condition</source>
-        <translation type="unfinished"/>
+        <translation>neguje,podmínka</translation>
     </message>
     <message>
         <source>equates,null</source>
-        <translation type="unfinished"/>
+        <translation>rovná se, null</translation>
     </message>
     <message>
         <source>angle,cosine,inverse,radians</source>
-        <translation type="unfinished"/>
+        <translation>úhel, kosinus, inverzní, radiány</translation>
     </message>
     <message>
         <source>affine,coordinate,operations,spatial,transformation,reference,offset,system,calculations,translation,rotation,order,added,present,scale</source>
-        <translation type="unfinished"/>
+        <translation>afinní, souřadnicové, operace, prostorová, transformace, reference, posun, systém, výpočty, posunutí, rotace, pořadí, přidáno, současnost, měřítko</translation>
     </message>
     <message>
         <source>aggregate,combine,features,calculated,merge,concatenate,sum,mean,median,count,quartile,minimum,maximum,minority,majority,standard,deviation,length,unique</source>
-        <translation type="unfinished"/>
+        <translation>agregovat, kombinovat, vlastnosti, vypočítat, sloučit, zřetězit, součet, průměr, medián, počet, kvartil, minimum, maximum, menšina, většina, směrodatná odchylka, délka, jedinečný</translation>
     </message>
     <message>
         <source>angles,specified,clockwise,angle,linestring,degrees,bisector,north,average,vertex</source>
-        <translation type="unfinished"/>
+        <translation>úhly,zadané,ve směru hodinových ručiček,úhel,řetězec,stupně,osa,sever,průměr,vrchol</translation>
     </message>
     <message>
         <source>dash,stroked,multilinestring,input,ring,specified,applies,line,pattern,returning</source>
-        <translation type="unfinished"/>
+        <translation>popel, tažený, víceřádkový řetězec, vstup, kruh, zadaný, platí, čára, vzor, ​​vrací se</translation>
     </message>
     <message>
         <source>planimetric,polygon,spatial,reference,system,calculations,area,project,settings,surface,ellipsoid,units</source>
-        <translation type="unfinished"/>
+        <translation>planimetrický, polygon, prostorový, referenční, systém, výpočty, plocha, projekt, nastavení, povrch, elipsoid, jednotky</translation>
     </message>
     <message>
         <source>list,array,parameter,containing</source>
-        <translation type="unfinished"/>
+        <translation>seznam, pole, parametr, obsahující</translation>
     </message>
     <message>
         <source>array,field,aggregated</source>
-        <translation type="unfinished"/>
+        <translation>pole, polí, agregované</translation>
     </message>
     <message>
         <source>array,contains,compare,search</source>
-        <translation type="unfinished"/>
+        <translation>pole,obsahuje,porovnání,hledání</translation>
     </message>
     <message>
         <source>array,added,end</source>
-        <translation type="unfinished"/>
+        <translation>pole,přidáno,konec</translation>
     </message>
     <message>
         <source>concatenated,arrays,containing</source>
-        <translation type="unfinished"/>
+        <translation>zřetězená,pole,obsahující</translation>
     </message>
     <message>
         <source>array,search,contains</source>
-        <translation type="unfinished"/>
+        <translation>pole, vyhledávání, obsahuje</translation>
     </message>
     <message>
         <source>number,array,occurrences,given,counts</source>
-        <translation type="unfinished"/>
+        <translation>číslo, pole, výskyty, dané, počty</translation>
     </message>
     <message>
         <source>array,containing,distinct</source>
-        <translation type="unfinished"/>
+        <translation>pole, obsahující, odlišné</translation>
     </message>
     <message>
         <source>array,items,limit,evaluates</source>
-        <translation type="unfinished"/>
+        <translation>pole, položky, limit, vyhodnocuje</translation>
     </message>
     <message>
         <source>array,found,first,lowest,index</source>
-        <translation type="unfinished"/>
+        <translation>pole,nalezeno,první,nejnižší,index</translation>
     </message>
     <message>
         <source>array,first</source>
-        <translation type="unfinished"/>
+        <translation>pole, první</translation>
     </message>
     <message>
         <source>evaluated,array,iterate,item</source>
-        <translation type="unfinished"/>
+        <translation>vyhodnoceno, pole, iterovat, položka</translation>
     </message>
     <message>
         <source>array,position,index,last,nth,one,first</source>
-        <translation type="unfinished"/>
+        <translation>pole,pozice,index,poslední,n-tá,jedna,první</translation>
     </message>
     <message>
         <source>array,added,position</source>
-        <translation type="unfinished"/>
+        <translation>pole,přidané,pozice</translation>
     </message>
     <message>
         <source>array,element,exists,intersection,overlap</source>
-        <translation type="unfinished"/>
+        <translation>pole, prvek, existuje, průnik, překrytí</translation>
     </message>
     <message>
         <source>array,last</source>
-        <translation type="unfinished"/>
+        <translation>pole, poslední</translation>
     </message>
     <message>
         <source>elements,array,count</source>
-        <translation type="unfinished"/>
+        <translation>prvky,pole,počet</translation>
     </message>
     <message>
         <source>common,array,median</source>
-        <translation type="unfinished"/>
+        <translation>společný,pole,medián</translation>
     </message>
     <message>
         <source>array,maximum</source>
-        <translation type="unfinished"/>
+        <translation>pole,maximum</translation>
     </message>
     <message>
         <source>array,ignored,mean,numeric,arithmetic</source>
-        <translation type="unfinished"/>
+        <translation>pole, ignorované, průměr, číselné, aritmetické</translation>
     </message>
     <message>
         <source>array,arithmetic,median,ignored</source>
-        <translation type="unfinished"/>
+        <translation>pole, aritmetické, medián, ignorované</translation>
     </message>
     <message>
         <source>array,minimum</source>
-        <translation type="unfinished"/>
+        <translation>pole,minimum</translation>
     </message>
     <message>
         <source>array,added,beginning</source>
-        <translation type="unfinished"/>
+        <translation>pole,přidané,začátek</translation>
     </message>
     <message>
         <source>sorted,array,first,specified,missing,second,ordering,added,present,result,end</source>
-        <translation type="unfinished"/>
+        <translation>seřazené, pole, první, zadané, chybějící, druhé, řazení, přidané, přítomné, výsledek, konec</translation>
     </message>
     <message>
         <source>array,entries,removed</source>
-        <translation type="unfinished"/>
+        <translation>pole,položky,odstraněno</translation>
     </message>
     <message>
         <source>array,removed,index</source>
-        <translation type="unfinished"/>
+        <translation>pole,odstraněno,index</translation>
     </message>
     <message>
         <source>array,reversed,order</source>
-        <translation type="unfinished"/>
+        <translation>pole, obrácené, pořadí</translation>
     </message>
     <message>
         <source>array,defined,arguments,start,position,slice,portion,end,index</source>
-        <translation type="unfinished"/>
+        <translation>pole, definované, argumenty, začátek, pozice, řez, část, konec, index</translation>
     </message>
     <message>
         <source>sorted,array,elements,provided</source>
-        <translation type="unfinished"/>
+        <translation>seřazené,prvky,pole,poskytnuté</translation>
     </message>
     <message>
         <source>array,ignored,numeric,arithmetic,sum</source>
-        <translation type="unfinished"/>
+        <translation>pole, ignorované, číselné, aritmetické, součet</translation>
     </message>
     <message>
         <source>the string delimiter used to separate concatenated array elements</source>
-        <translation type="unfinished"/>
+        <translation>oddělovač řetězců používaný k oddělení zřetězených prvků pole</translation>
     </message>
     <message>
         <source>the optional string to use as replacement for empty (zero length) matches</source>
-        <translation type="unfinished"/>
+        <translation>volitelný řetězec, který se má použít jako náhrada za prázdné (nulové) shody</translation>
     </message>
     <message>
         <source>&apos;1,2,3&apos;</source>
@@ -86170,11 +86207,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>concatenates,delimiter,join,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>zřetězuje, odděluje, spojuje, agreguje</translation>
     </message>
     <message>
         <source>Returns the unicode code associated with the first character of a string.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí kód Unicode přidružený k prvnímu znaku řetězce.</translation>
     </message>
     <message>
         <source>ascii</source>
@@ -86194,19 +86231,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>code,first,associated,character,unicode</source>
-        <translation type="unfinished"/>
+        <translation>kód, první, přidružený, znak, unicode</translation>
     </message>
     <message>
         <source>sine,inverse,angle,radians</source>
-        <translation type="unfinished"/>
+        <translation>sinus, inverzní, úhel, radiány</translation>
     </message>
     <message>
         <source>tangent,inverse,angle,radians</source>
-        <translation type="unfinished"/>
+        <translation>tečna,inverzní,úhel,radiány</translation>
     </message>
     <message>
         <source>tangent,arguments,signs,angle,inverse,quadrant</source>
-        <translation type="unfinished"/>
+        <translation>tečna, argumenty, znaménka, úhel, inverzní, kvadrant</translation>
     </message>
     <message>
         <source>Returns an attribute from a feature.</source>
@@ -86218,7 +86255,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the value of an attribute from the current feature.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí hodnotu atributu z aktuálního prvku.</translation>
     </message>
     <message>
         <source>attribute( &apos;name&apos; )</source>
@@ -86230,7 +86267,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Allows the target feature and attribute name to be specified.</source>
-        <translation type="unfinished"/>
+        <translation>Umožňuje zadat cílový prvek a název atributu.</translation>
     </message>
     <message>
         <source>attribute( @atlas_feature, &apos;name&apos; )</source>
@@ -86238,11 +86275,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a map containing all attributes from a feature, with field names as map keys.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu obsahující všechny atributy z prvku, přičemž názvy polí jsou klíči mapy.</translation>
     </message>
     <message>
         <source>Returns a map of all attributes from the current feature.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu všech atributů z aktuálního prvku.</translation>
     </message>
     <message>
         <source>attributes()[&apos;name&apos;]</source>
@@ -86258,11 +86295,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>measured,clockwise,points,angle,vertical,north,azimuth,radians</source>
-        <translation type="unfinished"/>
+        <translation>měřeno, ve směru, hodinových ručiček, body, úhel, svislý, sever, azimut, radiány</translation>
     </message>
     <message>
         <source>Returns the base name of the file without the directory or file suffix.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí základní název souboru bez přípony adresáře nebo souboru.</translation>
     </message>
     <message>
         <source>base_file_name</source>
@@ -86278,7 +86315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>suffix,base,directory,name,file,folder,path</source>
-        <translation type="unfinished"/>
+        <translation>přípona,základ,adresář,název,soubor,složka,cesta</translation>
     </message>
     <message>
         <source>Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Some geometry types do not have a defined boundary, e.g., points or geometry collections, and will return NULL.</source>
@@ -86306,7 +86343,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>polygon,linestrings,instance,combinatorial,topological,points,collections,types,ring,boundary,closure</source>
-        <translation type="unfinished"/>
+        <translation>polygon, řetězce, instance, kombinatorické, topologické, body, kolekce, typy, kruh, hranice, uzávěr</translation>
     </message>
     <message>
         <source>bounding box of the current feature&apos;s geometry</source>
@@ -86318,15 +86355,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((-1 0, 1 0, 1 1, -1 1, -1 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((-1 0, 1 0, 1 1, -1 1, -1 0))&apos;</translation>
     </message>
     <message>
         <source>box,input,spatial,reference,calculations,system,represents,bounding</source>
-        <translation type="unfinished"/>
+        <translation>rámeček, vstup, prostorový, odkaz, výpočty, systém, reprezentuje, ohraničující</translation>
     </message>
     <message>
         <source>height of bounding box of the current feature&apos;s geometry</source>
-        <translation type="unfinished"/>
+        <translation>výška ohraničujícího rámečku geometrie aktuálního prvku</translation>
     </message>
     <message>
         <source>bounds_height(geom_from_wkt(&apos;Polygon((1 1, 0 0, -1 1, 1 1))&apos;))</source>
@@ -86334,11 +86371,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>box,spatial,reference,calculations,system,height,bounding</source>
-        <translation type="unfinished"/>
+        <translation>rámeček, prostorový, odkaz, výpočty, systém, výška, ohraničující</translation>
     </message>
     <message>
         <source>width of bounding box of the current feature&apos;s geometry</source>
-        <translation type="unfinished"/>
+        <translation>šířka ohraničujícího rámečku geometrie aktuálního prvku</translation>
     </message>
     <message>
         <source>bounds_width(geom_from_wkt(&apos;Polygon((1 1, 0 0, -1 1, 1 1))&apos;))</source>
@@ -86346,15 +86383,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>width,box,spatial,reference,calculations,system,bounding</source>
-        <translation type="unfinished"/>
+        <translation>šířka, rámeček, prostorová, reference, výpočty, systém, ohraničení</translation>
     </message>
     <message>
         <source>polygon of the current feature&apos;s geometry buffered by 10.5 units</source>
-        <translation type="unfinished"/>
+        <translation>polygon geometrie aktuálního prvku s bufferem 10,5 jednotek</translation>
     </message>
     <message>
         <source>distance,equal,spatial,reference,calculations,system,points,segments,miter,join,cap,round</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, rovná, prostorová, reference, výpočty, systém, body, úsečky, pokos, spojení, zakončení, zaoblení</translation>
     </message>
     <message>
         <source>Creates a buffer along a line geometry where the buffer diameter varies according to the m-values at the line vertices.</source>
@@ -86366,11 +86403,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>input geometry. Must be a (multi)line geometry with m values.</source>
-        <translation type="unfinished"/>
+        <translation>vstupní geometrie. Musí se jednat o (více)řádkovou geometrii s m hodnotami.</translation>
     </message>
     <message>
         <source>number of segments to approximate quarter-circle curves in the buffer.</source>
-        <translation type="unfinished"/>
+        <translation>počet segmentů pro aproximaci čtvrtkruhových křivek ve vyrovnávací paměti.</translation>
     </message>
     <message>
         <source>buffer_by_m(geometry:=geom_from_wkt(&apos;LINESTRINGM(1 2 0.5, 4 2 0.2)&apos;),segments:=8)</source>
@@ -86382,15 +86419,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>line,according,values,varies,vertices,buffer,diameter</source>
-        <translation type="unfinished"/>
+        <translation>čára, podle, hodnot, liší se, vrcholy, vyrovnávací paměť, průměr</translation>
     </message>
     <message>
         <source>rounds,number</source>
-        <translation type="unfinished"/>
+        <translation>kola, počet</translation>
     </message>
     <message>
         <source>geometric,center</source>
-        <translation type="unfinished"/>
+        <translation>geometrický, střed</translation>
     </message>
     <message>
         <source>Returns the character associated with a unicode code.</source>
@@ -86414,11 +86451,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>associated,character,unicode,code</source>
-        <translation type="unfinished"/>
+        <translation>přidružený, znak, unicode, kód</translation>
     </message>
     <message>
         <source>specified,restricts,input,range</source>
-        <translation type="unfinished"/>
+        <translation>zadaný,omezuje,vstup,rozsah</translation>
     </message>
     <message>
         <source>Returns a closed line string of the input line string by appending the first point to the end of the line, if it is not already closed. If the geometry is not a line string or multi line string then the result will be NULL.</source>
@@ -86434,7 +86471,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;LineString (0 0, 1 0, 1 1, 0 0)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString (0 0, 1 0, 1 1, 0 0)&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(close_line(geom_from_wkt(&apos;LINESTRING(0 0, 1 0, 1 1, 0 0)&apos;)))</source>
@@ -86442,11 +86479,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>first,point,closed,end,input,appending,result,line,multi</source>
-        <translation type="unfinished"/>
+        <translation>první,bod,uzavřený,konec,vstup,připojování,výsledek,řádek,vícenásobný</translation>
     </message>
     <message>
         <source>Returns the point on geometry1 that is closest to geometry2.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí bod na geometrii1, který je nejblíže k geometrii2.</translation>
     </message>
     <message>
         <source>&apos;Point(73.0769 115.384)&apos;</source>
@@ -86454,7 +86491,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>closest,point,nearest</source>
-        <translation type="unfinished"/>
+        <translation>nejbližší,bod,blízko</translation>
     </message>
     <message>
         <source>any valid expression or value, regardless of type.</source>
@@ -86462,7 +86499,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>list,first,arguments,null</source>
-        <translation type="unfinished"/>
+        <translation>seznam, první, argumenty, null</translation>
     </message>
     <message>
         <source>Returns the multipart geometry of aggregated geometries from an expression</source>
@@ -86482,15 +86519,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregated centroids of the civilian features based on their region value</source>
-        <translation type="unfinished"/>
+        <translation>agregované centroidy civilních objektů na základě jejich regionální hodnoty</translation>
     </message>
     <message>
         <source>aggregated,multipart</source>
-        <translation type="unfinished"/>
+        <translation>agregovaný, vícedílný</translation>
     </message>
     <message>
         <source>Collects a set of geometries into a multi-part geometry object.</source>
-        <translation type="unfinished"/>
+        <translation>Shromáždí sadu geometrií do vícedílného geometrického objektu.</translation>
     </message>
     <message>
         <source>List of arguments variant</source>
@@ -86498,7 +86535,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Geometry parts are specified as separate arguments to the function.</source>
-        <translation type="unfinished"/>
+        <translation>Části geometrie jsou zadány jako samostatné argumenty funkce.</translation>
     </message>
     <message>
         <source>geom_to_wkt(collect_geometries(make_point(1,2), make_point(3,4), make_point(5,6)))</source>
@@ -86514,7 +86551,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Geometry parts are specified as an array of geometry parts.</source>
-        <translation type="unfinished"/>
+        <translation>Geometrické části jsou zadány jako pole geometrických částí.</translation>
     </message>
     <message>
         <source>array of geometry objects</source>
@@ -86530,7 +86567,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>cyan,color,black,yellow,representation,components</source>
-        <translation type="unfinished"/>
+        <translation>azurová, barva, černá, žlutá, reprezentace, komponenty</translation>
     </message>
     <message>
         <source>&apos;0,115,230,200&apos;</source>
@@ -86538,7 +86575,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>cyan,alpha,color,black,yellow,representation,components</source>
-        <translation type="unfinished"/>
+        <translation>azurová, alfa, barva, černá, žlutá, reprezentace, komponenty</translation>
     </message>
     <message>
         <source>color_grayscale_average</source>
@@ -86554,7 +86591,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>filter,color,provided,applies,grayscale,representation</source>
-        <translation type="unfinished"/>
+        <translation>filtr, barva, poskytnutá, platí, stupně šedi, reprezentace</translation>
     </message>
     <message>
         <source>&apos;166,217,140&apos;</source>
@@ -86562,7 +86599,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>attributes,lightness,color,hue,representation,saturation</source>
-        <translation type="unfinished"/>
+        <translation>atributy, světlost, barva, odstín, reprezentace, sytost</translation>
     </message>
     <message>
         <source>&apos;166,217,140,200&apos;</source>
@@ -86570,7 +86607,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>attributes,alpha,lightness,color,transparency,hue,representation,saturation</source>
-        <translation type="unfinished"/>
+        <translation>atributy, alfa, světlost, barva, průhlednost, odstín, reprezentace, sytost</translation>
     </message>
     <message>
         <source>&apos;255,170,0&apos;</source>
@@ -86578,7 +86615,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>attributes,color,hue,representation,saturation</source>
-        <translation type="unfinished"/>
+        <translation>atributy, barva, odstín, reprezentace, sytost</translation>
     </message>
     <message>
         <source>&apos;255,170,0,200&apos;</source>
@@ -86586,7 +86623,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>attributes,alpha,color,transparency,hue,representation,saturation</source>
-        <translation type="unfinished"/>
+        <translation>atributy, alfa, barva, průhlednost, odstín, reprezentace, sytost</translation>
     </message>
     <message>
         <source>color_mix_rgb</source>
@@ -86606,7 +86643,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>green,blue,red,alpha,mixing,color,colors,provided,ratio</source>
-        <translation type="unfinished"/>
+        <translation>zelená, modrá, červená, alfa, míchání, barva, barvy, zadané, poměr</translation>
     </message>
     <message>
         <source>a string corresponding to the color component to return. Valid options are:&lt;br /&gt;&lt;ul&gt;&lt;li&gt;red: RGB red component (0-255)&lt;/li&gt;&lt;li&gt;green: RGB green component (0-255)&lt;/li&gt;&lt;li&gt;blue: RGB blue component (0-255)&lt;/li&gt;&lt;li&gt;alpha: alpha (transparency) value (0-255)&lt;/li&gt;&lt;li&gt;hue: HSV hue (0-360)&lt;/li&gt;&lt;li&gt;saturation: HSV saturation (0-100)&lt;/li&gt;&lt;li&gt;value: HSV value (0-100)&lt;/li&gt;&lt;li&gt;hsl_hue: HSL hue (0-360)&lt;/li&gt;&lt;li&gt;hsl_saturation: HSL saturation (0-100)&lt;/li&gt;&lt;li&gt;lightness: HSL lightness (0-100)&lt;/li&gt;&lt;li&gt;cyan: CMYK cyan component (0-100)&lt;/li&gt;&lt;li&gt;magenta: CMYK magenta component (0-100)&lt;/li&gt;&lt;li&gt;yellow: CMYK yellow component (0-100)&lt;/li&gt;&lt;li&gt;black: CMYK black component (0-100)&lt;/li&gt;&lt;/ul&gt;</source>
@@ -86614,7 +86651,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>red,specific,color,component,alpha</source>
-        <translation type="unfinished"/>
+        <translation>červená, specifická, barva, složka, alfa</translation>
     </message>
     <message>
         <source>&apos;255,127,0&apos;</source>
@@ -86622,7 +86659,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>green,blue,red,color,representation,components</source>
-        <translation type="unfinished"/>
+        <translation>zelená, modrá, červená, barva, reprezentace, komponenty</translation>
     </message>
     <message>
         <source>&apos;255,127,0,200&apos;</source>
@@ -86630,11 +86667,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>green,blue,red,alpha,color,representation,components</source>
-        <translation type="unfinished"/>
+        <translation>zelená, modrá, červená, alfa, barva, reprezentace, komponenty</translation>
     </message>
     <message>
         <source>&apos;MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5))&apos;</translation>
     </message>
     <message>
         <source>&apos;LINESTRING(3 3, 4 4, 6 6, 2 1)&apos;</source>
@@ -86642,19 +86679,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>combination,union</source>
-        <translation type="unfinished"/>
+        <translation>kombinace, spojení</translation>
     </message>
     <message>
         <source>empty,converted,numbers,concatenates,null,strings,several,other,values</source>
-        <translation type="unfinished"/>
+        <translation>prázdná, převedená, čísla, zřetězení, null, řetězce, několik, dalších, hodnot</translation>
     </message>
     <message>
         <source>Returns all aggregated strings from a field or expression joined by a delimiter.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí všechny agregované řetězce z pole nebo výrazu spojené oddělovačem.</translation>
     </message>
     <message>
         <source>optional string to use to join values. Empty by default.</source>
-        <translation type="unfinished"/>
+        <translation>volitelný řetězec pro spojení hodnot. Ve výchozím nastavení prázdný.</translation>
     </message>
     <message>
         <source>concatenate(&quot;town_name&quot;,group_by:=&quot;state&quot;,concatenator:=&apos;,&apos;)</source>
@@ -86666,11 +86703,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregated,field,joined,delimiter,strings</source>
-        <translation type="unfinished"/>
+        <translation>agregované, pole, spojené, oddělovač, řetězce</translation>
     </message>
     <message>
         <source>Returns all unique strings from a field or expression joined by a delimiter.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí všechny jedinečné řetězce z pole nebo výrazu spojené oddělovačem.</translation>
     </message>
     <message>
         <source>concatenate_unique</source>
@@ -86686,11 +86723,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregated,unique,field,joined,delimiter,strings</source>
-        <translation type="unfinished"/>
+        <translation>agregované,jedinečné,pole,spojené,oddělovač,řetězce</translation>
     </message>
     <message>
         <source>lie,point,lies,tests,interior,exterior,within,points,contains</source>
-        <translation type="unfinished"/>
+        <translation>ležet, bod, leží, testy, interiér, exteriér, uvnitř, body, obsahuje</translation>
     </message>
     <message>
         <source>&apos;POLYGON((3 3, 4 10, 4 4, 3 3))&apos;</source>
@@ -86698,11 +86735,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>hull,convex,minimum,represents,encloses,set</source>
-        <translation type="unfinished"/>
+        <translation>trup, konvexní, minimum, představuje, uzavírá, množinu</translation>
     </message>
     <message>
         <source>angle,cosine</source>
-        <translation type="unfinished"/>
+        <translation>úhel, kosinus</translation>
     </message>
     <message>
         <source>Returns the count of matching features.</source>
@@ -86722,7 +86759,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregate,features,matching,count</source>
-        <translation type="unfinished"/>
+        <translation>agregace, funkce, porovnávání, počet</translation>
     </message>
     <message>
         <source>Returns the count of distinct values.</source>
@@ -86742,7 +86779,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregate,distinct,count</source>
-        <translation type="unfinished"/>
+        <translation>agregát, odlišný, počet</translation>
     </message>
     <message>
         <source>Returns the count of missing (NULL) values.</source>
@@ -86758,11 +86795,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>count of missing (NULL) station values, grouped by state field</source>
-        <translation type="unfinished"/>
+        <translation>počet chybějících (NULL) hodnot, seskupených podle pole států</translation>
     </message>
     <message>
         <source>aggregate,missing,count</source>
-        <translation type="unfinished"/>
+        <translation>agregát, chybějící, počet</translation>
     </message>
     <message>
         <source>Returns a gradient ramp from a map of color strings and steps.</source>
@@ -86778,7 +86815,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>set this parameter to true to create a discrete color ramp</source>
-        <translation type="unfinished"/>
+        <translation>Nastavením tohoto parametru na hodnotu true vytvoříte diskrétní kapátko</translation>
     </message>
     <message>
         <source>&apos;255,0,0,255&apos;</source>
@@ -86786,11 +86823,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map,gradient,steps,strings,ramp,color</source>
-        <translation type="unfinished"/>
+        <translation>mapa, přechod, kroky, řetězce, rampa, barva</translation>
     </message>
     <message>
         <source>common,supplied,crosses,tests,interior,points</source>
-        <translation type="unfinished"/>
+        <translation>běžné, dodávané, kříže, testy, interiérové, body</translation>
     </message>
     <message>
         <source>Only usable in an embedded form context, this function returns the current, unsaved value of a field in the parent form currently being edited. This will differ from the parent feature&apos;s actual attribute values for features which are currently being edited or have not yet been added to a parent layer. When used in a value-relation widget filter expression, this function should be wrapped into a &apos;coalesce()&apos; that can retrieve the actual parent feature from the layer when the form is not used in an embedded context.</source>
@@ -86814,7 +86851,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>field,actual,unsaved,wrapped,retrieve,widget,current,relation,differ,edited,embedded,coalesce,attribute,form,filter,added,features,parent,context,usable</source>
-        <translation type="unfinished"/>
+        <translation>pole,skutečné,neuložené,zabalené,načíst,widget,aktuální,vztah,rozdíl,upravené,vložené,sloučit,atribut,formulář,filtr,přidané,funkce,nadřazené,kontextové,použitelné</translation>
     </message>
     <message>
         <source>Returns the current, unsaved value of a field in the form or table row currently being edited. This will differ from the feature&apos;s actual attribute values for features which are currently being edited or have not yet been added to a layer.</source>
@@ -86826,7 +86863,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a field name in the current form or table row</source>
-        <translation type="unfinished"/>
+        <translation>název pole v aktuálním formuláři nebo řádku tabulky</translation>
     </message>
     <message>
         <source>current_value( &apos;FIELD_NAME&apos; )</source>
@@ -86838,7 +86875,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>table,field,actual,unsaved,current,differ,edited,row,attribute,form,added,features</source>
-        <translation type="unfinished"/>
+        <translation>tabulka, pole, skutečná, neuložená, aktuální, rozdíl, upravená, řádek, atribut, formulář, přidaná, prvky</translation>
     </message>
     <message>
         <source>an integer corresponding to the darkening factor:&lt;ul&gt;&lt;li&gt;if the factor is greater than 100, this function returns a darker color (e.g., setting factor to 200 returns a color that is half the brightness);&lt;/li&gt;&lt;li&gt;if the factor is less than 100, the return color is lighter, but using the lighter() function for this purpose is recommended;&lt;/li&gt;&lt;li&gt;if the factor is 0 or negative, the return value is unspecified.&lt;/li&gt;&lt;/ul&gt;</source>
@@ -86854,7 +86891,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>darker,color,lighter</source>
-        <translation type="unfinished"/>
+        <translation>tmavší, barva, světlejší</translation>
     </message>
     <message>
         <source>Returns a datetime whose date and time are the number of milliseconds, msecs, that have passed since 1970-01-01T00:00:00.000, Coordinated Universal Time (Qt.UTC), and converted to Qt.LocalTime.</source>
@@ -86878,11 +86915,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>passed,datetime,localtime,msecs,date,coordinated,converted,universal,milliseconds,time</source>
-        <translation type="unfinished"/>
+        <translation>prošel,datumčas,místníčas,ms,datum,koordinovaný,převedený,univerzální,milisekundy,čas</translation>
     </message>
     <message>
         <source>Extracts the day from a date, or the number of days from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část se dnem z data, nebo počet dní z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the day from a date or datetime.</source>
@@ -86910,7 +86947,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>week,day,specified,datetime,corresponds,ranges,date,saturday</source>
-        <translation type="unfinished"/>
+        <translation>týden, den, zadané, datum a čas, odpovídá, rozsahy, datum, sobota</translation>
     </message>
     <message>
         <source>Takes a layer and decodes the uri of the underlying data provider. It depends on the dataprovider, which data is available.</source>
@@ -86922,7 +86959,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The layer for which the uri should be decoded.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva, pro kterou má být identifikátor uri dekódován.</translation>
     </message>
     <message>
         <source>The part of the uri to return. If unspecified, a map with all uri parts will be returned.</source>
@@ -86950,23 +86987,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>depends,layer,data,dataprovider,provider,uri,underlying,decodes,available</source>
-        <translation type="unfinished"/>
+        <translation>závisí,vrstva,data,poskytovatel dat,poskytovatel,uri,podkladový,dekóduje,dostupný</translation>
     </message>
     <message>
         <source>converts,degrees,radians</source>
-        <translation type="unfinished"/>
+        <translation>převádí, stupně, radiány</translation>
     </message>
     <message>
         <source>generates,layer,line,number,one,new,polygon,vertices,larger,original</source>
-        <translation type="unfinished"/>
+        <translation>generuje,vrstva,čára,číslo,jedna,nový,polygon,vrcholy,větší,původní</translation>
     </message>
     <message>
         <source>maximum,edges,additional,generates,line,densified,adding,new,polygon,interval,layer,one,distance,vertices,specified</source>
-        <translation type="unfinished"/>
+        <translation>maximální,hrany,další,generuje,čáru,zhuštěnou,přidáváním,nového,polygonu,intervalu,vrstvy,jeden,vzdálenost,vrcholy,zadané</translation>
     </message>
     <message>
         <source>Returns a geometry that represents that part of geometry1 that does not intersect with geometry2.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii, která představuje tu část geometrie1, která se neprotíná s geometrií2.</translation>
     </message>
     <message>
         <source>&apos;LINESTRING(4 4, 5 5)&apos;</source>
@@ -86974,11 +87011,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>part,represents,intersect,clip</source>
-        <translation type="unfinished"/>
+        <translation>část, představuje, protíná, oříznout</translation>
     </message>
     <message>
         <source>share,intersect,tests,space</source>
-        <translation type="unfinished"/>
+        <translation>sdílet, protínat, testy, prostor</translation>
     </message>
     <message>
         <source>Returns the display expression for a given feature in a layer. The expression is evaluated by default. Can be used with zero, one or more arguments, see below for details.</source>
@@ -86994,7 +87031,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The display expression of the current feature in the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazovací výraz aktuálního prvku v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function will evaluate the specified feature from the current layer.</source>
@@ -87034,15 +87071,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The display expression of the feature with the ID 1 on the layer &apos;streets&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazovací výraz prvku s ID 1 na vrstvě &apos;ulice&apos;.</translation>
     </message>
     <message>
         <source>The display expression of the given feature not evaluated.</source>
-        <translation type="unfinished"/>
+        <translation>Výraz zobrazení dané prvku nebyl vyhodnocen.</translation>
     </message>
     <message>
         <source>projected,reference,spatial,minimum,units</source>
-        <translation type="unfinished"/>
+        <translation>projektované, referenční, prostorové, minimální, jednotky</translation>
     </message>
     <message>
         <source>Returns the distance along the geometry to a specified vertex.</source>
@@ -87062,11 +87099,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>distance,specified,vertex</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, zadaná, vrchol</translation>
     </message>
     <message>
         <source>last,node,vertex</source>
-        <translation type="unfinished"/>
+        <translation>poslední,uzel,vrchol</translation>
     </message>
     <message>
         <source>Gets an environment variable and returns its content as a string. If the variable is not found, NULL will be returned. This is handy to inject system specific configuration like drive letters or path prefixes. Definition of environment variables depends on the operating system, please check with your system administrator or the operating system documentation how this can be set.</source>
@@ -87102,7 +87139,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>operating,content,prefixes,gets,definition,found,drive,check,system,environment,path,variables,letters,inject,specific,configuration,depends,administrator,variable,documentation,handy,set</source>
-        <translation type="unfinished"/>
+        <translation>provozní, obsah, předpony, získá, definice, nalezeno, jednotka, kontrola, systém, prostředí, cesta, proměnné, písmena, vložit, specifické, konfigurace, závisí, správce, proměnná, dokumentace, šikovný, nastavit</translation>
     </message>
     <message>
         <source>epoch</source>
@@ -87118,7 +87155,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>interval,date,milliseconds,epoch</source>
-        <translation type="unfinished"/>
+        <translation>interval, datum, milisekundy, epocha</translation>
     </message>
     <message>
         <source>[whatever the result of evaluating @expression_var might be…]</source>
@@ -87126,7 +87163,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>dynamic,fields,parameters,expression,expand,context,passed,variables,evaluates</source>
-        <translation type="unfinished"/>
+        <translation>dynamická, pole, parametry, výraz, rozbalit, kontext, předané, proměnné, vyhodnocuje</translation>
     </message>
     <message>
         <source>Evaluates a template which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.</source>
@@ -87150,15 +87187,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>dynamic,fields,parameters,template,expand,context,passed,variables,evaluates</source>
-        <translation type="unfinished"/>
+        <translation>dynamická, pole, parametry, šablona, ​​rozbalit, kontext, předané, proměnné, vyhodnocuje</translation>
     </message>
     <message>
         <source>exif,retrieves,tag,file,image,values</source>
-        <translation type="unfinished"/>
+        <translation>exif,načte,tag,soubor,obrázek,hodnoty</translation>
     </message>
     <message>
         <source>geotags,exif,point,file,image</source>
-        <translation type="unfinished"/>
+        <translation>geotagy, exif, bod, soubor, obrázek</translation>
     </message>
     <message>
         <source>Extends the start and end of a linestring geometry by a specified amount. Lines are extended using the bearing of the first and last segment in the line. For a multilinestring, all the parts are extended. Distances are in the Spatial Reference System of this geometry.</source>
@@ -87194,11 +87231,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;MultiLineString ((-1 0, 1 0, 1 3),(3 2, 0 2, 0 7))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;MultiLineString ((-1 0, 1 0, 1 3),(3 2, 0 2, 0 7))&apos;</translation>
     </message>
     <message>
         <source>start,distances,line,last,linestring,amount,parts,bearing,lines,extends,reference,spatial,extended,first,segment,system,multilinestring,specified,end</source>
-        <translation type="unfinished"/>
+        <translation>začátek, vzdálenosti, čára, poslední, řetězec čar, množství, části, směr, čáry, prodloužení, reference, prostorový, prodloužený, první, segment, systém, víceřádkový řetězec, zadaný, konec</translation>
     </message>
     <message>
         <source>Returns a line string representing the exterior ring of a polygon geometry. If the geometry is not a polygon then the result will be NULL.</source>
@@ -87206,7 +87243,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>polygon,line,ring,exterior,result,representing</source>
-        <translation type="unfinished"/>
+        <translation>polygon, čára, kruh, vnější, výsledek, reprezentující</translation>
     </message>
     <message>
         <source>geom_to_wkt(extrude(geom_from_wkt(&apos;LineString(1 2, 3 2, 4 3)&apos;), 1, 2))</source>
@@ -87214,7 +87251,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(extrude(geom_from_wkt(&apos;MultiLineString((1 2, 3 2), (4 3, 8 3))&apos;), 1, 2))</source>
@@ -87222,11 +87259,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;MultiPolygon (((1 2, 3 2, 4 4, 2 4, 1 2)),((4 3, 8 3, 9 5, 5 5, 4 3)))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;MultiPolygon (((1 2, 3 2, 4 4, 2 4, 1 2)),((4 3, 8 3, 9 5, 5 5, 4 3)))&apos;</translation>
     </message>
     <message>
         <source>curve,version,extension,input,specified,extruded,linestring,multi</source>
-        <translation type="unfinished"/>
+        <translation>křivka, verze, rozšíření, vstup, zadaný, vysunutý, čárový řetězec, vícenásobný</translation>
     </message>
     <message>
         <source>file_exists</source>
@@ -87238,11 +87275,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>path,exists,file</source>
-        <translation type="unfinished"/>
+        <translation>cesta, existuje, soubor</translation>
     </message>
     <message>
         <source>Returns the name of a file (including the file extension), excluding the directory.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí název souboru (včetně přípony souboru), bez adresáře.</translation>
     </message>
     <message>
         <source>file_name</source>
@@ -87258,11 +87295,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>extension,name,directory,file,path</source>
-        <translation type="unfinished"/>
+        <translation>přípona, název, adresář, soubor, cesta</translation>
     </message>
     <message>
         <source>Returns the directory component of a file path. This does not include the file name.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí adresářovou součást cesty k souboru. Nezahrnuje název souboru.</translation>
     </message>
     <message>
         <source>file_path</source>
@@ -87278,7 +87315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>path,directory,name,folder,file</source>
-        <translation type="unfinished"/>
+        <translation>cesta, adresář, název, složka, soubor</translation>
     </message>
     <message>
         <source>Returns the size (in bytes) of a file.</source>
@@ -87298,11 +87335,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>size,file,bytes</source>
-        <translation type="unfinished"/>
+        <translation>velikost, soubor, bajty</translation>
     </message>
     <message>
         <source>Returns the file suffix (extension) from a file path.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí příponu souboru (rozšíření) z cesty k souboru.</translation>
     </message>
     <message>
         <source>file_suffix</source>
@@ -87318,7 +87355,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>extension,path,suffix,file</source>
-        <translation type="unfinished"/>
+        <translation>koncovka, cesta, přípona, soubor</translation>
     </message>
     <message>
         <source>Returns a copy of the geometry with the x and y coordinates swapped. Useful for repairing geometries which have had their latitude and longitude values reversed.</source>
@@ -87338,19 +87375,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>latitude,longitude,reversed,swapped,coordinates,repairing,copy</source>
-        <translation type="unfinished"/>
+        <translation>zeměpisná šířka, délka, obrácené, prohozené, souřadnice, oprava, kopírování</translation>
     </message>
     <message>
         <source>downwards,rounds,number</source>
-        <translation type="unfinished"/>
+        <translation>dolů, zaokrouhleno, číslo</translation>
     </message>
     <message>
         <source>exterior,clockwise,respect,convention,rings,counter,interior,forces</source>
-        <translation type="unfinished"/>
+        <translation>vnější, ve směru hodinových ručiček, respekt, konvence, kroužky, počítadlo, vnitřní, síly</translation>
     </message>
     <message>
         <source>exterior,clockwise,respect,convention,rings,interior,counter,forces</source>
-        <translation type="unfinished"/>
+        <translation>vnější, ve směru, hodinových ručiček, respekt, konvence, kroužky, vnitřní, proti, síly</translation>
     </message>
     <message>
         <source>force_rhr</source>
@@ -87586,7 +87623,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the band number for the associated attribute table lookup.</source>
-        <translation type="unfinished"/>
+        <translation>číslo pásma pro vyhledávání v přidružené tabulce atributů.</translation>
     </message>
     <message>
         <source>raster value</source>
@@ -87602,15 +87639,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>raster_attributes(&apos;vegetation&apos;, 1, raster_value(&apos;vegetation&apos;, 1, @layer_cursor_point))</source>
-        <translation type="unfinished"/>
+        <translation>raster_attributes(&apos;vegetation&apos;, 1, raster_value(&apos;vegetation&apos;, 1, @layer_cursor_point))</translation>
     </message>
     <message>
         <source>provider,point,raster,found,attributes</source>
-        <translation type="unfinished"/>
+        <translation>poskytovatel, bod, rastr, nalezený, atributy</translation>
     </message>
     <message>
         <source>raster_value(&apos;ndvi&apos;, 2, @layer_cursor_point)</source>
-        <translation type="unfinished"/>
+        <translation>raster_value(&apos;ndvi&apos;, 2, @layer_cursor_point)</translation>
     </message>
     <message>
         <source>Repeats a string a specified number of times.</source>
@@ -87638,7 +87675,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The field name for which the widget configuration should be loaded.</source>
-        <translation type="unfinished"/>
+        <translation>Název pole, pro které má být načtena konfigurace widgetu.</translation>
     </message>
     <message>
         <source>Reverses the direction of a line string or reverses a string of text.</source>
@@ -87910,7 +87947,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>retrieves,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>vyhledává, koordinuje</translation>
     </message>
     <message>
         <source>y( @geometry )</source>
@@ -87942,11 +87979,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>retrieves,coordinate,3D</source>
-        <translation type="unfinished"/>
+        <translation>načítá, souřadnice, 3D</translation>
     </message>
     <message>
         <source>coordinate,minimum</source>
-        <translation type="unfinished"/>
+        <translation>souřadnice, minimum</translation>
     </message>
     <message>
         <source>a geometry. Any non-polygon geometries are returned unchanged.</source>
@@ -87958,7 +87995,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))&apos;</translation>
     </message>
     <message>
         <source>&apos;This is a test&apos;</source>
@@ -88006,7 +88043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Decodes a string in the Base64 encoding into a binary value.</source>
-        <translation type="unfinished"/>
+        <translation>Dekóduje řetězec v kódování Base64 do binární hodnoty.</translation>
     </message>
     <message>
         <source>from_base64</source>
@@ -88070,7 +88107,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a geometry created from a Well-Known Binary (WKB) representation.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii vytvořenou z reprezentace typu Well-Known Binary (WKB).</translation>
     </message>
     <message>
         <source>geom_from_wkb</source>
@@ -88078,7 +88115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Well-Known Binary (WKB) representation of a geometry (as a binary blob)</source>
-        <translation type="unfinished"/>
+        <translation>Známá binární (WKB) reprezentace geometrie (jako binární blob)</translation>
     </message>
     <message>
         <source>geom_from_wkb( geom_to_wkb( make_point(4,5) ) )</source>
@@ -88090,7 +88127,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the Well-Known Binary (WKB) representation of a geometry</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí reprezentaci geometrie ve formátu Well-Known Binary (WKB)</translation>
     </message>
     <message>
         <source>geom_to_wkb</source>
@@ -88154,7 +88191,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scale of the item &apos;Map 0&apos; (if it exists) in the current print layout</source>
-        <translation type="unfinished"/>
+        <translation>měřítko položky &apos;Mapa 0&apos; (pokud existuje) v aktuálním rozvržení tisku</translation>
     </message>
     <message>
         <source>Returns a map with an added key/value. If the key already exists, its value is overridden.</source>
@@ -88162,151 +88199,151 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>least,occurring,field,minority,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>nejméně, vyskytující, pole, menšina, agregát</translation>
     </message>
     <message>
         <source>vertex,multipoint,node,input</source>
-        <translation type="unfinished"/>
+        <translation>vrchol, vícebodový, uzel, vstup</translation>
     </message>
     <message>
         <source>static,evaluating,current,date,time</source>
-        <translation type="unfinished"/>
+        <translation>statický, vyhodnocovací, aktuální, datum, čas</translation>
     </message>
     <message>
         <source>substitute,equals,condition,compare</source>
-        <translation type="unfinished"/>
+        <translation>nahrazení,rovná se,podmínka,porovnání</translation>
     </message>
     <message>
         <source>collection,multipart,parts,count</source>
-        <translation type="unfinished"/>
+        <translation>kolekce, vícedílný, díly, počet</translation>
     </message>
     <message>
         <source>rings,holes,count,polygon,collection,interior</source>
-        <translation type="unfinished"/>
+        <translation>kroužky, otvory, počet, mnohoúhelník, kolekce, interiér</translation>
     </message>
     <message>
         <source>rings,holes,polygon,collection,exterior,including</source>
-        <translation type="unfinished"/>
+        <translation>kroužky, otvory, mnohoúhelník, kolekce, exteriér, včetně</translation>
     </message>
     <message>
         <source>evaluated,selected,works,default,features</source>
-        <translation type="unfinished"/>
+        <translation>vyhodnocené, vybrané, práce, výchozí, prvky</translation>
     </message>
     <message>
         <source>spatial,offsetting,reference,system,linestring,formed,distances,side</source>
-        <translation type="unfinished"/>
+        <translation>prostorový, odsazený, referenční, systém, čárový řetězec, vytvořený, vzdálenosti, strana</translation>
     </message>
     <message>
         <source>multiplication,values</source>
-        <translation type="unfinished"/>
+        <translation>násobení, hodnoty</translation>
     </message>
     <message>
         <source>behavior,different,see,concat,null,joins,result,values</source>
-        <translation type="unfinished"/>
+        <translation>chování, různé, viz, concat, null, spojení, výsledek, hodnoty</translation>
     </message>
     <message>
         <source>division,values</source>
-        <translation type="unfinished"/>
+        <translation>dělení, hodnoty</translation>
     </message>
     <message>
         <source>compares,evaluates,values,equal</source>
-        <translation type="unfinished"/>
+        <translation>porovnává, vyhodnocuje, hodnotí, rovná se</translation>
     </message>
     <message>
         <source>power,values</source>
-        <translation type="unfinished"/>
+        <translation>výkon,hodnoty</translation>
     </message>
     <message>
         <source>compares,equal,values,greater,left,evaluates,right</source>
-        <translation type="unfinished"/>
+        <translation>porovnává,rovná se,hodnoty,větší,vlevo,vyhodnocuje,vpravo</translation>
     </message>
     <message>
         <source>greater,compares,evaluates,left,values,right</source>
-        <translation type="unfinished"/>
+        <translation>větší, porovnává, vyhodnocuje, vlevo, hodnoty, vpravo</translation>
     </message>
     <message>
         <source>array,operator,element,map,index</source>
-        <translation type="unfinished"/>
+        <translation>pole, operátor, prvek, mapa, index</translation>
     </message>
     <message>
         <source>compares,equal,less,values,left,evaluates,right</source>
-        <translation type="unfinished"/>
+        <translation>porovnává,rovná se,menší,hodnoty,vlevo,vyhodnocuje,vpravo</translation>
     </message>
     <message>
         <source>left,evaluates,compares,less,values,right</source>
-        <translation type="unfinished"/>
+        <translation>vlevo, vyhodnocuje, porovnává, méně, hodnot, vpravo</translation>
     </message>
     <message>
         <source>subtraction,null,result,values</source>
-        <translation type="unfinished"/>
+        <translation>odčítání, null, výsledek, hodnoty</translation>
     </message>
     <message>
         <source>addition,null,result,values</source>
-        <translation type="unfinished"/>
+        <translation>sčítání, null, výsledek, hodnoty</translation>
     </message>
     <message>
         <source>criteria,multigeometry,orders,parts,given</source>
-        <translation type="unfinished"/>
+        <translation>kritéria, multigeometrie, řády, části, dané</translation>
     </message>
     <message>
         <source>oriented,box,minimal,represents,bounding</source>
-        <translation type="unfinished"/>
+        <translation>orientovaný, rámeček, minimální, představuje, ohraničující</translation>
     </message>
     <message>
         <source>share,tests,contained,overlaps,same,dimension,space</source>
-        <translation type="unfinished"/>
+        <translation>sdílení, testy, obsažené, překrývá, stejný, rozměr, prostor</translation>
     </message>
     <message>
         <source>algorithm,parameter,processing</source>
-        <translation type="unfinished"/>
+        <translation>algoritmus, parametr, zpracování</translation>
     </message>
     <message>
         <source>planimetric,distance,polygon,perimeter,spatial,reference,system,calculations,project,differs,object,match,settings,ellipsoid,units</source>
-        <translation type="unfinished"/>
+        <translation>planimetrický, vzdálenost, polygon, obvod, prostorový, reference, systém, výpočty, projekt, rozdíly, objekt, shoda, nastavení, elipsoid, jednotky</translation>
     </message>
     <message>
         <source>calculations,pi</source>
-        <translation type="unfinished"/>
+        <translation>výpočty,pi</translation>
     </message>
     <message>
         <source>specific,node,vertex</source>
-        <translation type="unfinished"/>
+        <translation>specifický,uzel,vrchol</translation>
     </message>
     <message>
         <source>distance,elevation,projected,start,point,azimuth,radians,bearing</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, nadmořská výška, promítnutá, počáteční, bod, azimut, radiány, směrník</translation>
     </message>
     <message>
         <source>scheme,project,color</source>
-        <translation type="unfinished"/>
+        <translation>schéma, projekt, barva</translation>
     </message>
     <message>
         <source>field,quartile,first,calculated</source>
-        <translation type="unfinished"/>
+        <translation>pole, kvartil, první, vypočítané</translation>
     </message>
     <message>
         <source>third,field,quartile,calculated</source>
-        <translation type="unfinished"/>
+        <translation>třetí,pole,kvartil,vypočtený</translation>
     </message>
     <message>
         <source>random,inclusive,specified,range,argument,seed,same,provided,minimum,maximum,integer,depending</source>
-        <translation type="unfinished"/>
+        <translation>náhodný, včetně, zadaný, rozsah, argument, počáteční hodnota, stejný, zadaný, minimum, maximum, celé číslo, závislý</translation>
     </message>
     <message>
         <source>random,specified,range,argument,seed,same,provided,float,minimum,maximum,inclusive,depending</source>
-        <translation type="unfinished"/>
+        <translation>náhodný, zadaný, rozsah, argument, počáteční hodnota, stejný, zadaný, číslo s plovoucí čárkou, minimum, maximum, včetně, v závislosti</translation>
     </message>
     <message>
         <source>field,range,aggregate,minimum,maximum</source>
-        <translation type="unfinished"/>
+        <translation>pole, rozsah, agregát, minimum, maximum</translation>
     </message>
     <message>
         <source>raster,statistics</source>
-        <translation type="unfinished"/>
+        <translation>rastr, statistika</translation>
     </message>
     <message>
         <source>provided,point,raster,found</source>
-        <translation type="unfinished"/>
+        <translation>poskytnutý, bodový, rastrový, nalezený</translation>
     </message>
     <message>
         <source>The regular expression to test against. Backslash characters must be double escaped (e.g., &quot;\\s&quot; to match a white space character or  &quot;\\b&quot; to match a word boundary).</source>
@@ -88314,275 +88351,275 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>return,found,matching,unicode,regular,position,substring,first</source>
-        <translation type="unfinished"/>
+        <translation>vrátit,nalezeno,shoda,unicode,regular,pozice,podřetězec,první</translation>
     </message>
     <message>
         <source>array,groups,capturing,captured,order,appear,supplied,regular,strings</source>
-        <translation type="unfinished"/>
+        <translation>pole, skupiny, zachycení, zachyceno, pořadí, objevit se, dodané, regulární, řetězce</translation>
     </message>
     <message>
         <source>regular,supplied,replaced</source>
-        <translation type="unfinished"/>
+        <translation>běžný, dodávaný, nahrazený</translation>
     </message>
     <message>
         <source>regular,matches,supplied,portion</source>
-        <translation type="unfinished"/>
+        <translation>běžné, shody, dodávané, porce</translation>
     </message>
     <message>
         <source>child,matching,aggregate,features,relation</source>
-        <translation type="unfinished"/>
+        <translation>podřízený,přiřazování,agregace,prvky,vztah</translation>
     </message>
     <message>
         <source>depends,configured,field,type,widgets,map,representation,widget</source>
-        <translation type="unfinished"/>
+        <translation>závisí,nakonfigurované,pole,typ,widgety,mapa,reprezentace,widget</translation>
     </message>
     <message>
         <source>last,end,substring,rightmost,characters,contains</source>
-        <translation type="unfinished"/>
+        <translation>poslední,konec,podřetězec,zcela vpravo,znaky,obsahuje</translation>
     </message>
     <message>
         <source>version,spatial,reference,calculations,rotated,system</source>
-        <translation type="unfinished"/>
+        <translation>verze, prostorová, reference, výpočty, otočená, systém</translation>
     </message>
     <message>
         <source>rounds,places,decimal,number</source>
-        <translation type="unfinished"/>
+        <translation>zaokrouhlení,místa,desetinná,číslo</translation>
     </message>
     <message>
         <source>polygon,perfect,flat,close,shape,calculates,circle</source>
-        <translation type="unfinished"/>
+        <translation>polygon, perfektní, plochý, zavřít, tvar, vypočítá, kruh</translation>
     </message>
     <message>
         <source>length,right,padded,width,specified,truncated,target,fill,character,smaller</source>
-        <translation type="unfinished"/>
+        <translation>délka,vpravo,s odsazením,šířka,zadaná,zkrácená,cíl,výplň,znak,menší</translation>
     </message>
     <message>
         <source>exponential,curve,ease,transforms,output,given,input,domain,range,specified,values</source>
-        <translation type="unfinished"/>
+        <translation>exponenciální,křivka,zjednodušení,transformace,výstup,daný,vstup,doména,rozsah,zadané,hodnoty</translation>
     </message>
     <message>
         <source>transforms,linear,output,given,input,domain,range,interpolation</source>
-        <translation type="unfinished"/>
+        <translation>transformace, lineární, výstup, daný, vstup, doména, rozsah, interpolace</translation>
     </message>
     <message>
         <source>consisting,segment,input,multi,line</source>
-        <translation type="unfinished"/>
+        <translation>složený,segment,vstup,více,řádek</translation>
     </message>
     <message>
         <source>alpha,component,specific,red,color,sets</source>
-        <translation type="unfinished"/>
+        <translation>alfa,komponenta,specifická,červená,barva,množiny</translation>
     </message>
     <message>
         <source>start,resultant,joining,end,shortest,line</source>
-        <translation type="unfinished"/>
+        <translation>začátek, výslednice, spojnice, konec, nejkratší, úsečka</translation>
     </message>
     <message>
         <source>straight,large,deviations,nodes,algorithm,reduces,simplifies,segments,number,threshold,distance,removing,vertices,based,preserves</source>
-        <translation type="unfinished"/>
+        <translation>rovné, velké, odchylky, uzly, algoritmus, redukuje, zjednodušuje, segmenty, číslo, prahová hodnota, vzdálenost, odstraňování, vrcholy, na základě, zachování</translation>
     </message>
     <message>
         <source>spikes,areas,straight,nodes,algorithm,area,simplifies,removes,narrow,segments,visvalingam,threshold,create,vertices,removing,based,small</source>
-        <translation type="unfinished"/>
+        <translation>hroty, oblasti, rovné, uzly, algoritmus, oblast, zjednodušuje, odstraňuje, zužuje, segmenty, visvalingam, práh, vytvářet, vrcholy, odstraňování, na základě, malých</translation>
     </message>
     <message>
         <source>sine,angle</source>
-        <translation type="unfinished"/>
+        <translation>sinus, úhel</translation>
     </message>
     <message>
         <source>buffering,spatial,reference,system,linestring,formed,distances,side</source>
-        <translation type="unfinished"/>
+        <translation>ukládání, prostorové, reference, systém, čárový řetězec, vytvořené, vzdálenosti, strana</translation>
     </message>
     <message>
         <source>curve,distance,length,endpoints,sinuosity,ratio,straight</source>
-        <translation type="unfinished"/>
+        <translation>křivka, vzdálenost, délka, koncové body, vlnitost, poměr, přímka</translation>
     </message>
     <message>
         <source>adding,corners,smoothed,dimensionality,round,output,contain,input,retain,extra,smooths,nodes,values,same</source>
-        <translation type="unfinished"/>
+        <translation>přidání, rohů, vyhlazených, rozměrů, zaoblení, výstup, obsahovat, vstup, zachovat, navíc, vyhlazuje, uzly, hodnoty, stejné</translation>
     </message>
     <message>
         <source>code,represented,similar,matching,algorithm,soundex,same,phonetic,representation,strings,sounds</source>
-        <translation type="unfinished"/>
+        <translation>kód, reprezentovaný, podobný, porovnávací, algoritmus, soundex, stejný, fonetický, reprezentace, řetězce, zvuky</translation>
     </message>
     <message>
         <source>attributes,children,applied,uncommitted,works,relations,prefetched,intended,creating,several,auto_increment,form,databases,transaction,parents,filter_value,mode,open,primary,evaluate,sidenote,add,require,impossible,default_values,table,insert,nice,formats,current,adding,get,target,work,specified,usage,columns,retrieved,autoincrementing,new,limitation,gpkg,parallel,database,additional,makes,postgres,modifies,sequence,cached,manage,key,same,id_field,acquire,filtered,default,filter_attribute,parent,option,unsafe,sqlite,separate,parameter,map,row,configurations,lifetime,processes,incremented,able,features,purpose</source>
-        <translation type="unfinished"/>
+        <translation>atributy, podřízené, použité, nepotvrzené, práce, vztahy, přednačtené, zamýšlené, vytváření, několik, automatického_přírůstku, formuláře, databází, transakce, rodiče, hodnota_filtru, režim, otevřít, primární, vyhodnotit, poznámka na straně, přidat, vyžadovat, nemožné, výchozí_hodnoty, tabulka, vložit, pěkné, formáty, aktuální, přidávání, získat, cíl, práce, zadané, použití, sloupce, načtené, automatické přírůstky, nové, omezení, gpkg, paralelní, databáze, další, vytváří, postgres, upravuje, sekvenci, v mezipaměti, spravovat, klíč, stejný, pole_id, získat, filtrovaný, výchozí, atribut_filtru, rodičovská, možnost, nebezpečná, sqlite, samostatný, parametr, mapa, řádek, konfigurace, doba životnosti, procesy, zvýšený, schopný, funkce, účel</translation>
     </message>
     <message>
         <source>root,square</source>
-        <translation type="unfinished"/>
+        <translation>odmocnina, druhá mocnina</translation>
     </message>
     <message>
         <source>waves,rectangular,constructs,square,boundary</source>
-        <translation type="unfinished"/>
+        <translation>vlny, obdélníkové, konstrukty, čtverec, hranice</translation>
     </message>
     <message>
         <source>waves,rectangular,constructs,square,boundary,randomized</source>
-        <translation type="unfinished"/>
+        <translation>vlny, obdélníkové, konstrukty, čtverec, hranice, náhodné</translation>
     </message>
     <message>
         <source>first,node</source>
-        <translation type="unfinished"/>
+        <translation>první,uzel</translation>
     </message>
     <message>
         <source>deviation,field,standard,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>odchylka, pole, standard, agregát</translation>
     </message>
     <message>
         <source>distance,curve,circularstring,first,last,direct,euclidean,linestring,vertex</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, křivka, kruhový řetězec, první, poslední, přímý, euklidovský, čárový řetězec, vrchol</translation>
     </message>
     <message>
         <source>split,convert,separate,delimiter,divides</source>
-        <translation type="unfinished"/>
+        <translation>rozdělit, převést, oddělit, oddělovač, dělí</translation>
     </message>
     <message>
         <source>substring,position,return,found,first,matching</source>
-        <translation type="unfinished"/>
+        <translation>podřetězec,pozice,návrat,nalezeno,první,shoda</translation>
     </message>
     <message>
         <source>field,summed,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>pole, sečteno, agregováno</translation>
     </message>
     <message>
         <source>portions,represents,intersect</source>
-        <translation type="unfinished"/>
+        <translation>části, reprezentuje, protíná</translation>
     </message>
     <message>
         <source>angle,tangent</source>
-        <translation type="unfinished"/>
+        <translation>úhel, tečna</translation>
     </message>
     <message>
         <source>varies,buffer,line,diameter,length</source>
-        <translation type="unfinished"/>
+        <translation>liší se, vyrovnávací, čára, průměr, délka</translation>
     </message>
     <message>
         <source>letter,words,lower,converts,leading,capital,title,case</source>
-        <translation type="unfinished"/>
+        <translation>písmeno, slova, malá, převádí, úvodní, velká, nadpis, velká a malá písmena</translation>
     </message>
     <message>
         <source>encoding,base,binary,encodes</source>
-        <translation type="unfinished"/>
+        <translation>kódování, základní, binární, kóduje</translation>
     </message>
     <message>
         <source>provided,additional,user,format_date,parse,qdate,converts,default,current,format,object,fromstring,date,optional,documentation,see</source>
-        <translation type="unfinished"/>
+        <translation>poskytnutý, další, uživatel, formát_date, analyzovat, qdate, převádí, výchozí, aktuální, formát, objekt, fromstring, date, volitelné, dokumentace, viz</translation>
     </message>
     <message>
         <source>provided,additional,user,format_date,parse,qdate,converts,default,datetime,current,format,object,fromstring,optional,documentation,qtime,see</source>
-        <translation type="unfinished"/>
+        <translation>poskytnuté, další, uživatel, formát_date, analýza, qdate, převádí, výchozí, datum a čas, aktuální, formát, objekt, fromstring, volitelné, dokumentace, qtime, viz</translation>
     </message>
     <message>
         <source>converts,minute,degree,equivalent,second,coordinate,decimal</source>
-        <translation type="unfinished"/>
+        <translation>převádí, minuta, stupeň, ekvivalent, sekunda, souřadnice, desetinné číslo</translation>
     </message>
     <message>
         <source>converts,minute,degree,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>převádí, minuta, stupeň, souřadnice</translation>
     </message>
     <message>
         <source>converts,minute,degree,second,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>převádí, minuta, stupeň, sekunda, souřadnice</translation>
     </message>
     <message>
         <source>converts,invalid,converted,integer</source>
-        <translation type="unfinished"/>
+        <translation>převádí, neplatné, převedeno, celé číslo</translation>
     </message>
     <message>
         <source>type,month,converts,date,interval,take,hours,days</source>
-        <translation type="unfinished"/>
+        <translation>typ, měsíc, převody, datum, interval, čas, hodiny, dny</translation>
     </message>
     <message>
         <source>formatted,json,array,create,other,map</source>
-        <translation type="unfinished"/>
+        <translation>formátovaný,json,pole,vytvořit,jiný,mapa</translation>
     </message>
     <message>
         <source>converts,precision,invalid,rounded,numbers,changes,real,result,converted,saving,conversion,smaller</source>
-        <translation type="unfinished"/>
+        <translation>převádí, přesnost, neplatný, zaokrouhlený, čísla, změny, skutečný, výsledek, převedeno, ukládání, konverze, menší</translation>
     </message>
     <message>
         <source>converts,number</source>
-        <translation type="unfinished"/>
+        <translation>konvertuje, počet</translation>
     </message>
     <message>
         <source>provided,additional,format,object,parse,time,converts,fromstring,optional,documentation,qtime,see</source>
-        <translation type="unfinished"/>
+        <translation>poskytnutý, další, formát, objekt, analyzovat, čas, převádí, z řetězce, volitelný, dokumentace, qtime, viz</translation>
     </message>
     <message>
         <source>point,common,touches,interiors,tests,intersect</source>
-        <translation type="unfinished"/>
+        <translation>bod, společný, dotyk, interiéry, testy, protínají se</translation>
     </message>
     <message>
         <source>crs,source,transformed,destination,reprojection</source>
-        <translation type="unfinished"/>
+        <translation>crs, zdroj, transformovaný, cíl, reprojekce</translation>
     </message>
     <message>
         <source>spatial,reference,calculations,system,translated,displace,move</source>
-        <translation type="unfinished"/>
+        <translation>prostorová, reference, výpočty, systém, přenesený, posunout, přesunout</translation>
     </message>
     <message>
         <source>waves,boundary,constructs,triangular</source>
-        <translation type="unfinished"/>
+        <translation>vlny, hranice, konstrukty, trojúhelníkové</translation>
     </message>
     <message>
         <source>waves,boundary,constructs,randomized,triangular</source>
-        <translation type="unfinished"/>
+        <translation>vlny, hranice, konstrukty, náhodné, trojúhelníkové</translation>
     </message>
     <message>
         <source>removes,leading,whitespace,spaces,tabs,trailing</source>
-        <translation type="unfinished"/>
+        <translation>odstraní, úvodní, prázdné, mezery, tabulátory, koncové</translation>
     </message>
     <message>
         <source>return,tries,error,alternative,provided,exception</source>
-        <translation type="unfinished"/>
+        <translation>návrat, pokusy, chyba, alternativa, poskytnutá, výjimka</translation>
     </message>
     <message>
         <source>union,dissolve,point,represents,set</source>
-        <translation type="unfinished"/>
+        <translation>sjednocení, rozpuštění, bod, reprezentuje, množina</translation>
     </message>
     <message>
         <source>converts,upper,letters,case</source>
-        <translation type="unfinished"/>
+        <translation>převádí, velká, písmena, velká a malá písmena</translation>
     </message>
     <message>
         <source>encoded,producing,form,characters,query,plus,url,compliant,converted,map,sign,transforms</source>
-        <translation type="unfinished"/>
+        <translation>kódovaný, produkující, formulář, znaky, dotaz, plus, url, kompatibilní, převedený, mapa, znaménko, transformace</translation>
     </message>
     <message>
         <source>createuuid,generates,method,unique,quuid,identifier,row</source>
-        <translation type="unfinished"/>
+        <translation>createuuid,generuje,metoda,jedinečný,quuid,identifikátor,řádek</translation>
     </message>
     <message>
         <source>stored,variable,specified</source>
-        <translation type="unfinished"/>
+        <translation>uložená, proměnná, specifikovaná</translation>
     </message>
     <message>
         <source>waves,rounded,sine,boundary,constructs</source>
-        <translation type="unfinished"/>
+        <translation>vlny, zaoblené, sinusové, hraniční, konstrukty</translation>
     </message>
     <message>
         <source>waves,sine,boundary,curved,constructs,randomized</source>
-        <translation type="unfinished"/>
+        <translation>vlny, sinus, hranice, zakřivené, konstrukty, náhodné</translation>
     </message>
     <message>
         <source>buffer,wedge,point,originating,shaped</source>
-        <translation type="unfinished"/>
+        <translation>obalová zóna, klín, bod, původ, tvarovaný</translation>
     </message>
     <message>
         <source>variable,argument,value,evaluation</source>
-        <translation type="unfinished"/>
+        <translation>proměnná, argument, hodnota, vyhodnocení</translation>
     </message>
     <message>
         <source>tests,contains,completely</source>
-        <translation type="unfinished"/>
+        <translation>testy, obsahuje, kompletně</translation>
     </message>
     <message>
         <source>maximum,minimum,wrapped,characters,multiline</source>
-        <translation type="unfinished"/>
+        <translation>maximální, minimální, zalomené, znaky, víceřádkový</translation>
     </message>
     <message>
         <source>centroid,point,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>těžiště, bod, souřadnice</translation>
     </message>
     <message>
         <source>coordinate,spatial,reference,calculations,system,maximum</source>
@@ -88626,7 +88663,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>coordinate,maximum</source>
-        <translation type="unfinished"/>
+        <translation>souřadnice, maximum</translation>
     </message>
     <message>
         <source>Returns the minimum z coordinate of a geometry, or NULL if the geometry has no z value.</source>
@@ -88710,7 +88747,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the hour part from a time or datetime.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s hodinami z data nebo data/času.</translation>
     </message>
     <message>
         <source>Calculates the length in hours of an interval.</source>
@@ -88754,7 +88791,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the calculated inter quartile range from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí vypočítaný interkvartilový rozsah z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>iqr</source>
@@ -88806,7 +88843,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The layer (or its id or name) on which the selection will be checked.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva (nebo její id nebo název), na které bude výběr zkontrolován.</translation>
     </message>
     <message>
         <source>is_selected()</source>
@@ -88870,7 +88907,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;eb045cba7a797aaa06ac58830846e40c8e8c780bc0676d3393605fae50c05309&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;eb045cba7a797aaa06ac58830846e40c8e8c780bc0676d3393605fae50c05309&apos;</translation>
     </message>
     <message>
         <source>hash(&apos;QGIS&apos;, &apos;sha384&apos;)</source>
@@ -88878,7 +88915,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;91c1de038cc3d09fdd512e99f9dd9922efadc39ed21d3922e69a4305cc25506033aee388e554b78714c8734f9cd7e610&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;91c1de038cc3d09fdd512e99f9dd9922efadc39ed21d3922e69a4305cc25506033aee388e554b78714c8734f9cd7e610&apos;</translation>
     </message>
     <message>
         <source>hash(&apos;QGIS&apos;, &apos;sha512&apos;)</source>
@@ -88886,7 +88923,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;c2c092f2ab743bf8edbeb6d028a745f30fc720408465ed369421f0a4e20fa5e27f0c90ad72d3f1d836eaa5d25cd39897d4cf77e19984668ef58da6e3159f18ac&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;c2c092f2ab743bf8edbeb6d028a745f30fc720408465ed369421f0a4e20fa5e27f0c90ad72d3f1d836eaa5d25cd39897d4cf77e19984668ef58da6e3159f18ac&apos;</translation>
     </message>
     <message>
         <source>hash(&apos;QGIS&apos;, &apos;sha3_224&apos;)</source>
@@ -88918,7 +88955,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;900d079dc69761da113980253aa8ac0414a8bd6d09879a916228f8743707c4758051c98445d6b8945ec854ff90655005e02aceb0a2ffc6a0ebf818745d665349&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;900d079dc69761da113980253aa8ac0414a8bd6d09879a916228f8743707c4758051c98445d6b8945ec854ff90655005e02aceb0a2ffc6a0ebf818745d665349&apos;</translation>
     </message>
     <message>
         <source>hash(&apos;QGIS&apos;, &apos;keccak_224&apos;)</source>
@@ -88942,7 +88979,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;c57a3aed9d856fa04e5eeee9b62b6e027cca81ba574116d3cc1f0d48a1ef9e5886ff463ea8d0fac772ee473bf92f810d&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;c57a3aed9d856fa04e5eeee9b62b6e027cca81ba574116d3cc1f0d48a1ef9e5886ff463ea8d0fac772ee473bf92f810d&apos;</translation>
     </message>
     <message>
         <source>hour( to_datetime(&apos;2012-07-22 13:24:57&apos;) )</source>
@@ -89026,7 +89063,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The layer (its ID or name) on which the selection will be checked.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva (její ID nebo název), na které bude výběr zkontrolován.</translation>
     </message>
     <message>
         <source>is_selected( &apos;streets&apos;, get_feature_by_id(&apos;streets&apos;, 1))</source>
@@ -89046,7 +89083,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a map of variables from a layout item inside this print layout.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu proměnných z položky rozvržení uvnitř tohoto rozvržení tisku.</translation>
     </message>
     <message>
         <source>item_variables</source>
@@ -89062,7 +89099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scale of the item &apos;Map 0&apos; in the current print layout</source>
-        <translation type="unfinished"/>
+        <translation>měřítko položky &apos;Mapa 0&apos; v aktuálním rozvržení tisku</translation>
     </message>
     <message>
         <source>an integer corresponding to the lightening factor:&lt;ul&gt;&lt;li&gt;if the factor is greater than 100, this function returns a lighter color (e.g., setting factor to 150 returns a color that is 50% brighter);&lt;/li&gt;&lt;li&gt;if the factor is less than 100, the return color is darker, but using the darker() function for this purpose is recommended;&lt;/li&gt;&lt;li&gt;if the factor is 0 or negative, the return value is unspecified.&lt;/li&gt;&lt;/ul&gt;</source>
@@ -89090,7 +89127,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the point interpolated by a specified distance along a linestring geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí bod interpolovaný o zadanou vzdálenost podél geometrie čáry.</translation>
     </message>
     <message>
         <source>line_interpolate_point</source>
@@ -89114,7 +89151,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>point geometry to locate closest position on linestring to</source>
-        <translation type="unfinished"/>
+        <translation>geometrie bodu pro nalezení nejbližší pozice na linii</translation>
     </message>
     <message>
         <source>line_locate_point(geometry:=geom_from_wkt(&apos;LineString(0 0, 10 0)&apos;),point:=geom_from_wkt(&apos;Point(5 0)&apos;))</source>
@@ -89198,7 +89235,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the maximum m (measure) value of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí maximální hodnotu m (míry) geometrie.</translation>
     </message>
     <message>
         <source>m_max</source>
@@ -89218,7 +89255,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the minimum m (measure) value of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí minimální hodnotu m (míry) geometrie.</translation>
     </message>
     <message>
         <source>m_min</source>
@@ -89246,7 +89283,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the aggregate majority of values (most commonly occurring value) from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou většinu hodnot (nejčastěji se vyskytující hodnotu) z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>majority</source>
@@ -89258,7 +89295,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>most commonly occurring class value, grouped by state field</source>
-        <translation type="unfinished"/>
+        <translation>nejčastěji se vyskytující hodnota třídy, seskupená podle pole stavu</translation>
     </message>
     <message>
         <source>Creates a circular polygon.</source>
@@ -89298,7 +89335,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates a date value from year, month and day numbers.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří hodnotu data z čísel roku, měsíce a dne.</translation>
     </message>
     <message>
         <source>make_date</source>
@@ -89306,7 +89343,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid.</source>
-        <translation type="unfinished"/>
+        <translation>Číslo roku. Roky 1 až 99 se interpretují tak, jak jsou. Rok 0 je neplatný.</translation>
     </message>
     <message>
         <source>Month number, where 1=January</source>
@@ -89314,7 +89351,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Day number, beginning with 1 for the first day in the month</source>
-        <translation type="unfinished"/>
+        <translation>Číslo dne, počínaje 1 pro první den v měsíci</translation>
     </message>
     <message>
         <source>make_date(2020,5,4)</source>
@@ -89326,7 +89363,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates a datetime value from year, month, day, hour, minute and second numbers.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří hodnotu data a času z čísel roku, měsíce, dne, hodiny, minuty a sekundy.</translation>
     </message>
     <message>
         <source>make_datetime</source>
@@ -89386,7 +89423,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates an interval value from year, month, weeks, days, hours, minute and seconds values.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří intervalovou hodnotu z hodnot roku, měsíce, týdnů, dnů, hodin, minut a sekund.</translation>
     </message>
     <message>
         <source>make_interval</source>
@@ -89394,11 +89431,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Number of years (assumes a 365.25 day year length).</source>
-        <translation type="unfinished"/>
+        <translation>Počet let (předpokládá se délka roku 365,25 dní).</translation>
     </message>
     <message>
         <source>Number of months (assumes a 30 day month length)</source>
-        <translation type="unfinished"/>
+        <translation>Počet měsíců (předpokládá se délka měsíce 30 dní)</translation>
     </message>
     <message>
         <source>Number of weeks</source>
@@ -89446,7 +89483,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line vertices are specified as separate arguments to the function.</source>
-        <translation type="unfinished"/>
+        <translation>Vrcholy linie jsou zadány jako samostatné argumenty funkce.</translation>
     </message>
     <message>
         <source>a point geometry (or array of points)</source>
@@ -89454,7 +89491,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line vertices are specified as an array of points.</source>
-        <translation type="unfinished"/>
+        <translation>Vrcholy linie jsou zadány jako pole bodů.</translation>
     </message>
     <message>
         <source>array of points</source>
@@ -89478,111 +89515,111 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>contexts,clockwise,boundary,interior,rings,bounded,force_polygon_cw,explicit,polygon,area,exterior,inconsistency,right,use,hand,particular,respect,counter,forces,ring,recommended,oriented,direction,rule,definition</source>
-        <translation type="unfinished"/>
+        <translation>kontexty, ve směru hodinových ručiček, hranice, vnitřní, prstence, ohraničené, force_polygon_cw, explicitní, polygon, oblast, vnější, nekonzistence, vpravo, použití, ruka, konkrétní, respekt, proti, síly, prstenec, doporučené, orientované, směr, pravidlo, definice</translation>
     </message>
     <message>
         <source>format,supplied,arguments</source>
-        <translation type="unfinished"/>
+        <translation>formát,dodané,argumenty</translation>
     </message>
     <message>
         <source>custom,type,uses,format,strings,time,date,formats,see,qdatetime,tostring</source>
-        <translation type="unfinished"/>
+        <translation>vlastní, typ, použití, formát, řetězce, čas, datum, formáty, viz, qdatetime, tostring</translation>
     </message>
     <message>
         <source>formatted,truncates,places,separator,decimal,default,thousands,locale,language</source>
-        <translation type="unfinished"/>
+        <translation>formátovaný, zkrátí, místa, oddělovač, desetinné číslo, výchozí, tisíce, národní prostředí, jazyk</translation>
     </message>
     <message>
         <source>encoding,base,binary,decodes</source>
-        <translation type="unfinished"/>
+        <translation>kódování, základní, binární, dekódování</translation>
     </message>
     <message>
         <source>json,loads,formatted</source>
-        <translation type="unfinished"/>
+        <translation>json, načtení, formátování</translation>
     </message>
     <message>
         <source>sequence,containing,numbers,array</source>
-        <translation type="unfinished"/>
+        <translation>sekvence, obsahující, čísla, pole</translation>
     </message>
     <message>
         <source>representation,conversion</source>
-        <translation type="unfinished"/>
+        <translation>reprezentace, konverze</translation>
     </message>
     <message>
         <source>created,wkb,binary,known,representation,conversion</source>
-        <translation type="unfinished"/>
+        <translation>vytvořený, wkb, binární, známý, reprezentace, konverze</translation>
     </message>
     <message>
         <source>text,known,wkt,representation,conversion</source>
-        <translation type="unfinished"/>
+        <translation>text, známý, wkt, reprezentace, konverze</translation>
     </message>
     <message>
         <source>wkb,binary,representation,known,conversion</source>
-        <translation type="unfinished"/>
+        <translation>wkb, binární, reprezentace, známá, konverze</translation>
     </message>
     <message>
         <source>text,wkt,srid,representation,known,conversion</source>
-        <translation type="unfinished"/>
+        <translation>text, wkt, srid, reprezentace, známý, konverze</translation>
     </message>
     <message>
         <source>part,input,multipart,collection,specific</source>
-        <translation type="unfinished"/>
+        <translation>část, vstup, vícedílný, kolekce, specifický</translation>
     </message>
     <message>
         <source>describing,type,point,polygon,line</source>
-        <translation type="unfinished"/>
+        <translation>popisující, typ, bod, mnohoúhelník, čára</translation>
     </message>
     <message>
         <source>distance,length,input,sensitive,different,strings,corresponding,hamming,equates,characters,case,same,comparison,positions</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, délka, vstup, citlivý, odlišný, řetězce, odpovídající, hamming, porovnává, znaky, velká a malá písmena, stejný, porovnání, pozice</translation>
     </message>
     <message>
         <source>hex,bytes,byte,digits,hash,method,given,represented,character,long,bits,produces</source>
-        <translation type="unfinished"/>
+        <translation>hex, bajty, bajt, číslice, hash, metoda, zadaná, reprezentovaná, znak, dlouhý, bity, produkuje</translation>
     </message>
     <message>
         <source>distance,segment,dissimilar,densify,linestrings,parallel,other,matching,total,close,executed,specifying,occurs,equal,fraction,testing,method,discrete,linear,default,approximate,sets,length,large,lower,similar,similarity,parameter,measure,split,make,approach,closest,examples,provided,performs,insufficient,networks,specify,optional,decreasing,approximation,cases,densification,specified,computing,argument,subsegments,hausdorff,exact,indicating,subset,standard</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, segment, odlišný, zhuštění, čárové řetězce, rovnoběžné, jiné, shodné, celkový, blízko, provedeno, specifikace, dochází, rovný, zlomek, testování, metoda, diskrétní, lineární, výchozí, přibližné, sady, délka, velký, nižší, podobný, podobnost, parametr, měření, rozdělení, vytvoření, přiblížení, nejbližší, příklady, poskytnuté, provádí, nedostatečné, sítě, specifikovat, volitelné, klesající, aproximace, případy, zhuštění, specifikované, výpočet, argument, dílčí segmenty, hausdorffův, přesný, indikující, podmnožina, standardní</translation>
     </message>
     <message>
         <source>formatted,hstore,map</source>
-        <translation type="unfinished"/>
+        <translation>formátovaný,hstore,mapa</translation>
     </message>
     <message>
         <source>tests,different,check,result,conditional,depending,condition</source>
-        <translation type="unfinished"/>
+        <translation>testy, různé, kontrola, výsledek, podmíněný, závislý, podmínka</translation>
     </message>
     <message>
         <source>zenith,nadir,inclination,measured,points</source>
-        <translation type="unfinished"/>
+        <translation>zenit, nadir, sklon, naměřené, body</translation>
     </message>
     <message>
         <source>interior,polygon,hole,ring</source>
-        <translation type="unfinished"/>
+        <translation>interiér, mnohoúhelník, otvor, prstenec</translation>
     </message>
     <message>
         <source>shared,represents,portion,overlap</source>
-        <translation type="unfinished"/>
+        <translation>sdílený, představuje, část, překrývání</translation>
     </message>
     <message>
         <source>share,space,intersects,tests,intersect,portion,overlaps</source>
-        <translation type="unfinished"/>
+        <translation>sdílet, prostor, protíná, testy, protínat, část, překrývá</translation>
     </message>
     <message>
         <source>box,tests,overlaps,defined,intersect,bounding</source>
-        <translation type="unfinished"/>
+        <translation>rámeček, testy, překrývání, definované, protínající, ohraničující</translation>
     </message>
     <message>
         <source>field,quartile,range,inter,calculated,statistics,aggregates</source>
-        <translation type="unfinished"/>
+        <translation>pole, kvartil, rozsah, mezi, vypočítané, statistiky, agregáty</translation>
     </message>
     <message>
         <source>points,start,closed,end,coincident,result,false,line</source>
-        <translation type="unfinished"/>
+        <translation>body, začátek, uzavřený, konec, shodný, výsledek, nepravdivý, čára</translation>
     </message>
     <message>
         <source>path,directory,folder</source>
-        <translation type="unfinished"/>
+        <translation>cesta, adresář, složka</translation>
     </message>
     <message>
         <source>empty,is_empty_or_null,see,coordinates,false</source>
@@ -89594,115 +89631,115 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>path,file</source>
-        <translation type="unfinished"/>
+        <translation>cesta, soubor</translation>
     </message>
     <message>
         <source>specified,visible</source>
-        <translation type="unfinished"/>
+        <translation>specifikovaný, viditelný</translation>
     </message>
     <message>
         <source>type,multi</source>
-        <translation type="unfinished"/>
+        <translation>typ,multi</translation>
     </message>
     <message>
         <source>rules,valid,ogc,according,formed</source>
-        <translation type="unfinished"/>
+        <translation>pravidla, platná, ogc, dle, vytvořená</translation>
     </message>
     <message>
         <source>layout,item,variables,print,map</source>
-        <translation type="unfinished"/>
+        <translation>rozvržení, položka, proměnné, tisk, mapa</translation>
     </message>
     <message>
         <source>first,start,begin,substring,leftmost,characters,contains,extracts</source>
-        <translation type="unfinished"/>
+        <translation>první,začátek,počátek,podřetězec,zcela vlevo,znaky,obsahuje,výňatky</translation>
     </message>
     <message>
         <source>planimetric,distance,length,spatial,reference,system,calculations,calculates,line,project,differs,object,match,settings,ellipsoid,units</source>
-        <translation type="unfinished"/>
+        <translation>planimetrický, vzdálenost, délka, prostorový, referenční, systém, výpočty, vypočítává, čára, projekt, rozdíly, objekt, shoda, nastavení, elipsoid, jednotky</translation>
     </message>
     <message>
         <source>distance,required,edit,indicate,sensitive,similarity,insertions,similar,mean,measure,different,character,change,substitutions,strings,edits,distances,larger,deletions,equates,case,minimum,levenshtein,smaller</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, povinná, upravit, označit, citlivá, podobnost, vložení, podobný, průměr, míra, odlišný, znak, změna, substituce, řetězce, úpravy, vzdálenosti, větší, odstranění, rovná se, případ, minimum, levenshtein, menší</translation>
     </message>
     <message>
         <source>distance,angles,parallel,specified,clockwise,angle,linestring,degrees,north</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, úhly, rovnoběžné, zadané, ve směru hodinových ručiček, úhel, čárový řetězec, stupně, sever</translation>
     </message>
     <message>
         <source>distance,interpolated,linestring,point,specified,along</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, interpolovaná, čárový řetězec, bod, zadaný, podél</translation>
     </message>
     <message>
         <source>distance,point,specified,closest,linestring,position,corresponding,along</source>
-        <translation type="unfinished"/>
+        <translation>vzdálenost, bod, zadaný, nejbližší, čárový řetězec, poloha, odpovídající, podél</translation>
     </message>
     <message>
         <source>passed,single,return,input,linestrings,merged,connected,linestring,multilinestring</source>
-        <translation type="unfinished"/>
+        <translation>předaný, jeden, návrat, vstup, řetězce, sloučené, propojené, řetězec, víceřádkový řetězec</translation>
     </message>
     <message>
         <source>curve,start,specified,measured,falls,existing,interpolated,beginning,distances,line,end,portion</source>
-        <translation type="unfinished"/>
+        <translation>křivka, začátek, zadaná, naměřená, spády, existující, interpolovaná, začátek, vzdálenosti, čára, konec, část</translation>
     </message>
     <message>
         <source>natural,logarithm</source>
-        <translation type="unfinished"/>
+        <translation>přirozený,logaritmus</translation>
     </message>
     <message>
         <source>base,logarithm</source>
-        <translation type="unfinished"/>
+        <translation>základ,logaritmus</translation>
     </message>
     <message>
         <source>longest,common,input,sensitive,case,substring,strings</source>
-        <translation type="unfinished"/>
+        <translation>nejdelší,běžný,vstup,citlivý,velká písmená,podřetězec,řetězce</translation>
     </message>
     <message>
         <source>converts,letters,lower,case</source>
-        <translation type="unfinished"/>
+        <translation>konvertuje, písmena, malá, velká</translation>
     </message>
     <message>
         <source>length,padded,width,truncated,specified,target,fill,left,character,smaller</source>
-        <translation type="unfinished"/>
+        <translation>délka,odsazená,šířka,zkrácená,zadaná,cíl,výplň,vlevo,znak,menší</translation>
     </message>
     <message>
         <source>point,measure</source>
-        <translation type="unfinished"/>
+        <translation>bod, míra</translation>
     </message>
     <message>
         <source>maximum,measure</source>
-        <translation type="unfinished"/>
+        <translation>maximum,míra</translation>
     </message>
     <message>
         <source>minimum,measure</source>
-        <translation type="unfinished"/>
+        <translation>minimum,míra</translation>
     </message>
     <message>
         <source>oriented,minimal,covers,clockwise,angle,long,north,degrees,rectangle,axis,bounding</source>
-        <translation type="unfinished"/>
+        <translation>orientovaný, minimální, pokrývá, ve směru, hodinových ručiček, úhel, dlouhý, severní, stupně, obdélník, osa, ohraničující</translation>
     </message>
     <message>
         <source>occurring,field,majority,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>vyskytující se, pole, většina, agregát</translation>
     </message>
     <message>
         <source>circular,polygon</source>
-        <translation type="unfinished"/>
+        <translation>kruhový, mnohoúhelníkový</translation>
     </message>
     <message>
         <source>year,date,month,numbers,day</source>
-        <translation type="unfinished"/>
+        <translation>rok, datum, měsíc, čísla, den</translation>
     </message>
     <message>
         <source>minute,month,numbers,day,year,second,hour,datetime</source>
-        <translation type="unfinished"/>
+        <translation>minuta, měsíc, čísla, den, rok, sekunda, hodina, datum a čas</translation>
     </message>
     <message>
         <source>polygon,elliptical</source>
-        <translation type="unfinished"/>
+        <translation>mnohoúhelník, eliptický</translation>
     </message>
     <message>
         <source>minute,seconds,month,year,weeks,values,interval,hours,days</source>
-        <translation type="unfinished"/>
+        <translation>minuta, sekundy, měsíc, rok, týdny, hodnoty, interval, hodiny, dny</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_point(2,4,6))</source>
@@ -89722,7 +89759,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>optional,point</source>
-        <translation type="unfinished"/>
+        <translation>volitelný,bod</translation>
     </message>
     <message>
         <source>Creates a point geometry from an x, y coordinate and m value.</source>
@@ -89746,7 +89783,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>point,coordinate</source>
-        <translation type="unfinished"/>
+        <translation>bod, souřadnice</translation>
     </message>
     <message>
         <source>Creates a polygon geometry from an outer ring and optional series of inner ring geometries.</source>
@@ -89782,7 +89819,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>outer,ring,series,inner,optional,polygon</source>
-        <translation type="unfinished"/>
+        <translation>vnější, kruh, řada, vnitřní, volitelný, mnohoúhelník</translation>
     </message>
     <message>
         <source>Creates a rectangle from 3 points.</source>
@@ -89810,11 +89847,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))&apos;</translation>
     </message>
     <message>
         <source>rectangle,points</source>
-        <translation type="unfinished"/>
+        <translation>obdélník, body</translation>
     </message>
     <message>
         <source>Creates a regular polygon.</source>
@@ -89854,7 +89891,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>polygon,regular</source>
-        <translation type="unfinished"/>
+        <translation>mnohoúhelník, pravidelný</translation>
     </message>
     <message>
         <source>Creates a square from a diagonal.</source>
@@ -89878,7 +89915,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((0 0, -0 5, 5 5, 5 0, 0 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 0, -0 5, 5 5, 5 0, 0 0))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_square( make_point(5,0), make_point(5,5)))</source>
@@ -89886,15 +89923,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((5 0, 2.5 2.5, 5 5, 7.5 2.5, 5 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((5 0, 2.5 2.5, 5 5, 7.5 2.5, 5 0))&apos;</translation>
     </message>
     <message>
         <source>square,diagonal</source>
-        <translation type="unfinished"/>
+        <translation>čtverec, diagonální</translation>
     </message>
     <message>
         <source>Creates a time value from hour, minute and second numbers.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří časovou hodnotu z hodin, minut a sekund.</translation>
     </message>
     <message>
         <source>make_time</source>
@@ -89910,7 +89947,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>minute,hour,second,numbers,time</source>
-        <translation type="unfinished"/>
+        <translation>minuta, hodina, sekunda, čísla, čas</translation>
     </message>
     <message>
         <source>Creates a triangle polygon.</source>
@@ -89950,11 +89987,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>triangle,polygon</source>
-        <translation type="unfinished"/>
+        <translation>trojúhelník, mnohoúhelník</translation>
     </message>
     <message>
         <source>Returns a map containing all the keys and values passed as pair of parameters.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu obsahující všechny klíče a hodnoty předané jako dvojice parametrů.</translation>
     </message>
     <message>
         <source>map</source>
@@ -89970,11 +90007,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>passed,keys,pair,containing,parameters,map</source>
-        <translation type="unfinished"/>
+        <translation>předané,klíče,pár,obsahující,parametry,mapa</translation>
     </message>
     <message>
         <source>Returns all the keys of a map as an array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí všechny klíče mapy jako pole.</translation>
     </message>
     <message>
         <source>map_akeys</source>
@@ -89990,11 +90027,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>array,map,keys</source>
-        <translation type="unfinished"/>
+        <translation>pole, mapa, klíče</translation>
     </message>
     <message>
         <source>Returns all the values of a map as an array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí všechny hodnoty mapy jako pole.</translation>
     </message>
     <message>
         <source>map_avals</source>
@@ -90006,7 +90043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>array,map</source>
-        <translation type="unfinished"/>
+        <translation>pole, mapa</translation>
     </message>
     <message>
         <source>Returns a map containing all the entries of the given maps. If two maps contain the same key, the value of the second map is taken.</source>
@@ -90022,15 +90059,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>containing,key,concatenate,contain,entries,maps,map</source>
-        <translation type="unfinished"/>
+        <translation>obsahující, klíč, zřetězit, obsahovat, položky, mapy, mapa</translation>
     </message>
     <message>
         <source>list,rights,layers,layout,item,usage,credit,strings,map</source>
-        <translation type="unfinished"/>
+        <translation>seznam, práva, vrstvy, rozvržení, položka, použití, kredit, řetězce, mapa</translation>
     </message>
     <message>
         <source>Returns a map with the given key and its corresponding value deleted.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu se zadaným klíčem a jeho odpovídající odstraněnou hodnotou.</translation>
     </message>
     <message>
         <source>map_delete</source>
@@ -90046,7 +90083,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>deleted,corresponding,map,key</source>
-        <translation type="unfinished"/>
+        <translation>smazaný,odpovídající,mapový,klíč</translation>
     </message>
     <message>
         <source>map_exist</source>
@@ -90062,7 +90099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map,exists,key</source>
-        <translation type="unfinished"/>
+        <translation>mapa, existuje, klíč</translation>
     </message>
     <message>
         <source>map_get</source>
@@ -90094,15 +90131,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map,added,exists,key,overridden</source>
-        <translation type="unfinished"/>
+        <translation>mapa,přidáno,existuje,klíč,přepsáno</translation>
     </message>
     <message>
         <source>prefixed,keys,map</source>
-        <translation type="unfinished"/>
+        <translation>předpona, klíče, mapa</translation>
     </message>
     <message>
         <source>formatted,hstore,elements,map,merge</source>
-        <translation type="unfinished"/>
+        <translation>formátované,hstore,prvky,mapa,sloučení</translation>
     </message>
     <message>
         <source>Returns the maptip for a given feature in a layer. The expression is evaluated by default. Can be used with zero, one or more arguments, see below for details.</source>
@@ -90118,7 +90155,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The maptip of the current feature in the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Popis mapy aktuálního prvku v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>maptip(@atlas_feature)</source>
@@ -90138,7 +90175,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The maptip of the feature with the ID 1 on the layer &apos;streets&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Popisek mapy prvku s ID 1 na vrstvě „ulice“.</translation>
     </message>
     <message>
         <source>The maptip of the given feature not evaluated.</source>
@@ -90170,7 +90207,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>longest,biggest,most,largest,maximum</source>
-        <translation type="unfinished"/>
+        <translation>nejdelší, největší, nejvíce, obrovský, maximální</translation>
     </message>
     <message>
         <source>Returns the maximum length of strings from a field or expression.</source>
@@ -90190,11 +90227,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>length,maximum,strings,characters,count,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>délka, maximum, řetězce, znaky, počet, agregace</translation>
     </message>
     <message>
         <source>Returns the aggregate maximum value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou maximální hodnotu z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>maximum(&quot;population&quot;,group_by:=&quot;state&quot;)</source>
@@ -90206,7 +90243,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>maximum,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>maximální, agregát</translation>
     </message>
     <message>
         <source>Creates a md5 hash from a string.</source>
@@ -90222,7 +90259,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the aggregate mean value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou střední hodnotu z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>mean</source>
@@ -90238,11 +90275,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>average,aggregate,mean</source>
-        <translation type="unfinished"/>
+        <translation>průměr, souhrn, průměrný</translation>
     </message>
     <message>
         <source>Returns the aggregate median value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou mediánovou hodnotu z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>median</source>
@@ -90258,11 +90295,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>median,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>medián,agregát</translation>
     </message>
     <message>
         <source>type,data,binary</source>
-        <translation type="unfinished"/>
+        <translation>typ, data, binární</translation>
     </message>
     <message>
         <source>Returns the smallest value in a set of values.</source>
@@ -90290,7 +90327,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>least,smallest,minimum</source>
-        <translation type="unfinished"/>
+        <translation>nejméně,nejmenší,minimum</translation>
     </message>
     <message>
         <source>Returns the minimum length of strings from a field or expression.</source>
@@ -90310,7 +90347,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>length,characters,count,minimum,strings</source>
-        <translation type="unfinished"/>
+        <translation>délka, znaky, počet, minimum, řetězce</translation>
     </message>
     <message>
         <source>Returns the minimal enclosing circle of a geometry. It represents the minimum circle that encloses all geometries within the set.</source>
@@ -90330,11 +90367,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>enclosing,minimal,minimum,represents,encloses,circle,smallest</source>
-        <translation type="unfinished"/>
+        <translation>uzavírající, minimální, minimum, představuje, uzavírá, kruh, nejmenší</translation>
     </message>
     <message>
         <source>Returns the aggregate minimum value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou minimální hodnotu z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>minimum(&quot;population&quot;,group_by:=&quot;state&quot;)</source>
@@ -90346,11 +90383,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>minimum,aggregate</source>
-        <translation type="unfinished"/>
+        <translation>minimální, agregátní</translation>
     </message>
     <message>
         <source>Returns the aggregate minority of values (least occurring value) from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou menšinu hodnot (nejméně se vyskytující hodnotu) z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>minority</source>
@@ -90366,7 +90403,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the index of the current mesh face. </source>
-        <translation type="unfinished"/>
+        <translation>Vrátí index aktuální plochy sítě.</translation>
     </message>
     <message>
         <source>$face_index</source>
@@ -90382,7 +90419,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the current vertex as a point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí aktuální vrchol jako bodovou geometrii.</translation>
     </message>
     <message>
         <source>$vertex_as_point</source>
@@ -90398,7 +90435,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the index of the current mesh vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí index aktuálního vrcholu sítě.</translation>
     </message>
     <message>
         <source>$vertex_index</source>
@@ -90410,7 +90447,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the X coordinate of the current mesh vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí souřadnici X aktuálního vrcholu sítě.</translation>
     </message>
     <message>
         <source>$vertex_x</source>
@@ -90422,7 +90459,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the Y coordinate of the current mesh vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí souřadnici Y aktuálního vrcholu sítě.</translation>
     </message>
     <message>
         <source>$vertex_y</source>
@@ -90434,7 +90471,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the Z value of the current mesh vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí hodnotu Z aktuálního vrcholu sítě.</translation>
     </message>
     <message>
         <source>$vertex_z</source>
@@ -90506,7 +90543,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Contains functions which calculate or return mesh related values.</source>
-        <translation type="unfinished"/>
+        <translation>Obsahuje funkce, které vypočítávají nebo vracejí hodnoty související se sítí.</translation>
     </message>
     <message>
         <source>Meshes</source>
@@ -90566,11 +90603,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if value is found within a list of values.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE pokud je hodnota nalezena uvnitř množiny hodnot.</translation>
     </message>
     <message>
         <source>Returns TRUE if a is the same as b.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE když a je totéž co b.</translation>
     </message>
     <message>
         <source>@geometry IS NULL</source>
@@ -90578,11 +90615,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a is not the same as b.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací TRUE, pokud a není stejné jako b.</translation>
     </message>
     <message>
         <source>Returns TRUE if the first parameter matches the supplied pattern. Works with numbers also.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE, pokud první parametr odpovídá dodanému vzoru. Pracuje i s čísly.</translation>
     </message>
     <message>
         <source>1.0 NOT BETWEEN 1.1 AND 1.2</source>
@@ -90590,11 +90627,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To test for NULL use an &lt;i&gt;IS NULL&lt;/i&gt; or &lt;i&gt;IS NOT NULL&lt;/i&gt; expression.</source>
-        <translation type="unfinished"/>
+        <translation>Pro testování hodnoty NULL použijte výraz &lt;i&gt;IS NULL&lt;/i&gt; nebo &lt;i&gt;IS NOT NULL&lt;/i&gt;.</translation>
     </message>
     <message>
         <source>Returns TRUE when condition a or b is true.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE když podmínka a nebo b je pravda.</translation>
     </message>
     <message>
         <source>This group contains functions to interact with sensors.</source>
@@ -90666,7 +90703,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((0 0, 6 0, 4 -2, 0 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 0, 6 0, 4 -2, 0 0))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(affine_transform(geom_from_wkt(&apos;POINT(3 1)&apos;), 0, 0, 0, 1, 1, 5, 0))</source>
@@ -90690,7 +90727,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>aggregate(layer:=&apos;countries&apos;, aggregate:=&apos;max&apos;, expression:=&quot;code&quot;, filter:=intersects( @geometry, geometry(@parent) ) )</source>
-        <translation type="unfinished"/>
+        <translation>aggregate(layer:=&apos;countries&apos;, aggregate:=&apos;max&apos;, expression:=&quot;code&quot;, filter:=intersects( @geometry, geometry(@parent) ) )</translation>
     </message>
     <message>
         <source>aggregate(layer:=&apos;rail_stations&apos;,aggregate:=&apos;sum&apos;,expression:=&quot;passengers&quot;,filter:=contains( @atlas_geometry, @geometry ) )</source>
@@ -90710,7 +90747,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a geometry (accepts (multi)linestrings or (multi)polygons).</source>
-        <translation type="unfinished"/>
+        <translation>geometrie (akceptuje (více)řádkové řetězce nebo (více)polygony).</translation>
     </message>
     <message>
         <source>dash pattern, as an array of numbers representing dash and gap lengths. Must contain an even number of elements.</source>
@@ -90730,7 +90767,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Optional distance specifying a specific distance along the pattern to commence at.</source>
-        <translation type="unfinished"/>
+        <translation>Volitelná vzdálenost určující konkrétní vzdálenost podél vzoru, kde se má začít.</translation>
     </message>
     <message>
         <source>geom_to_wkt(apply_dash_pattern(geom_from_wkt(&apos;LINESTRING(1 1, 10 1)&apos;), array(3, 1)))</source>
@@ -90738,7 +90775,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>MultiLineString ((1 1, 4 1),(5 1, 8 1),(9 1, 10 1, 10 1))</source>
-        <translation type="unfinished"/>
+        <translation>MultiLineString ((1 1, 4 1),(5 1, 8 1),(9 1, 10 1, 10 1))</translation>
     </message>
     <message>
         <source>geom_to_wkt(apply_dash_pattern(geom_from_wkt(&apos;LINESTRING(1 1, 10 1)&apos;), array(3, 1), start_rule:=&apos;half_dash&apos;))</source>
@@ -90746,7 +90783,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>MultiLineString ((1 1, 2.5 1),(3.5 1, 6.5 1),(7.5 1, 10 1, 10 1))</source>
-        <translation type="unfinished"/>
+        <translation>MultiLineString ((1 1, 2.5 1),(3.5 1, 6.5 1),(7.5 1, 10 1, 10 1))</translation>
     </message>
     <message>
         <source>array(2,10)[0]</source>
@@ -90754,15 +90791,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if an array contains all the values of a given array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud pole obsahuje všechny hodnoty daného pole.</translation>
     </message>
     <message>
         <source>Returns TRUE if an array contains the given value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE, pokud pole obsahuje danou hodnotu.</translation>
     </message>
     <message>
         <source>Counts the number of occurrences of a given value in an array.</source>
-        <translation type="unfinished"/>
+        <translation>Spočítá počet výskytů dané hodnoty v poli.</translation>
     </message>
     <message>
         <source>array_count</source>
@@ -90778,7 +90815,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>maximum number of elements to be returned. Use 0 to return all values.</source>
-        <translation type="unfinished"/>
+        <translation>maximální počet vrácených prvků. Pro vrácení všech hodnot použijte 0.</translation>
     </message>
     <message>
         <source>array_filter(array(1,2,3),@element &amp;lt; 3, 1)</source>
@@ -90818,11 +90855,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if at least one element of array1 exists in array2.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací TRUE, pokud alespoň jeden prvek pole array1 existuje v poli array2.</translation>
     </message>
     <message>
         <source>Returns the most common values in an array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí nejběžnější hodnoty v poli.</translation>
     </message>
     <message>
         <source>array_majority</source>
@@ -90934,7 +90971,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the less common values in an array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí méně běžné hodnoty v poli.</translation>
     </message>
     <message>
         <source>array_minority</source>
@@ -90978,7 +91015,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ 42, 43, 0, 1 ]</source>
-        <translation type="unfinished"/>
+        <translation>[ 42, 43, 0, 1 ]</translation>
     </message>
     <message>
         <source>array_minority(array(0,1,42,42,43,42), &apos;real_minority&apos;)</source>
@@ -91010,7 +91047,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ 5, 2, 1, 8 ]</source>
-        <translation type="unfinished"/>
+        <translation>[ 5, 2, 1, 8 ]</translation>
     </message>
     <message>
         <source>array_prioritize(array(5, 4, 2, 1, 3, 8), array(1, 8, 6, 5))</source>
@@ -91018,7 +91055,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ 1, 8, 5, 4, 2, 3 ]</source>
-        <translation type="unfinished"/>
+        <translation>[ 1, 8, 5, 4, 2, 3 ]</translation>
     </message>
     <message>
         <source>Returns an array with the item at the given index removed. Supports positive (0 for the first element) and negative (the last -Nth value, -1 for the last element) index.</source>
@@ -91042,7 +91079,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the supplied value, array, or map of values replaced.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, které nahradí zadanou hodnotu, pole nebo mapu hodnot.</translation>
     </message>
     <message>
         <source>Value &amp; array variant</source>
@@ -91054,11 +91091,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the value or array of values to replace</source>
-        <translation type="unfinished"/>
+        <translation>hodnota nebo pole hodnot, které se mají nahradit</translation>
     </message>
     <message>
         <source>the value or array of values to use as a replacement</source>
-        <translation type="unfinished"/>
+        <translation>hodnota nebo pole hodnot, které se mají použít jako náhrada</translation>
     </message>
     <message>
         <source>array_replace(array(&apos;QGIS&apos;,&apos;SHOULD&apos;,&apos;ROCK&apos;),&apos;SHOULD&apos;,&apos;DOES&apos;)</source>
@@ -91082,11 +91119,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[ &apos;-&apos;, &apos;G&apos;, &apos;I&apos;, &apos;-&apos; ]</source>
-        <translation type="unfinished"/>
+        <translation>[ &apos;-&apos;, &apos;G&apos;, &apos;I&apos;, &apos;-&apos; ]</translation>
     </message>
     <message>
         <source>Returns an array with the supplied map keys replaced by their paired values.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, kde jsou zadané klíče mapy nahrazeny jejich párovými hodnotami.</translation>
     </message>
     <message>
         <source>array_replace(array(&apos;APP&apos;, &apos;SHOULD&apos;, &apos;ROCK&apos;),map(&apos;APP&apos;,&apos;QGIS&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;))</source>
@@ -91162,15 +91199,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>end cap style for buffer. Valid values are &apos;round&apos;, &apos;flat&apos; or &apos;square&apos;</source>
-        <translation type="unfinished"/>
+        <translation>styl koncovky pro buffer. Platné hodnoty jsou „kulatý“, „plochý“ nebo „čtvercový“</translation>
     </message>
     <message>
         <source>join style for buffer. Valid values are &apos;round&apos;, &apos;bevel&apos; or &apos;miter&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>styl spojení pro buffer. Platné hodnoty jsou „kulatý“, „zkosený“ nebo „pokosový“.</translation>
     </message>
     <message>
         <source>miter distance limit, for use when the join style is set to &apos;miter&apos;</source>
-        <translation type="unfinished"/>
+        <translation>limit vzdálenosti pokosu, pro použití, když je styl spojení nastaven na „pokos“</translation>
     </message>
     <message>
         <source>buffer(@geometry, 10.5)</source>
@@ -91434,7 +91471,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a feature&apos;s unique ID, or NULL if the feature is not valid.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí jedinečné ID prvku nebo hodnotu NULL, pokud prvek není platný.</translation>
     </message>
     <message>
         <source>feature_id</source>
@@ -91498,7 +91535,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a specific feature attribute meets all constraints.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud daný atribut prvku splňuje všechna omezení.</translation>
     </message>
     <message>
         <source>is_attribute_valid</source>
@@ -91510,11 +91547,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A feature. If not set, the current feature will be used.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek. Pokud není nastaven, použije se aktuální prvek.</translation>
     </message>
     <message>
         <source>A vector layer. If not set, the current layer will be used.</source>
-        <translation type="unfinished"/>
+        <translation>Vektorová vrstva. Pokud není nastavena, použije se aktuální vrstva.</translation>
     </message>
     <message>
         <source>Set to &apos;hard&apos; or &apos;soft&apos; to narrow down to a specific constraint type. If not set, the function will return FALSE if either a hard or a soft constraint fails.</source>
@@ -91526,7 +91563,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature&apos;s value in the &quot;HECTARES&quot; field meets all constraints.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud hodnota aktuálního prvku v poli „HECTARES“ splňuje všechna omezení.</translation>
     </message>
     <message>
         <source>is_attribute_valid(&apos;HOUSES&apos;,get_feature(&apos;my_layer&apos;, &apos;FID&apos;, 10), &apos;my_layer&apos;)</source>
@@ -91538,7 +91575,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>constraints,hard,soft</source>
-        <translation type="unfinished"/>
+        <translation>omezení, tvrdá, měkká</translation>
     </message>
     <message>
         <source>Returns TRUE if a geometry is NULL or empty (without coordinates) or false otherwise. This function is like the expression &apos;@geometry IS NULL or is_empty(@geometry)&apos;</source>
@@ -91546,7 +91583,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a feature meets all field constraints.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud prvek splňuje všechna omezení polí.</translation>
     </message>
     <message>
         <source>is_feature_valid</source>
@@ -91558,7 +91595,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if all fields from the current feature meet their hard constraints.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud všechna pole z aktuálního prvku splňují svá tvrdá omezení.</translation>
     </message>
     <message>
         <source>is_feature_valid(get_feature(&apos;my_layer&apos;, &apos;FID&apos;, 10), &apos;my_layer&apos;)</source>
@@ -91630,7 +91667,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Loads a layer by source URI and provider name.</source>
-        <translation type="unfinished"/>
+        <translation>Načte vrstvu podle zdrojového URI a názvu poskytovatele.</translation>
     </message>
     <message>
         <source>load_layer</source>
@@ -91650,11 +91687,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>count of features from the c:/data/roads.shp vector layer</source>
-        <translation type="unfinished"/>
+        <translation>počet prvků z vektorové vrstvy c:/data/roads.shp</translation>
     </message>
     <message>
         <source>layer,vector,raster,mesh,point,cloud</source>
-        <translation type="unfinished"/>
+        <translation>vrstva, vektor, rastr, síť, bod, mrak</translation>
     </message>
     <message>
         <source>Removes the longest string containing only the specified characters (a space by default) from the start of string.</source>
@@ -91706,7 +91743,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>retrieves,coordinate,measure</source>
-        <translation type="unfinished"/>
+        <translation>vyhledává, koordinuje, měří</translation>
     </message>
     <message>
         <source>Returns a list of credit (usage rights) strings for the layers shown in a layout, or specific layout map item.</source>
@@ -91734,7 +91771,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Merge map elements into a HTML definition list string.</source>
-        <translation type="unfinished"/>
+        <translation>Sloučit prvky mapy do řetězce seznamu definic HTML.</translation>
     </message>
     <message>
         <source>map_to_html_dl</source>
@@ -91750,11 +91787,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>formatted,map,html</source>
-        <translation type="unfinished"/>
+        <translation>formátovaný,mapa,html</translation>
     </message>
     <message>
         <source>Merge map elements into a HTML table string.</source>
-        <translation type="unfinished"/>
+        <translation>Sloučit prvky mapy do řetězce tabulky HTML.</translation>
     </message>
     <message>
         <source>map_to_html_table</source>
@@ -91810,7 +91847,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>LineString (1 1, 3.25 1, 5.5 1, 7.75 1, 10 1)</source>
-        <translation type="unfinished"/>
+        <translation>LineString (1 1, 3.25 1, 5.5 1, 7.75 1, 10 1)</translation>
     </message>
     <message>
         <source>Takes a polygon or line layer geometry and generates a new one in which the geometries are densified by adding additional vertices on edges that have a maximum distance of the specified interval distance.</source>
@@ -91822,7 +91859,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>maximum interval distance between vertices in output geometry</source>
-        <translation type="unfinished"/>
+        <translation>maximální interval vzdálenosti mezi vrcholy ve výstupní geometrii</translation>
     </message>
     <message>
         <source>geom_to_wkt(densify_by_distance(geom_from_wkt(&apos;LINESTRING(1 1, 10 1)&apos;), 4))</source>
@@ -91830,7 +91867,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>LineString (1 1, 4 1, 7 1, 10 1)</source>
-        <translation type="unfinished"/>
+        <translation>LineString (1 1, 4 1, 7 1, 10 1)</translation>
     </message>
     <message>
         <source>part</source>
@@ -91878,7 +91915,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bound,contained,found,include,range,within</source>
-        <translation type="unfinished"/>
+        <translation>vázaný, obsažený, nalezený, zahrnout, rozsah, v rámci</translation>
     </message>
     <message>
         <source>Loading field values from online sources isn&apos;t supported before the layer is actually inserted, ie. when building queries.</source>
@@ -91902,11 +91939,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bound,contained,exclude,found,range</source>
-        <translation type="unfinished"/>
+        <translation>vázaný, obsažený, vyloučený, nalezený, rozsah</translation>
     </message>
     <message>
         <source>Returns a possibly concave polygon that contains all the points in the geometry</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí potenciálně konkávní polygon, který obsahuje všechny body v geometrii</translation>
     </message>
     <message>
         <source>concave_hull</source>
@@ -91918,23 +91955,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>geom_to_wkt(concave_hull(geom_from_wkt(&apos;MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))&apos;), 0.99))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(concave_hull(geom_from_wkt(&apos;MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,130 62,122 40,156 32,162 76,172 88),(132 178,134 148,128 136,96 128,132 108,150 130,170 142,174 110,156 96,158 90,158 88),(22 64,66 28,94 38,94 68,114 76,112 30,132 10,168 18,178 34,186 52,184 74,190 100,190 122,182 148,178 170,176 184,156 164,146 178,132 186,92 182,56 158,36 150,62 150,76 128,88 118))&apos;), 0.99))</translation>
     </message>
     <message>
         <source>&apos;Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 112 30, 66 28, 22 64, 30 112))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((30 112, 36 150, 92 182, 132 186, 176 184, 190 122, 190 100, 186 52, 178 34, 168 18, 132 10, 112 30, 66 28, 22 64, 30 112))&apos;</translation>
     </message>
     <message>
         <source>hull,concave,represents,encloses,set</source>
-        <translation type="unfinished"/>
+        <translation>trup, konkávní, představuje, uzavírá, množinu</translation>
     </message>
     <message>
         <source>Returns the minimum distance (based on spatial reference) between two geometries in projected units.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí minimální vzdálenost (dle prostorové reference) mezi dvěma geometriemi v jednotkách projekce.</translation>
     </message>
     <message>
         <source>Retrieves exif tag values from an image file.</source>
-        <translation type="unfinished"/>
+        <translation>Načte hodnoty tagu EXIF ​​z obrazového souboru.</translation>
     </message>
     <message>
         <source>exif</source>
@@ -91954,7 +91991,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates a point geometry from the exif geotags of an image file.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří bodovou geometrii z geotagů EXIF ​​obrazového souboru.</translation>
     </message>
     <message>
         <source>exif_geotag</source>
@@ -91986,7 +92023,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((-1 -1, 4 0, 4 2, 0 2, -1 -1))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((-1 -1, 4 0, 4 2, 0 2, -1 -1))&apos;</translation>
     </message>
     <message>
         <source>Forces a geometry to respect the convention where exterior rings are clockwise, interior rings are counter-clockwise.</source>
@@ -92010,11 +92047,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>format(&apos;This is %2&apos;,&apos;a bit unexpected but 2 is lowest number in string&apos;,&apos;normal&apos;)</source>
-        <translation type="unfinished"/>
+        <translation>format(&apos;Toto je %2&apos;,&apos;trochu neočekávané, ale 2 je nejnižší číslo v řetězci&apos;,&apos;normální&apos;)</translation>
     </message>
     <message>
         <source>&apos;This is a bit unexpected but 2 is lowest number in string&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;To je trochu nečekané, ale 2 je nejnižší číslo v řetězci&apos;</translation>
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, &lt;a href=&apos;https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes&apos;&gt;ISO 639 language code&lt;/a&gt;) used to format the date into a custom string. By default the current QGIS user locale is used.</source>
@@ -92022,7 +92059,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Tuesday&apos;, if the current locale is an English variant</source>
-        <translation type="unfinished"/>
+        <translation>„Tuesday“, pokud je aktuální národní prostředí anglickou variantou</translation>
     </message>
     <message>
         <source>Returns a number formatted with the locale separator for thousands. By default the current QGIS user locale is used. Also truncates the decimal places to the number of supplied places.</source>
@@ -92034,11 +92071,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;10,000,000.33&apos; if e.g. the current locale is an English variant</source>
-        <translation type="unfinished"/>
+        <translation>&apos;10,000,000.33&apos;, pokud je např. aktuální národní prostředí anglickou variantou</translation>
     </message>
     <message>
         <source>Splits a geometry into simpler geometries in an array.</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělí geometrii na jednodušší geometrie v poli.</translation>
     </message>
     <message>
         <source>geometries_to_array</source>
@@ -92054,7 +92091,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of a polygon and a line geometries</source>
-        <translation type="unfinished"/>
+        <translation>pole polygonu a liniové geometrie</translation>
     </message>
     <message>
         <source>geom_to_wkt(geometries_to_array(geom_from_wkt(&apos;GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))&apos;))[0])</source>
@@ -92062,7 +92099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((5 8, 4 1, 3 2, 5 8))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((5 8, 4 1, 3 2, 5 8))&apos;</translation>
     </message>
     <message>
         <source>geometries_to_array(geom_from_wkt(&apos;MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))&apos;))</source>
@@ -92074,7 +92111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>split,convert,separate,collection,multi,part</source>
-        <translation type="unfinished"/>
+        <translation>rozdělit, převést, oddělit, kolekce, více, část</translation>
     </message>
     <message>
         <source>geom_to_wkt( geometry( get_feature_by_id( &apos;streets&apos;, 1 ) ) )</source>
@@ -92082,7 +92119,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the geometry in WKT of the feature with the id 1 on the layer &quot;streets&quot;, e.g. &apos;POINT(6 50)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>geometrie prvku s ID 1 ve vrstvě „ulice“ ve WKT, např. „POINT(6 50)“</translation>
     </message>
     <message>
         <source>Returns a specific geometry from a geometry collection, or NULL if the input geometry is not a collection. Also returns a part from a multipart geometry.</source>
@@ -92090,7 +92127,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string value describing the type of a geometry (Point, Line or Polygon)</source>
-        <translation type="unfinished"/>
+        <translation>Vrací řetězcovou hodnotu popisující typ geometrie (bod, úsečka nebo mnohoúhelník)</translation>
     </message>
     <message>
         <source>geometry_type</source>
@@ -92130,7 +92167,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Along with the layer ID, a single column and value are specified.</source>
-        <translation type="unfinished"/>
+        <translation>Spolu s vrstvou ID je zadán jeden sloupec a hodnota.</translation>
     </message>
     <message>
         <source>attribute name to use for the match</source>
@@ -92142,7 +92179,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map containing the column and value pairs to use</source>
-        <translation type="unfinished"/>
+        <translation>Mapa obsahující páry sloupců a hodnot, které se mají použít</translation>
     </message>
     <message>
         <source>get_feature(&apos;streets&apos;,map(&apos;name&apos;,&apos;main st&apos;,&apos;lane_num&apos;,&apos;4&apos;))</source>
@@ -92194,7 +92231,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the m (measure) value of a point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí hodnotu m (míru) bodové geometrie.</translation>
     </message>
     <message>
         <source>Returns the angle of the long axis (clockwise, in degrees from North) of the oriented minimal bounding rectangle, which completely covers the geometry.</source>
@@ -92222,7 +92259,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((3 2, 5 8, 4 1, 3 2))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((3 2, 5 8, 4 1, 3 2))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_valid(geom_from_wkt(&apos;POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))&apos;), &apos;linework&apos;))</source>
@@ -92230,7 +92267,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_valid(geom_from_wkt(&apos;POLYGON((3 2, 4 1, 5 8))&apos;), method:=&apos;linework&apos;))</source>
@@ -92238,7 +92275,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((3 2, 4 1, 5 8, 3 2))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((3 2, 4 1, 5 8, 3 2))&apos;</translation>
     </message>
     <message>
         <source>make_valid(geom_from_wkt(&apos;LINESTRING(0 0)&apos;))</source>
@@ -92250,7 +92287,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>rules,valid,ogc,according,formed,repair,fix</source>
-        <translation type="unfinished"/>
+        <translation>pravidla, platná, ogc, dle, vytvořená, oprava</translation>
     </message>
     <message>
         <source>map(&apos;1&apos;,&apos;one&apos;,&apos;2&apos;, &apos;two&apos;)[&apos;1&apos;]</source>
@@ -92266,7 +92303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Set to true to include layer names before their credit strings</source>
-        <translation type="unfinished"/>
+        <translation>Nastavením na hodnotu true se názvy vrstev zobrazí před jejich titulky</translation>
     </message>
     <message>
         <source>String to insert between layer names and their credit strings, if include_layer_names is true</source>
@@ -92290,11 +92327,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if the given key exists in the map.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud daný klíč v mapě existuje.</translation>
     </message>
     <message>
         <source>Returns a map with all keys prefixed by a given string.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu se všemi klíči, které mají předponu daného řetězce.</translation>
     </message>
     <message>
         <source>map_prefix_keys</source>
@@ -92310,7 +92347,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the mime type of the binary data.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mime typ binárních dat.</translation>
     </message>
     <message>
         <source>mime_type</source>
@@ -92438,11 +92475,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The value that should either be used or substituted with NULL.</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota, která by měla být buď použita, nebo nahrazena hodnotou NULL.</translation>
     </message>
     <message>
         <source>The control value that will trigger the NULL substitution.</source>
-        <translation type="unfinished"/>
+        <translation>Kontrolní hodnota, která spustí substituci NULL.</translation>
     </message>
     <message>
         <source>nullif(&apos;(none)&apos;, &apos;(none)&apos;)</source>
@@ -92462,7 +92499,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>NULL, if name is an empty string (or already NULL), the name in any other case.</source>
-        <translation type="unfinished"/>
+        <translation>NULL, pokud je název prázdný řetězec (nebo je již NULL), název v ostatních případech.</translation>
     </message>
     <message>
         <source>Returns the number of geometries in a geometry collection, or the number of parts in a multi-part geometry. The function returns NULL if the input geometry is not a collection.</source>
@@ -92730,7 +92767,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Index operator. Returns an element from an array or map value.</source>
-        <translation type="unfinished"/>
+        <translation>Indexový operátor. Vrací prvek z pole nebo hodnoty mapy.</translation>
     </message>
     <message>
         <source>[]</source>
@@ -92898,7 +92935,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A regular expression. Slashes must be escaped, eg \\d.</source>
-        <translation type="unfinished"/>
+        <translation>Regulární výraz. Lomítka musí být escapována, např. \\d.</translation>
     </message>
     <message>
         <source>&apos;hello&apos; ~ &apos;ll&apos;</source>
@@ -92938,7 +92975,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;MultiPolygon (((1 1, 9 1, 9 9, 1 9, 1 1)),((1 1, 5 1, 5 5, 1 5, 1 1)))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;MultiPolygon (((1 1, 9 1, 9 9, 1 9, 1 1)),((1 1, 5 1, 5 5, 1 5, 1 1)))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(order_parts(geom_from_wkt(&apos;LineString(1 2, 3 2, 4 3)&apos;), &apos;1&apos;, True))</source>
@@ -92946,7 +92983,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;LineString(1 2, 3 2, 4 3)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString(1 2, 3 2, 4 3)&apos;</translation>
     </message>
     <message>
         <source>Returns a geometry which represents the minimal oriented bounding box of an input geometry.</source>
@@ -92962,7 +92999,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;Polygon ((3 2, 3 4, 1 4, 1 2, 3 2))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((3 2, 3 4, 1 4, 1 2, 3 2))&apos;</translation>
     </message>
     <message>
         <source>overlaps</source>
@@ -93018,7 +93055,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions contained in the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti obsažené v aktuálním prvku</translation>
     </message>
     <message>
         <source>array_to_string(overlay_contains(&apos;regions&apos;, name))</source>
@@ -93062,7 +93099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions crossed by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti, kterými prochází aktuální prvek</translation>
     </message>
     <message>
         <source>array_to_string(overlay_crosses(&apos;regions&apos;, name))</source>
@@ -93106,7 +93143,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions spatially disjoint from the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti prostorově oddělené od aktuálního prvku</translation>
     </message>
     <message>
         <source>array_to_string(overlay_disjoint(&apos;regions&apos;, name))</source>
@@ -93202,7 +93239,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions intersected by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti protínané aktuálním prvkem</translation>
     </message>
     <message>
         <source>array_to_string(overlay_intersects(&apos;regions&apos;, name))</source>
@@ -93234,11 +93271,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of maps containing &apos;id&apos;, &apos;result&apos;, &apos;overlap&apos; and &apos;radius&apos;</source>
-        <translation type="unfinished"/>
+        <translation>pole map obsahující &apos;id&apos;, &apos;result&apos;, &apos;overlap&apos; a &apos;radius&apos;</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT) ordered by the overlap value in descending order</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) seřazených sestupně podle hodnoty překrytí</translation>
     </message>
     <message>
         <source>Returns whether the current feature has feature(s) from a target layer within a given distance, or an array of expression-based results for the features in the target layer within a distance from the current feature.&lt;br&gt;&lt;br&gt;Note: This function can be slow and consume a lot of memory for large layers.</source>
@@ -93278,7 +93315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the name of the closest airport to the current feature, as an array</source>
-        <translation type="unfinished"/>
+        <translation>název nejbližšího letiště k aktuálnímu objektu, jako pole</translation>
     </message>
     <message>
         <source>array_to_string(overlay_nearest(&apos;airports&apos;, name))</source>
@@ -93286,7 +93323,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the name of the closest airport to the current feature, as a string</source>
-        <translation type="unfinished"/>
+        <translation>název nejbližšího letiště k aktuálnímu objektu, jako řetězec</translation>
     </message>
     <message>
         <source>overlay_nearest(layer:=&apos;airports&apos;, expression:= name, max_distance:= 5000)</source>
@@ -93302,7 +93339,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for up to the three closest civilian airports ordered by distance</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů až tří nejbližších civilních letišť seřazených podle vzdálenosti</translation>
     </message>
     <message>
         <source>overlay_nearest(layer:=&apos;airports&apos;, expression:=&quot;name&quot;, limit:= -1, max_distance:= 5000)</source>
@@ -93334,7 +93371,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions touched by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti, kterých se aktuální prvek dotýká</translation>
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions touched by the current feature</source>
@@ -93350,7 +93387,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions touched by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti dotčené aktuálním prvkem</translation>
     </message>
     <message>
         <source>Returns whether the current feature is spatially within at least one feature from a target layer, or an array of expression-based results for the features in the target layer that contain the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Within&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Within.html&apos;&gt;ST_Within&lt;/a&gt; function.</source>
@@ -93374,7 +93411,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for the regions containing the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů pro oblasti obsahující aktuální prvek</translation>
     </message>
     <message>
         <source>array_to_string(overlay_within(&apos;regions&apos;, name))</source>
@@ -93394,7 +93431,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions containing the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti obsahující aktuální prvek</translation>
     </message>
     <message>
         <source>Returns the value of a processing algorithm input parameter.</source>
@@ -93486,7 +93523,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>maximum distance between the returned point and the true pole location</source>
-        <translation type="unfinished"/>
+        <translation>maximální vzdálenost mezi vráceným bodem a skutečnou polohou pólu</translation>
     </message>
     <message>
         <source>&apos;Point(1.546875 2.546875)&apos;</source>
@@ -93498,7 +93535,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>azimuth in radians clockwise, where 0 corresponds to north</source>
-        <translation type="unfinished"/>
+        <translation>azimut v radiánech po směru hodinových ručiček, kde 0 odpovídá severu</translation>
     </message>
     <message>
         <source>angle of inclination in radians</source>
@@ -93650,7 +93687,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the aggregate range of values (maximum - minimum) from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovaný rozsah hodnot (maximum - minimum) z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>range</source>
@@ -93706,7 +93743,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tests the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje reprezentaci vztahu mezi dvěma geometriemi pomocí modelu DE-9IM (Dimensional Extended 9 Intersection Model).</translation>
     </message>
     <message>
         <source>Relationship variant</source>
@@ -93714,7 +93751,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí reprezentaci vztahu mezi dvěma geometriemi pomocí modelu DE-9IM (Dimensional Extended 9 Intersection Model).</translation>
     </message>
     <message>
         <source>relate( geom_from_wkt( &apos;LINESTRING(40 40,120 120)&apos; ), geom_from_wkt( &apos;LINESTRING(40 40,60 120)&apos; ) )</source>
@@ -93742,7 +93779,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an aggregate value calculated using all matching child features from a layer relation.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou hodnotu vypočítanou s použitím všech odpovídajících podřízených prvků z relace vrstev.</translation>
     </message>
     <message>
         <source>relation_aggregate</source>
@@ -93894,7 +93931,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE when conditions a and b are true.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE, pokud jsou splněny podmínky a a b.</translation>
     </message>
     <message>
         <source>[ &apos;QGIS&apos;, &apos;rocks&apos; ]</source>
@@ -93938,7 +93975,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The representation of the attributes for the current feature.</source>
-        <translation type="unfinished"/>
+        <translation>Reprezentace atributů pro aktuální prvek.</translation>
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function will return the representation of the attributes of the specified feature from the current layer.</source>
@@ -93950,7 +93987,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The representation of the attributes for the specified feature from the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Reprezentace atributů pro zadaný prvek z aktuální vrstvy.</translation>
     </message>
     <message>
         <source>If called with a &apos;layer&apos; and a &apos;feature&apos; parameter, the function will return the representation of the attributes of the specified feature from the specified layer.</source>
@@ -93966,7 +94003,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The representation of the attributes for the specified feature from the specified layer.</source>
-        <translation type="unfinished"/>
+        <translation>Reprezentace atributů pro zadaný prvek ze zadané vrstvy.</translation>
     </message>
     <message>
         <source>apply rotation per part. If true, then rotation will apply around the center of each part&apos;s bounding box when the input geometry is multipart and an explicit rotation center point is not specified.</source>
@@ -94018,15 +94055,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scaling center point. If not specified, the center of the geometry&apos;s bounding box is used.</source>
-        <translation type="unfinished"/>
+        <translation>středový bod změny měřítka. Pokud není zadán, použije se střed ohraničujícího rámečku geometrie.</translation>
     </message>
     <message>
         <source>geometry scaled twice horizontally and halved vertically, around the (4, 5) point</source>
-        <translation type="unfinished"/>
+        <translation>geometrie dvakrát horizontálně zmenšená a vertikálně rozdělená na polovinu, kolem bodu (4, 5)</translation>
     </message>
     <message>
         <source>geometry twice horizontally and halved vertically, around the center of its bounding box</source>
-        <translation type="unfinished"/>
+        <translation>geometrie dvakrát horizontálně a vertikálně rozdělená na polovinu, kolem středu ohraničujícího rámečku</translation>
     </message>
     <message>
         <source>easing in, using an exponent of 2</source>
@@ -94142,7 +94179,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(shared_paths(geom_from_wkt(&apos;LINESTRING(76 175,90 161,126 125,126 156.25,151 100)&apos;),geom_from_wkt(&apos;MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))&apos;)))</source>
@@ -94150,11 +94187,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&apos;GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))&apos;</translation>
     </message>
     <message>
         <source>linestrings,paths,overlapping,shared,linestring,multilinestring</source>
-        <translation type="unfinished"/>
+        <translation>řetězce čar, cesty, překrývající se, sdílené, řetězec čar, víceřádkový řetězec</translation>
     </message>
     <message>
         <source>shortest_line</source>
@@ -94266,11 +94303,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name of the field that contains the current value</source>
-        <translation type="unfinished"/>
+        <translation>Název pole, které obsahuje aktuální hodnotu</translation>
     </message>
     <message>
         <source>Name the field that contains a unique identifier for this sequence. Must have a UNIQUE index.</source>
-        <translation type="unfinished"/>
+        <translation>Název pole, které obsahuje jedinečný identifikátor pro tuto sekvenci. Musí mít JEDINEČNÝ index.</translation>
     </message>
     <message>
         <source>Name of the sequence to use.</source>
@@ -94302,7 +94339,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Constructs square/rectangular waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří čtvercové/obdélníkové vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>square_wave</source>
@@ -94326,11 +94363,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Square waves with wavelength 3 and amplitude 1 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Čtvercové vlny s vlnovou délkou 3 a amplitudou 1 podél linestringu</translation>
     </message>
     <message>
         <source>Constructs randomized square/rectangular waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Konstruuje náhodné čtvercové/obdélníkové vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>square_wave_randomized</source>
@@ -94378,7 +94415,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the aggregate standard deviation value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovanou hodnotu směrodatné odchylky z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>stdev</source>
@@ -94514,7 +94551,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the aggregate summed value from a field or expression.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí agregovaný součet hodnot z pole nebo výrazu.</translation>
     </message>
     <message>
         <source>sum</source>
@@ -94530,7 +94567,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a geometry that represents the portions of two geometries that do not intersect.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii, která představuje části dvou geometrií, které se neprotínají.</translation>
     </message>
     <message>
         <source>sym_difference</source>
@@ -94610,7 +94647,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Encodes a binary value into a string, using the Base64 encoding.</source>
-        <translation type="unfinished"/>
+        <translation>Zakóduje binární hodnotu do řetězce pomocí kódování Base64.</translation>
     </message>
     <message>
         <source>to_base64</source>
@@ -94658,7 +94695,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>format used to convert the string into a datetime</source>
-        <translation type="unfinished"/>
+        <translation>formát použitý k převodu řetězce na datum a čas</translation>
     </message>
     <message>
         <source>to_datetime(&apos;2012-05-04 12:50:00&apos;)</source>
@@ -94758,7 +94795,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Converts a degree, minute, second coordinate to its decimal equivalent.</source>
-        <translation type="unfinished"/>
+        <translation>Převede souřadnici stupňů, minut a sekund na jejich desítkový ekvivalent.</translation>
     </message>
     <message>
         <source>to_decimal</source>
@@ -94778,7 +94815,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Designates the formatting type. Acceptable values are NULL (default), &apos;aligned&apos; or &apos;suffix&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Určuje typ formátování. Přijatelné hodnoty jsou NULL (výchozí), „zarovnáno“ nebo „přípona“.</translation>
     </message>
     <message>
         <source>to_dm(6.1545681, &apos;x&apos;, 3)</source>
@@ -94854,7 +94891,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create a JSON formatted string from a map, array or other value.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit řetězec ve formátu JSON z mapy, pole nebo jiné hodnoty.</translation>
     </message>
     <message>
         <source>to_json</source>
@@ -94902,7 +94939,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>format used to convert the string into a time</source>
-        <translation type="unfinished"/>
+        <translation>formát použitý k převodu řetězce na čas</translation>
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a time</source>
@@ -94942,7 +94979,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the geometry transformed from a source CRS to a destination CRS.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii transformovanou ze zdrojového SRS do cílového SRS.</translation>
     </message>
     <message>
         <source>transform</source>
@@ -94994,7 +95031,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the result which will be returned if the expression returns an error.</source>
-        <translation type="unfinished"/>
+        <translation>výsledek, který bude vrácen, pokud výraz vrátí chybu.</translation>
     </message>
     <message>
         <source>try( to_int( &apos;1&apos; ), 0 )</source>
@@ -95010,7 +95047,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a geometry that represents the point set union of the geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii, která představuje sjednocení množiny bodů geometrií.</translation>
     </message>
     <message>
         <source>union</source>
@@ -95078,7 +95115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a wedge shaped buffer originating from a point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí klínovitý buffer pocházející z bodové geometrie.</translation>
     </message>
     <message>
         <source>wedge_buffer</source>
@@ -95086,11 +95123,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>center point (origin) of buffer. Must be a point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>středový bod (počátek) bufferu. Musí se jednat o bodovou geometrii.</translation>
     </message>
     <message>
         <source>angle (in degrees) for the middle of the wedge to point.</source>
-        <translation type="unfinished"/>
+        <translation>úhel (ve stupních) pro střed klínu.</translation>
     </message>
     <message>
         <source>buffer width (in degrees). Note that the wedge will extend to half of the angular width either side of the azimuth direction.</source>
@@ -95186,11 +95223,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a specified layer is visible.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí hodnotu TRUE pokud daná vrstva je viditelná.</translation>
     </message>
     <message>
         <source>Returns TRUE if the geometry is of Multi type.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE, pokud je geometrie typu Multi.</translation>
     </message>
     <message>
         <source>Returns TRUE if a feature is selected. Can be used with zero, one or two arguments, see below for details.</source>
@@ -95202,7 +95239,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature in the current layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrán aktuální prvek v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function returns TRUE if the specified feature from the current layer is selected.</source>
@@ -95210,15 +95247,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current atlas feature is selected.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrán aktuální prvek atlasu.</translation>
     </message>
     <message>
         <source>TRUE if the unique named &quot;Main St.&quot; feature on the active &quot;streets&quot; layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrán jedinečný prvek s názvem „Hlavní ulice“ na aktivní vrstvě „ulice“.</translation>
     </message>
     <message>
         <source>TRUE if the feature with the id 1 on the active &quot;streets&quot; layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrán prvek s ID 1 v aktivní vrstvě „ulice“.</translation>
     </message>
     <message>
         <source>If the function is called with both a layer and a feature, it will return TRUE if the specified feature from the specified layer is selected.</source>
@@ -95230,7 +95267,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the feature with the id 1 on the &quot;streets&quot; layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrán prvek s ID 1 ve vrstvě „ulice“.</translation>
     </message>
     <message>
         <source>Returns TRUE if a geometry is valid; if it is well-formed in 2D according to the OGC rules.</source>
@@ -95242,23 +95279,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature spatially contains a region</source>
-        <translation type="unfinished"/>
+        <translation>TRUE, pokud aktuální prvek prostorově obsahuje oblast</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially contains a region with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud aktuální prvek prostorově obsahuje oblast s populací větší než 10 000</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially crosses a region</source>
-        <translation type="unfinished"/>
+        <translation>TRUE, pokud aktuální prvek prostorově přechází přes oblast</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially crosses a region with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud aktuální prvek prostorově protíná oblast s populací větší než 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature is spatially disjoint from all the regions</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je aktuální prvek prostorově oddělený od všech oblastí</translation>
     </message>
     <message>
         <source>TRUE if the current feature is spatially disjoint from all the regions with a population greater than 10000</source>
@@ -95266,11 +95303,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region</source>
-        <translation type="unfinished"/>
+        <translation>TRUE, pokud aktuální prvek prostorově protíná oblast</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud aktuální prvek prostorově protíná oblast s populací větší než 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54</source>
@@ -95282,7 +95319,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the &quot;airports&quot; layer has at least one feature</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud vrstva „letiště“ obsahuje alespoň jeden prvek</translation>
     </message>
     <message>
         <source>TRUE if there is an airport within a distance of 5000 map units from the current feature</source>
@@ -95290,15 +95327,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature spatially touches a region</source>
-        <translation type="unfinished"/>
+        <translation>TRUE, pokud se aktuální prvek prostorově dotýká oblasti</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially touches a region with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud se aktuální prvek prostorově dotýká oblasti s populací větší než 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature is spatially within a region</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud se aktuální prvek nachází prostorově v oblasti</translation>
     </message>
     <message>
         <source>TRUE if the current feature is spatially within a region with a population greater than 10000</source>
@@ -95310,7 +95347,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Constructs triangular waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří trojúhellníkové vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>triangular_wave</source>
@@ -95334,11 +95371,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Triangular waves with wavelength 3 and amplitude 1 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Trojúhelníkové vlny s vlnovou délkou 3 a amplitudou 1 podél linestringu</translation>
     </message>
     <message>
         <source>Constructs randomized triangular waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Konstruuje náhodné trojúhelníkové vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>triangular_wave_randomized</source>
@@ -95378,11 +95415,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Generates a Universally Unique Identifier (UUID) for each row using the Qt &lt;a href=&apos;https://doc.qt.io/qt-5/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt; method.</source>
-        <translation type="unfinished"/>
+        <translation>Generuje univerzálně jedinečný identifikátor (UUID) pro každý řádek pomocí metody Qt &lt;a href=&apos;https://doc.qt.io/qt-5/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>The format, as the UUID will be formatted. &apos;WithBraces&apos;, &apos;WithoutBraces&apos; or &apos;Id128&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Formát, ve kterém bude UUID formátováno. „Se složenými závorkami“, „Bez složených závorek“ nebo „Id128“.</translation>
     </message>
     <message>
         <source>uuid(&apos;WithoutBraces&apos;)</source>
@@ -95402,7 +95439,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Constructs rounded (sine-like) waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Konstruuje zaoblené (sinusové) vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>wave</source>
@@ -95426,11 +95463,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sine-like waves with wavelength 3 and amplitude 1 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Sinusové vlny s vlnovou délkou 3 a amplitudou 1 podél linestringu</translation>
     </message>
     <message>
         <source>Constructs randomized curved (sine-like) waves along the boundary of a geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Konstruuje náhodné zakřivené (sinusové) vlny podél hranice geometrie.</translation>
     </message>
     <message>
         <source>wave_randomized</source>
@@ -95644,7 +95681,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderdialog.cpp" line="99"/>
         <source>The changes to the expression will be discarded. Would you like to continue?</source>
-        <translation type="unfinished"/>
+        <translation>Změny výrazu budou zahozeny. Chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderdialog.cpp" line="100"/>
@@ -96163,7 +96200,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/gui/qgsexpressionpreviewwidget.cpp" line="147"/>
         <source>No feature was found on this layer to evaluate the expression.</source>
-        <translation type="unfinished"/>
+        <translation>Na této vrstvě nebyl nalezen žádný prvek pro vyhodnocení výrazu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionpreviewwidget.cpp" line="161"/>
@@ -96761,7 +96798,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
         <source>Url used to store file selected from the attachment widget.</source>
-        <translation type="unfinished"/>
+        <translation>URL adresa použitá k uložení souboru vybraného z widgetu přílohy.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
@@ -96784,7 +96821,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/gui/qgsexternalresourcewidget.cpp" line="441"/>
         <source>Error while fetching external resource &apos;%1&apos; : %2</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při načítání externího zdroje &apos;%1&apos;: %2</translation>
     </message>
 </context>
 <context>
@@ -96815,7 +96852,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/gui/qgsexternalstoragefilewidget.cpp" line="252"/>
         <source>Storing file &apos;%1&apos; to url &apos;%2&apos; has failed : %3</source>
-        <translation type="unfinished"/>
+        <translation>Ukládání souboru &apos;%1&apos; na adresu URL &apos;%2&apos; selhalo : %3</translation>
     </message>
 </context>
 <context>
@@ -97721,7 +97758,8 @@ This field is part of a primary key, its removal may make the table unusable by 
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1560"/>
         <source>
 This field is a geometry column, its removal may make the table unusable by QGIS!</source>
-        <translation type="unfinished"/>
+        <translation>
+Toto pole je geometrický sloupec, jeho odstranění může způsobit, že tabulka nebude v QGIS použitelná!</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1562"/>
@@ -97966,7 +98004,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="117"/>
         <source>DATA parameter is not used when it&apos;s a GET request.</source>
-        <translation type="unfinished"/>
+        <translation>Parametr DATA se nepoužívá, pokud se jedná o požadavek GET.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfiledownloader.cpp" line="139"/>
@@ -98223,7 +98261,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsfirstrundialog.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;You are running a dev version. We would love your feedback and testing!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Používáte vývojářskou verzi. Uvítáme vaši zpětnou vazbu a informace o testování!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -98347,7 +98385,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="1935"/>
         <source>Could not write font data to a temporary file</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapsat data písma do dočasného souboru</translation>
     </message>
     <message>
         <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="1955"/>
@@ -99021,7 +99059,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3645"/>
         <source>GDAL error saving raster attribute table, raster attribute table could not be saved.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba GDAL při ukládání tabulky atributů rastru, tabulku atributů rastru se nepodařilo uložit.</translation>
     </message>
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3774"/>
@@ -99273,7 +99311,7 @@ Check file and directory permissions on
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="468"/>
         <source>You cannot import a GeoPackage file over another GeoPackage file!</source>
-        <translation type="unfinished"/>
+        <translation>Soubor GeoPackage nelze importovat přes jiný soubor GeoPackage!</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="497"/>
@@ -100189,7 +100227,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/plugins/geometry_checker/qgsgeometrycheckersetuptab.ui"/>
         <source>Multipart objects must consist of more than one part</source>
-        <translation type="unfinished"/>
+        <translation>Vícedílné objekty se musí skládat z více než jedné části</translation>
     </message>
 </context>
 <context>
@@ -100394,12 +100432,12 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="296"/>
         <source>Could not resolve target layer %1 to add feature</source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se rozpoznat cílovou vrstvu %1 pro přidání prvku</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="452"/>
         <source>Add gap area to neighboring polygon with longest shared edge</source>
-        <translation type="unfinished"/>
+        <translation>Přidat oblast mezery k sousednímu polygonu s nejdelší sdílenou hranou</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="453"/>
@@ -100420,7 +100458,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="463"/>
         <source>Add the gap area to the neighbouring polygon with the longest shared edge.</source>
-        <translation type="unfinished"/>
+        <translation>Přidat oblast mezery k sousednímu polygonu s nejdelší sdílenou hranou.</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="464"/>
@@ -100440,7 +100478,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="465"/>
         <source>Add the gap area to the neighbouring polygon with the largest area.</source>
-        <translation type="unfinished"/>
+        <translation>Přidat plochu mezery k sousednímu polygonu s největší plochou.</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
@@ -100450,12 +100488,12 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="469"/>
         <source>Create a new feature from the gap geometry on the allowed exceptions layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit nový prvek z geometrie mezery na vrstvě povolených výjimek.</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="471"/>
         <source>Do not perform any action and mark this error as fixed.</source>
-        <translation type="unfinished"/>
+        <translation>Neprovádějte žádnou akci a označte tuto chybu jako opravenou.</translation>
     </message>
     <message>
         <location filename="../src/analysis/vector/geometry_checker/qgsgeometrygapcheck.cpp" line="494"/>
@@ -101421,7 +101459,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="342"/>
         <source>%1 is not a supported raster data source.%2</source>
-        <translation type="unfinished"/>
+        <translation>%1 není podporovaný zdroj rastrových dat.%2</translation>
     </message>
     <message>
         <location filename="../src/app/georeferencer/qgsgeorefmainwindow.cpp" line="381"/>
@@ -102006,12 +102044,12 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="46"/>
         <source>the GPX filename when uploading or the port when downloading</source>
-        <translation type="unfinished"/>
+        <translation>název souboru GPX při nahrávání nebo port při stahování</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="46"/>
         <source>the port when uploading or the GPX filename when downloading</source>
-        <translation type="unfinished"/>
+        <translation>port při nahrávání nebo název souboru GPX při stahování</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="46"/>
@@ -102481,7 +102519,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Difference between WGS-84 earth ellipsoid and mean sea level.  -=geoid is below WGS-84 ellipsoid&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rozdíl mezi zemským elipsoidem WGS-84 a střední hladinou moře. -=geoid je pod elipsoidem WGS-84.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
@@ -102521,7 +102559,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Difference between the WGS-84 Earth ellipsoid and mean-sea-level</source>
-        <translation type="unfinished"/>
+        <translation>Rozdíl mezi elipsoidem Země WGS-84 a střední hladinou moře</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
@@ -102536,12 +102574,12 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Direct distance from first vertex in GPS track to last vertex</source>
-        <translation type="unfinished"/>
+        <translation>Přímá vzdálenost od prvního vrcholu v GPS trase k poslednímu vrcholu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Number of satellites used in the position fix</source>
-        <translation type="unfinished"/>
+        <translation>Počet satelitů použitých při korekci pozice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
@@ -102551,12 +102589,12 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Position fix dimensions: 2D, 3D or No fix</source>
-        <translation type="unfinished"/>
+        <translation>Rozměry korekce pozice: 2D, 3D nebo Bez korekce</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Antenna altitude with respect to geoid (mean sea level)</source>
-        <translation type="unfinished"/>
+        <translation>Nadmořská výška antény s ohledem na geoid (průměrná hladina moře)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
@@ -102571,7 +102609,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui"/>
         <source>Antenna altitude with respect to the WGS-84 Earth ellipsoid</source>
-        <translation type="unfinished"/>
+        <translation>Nadmořská výška antény vzhledem k zemskému elipsoidu WGS-84</translation>
     </message>
 </context>
 <context>
@@ -102579,12 +102617,12 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/core/gps/qgsgpslogger.cpp" line="119"/>
         <source>Creating a line feature requires a track with at least two vertices.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoření liniového prvku vyžaduje stopu s alespoň dvěma vrcholy.</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qgsgpslogger.cpp" line="124"/>
         <source>Creating a polygon feature requires a track with at least three vertices.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoření polygonového prvku vyžaduje stopu s alespoň třemi vrcholy.</translation>
     </message>
 </context>
 <context>
@@ -102863,7 +102901,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
         <source>Apply leap seconds correction by adding the seconds to GPS timestamp</source>
-        <translation type="unfinished"/>
+        <translation>Použít opravu skokových sekund přidáním sekund do časové značky GPS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
@@ -102925,7 +102963,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="106"/>
         <source>Add vertex to GPS track using current GPS location</source>
-        <translation type="unfinished"/>
+        <translation>Přidat vrchol do GPS trasy s využitím aktuální GPS polohy</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="112"/>
@@ -102980,7 +103018,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="341"/>
         <source>GPS digitized features will be stored in %1</source>
-        <translation type="unfinished"/>
+        <translation>Digitalizované funkce GPS budou uloženy v %1</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="354"/>
@@ -102996,7 +103034,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="365"/>
         <source>Create a new point feature at the current GPS location</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit nový bodový prvek v aktuální poloze GPS</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="370"/>
@@ -103006,7 +103044,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="371"/>
         <source>Create a new line feature using the current GPS track</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit nový liniový prvek s použitím aktuální GPS trasy</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="376"/>
@@ -103016,7 +103054,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="377"/>
         <source>Create a new polygon feature using the current GPS track</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit nový polygonový prvek s použitím aktuální GPS trasy</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="400"/>
@@ -103026,7 +103064,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="401"/>
         <source>Always add GPS digitized features to the active layer</source>
-        <translation type="unfinished"/>
+        <translation>Vždy přidávat digitalizované prvky GPS do aktivní vrstvy</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpstoolbar.cpp" line="448"/>
@@ -103096,7 +103134,8 @@ zelená = dobrá nebo 3D korekce
         <location filename="../src/providers/gpx/qgsgpxsourceselect.cpp" line="56"/>
         <source>Unable to read the selected file.
 Please select a valid file.</source>
-        <translation type="unfinished"/>
+        <translation>Nemohu přečíst vybraný soubor.
+Vyberte prosím nějaký platný soubor.</translation>
     </message>
 </context>
 <context>
@@ -106416,7 +106455,7 @@ b) Na kartě Konfigurace můžete přidat svá přihlašovací údaje do metody 
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="439"/>
         <source>Specified driver &apos;%1&apos; cannot be used to connect to SAP HANA.</source>
-        <translation type="unfinished"/>
+        <translation>Zadaný ovladač &apos;%1&apos; nelze použít pro připojení k SAP HANA.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="441"/>
@@ -106756,7 +106795,7 @@ b) Na kartě Konfigurace můžete přidat svá přihlašovací údaje do metody 
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1054"/>
         <source>Error renaming field &apos;%1&apos; to &apos;%2&apos;. Field with the same name already exists</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při přejmenování pole &apos;%1&apos; na &apos;%2&apos;. Pole se stejným názvem již existuje</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1071"/>
@@ -107668,7 +107707,7 @@ By default the algorithm will warn on errors. Optionally, the algorithm can be s
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui"/>
         <source>Identify Features by hovering on a feature with the mouse</source>
-        <translation type="unfinished"/>
+        <translation>Identifikace prvků najetím myší na prvek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui"/>
@@ -107970,7 +108009,7 @@ By default the algorithm will warn on errors. Optionally, the algorithm can be s
     <message>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="80"/>
         <source>Could not copy %1 to %2. Please check folder permissions and retry.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zkopírovat %1 do %2. Zkontrolujte oprávnění složky a zkuste to znovu.</translation>
     </message>
 </context>
 <context>
@@ -108448,7 +108487,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/ui/labeling/qgslabelengineconfigdialog.ui"/>
         <source>Show all labels for all layers (i.e. including collisions)</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit všechny popisky pro všechny vrstvy (tj. včetně kolizí)</translation>
     </message>
     <message>
         <location filename="../src/ui/labeling/qgslabelengineconfigdialog.ui"/>
@@ -108564,7 +108603,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/ui/labeling/qgslabellineanchorwidgetbase.ui"/>
         <source>&lt;b&gt;Controls the position along the line which labels will be placed close to.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Řídí polohu podél čáry, blízko které budou umístěny popisky.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/labeling/qgslabellineanchorwidgetbase.ui"/>
@@ -109432,7 +109471,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/app/qgslayercapabilitiesmodel.cpp" line="132"/>
         <source>Layers which can be queried with the &quot;Identify features&quot; tool.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstvy, na které lze dotazovat pomocí nástroje „Identifikovat prvky“.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayercapabilitiesmodel.cpp" line="134"/>
@@ -109442,7 +109481,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/app/qgslayercapabilitiesmodel.cpp" line="136"/>
         <source>Layers which can be queried with the locator search tool.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstvy, které lze dotazovat pomocí vyhledávacího nástroje Lokátor.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslayercapabilitiesmodel.cpp" line="138"/>
@@ -110210,7 +110249,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="330"/>
         <source>&lt;b&gt;Feature count is estimated&lt;/b&gt; : the feature count is determined by the database statistics</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Počet prvků je odhadován&lt;/b&gt; : počet prvků je určen statistikami databáze</translation>
     </message>
     <message>
         <location filename="../src/core/layertree/qgslayertreemodel.cpp" line="1216"/>
@@ -112620,7 +112659,7 @@ Chyba analyzátoru:
     <message>
         <location filename="../src/ui/layout/qgslayoutdesignerbase.ui"/>
         <source>Distributes items equidistantly with respect to their vertical edges</source>
-        <translation type="unfinished"/>
+        <translation>Rozmístí položky ve stejné vzdálenosti od jejich svislých okrajů</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutdesignerbase.ui"/>
@@ -113153,7 +113192,7 @@ Please try a lower resolution or a smaller paper size.</source>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="3007"/>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="3199"/>
         <source>The filename expression is empty. A default one will be used instead.</source>
-        <translation type="unfinished"/>
+        <translation>Výraz názvu souboru je prázdný. Bude použit výchozí výraz.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2863"/>
@@ -113276,7 +113315,7 @@ Please try a lower resolution or a smaller paper size.</source>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="3046"/>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="3239"/>
         <source>Unable to write into the given output directory. Canceling.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapisovat do daného výstupního adresáře. Probíhá zrušení.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2914"/>
@@ -113376,7 +113415,8 @@ Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2852"/>
         <source>Output file name expression is not valid. Canceling.
 Evaluation error: %1</source>
-        <translation type="unfinished"/>
+        <translation>Výraz názvu výstupního souboru není platný. Rušení.
+Chyba vyhodnocení: %1</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="3199"/>
@@ -113514,7 +113554,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4544"/>
         <source>Atlas feature %1 has no geometry — linked map extents cannot be updated</source>
-        <translation type="unfinished"/>
+        <translation>Atlasový prvek %1 nemá geometrii – rozsahy propojené mapy nelze aktualizovat</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4685"/>
@@ -114416,7 +114456,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutimageexportoptions.ui"/>
         <source>If unchecked, the generated images will not be antialiased</source>
-        <translation type="unfinished"/>
+        <translation>Pokud není zaškrtnuto, generované obrázky nebudou vyhlazeny</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutimageexportoptions.ui"/>
@@ -114539,32 +114579,32 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="246"/>
         <source>Elevation profile distance axis major interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba výrazu pro vyhodnocení vzdálenosti profilu výškové polohy v hlavním intervalu osy</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="266"/>
         <source>Elevation profile distance axis minor interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba výrazu pro vyhodnocení vzdálenosti profilu výškové polohy ve vedlejším intervalu osy</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="286"/>
         <source>Elevation profile distance axis label interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba výrazu pro vyhodnocení vzdálenosti profilu výškové polohy v popisku intervalu osy</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="306"/>
         <source>Elevation profile elevation axis major interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba vyhodnocení výrazu hlavního intervalu výškového profilu výškové osy</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="326"/>
         <source>Elevation profile elevation axis minor interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba vyhodnocení výrazu vedlejšího intervalu výškového profilu výškové osy</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="346"/>
         <source>Elevation profile elevation axis label interval expression eval error</source>
-        <translation type="unfinished"/>
+        <translation>Chyba výrazu intervalu popisku osy výškového profilu výškového profilu</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutitemelevationprofile.cpp" line="366"/>
@@ -116880,7 +116920,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/gui/layout/qgslayoutmapwidget.cpp" line="2198"/>
         <source>&lt;b&gt;When enabled, map layers will be automatically clipped to the boundary of the current %1 feature.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Pokud je tato možnost povolena, vrstvy mapy budou automaticky oříznuty k hranici aktuálního prvku %1.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutmapwidget.cpp" line="2199"/>
@@ -116903,12 +116943,12 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapclippingwidgetbase.ui"/>
         <source>The clipping mode determines how features from vector layers will be clipped.</source>
-        <translation type="unfinished"/>
+        <translation>Režim oříznutí určuje, jak budou prvky z vektorových vrstev oříznuty.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapclippingwidgetbase.ui"/>
         <source>&lt;b&gt;When enabled, map layers will be automatically clipped to the boundary of the current atlas feature.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Pokud je tato možnost povolena, vrstvy mapy se automaticky oříznou k hranici aktuálního atlasového prvku.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapclippingwidgetbase.ui"/>
@@ -116933,7 +116973,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapclippingwidgetbase.ui"/>
         <source>&lt;b&gt;When enabled, the map will be automatically clipped to the selected shape.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Pokud je tato možnost povolena, mapa se automaticky ořízne podle vybraného tvaru.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapclippingwidgetbase.ui"/>
@@ -117646,7 +117686,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source>Determines how the ticks length is defined when rotated.</source>
-        <translation type="unfinished"/>
+        <translation>Určuje, jak je definována délka značek při otočení.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -117656,7 +117696,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source>Grid lines intersecting the border below this threshold will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Čáry mřížky protínající hranici pod touto prahovou hodnotou budou ignorovány.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -117671,7 +117711,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source>Outwards facing ticks closer to the corners than this margin will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Značky směřující ven, které jsou blíže k rohům než tento okraj, budou ignorovány.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -117681,7 +117721,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
         <source>Outwards facing annotations closer to the corners than this margin will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Anotace směřující ven a blíže k rohům než je tento okraj budou ignorovány.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutmapgridwidgetbase.ui"/>
@@ -120388,12 +120428,12 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/app/3d/qgslightswidget.cpp" line="229"/>
         <source>It is not possible to add more than 4 directional lights to the scene.</source>
-        <translation type="unfinished"/>
+        <translation>Do scény není možné přidat více než 4 směrová světla.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Attenuation (A&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt;+A&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&amp;times;D+A&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&amp;times;D&lt;span style=&quot; vertical-align:super;&quot;&gt;2&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Útlum (A&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt;+A&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&amp;times;D+A&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&amp;times;D&lt;span style=&quot; vertical-align:super;&quot;&gt;2&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
@@ -120683,7 +120723,7 @@ Evaluation error: %1</source>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="85"/>
         <source>The selected raster band %1 is not valid.</source>
-        <translation type="unfinished"/>
+        <translation>Vybrané rastrové pásmo %1 není platné.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
@@ -120694,7 +120734,8 @@ Evaluation error: %1</source>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="96"/>
         <source>The raster attribute table could not be loaded.
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Tabulku atributů rastru se nepodařilo načíst.
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="102"/>
@@ -120706,7 +120747,9 @@ Evaluation error: %1</source>
         <source>The raster attribute table is not valid:
 %1
 Load anyway?</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů rastru není platná:
+%1
+Načíst i tak?</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
@@ -120726,7 +120769,7 @@ Load anyway?</source>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
         <source>The new raster attribute table was successfully loaded.</source>
-        <translation type="unfinished"/>
+        <translation>Nová tabulka atributů rastru byla úspěšně načtena.</translation>
     </message>
 </context>
 <context>
@@ -120739,7 +120782,7 @@ Load anyway?</source>
     <message>
         <location filename="../src/ui/raster/qgsloadrasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load a new Raster Attribute Table from a VAT.DBF file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Načist novou tabulku atributů rastru ze souboru VAT.DBF.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsloadrasterattributetabledialogbase.ui"/>
@@ -120757,7 +120800,7 @@ Load anyway?</source>
     <message>
         <location filename="../src/core/locator/qgslocator.cpp" line="193"/>
         <source>QgsLocatorFilter &apos;%1&apos; could not provide a valid clone</source>
-        <translation type="unfinished"/>
+        <translation>QgsLocatorFilter &apos;%1&apos; nenašel platný klon.</translation>
     </message>
 </context>
 <context>
@@ -121015,7 +121058,7 @@ Load anyway?</source>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="376"/>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="1199"/>
         <source>The file is not a MS SQL Server connections exchange file.</source>
-        <translation type="unfinished"/>
+        <translation>Soubor není souborem pro výměnu připojení k MS SQL Serveru.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="383"/>
@@ -122939,12 +122982,12 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="508"/>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1345"/>
         <source>Select an option from the Shape Digitizing Toolbar in order to capture shapes</source>
-        <translation type="unfinished"/>
+        <translation>Vyberte možnost z panelu nástrojů Digitalizace tvarů pro zachycení tvarů</translation>
     </message>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1318"/>
         <source>Cannot transform the point to the layer&apos;s coordinate system</source>
-        <translation type="unfinished"/>
+        <translation>Bod nelze transformovat do souřadného systému vrstvy</translation>
     </message>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1371"/>
@@ -122970,7 +123013,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolcapturelayergeometry.cpp" line="67"/>
         <source>The feature cannot be added because its geometry collapsed due to intersection avoidance</source>
-        <translation type="unfinished"/>
+        <translation>Prvek nelze přidat, protože jeho geometrie se nezdařila vytvořit kvůli zamezení průniku</translation>
     </message>
 </context>
 <context>
@@ -123067,7 +123110,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/gui/maptools/qgsmaptooldigitizefeature.cpp" line="87"/>
         <source>The digitized geometry type (%1) does not correspond to the layer geometry type (%2).</source>
-        <translation type="unfinished"/>
+        <translation>Typ digitalizované geometrie (%1) neodpovídá typu geometrie vrstvy (%2).</translation>
     </message>
     <message>
         <location filename="../src/gui/maptools/qgsmaptooldigitizefeature.cpp" line="185"/>
@@ -123188,12 +123231,12 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1814"/>
         <source>removing the vertex %1 leads to a topological error, operation canceled.</source>
-        <translation type="unfinished"/>
+        <translation>odstranění vrcholu %1 vede k topologické chybě, operace zrušena.</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1834"/>
         <source>removing the faces %1 leads to a topological error, operation canceled.</source>
-        <translation type="unfinished"/>
+        <translation>odstranění plošek %1 vede k topologické chybě, operace zrušena.</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1863"/>
@@ -123283,7 +123326,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1998"/>
         <source>Do you want to reindex the faces and vertices of the mesh layer %1?</source>
-        <translation type="unfinished"/>
+        <translation>Chcete znovu indexovat plochy a vrcholy síťové vrstvy %1?</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="2690"/>
@@ -123887,47 +123930,47 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="292"/>
         <source>The label anchor percent column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec procentuálního ukotvení popisku „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="298"/>
         <source>The label anchor clipping column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec ořezu kotev popisku „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="304"/>
         <source>The label anchor type column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec typu kotvy popisku „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="310"/>
         <source>The label anchor text point column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec bodu kotevního textu popisku „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="326"/>
         <source>The point position expression is not pointing to a writable geometry column</source>
-        <translation type="unfinished"/>
+        <translation>Výraz pro polohu bodu neukazuje na zapisovatelný geometrický sloupec</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="340"/>
         <source>The label X/Y columns “%1” and “%2” do not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupce X/Y s popiskem „%1“ a „%2“ ve vrstvě neexistují</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="342"/>
         <source>The label X column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec s popiskem X „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="344"/>
         <source>The label Y column “%1” does not exist in the layer</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec s popiskem Y „%1“ ve vrstvě neexistuje</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="376"/>
         <source>Cannot move “%1” — the layer “%2” could not be made editable</source>
-        <translation type="unfinished"/>
+        <translation>Nelze přesunout „%1“ – vrstvu „%2“ nelze nastavit jako upravitelnou</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="486"/>
@@ -123984,12 +124027,12 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="749"/>
         <source>Layer “%1” must be editable in order to remove stored label anchor percent</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva „%1“ musí být upravitelná, aby bylo možné odstranit uložené procento kotev popisku</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="753"/>
         <source>Error encountered while removing stored label anchor percent</source>
-        <translation type="unfinished"/>
+        <translation>Při odstraňování procenta uložených kotev popisku došlo k chybě</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="759"/>
@@ -124008,7 +124051,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="769"/>
         <source>Layer “%1” must be editable in order to remove stored label positions</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva „%1“ musí být upravitelná, aby bylo možné odstranit uložené pozice popisků</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolmovelabel.cpp" line="771"/>
@@ -124234,12 +124277,12 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolrotatelabel.cpp" line="141"/>
         <source>Cannot rotate “%1” — the layer “%2” could not be made editable</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otáčet „%1“ – vrstvu „%2“ nelze nastavit jako upravitelnou</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolrotatelabel.cpp" line="150"/>
         <source>Cannot rotate “%1” — the layer “%2” has an invalid expression set for label rotation</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otočit „%1“ – vrstva „%2“ má nastaven neplatný výraz pro otočení popisku</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolrotatelabel.cpp" line="222"/>
@@ -124249,7 +124292,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolrotatelabel.cpp" line="227"/>
         <source>Layer “%1” must be editable in order to rotate labels from it</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva „%1“ musí být upravitelná, aby bylo možné z ní otáčet popisky</translation>
     </message>
     <message>
         <location filename="../src/app/labeling/qgsmaptoolrotatelabel.cpp" line="231"/>
@@ -124956,7 +124999,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="572"/>
         <source>Cartesian calculation selected, so distance is calculated using Cartesian calculations.</source>
-        <translation type="unfinished"/>
+        <translation>Je vybrán kartézský výpočet, takže vzdálenost se vypočítává pomocí kartézských výpočtů.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="577"/>
@@ -125130,7 +125173,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/core/providers/memory/qgsmemoryprovider.cpp" line="696"/>
         <source>Could not change attribute %1 having type %2 for feature %4: %3</source>
-        <translation type="unfinished"/>
+        <translation>Nelze změnit atribut %1 typu %2 pro prvek %4: %3</translation>
     </message>
     <message>
         <location filename="../src/core/providers/memory/qgsmemoryprovider.cpp" line="779"/>
@@ -125143,32 +125186,32 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="87"/>
         <source>Take attributes from feature with the most points</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte atributy z prvku s nejvyšším počtem bodů</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="88"/>
         <source>Take all attributes from the MultiPoint feature with the most parts</source>
-        <translation type="unfinished"/>
+        <translation>Převzít všechny atributy z prvku MultiPoint s největším počtem částí</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="97"/>
         <source>Take attributes from feature with the longest length</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte atributy z prvku s nejdelší délkou</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="98"/>
         <source>Take all attributes from the Line feature with the longest length</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte všechny atributy z prvku Linie s nejdelší délkou</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="102"/>
         <source>Take attributes from feature with the largest area</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte atributy z prvku s největší plochou</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="103"/>
         <source>Take all attributes from the Polygon feature with the largest area</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte všechny atributy z polygonálního prvku s největší plochou</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="208"/>
@@ -125246,7 +125289,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui"/>
         <source>Take attributes from feature with the largest geometry</source>
-        <translation type="unfinished"/>
+        <translation>Vezměte atributy z prvku s největší geometrií</translation>
     </message>
 </context>
 <context>
@@ -125678,7 +125721,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/ui/mesh/qgsmeshcalculatordialogbase.ui"/>
         <source>Create on-the-fly dataset group instead of writing layer to disk</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoření skupiny datových sad za běhu namísto zápisu vrstvy na disk</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshcalculatordialogbase.ui"/>
@@ -125708,7 +125751,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/ui/mesh/qgsmeshcalculatordialogbase.ui"/>
         <source>Clips the datasets using features from vector polygon layer.</source>
-        <translation type="unfinished"/>
+        <translation>Připne datové sady pomocí prvků z vektorové polygonové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshcalculatordialogbase.ui"/>
@@ -126323,7 +126366,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/gui/mesh/qgsmeshlayerproperties.cpp" line="98"/>
         <source>Find Closest Dataset From Requested Time (After or Before)</source>
-        <translation type="unfinished"/>
+        <translation>Najít nejbližší datovou sadu z požadovaného času (po nebo před)</translation>
     </message>
     <message>
         <location filename="../src/gui/mesh/qgsmeshlayerproperties.cpp" line="154"/>
@@ -126456,7 +126499,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
         <source>Default time unit of mesh data provider is hour, change to override the time unit</source>
-        <translation type="unfinished"/>
+        <translation>Výchozí časová jednotka poskytovatele síťových dat je hodina, změnou přepíšete časovou jednotku</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
@@ -126471,7 +126514,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
         <source>Reference time used to render mesh dataset when using temporal range or temporal animation</source>
-        <translation type="unfinished"/>
+        <translation>Referenční čas použitý k vykreslení datové sady sítě při použití časového rozsahu nebo časové animace</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
@@ -126496,12 +126539,12 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
         <source>Method for selection of temporal mesh dataset from a range time</source>
-        <translation type="unfinished"/>
+        <translation>Metoda pro výběr datové sady časové sítě z časového rozsahu</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
         <source>Always treat as a static dataset even if the temporal navigation is on</source>
-        <translation type="unfinished"/>
+        <translation>Vždy považovat za statickou datovou sadu, i když je zapnutá časová navigace</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshlayerpropertiesbase.ui"/>
@@ -126544,17 +126587,17 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="101"/>
         <source>Invalid mesh definition, vertex definition does not contain x, y</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice sítě, definice vrcholu neobsahuje x, y</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="336"/>
         <source>Invalid mesh definition, vertex index must be positive value</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice sítě, index vrcholu musí být kladná hodnota</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="342"/>
         <source>Invalid mesh definition, missing vertex id defined in face</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice sítě, chybí ID vrcholu definované v ploše</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="172"/>
@@ -126574,12 +126617,12 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="126"/>
         <source>Invalid mesh definition, edge must contain at least 2 vertices</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice sítě, hrana musí obsahovat alespoň 2 vrcholy</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="157"/>
         <source>Invalid mesh definition, unable to read mesh with both edges and faces</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice sítě, nelze číst síť s hranami i plochami</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="201"/>
@@ -126589,7 +126632,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="245"/>
         <source>Invalid dataset definition, must contain at least 1 line (time)</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice datové sady, musí obsahovat alespoň 1 řádek (čas)</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="261"/>
@@ -126599,12 +126642,12 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="276"/>
         <source>Invalid dataset definition, dataset vector values must be x, y</source>
-        <translation type="unfinished"/>
+        <translation>Neplatná definice datové sady, vektory datové sady musí být x a y</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="304"/>
         <source>Dataset defined on vertices has {} values, but mesh {}</source>
-        <translation type="unfinished"/>
+        <translation>Dataset definovaný vrcholy má {} hodnot, ale síť (mesh) {}</translation>
     </message>
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="314"/>
@@ -126614,7 +126657,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/core/providers/meshmemory/qgsmeshmemorydataprovider.cpp" line="324"/>
         <source>Dataset defined on edges has {} values, but mesh {}</source>
-        <translation type="unfinished"/>
+        <translation>Datová sada definovaná na hranách má {} hodnot, ale síť {}</translation>
     </message>
 </context>
 <context>
@@ -126702,7 +126745,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Sigma averages over the values between 0 (bed level) and 1 (surface).</source>
-        <translation type="unfinished"/>
+        <translation>Sigma průměruje hodnoty mezi 0 (úroveň dna) a 1 (povrch).</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -127120,7 +127163,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderervectorsettingswidgetbase.ui"/>
         <source>Streamlines</source>
-        <translation type="unfinished"/>
+        <translation>Proudnice</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderervectorsettingswidgetbase.ui"/>
@@ -127319,12 +127362,12 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshstaticdatasetwidgetbase.ui"/>
         <source>Select the timestamp to use for the vector dataset group display</source>
-        <translation type="unfinished"/>
+        <translation>Vyberte časové razítko, které se má použít pro zobrazení skupiny vektorových datových sad</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshstaticdatasetwidgetbase.ui"/>
         <source>Select the timestamp to use for the scalar dataset group display</source>
-        <translation type="unfinished"/>
+        <translation>Vyberte časové razítko, které se má použít pro zobrazení skupiny skalárních datových sad</translation>
     </message>
 </context>
 <context>
@@ -127909,7 +127952,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>Categories chosen will be added as a new entry in the keywords tab.</source>
-        <translation type="unfinished"/>
+        <translation>Vybrané kategorie budou přidány jako nová položka na kartě klíčová slova.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -127939,7 +127982,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>Adds a list of descriptive keywords for a specified vocabulary.</source>
-        <translation type="unfinished"/>
+        <translation>Přidá seznam popisných klíčových slov pro zadanou slovní zásobu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -127949,7 +127992,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>A set of descriptive keywords associated with the resource for a specified concept.</source>
-        <translation type="unfinished"/>
+        <translation>Sada popisných klíčových slov spojených se zdrojem pro daný koncept.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -128004,7 +128047,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>List of attribution or copyright strings associated with the resource</source>
-        <translation type="unfinished"/>
+        <translation>Seznam řetězců s uvedením zdroje nebo autorských práv spojených se zdrojem</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -128039,7 +128082,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>The coordinate reference system described by the layer&apos;s metadata</source>
-        <translation type="unfinished"/>
+        <translation>Souřadnicový referenční systém popsaný metadaty vrstvy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -128244,7 +128287,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
         <source>Validation is not enforced, but it&apos;s recommended to resolve any validation issues listed here.</source>
-        <translation type="unfinished"/>
+        <translation>Ověřování se nevynucuje, ale doporučuje se vyřešit všechny zde uvedené problémy s ověřováním.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmetadatawidget.ui"/>
@@ -128521,7 +128564,7 @@ Pročtete si záznam pro více informací.</translation>
     <message>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="779"/>
         <source>Successfully exported model as Python script to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Model byl úspěšně exportován jako skript Pythonu do &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="680"/>
@@ -130100,7 +130143,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgsnetworkloggerpanelbase.ui"/>
         <source>Show replies served directly from local cached data</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit odpovědi poskytované přímo z lokálních dat uložených v cache</translation>
     </message>
 </context>
 <context>
@@ -131085,7 +131128,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/app/mesh/qgsnewmeshlayerdialog.cpp" line="40"/>
         <source>MDAL not available, unable to create a new mesh layer</source>
-        <translation type="unfinished"/>
+        <translation>MDAL není k dispozici, nelze vytvořit novou vrstvu sítě</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsnewmeshlayerdialog.cpp" line="56"/>
@@ -131095,7 +131138,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/app/mesh/qgsnewmeshlayerdialog.cpp" line="272"/>
         <source>Unable to create a new mesh layer with format &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit novou síťovou vrstvu s formátem „%1“</translation>
     </message>
 </context>
 <context>
@@ -131706,17 +131749,17 @@ Chybová zpráva: %1</translation>
     <message>
         <location filename="../src/gui/qgsnewvectortabledialog.cpp" line="381"/>
         <source>Geometry column name &lt;b&gt;%1&lt;/b&gt; cannot be equal to an existing field name</source>
-        <translation type="unfinished"/>
+        <translation>Název sloupce geometrie &lt;b&gt;%1&lt;/b&gt; se nemůže rovnat existujícímu názvu pole</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectortabledialog.cpp" line="386"/>
         <source>The table has no geometry column and no fields</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka nemá žádný geometrický sloupec ani pole</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectortabledialog.cpp" line="394"/>
         <source>Field &lt;b&gt;%1&lt;/b&gt;: precision cannot be greater than length</source>
-        <translation type="unfinished"/>
+        <translation>Pole &lt;b&gt;%1&lt;/b&gt;: přesnost nemůže být větší než délka</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectortabledialog.cpp" line="399"/>
@@ -131726,7 +131769,7 @@ Chybová zpráva: %1</translation>
     <message>
         <location filename="../src/gui/qgsnewvectortabledialog.cpp" line="407"/>
         <source>&lt;b&gt;%1&lt;/b&gt; is an illegal field name for this format and cannot be used</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;%1&lt;/b&gt; je neplatný název pole pro tento formát a nelze jej použít.</translation>
     </message>
 </context>
 <context>
@@ -131863,7 +131906,7 @@ Chybová zpráva: %1</translation>
     <message>
         <location filename="../src/app/locator/qgsnominatimlocatorfilter.cpp" line="65"/>
         <source>The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors.</source>
-        <translation type="unfinished"/>
+        <translation>Data geokódéru Nominatim jsou zpřístupněna nadací OpenStreetMap Foundation a jejími přispěvateli.</translation>
     </message>
     <message>
         <location filename="../src/app/locator/qgsnominatimlocatorfilter.cpp" line="66"/>
@@ -133096,7 +133139,7 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovider.cpp" line="869"/>
         <source>GPKG error searching for unique constraints on fields for table %1. (%2)</source>
-        <translation type="unfinished"/>
+        <translation>Chyba GPKG při hledání jedinečných omezení v polích pro tabulku %1. (%2)</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovider.cpp" line="1644"/>
@@ -133291,12 +133334,12 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="85"/>
         <source>A file already exists with the specified database path</source>
-        <translation type="unfinished"/>
+        <translation>Soubor se zadanou cestou k databázi již existuje</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="93"/>
         <source>The file extension %1 is not supported for database creation</source>
-        <translation type="unfinished"/>
+        <translation>Přípona souboru %1 není podporována pro vytváření databáze</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="100"/>
@@ -133307,7 +133350,7 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="111"/>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="119"/>
         <source>The %1 driver does not support database creation</source>
-        <translation type="unfinished"/>
+        <translation>Ovladač %1 nepodporuje vytváření databáze</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="129"/>
@@ -135640,7 +135683,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>Only show CRS accuracy warnings for inaccuracies which exceed</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit varování o přesnosti SRS pouze pro nepřesnosti, které překračují</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -135650,7 +135693,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>Show CRS accuracy warnings for layers in project legend</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazit v legendě projektu varování o přesnosti SRS pro vrstvy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -135660,7 +135703,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>Automatically refresh directories in browser dock when their contents change</source>
-        <translation type="unfinished"/>
+        <translation>Automaticky aktualizovat adresáře v doku prohlížeče při změně jejich obsahu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -137775,7 +137818,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="246"/>
         <source>Saving metadata in databases not available for PostgreSQL databases earlier than 9.5</source>
-        <translation type="unfinished"/>
+        <translation>Ukládání metadat do databází není k dispozici pro databáze PostgreSQL starší než 9.5.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="257"/>
@@ -137893,7 +137936,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui"/>
         <source>Allow saving/loading QGIS layer metadata in the database</source>
-        <translation type="unfinished"/>
+        <translation>Povolit ukládání/načítání metadat vrstev QGIS v databázi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui"/>
@@ -138583,7 +138626,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     </message>
     <message>
         <source>The Zip file is not a valid QGIS python plugin. No root folder was found inside.</source>
-        <translation type="unfinished"/>
+        <translation>Soubor ZIP není platný plugin pro QGIS v jazyce Python. Uvnitř nebyla nalezena žádná kořenová složka.</translation>
     </message>
     <message>
         <source>More Information</source>
@@ -138982,7 +139025,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1131"/>
         <source>Installs latest stable version of the selected plugin</source>
-        <translation type="unfinished"/>
+        <translation>Nainstaluje nejnovější stabilní verzi vybraného pluginu</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1136"/>
@@ -138992,7 +139035,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1137"/>
         <source>Reinstalls latest stable version of the selected plugin</source>
-        <translation type="unfinished"/>
+        <translation>Znovu nainstaluje nejnovější stabilní verzi vybraného pluginu</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1145"/>
@@ -142486,7 +142529,7 @@ Přístupy k zápisu budou zamítnuty.</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1589"/>
         <source>Ignoring key candidate because of NULL values or inheritance</source>
-        <translation type="unfinished"/>
+        <translation>Ignorování klíčového kandidáta z důvodu hodnot NULL nebo dědičnosti</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2088"/>
@@ -142654,7 +142697,7 @@ PostGIS %2</translation>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="147"/>
         <source>PostgreSQL raster layer metadata loaded from the database.</source>
-        <translation type="unfinished"/>
+        <translation>Metadata rastrové vrstvy PostgreSQL načtená z databáze.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="216"/>
@@ -142765,29 +142808,29 @@ Přístupy k zápisu budou zamítnuty.</translation>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
         <source>Unable to create temporary raster for tiles from %1</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit dočasný rastr pro dlaždice z %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
         <source>Unable to write tile to temporary raster from %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapsat dlaždici do dočasného rastru z %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
         <source>Unable to create destination raster for tiles from %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit cílový rastr pro dlaždice z %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
         <source>Unable to resample and transform destination raster for tiles from %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze převzorkovat a transformovat cílový rastr pro dlaždice z %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
         <source>Unable to write raster to block from %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapsat rastr do bloku z %1: %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="749"/>
@@ -142890,7 +142933,8 @@ Přístupy k zápisu budou zamítnuty.</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání rastrových metadat pro tabulku %1 došlo k chybě: %2
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
@@ -142926,22 +142970,22 @@ Please consider adding raster constraints with PostGIS function AddRasterConstra
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1477"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Neplatné výchozí datum v časových možnostech rastru pro pole %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>V časových možnostech rastru pro pole %1: %2 nebyly zjištěny žádné časové rozsahy</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
-        <translation type="unfinished"/>
+        <translation>Neplatný časový rozsah v časových možnostech rastru pro pole %1: %2 - %3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání časových možností rastru pro pole %1 došlo k chybě</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
@@ -142990,7 +143034,7 @@ Please consider adding raster constraints with PostGIS function AddRasterConstra
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
-        <translation type="unfinished"/>
+        <translation>Ignorování kandidáta na klíč kvůli hodnotám NULL nebo zděděné tabulce</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2271"/>
@@ -143436,7 +143480,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7532"/>
         <source>name of an annotation layer, or &quot;main&quot; for the main annotation layer</source>
-        <translation type="unfinished"/>
+        <translation>název vrstvy anotací nebo „hlavní“ pro hlavní vrstvu anotací</translation>
     </message>
 </context>
 <context>
@@ -143571,7 +143615,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
         <source>%1 executions failed. See log for further details.</source>
-        <translation type="unfinished"/>
+        <translation>%1 spuštění selhalo. Projděte si záznam zpráv pro podrobnosti.</translation>
     </message>
 </context>
 <context>
@@ -144779,7 +144823,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessinghistorywidget.cpp" line="44"/>
         <source>Are you sure you want to clear the Processing history?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat historii zpracování?</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessinghistorywidget.cpp" line="57"/>
@@ -146721,7 +146765,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="4559"/>
         <source>Transaction mode can be changed only if all layers are not editable.</source>
-        <translation type="unfinished"/>
+        <translation>Režim transakce lze změnit pouze tehdy, pokud nejsou všechny vrstvy upravitelné.</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="4646"/>
@@ -147445,7 +147489,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="200"/>
         <source>Edits are buffered locally and sent to the provider when toggling layer editing mode.</source>
-        <translation type="unfinished"/>
+        <translation>Úpravy se ukládají lokálně do vyrovnávací paměti a odesílají se poskytovateli při přepínání režimu úprav vrstev.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="547"/>
@@ -148475,7 +148519,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
         <source>Number of decimal places to consider for geometry precision</source>
-        <translation type="unfinished"/>
+        <translation>Počet desetinných míst, které je třeba zvážit pro geometrickou přesnost</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
@@ -148515,7 +148559,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
         <source>Remember attribute tables windows and docks between sessions</source>
-        <translation type="unfinished"/>
+        <translation>Zapamatovat si tabulky atributů oken a doků mezi relacemi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
@@ -148880,12 +148924,12 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectionwidget.cpp" line="785"/>
         <source>The selected CRS is based on %1, which has a limited accuracy.</source>
-        <translation type="unfinished"/>
+        <translation>Vybraný SRS je založen na %1, který má omezenou přesnost.</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectionwidget.cpp" line="787"/>
         <source>Use an alternative CRS if accurate positioning is required.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je vyžadováno přesné určení polohy, použijte alternativní SRS.</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectionwidget.cpp" line="792"/>
@@ -150538,27 +150582,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="297"/>
         <source>A field with unique usage &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"/>
+        <translation>Pole s jedinečným použitím &apos;%1&apos; již existuje.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="390"/>
         <source>A color ramp can only be added to an athematic attribute table.</source>
-        <translation type="unfinished"/>
+        <translation>Kapátko lze přidat pouze do atematické tabulky atributů.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="442"/>
         <source>A field with name &apos;%1&apos; was not found.</source>
-        <translation type="unfinished"/>
+        <translation>Pole s názvem &apos;%1&apos; nebylo nalezeno.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="456"/>
         <source>Row element count differs from field count (%1).</source>
-        <translation type="unfinished"/>
+        <translation>Počet prvků řádku se liší od počtu polí (%1).</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="470"/>
         <source>Row data at column %1 cannot be converted to field type (%2).</source>
-        <translation type="unfinished"/>
+        <translation>Data řádku ve sloupci %1 nelze převést na typ pole (%2).</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="491"/>
@@ -150573,12 +150617,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="545"/>
         <source>Error creating Raster Attribute Table table: could not add rows.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při vytváření tabulky atributů rastru: nepodařilo se přidat řádky.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="568"/>
         <source>Error reading Raster Attribute Table table from file: invalid layer.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při čtení tabulky atributů rastru ze souboru: neplatná vrstva.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="623"/>
@@ -150598,7 +150642,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="658"/>
         <source>The attribute table has no MinMax nor a pair of Min and Max fields.</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů nemá žádná pole MinMax ani dvojici polí Min a Max.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="666"/>
@@ -150937,7 +150981,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="80"/>
         <source>Virtual color field generated from the values in RGB(A) data columns</source>
-        <translation type="unfinished"/>
+        <translation>Virtuální barevné pole generované z hodnot v datových sloupcích RGB(A)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="107"/>
@@ -150947,7 +150991,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="182"/>
         <source>Raster attribute table does not have color or ramp information.</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů rastru neobsahuje informace o barvě ani rozsahu.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="216"/>
@@ -150963,7 +151007,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablemodel.cpp" line="395"/>
         <source>This data is part of a color definition: click on &apos;%1&apos; column to edit.</source>
-        <translation type="unfinished"/>
+        <translation>Tato data jsou součástí definice barvy: klikněte na sloupec &apos;%1&apos; pro úpravu.</translation>
     </message>
 </context>
 <context>
@@ -151018,12 +151062,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="204"/>
         <source>Attribute table contains unsaved changes, do you want to save the changes?</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů obsahuje neuložené změny, chcete změny uložit?</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="259"/>
         <source>Save Raster Attribute Table (band %1) To File</source>
-        <translation type="unfinished"/>
+        <translation>Uložit tabulku atributů rastru (pásmo %1) do souboru</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="286"/>
@@ -151095,7 +151139,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="380"/>
         <source>Do you want to remove the selected column? This action cannot be undone.</source>
-        <translation type="unfinished"/>
+        <translation>Chcete odstranit vybraný sloupec? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="385"/>
@@ -151110,7 +151154,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="443"/>
         <source>Do you want to remove the selected row? This action cannot be undone.</source>
-        <translation type="unfinished"/>
+        <translation>Chcete odstranit vybraný řádek? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="448"/>
@@ -152445,17 +152489,17 @@ Klikněte na tlačíko nápovědy k získání platných možností vytváření
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1194"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při čtení tabulky atributů rastru: neplatné pásmo %1.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1201"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při načítání tabulky atributů rastru, soubor nebyl nalezen: %1.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1209"/>
         <source>Error loading raster attribute table from path %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při načítání tabulky atributů rastru z cesty %1: %2</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2263"/>
@@ -154147,7 +154191,7 @@ směrodatná od&amp;chylka ×</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
         <source>The generated relations for a polymorphic relation cannot be used.</source>
-        <translation type="unfinished"/>
+        <translation>Vygenerované relace pro polymorfní relaci nelze použít.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
@@ -154262,12 +154306,12 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
         <source>Automatically select first child feature and show attribute form</source>
-        <translation type="unfinished"/>
+        <translation>Automaticky vybrat první podřízený prvek a zobrazit formulář atributů</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
         <source>Unchecking this can lead to faster loading time of attribute forms and avoid unnecessary queries.</source>
-        <translation type="unfinished"/>
+        <translation>Zrušení zaškrtnutí této možnosti může vést k rychlejšímu načítání formulářů atributů a vyhnout se zbytečným dotazům.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
@@ -154317,7 +154361,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
         <source>Allow add child feature with no geometry (for spatial layer)</source>
-        <translation type="unfinished"/>
+        <translation>Povolit přidání podřízeného prvku bez geometrie (pro prostorovou vrstvu)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
@@ -154400,7 +154444,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="247"/>
         <source>Dual view should not be used in multiple edit mode</source>
-        <translation type="unfinished"/>
+        <translation>Duální zobrazení by se nemělo používat v režimu vícenásobné úpravy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="264"/>
@@ -154420,7 +154464,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="411"/>
         <source>Adding a geometry feature is not supported in multiple edit mode</source>
-        <translation type="unfinished"/>
+        <translation>Přidání geometrického prvku není podporováno v režimu vícenásobné úpravy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrelationeditorwidget.cpp" line="783"/>
@@ -154837,7 +154881,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2618"/>
         <source>Are you sure you want to delete the %1 relationship?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat vztah %1?</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2672"/>
@@ -155339,7 +155383,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrenderingoptionsbase.ui"/>
         <source>By default new la&amp;yers added to the map should be displayed</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazovat vrst&amp;vy nově přidané do mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrenderingoptionsbase.ui"/>
@@ -155369,7 +155413,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrenderingoptionsbase.ui"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
-        <translation type="unfinished"/>
+        <translation>Linie bude vykreslena jako méně roztřepená, nicméně na úkor rychlosti vykreslování</translation>
     </message>
 </context>
 <context>
@@ -155520,7 +155564,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
         <source>Include a footer layout after the last matching feature</source>
-        <translation type="unfinished"/>
+        <translation>Za poslední odpovídající prvek přidat rozvržení zápatí</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
@@ -155535,7 +155579,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
         <source>If unchecked, the header will only be shown when at least one matching feature is found</source>
-        <translation type="unfinished"/>
+        <translation>Pokud není zaškrtnuto, záhlaví se zobrazí pouze tehdy, když bude nalezen alespoň jeden odpovídající prvek</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
@@ -155545,12 +155589,12 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
         <source>Include a header layout before the first matching feature</source>
-        <translation type="unfinished"/>
+        <translation>Přidat rozvržení záhlaví před první odpovídající prvek</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
         <source>Include a separate layout for every matching feature found</source>
-        <translation type="unfinished"/>
+        <translation>Pro každý nalezený odpovídající prvek zahrnout samostatné rozvržení</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
@@ -155560,7 +155604,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
         <source>If unchecked, the footer will only be shown when at least one matching feature is found</source>
-        <translation type="unfinished"/>
+        <translation>Pokud není zaškrtnuto, zápatí se zobrazí pouze tehdy, když bude nalezen alespoň jeden odpovídající prvek.</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgsreportwidgetfieldgroupsectionbase.ui"/>
@@ -155753,7 +155797,7 @@ features are found</source>
     <message>
         <location filename="../src/gui/qgsrichtexteditor.cpp" line="777"/>
         <source>JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)</source>
-        <translation type="unfinished"/>
+        <translation>JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; Všechny(*)</translation>
     </message>
 </context>
 <context>
@@ -157594,7 +157638,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssettingstreewidgetold.cpp" line="174"/>
         <source>Are you sure you want to delete the %1 group?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit skupinu %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgssettingstreewidgetold.cpp" line="187"/>
@@ -157609,7 +157653,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssettingstreewidgetold.cpp" line="189"/>
         <source>Are you sure you want to delete the %1 setting?</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat nastavení %1?</translation>
     </message>
 </context>
 <context>
@@ -159737,7 +159781,7 @@ zadejte prosím nové jméno:</translation>
     <message>
         <location filename="../src/app/qgsstatusbarcoordinateswidget.cpp" line="64"/>
         <source>Current map coordinate (longitude latitude or east north)</source>
-        <translation type="unfinished"/>
+        <translation>Aktuální souřadnice v mapě (lon lat nebo východ sever)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsstatusbarcoordinateswidget.cpp" line="69"/>
@@ -160548,7 +160592,8 @@ Přepsat?</translation>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="1192"/>
         <source>A 3D symbol with the name “%1” already exists.
 Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>3D Formát s názvem „%1“ již existuje.
+Přepsat?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="1240"/>
@@ -160686,7 +160731,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2066"/>
         <source>Please enter a name for the new 3D symbol:</source>
-        <translation type="unfinished"/>
+        <translation>Zadejte název nového symbolu 3D:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="2120"/>
@@ -160925,7 +160970,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="219"/>
         <source>Download new styles from the online QGIS style repository</source>
-        <translation type="unfinished"/>
+        <translation>Stáhnout nové styly z online repozitáře stylů QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="1447"/>
@@ -163249,7 +163294,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1603"/>
         <source>Arranges label candidates directly over the feature or at a preset offset from the feature.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty na popisky přímo nad prvkem nebo s přednastaveným odsazením od prvku.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1605"/>
@@ -163279,7 +163324,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1621"/>
         <source>Label candidates are arranged horizontally along the length of the feature.</source>
-        <translation type="unfinished"/>
+        <translation>Kandidáti na popisky jsou uspořádáni vodorovně podél délky prvku.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1625"/>
@@ -163369,7 +163414,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="2084"/>
         <source>Labels from this layer may freely overlap other labels or label obstacles without penalty.</source>
-        <translation type="unfinished"/>
+        <translation>Popisky z této vrstvy se mohou volně překrývat s jinými popisky nebo popisky překážek bez penalizace.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="2150"/>
@@ -164311,7 +164356,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>When activated, features acting as obstacles discourage labels and diagrams from covering them.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud jsou aktivovány, prvky fungující jako překážky odrazují popisky a diagramy od jejich zakrytí.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -166104,22 +166149,22 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="302"/>
         <source>Any z values present in the features will be added to the terrain height.</source>
-        <translation type="unfinished"/>
+        <translation>Veškeré hodnoty z přítomné v prvcích budou přičteny k výšce terénu.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="308"/>
         <source>Feature elevation will be taken directly from the terrain height.</source>
-        <translation type="unfinished"/>
+        <translation>Výška prvku bude odečtena přímo z výšky terénu.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="308"/>
         <source>Any existing z values present in the features will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Veškeré existující hodnoty z v daných prvcích budou ignorovány.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="325"/>
         <source>Feature elevation is relative to the terrain height at every vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Nadmořská výška prvku je relativní k výšce terénu v každém vrcholu.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="325"/>
@@ -166129,7 +166174,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="330"/>
         <source>Feature elevation is relative to the terrain height at feature&apos;s centroid only.</source>
-        <translation type="unfinished"/>
+        <translation>Nadmořská výška prvku je vztažena k výšce terénu pouze v těžišti prvku.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="330"/>
@@ -166187,7 +166232,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
         <source>Extrusion controls how high features extend vertically above their base.</source>
-        <translation type="unfinished"/>
+        <translation>Vytlačení řídí, jak se vysoké prvky svisle rozprostírají nad svou základnou.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
@@ -166735,13 +166780,13 @@ Chyba byla: %2</translation>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="810"/>
         <source>ERROR: %1 attributes and %2 geometries not changed.</source>
         <comment>not changed attributes and geometries count</comment>
-        <translation type="unfinished"/>
+        <translation>CHYBA: %1 atributů a %2 geometrií nebylo změněno.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="820"/>
         <source>ERROR: %1 geometries not changed. Data provider &apos;%2&apos; does not have ChangeFeatures or ChangeGeometries capabilities</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished"/>
+        <translation>CHYBA: %1 geometrií nebylo změněno. Poskytovatel dat &apos;%2&apos; nemá funkce ChangeFeatures ani ChangeGeometries</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="845"/>
@@ -166828,32 +166873,32 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="82"/>
         <source>Can&apos;t start editing layer &apos;%1&apos; with invalid data provider.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze spustit úpravy vrstvy &apos;%1&apos; s neplatným poskytovatelem dat.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="90"/>
         <source>Can&apos;t start editing. Layer &apos;%1&apos; doesn&apos;t support editing.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze spustit úpravy. Vrstva &apos;%1&apos; nepodporuje úpravy.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="114"/>
         <source>Can&apos;t rollback after start editing failure. Roll back detailed errors: %1</source>
-        <translation type="unfinished"/>
+        <translation>Nelze se vrátit zpět po selhání zahájení úprav. Vrátit podrobné chyby: %1</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="149"/>
         <source>ERROR: data source &apos;%1&apos;, is not available for transactions.</source>
-        <translation type="unfinished"/>
+        <translation>CHYBA: Zdroj dat &apos;%1&apos; není k dispozici pro transakce.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="157"/>
         <source>ERROR: could not start a transaction on data provider &apos;%1&apos;, detailed error: &apos;%2&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>CHYBA: Nelze spustit transakci u poskytovatele dat &apos;%1&apos;, podrobný popis chyby: &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="167"/>
         <source>ERROR: could not add layer &apos;%1&apos; to transaction on data provider &apos;%2&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>CHYBA: Nelze přidat vrstvu &apos;%1&apos; k transakci u poskytovatele dat &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="192"/>
@@ -166863,7 +166908,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="299"/>
         <source>ERROR: could not commit a transaction, detailed error: &apos;%1&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>CHYBA: Nepodařilo se potvrdit transakci, podrobná chyba: &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="315"/>
@@ -166888,7 +166933,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditbuffergroup.cpp" line="348"/>
         <source>Layer &apos;%1&apos; doesn&apos;t have a valid data provider</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva &apos;%1&apos; nemá platného poskytovatele dat</translation>
     </message>
 </context>
 <context>
@@ -168005,7 +168050,7 @@ Chyba byla: %2</translation>
         <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
         <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
         <source>Some names were modified and will be overridden. Do you want to continue?</source>
-        <translation type="unfinished"/>
+        <translation>Některá jména byla upravena a budou přepsána. Chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="172"/>
@@ -168386,7 +168431,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorrenderingoptionsbase.ui"/>
         <source>Enable feature si&amp;mplification by default for newly added layers</source>
-        <translation type="unfinished"/>
+        <translation>Povolit zjednodušení prvků jako výchozí pro &amp;nově přidané vrstvy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrenderingoptionsbase.ui"/>
@@ -168396,7 +168441,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorrenderingoptionsbase.ui"/>
         <source>This algorithm is only applied to simplify on local side</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus je pouze aplikován na zjednodušení na lokální straně</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrenderingoptionsbase.ui"/>
@@ -168728,7 +168773,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectortileconnectiondialog.ui"/>
         <source>If specified, the layer will be automatically styled using styling JSON from the entered URL.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zadáno, vrstva bude automaticky stylizována pomocí stylingového JSON ze zadané URL adresy.</translation>
     </message>
     <message>
         <location filename="../src/gui/vectortile/qgsvectortileconnectiondialog.cpp" line="35"/>
@@ -169284,7 +169329,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="342"/>
         <source>Right click on an editable feature to show its table of vertices.</source>
-        <translation type="unfinished"/>
+        <translation>Kliknutím pravým tlačítkem na upravitelný prvek zobrazíte její tabulku vrcholů.</translation>
     </message>
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="342"/>
@@ -169345,7 +169390,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2667"/>
         <source>Conversion can only be done on exactly one vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Konverzi lze provést pouze na přesně jednom vrcholu.</translation>
     </message>
     <message>
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2679"/>
@@ -169355,7 +169400,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2693"/>
         <source>Layer of type %1 does not support curved geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva typu %1 nepodporuje zakřivené geometrie.</translation>
     </message>
     <message>
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2699"/>
@@ -169365,7 +169410,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2716"/>
         <source>Start/end of vertices of features and arcs can not be converted.</source>
-        <translation type="unfinished"/>
+        <translation>Začátek/konec vrcholů prvků a oblouků nelze převést.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/vertextool/qgsvertextool.cpp" line="2961"/>
@@ -169459,17 +169504,17 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="266"/>
         <source>Checkbox &apos;Unique identifier column&apos; is checked, but no field given</source>
-        <translation type="unfinished"/>
+        <translation>Zaškrtávací políčko „Sloupec s jedinečným identifikátorem“ je zaškrtnuto, ale není zadáno žádné pole</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="275"/>
         <source>The unique identifier field &lt;b&gt;%1&lt;/b&gt; was not found in list of fields:&lt;ul&gt;%2&lt;/ul&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Pole s jedinečným identifikátorem &lt;b&gt;%1&lt;/b&gt; nebylo nalezeno v seznamu polí: &lt;ul&gt;%2&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="283"/>
         <source>No CRS defined, are you sure you want to create a layer without a crs?</source>
-        <translation type="unfinished"/>
+        <translation>Není definován žádný SRS, jste si jisti, že chcete vytvořit vrstvu bez SRS?</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="297"/>
@@ -169810,7 +169855,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="95"/>
         <source>The following unknown parameter(s) have been found in the URI: </source>
-        <translation type="unfinished"/>
+        <translation>V URI byly nalezeny následující neznámé parametry: </translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="445"/>
@@ -169873,7 +169918,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="566"/>
         <source>FROM or JOIN clause should contain the table name &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Klauzule FROM nebo JOIN by měla obsahovat název tabulky &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="581"/>
@@ -169885,18 +169930,18 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="608"/>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="798"/>
         <source>Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3</source>
-        <translation type="unfinished"/>
+        <translation>Analýza odpovědi DescribeFeatureType selhala pro URL %1, typeName %2: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="661"/>
         <source>Column &apos;%1&apos; is not a direct reference to a table column.</source>
-        <translation type="unfinished"/>
+        <translation>Sloupec &apos;%1&apos; není přímý odkaz na sloupec tabulky.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="700"/>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="769"/>
         <source>Field &apos;%1&apos;: a field with the same name already exists.</source>
-        <translation type="unfinished"/>
+        <translation>Pole &apos;%1&apos;: pole tohoto jména již existuje.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="740"/>
@@ -169998,7 +170043,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2734"/>
         <source>Unsuccessful service response: no features were added, deleted or changed.</source>
-        <translation type="unfinished"/>
+        <translation>Neúspěšná odpověď služby: nebyly přidány, odstraněny ani změněny žádné funkce.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2751"/>
@@ -170008,7 +170053,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1519"/>
         <source>Analysis of DescribeFeatureType response failed for url %1: %2</source>
-        <translation type="unfinished"/>
+        <translation>Analýza odpovědi DescribeFeatureType selhala pro URL %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2105"/>
@@ -170033,7 +170078,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2682"/>
         <source>Could not find typename %1 in capabilities for url %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze najít název typu %1 v možnostech pro URL %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2745"/>
@@ -170151,7 +170196,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="604"/>
         <source>The following part of the filter will be evaluated on client side : %1</source>
-        <translation type="unfinished"/>
+        <translation>Následující část filtru bude vyhodnocena na straně klienta : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="745"/>
@@ -170632,7 +170677,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui"/>
         <source>Load each selected layer as an individual layer</source>
-        <translation type="unfinished"/>
+        <translation>Načíst každou vybranou vrstvu jako samostatnou vrstvu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui"/>
@@ -170684,14 +170729,14 @@ Vyzkoušeno URL: %1</translation>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="161"/>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="382"/>
         <source>Download of capabilities failed: network request update failed for authentication config</source>
-        <translation type="unfinished"/>
+        <translation>Stahování funkcí se nezdařilo: aktualizace síťového požadavku pro konfiguraci ověřování selhala</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="176"/>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="398"/>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="434"/>
         <source>Download of capabilities failed: network reply update failed for authentication config</source>
-        <translation type="unfinished"/>
+        <translation>Stahování funkcí se nezdařilo: aktualizace síťové odpovědi pro konfiguraci ověřování selhala</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="457"/>
@@ -170735,7 +170780,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="520"/>
         <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
-        <translation type="unfinished"/>
+        <translation>Server WCS verze %1 není podporován systémem QGIS (podporované verze: 1.0.0, 1.1.0, 1.1.2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="810"/>
@@ -171430,14 +171475,16 @@ Reakce byla:
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="2566"/>
         <source>Download of capabilities failed:
 network request update failed for authentication config</source>
-        <translation type="unfinished"/>
+        <translation>Stahování funkcí se nezdařilo:
+aktualizace síťového požadavku pro konfiguraci ověřování selhala</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="2508"/>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="2586"/>
         <source>Download of capabilities failed:
 network reply update failed for authentication config</source>
-        <translation type="unfinished"/>
+        <translation>Stahování funkcí se nezdařilo:
+aktualizace síťové odpovědi pro konfiguraci ověřování selhala</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="2534"/>
@@ -171544,7 +171591,7 @@ network reply update failed for authentication config</source>
     <message>
         <location filename="../src/gui/vector/qgswmsdimensiondialog.cpp" line="167"/>
         <source>If a string is used, it must be formatted according to &lt;a href=&quot;https://www.iso.org/iso-8601-date-and-time-format.html&quot;&gt;ISO8601&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud se používá řetězec, musí být formátován podle normy &lt;a href=&quot;https://www.iso.org/iso-8601-date-and-time-format.html&quot;&gt;ISO8601&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -171802,7 +171849,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1770"/>
         <source>Base map and data from OpenStreetMap and OpenStreetMap Foundation (CC-BY-SA). © https://www.openstreetmap.org and contributors.</source>
-        <translation type="unfinished"/>
+        <translation>Základní mapa a data z OpenStreetMap a OpenStreetMap Foundation (CC-BY-SA). © https://www.openstreetmap.org a přispěvatelé.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
@@ -172497,7 +172544,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4568"/>
         <source>Tile request error (Title: %1; Error: %2; URL: %3)</source>
-        <translation type="unfinished"/>
+        <translation>Chyba požadavku na dlaždice (Dlaždice: %1; Chyba: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
@@ -172523,7 +172570,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4724"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
-        <translation type="unfinished"/>
+        <translation>Chyba maximálního počtu opakování požadavku na dlaždici. %1 selhalo s požadavky na dlaždici %2 z tileRequest %3 (url: %4).</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4732"/>
@@ -172536,7 +172583,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmstsettingswidget.cpp" line="60"/>
         <source>Project temporal range is set from %1 to %2</source>
-        <translation type="unfinished"/>
+        <translation>Časový rozsah projektu je nastaven od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmstsettingswidget.cpp" line="64"/>
@@ -172956,7 +173003,7 @@ Reason phrase: %2</translation>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
-        <translation type="unfinished"/>
+        <translation>Procento nemůže být větší než 100. Nastavte správnou hodnotu a zkuste to znovu.</translation>
     </message>
     <message>
         <source>Subset &quot;{}&quot; is smaller than requested number of features.</source>
@@ -173438,7 +173485,7 @@ Reason phrase: %2</translation>
     </message>
     <message>
         <source>Output raster size is too small (at least 3 rows needed).</source>
-        <translation type="unfinished"/>
+        <translation>Velikost výstupního rastru je příliš malá (potřeba alespoň 3 řádků).</translation>
     </message>
     <message>
         <source>Canceled.</source>
@@ -173565,7 +173612,7 @@ Reason phrase: %2</translation>
     </message>
     <message>
         <source>Seems there is no valid script in the file.</source>
-        <translation type="unfinished"/>
+        <translation>Zdá se, že v souboru není žádný platný skript.</translation>
     </message>
     <message>
         <source>Unsaved changes</source>
@@ -173810,7 +173857,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../python/console/console_settings.ui"/>
         <source>Automatic insertion of the &apos;import&apos; string on &apos;from xxx&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Automatické vložení řetězce „import“ do „from xxx“</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui"/>
@@ -173845,7 +173892,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../python/console/console_settings.ui"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
-        <translation type="unfinished"/>
+        <translation>Povolit Inspektor objektů (přepínání mezi záložkami může být pomalé)</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui"/>
@@ -173904,7 +173951,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../python/console/console_settings.ui"/>
         <source>Automatically surround selection when typing quotes or brackets</source>
-        <translation type="unfinished"/>
+        <translation>Automaticky obklopit výběr při psaní uvozovek nebo závorek</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui"/>
@@ -173924,7 +173971,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../python/console/console_settings.ui"/>
         <source>Formatter</source>
-        <translation type="unfinished"/>
+        <translation>Formátovač</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui"/>
@@ -176503,7 +176550,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
         <source>If enabled, the dash pattern for the line will be dynamically refined over sharp corners</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je tato možnost povolena, bude čárkovaný vzor čáry dynamicky zjemňován přes ostré rohy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
@@ -177503,11 +177550,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Maximum distance (in pixels) to search out for values to interpolate</source>
-        <translation type="unfinished"/>
+        <translation>Maximální vzdálenost (v pixelech) pro vyhledávání hodnot k interpolaci</translation>
     </message>
     <message>
         <source>Number of smoothing iterations to run after the interpolation</source>
-        <translation type="unfinished"/>
+        <translation>Počet iterací vyhlazování, které se mají spustit po interpolaci</translation>
     </message>
     <message>
         <source>Do not use the default validity mask for the input band</source>
@@ -177602,7 +177649,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>The spatial reference system used for the source input data</source>
-        <translation type="unfinished"/>
+        <translation>Prostorový referenční systém použitý pro vstupní zdrojová data</translation>
     </message>
     <message>
         <source>Zoom levels to render</source>
@@ -177614,7 +177661,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>URL address where the generated tiles are going to be published</source>
-        <translation type="unfinished"/>
+        <translation>URL adresa, na které budou publikovány vygenerované dlaždice</translation>
     </message>
     <message>
         <source>Mercator</source>
@@ -177955,7 +178002,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>This option determines how to handle rasters with different extents</source>
-        <translation type="unfinished"/>
+        <translation>Tato možnost určuje, jak se mají zpracovávat rastry s různým rozsahem</translation>
     </message>
     <message>
         <source>{} data type requires GDAL version 3.5.3 or later</source>
@@ -177967,7 +178014,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>The custom output extent option (--projwin) is only available on GDAL 3.3 or later</source>
-        <translation type="unfinished"/>
+        <translation>Volba vlastního rozsahu výstupu (--projwin) je k dispozici pouze v GDAL 3.3 nebo novějším</translation>
     </message>
 </context>
 <context>
@@ -177978,11 +178025,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Force computation of the actual min/max values for each band</source>
-        <translation type="unfinished"/>
+        <translation>Vynutit výpočet skutečných min./max. hodnot pro každé pásmo</translation>
     </message>
     <message>
         <source>Read and display image statistics (force computation if necessary)</source>
-        <translation type="unfinished"/>
+        <translation>Čtení a zobrazení statistik obrázků (v případě potřeby vynucení výpočtu)</translation>
     </message>
     <message>
         <source>Suppress GCP info</source>
@@ -178037,7 +178084,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Field name to hold the file path to the indexed rasters</source>
-        <translation type="unfinished"/>
+        <translation>Název pole pro uchování cesty k indexovaným rastrům</translation>
     </message>
     <message>
         <source>Store absolute path to the indexed rasters</source>
@@ -178057,7 +178104,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>The format in which the CRS of each tile must be written</source>
-        <translation type="unfinished"/>
+        <translation>Formát, ve kterém musí být zapsán SRS každé dlaždice</translation>
     </message>
     <message>
         <source>Tile index</source>
@@ -178108,7 +178155,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Aggregates temporally the maps of a space time raster dataset by a user defined granularity</source>
-        <translation type="unfinished"/>
+        <translation>Časově agreguje mapy rastrové datové sady časoprostoru s uživatelem definovanou granularitou</translation>
     </message>
     <message>
         <source>Aggregation</source>
@@ -178140,7 +178187,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Assigns a predefined color table to each raster map of the space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Přiřadí každé rastrové mapě časoprostorové rastrové sady předdefinovanou tabulku barev</translation>
     </message>
     <message>
         <source>Attribute field</source>
@@ -178248,15 +178295,15 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation type="unfinished"/>
+        <translation>Výpočet univariační statistiky pro číselné atributy v datové tabulce</translation>
     </message>
     <message>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation type="unfinished"/>
+        <translation>Výpočet univariantních statistik z rastru na základě vektorových objektů</translation>
     </message>
     <message>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation type="unfinished"/>
+        <translation>Vypočet univariačních statistik z nenulových buněk rastru</translation>
     </message>
     <message>
         <source>Calculate univariate statistics of vector map features</source>
@@ -178264,7 +178311,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítat objem shluků dat a vytvořit vektor s centroidy shluků</translation>
     </message>
     <message>
         <source>Calculates category or object oriented statistics</source>
@@ -178276,7 +178323,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculates geomorphons (terrain forms) and associated geometry using machine vision approach</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává geomorfony (tvary terénu) a související geometrii pomocí strojového vidění</translation>
     </message>
     <message>
         <source>Calculates multiple linear regression from raster maps</source>
@@ -178292,7 +178339,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává univariační statistiky atributů pro každou registrovanou vektorovou mapu datové sady časoprostoru</translation>
     </message>
     <message>
         <source>Category or object oriented statistics</source>
@@ -178380,11 +178427,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Computes cyclic accumulations of a space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává cyklické akumulace datové sady časoprostorového rastru</translation>
     </message>
     <message>
         <source>Computes emissivity from NDVI, generic method for sparse land</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítá emisivitu z NDVI, obecná metoda pro řídce zalité terény</translation>
     </message>
     <message>
         <source>Concentric circles</source>
@@ -178504,11 +178551,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Create a MASK from raster map for limiting raster operation</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořte MASKU z rastrové mapy pro omezení operací s rastrem</translation>
     </message>
     <message>
         <source>Create a MASK from vector map for limiting raster operation</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořte MASKU z vektorové mapy pro omezení operací s rastrem</translation>
     </message>
     <message>
         <source>Create a map containing concentric rings</source>
@@ -178628,7 +178675,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Create raster images with textural features from raster (first series of indices)</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit rastrové obrázky s texturálními prvky z rastru (první série indexů)</translation>
     </message>
     <message>
         <source>Create raster of distance to features in input layer</source>
@@ -178636,23 +178683,23 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit rastr gaussovských odchylek s uživatelem definovanou střední hodnotou a směrodatnou odchylkou</translation>
     </message>
     <message>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit rastr rovnoměrných náhodných odchylek s uživatelem definovaným rozsahem</translation>
     </message>
     <message>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit rastr se souvislými oblastmi narostlými o jednu buňku</translation>
     </message>
     <message>
         <source>Create raster with textural features from raster (second series of indices)</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoření rastru s texturními prvky z rastru (druhá série indexů)</translation>
     </message>
     <message>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit červené, zelené a modré rastry kombinací hodnot odstínu, intenzity a sytosti (his) z rastrů</translation>
     </message>
     <message>
         <source>Create shaded map</source>
@@ -178752,7 +178799,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Detects accumulation patterns in temporally accumulated space time raster datasets created by t.rast.accumulate</source>
-        <translation type="unfinished"/>
+        <translation>Detekuje akumulační vzory v časově akumulovaných časoprostorových rastrových sadách dat vytvořených funkcí t.rast.accumulate</translation>
     </message>
     <message>
         <source>Develop images and group</source>
@@ -178836,7 +178883,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Drapes a color raster over an shaded relief or aspect map</source>
-        <translation type="unfinished"/>
+        <translation>Překryje barevný rastr přes stínovaný reliéf nebo mapu expozice svahů</translation>
     </message>
     <message>
         <source>Drop column from attribute table</source>
@@ -178860,7 +178907,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"/>
+        <translation>Export 3 rastrů GRASS (R, G, B) do obrazu PPM v rozlišení aktuální oblasti</translation>
     </message>
     <message>
         <source>Export from GRASS</source>
@@ -178976,7 +179023,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Exports a raster map as GRASS GIS specific archive file</source>
-        <translation type="unfinished"/>
+        <translation>Exportuje rastrovou mapu jako archivní soubor specifický pro GRASS GIS</translation>
     </message>
     <message>
         <source>Exports a space time vector dataset as GRASS GIS specific archive file</source>
@@ -178984,7 +179031,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Exports a vector map as GRASS GIS specific archive file</source>
-        <translation type="unfinished"/>
+        <translation>Exportuje vektorovou mapu jako archivní soubor specifický pro GRASS GIS</translation>
     </message>
     <message>
         <source>Exports attribute tables into various format</source>
@@ -179060,7 +179107,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation type="unfinished"/>
+        <translation>Vyplnění oblastí bez dat v rastru pomocí interpolace splines v.surf.rst</translation>
     </message>
     <message>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
@@ -179092,15 +179139,15 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
-        <translation type="unfinished"/>
+        <translation>Generování rastru kumulativních nákladů na přesun mezi lokalitami na základě vstupního rastru nákladů a souřadnic výchozího bodu (bodů)</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
-        <translation type="unfinished"/>
+        <translation>Generování rastru kumulativních nákladů na přesun mezi lokalitami na základě vstupního rastru nákladů a rastru výchozího(ých) bodu(ů)</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
-        <translation type="unfinished"/>
+        <translation>Generování rastru kumulativních nákladů na přesun mezi lokalitami na základě vstupního rastru nákladů a vektoru výchozího bodu (bodů)</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
@@ -179136,7 +179183,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="unfinished"/>
+        <translation>Funkce rastrové transformace barev Hue Intensity Saturation (HIS) na Red Green Blue (RGB)</translation>
     </message>
     <message>
         <source>Hydrologic modelling</source>
@@ -179304,7 +179351,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Imports a raster map as GRASS GIS specific archive file (packed with r.pack).</source>
-        <translation type="unfinished"/>
+        <translation>Importuje rastrovou mapu jako archivní soubor specifický pro GRASS GIS (zabalený s r.pack).</translation>
     </message>
     <message>
         <source>Imports a space time vector dataset from a GRASS GIS specific archive file</source>
@@ -179312,7 +179359,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Imports a vector map as GRASS GIS specific archive file (packed with v.pack).</source>
-        <translation type="unfinished"/>
+        <translation>Importuje vektorovou mapu jako archivní soubor specifický pro GRASS GIS (zabalený s v.pack).</translation>
     </message>
     <message>
         <source>Imports space time raster dataset</source>
@@ -179596,7 +179643,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Performs a neighborhood analysis for each map in a space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Provádí analýzu sousedství pro každou mapu v rastrové datové sadě časoprostoru</translation>
     </message>
     <message>
         <source>Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset</source>
@@ -179604,11 +179651,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Performs spatio-temporal mapcalc expressions on temporally sampled maps of space time raster datasets</source>
-        <translation type="unfinished"/>
+        <translation>Provádí časoprostorové výrazy mapcalc na časově vzorkovaných mapách časoprostorových rastrových datových sad</translation>
     </message>
     <message>
         <source>Performs spatio-temporal r3.mapcalc expressions on temporally sampled maps of space time 3D raster datasets</source>
-        <translation type="unfinished"/>
+        <translation>Provádí časoprostorové výrazy r3.mapcalc na časově vzorkovaných mapách časoprostorových 3D rastrových datových sad</translation>
     </message>
     <message>
         <source>Performs transformation of 2D vector features to 3D with fixed height</source>
@@ -179628,7 +179675,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="unfinished"/>
+        <translation>Vytisknout informace o projekci z georeferencovaného souboru a na jejich základě vytvořit novou polohu</translation>
     </message>
     <message>
         <source>Print projection information of the current location</source>
@@ -179636,11 +179683,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Prints attributes of vector maps registered in a space time vector dataset</source>
-        <translation type="unfinished"/>
+        <translation>Vypíše atributy vektorových map registrovaných v datové sadě vektorového časoprostoru</translation>
     </message>
     <message>
         <source>Prints/sets general temporal GIS database connection for current mapset</source>
-        <translation type="unfinished"/>
+        <translation>Vytiskne/nastaví obecné připojení k časové databázi GIS pro aktuální mapovou sadu</translation>
     </message>
     <message>
         <source>Projection conversion of vector</source>
@@ -179724,15 +179771,15 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="unfinished"/>
+        <translation>Překlasifikovat rastr s plochami většími než je velikost uživatelem definované plochy (v hektarech)</translation>
     </message>
     <message>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="unfinished"/>
+        <translation>Překlasifikovat rastr s plochami menšími než je velikost uživatelem definované plochy (v hektarech)</translation>
     </message>
     <message>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="unfinished"/>
+        <translation>Překlasifikovat rastr větší nebo menší než uživatelem definovaná velikost plochy (v hektarech)</translation>
     </message>
     <message>
         <source>Recode categorical raster using reclassification rules</source>
@@ -179764,11 +179811,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="unfinished"/>
+        <translation>Regularizovaný spline s interpolací rastru napětí na základě vektorových bodů</translation>
     </message>
     <message>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="unfinished"/>
+        <translation>Reinterpolace a výpočet topografické analýzy pomocí regularizovaného spline s napětím a vyhlazováním</translation>
     </message>
     <message>
         <source>Remove all lines or boundaries of zero length</source>
@@ -179824,7 +179871,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Replaces gaps in a space time raster dataset with interpolated raster maps</source>
-        <translation type="unfinished"/>
+        <translation>Nahrazuje mezery v rastrové datové sadě časoprostoru interpolovanými rastrovými mapami</translation>
     </message>
     <message>
         <source>Report and statistics</source>
@@ -180016,7 +180063,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Stores raster map values at spatial and temporal positions of vector points as vector attributes</source>
-        <translation type="unfinished"/>
+        <translation>Ukládá hodnoty rastrové mapy v prostorových a časových pozicích vektorových bodů jako atributy vektoru</translation>
     </message>
     <message>
         <source>Sum raster cell values</source>
@@ -180032,7 +180079,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka vzájemného výskytu (shody) kategorií pro dva rastry</translation>
     </message>
     <message>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
@@ -180176,7 +180223,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Vector supervised classification tool which uses attributes as classification parameters</source>
-        <translation type="unfinished"/>
+        <translation>Nástroj pro vektorovou klasifikaci s dohledem, který používá atributy jako parametry klasifikace</translation>
     </message>
     <message>
         <source>Vector union</source>
@@ -180232,7 +180279,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculate shadow maps from sun position determined by date/time</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítat mapy stínů z umístění slunce dle data/času</translation>
     </message>
 </context>
 <context>
@@ -180627,7 +180674,7 @@ Supported output formats for this option are:
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="957"/>
         <source>The associated plot axis, e.g. &apos;x&apos; or &apos;y&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Přidružená osa grafu, např. &apos;x&apos; nebo &apos;y&apos;.</translation>
     </message>
 </context>
 <context>
@@ -180693,7 +180740,7 @@ Supported output formats for this option are:
     </message>
     <message>
         <source>Nodata value to use for the destination proximity raster</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota Nodata, která se má použít pro rastr blízkosti cíle</translation>
     </message>
     <message>
         <source>Additional creation options</source>
@@ -180828,7 +180875,7 @@ Supported output formats for this option are:
     </message>
     <message>
         <source>Burn value extracted from the &quot;Z&quot; values of the feature</source>
-        <translation type="unfinished"/>
+        <translation>Hodnota hoření extrahovaná z hodnot „Z“ prvku</translation>
     </message>
     <message>
         <source>Assign a specified NoData value to output bands</source>
@@ -181771,7 +181818,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="750"/>
         <source>Base name of current project&apos;s filename (without path and extension).</source>
-        <translation type="unfinished"/>
+        <translation>Základní název souboru aktuálního projektu (bez cesty a přípony).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="751"/>
@@ -181781,7 +181828,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="752"/>
         <source>Identifier for the coordinate reference system of project (e.g., &apos;EPSG:4326&apos;).</source>
-        <translation type="unfinished"/>
+        <translation>Identifikátor souřadnicového referenčního systému projektu (např. „EPSG:4326“).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="753"/>
@@ -181796,27 +181843,27 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="755"/>
         <source>Name of the coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Název souřadnicového referenčního systému projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="756"/>
         <source>Acronym of the coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Zkratka souřadnicového referenčního systému projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="757"/>
         <source>Acronym of the ellipsoid of the coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Zkratka elipsoidu souřadnicového referenčního systému projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="758"/>
         <source>Proj4 definition of the coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Definice souřadnicového referenčního systému projektu v Proj4.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="759"/>
         <source>WKT definition of the coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Definice souřadnicového referenčního systému projektu ve WKT.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="761"/>
@@ -181826,12 +181873,12 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="762"/>
         <source>Vertical coordinate reference system of project (full definition).</source>
-        <translation type="unfinished"/>
+        <translation>Vertikální souřadnicový referenční systém projektu (úplná definice).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="763"/>
         <source>Name of the vertical coordinate reference system of the project.</source>
-        <translation type="unfinished"/>
+        <translation>Název výškového souřadnicového referenčního systému projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="764"/>
@@ -181871,27 +181918,27 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="772"/>
         <source>Area unit for current project, used when calculating areas of geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Plošná jednotka pro aktuální projekt, používaná při výpočtu ploch geometrických objektů.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="773"/>
         <source>Distance unit for current project, used when calculating lengths of geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Jednotka vzdálenosti pro aktuální projekt, používaná při výpočtu délek geometrií.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="774"/>
         <source>Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Název elipsoidu aktuálního projektu, používaný při výpočtu geodetických ploch a délek geometrií.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="775"/>
         <source>List of all map layer IDs from the current project.</source>
-        <translation type="unfinished"/>
+        <translation>Seznam všech ID vrstev mapy z aktuálního projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="776"/>
         <source>List of all map layers from the current project.</source>
-        <translation type="unfinished"/>
+        <translation>Seznam všech mapových vrstev z aktuálního projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="779"/>
@@ -181926,7 +181973,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="786"/>
         <source>Vertical coordinate reference system of layer (full definition).</source>
-        <translation type="unfinished"/>
+        <translation>Vertikální souřadnicový referenční systém vrstvy (úplná definice).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="787"/>
@@ -181946,12 +181993,12 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="792"/>
         <source>The ID of the current feature being evaluated.</source>
-        <translation type="unfinished"/>
+        <translation>ID aktuálně vyhodnocovaného prvku.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="793"/>
         <source>The geometry of the current feature being evaluated.</source>
-        <translation type="unfinished"/>
+        <translation>Geometrie aktuálně vyhodnocovaného prvku.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="796"/>
@@ -181971,17 +182018,17 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="799"/>
         <source>Composition page height in mm (or specified custom units).</source>
-        <translation type="unfinished"/>
+        <translation>Výška stránky kompozice v mm (nebo zadaných vlastních jednotkách).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="800"/>
         <source>Composition page width in mm (or specified custom units).</source>
-        <translation type="unfinished"/>
+        <translation>Šířka stránky kompozice v mm (nebo zadaných vlastních jednotkách).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="801"/>
         <source>Array of Y coordinate of the top of each page.</source>
-        <translation type="unfinished"/>
+        <translation>Pole souřadnice Y horního okraje každé stránky.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="802"/>
@@ -182106,7 +182153,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="832"/>
         <source>Name of the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>Název souřadnicového referenčního systému mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="833"/>
@@ -182121,32 +182168,32 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="835"/>
         <source>Acronym of the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>Zkratka souřadnicového referenčního systému mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="836"/>
         <source>Projection method used by the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>Projekční metoda používaná souřadnicovým referenčním systémem mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="837"/>
         <source>Acronym of the ellipsoid of the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>Zkratka elipsoidu souřadnicového referenčního systému mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="838"/>
         <source>Proj4 definition of the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>Definice souřadnicového referenčního systému mapy pomocí Proj4.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="839"/>
         <source>WKT definition of the coordinate reference system of the map.</source>
-        <translation type="unfinished"/>
+        <translation>WKT definice souřadnicového referenčního systému mapy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="840"/>
         <source>List of map layer IDs visible in the map.</source>
-        <translation type="unfinished"/>
+        <translation>Seznam ID vrstev mapy viditelných v mapě.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="841"/>
@@ -182156,17 +182203,17 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="843"/>
         <source>Start of the map&apos;s temporal time range (as a datetime value)</source>
-        <translation type="unfinished"/>
+        <translation>Začátek časového rozsahu mapy (jako hodnota data a času)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="844"/>
         <source>End of the map&apos;s temporal time range (as a datetime value)</source>
-        <translation type="unfinished"/>
+        <translation>Konec časového rozsahu mapy (jako hodnota data a času)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="845"/>
         <source>Duration of the map&apos;s temporal time range (as an interval value)</source>
-        <translation type="unfinished"/>
+        <translation>Trvání časového rozsahu mapy (jako intervalová hodnota)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="846"/>
@@ -182191,7 +182238,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="851"/>
         <source>Temporal duration of each animation frame (as an interval value)</source>
-        <translation type="unfinished"/>
+        <translation>Časová délka každého animačního snímku (jako hodnota intervalu)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="852"/>
@@ -182201,27 +182248,27 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="853"/>
         <source>Unit value of the frame time step during animation playback</source>
-        <translation type="unfinished"/>
+        <translation>Jednotková hodnota časového kroku snímku během přehrávání animace</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="854"/>
         <source>String representation of the frame time step unit during animation playback</source>
-        <translation type="unfinished"/>
+        <translation>Řetězcová reprezentace jednotky časového kroku snímku během přehrávání animace</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="855"/>
         <source>Start of the animation&apos;s overall temporal time range (as a datetime value)</source>
-        <translation type="unfinished"/>
+        <translation>Začátek celkového časového rozsahu animace (jako hodnota data a času)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="856"/>
         <source>End of the animation&apos;s overall temporal time range (as a datetime value)</source>
-        <translation type="unfinished"/>
+        <translation>Konec celkového časového rozsahu animace (jako hodnota data a času)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="857"/>
         <source>Duration of the animation&apos;s overall temporal time range (as an interval value)</source>
-        <translation type="unfinished"/>
+        <translation>Trvání celkového časového rozsahu animace (jako hodnota intervalu)</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="860"/>
@@ -182256,7 +182303,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="865"/>
         <source>Current grid annotation axis (e.g., &apos;x&apos; for longitude, &apos;y&apos; for latitude).</source>
-        <translation type="unfinished"/>
+        <translation>Aktuální osa anotace mřížky (např. „x“ pro zeměpisnou délku, „y“ pro zeměpisnou šířku).</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="866"/>
@@ -182266,7 +182313,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="869"/>
         <source>Last cursor position on the canvas in the project&apos;s geographical coordinates.</source>
-        <translation type="unfinished"/>
+        <translation>Poslední pozice kurzoru na plátně v zeměpisných souřadnicích projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="870"/>
@@ -182286,7 +182333,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="875"/>
         <source>Boolean indicating if layers can be split in the legend.</source>
-        <translation type="unfinished"/>
+        <translation>Logická hodnota označující, zda lze vrstvy v legendě rozdělit.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="876"/>
@@ -182296,12 +182343,12 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="877"/>
         <source>Boolean indicating if the content of the legend is filtered by the map.</source>
-        <translation type="unfinished"/>
+        <translation>Logická hodnota označující, zda je obsah legendy filtrován mapou.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="878"/>
         <source>Boolean indicating if the Atlas is filtered out of the legend.</source>
-        <translation type="unfinished"/>
+        <translation>Logická hodnota označující, zda je Atlas odfiltrován z legendy.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="881"/>
