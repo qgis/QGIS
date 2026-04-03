@@ -35,7 +35,7 @@
       "arg": "backend",
       "optional": true,
       "default": "'QGIS'",
-      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'"
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. 'GEOS' works only on 2D components (Z or M components are ignored) where 'QGIS' works on 2D, 3D and 4D. Also, 'GEOS' compares coordinates by using 2D Euclidean distance where 'QGIS' uses component per component comparison."
     },
     {
       "arg": "epsilon",
@@ -74,7 +74,7 @@
       "returns": "an array of geometries (in WKT), for up to two regions fuzzy equal to the current feature"
     }
   ],
-  "notes": "This function requires exact equality of geometries, meaning that the geometries 'LINESTRING( 0 0, 1 1 )' and 'LINESTRING( 1 1, 0 0 )' are different.",
+  "notes": "This function uses fuzzy equality of geometries, see also 'equals_fuzzy' function examples.",
   "tags": [
     "predicate",
     "current",

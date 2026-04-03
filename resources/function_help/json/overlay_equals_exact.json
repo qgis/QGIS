@@ -35,7 +35,7 @@
       "arg": "backend",
       "optional": true,
       "default": "'QGIS'",
-      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'"
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. 'GEOS' works only on 2D components (Z or M components are ignored) where 'QGIS' works on 2D, 3D and 4D."
     }
   ],
   "examples": [

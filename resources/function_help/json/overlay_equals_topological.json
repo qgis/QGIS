@@ -35,7 +35,7 @@
       "arg": "backend",
       "optional": true,
       "default": "'GEOS'",
-      "description": "Geometry backend implementation: 'GEOS'"
+      "description": "Available geometry backend implementations: 'GEOS'. 'GEOS' works only on 2D components, Z or M components are ignored."
     }
   ],
   "examples": [
@@ -68,7 +68,7 @@
       "returns": "an array of geometries (in WKT), for up to two regions topologically equal to the current feature"
     }
   ],
-  "notes": "This function requires exact equality of geometries, meaning that the geometries 'LINESTRING( 0 0, 1 1 )' and 'LINESTRING( 1 1, 0 0 )' are different.",
+  "notes": "This function uses topological equality of geometries, see also 'equals_topological' function examples.",
   "tags": [
     "predicate",
     "current",
