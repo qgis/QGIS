@@ -1284,7 +1284,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   return Qgis::GeometryOperationResult::GeometryEngineError;
 }
 
-int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
+int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *feedback )
 {
   if ( !d->geometry || !other.d->geometry )
   {
@@ -1294,7 +1294,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1304,7 +1304,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   return 0;
 }
 
-QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
+QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || other.isNull() )
   {
@@ -1314,7 +1314,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     QgsGeometry result;
@@ -2564,7 +2564,7 @@ QgsGeometryConstPartIterator QgsGeometry::constParts() const
   return QgsGeometryConstPartIterator( d->geometry.get() );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2573,7 +2573,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 
   QgsGeos g( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr<QgsAbstractGeometry> geom( g.buffer( distance, segments, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> geom( g.buffer( distance, segments, &mLastError, feedback ) );
   if ( !geom )
   {
     QgsGeometry result;
@@ -2583,7 +2583,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   return QgsGeometry( std::move( geom ) );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2592,7 +2592,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, Qgis::EndCapStyl
 
   QgsGeos g( d->geometry.get() );
   mLastError.clear();
-  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, miterLimit, &mLastError );
+  QgsAbstractGeometry *geom = g.buffer( distance, segments, endCapStyle, joinStyle, miterLimit, &mLastError, feedback );
   if ( !geom )
   {
     QgsGeometry result;
@@ -2757,7 +2757,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   }
 }
 
-QgsGeometry QgsGeometry::simplify( double tolerance ) const
+QgsGeometry QgsGeometry::simplify( double tolerance, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -2766,7 +2766,7 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( tolerance, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( tolerance, &mLastError, feedback ) );
   if ( !simplifiedGeom )
   {
     QgsGeometry result;
@@ -2937,6 +2937,32 @@ QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles, Qgs
   return QgsGeometry( std::move( concaveHull ) );
 }
 
+QgsGeometry QgsGeometry::concaveHullOfPolygons( double lengthRatio, bool allowHoles, bool isTight, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( type() != Qgis::GeometryType::Polygon )
+  {
+    QgsGeometry geom;
+    geom.mLastError = u"Only Polygon or MultiPolygon geometries are supported"_s;
+    return geom;
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHullOfPolygons( lengthRatio, allowHoles, isTight, &mLastError, feedback ) );
+  if ( !concaveHull )
+  {
+    QgsGeometry geom;
+    geom.mLastError = mLastError;
+    return geom;
+  }
+  return QgsGeometry( std::move( concaveHull ) );
+}
+
 QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double tolerance, bool edgesOnly ) const
 {
   if ( !d->geometry )
@@ -3059,7 +3085,7 @@ QgsGeometry QgsGeometry::sharedPaths( const QgsGeometry &other ) const
   return result;
 }
 
-QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
   {
@@ -3076,7 +3102,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &p
 
   QgsGeos geos( geom );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters, feedback ) );
   if ( !result )
   {
     QgsGeometry geom;
@@ -3212,7 +3238,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
   }
 }
 
-QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3222,7 +3248,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeo
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
 
   if ( !resultGeom )
   {
@@ -3234,7 +3260,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeo
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3243,7 +3269,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3273,7 +3299,7 @@ QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) c
   return result;
 }
 
-QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3283,7 +3309,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeome
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3293,7 +3319,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeome
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
+QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -3303,7 +3329,7 @@ QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry, const QgsGe
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError, parameters, feedback ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3498,14 +3524,14 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   return 4;
 }
 
-QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed ) const
+QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed, QgsFeedback *feedback ) const
 {
   if ( !d->geometry )
     return QgsGeometry();
 
   mLastError.clear();
   QgsGeos geos( d->geometry.get() );
-  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( method, keepCollapsed, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( method, keepCollapsed, &mLastError, feedback ) );
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;
@@ -3827,12 +3853,12 @@ bool QgsGeometry::isFuzzyEqual( const QgsGeometry &g, double epsilon, Qgis::Geom
   BUILTIN_UNREACHABLE
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters, QgsFeedback *feedback )
 {
   QgsGeos geos( nullptr );
 
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters, feedback ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;
@@ -3909,7 +3935,7 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
   }
 }
 
-QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
+QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle, QgsFeedback *feedback )
 {
   if ( !d->geometry || rectangle.isNull() || rectangle.isEmpty() )
   {
@@ -3918,7 +3944,7 @@ QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom = geos.clip( rectangle, &mLastError );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom = geos.clip( rectangle, &mLastError, feedback );
   if ( !resultGeom )
   {
     QgsGeometry result;

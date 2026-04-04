@@ -64,6 +64,11 @@ double QgsPercentageWidget::value() const
   return mSpinBox->value() / 100.0;
 }
 
+QgsDoubleSpinBox *QgsPercentageWidget::spinBox()
+{
+  return mSpinBox;
+}
+
 void QgsPercentageWidget::setValue( double value )
 {
   mSpinBox->setValue( value * 100.0 );

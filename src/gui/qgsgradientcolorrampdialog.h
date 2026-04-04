@@ -25,6 +25,7 @@
 #include <QDialog>
 
 class QgsGradientColorRamp;
+class QgsSettingsEntryBool;
 class QwtPlot;
 class QwtPlotCurve;
 class QwtPlotMarker;
@@ -41,6 +42,11 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     Q_PROPERTY( QgsGradientColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+    static const QgsSettingsEntryBool *settingsPlotHue SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsPlotLightness SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsPlotSaturation SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsPlotAlpha SIP_SKIP;
+
     /**
      * Constructor for QgsGradientColorRampDialog.
      * \param ramp initial ramp to show in dialog

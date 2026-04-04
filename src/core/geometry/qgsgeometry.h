@@ -1287,17 +1287,19 @@ class CORE_EXPORT QgsGeometry
     /**
      * Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \note Not available in Python
      */
-    int makeDifferenceInPlace( const QgsGeometry &other ) SIP_SKIP;
+    int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
 
     /**
      * Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.
      * \param other geometry that should not be intersect
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \returns difference geometry, or empty geometry if difference could not be calculated
      */
-    QgsGeometry makeDifference( const QgsGeometry &other ) const;
+    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns the bounding box of the geometry.
@@ -1639,12 +1641,14 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
-     * of segments used to approximate curves
+     * of segments used to approximate curves.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      *
      * \see singleSidedBuffer()
      * \see taperedBuffer()
      */
-    QgsGeometry buffer( double distance, int segments ) const;
+    QgsGeometry buffer( double distance, int segments, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a buffer region around the geometry, with additional style options.
@@ -1653,11 +1657,12 @@ class CORE_EXPORT QgsGeometry
      * \param endCapStyle end cap style
      * \param joinStyle   join style for corners in geometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
+     * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      *
      * \see singleSidedBuffer()
      * \see taperedBuffer()
      */
-    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns an offset line at a given distance and side from an input line.
@@ -1726,8 +1731,12 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
 
-    //! Returns a simplified version of this geometry using a specified tolerance value
-    QgsGeometry simplify( double tolerance ) const;
+    /**
+     * Returns a simplified version of this geometry using a specified \a tolerance value.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     */
+    QgsGeometry simplify( double tolerance, QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a copy of the geometry which has been densified by adding the specified
@@ -1913,9 +1922,47 @@ class CORE_EXPORT QgsGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      *
+     * \see concaveHullOfPolygons()
      * \since QGIS 3.28
      */
     QgsGeometry concaveHull( double targetPercent, bool allowHoles = false, QgsFeedback * feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Constructs a concave hull of a set of polygons, respecting the polygons as constraints.
+     *
+     * A concave hull is a (possibly) non-convex polygon containing all the input polygons.
+     *
+     * The computed hull "fills the gap" between the polygons, and does not intersect their interior.
+     *
+     * A set of polygons has a sequence of hulls of increasing concaveness,
+     * determined by a numeric target parameter.
+     *
+     * The concave hull is constructed by removing the longest outer edges
+     * of the Delaunay Triangulation of the space between the polygons,
+     * until the target criterion parameter is reached.
+     *
+     * The "Maximum Edge Length" parameter limits the length of the longest edge between polygons
+     * to be no larger than this value. This can be expressed as a ratio between the lengths of the
+     * longest and shortest edges.
+     *
+     * The input geometry must be a valid Polygon or MultiPolygon (i.e. they must be non-overlapping).
+     *
+     * \param lengthRatio specifies the Maximum Edge Length as a
+     *        fraction of the difference between the longest and
+     *        shortest edge lengths between the polygons.
+     *        This normalizes the Maximum Edge Length to be scale-free.
+     *        A value of 1 produces the convex hull; a value of 0 produces
+     *        the original polygons.
+     * \param allowHoles set to TRUE to allow the concave hull to contain holes
+     * \param isTight set to TRUE if the concave hull should follow the outer boundaries of the input polygons
+     * \param feedback optional feedback object for early cancellation.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     *
+     * \see concaveHull()
+     * \since QGIS 4.2
+     */
+    QgsGeometry concaveHullOfPolygons( double lengthRatio, bool allowHoles = false, bool isTight = false, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -2061,8 +2108,9 @@ class CORE_EXPORT QgsGeometry
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the subdivision results.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns an interpolated point on the geometry at the specified \a distance.
@@ -2112,16 +2160,20 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the intersection results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
      *
      * Performs a fast, non-robust intersection between the geometry and
      * a \a rectangle. The returned geometry may be invalid.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry clipped( const QgsRectangle &rectangle );
+    QgsGeometry clipped( const QgsRectangle &rectangle, QgsFeedback* feedback = nullptr );
 
     /**
      * Returns a geometry representing all the points in this geometry and other (a
@@ -2136,8 +2188,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the union results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -2161,8 +2215,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the difference results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -2174,8 +2230,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the difference results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr ) const;
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
@@ -2777,12 +2835,13 @@ class CORE_EXPORT QgsGeometry
      * The \a method and \a keepCollapsed arguments are available since QGIS 3.28.
      * They require builds based on GEOS 3.10 or later.
      *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
+     *
      * \returns new valid QgsGeometry or null geometry on error
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
-     *
      */
-    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QgsFeedback* feedback = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the orientation of the polygon.
@@ -2950,8 +3009,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
      * control the union results.
+     *
+     * The optional \a feedback argument allows for early cancellation (since QGIS 4.2).
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = nullptr );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent

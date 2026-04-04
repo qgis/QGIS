@@ -1303,12 +1303,14 @@ Replaces a part of this geometry with another line
 %End
 
 
-    QgsGeometry makeDifference( const QgsGeometry &other ) const;
+    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns the geometry formed by modifying this geometry such that it does
 not intersect the other geometry.
 
 :param other: geometry that should not be intersect
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 :return: difference geometry, or empty geometry if difference could not
          be calculated
@@ -1688,17 +1690,20 @@ Returns ``True`` if the geometry crosses another ``geometry``.
    :py:class:`QgsGeometryEngine` class.
 %End
 
-    QgsGeometry buffer( double distance, int segments ) const;
+    QgsGeometry buffer( double distance, int segments, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a buffer region around this geometry having the given width and
-with a specified number of segments used to approximate curves
+with a specified number of segments used to approximate curves.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
 %End
 
-    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a buffer region around the geometry, with additional style
 options.
@@ -1710,6 +1715,8 @@ options.
 :param joinStyle: join style for corners in geometry
 :param miterLimit: limit on the miter ratio used for very sharp corners
                    (JoinStyleMiter only)
+:param feedback: optional feedback object for early cancellation (since
+                 QGIS 4.2).
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
@@ -1799,10 +1806,13 @@ the line by a specified distance. Lines are extended using the bearing
 of the first or last segment in the line.
 %End
 
-    QgsGeometry simplify( double tolerance ) const;
+    QgsGeometry simplify( double tolerance, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a simplified version of this geometry using a specified
-tolerance value
+``tolerance`` value.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
@@ -2028,7 +2038,55 @@ early cancellation.
 :raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or
                                   earlier.
 
+.. seealso:: :py:func:`concaveHullOfPolygons`
+
 .. versionadded:: 3.28
+%End
+
+    QgsGeometry concaveHullOfPolygons( double lengthRatio, bool allowHoles = false, bool isTight = false, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Constructs a concave hull of a set of polygons, respecting the polygons
+as constraints.
+
+A concave hull is a (possibly) non-convex polygon containing all the
+input polygons.
+
+The computed hull "fills the gap" between the polygons, and does not
+intersect their interior.
+
+A set of polygons has a sequence of hulls of increasing concaveness,
+determined by a numeric target parameter.
+
+The concave hull is constructed by removing the longest outer edges of
+the Delaunay Triangulation of the space between the polygons, until the
+target criterion parameter is reached.
+
+The "Maximum Edge Length" parameter limits the length of the longest
+edge between polygons to be no larger than this value. This can be
+expressed as a ratio between the lengths of the longest and shortest
+edges.
+
+The input geometry must be a valid Polygon or MultiPolygon (i.e. they
+must be non-overlapping).
+
+:param lengthRatio: specifies the Maximum Edge Length as a fraction of
+                    the difference between the longest and shortest edge
+                    lengths between the polygons. This normalizes the
+                    Maximum Edge Length to be scale-free. A value of 1
+                    produces the convex hull; a value of 0 produces the
+                    original polygons.
+:param allowHoles: set to ``True`` to allow the concave hull to contain
+                   holes
+:param isTight: set to ``True`` if the concave hull should follow the
+                outer boundaries of the input polygons
+:param feedback: optional feedback object for early cancellation.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or
+                                  earlier.
+
+.. seealso:: :py:func:`concaveHull`
+
+.. versionadded:: 4.2
 %End
 
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
@@ -2182,7 +2240,7 @@ Returns a null geometry on exception.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Subdivides the geometry. The returned geometry will be a collection
 containing subdivided parts from the original geometry, where no part
@@ -2206,6 +2264,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the subdivision results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry interpolate( double distance ) const;
@@ -2257,7 +2318,7 @@ average angle from the segment either side of the node is returned.
 .. seealso:: :py:func:`angleAtVertex`
 %End
 
-    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing the points shared by this geometry and
 other.
@@ -2271,17 +2332,23 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the intersection results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    QgsGeometry clipped( const QgsRectangle &rectangle );
+    QgsGeometry clipped( const QgsRectangle &rectangle, QgsFeedback* feedback = 0 );
 %Docstring
 Clips the geometry using the specified ``rectangle``.
 
 Performs a fast, non-robust intersection between the geometry and a
 ``rectangle``. The returned geometry may be invalid.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing all the points in this geometry and
 other (a union geometry operation).
@@ -2299,6 +2366,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the union results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -2314,7 +2384,7 @@ Since QGIS 3.44 the optional ``parameters`` argument can be used to
 specify parameters which control the mergeLines results.
 %End
 
-    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that
 do not make up other.
@@ -2328,9 +2398,12 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the difference results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
-    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 ) const;
 %Docstring
 Returns a geometry representing the points making up this geometry that
 do not make up other.
@@ -2344,6 +2417,9 @@ returned geometry.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the difference results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     QgsGeometry extrude( double x, double y );
@@ -2836,7 +2912,7 @@ project properties
 .. versionadded:: 3.34
 %End
 
-    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QgsFeedback* feedback = 0 ) const;
 %Docstring
 Attempts to make an invalid geometry valid without losing vertices.
 
@@ -2852,6 +2928,9 @@ geometry.
 
 The ``method`` and ``keepCollapsed`` arguments are available since QGIS
 3.28. They require builds based on GEOS 3.10 or later.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 
 :return: new valid QgsGeometry or null geometry on error
 
@@ -3036,7 +3115,7 @@ original geometry.
 .. versionadded:: 3.20
 %End
 
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters(), QgsFeedback* feedback = 0 );
 %Docstring
 Compute the unary union on a list of ``geometries``. May be faster than
 an iterative union on a set of geometries. The returned geometry will be
@@ -3046,6 +3125,9 @@ errors.
 
 Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the union results.
+
+The optional ``feedback`` argument allows for early cancellation (since
+QGIS 4.2).
 %End
 
     static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );

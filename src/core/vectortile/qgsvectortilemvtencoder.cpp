@@ -217,7 +217,7 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
     }
 
     // clip
-    const QgsGeometry clippedToTile = g.clipped( tileExtent );
+    const QgsGeometry clippedToTile = g.clipped( tileExtent, feedback );
     if ( clippedToTile.isEmpty() )
     {
       // this can often happen -- the transformation of the tile's bounding box to the layer's bounding box

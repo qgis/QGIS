@@ -26,8 +26,8 @@
   }, {
     "arg": "backend",
     "optional": true,
-    "default": "GEOS",
-    "description": "Geometry backend implementation: GEOS"
+    "default": "'GEOS'",
+    "description": "Geometry backend implementation: 'GEOS'"
   }],
   "examples": [{
     "expression": "overlay_topologically_equals('regions')",

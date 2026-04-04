@@ -386,7 +386,7 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
     return false;
 
   std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
-  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
 
   try
@@ -985,7 +985,7 @@ bool QgsTriangulatedPointCloudLayerProfileGenerator::generateProfile( const QgsP
     QgsGeos geosPoly( &triangle );
     geosPoly.prepareGeometry();
 
-    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve ) );
+    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve, nullptr, QgsGeometryParameters(), mFeedback.get() ) );
     if ( !intersectingGeom )
       continue;
 

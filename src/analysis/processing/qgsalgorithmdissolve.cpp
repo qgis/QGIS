@@ -297,7 +297,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     context,
     feedback,
     [&]( const QVector<QgsGeometry> &parts ) -> QgsGeometry {
-      QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+      QgsGeometry result( QgsGeometry::unaryUnion( parts, QgsGeometryParameters(), feedback ) );
       if ( QgsWkbTypes::geometryType( result.wkbType() ) == Qgis::GeometryType::Line )
         result = result.mergeLines();
       // Geos may fail in some cases, let's try a slower but safer approach
@@ -311,7 +311,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
         result = QgsGeometry();
         for ( const auto &p : parts )
         {
-          result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+          result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p, QgsGeometryParameters(), feedback );
           if ( QgsWkbTypes::geometryType( result.wkbType() ) == Qgis::GeometryType::Line )
             result = result.mergeLines();
           if ( feedback->isCanceled() )

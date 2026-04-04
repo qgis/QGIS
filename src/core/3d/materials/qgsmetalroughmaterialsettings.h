@@ -60,14 +60,14 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     QColor baseColor() const { return mBaseColor; }
 
     /**
-     * Returns the material's metalness.
+     * Returns the material's metalness, as a value between 0 and 1.
      *
      * \see setMetalness()
      */
     double metalness() const { return mMetalness; }
 
     /**
-     * Returns the material's roughness.
+     * Returns the material's roughness, as a value between 0 and 1.
      *
      * \see setRoughness()
      */
@@ -81,14 +81,14 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     void setBaseColor( const QColor &color ) { mBaseColor = color; }
 
     /**
-     * Returns the material's \a metalness.
+     * Sets the material's \a metalness, as a value between 0 and 1.
      *
      * \see metalness()
      */
     void setMetalness( double metalness ) { mMetalness = metalness; }
 
     /**
-     * Returns the material's \a roughness.
+     * Sets the material's \a roughness, as a value between 0 and 1.
      *
      * \see roughness()
      */
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
   private:
     QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
     double mMetalness = 0.0;
-    double mRoughness = 0.0;
+    double mRoughness = 0.5;
 };
 
 
