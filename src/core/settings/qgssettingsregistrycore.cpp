@@ -130,8 +130,8 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatur
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers
   = new QgsSettingsEntryBool( u"show-legend-classifiers"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, classification attribute name is shown in the legend."_s );
 
-  const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeHiddenIdInLayerTooltips
-  = new QgsSettingsEntryBool( u"hidden-id-in-layer-tooltips"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, ID will not shown in the layer tooltips."_s );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips
+  = new QgsSettingsEntryBool( u"show-id-in-layer-tooltips"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, layer IDs will be shown in the layer tooltips."_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching
   = new QgsSettingsEntryBool( u"enable_wms_tile_prefetch"_s, QgsSettingsTree::sTreeWms, false, u"Whether to include WMS layers when rendering tiles adjacent to the visible map area"_s );
@@ -226,8 +226,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
   settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"qgis/showLegendClassifiers"_s, true );
   settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"/qgis/showLegendClassifiers"_s, true );
-  settingsLayerTreeHiddenIdInLayerTooltips->copyValueFromKey( u"qgis/hiddenIdInLayerTooltips"_s, true );
-  settingsLayerTreeHiddenIdInLayerTooltips->copyValueFromKey( u"/qgis/hiddenIdInLayerTooltips"_s, true );
+  settingsLayerTreeShowIdInLayerTooltips->copyValueFromKey( u"qgis/showIdInLayerTooltips"_s, true );
+  settingsLayerTreeShowIdInLayerTooltips->copyValueFromKey( u"/qgis/showIdInLayerTooltips"_s, true );
 
   // single settings - added in 4.2
   // Old code used QgsSettings::Core section, so the actual QSettings key has a "core/" prefix

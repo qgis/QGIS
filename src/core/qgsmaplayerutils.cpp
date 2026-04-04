@@ -23,15 +23,15 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
 #include <QString>
-#include <qgssettingsregistrycore.h>
-#include <qgssettingsentryimpl.h>
 
 using namespace Qt::StringLiterals;
 
@@ -245,7 +245,7 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
   {
     QStringList parts;
     QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title()
-                                                          : ( layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->shortName() : layer->serverProperties()->title() );
+                                                         : ( layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->shortName() : layer->serverProperties()->title() );
     if ( title.isEmpty() )
       title = layer->name();
     title = "<b>" + title + "</b>";
@@ -267,9 +267,9 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
     if ( !abstract.isEmpty() )
       parts << "<br/>" + abstract.replace( "\n"_L1, "<br/>"_L1 );
     parts << "<i>" + layer->publicSource() + "</i>";
-    if ( !QgsSettingsRegistryCore::settingsLayerTreeHiddenIdInLayerTooltips->value() )
+    if ( QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips->value() )
     {
-      parts << "ID:" + layer->id();
+      parts << QObject::tr( "ID:" ) + layer->id();
     }
     return parts.join( "<br/>"_L1 );
   }
