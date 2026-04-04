@@ -17,6 +17,7 @@
 
 #include "qgsiconutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -25,7 +26,6 @@
 #include <QString>
 
 #include "moc_qgsmaplayermodel.cpp"
-#include <qgsmaplayerutils.h>
 
 using namespace Qt::StringLiterals;
 
@@ -374,7 +374,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
       if ( layer )
       {
-        return QgsMapLayerUtils::layerToolTip(layer);
+        return QgsMapLayerUtils::layerToolTip( layer );
       }
       return QVariant();
     }

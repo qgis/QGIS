@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgsiconutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmimedatautils.h"
 #include "qgspluginlayer.h"
@@ -44,7 +45,6 @@
 #include <QToolButton>
 
 #include "moc_qgsprocessingmultipleselectiondialog.cpp"
-#include <qgsmaplayerutils.h>
 
 using namespace Qt::StringLiterals;
 
@@ -680,8 +680,8 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
         break;
       }
     }
-    
-    QString tooltip = QgsMapLayerUtils::layerToolTip(layer);
+
+    QString tooltip = QgsMapLayerUtils::layerToolTip( layer );
     addOption( id, title, false, true, icon, tooltip );
   };
 
