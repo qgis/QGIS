@@ -206,6 +206,7 @@ class TestQgsTessellator : public QgsTest
     void testBasicClockwise();
     void testWalls();
     void testBackEdges();
+    void testBackFacesWithWalls();
     void test2DTriangle();
     void test3DTriangle();
     void asMultiPolygon();
@@ -668,6 +669,59 @@ void TestQgsTessellator::testBackEdges()
 
   QCOMPARE( tN.zMinimum(), 0 );
   QCOMPARE( tN.zMaximum(), 0 );
+}
+
+void TestQgsTessellator::testBackFacesWithWalls()
+{
+  QgsPolygon rect;
+  rect.fromWkt( "POLYGON((0 0, 3 0, 3 2, 0 2, 0 0))" );
+
+  const QVector3D zPos( 0, 0, 1 );
+  const QVector3D zNeg( 0, 0, -1 );
+  const QVector3D xPos( 1, 0, 0 );
+  const QVector3D xNeg( -1, 0, 0 );
+  const QVector3D yPos( 0, 1, 0 );
+  const QVector3D yNeg( 0, -1, 0 );
+
+  QList<TriangleCoords> tc;
+
+  tc << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), zPos, zPos, zPos );
+  tc << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 1 ), zPos, zPos, zPos );
+  tc << TriangleCoords( QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 0, 2, 1 ), zNeg, zNeg, zNeg );
+  tc << TriangleCoords( QVector3D( 3, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 1 ), zNeg, zNeg, zNeg );
+
+  tc << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 3, 0, 0 ), QVector3D( 3, 2, 0 ), zPos, zPos, zPos );
+  tc << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 3, 0, 0 ), zPos, zPos, zPos );
+  tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 3, 0, 0 ), QVector3D( 0, 2, 0 ), zNeg, zNeg, zNeg );
+  tc << TriangleCoords( QVector3D( 3, 0, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 0, 2, 0 ), zNeg, zNeg, zNeg );
+
+  tc << TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 0 ), xNeg, xNeg, xNeg );
+  tc << TriangleCoords( QVector3D( 0, 0, 0 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 2, 0 ), xNeg, xNeg, xNeg );
+  tc << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 0 ), xPos, xPos, xPos );
+  tc << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 0 ), xPos, xPos, xPos );
+
+  tc << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 2, 1 ), QVector3D( 0, 2, 0 ), yPos, yPos, yPos );
+  tc << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 2, 0 ), yPos, yPos, yPos );
+  tc << TriangleCoords( QVector3D( 3, 2, 1 ), QVector3D( 0, 2, 1 ), QVector3D( 3, 2, 0 ), yNeg, yNeg, yNeg );
+  tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 2, 0 ), yNeg, yNeg, yNeg );
+
+  tc << TriangleCoords( QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 0 ), xPos, xPos, xPos );
+  tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 0, 0 ), xPos, xPos, xPos );
+  tc << TriangleCoords( QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 0 ), xNeg, xNeg, xNeg );
+  tc << TriangleCoords( QVector3D( 3, 0, 0 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 2, 0 ), xNeg, xNeg, xNeg );
+
+  tc << TriangleCoords( QVector3D( 3, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 0 ), yNeg, yNeg, yNeg );
+  tc << TriangleCoords( QVector3D( 3, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 0 ), yNeg, yNeg, yNeg );
+  tc << TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 0, 0, 0 ), yPos, yPos, yPos );
+  tc << TriangleCoords( QVector3D( 0, 0, 0 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 0, 0 ), yPos, yPos, yPos );
+
+  QgsTessellator t;
+  t.setAddNormals( true );
+  t.setOutputZUp( true );
+  t.setBackFacesEnabled( true );
+  t.setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor );
+  t.addPolygon( rect, 1 );
+  QVERIFY( checkTriangleOutput( extractTriangles( t, true ), tc ) );
 }
 
 void TestQgsTessellator::test2DTriangle()

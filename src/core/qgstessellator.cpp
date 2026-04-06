@@ -295,6 +295,10 @@ void QgsTessellator::makeWalls( const QgsLineString &ring, bool ccw, float extru
 
     // make a quad
     addExtrusionWallQuad( pt1, pt2, extrusionHeight );
+
+    if ( mAddBackFaces )
+      addExtrusionWallQuad( pt2, pt1, extrusionHeight );
+
     ptPrev = pt;
   }
 }
