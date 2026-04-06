@@ -161,6 +161,9 @@ void QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  if ( material->objectName() != "goochMaterial"_L1 )
+    return;
+
   Qt3DRender::QEffect *effect = material->effect();
 
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"kd"_s ) )
@@ -186,6 +189,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
   const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
 
   QgsMaterial *material = new QgsMaterial;
+  material->setObjectName( u"goochMaterial"_s );
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
 
