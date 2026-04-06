@@ -34,9 +34,9 @@ QgsMaterialSettingsWidget *QgsNullMaterialWidget::create()
 void QgsNullMaterialWidget::setSettings( const QgsAbstractMaterialSettings *, QgsVectorLayer * )
 {}
 
-QgsAbstractMaterialSettings *QgsNullMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsNullMaterialWidget::settings()
 {
-  return new QgsNullMaterialSettings();
+  return std::make_unique< QgsNullMaterialSettings >();
 }
 
 void QgsNullMaterialWidget::setPreviewVisible( bool )

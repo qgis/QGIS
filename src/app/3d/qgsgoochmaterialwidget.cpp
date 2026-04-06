@@ -111,7 +111,7 @@ void QgsGoochMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
   }
 }
 
-QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsGoochMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsGoochMaterialSettings>();
   m->setDiffuse( btnDiffuse->color() );
@@ -128,7 +128,7 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Specular, mSpecularDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
 }
 
 void QgsGoochMaterialWidget::setPreviewVisible( bool visible )

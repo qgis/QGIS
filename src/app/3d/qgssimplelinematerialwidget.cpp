@@ -59,7 +59,7 @@ void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsSimpleLineMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsSimpleLineMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
@@ -67,7 +67,7 @@ QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, mAmbientDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
 }
 
 void QgsSimpleLineMaterialWidget::setPreviewVisible( bool visible )

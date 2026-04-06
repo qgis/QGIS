@@ -76,7 +76,7 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongTexturedMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsPhongTexturedMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
@@ -88,7 +88,7 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   m->setTextureRotation( textureRotationSpinBox->value() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
 }
 
 void QgsPhongTexturedMaterialWidget::setPreviewVisible( bool visible )

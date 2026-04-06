@@ -145,7 +145,7 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsPhongMaterialSettings>();
   m->setDiffuse( btnDiffuse->color() );
@@ -165,7 +165,7 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Specular, mSpecularDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
 }
 
 void QgsPhongMaterialWidget::setHasOpacity( const bool opacity )
