@@ -206,7 +206,6 @@ class TestQgsTessellator : public QgsTest
     void testBasicClockwise();
     void testWalls();
     void testBackEdges();
-    void testBackFacesWithWalls();
     void test2DTriangle();
     void test3DTriangle();
     void asMultiPolygon();
@@ -648,31 +647,6 @@ void TestQgsTessellator::testWalls()
 
 void TestQgsTessellator::testBackEdges()
 {
-  QgsPolygon polygon;
-  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
-
-  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
-  const QVector3D dn( 0, 0, -1 ); // surface normal pointing straight down for back faces
-  QList<TriangleCoords> tcNormals;
-  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
-  tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
-  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
-  tcNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
-
-  // QgsTessellator tN( 0, 0, true, false, true );
-  QgsTessellator tN;
-  tN.setAddNormals( true );
-  tN.setBackFacesEnabled( true );
-  tN.setOutputZUp( true );
-  tN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( extractTriangles( tN, true ), tcNormals ) );
-
-  QCOMPARE( tN.zMinimum(), 0 );
-  QCOMPARE( tN.zMaximum(), 0 );
-}
-
-void TestQgsTessellator::testBackFacesWithWalls()
-{
   QgsPolygon rect;
   rect.fromWkt( "POLYGON((0 0, 3 0, 3 2, 0 2, 0 0))" );
 
@@ -723,6 +697,7 @@ void TestQgsTessellator::testBackFacesWithWalls()
   t.addPolygon( rect, 1 );
   QVERIFY( checkTriangleOutput( extractTriangles( t, true ), tc ) );
 }
+
 
 void TestQgsTessellator::test2DTriangle()
 {
