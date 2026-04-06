@@ -33,7 +33,7 @@ class QgsGoochMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Goo
     static QgsMaterialSettingsWidget *create();
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
     void setTechnique( Qgis::MaterialRenderingTechnique technique ) final;
-    QgsAbstractMaterialSettings *settings() final;
+    std::unique_ptr< QgsAbstractMaterialSettings > settings() final;
 
   public slots:
     void setPreviewVisible( bool visible ) final;

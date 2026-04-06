@@ -61,7 +61,7 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      *
      * Caller takes ownership of the returned settings.
      */
-    virtual QgsAbstractMaterialSettings *settings() = 0 SIP_FACTORY;
+    virtual std::unique_ptr< QgsAbstractMaterialSettings > settings() = 0 SIP_FACTORY;
 
   public slots:
 

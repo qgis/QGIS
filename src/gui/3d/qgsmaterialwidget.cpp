@@ -172,7 +172,7 @@ void QgsMaterialWidget::materialWidgetChanged()
 {
   if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
-    mCurrentSettings.reset( w->settings() );
+    mCurrentSettings = w->settings();
   }
   emit changed();
 }

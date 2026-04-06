@@ -75,14 +75,14 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsMetalRoughMaterialSettings>();
   m->setBaseColor( mButtonBaseColor->color() );
   m->setMetalness( mMetalnessWidget->value() );
   m->setRoughness( mRoughnessWidget->value() );
   m->setDataDefinedProperties( mPropertyCollection );
-  return m.release();
+  return m;
 }
 
 void QgsMetalRoughMaterialWidget::setPreviewVisible( bool visible )
