@@ -16,6 +16,7 @@
 #include "qgsmetalroughmaterialwidget.h"
 
 #include "qgis.h"
+#include "qgsdoublespinbox.h"
 #include "qgsmetalroughmaterialsettings.h"
 
 #include <QString>
