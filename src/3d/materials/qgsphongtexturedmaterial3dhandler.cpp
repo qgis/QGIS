@@ -74,6 +74,7 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
       }
 
       QgsPhongTexturedMaterial *material = new QgsPhongTexturedMaterial();
+      material->setObjectName( u"phongTexturedMaterial"_s );
 
       int opacity = static_cast<int>( phongSettings->opacity() * 255.0 );
       QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
@@ -144,6 +145,9 @@ void QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
   const QgsPhongTexturedMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongTexturedMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  if ( material->objectName() != "phongTexturedMaterial"_L1 )
+    return;
+
   Qt3DRender::QEffect *effect = material->effect();
 
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"ambientColor"_s ) )

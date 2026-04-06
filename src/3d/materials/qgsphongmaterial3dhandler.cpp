@@ -224,6 +224,9 @@ void QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   const QgsPhongMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  if ( material->objectName() != "phongMaterial"_L1 )
+    return;
+
   Qt3DRender::QEffect *effect = material->effect();
 
   const QColor ambient = phongSettings->ambient();
@@ -274,6 +277,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
   Q_ASSERT( phongSettings );
 
   QgsMaterial *material = new QgsMaterial;
+  material->setObjectName( u"phongMaterial"_s );
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
 
