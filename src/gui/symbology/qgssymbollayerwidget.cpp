@@ -2128,8 +2128,12 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::changed, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
-  connect( vectorLayer(), &QgsMapLayer::editingStarted, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
-  connect( vectorLayer(), &QgsMapLayer::editingStopped, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+
+  if ( vectorLayer() )
+  {
+    connect( vectorLayer(), &QgsMapLayer::editingStarted, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+    connect( vectorLayer(), &QgsMapLayer::editingStopped, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+  }
 
   updateBlankSegmentsWidget();
 }
@@ -2381,7 +2385,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
     mEditBlankSegmentsBtn->setEnabled( false );
     tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because no valid field property has been set" );
   }
-  else if ( QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), blankSegmentsFieldIndex() ) )
+  else if ( !vectorLayer() || QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), blankSegmentsFieldIndex() ) )
   {
     mEditBlankSegmentsBtn->setEnabled( false );
     tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because field property is not editable" );
