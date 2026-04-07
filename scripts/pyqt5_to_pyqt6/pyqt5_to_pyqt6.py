@@ -45,7 +45,6 @@ import glob
 import inspect
 import logging
 import os
-import re
 import sys
 from collections import defaultdict
 from collections.abc import Sequence
@@ -592,6 +591,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                         logging.warning(
                             f"Import of {submodule} couldn't be adjusted automatically without breaking compatibility with QGIS 3*."
                         )
+                        has_unfixed_errors = True
 
     for module, classes in extra_imports.items():
         if module not in imported_modules:
