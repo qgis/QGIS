@@ -54,14 +54,6 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
   hMax = Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE;
 }
 
-float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
-{
-  Q_UNUSED( x )
-  Q_UNUSED( y )
-  Q_UNUSED( context )
-  return std::numeric_limits<float>::quiet_NaN();
-}
-
 QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
 {
   switch ( type )
