@@ -374,6 +374,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     Q_ENUM( PropertyType )
 
     /**
+     * Interpolation types, for interpolated value conversion
+     * \warning This is private API only, and may change in future QGIS versions
+     * \since QGIS 4.2
+     */
+    enum class InterpolationType
+    {
+      Linear,      //!< Linear interpolation
+      Exponential, //!< Exponential interpolation
+      CubicBezier, //!< Cubic-bezier interpolation
+    };
+    Q_ENUM( InterpolationType )
+
+    /**
      * Converts a JSON \a style map, and returns the resultant status of the conversion.
      *
      * If an error occurs during conversion then a descriptive error message can be retrieved
@@ -550,10 +563,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param json definition of color interpolation
      * \param context conversion context
      * \param defaultColor optional storage for a reasonable "default" color representing the overall property.
+     * \param type interpolation type (since QGIS 4.2)
      *
      * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateColorByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      QColor *defaultColor SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Parses a numeric value which is interpolated by zoom range.
@@ -562,10 +581,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \param multiplier optional multiplication factor
      * \param defaultNumber optional storage for a reasonable "default" number representing the overall property.
+     * \param type interpolation type (since QGIS 4.2)
      *
      * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber SIP_OUT = nullptr );
+    static QgsProperty parseInterpolateByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      double *defaultNumber SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
@@ -574,7 +600,12 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
+    static QgsProperty parseInterpolateOpacityByZoom(
+      const QVariantMap &json,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext *contextPtr = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -582,7 +613,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseOpacityStops(
+      double base,
+      const QVariantList &stops,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 
     /**
      * Interpolates a point/offset with either scale_linear() or scale_exp() (depending on base value).
@@ -590,7 +631,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint SIP_OUT = nullptr );
+    static QgsProperty parseInterpolatePointByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QPointF *defaultPoint SIP_OUT = nullptr,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 
     /**
      * Interpolates a string by zoom.
@@ -606,7 +653,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+    static QString parsePointStops(
+      double base,
+      const QVariantList &stops,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 0,
+      double y2 = 0
+    );
 
     /**
      * Takes numerical arrays from stops.
@@ -622,8 +679,23 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param stops definition of interpolation stops
      * \param multiplier optional multiplication factor
      * \param context conversion context
+     * \param type interpolation type
+     * \param x1 control point for bezier-cubic interpolation
+     * \param y1 control point for bezier-cubic interpolation
+     * \param x2 control point for bezier-cubic interpolation
+     * \param y2 control point for bezier-cubic interpolation
      */
-    static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseStops(
+      double base,
+      const QVariantList &stops,
+      double multiplier,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 
     /**
      * Parses a list of interpolation stops containing string values.
@@ -751,7 +823,20 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
+    static QString interpolateExpression(
+      double zoomMin,
+      double zoomMax,
+      QVariant valueMin,
+      QVariant valueMax,
+      double base,
+      double multiplier = 1,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      QgsMapBoxGlStyleConversionContext *contextPtr = nullptr
+    );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.

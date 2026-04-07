@@ -365,6 +365,13 @@ Constructor for QgsMapBoxGlStyleConverter.
       NumericArray,
     };
 
+    enum class InterpolationType
+    {
+      Linear,
+      Exponential,
+      CubicBezier,
+    };
+
     Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Converts a JSON ``style`` map, and returns the resultant status of the
@@ -574,32 +581,50 @@ Parses a symbol layer as a renderer
          - rendererStyle: generated QGIS vector tile style
 %End
 
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor /Out/ = 0 );
+    static QgsProperty parseInterpolateColorByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      QColor *defaultColor /Out/ = 0,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 %Docstring
 Parses a color value which is interpolated by zoom range.
 
 :param json: definition of color interpolation
 :param context: conversion context
+:param type: interpolation type (since QGIS 4.2)
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
          - defaultColor: a reasonable "default" color representing the
            overall property.
 %End
 
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseInterpolateByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      double *defaultNumber /Out/ = 0,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 %Docstring
 Parses a numeric value which is interpolated by zoom range.
 
 :param json: definition of interpolation
 :param context: conversion context
 :param multiplier: optional multiplication factor
+:param type: interpolation type (since QGIS 4.2)
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
          - defaultNumber: a reasonable "default" number representing the
            overall property.
 %End
 
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
+    static QgsProperty parseInterpolateOpacityByZoom(
+      const QVariantMap &json,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext *contextPtr = 0,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 %Docstring
 Interpolates opacity with either
 :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
@@ -614,7 +639,17 @@ to set alpha component of color.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseOpacityStops(
+      double base,
+      const QVariantList &stops,
+      int maxOpacity,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 %Docstring
 Takes values from stops and uses either
 :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
@@ -626,7 +661,13 @@ alpha component of color.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
+    static QgsProperty parseInterpolatePointByZoom(
+      const QVariantMap &json,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QPointF *defaultPoint /Out/ = 0,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential
+    );
 %Docstring
 Interpolates a point/offset with either
 :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
@@ -649,7 +690,17 @@ uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+    static QString parsePointStops(
+      double base,
+      const QVariantList &stops,
+      QgsMapBoxGlStyleConversionContext &context,
+      double multiplier = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 0,
+      double y2 = 0
+    );
 %Docstring
 Takes values from stops and uses either
 :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or
@@ -670,7 +721,17 @@ Takes numerical arrays from stops.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
+    static QString parseStops(
+      double base,
+      const QVariantList &stops,
+      double multiplier,
+      QgsMapBoxGlStyleConversionContext &context,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1
+    );
 %Docstring
 Parses a list of interpolation stops
 
@@ -678,6 +739,11 @@ Parses a list of interpolation stops
 :param stops: definition of interpolation stops
 :param multiplier: optional multiplication factor
 :param context: conversion context
+:param type: interpolation type
+:param x1: control point for bezier-cubic interpolation
+:param y1: control point for bezier-cubic interpolation
+:param x2: control point for bezier-cubic interpolation
+:param y2: control point for bezier-cubic interpolation
 %End
 
     static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString /Out/ = 0 );
@@ -820,7 +886,20 @@ function.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
+    static QString interpolateExpression(
+      double zoomMin,
+      double zoomMax,
+      QVariant valueMin,
+      QVariant valueMax,
+      double base,
+      double multiplier = 1,
+      double x1 = 0,
+      double y1 = 0,
+      double x2 = 1,
+      double y2 = 1,
+      QgsMapBoxGlStyleConverter::InterpolationType type = QgsMapBoxGlStyleConverter::InterpolationType::Exponential,
+      QgsMapBoxGlStyleConversionContext *contextPtr = 0
+    );
 %Docstring
 Generates an interpolation for values between ``valueMin`` and
 ``valueMax``, scaled between the ranges ``zoomMin`` to ``zoomMax``.
