@@ -58,7 +58,6 @@ using namespace Qt::StringLiterals;
   int main( int argc, char *argv[] )           \
   {                                            \
     QgsApplication app( argc, argv, false );   \
-    app.init();                                \
     app.setAttribute( Qt::AA_Use96Dpi, true ); \
     QTEST_DISABLE_KEYPAD_NAVIGATION            \
     TestObject tc;                             \
