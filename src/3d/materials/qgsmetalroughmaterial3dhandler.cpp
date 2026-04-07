@@ -68,13 +68,13 @@ QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const
 void QgsMetalRoughMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
 {}
 
-void QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
 {
   const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
   if ( material->objectName() != "metalRoughMaterial"_L1 )
-    return;
+    return false;
 
   Qt3DRender::QEffect *effect = material->effect();
 
@@ -84,4 +84,5 @@ void QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
     p->setValue( metalRoughSettings->metalness() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"roughness"_s ) )
     p->setValue( metalRoughSettings->roughness() );
+  return true;
 }

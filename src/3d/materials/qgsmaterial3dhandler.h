@@ -202,8 +202,10 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * This method is called on every material setting parameter change while configuring
      * materials, so the implementation must be cheap (e.g. involve no entity creation, just direct
      * manipulation of existing attributes).
+     *
+     * Returns FALSE if the scene could not be updated in place and needs to be regenered via createPreviewScene().
      */
-    virtual void updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const = 0;
+    virtual bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const = 0;
 
   protected:
     /**

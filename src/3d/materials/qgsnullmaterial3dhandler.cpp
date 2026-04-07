@@ -41,5 +41,7 @@ QMap<QString, QString> QgsNullMaterial3DHandler::toExportParameters( const QgsAb
 void QgsNullMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
 {}
 
-void QgsNullMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
+bool QgsNullMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{
+  return true;
+}
