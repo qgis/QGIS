@@ -264,6 +264,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
         maxZ *= zScale;
       }
 
+      // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
       minZ += pos.z() + static_cast<float>( mChunkOrigin.z() );
       maxZ += pos.z() + static_cast<float>( mChunkOrigin.z() );
 
@@ -683,11 +684,9 @@ void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 
   // the elevation offset is applied separately in QTransform added to sub-entities
   const float symbolHeight = mSymbol->transform().data()[14];
-  mZMin += symbolHeight;
-  mZMax += symbolHeight;
-
-  mZMin += static_cast<float>( mChunkOrigin.z() );
-  mZMax += static_cast<float>( mChunkOrigin.z() );
+  // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
+  mZMin += symbolHeight + static_cast<float>( mChunkOrigin.z() );
+  mZMax += symbolHeight + static_cast<float>( mChunkOrigin.z() );
 }
 
 void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -939,11 +938,9 @@ void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
   // the elevation offset is applied externally through a QTransform of QEntity so let's account for it
   const float billboardHeight = mSymbol->billboardHeight();
-  mZMin += billboardHeight;
-  mZMax += billboardHeight;
-
-  mZMin += static_cast<float>( mChunkOrigin.z() );
-  mZMax += static_cast<float>( mChunkOrigin.z() );
+  // as we are relative to chunk center elevation we have to add mChunkOrigin.z()
+  mZMin += billboardHeight + static_cast<float>( mChunkOrigin.z() );
+  mZMax += billboardHeight + static_cast<float>( mChunkOrigin.z() );
 }
 
 void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
