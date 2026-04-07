@@ -1188,6 +1188,24 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_exponential(5,0,10,0,100,2)" ) << "scale_exponential(5,0,10,0,100,2)" << false << QVariant( 3.0303030303030303 );
       QTest::newRow( "scale_exponential(3,0,10,0,100,0.5)" ) << "scale_exponential(3,0,10,0,100,0.5)" << false << QVariant( 87.58553274682306 );
 
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(0, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(0, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(10, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(10, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(-1, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(-1, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(11, 0, 10, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(11, 0, 10, 0, 100, 0, 0, 1, 1)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(15, 10, 20, 100, 200, 0, 0, 1, 1)" ) << "scale_cubic_bezier(15, 10, 20, 100, 200, 0, 0, 1, 1)" << false << QVariant( 150.0 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0),5)" << false << QVariant( 80.24034 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0),5)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(5, 0, 10, 0, 100, 1.0, 0.0, 0.0, 1.0)" ) << "round(scale_cubic_bezier(5, 0, 10, 0, 100, 1.0, 0.0, 0.0, 1.0),5)" << false << QVariant( 50.0 );
+      QTest::newRow( "scale_cubic_bezier(-5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(-5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(0, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(0, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 0.0 );
+      QTest::newRow( "scale_cubic_bezier(10, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(10, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 100.0 );
+      QTest::newRow( "scale_cubic_bezier(15, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" ) << "scale_cubic_bezier(15, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)" << false << QVariant( 100.0 );
+      QTest::newRow( "invalid scale_cubic_bezier(5, 10, 0, 0, 100, 0, 0, 1, 1)" ) << "scale_cubic_bezier(5, 10, 0, 0, 100, 0, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, 1.5, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 1.5, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, -0.5, 0, 1, 1)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, -0.5, 0, 1, 1)" << true << QVariant();
+      QTest::newRow( "invalid scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 2.0)" ) << "scale_cubic_bezier(5, 0, 10, 0, 100, 0, 0, 1, 2.0)" << true << QVariant();
+
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
       QTest::newRow( "text to int" ) << "toint('53')" << false << QVariant( 53 );
