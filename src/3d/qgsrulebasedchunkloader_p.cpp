@@ -198,6 +198,7 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
     return;
   }
 
+  // choose the smaller root extent between context and mLayer ones:
   QgsRectangle extent = context.extent();
   if ( context.extent().contains( mLayer->extent() ) )
     extent = mLayer->extent();
