@@ -269,7 +269,7 @@ QString QgsMapLayerUtils::layerToolTip( const QgsMapLayer *layer )
     parts << "<i>" + layer->publicSource() + "</i>";
     if ( QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips->value() )
     {
-      parts << QObject::tr( "ID:" ) + layer->id();
+      parts << QObject::tr( "ID: %1" ).arg( layer->id() );
     }
     return parts.join( "<br/>"_L1 );
   }

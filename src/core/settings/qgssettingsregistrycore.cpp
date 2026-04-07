@@ -226,8 +226,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( u"core/layer-tree/show_feature_count_for_new_layers"_s, true );
   settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"qgis/showLegendClassifiers"_s, true );
   settingsLayerTreeShowLegendClassifiers->copyValueFromKey( u"/qgis/showLegendClassifiers"_s, true );
-  settingsLayerTreeShowIdInLayerTooltips->copyValueFromKey( u"qgis/showIdInLayerTooltips"_s, true );
-  settingsLayerTreeShowIdInLayerTooltips->copyValueFromKey( u"/qgis/showIdInLayerTooltips"_s, true );
 
   // single settings - added in 4.2
   // Old code used QgsSettings::Core section, so the actual QSettings key has a "core/" prefix
