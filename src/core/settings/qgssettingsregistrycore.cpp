@@ -30,10 +30,10 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QSettings>
 #include <QString>
 #include <QThread>
 
@@ -200,14 +200,6 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
-  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
-  // as it involves writing new values to the underlying ini files.
-  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
-  // so that only a single QgsSettings object is created and destroyed at the end of this method.
-  QgsSettings::holdFlush();
-
-  auto settings = QgsSettings::get();
-
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
@@ -310,9 +302,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // locator filters - added in 3.30
   {
-    settings->beginGroup( u"gui/locator_filters"_s );
-    const QStringList childKeys = settings->childKeys();
-    settings->endGroup();
+    QSettings &locatorSettings = QgsSettingsEntryBase::userSettings();
+    locatorSettings.beginGroup( u"gui/locator_filters"_s );
+    const QStringList childKeys = locatorSettings.childKeys();
+    locatorSettings.endGroup();
     for ( const QString &childKey : childKeys )
     {
       if ( childKey.startsWith( "enabled"_L1 ) )
@@ -457,7 +450,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
     {
-      const QStringList deviceNames = settings->value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
+      const QStringList deviceNames = QgsSettingsEntryBase::userSettings().value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
 
       for ( const QString &device : deviceNames )
       {
@@ -470,8 +463,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
-
-  QgsSettings::releaseFlush();
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()

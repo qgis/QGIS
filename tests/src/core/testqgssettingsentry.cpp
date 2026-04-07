@@ -19,6 +19,7 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QSettings>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -140,7 +141,7 @@ void TestQgsSettingsEntry::flagValue()
   const Qgis::LayerFilters hasGeometry = Qgis::LayerFilters( Qgis::LayerFilter::HasGeometry );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
 
   const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, Qgis::LayerFilters(), u"Filters"_s );
 

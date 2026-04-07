@@ -71,7 +71,6 @@ using namespace Qt::StringLiterals;
     return QTest::qExec( &tc, argc, argv );                            \
   }
 
-
 #define QGSCOMPARENEAR( value, expected, epsilon )                                                                                                                                                                     \
   {                                                                                                                                                                                                                    \
     bool _xxxresult = qgsDoubleNear( value, expected, epsilon );                                                                                                                                                       \
