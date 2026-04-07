@@ -202,7 +202,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     }
     else
     {
-      outputFields.append( QgsField( QStringLiteral( "group"_s ), QVariant::String ) );
+      outputFields.append( QgsField( QStringLiteral( "group" ), QMetaType::QString ) );
     }
   }
   outputFields.append( QgsField( "begin", orderFieldType ) );
