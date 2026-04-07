@@ -190,6 +190,41 @@ using namespace Qt::StringLiterals;
   ( void ) ( other );
 #endif
 
+#ifdef __clang_analyzer__
+#define QGIS_CHECK_MAIN_THREAD_ACCESS \
+  do                                  \
+  {                                   \
+  } while ( false );
+#elif defined( AGGRESSIVE_SAFE_MODE )
+#define QGIS_CHECK_MAIN_THREAD_ACCESS                                                                                                                                  \
+  if ( QThread::currentThread() != QCoreApplication::instance()->thread() )                                                                                            \
+  {                                                                                                                                                                    \
+    qFatal(                                                                                                                                                            \
+      "%s",                                                                                                                                                            \
+      u"%2 (%1:%3) must be called from the main thread [current: 0x%4, main: 0x%5]"_s.arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__ ) ) \
+        .arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 )                                                                                          \
+        .arg( reinterpret_cast< qint64 >( QCoreApplication::instance()->thread() ), 0, 16 )                                                                            \
+        .toLocal8Bit()                                                                                                                                                 \
+        .constData()                                                                                                                                                   \
+    );                                                                                                                                                                 \
+  }
+#elif defined( QGISDEBUG )
+#define QGIS_CHECK_MAIN_THREAD_ACCESS                                                                                                                                              \
+  if ( QThread::currentThread() != QCoreApplication::instance()->thread() )                                                                                                        \
+  {                                                                                                                                                                                \
+    qWarning() << u"%2 (%1:%3) must be called from the main thread [current: 0x%4, main: 0x%5]"_s.arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__ ) ) \
+                    .arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 )                                                                                          \
+                    .arg( reinterpret_cast< qint64 >( QCoreApplication::instance()->thread() ), 0, 16 )                                                                            \
+                    .toLocal8Bit()                                                                                                                                                 \
+                    .constData();                                                                                                                                                  \
+  }
+#else
+#define QGIS_CHECK_MAIN_THREAD_ACCESS \
+  do                                  \
+  {                                   \
+  } while ( false );
+#endif
+
 
 /**
  * \ingroup core
