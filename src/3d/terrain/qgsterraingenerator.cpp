@@ -32,10 +32,6 @@ QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) cons
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  if ( hMin > Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE )
-    hMin *= static_cast<float>( map.terrainSettings()->verticalScale() );
-  if ( hMax < Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE )
-    hMax *= static_cast<float>( map.terrainSettings()->verticalScale() );
   return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin, te.xMaximum(), te.yMaximum(), hMax );
 }
 
