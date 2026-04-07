@@ -16,9 +16,8 @@
 #include "qgssettingstreenode.h"
 
 #include "qgsexception.h"
-#include "qgssettings.h"
+#include "qgssettingsentry.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
 
 #include <QDir>
 #include <QString>
@@ -184,10 +183,29 @@ QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, co
 
 
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentsNamedItems );
-  auto settings = QgsSettings::get();
-  settings->beginGroup( completeKeyParam );
-  const QStringList res = settings->childGroups( origin );
-  settings->endGroup();
+
+  QStringList res;
+
+  // Collect items from the user QSettings
+  if ( origin != Qgis::SettingsOrigin::Global )
+  {
+    QSettings &settings = QgsSettingsEntryBase::userSettings();
+    settings.beginGroup( completeKeyParam );
+    res = settings.childGroups();
+    settings.endGroup();
+  }
+
+  // Collect items from the global defaults hash
+  if ( origin != Qgis::SettingsOrigin::Local )
+  {
+    const QStringList globalGroups = QgsSettingsEntryBase::globalChildGroups( completeKeyParam );
+    for ( const QString &group : globalGroups )
+    {
+      if ( !res.contains( group ) )
+        res.append( group );
+    }
+  }
+
   return res;
 }
 
@@ -227,7 +245,7 @@ void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStrin
   QStringList args = parentsNamedItems;
   args << item;
   QString key = completeKeyWithNamedItems( mCompleteKey, args );
-  QgsSettings::get()->remove( key );
+  QgsSettingsEntryBase::userSettings().remove( key );
 }
 
 void QgsSettingsTreeNamedListNode::deleteAllItems( const QStringList &parentsNamedItems )
@@ -238,13 +256,13 @@ void QgsSettingsTreeNamedListNode::deleteAllItems( const QStringList &parentsNam
     );
 
   const QStringList children = items( parentsNamedItems );
-  auto settings = QgsSettings::get();
+  QSettings &settings = QgsSettingsEntryBase::userSettings();
   for ( const QString &child : children )
   {
     QStringList args = parentsNamedItems;
     args << child;
     QString key = completeKeyWithNamedItems( mCompleteKey, args );
-    settings->remove( key );
+    settings.remove( key );
   }
 }
 

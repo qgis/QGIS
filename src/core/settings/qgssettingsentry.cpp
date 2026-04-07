@@ -18,12 +18,12 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingstreenode.h"
+#include "qgsthreadingutils.h"
 
 #include <QDir>
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
-#include <QThread>
 
 using namespace Qt::StringLiterals;
 
@@ -51,9 +51,10 @@ static QSettings &sUserSettings()
 
 void QgsSettingsEntryBase::setupUserSettings( const QString &profilePath )
 {
-  Q_ASSERT_X( QThread::isMainThread(), "setupUserSettings", "Must be called from the main thread" );
+  QGIS_CHECK_MAIN_THREAD_ACCESS
   if ( sSettingsInitialized )
     return;
+
   QSettings::setDefaultFormat( QSettings::IniFormat );
   QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, profilePath );
   sSettingsInitialized = true;
@@ -63,7 +64,7 @@ QHash<QString, QVariant> QgsSettingsEntryBase::sGlobalDefaults;
 
 bool QgsSettingsEntryBase::setGlobalSettingsPath( const QString &path )
 {
-  Q_ASSERT_X( QThread::isMainThread(), "QgsSettingsEntryBase::setGlobalSettingsPath", "Must be called from the main thread" );
+  QGIS_CHECK_MAIN_THREAD_ACCESS
 
   sGlobalDefaults.clear();
   if ( path.isEmpty() || !QFile::exists( path ) )
@@ -88,6 +89,33 @@ bool QgsSettingsEntryBase::hasGlobalDefault( const QString &key )
 QVariant QgsSettingsEntryBase::globalDefault( const QString &key )
 {
   return sGlobalDefaults.value( sanitizeGlobalKey( key ) );
+}
+
+QSettings &QgsSettingsEntryBase::userSettings()
+{
+  return sUserSettings();
+}
+
+QStringList QgsSettingsEntryBase::globalChildGroups( const QString &prefix )
+{
+  QString normalizedPrefix = sanitizeGlobalKey( prefix );
+  if ( !normalizedPrefix.endsWith( '/' ) )
+    normalizedPrefix.append( '/' );
+
+  const int prefixLen = normalizedPrefix.size();
+  QStringList result;
+
+  for ( auto it = sGlobalDefaults.constBegin(); it != sGlobalDefaults.constEnd(); ++it )
+  {
+    if ( it.key().startsWith( normalizedPrefix ) )
+    {
+      const int slashPos = it.key().indexOf( '/', prefixLen );
+      const QString group = ( slashPos < 0 ) ? it.key().mid( prefixLen ) : it.key().mid( prefixLen, slashPos - prefixLen );
+      if ( !group.isEmpty() && !result.contains( group ) )
+        result.append( group );
+    }
+  }
+  return result;
 }
 
 QString QgsSettingsEntryBase::sanitizeGlobalKey( const QString &key )

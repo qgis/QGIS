@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 
 #include <QColor>
+#include <QHash>
+#include <QSettings>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -119,6 +121,31 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \since QGIS 4.2
      */
     static QVariant globalDefault( const QString &key ) SIP_SKIP;
+
+    /**
+     * Returns a reference to the thread-local QSettings instance used
+     * internally by all QgsSettingsEntry operations.
+     *
+     * \note This is intended for internal use by the settings framework
+     * (e.g. QgsSettingsTreeNamedListNode). Prefer using QgsSettingsEntry
+     * accessors instead.
+     *
+     * \since QGIS 4.2
+     */
+    static QSettings &userSettings() SIP_SKIP;
+
+    /**
+     * Returns the list of child group names found under \a prefix
+     * in the global defaults hash.
+     *
+     * The \a prefix is a tree-based key (may start with '/').
+     * A trailing '/' is added automatically if not present.
+     *
+     * \note This is intended for internal use by QgsSettingsTreeNamedListNode.
+     *
+     * \since QGIS 4.2
+     */
+    static QStringList globalChildGroups( const QString &prefix ) SIP_SKIP;
 
     /**
      * Transforms a dynamic key part string to list
