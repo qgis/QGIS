@@ -1,0 +1,44 @@
+{
+  "name": "scale_cubic_bezier",
+  "type": "function",
+  "groups": ["Math"],
+  "description": "Transforms a given value from an input domain to an output range using a cubic Bézier curve. This function can be used to ease values in or out of the specified output range using custom control points.",
+  "arguments": [{
+    "arg": "value",
+    "description": "A value in the input domain. The function will return a corresponding scaled value in the output range."
+  }, {
+    "arg": "domain_min",
+    "description": "Specifies the minimum value in the input domain, the smallest value the input value should take."
+  }, {
+    "arg": "domain_max",
+    "description": "Specifies the maximum value in the input domain, the largest value the input value should take."
+  }, {
+    "arg": "range_min",
+    "description": "Specifies the minimum value in the output range, the smallest value which should be output by the function."
+  }, {
+    "arg": "range_max",
+    "description": "Specifies the maximum value in the output range, the largest value which should be output by the function."
+  }, {
+    "arg": "x1",
+    "description": "The x-coordinate of the first control point. Must be a value between 0 and 1."
+  }, {
+    "arg": "y1",
+    "description": "The y-coordinate of the first control point. Must be a value between 0 and 1."
+  }, {
+    "arg": "x2",
+    "description": "The x-coordinate of the second control point. Must be a value between 0 and 1."
+  }, {
+    "arg": "y2",
+    "description": "The y-coordinate of the second control point. Must be a value between 0 and 1."
+  }],
+  "examples": [{
+    "expression": "scale_cubic_bezier(5, 0, 10, 0, 100, 0.42, 0.0, 0.58, 1.0)",
+    "returns": "50.0",
+    "note": "easing in and out using a symmetrical cubic Bézier curve"
+  }, {
+    "expression": "scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0)",
+    "returns": "80.24034",
+    "note": "a standard ease curve, accelerating quickly before decelerating gradually"
+  }],
+  "tags": ["cubic", "bezier", "curve", "ease", "transforms", "output", "given", "input", "domain", "range", "specified", "values", "interpolation"]
+}
