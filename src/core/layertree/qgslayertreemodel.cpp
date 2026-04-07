@@ -342,7 +342,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         if ( QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips->value() )
         {
-          parts << tr( "ID:" ) + layer->id();
+          parts << tr( "ID: %1" ).arg( layer->id() );
         }
 
         return parts.join( "<br/>"_L1 );
