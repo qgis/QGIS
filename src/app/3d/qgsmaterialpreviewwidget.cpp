@@ -86,7 +86,11 @@ void QgsMaterialPreviewWidget::updatePreview( const QgsAbstractMaterialSettings 
   }
   else
   {
-    handler->updatePreviewScene( mPreviewScene, mLastPreviewSettings.get(), context );
+    if ( !handler->updatePreviewScene( mPreviewScene, mLastPreviewSettings.get(), context ) )
+    {
+      delete mPreviewScene;
+      mPreviewScene = handler->createPreviewScene( mLastPreviewSettings.get(), mPreviewSceneType, context, mView, mSceneRoot );
+    }
   }
 }
 

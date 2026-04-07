@@ -47,7 +47,7 @@ class _3D_EXPORT QgsSimpleLineMaterial3DHandler : public QgsAbstractMaterial3DHa
     Qt3DCore::QEntity *createPreviewScene(
       const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
     ) const override;
-    void updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
+    bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 };
 
 

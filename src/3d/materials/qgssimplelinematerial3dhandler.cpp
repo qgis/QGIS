@@ -185,10 +185,12 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewScene(
   return root;
 }
 
-void QgsSimpleLineMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsSimpleLineMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
 {
   const QgsSimpleLineMaterialSettings *lineSettings = qgis::down_cast< const QgsSimpleLineMaterialSettings * >( settings );
 
   QgsLineMaterial *material = sceneRoot->findChild<QgsLineMaterial *>();
   material->setLineColor( lineSettings->ambient() );
+
+  return true;
 }

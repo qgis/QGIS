@@ -219,13 +219,13 @@ void QgsPhongMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMat
   dataBuffer->setData( data );
 }
 
-void QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
 {
   const QgsPhongMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
   if ( material->objectName() != "phongMaterial"_L1 )
-    return;
+    return false;
 
   Qt3DRender::QEffect *effect = material->effect();
 
@@ -269,6 +269,8 @@ void QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
 
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"opacity"_s ) )
     p->setValue( static_cast<float>( phongSettings->opacity() ) );
+
+  return true;
 }
 
 QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const

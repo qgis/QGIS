@@ -140,13 +140,13 @@ void QgsPhongTexturedMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffe
   effect->addParameter( shininessParameter );
 }
 
-void QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
 {
   const QgsPhongTexturedMaterialSettings *phongSettings = qgis::down_cast< const QgsPhongTexturedMaterialSettings * >( settings );
 
   QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
   if ( material->objectName() != "phongTexturedMaterial"_L1 )
-    return;
+    return false;
 
   Qt3DRender::QEffect *effect = material->effect();
 
@@ -166,4 +166,5 @@ void QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
     p->setValue( phongSettings->shininess() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"opacity"_s ) )
     p->setValue( phongSettings->opacity() );
+  return true;
 }

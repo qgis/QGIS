@@ -41,7 +41,7 @@ class _3D_EXPORT QgsGoochMaterial3DHandler : public QgsAbstractMaterial3DHandler
     QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const override;
     void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
-    void updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
+    bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:
     //! Constructs a material from shader files
