@@ -4,7 +4,7 @@
   "groups": [
     "GeometryGroup"
   ],
-  "description": "Tests whether two geometries are topologically equal. Returns TRUE if geometry1 is topologically equal to geometry2.",
+  "description": "Tests whether two geometries are topologically equal. Returns TRUE if geometry1 is topologically equal to geometry2: ie. opposite data direction are valid and duplicated data are valid, see examples below.",
   "arguments": [
     {
       "arg": "geometry1",

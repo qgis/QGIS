@@ -4861,7 +4861,7 @@ class TestQgsExpression : public QObject
         << "equals_topological( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )'), backend:='QGIS' )"
         << QgsGeometry::fromPolylineXY( line )
         << true
-        << QVariant( 0 );
+        << QVariant();
       QTest::newRow( "Topological equals line" )
         << "equals_topological( $geometry, geomFromWKT('MULTILINESTRING(( 0 0, 10 10 ))'), backend:='GEOS' )"
         << QgsGeometry::fromPolylineXY( line )

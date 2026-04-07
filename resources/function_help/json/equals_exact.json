@@ -4,7 +4,7 @@
   "groups": [
     "GeometryGroup"
   ],
-  "description": "Tests whether two geometries are exactly equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
+  "description": "Tests whether two geometries are point-by-point exactly equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
   "arguments": [
     {
       "arg": "geometry1",

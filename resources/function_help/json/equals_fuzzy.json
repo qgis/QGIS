@@ -4,7 +4,7 @@
   "groups": [
     "GeometryGroup"
   ],
-  "description": "Tests whether two geometries are fuzzy equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is fuzzy equal to geometry2.",
+  "description": "Tests whether two geometries are point-by-point equal in respect of a tolerance. Note that the order of their vertices matters. Returns TRUE if geometry1 is fuzzy equal to geometry2.",
   "arguments": [
     {
       "arg": "geometry1",
