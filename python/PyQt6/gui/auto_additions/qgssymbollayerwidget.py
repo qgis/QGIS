@@ -154,7 +154,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsTemplatedLineSymbolLayerWidget.__overridden_methods__ = ['setSymbolLayer', 'symbolLayer', 'setContext']
+    QgsTemplatedLineSymbolLayerWidget.__overridden_methods__ = ['event', 'setSymbolLayer', 'symbolLayer', 'setContext']
     QgsTemplatedLineSymbolLayerWidget.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

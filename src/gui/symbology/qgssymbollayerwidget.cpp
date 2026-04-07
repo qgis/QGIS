@@ -2038,6 +2038,18 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   }
 }
 
+bool QgsTemplatedLineSymbolLayerWidget::event( QEvent *event )
+{
+  if ( event->type() == QEvent::Show )
+  {
+    // Blank segments button is enabled only in dock mode. That requires for this widget to be
+    // parented which is not the case when we create the widget. So we update on show event
+    updateBlankSegmentsWidget();
+  }
+
+  return QgsSymbolLayerWidget::event( event );
+}
+
 void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   switch ( mSymbolType )
@@ -2374,7 +2386,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
       break;
   }
 
-  if ( !qobject_cast<QMainWindow *>( QApplication::activeWindow() ) )
+  if ( QgsPanelWidget *panelWidget = QgsPanelWidget::findParentPanel( this ); !panelWidget || !panelWidget->dockMode() )
   {
     // It's not possible to edit blank segments from Layer properties dialog
     mEditBlankSegmentsBtn->setEnabled( false );
@@ -2401,7 +2413,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
 {
   const QgsProperty blankSegmentsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments );
-  return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field
+  return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
            ? vectorLayer()->fields().indexFromName( blankSegmentsProperty.field() )
            : -1;
 }
