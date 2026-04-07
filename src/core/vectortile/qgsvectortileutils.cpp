@@ -20,6 +20,7 @@
 #include <QPolygon>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QUrlQuery>
 
 #include "qgscoordinatetransform.h"
 #include "qgsgeometrycollection.h"
@@ -344,6 +345,15 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
       {
         return sprite;
       }
+      else if ( sprite.startsWith( QLatin1String( "mapbox://" ) ) )
+      {
+        const QUrl url( styleUrl );
+        const QUrlQuery query( url.query() );
+        if ( query.hasQueryItem( QStringLiteral( "access_token" ) ) )
+        {
+          return resolveMapboxUri( sprite, query.queryItemValue( QStringLiteral( "access_token" ) ) );
+        }
+      }
       else if ( sprite.startsWith( QLatin1String( "/" ) ) )
       {
         const QUrl url( styleUrl );
@@ -435,3 +445,34 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
   }
 }
 
+QString QgsVectorTileUtils::resolveMapboxUri( const QString &uri, const QString &accessToken )
+{
+  const QUrl url( uri );
+  if ( url.scheme() != QLatin1String( "mapbox" ) )
+  {
+    return uri;
+  }
+
+  const QString host = url.host();
+  if ( host == QLatin1String( "styles" ) )
+  {
+    // e.g. mapbox://styles/mapbox/dark-v11
+    return QStringLiteral( "https://api.mapbox.com/styles/v1%1?access_token=%2" ).arg( url.path(), accessToken );
+  }
+  else if ( host == "sprites" )
+  {
+    // e.g. mapbox://sprites/mapbox/streets-v11
+    return QStringLiteral( "https://api.mapbox.com/styles/v1%1/sprite?access_token=%2" ).arg( url.path(), accessToken );
+  }
+  else if ( host == "fonts" )
+  {
+    // e.g. mapbox://fonts/mapbox/Open Sans Regular/{range}.pbf
+    return QStringLiteral( "https://api.mapbox.com/fonts/v1%1?access_token=%2" ).arg( url.path(), accessToken );
+  }
+  else
+  {
+    // sources:
+    // e.g. mapbox://{username}.{tileset_id}
+    return QStringLiteral( "https://api.mapbox.com/v4/%1.json?secure&access_token=%2" ).arg( host, accessToken );
+  }
+}
