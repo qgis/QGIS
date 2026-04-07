@@ -181,7 +181,7 @@ bool QgsSelectByAttributeAlgorithm::prepareAlgorithm( const QVariantMap &paramet
       expr = u"%1 = %2"_s.arg( fieldRef, quotedVal );
       break;
     case NotEquals:
-      expr = u"%1 != %2"_s.arg( fieldRef, quotedVal );
+      expr = u"%1 <> %2"_s.arg( fieldRef, quotedVal );
       break;
     case GreaterThan:
       expr = u"%1 > %2"_s.arg( fieldRef, quotedVal );
