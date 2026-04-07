@@ -713,7 +713,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
         if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
         {
-          QgsProperty property = parseValueList( dashSource, PropertyType::NumericArray, context, 1, 255, nullptr, nullptr );
+          QgsProperty property = parseValueList( dashSource, PropertyType::DashArray, context, 1, 255, nullptr, nullptr );
           if ( !lineWidthProperty.asExpression().isEmpty() )
           {
             property = QgsProperty::fromExpression( QStringLiteral( "array_to_string(array_foreach(%1,@element * (%2)), ';')" ) // skip-keyword-check
@@ -743,9 +743,8 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
           else if ( rawDashVectorSizes.size() % 2 == 1 )
           {
             // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
-            // MapBox seems to add the extra dash element to the first dash size
-            rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
-            rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
+            // MapBox seems to implicitly add a 0 length gap to the array if odd length.
+            rawDashVectorSizes.append( 0 );
           }
 
           if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
@@ -2998,6 +2997,29 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
         }
         break;
       }
+
+      case PropertyType::DashArray:
+      {
+        if ( value.toList().count() == 2 && value.toList().first().toString() == QLatin1String( "literal" ) )
+        {
+          QStringList dashValues = value.toList().at( 1 ).toStringList();
+          if ( dashValues.length() % 2 == 1 )
+          {
+            dashValues << QStringLiteral( "0" );
+          }
+          valueString = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
+        }
+        else
+        {
+          QStringList dashValues = value.toStringList();
+          if ( dashValues.length() % 2 == 1 )
+          {
+            dashValues << QStringLiteral( "0" );
+          }
+          valueString = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
+        }
+        break;
+      }
     }
 
     if ( matchString.count() == 1 )
@@ -3073,6 +3095,28 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
           break;
         }
 
+        case PropertyType::DashArray:
+        {
+          if ( json.constLast().toList().count() == 2 && json.constLast().toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            QStringList dashValues = json.constLast().toList().at( 1 ).toStringList();
+            if ( dashValues.length() % 2 == 1 )
+            {
+              dashValues << QStringLiteral( "0" );
+            }
+            elseValue = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
+          }
+          else
+          {
+            QStringList dashValues = json.constLast().toStringList();
+            if ( dashValues.length() % 2 == 1 )
+            {
+              dashValues << QStringLiteral( "0" );
+            }
+            elseValue = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
+          }
+          break;
+        }
       }
       break;
     }
@@ -3101,7 +3145,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
     QString valueString;
     if ( stepValue.canConvert<QVariantList>()
          && ( stepValue.toList().count() != 2 || type != PropertyType::Point )
-         && type != PropertyType::NumericArray )
+         && type != PropertyType::NumericArray && type != PropertyType::DashArray )
     {
       valueString = parseValueList( stepValue.toList(), type, context, multiplier, maxOpacity, defaultColor, defaultNumber ).expressionString();
     }
@@ -3148,6 +3192,29 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
           else
           {
             valueString = QStringLiteral( "array(%1)" ).arg( stepValue.toStringList().join( ',' ) );
+          }
+          break;
+        }
+
+        case PropertyType::DashArray:
+        {
+          if ( stepValue.toList().count() == 2 && stepValue.toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            QStringList dashValues = stepValue.toList().at( 1 ).toStringList();
+            if ( dashValues.length() % 2 == 1 )
+            {
+              dashValues << QStringLiteral( "0" );
+            }
+            valueString = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
+          }
+          else
+          {
+            QStringList dashValues = stepValue.toStringList();
+            if ( dashValues.length() % 2 == 1 )
+            {
+              dashValues << QStringLiteral( "0" );
+            }
+            valueString = QStringLiteral( "array(%1)" ).arg( dashValues.join( ',' ) );
           }
           break;
         }
@@ -3223,6 +3290,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
       return parseInterpolatePointByZoom( props, context, multiplier );
 
     case PropertyType::NumericArray:
+    case PropertyType::DashArray:
       context.pushWarning( QObject::tr( "%1: Skipping unsupported numeric array in interpolate" ).arg( context.layerId() ) );
       return QgsProperty();
 
