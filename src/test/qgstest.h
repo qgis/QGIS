@@ -46,6 +46,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QSettings>
 #include <QString>
 #include <QTextStream>
 #include <QtTest/QTest>
@@ -62,6 +63,7 @@ using namespace Qt::StringLiterals;
     QCoreApplication::setApplicationName( u"QGIS-TEST"_s );   \
     QgsApplication app( argc, argv, false );                  \
     app.setAttribute( Qt::AA_Use96Dpi, true );                \
+    QSettings().clear();                                      \
     QTEST_DISABLE_KEYPAD_NAVIGATION                           \
     TestObject tc;                                            \
     QTEST_SET_MAIN_SOURCE_PATH                                \
