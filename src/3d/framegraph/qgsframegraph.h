@@ -19,6 +19,7 @@
 #include <map>
 
 #include "qgis_3d.h"
+#include "qgsabstractrenderview.h"
 
 #include <QWindow>
 #include <Qt3DRender/QCamera>
@@ -43,7 +44,6 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsAbstractRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 class QgsCameraController;
