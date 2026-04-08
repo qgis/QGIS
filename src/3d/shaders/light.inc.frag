@@ -40,7 +40,6 @@ void adsModelNormalMapped(const in vec3 worldPos,
     specularColor = vec3(0.0);
 
     // We perform all work in tangent space, so we convert quantities from world space
-    vec3 tsPos = tangentMatrix * worldPos;
     vec3 n = normalize(tsNormal);
     vec3 v = normalize(tangentMatrix * (worldEye - worldPos));
     vec3 s = vec3(0.0);
@@ -53,8 +52,8 @@ void adsModelNormalMapped(const in vec3 worldPos,
             // Point and Spot lights
 
             // Transform the light position from world to tangent space
-            vec3 tsLightPos = tangentMatrix * lights[i].position;
-            vec3 sUnnormalized = tsLightPos - tsPos;
+            vec3 worldLightDir = lights[i].position - worldPos;
+            vec3 sUnnormalized = tangentMatrix * worldLightDir;
             s = normalize(sUnnormalized); // Light direction in tangent space
 
             // Calculate the attenuation factor
