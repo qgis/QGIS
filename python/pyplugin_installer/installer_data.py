@@ -296,7 +296,6 @@ class Repositories(QObject):
 
     def timeForChecking(self) -> bool:
         """determine whether it's the time for checking for news and updates now"""
-        settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
             interval = (
