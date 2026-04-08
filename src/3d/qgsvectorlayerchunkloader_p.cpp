@@ -195,9 +195,8 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   }
 
   // choose the smaller root extent between context and mLayer ones:
-  QgsRectangle extent = context.extent();
-  if ( context.extent().contains( mLayer->extent() ) )
-    extent = mLayer->extent();
+  QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
+  QgsRectangle extent = context.extent().contains( layerExtentInMapCrs ) ? layerExtentInMapCrs : context.extent();
   QgsBox3D rootBox3D( extent, zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
