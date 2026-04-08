@@ -20694,6 +20694,7 @@ QgsVectorTileUtils.formatXYZUrlTemplate: src/core/vectortile/qgsvectortileutils.
 QgsVectorTileUtils.loadSprites: src/core/vectortile/qgsvectortileutils.h#L99
 QgsVectorTileUtils.makeQgisFields: src/core/vectortile/qgsvectortileutils.h#L67
 QgsVectorTileUtils.makeVectorLayerForTile: src/core/vectortile/qgsvectortileutils.h#L87
+QgsVectorTileUtils.resolveMapboxUri: src/core/vectortile/qgsvectortileutils.h#L106
 QgsVectorTileUtils.scaleToZoom: src/core/vectortile/qgsvectortileutils.h#L77
 QgsVectorTileUtils.scaleToZoomLevel: src/core/vectortile/qgsvectortileutils.h#L85
 QgsVectorTileUtils.sortTilesByDistanceFromCenter: src/core/vectortile/qgsvectortileutils.h#L57
