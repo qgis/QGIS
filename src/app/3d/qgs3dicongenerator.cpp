@@ -25,6 +25,7 @@
 #include "qgsframegraph.h"
 #include "qgshighlightsrenderview.h"
 #include "qgsimageoperation.h"
+#include "qgslinematerial_p.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsmaterialregistry.h"
 #include "qgsoffscreen3dengine.h"
@@ -154,11 +155,12 @@ void Qgs3DIconGenerator::generateThumbnailForMaterial( QgsStyle *style, const QS
 QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *settings )
 {
   QgsOffscreen3DEngine engine;
-  QSize size( 600, 600 );
+  const QSize size( 600, 600 );
   engine.setSize( size );
 
   // clear color -- will be replaced with transparent color
-  engine.setClearColor( QColor( 255, 0, 255 ) );
+  constexpr QColor CLEAR_COLOR = QColor( 255, 0, 255 );
+  engine.setClearColor( CLEAR_COLOR );
   engine.frameGraph()->setRenderCaptureEnabled( true );
 
   QgsMaterialContext context;
@@ -171,6 +173,15 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   auto root = new Qt3DCore::QEntity();
   Qt3DCore::QEntity *scene = handler->createPreviewScene( settings, meshTypes.at( 0 ).type, context, nullptr, root );
   scene->addComponent( engine.frameGraph()->forwardRenderView().renderLayer() );
+
+  // bit of a hack to get simple line materials to show -- since we don't have a window for the material
+  // to retrieve the viewport from, we just manually set one
+  const QList<QgsLineMaterial *> lineMaterials = scene->findChildren<QgsLineMaterial *>();
+  for ( QgsLineMaterial *lineMaterial : lineMaterials )
+  {
+    lineMaterial->setViewportSize( QSizeF( size.width(), size.height() ) );
+    lineMaterial->setLineWidth( 6 );
+  }
 
   // use same camera angle as interactive preview
   Qt3DRender::QCamera *camera = engine.camera();
@@ -210,6 +221,12 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
 
   // replace background color with transparent
   thumbnail = QgsImageOperation::floodFill( thumbnail, QPoint( 0, 0 ), QColor( 0, 0, 0, 0 ), 1 );
+  // another bit of a hack to get nice previews for simple lines -- the flood fill doesn't work well for those, because
+  // the center of the preview image is supposed to be transparent but it's surrounded by color:
+  if ( thumbnail.pixelColor( 300, 300 ) == CLEAR_COLOR )
+  {
+    thumbnail = QgsImageOperation::floodFill( thumbnail, QPoint( 300, 300 ), QColor( 0, 0, 0, 0 ), 1 );
+  }
 
   return thumbnail;
 }
