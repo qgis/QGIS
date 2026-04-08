@@ -813,7 +813,8 @@ std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsStatusBarWidgets
 ////////////////
 
 QgsCustomization::QgsCustomization( const QString &customizationFile )
-  : mCustomizationFile( customizationFile )
+  : mSplashPath( QgsApplication::splashPath() )
+  , mCustomizationFile( customizationFile )
 {
   const QFileInfo fileInfo( customizationFile );
   // TODO QGIS 5: remove QGIS 3 .ini customization file import logic
