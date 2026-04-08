@@ -6577,5 +6577,16 @@
         </data-defined-properties>
       </definition>
     </material>
+    <material name="CAD style" favorite="1" addedVersion="40200">
+      <definition alpha="0.25" beta="0.5" cool="255,130,0,255,rgb:1,0.509804,0,1" diffuse="179,179,179,255,rgb:0.7000076,0.7000076,0.7000076,1" shininess2="100" specular="255,255,255,255,rgb:1,1,1,1" type="gooch" warm="107,0,107,255,rgb:0.4196078,0,0.4196078,1">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
   </materialsettings>
 </qgis_style>
