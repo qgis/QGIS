@@ -169,7 +169,11 @@ void TestQgsCustomization::cleanup()
 
 void TestQgsCustomization::testLoadApply()
 {
+  QVERIFY( !mQgisApp->customization()->splashPath().isEmpty() );
+
   mQgisApp->customization()->setEnabled( true );
+
+  QVERIFY( !mQgisApp->customization()->splashPath().isEmpty() );
 
   // Make some modifications to the current customization
   auto setAllVisible = [this]( bool visible ) {
