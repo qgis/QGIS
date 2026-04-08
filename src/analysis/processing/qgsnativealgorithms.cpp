@@ -121,6 +121,7 @@
 #include "qgsalgorithmextractspecificvertices.h"
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
+#include "qgsalgorithmextrude.h"
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfileuploader.h"
@@ -446,6 +447,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsDxfExportAlgorithm() );
+  addAlgorithm( new QgsExtrudeAlgorithm() );
   addAlgorithm( new QgsExecuteAndLoadPostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecuteRegisteredSpatialiteQueryAlgorithm() );
