@@ -4714,8 +4714,14 @@ static QVariant fcnGeomFromGeoJSON( const QVariantList &values, const QgsExpress
 {
   QString geojson = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QgsGeometry geom = QgsJsonUtils::geometryFromGeoJson( geojson );
-  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
-  return result;
+
+  if ( geom.isNull() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Could not parse the GeoJSON string" ) );
+    return QVariant();
+  }
+
+  return QVariant::fromValue( geom );
 }
 
 static QVariant fcnGeomFromWKB( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
