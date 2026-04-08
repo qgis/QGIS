@@ -162,6 +162,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmhubdistance.h"
+#include "qgsalgorithmhypsometriccurves.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbylocation.h"
 #include "qgsalgorithmjoinbylocationsummary.h"
@@ -512,6 +513,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsHubDistanceAlgorithm() );
+  addAlgorithm( new QgsHypsometricCurvesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );
