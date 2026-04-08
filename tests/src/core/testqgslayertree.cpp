@@ -96,10 +96,6 @@ void TestQgsLayerTree::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   mRoot = new QgsLayerTreeGroup();
   mRoot->addGroup( u"grp1"_s );
   mRoot->addGroup( u"grp2"_s );

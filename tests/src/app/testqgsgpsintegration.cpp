@@ -73,10 +73,6 @@ void TestQgsGpsIntegration::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  QCoreApplication::setOrganizationName( u"QGISGpsTests"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsSettings().clear();
 
   mQgisApp = new QgisApp();
