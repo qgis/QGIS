@@ -1715,7 +1715,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry
         )
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
-        self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [6.0, 3.0])
+        self.assertEqual(
+            rendererStyle.symbol()[0].customDashVector(), [1.5, 3.0, 4.5, 0.0]
+        )
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(
             dd_properties.property(
@@ -1736,7 +1738,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 QgsSymbolLayer.Property.PropertyCustomDash
             ).asExpression(),
             (
-                "array_to_string(array_foreach(array(4,2),@element * ("
+                "array_to_string(array_foreach(array(1,2,3,0),@element * ("
                 "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) "
                 "WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) "
                 "WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) "
@@ -1744,6 +1746,45 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 "WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) "
                 "WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) "
                 "WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')"
+            ),
+        )
+
+    def testParseLineDashArrayStepOddNumber(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "water line (intermittent)/river",
+            "type": "line",
+            "source": "esri",
+            "source-layer": "water line (intermittent)",
+            "filter": ["==", "_symbol", 3],
+            "minzoom": 10,
+            "layout": {"line-join": "round"},
+            "paint": {
+                "line-color": "#aad3df",
+                "line-dasharray": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [1]],
+                    2,
+                    ["literal", [1, 1, 3]],
+                ],
+                "line-width": 1.2,
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(
+            style, conversion_context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry
+        )
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(
+            dd_properties.property(
+                QgsSymbolLayer.Property.PropertyCustomDash
+            ).asExpression(),
+            (
+                "array_to_string(CASE  WHEN @vector_tile_zoom >= 2 THEN (array(1,1,3,0)) ELSE (array(1,0)) END, ';')"
             ),
         )
 
