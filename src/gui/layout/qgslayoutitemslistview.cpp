@@ -119,7 +119,10 @@ void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
   setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'x' ) * 4 );
   header()->setSectionsMovable( false );
 
-  connect( selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLayoutItemsListView::updateSelection );
+  // Queued so updateSelection() does not run synchronously from inside
+  // a source model row insertion (e.g. when grouping items), which
+  // would emit dataChanged mid-transaction and corrupt the proxy.
+  connect( selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLayoutItemsListView::updateSelection, Qt::QueuedConnection );
 }
 
 void QgsLayoutItemsListView::keyPressEvent( QKeyEvent *event )
@@ -150,8 +153,8 @@ void QgsLayoutItemsListView::updateSelection()
 {
   // Do nothing if we are currently updating the selection
   // because user has selected/deselected some items in the
-  // graphics view
-  if ( !mModel || mUpdatingFromView )
+  // graphics view, or if we are already inside this method.
+  if ( !mModel || mUpdatingFromView || mUpdatingSelection )
     return;
 
   // Set the updating flag
