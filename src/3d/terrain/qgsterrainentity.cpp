@@ -23,13 +23,19 @@
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdemterrainsettings.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshterrainsettings.h"
+#include "qgsquantizedmeshterrainsettings.h"
+#include "qgsrasterlayer.h"
 #include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
+#include "qgstiledscenelayer.h"
 
 #include <QString>
 #include <Qt3DCore/QTransform>
@@ -71,10 +77,9 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, [this]() {
-    invalidateMapImages();
-    emit onTerrainElevationOffsetChanged();
-  } );
+  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
+
+  connectToLayersRepaintRequest();
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
@@ -199,6 +204,36 @@ void QgsTerrainEntity::invalidateMapImages()
 void QgsTerrainEntity::onLayersChanged()
 {
   invalidateMapImages();
+}
+
+void QgsTerrainEntity::connectToLayersRepaintRequest()
+{
+  if ( mLayer )
+  {
+    disconnect( mLayer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
+  }
+
+  mLayer = nullptr;
+  if ( mMapSettings && mMapSettings->terrainSettings() )
+  {
+    if ( const QgsQuantizedMeshTerrainSettings *settings = dynamic_cast<const QgsQuantizedMeshTerrainSettings *>( mMapSettings->terrainSettings() ) )
+    {
+      mLayer = dynamic_cast<QgsMapLayer *>( settings->layer() );
+    }
+    else if ( const QgsDemTerrainSettings *settings = dynamic_cast<const QgsDemTerrainSettings *>( mMapSettings->terrainSettings() ) )
+    {
+      mLayer = dynamic_cast<QgsMapLayer *>( settings->layer() );
+    }
+    else if ( const QgsMeshTerrainSettings *settings = dynamic_cast<const QgsMeshTerrainSettings *>( mMapSettings->terrainSettings() ) )
+    {
+      mLayer = dynamic_cast<QgsMeshLayer *>( settings->layer() );
+    }
+  }
+
+  if ( mLayer )
+  {
+    connect( mLayer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
+  }
 }
 
 void QgsTerrainEntity::onTerrainElevationOffsetChanged()
