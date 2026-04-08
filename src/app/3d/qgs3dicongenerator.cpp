@@ -235,7 +235,7 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   QImage thumbnail;
   {
     QEventLoop captureLoop;
-    const QMetaObject::Connection conn = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, [&thumbnail, &captureLoop]( const QImage &img ) {
+    QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, &captureLoop, [&thumbnail, &captureLoop]( const QImage &img ) {
       thumbnail = img.convertToFormat( QImage::Format_ARGB32_Premultiplied );
       captureLoop.quit();
     } );
@@ -243,7 +243,6 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
     engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
     engine.requestCaptureImage();
     captureLoop.exec();
-    QObject::disconnect( conn );
   }
 
   // replace background color with transparent
