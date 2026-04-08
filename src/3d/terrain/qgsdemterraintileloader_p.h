@@ -114,7 +114,7 @@ class QgsDemHeightMapGenerator : public QObject
     const QgsRectangle mDtmExtent;
 
     //! cloned provider to be used in worker thread
-    QgsRasterDataProvider *mClonedProvider = nullptr;
+    std::unique_ptr<QgsRasterDataProvider> mClonedProvider;
 
     QgsTilingScheme mTilingScheme;
 
