@@ -86,6 +86,33 @@ void Qgs3DIconGenerator::generateIcon( QgsStyle *style, QgsStyle::StyleEntity ty
   }
 }
 
+QImage Qgs3DIconGenerator::scaleAndCenterImage( const QImage &source, const QSize &targetSize )
+{
+  if ( source.isNull() || targetSize.isEmpty() )
+  {
+    return QImage();
+  }
+
+  const QImage scaledImage = source.scaled( targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+  if ( scaledImage.size() == targetSize )
+  {
+    return scaledImage;
+  }
+
+  QImage result( targetSize, QImage::Format_ARGB32_Premultiplied );
+  result.fill( Qt::transparent );
+
+  const int xOffset = ( targetSize.width() - scaledImage.width() ) / 2;
+  const int yOffset = ( targetSize.height() - scaledImage.height() ) / 2;
+
+  QPainter painter( &result );
+  painter.setCompositionMode( QPainter::CompositionMode_Source );
+  painter.drawImage( xOffset, yOffset, scaledImage );
+  painter.end();
+
+  return result;
+}
+
 void Qgs3DIconGenerator::generateThumbnailForMaterial( QgsStyle *style, const QString &name )
 {
   std::unique_ptr< QgsAbstractMaterialSettings > settings( style->materialSettings( name ) );
@@ -140,12 +167,12 @@ void Qgs3DIconGenerator::generateThumbnailForMaterial( QgsStyle *style, const QS
   QIcon icon;
   if ( sizes.isEmpty() )
   {
-    QImage scaled = thumbnail.scaled( QSize( 24, 24 ), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    const QImage scaled = scaleAndCenterImage( thumbnail, QSize( 24, 24 ) );
     icon.addPixmap( QPixmap::fromImage( scaled ) );
   }
   for ( const QSize &s : sizes )
   {
-    QImage scaled = thumbnail.scaled( s, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+    const QImage scaled = scaleAndCenterImage( thumbnail, s );
     icon.addPixmap( QPixmap::fromImage( scaled ) );
   }
 

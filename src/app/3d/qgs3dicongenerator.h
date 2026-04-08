@@ -32,6 +32,7 @@ class Qgs3DIconGenerator : public QgsAbstractStyleEntityIconGenerator
   private:
     void generateThumbnailForMaterial( QgsStyle *style, const QString &name );
     static QImage renderMaterial( const QgsAbstractMaterialSettings *material );
+    static QImage scaleAndCenterImage( const QImage &source, const QSize &targetSize );
 };
 
 #endif //QGS3DICONGENERATOR_H
