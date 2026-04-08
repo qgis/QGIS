@@ -60,6 +60,8 @@ void TestQgsCompoundColorWidget::initTestCase()
   QCoreApplication::setOrganizationName( u"QGIS"_s );
   QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
   QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsCompoundColorWidget::cleanupTestCase()
