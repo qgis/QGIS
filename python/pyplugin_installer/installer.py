@@ -26,23 +26,20 @@ import json
 import os
 import shutil
 import zipfile
-from functools import partial
 
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsMessageLog,
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
     QgsSettings,
     QgsSettingsTree,
 )
-from qgis.gui import QgsHelp, QgsMessageBar, QgsPasswordLineEdit
+from qgis.gui import QgsHelp, QgsPasswordLineEdit
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
     QDateTime,
     QDir,
-    QFile,
     QFileInfo,
     QObject,
     Qt,
@@ -57,7 +54,6 @@ from qgis.PyQt.QtWidgets import (
     QFrame,
     QLabel,
     QMessageBox,
-    QPushButton,
     QVBoxLayout,
 )
 from qgis.utils import (
