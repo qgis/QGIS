@@ -3471,7 +3471,11 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"to_real(%1)"_s.arg( parseValue( expression.value( 1 ), context ) );
   }
-  if ( op == "literal"_L1 )
+  else if ( op == "sqrt"_L1 )
+  {
+    return u"sqrt(%1)"_s.arg( parseValue( expression.value( 1 ), context ) );
+  }
+  else if ( op == "literal"_L1 )
   {
     return expression.value( 1 ).toString();
   }
@@ -3660,6 +3664,18 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return u"@vector_tile_zoom"_s;
   }
+  else if ( op == "coalesce"_L1 )
+  {
+    QString coalesceString = u"coalesce("_s;
+    for ( int i = 1; i < expression.size(); i++ )
+    {
+      if ( i > 1 )
+        coalesceString += ", "_L1;
+      coalesceString += parseValue( expression.value( i ), context );
+    }
+    coalesceString += ')'_L1;
+    return coalesceString;
+  }
   else if ( op == "concat"_L1 )
   {
     QString concatString = u"concat("_s;
@@ -3701,6 +3717,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
     }
     return caseString;
+  }
+  else if ( op == "pitch"_L1 )
+  {
+    return u"0"_s;
   }
   else
   {
