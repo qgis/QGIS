@@ -917,6 +917,30 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "((10 + 10) * (1 + 2))",
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["sqrt", ["get", "sizerank"]],
+                conversion_context,
+            ),
+            """sqrt("sizerank")""",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["pitch"],
+                conversion_context,
+            ),
+            """0""",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["coalesce", ["get", "name_en"], ["get", "name"]],
+                conversion_context,
+            ),
+            """coalesce("name_en", "name")""",
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {

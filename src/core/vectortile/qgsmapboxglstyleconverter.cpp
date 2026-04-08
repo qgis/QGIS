@@ -3361,7 +3361,11 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return QStringLiteral( "to_real(%1)" ).arg( parseValue( expression.value( 1 ), context ) );
   }
-  if ( op == QLatin1String( "literal" ) )
+  else if ( op == QLatin1String( "sqrt" ) )
+  {
+    return QStringLiteral( "sqrt(%1)" ).arg( parseValue( expression.value( 1 ), context ) );
+  }
+  else if ( op == QLatin1String( "literal" ) )
   {
     return expression.value( 1 ).toString();
   }
@@ -3554,6 +3558,18 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return QStringLiteral( "@vector_tile_zoom" );
   }
+  else if ( op == QLatin1String( "coalesce" ) )
+  {
+    QString coalesceString = QStringLiteral( "coalesce(" );
+    for ( int i = 1; i < expression.size(); i++ )
+    {
+      if ( i > 1 )
+        coalesceString += QLatin1String( ", " );
+      coalesceString += parseValue( expression.value( i ), context );
+    }
+    coalesceString += QLatin1Char( ')' );
+    return coalesceString;
+  }
   else if ( op == QLatin1String( "concat" ) )
   {
     QString concatString = QStringLiteral( "concat(" );
@@ -3595,6 +3611,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
     }
     return caseString;
+  }
+  else if ( op == QLatin1String( "pitch" ) )
+  {
+    return QStringLiteral( "0" );
   }
   else
   {
