@@ -66,11 +66,6 @@ void TestQgsFieldExpressionWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   // Create memory layers
   // LAYER A //
   mLayerA = new QgsVectorLayer( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );

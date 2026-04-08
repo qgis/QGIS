@@ -71,11 +71,6 @@ void TestQgsMapToolDeleteRing::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
