@@ -27,6 +27,7 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis_3d.h"
 #include "qgsmaterial.h"
 
 #include <Qt3DRender/QCamera>
@@ -52,7 +53,7 @@
  * we have access to previous (p0) and next (p3) points). Geometry shader generates two triangles
  * for each segment and possibly another triangle for bevel join.
  */
-class QgsLineMaterial : public QgsMaterial
+class _3D_EXPORT QgsLineMaterial : public QgsMaterial
 {
     Q_OBJECT
   public:
