@@ -758,8 +758,6 @@ class QgsPluginInstaller(QObject):
             if len(metadatafiles) > 0:
                 pluginName = os.path.split(metadatafiles[0])[0]
 
-        pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
-
         if not pluginName:
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Icon.Warning)
