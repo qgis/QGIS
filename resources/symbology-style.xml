@@ -6422,4 +6422,160 @@
       </settings>
     </labelsetting>
   </labelsettings> 
+  <materialsettings>
+    <material name="Blue (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="9,36,55,255,hsv:0.56711113452911377,0.82777142524719238,0.21428243815898895,1" diffuse="31,120,180,255,rgb:0.1215686,0.4705882,0.7058824,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Blue (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="10,39,59,255,hsv:0.56711113452911377,0.82777142524719238,0.23213550448417664,1" diffuse="31,120,180,255,rgb:0.1215686,0.4705882,0.7058824,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Brown (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="46,29,13,255,hsv:0.0833333358168602,0.70833903551101685,0.17857633531093597,1" diffuse="149,107,86,255,hsv:0.05550000071525574,0.42261385917663574,0.58333712816238403,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Brown (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="44,32,25,255,hsv:0.05550000071525574,0.42261385917663574,0.17262531816959381,1" diffuse="149,107,86,255,hsv:0.05550000071525574,0.42261385917663574,0.58333712816238403,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Gray (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="46,46,46,255,hsv:0,0,0.17857633531093597,1" diffuse="179,179,179,255,rgb:0.7000076,0.7000076,0.7000076,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Gray (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="46,46,46,255,hsv:0,0,0.17857633531093597,1" diffuse="179,179,179,255,rgb:0.7000076,0.7000076,0.7000076,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Green (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="2,36,0,255,hsv:0.32327777147293091,1,0.1428549587726593,1" diffuse="51,160,44,255,rgb:0.2,0.627451,0.172549,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Green (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="15,47,13,255,hsv:0.32327777147293091,0.72500193119049072,0.18452735245227814,1" diffuse="51,160,44,255,rgb:0.2,0.627451,0.172549,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Purple (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="43,21,47,255,hsv:0.80872219800949097,0.54320591688156128,0.18452735245227814,1" diffuse="149,74,162,255,rgb:0.5843138,0.2901961,0.6352941,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Purple (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="50,25,55,255,hsv:0.80872219800949097,0.54320591688156128,0.21428243815898895,1" diffuse="149,74,162,255,rgb:0.5843138,0.2901961,0.6352941,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Red (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="60,0,1,255,hsv:0.99833333492279053,1,0.23379872739315033,1" diffuse="227,26,28,255,rgb:0.8901961,0.1019608,0.1098039,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Red (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="47,5,6,255,hsv:0.99833333492279053,0.88546580076217651,0.18452735245227814,1" diffuse="227,26,28,255,rgb:0.8901961,0.1019608,0.1098039,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Yellow (flat)" favorite="1" addedVersion="40200">
+      <definition ambient="58,46,0,255,hsv:0.1323055624961853,1,0.22618448734283447,1" diffuse="255,202,0,255,hsv:0.1323055624961853,1,1,1" ka="1" kd="1" ks="1" opacity="1" shininess="0" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+    <material name="Yellow (shiny)" favorite="1" addedVersion="40200">
+      <definition ambient="58,46,0,255,hsv:0.1323055624961853,1,0.22618448734283447,1" diffuse="255,202,0,255,hsv:0.1323055624961853,1,1,1" ka="1" kd="1" ks="1" opacity="1" shininess="4" specular="255,255,255,255,rgb:1,1,1,1" type="phong">
+        <data-defined-properties>
+          <Option type="Map">
+            <Option name="name" type="QString" value=""/>
+            <Option name="properties"/>
+            <Option name="type" type="QString" value="collection"/>
+          </Option>
+        </data-defined-properties>
+      </definition>
+    </material>
+  </materialsettings>
 </qgis_style>
