@@ -16,6 +16,7 @@
 #ifndef QGS3DSYMBOLWIDGET_H
 #define QGS3DSYMBOLWIDGET_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
@@ -59,12 +60,32 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
      */
     virtual QString symbolType() const = 0;
 
+    /**
+     * Returns associated rendering technique.
+     *
+     * \warning This is not considered stable API, and may change in future QGIS releases. It is
+     * exposed to the Python bindings as a tech preview only.
+     *
+     * \since QGIS 4.2
+     */
+    virtual Qgis::MaterialRenderingTechnique renderingTechnique() const = 0;
+
   signals:
 
     /**
      * Emitted when the symbol is changed.
      */
     void changed();
+
+    /**
+     * Emitted when the rendering technique associated with the symbol is changed.
+     *
+     * \warning This is not considered stable API, and may change in future QGIS releases. It is
+     * exposed to the Python bindings as a tech preview only.
+     *
+     * \since QGIS 4.2
+     */
+    void renderingTechniqueChanged();
 };
 
 

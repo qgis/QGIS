@@ -1864,6 +1864,20 @@ Qgis.BrowserItemCapabilities = lambda flags=0: Qgis.BrowserItemCapability(flags)
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 Qgis.BrowserItemCapabilities.baseClass = Qgis
 BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.BrowserItemFilterFlag.HideWhenNotFilteringByLayerType.__doc__ = "Item should be hidden from the view when no layer type filter is in place"
+Qgis.BrowserItemFilterFlag.__doc__ = """Browser item filter flags.
+
+.. versionadded:: 4.2
+
+* ``HideWhenNotFilteringByLayerType``: Item should be hidden from the view when no layer type filter is in place
+
+"""
+# --
+Qgis.BrowserItemFilterFlag.baseClass = Qgis
+Qgis.BrowserItemFilterFlags = lambda flags=0: Qgis.BrowserItemFilterFlag(flags)
+Qgis.BrowserItemFilterFlags.baseClass = Qgis
+BrowserItemFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsDataProvider.DataCapability = Qgis.DataItemProviderCapability
 # monkey patching scoped based enum
 QgsDataProvider.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
@@ -7722,6 +7736,36 @@ Qgis.Point3DShape.__doc__ = """3D point shape types.
 # --
 Qgis.Point3DShape.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MaterialRenderingTechnique.Triangles.__doc__ = "Triangle based rendering (default)"
+Qgis.MaterialRenderingTechnique.Lines.__doc__ = "Line based rendering, requires line data"
+Qgis.MaterialRenderingTechnique.InstancedPoints.__doc__ = "Instanced based rendering, requiring triangles and point data"
+Qgis.MaterialRenderingTechnique.Points.__doc__ = "Point based rendering, requires point data"
+Qgis.MaterialRenderingTechnique.TrianglesWithFixedTexture.__doc__ = "Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)"
+Qgis.MaterialRenderingTechnique.TrianglesFromModel.__doc__ = "Triangle based rendering, using a model object source"
+Qgis.MaterialRenderingTechnique.TrianglesDataDefined.__doc__ = "Triangle based rendering with possibility of datadefined color"
+Qgis.MaterialRenderingTechnique.Billboards.__doc__ = "Flat billboard rendering"
+Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+
+* ``Triangles``: Triangle based rendering (default)
+* ``Lines``: Line based rendering, requires line data
+* ``InstancedPoints``: Instanced based rendering, requiring triangles and point data
+* ``Points``: Point based rendering, requires point data
+* ``TrianglesWithFixedTexture``: Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
+* ``TrianglesFromModel``: Triangle based rendering, using a model object source
+* ``TrianglesDataDefined``: Triangle based rendering with possibility of datadefined color
+* ``Billboards``: Flat billboard rendering
+
+"""
+# --
+Qgis.MaterialRenderingTechnique.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
@@ -8122,6 +8166,31 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 """
 # --
 Qgis.ArcGisRestServiceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ArcGisRestServiceCapability.Map.__doc__ = "Render map"
+Qgis.ArcGisRestServiceCapability.Query.__doc__ = "Query features"
+Qgis.ArcGisRestServiceCapability.Update.__doc__ = "Update features"
+Qgis.ArcGisRestServiceCapability.Delete.__doc__ = "Delete features"
+Qgis.ArcGisRestServiceCapability.Create.__doc__ = "Create features"
+Qgis.ArcGisRestServiceCapability.__doc__ = """Available ArcGIS REST service capabilities.
+
+This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
+extended in future with additional capabilities when required.
+
+.. versionadded:: 4.2
+
+* ``Map``: Render map
+* ``Query``: Query features
+* ``Update``: Update features
+* ``Delete``: Delete features
+* ``Create``: Create features
+
+"""
+# --
+Qgis.ArcGisRestServiceCapability.baseClass = Qgis
+Qgis.ArcGisRestServiceCapabilities = lambda flags=0: Qgis.ArcGisRestServiceCapability(flags)
+Qgis.ArcGisRestServiceCapabilities.baseClass = Qgis
+ArcGisRestServiceCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRelation.RelationType = Qgis.RelationshipType
 # monkey patching scoped based enum
 QgsRelation.Normal = Qgis.RelationshipType.Normal

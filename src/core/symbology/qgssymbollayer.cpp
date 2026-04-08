@@ -1095,17 +1095,17 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
   if ( !clipGeometries.empty() )
   {
     foundGeometries = true;
-    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
+    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries, QgsGeometryParameters(), renderContext.feedback() );
     if ( renderContext.maskSettings().simplifyTolerance() > 0 )
     {
       QgsGeos geos( mergedGeom.constGet() );
-      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance() ) );
+      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance(), nullptr, renderContext.feedback() ) );
     }
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
     // structure would be better, but too old GEOS
-    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework );
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework, false, renderContext.feedback() );
 #else
-    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Structure );
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Structure, false, renderContext.feedback() );
 #endif
     if ( !mergedGeom.isEmpty() )
     {
@@ -1119,7 +1119,7 @@ QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QStr
       {
         exterior = QgsGeometry::fromRect( contextBounds );
       }
-      const QgsGeometry maskGeom = exterior.difference( mergedGeom );
+      const QgsGeometry maskGeom = exterior.difference( mergedGeom, QgsGeometryParameters(), renderContext.feedback() );
       if ( !maskGeom.isNull() )
       {
         return maskGeom.constGet()->asQPainterPath();

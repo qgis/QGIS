@@ -85,6 +85,7 @@ using namespace Qt::StringLiterals;
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
@@ -986,6 +987,8 @@ QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
 const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
+
+const QgsSettingsEntryBool *QgisApp::settingsAskToDeleteFeatures = new QgsSettingsEntryBool( u"ask-to-delete-features"_s, QgsSettingsTree::sTreeApp, true );
 
 QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
@@ -8815,8 +8818,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
 
   if ( !confirmationServed )
   {
-    QgsSettings settings;
-    const bool showConfirmation = settings.value( u"askToDeleteFeatures"_s, true, QgsSettings::App ).toBool();
+    const bool showConfirmation = QgisApp::settingsAskToDeleteFeatures->value();
     if ( showConfirmation )
     {
       QMessageBox confirmMessage(
@@ -8835,7 +8837,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
 
       if ( confirmMessage.checkBox()->isChecked() )
       {
-        settings.setValue( u"askToDeleteFeatures"_s, false, QgsSettings::App );
+        settingsAskToDeleteFeatures->setValue( false );
       }
     }
   }
@@ -13455,6 +13457,14 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   widget->setMainCanvas( mMapCanvas );
   widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
+  for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+  {
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+    profileWidget->updateCurveIn3D();
+  }
+
   return widget;
 #else
   Q_UNUSED( name );
@@ -13493,6 +13503,16 @@ QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *p
   QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile, mMapCanvas );
 
   connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] { mElevationProfileWidgets.remove( widget ); } );
+
+#ifdef HAVE_3D
+  // Connect the new elevation profile widget's signals to all open 3D map views
+  for ( Qgs3DMapCanvasWidget *canvasWidget : std::as_const( mOpen3DMapViews ) )
+  {
+    connect( widget, &QgsElevationProfileWidget::profileDataChanged, canvasWidget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileDataRemoved, canvasWidget, &Qgs3DMapCanvasWidget::removeProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileCursorMoved, canvasWidget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+  }
+#endif
 
   mElevationProfileWidgets.insert( widget );
 
@@ -15279,7 +15299,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     }
   }
 
-  bool identifyModeIsActiveLayer = QgsSettings().enumValue( u"/Map/identifyMode"_s, QgsMapToolIdentify::ActiveLayer ) == QgsMapToolIdentify::ActiveLayer;
+  bool identifyModeIsActiveLayer = QgsMapToolIdentify::settingIdentifyMode->value() == QgsMapToolIdentify::ActiveLayer;
 
   if ( !layer )
   {

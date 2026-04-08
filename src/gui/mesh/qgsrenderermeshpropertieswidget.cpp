@@ -22,12 +22,16 @@
 #include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QString>
 
 #include "moc_qgsrenderermeshpropertieswidget.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryInteger *QgsRendererMeshPropertiesWidget::settingsTab = new QgsSettingsEntryInteger( u"renderer-mesh-properties-tab"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -132,8 +136,7 @@ void QgsRendererMeshPropertiesWidget::apply()
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
 
-  QgsSettings windowsSettings;
-  windowsSettings.setValue( u"/Windows/RendererMeshProperties/tab"_s, mStyleOptionsTab->currentIndex() );
+  settingsTab->setValue( mStyleOptionsTab->currentIndex() );
 }
 
 void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
@@ -178,11 +181,7 @@ void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
   const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   mEdgeMeshGroupBox->setVisible( hasEdges || !mMeshLayer->isValid() );
 
-  QgsSettings settings;
-  if ( !settings.contains( u"/Windows/RendererMeshProperties/tab"_s ) )
-    settings.setValue( u"/Windows/RendererMeshProperties/tab"_s, 0 );
-  else
-    mStyleOptionsTab->setCurrentIndex( settings.value( u"/Windows/RendererMeshProperties/tab"_s ).toInt() );
+  mStyleOptionsTab->setCurrentIndex( settingsTab->value() );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )

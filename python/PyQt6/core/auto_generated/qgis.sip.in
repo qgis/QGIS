@@ -618,6 +618,14 @@ The development version
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
 
+    enum class BrowserItemFilterFlag /BaseType=IntFlag/
+    {
+      HideWhenNotFilteringByLayerType,
+    };
+
+    typedef QFlags<Qgis::BrowserItemFilterFlag> BrowserItemFilterFlags;
+
+
     enum class DataItemProviderCapability /BaseType=IntFlag/
     {
       NoCapabilities,
@@ -2410,6 +2418,18 @@ The development version
       Billboard,
     };
 
+    enum class MaterialRenderingTechnique /BaseType=IntEnum/
+    {
+      Triangles,
+      Lines,
+      InstancedPoints,
+      Points,
+      TrianglesWithFixedTexture,
+      TrianglesFromModel,
+      TrianglesDataDefined,
+      Billboards,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
@@ -2542,6 +2562,18 @@ The development version
       Unknown,
       SceneServer,
     };
+
+    enum class ArcGisRestServiceCapability /BaseType=IntFlag/
+    {
+      Map,
+      Query,
+      Update,
+      Delete,
+      Create,
+    };
+
+    typedef QFlags<Qgis::ArcGisRestServiceCapability> ArcGisRestServiceCapabilities;
+
 
     enum class RelationshipType /BaseType=IntEnum/
     {
@@ -3852,6 +3884,8 @@ QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QF
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
+QFlags<Qgis::BrowserItemFilterFlag> operator|(Qgis::BrowserItemFilterFlag f1, QFlags<Qgis::BrowserItemFilterFlag> f2);
+
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
@@ -4019,6 +4053,8 @@ QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::Extru
 QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
 
 QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapability f1, QFlags<Qgis::SymbolConverterCapability> f2);
+
+QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
 
 

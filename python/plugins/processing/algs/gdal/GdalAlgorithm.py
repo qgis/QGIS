@@ -212,10 +212,4 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate(context, string)
 
     def outputFormat(self, parameters, parameterName, context):
-        output_format = self.parameterAsOutputFormat(parameters, parameterName, context)
-        if not output_format:
-            out = self.parameterAsOutputLayer(parameters, parameterName, context)
-            output_format = QgsRasterFileWriter.driverForExtension(
-                os.path.splitext(out)[1]
-            )
-        return output_format
+        return self.parameterAsOutputRasterFormat(parameters, parameterName, context)

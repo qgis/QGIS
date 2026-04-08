@@ -156,6 +156,13 @@ bool QgsPointCloudLayerRenderer::render()
     mElapsedTimer.start();
   }
 
+  QgsElevationShadingRenderer elevationShadingRenderer = mRenderer->elevationShadingRenderer();
+  if ( elevationShadingRenderer.isActive() )
+  {
+    auto elevationMap = std::make_unique<QgsElevationMap>( renderContext()->deviceOutputSize(), renderContext()->devicePixelRatio() );
+    renderContext()->setElevationMap( elevationMap.release() );
+  }
+
   mRenderer->startRender( context );
 
   mAttributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
@@ -258,6 +265,17 @@ bool QgsPointCloudLayerRenderer::render()
         }
       }
       mSubIndexExtentRenderer->stopRender( context );
+    }
+  }
+
+  if ( elevationShadingRenderer.isActive() )
+  {
+    QImage *img = dynamic_cast< QImage * >( painter->device() );
+    if ( img )
+    {
+      const QgsElevationMap *elevationMap = renderContext()->elevationMap();
+      if ( elevationMap )
+        mRenderer->elevationShadingRenderer().renderShading( *elevationMap, *img, *renderContext() );
     }
   }
 
@@ -374,7 +392,7 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNode
   }
 
   int nodesDrawn = 0;
-  for ( const QgsPointCloudNodeId &n : nodes )
+  for ( QgsPointCloudNodeId n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
@@ -447,7 +465,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNod
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
-    const QgsPointCloudNodeId &n = nodes[i];
+    QgsPointCloudNodeId n = nodes[i];
     const QString nStr = n.toString();
     QgsPointCloudBlockRequest *blockRequest = pc.asyncNodeData( n, request );
     blockRequests.append( blockRequest );
@@ -539,7 +557,7 @@ int QgsPointCloudLayerRenderer::renderNodesSorted(
   // And pairs of byte array start positions paired with their Z values for sorting
   QVector<QPair<int, double>> allPairs;
 
-  for ( const QgsPointCloudNodeId &n : nodes )
+  for ( QgsPointCloudNodeId n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
@@ -817,7 +835,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerRenderer::traverseTree( const Qgs
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
-  for ( const QgsPointCloudNodeId &nn : node.children() )
+  for ( QgsPointCloudNodeId nn : node.children() )
   {
     nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
   }

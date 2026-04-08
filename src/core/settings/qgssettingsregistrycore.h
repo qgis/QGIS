@@ -171,6 +171,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     static const QgsSettingsEntryBool *settingsLayerTreeShowLegendClassifiers;
 
+    /**
+     * Settings entry for hidden ID in layer tooltips.
+     * \since QGIS 4.2
+     */
+    static const QgsSettingsEntryBool *settingsLayerTreeShowIdInLayerTooltips;
+
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
 

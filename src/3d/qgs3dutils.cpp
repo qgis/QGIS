@@ -412,7 +412,7 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     }
   }
 
-  const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainSettings()->verticalScale() ) + offset;
+  const float z = ( terrainZ + geomZ ) * ( context.terrainSettings() ? static_cast<float>( context.terrainSettings()->verticalScale() ) : 1 ) + offset;
   return z;
 }
 
@@ -460,7 +460,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
         break;
     }
 
-    const float z = ( terrainZ + geomZ ) * static_cast<float>( context.terrainSettings()->verticalScale() ) + offset;
+    const float z = ( terrainZ + geomZ ) * ( context.terrainSettings() ? static_cast<float>( context.terrainSettings()->verticalScale() ) : 1 ) + offset;
     lineString->setZAt( i, z );
   }
 }
@@ -536,7 +536,7 @@ void Qgs3DUtils::extractPointPositions(
       geomZ = pt.z();
     }
     const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
-                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * context.terrainSettings()->verticalScale() )
+                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
                              : 0.f;
     float h = 0.0f;
     switch ( altClamp )

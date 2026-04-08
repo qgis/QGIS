@@ -42,18 +42,14 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
   public:
     explicit QgsWebView( QWidget *parent = nullptr )
       : QTextBrowser( parent )
-      , mSettings( new QWebSettings() )
-      , mPage( new QWebPage( this ) )
+      , mSettings( std::make_unique<QWebSettings>() )
+      , mPage( std::make_unique<QWebPage>( this ) )
     {
       connect( this, &QTextBrowser::anchorClicked, this, &QgsWebView::linkClicked );
-      connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
+      connect( this, &QgsWebView::pageLoadFinished, mPage.get(), &QWebPage::loadFinished );
     }
 
-    ~QgsWebView() override
-    {
-      delete mSettings;
-      delete mPage;
-    }
+    ~QgsWebView() override {}
 
     void setUrl( const QUrl &url ) { setSource( url ); }
 
@@ -61,9 +57,9 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 
     QUrl url() const { return source(); }
 
-    QWebPage *page() const { return mPage; }
+    QWebPage *page() const { return mPage.get(); }
 
-    QWebSettings *settings() const { return mSettings; }
+    QWebSettings *settings() const { return mSettings.get(); }
 
     virtual QgsWebView *createWindow( QWebPage::WebWindowType ) { return new QgsWebView(); }
 
@@ -100,8 +96,8 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     }
 
   private:
-    QWebSettings *mSettings = nullptr;
-    QWebPage *mPage = nullptr;
+    std::unique_ptr<QWebSettings> mSettings;
+    std::unique_ptr<QWebPage> mPage;
 
     /// @endcond
 };

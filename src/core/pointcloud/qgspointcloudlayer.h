@@ -319,7 +319,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * changes can be discarded by calling rollBack().
      * \since QGIS 3.42
      */
-    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+    bool changeAttributeValue( QgsPointCloudNodeId n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int position );
+    void chunkAttributeValuesChanged( QgsPointCloudNodeId n, const int position );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );

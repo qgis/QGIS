@@ -2546,6 +2546,130 @@ class TestQgsExpression : public QObject
       QTest::newRow( "color hsva float" ) << "color_hsvf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHsvF( 0.5f, 0.9012, 0, 0.8034 ) );
       QTest::newRow( "color hsv invalid float" ) << "color_hsvf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHsvF( 1, 0.1, 0, 0 ) );
 
+      // RGB color addition
+      QTest::newRow( "color add float" ) << "color_rgbf(0.4,0.6,0.8) + 0.1" << false << QVariant( QColor::fromRgbF( 0.5, 0.7, 0.9, 1.0 ) );
+      QTest::newRow( "color add overflow" ) << "color_rgbf(0.8,0.8,0.8) + 1" << false << QVariant( QColor::fromRgbF( 1.0, 1.0, 1.0, 1.0 ) );
+
+      // RGB color subtraction
+      QTest::newRow( "color subtract float" ) << "color_rgbf(0.4,0.6,0.8) - 0.1" << false << QVariant( QColor::fromRgbF( 0.3, 0.5, 0.7, 1.0 ) );
+      QTest::newRow( "color subtract underflow" ) << "color_rgbf(0.2,0.2,0.2) - 1" << false << QVariant( QColor::fromRgbF( 0.0, 0.0, 0.0, 1.0 ) );
+
+      // RGB color multiplication
+      QTest::newRow( "color multiply int" ) << "color_rgbf(0.4,0.6,0.8,0.4) * 2" << false << QVariant( QColor::fromRgbF( 0.8, 1.0, 1.0, 0.4 ) );
+      QTest::newRow( "color multiply float" ) << "color_rgbf(0.4,0.6,0.8) * 0.5" << false << QVariant( QColor::fromRgbF( 0.2, 0.3, 0.4, 1.0 ) );
+      QTest::newRow( "color multiply zero" ) << "color_rgbf(0.4,0.6,0.8) * 0" << false << QVariant( QColor::fromRgbF( 0.0, 0.0, 0.0, 1.0 ) );
+      QTest::newRow( "color multiply negative" ) << "color_rgbf(0.4,0.6,0.8) * -1" << false << QVariant( QColor::fromRgbF( 0.0, 0.0, 0.0, 1.0 ) );
+
+      // RGB color division
+      QTest::newRow( "color divide int" ) << "color_rgbf(0.4,0.6,0.8,0.4) / 2" << false << QVariant( QColor::fromRgbF( 0.2, 0.3, 0.4, 0.4 ) );
+      QTest::newRow( "color divide float" ) << "color_rgbf(0.4,0.6,0.8) / 0.5" << false << QVariant( QColor::fromRgbF( 0.8, 1.0, 1.0, 1.0 ) );
+      QTest::newRow( "color divide zero" ) << "color_rgbf(0.4,0.6,0.8) / 0" << false << QVariant();
+
+      // CMYK color addition
+      QTest::newRow( "cmyk color add float" ) << "color_cmykf(0.4,0.6,0.8,0.2) + 0.1" << false << QVariant( QColor::fromCmykF( 0.5, 0.7, 0.9, 0.3, 1.0 ) );
+      QTest::newRow( "cmyk color add overflow" ) << "color_cmykf(0.8,0.8,0.8,0.8) + 1" << false << QVariant( QColor::fromCmykF( 1.0, 1.0, 1.0, 1.0, 1.0 ) );
+
+      // CMYK color subtraction
+      QTest::newRow( "cmyk color subtract float" ) << "color_cmykf(0.4,0.6,0.8,0.2) - 0.1" << false << QVariant( QColor::fromCmykF( 0.3, 0.5, 0.7, 0.1, 1.0 ) );
+      QTest::newRow( "cmyk color subtract underflow" ) << "color_cmykf(0.2,0.2,0.2,0.2) - 1" << false << QVariant( QColor::fromCmykF( 0.0, 0.0, 0.0, 0.0, 1.0 ) );
+
+      // CMYK color multiplication
+      QTest::newRow( "cmyk color multiply int" ) << "color_cmykf(0.4,0.6,0.8,0.2,0.4) * 2" << false << QVariant( QColor::fromCmykF( 0.8, 1.0, 1.0, 0.4, 0.4 ) );
+      QTest::newRow( "cmyk color multiply float" ) << "color_cmykf(0.4,0.6,0.8,0.2) * 0.5" << false << QVariant( QColor::fromCmykF( 0.2, 0.3, 0.4, 0.1, 1.0 ) );
+      QTest::newRow( "cmyk color multiply zero" ) << "color_cmykf(0.4,0.6,0.8,0.2) * 0" << false << QVariant( QColor::fromCmykF( 0.0, 0.0, 0.0, 0.0, 1.0 ) );
+      QTest::newRow( "cmyk color multiply negative" ) << "color_cmykf(0.4,0.6,0.8,0.2) * -1" << false << QVariant( QColor::fromCmykF( 0.0, 0.0, 0.0, 0.0, 1.0 ) );
+
+      // CMYK color division
+      QTest::newRow( "cmyk color divide int" ) << "color_cmykf(0.4,0.6,0.8,0.2,0.4) / 2" << false << QVariant( QColor::fromCmykF( 0.2, 0.3, 0.4, 0.1, 0.4 ) );
+      QTest::newRow( "cmyk color divide float" ) << "color_cmykf(0.4,0.6,0.8,0.2) / 0.5" << false << QVariant( QColor::fromCmykF( 0.8, 1.0, 1.0, 0.4, 1.0 ) );
+      QTest::newRow( "cmyk color divide zero" ) << "color_cmykf(0.4,0.6,0.8,0.2) / 0" << false << QVariant();
+
+      // HSL color addition
+      QTest::newRow( "hsl color add" ) << "color_hslf(0,0,0.5) + 0.2" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+      QTest::newRow( "hsl color add 2" ) << "color_hslf(0.75,0.5,0.5) + 0.3" << false << QVariant( QColor::fromRgbF( 0.8f, 0.55f, 1.0f, 1.0f ) );
+      QTest::newRow( "hsl color add overflow" ) << "color_hslf(0,0,0.8) + 0.5" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
+      // HSL color subtraction
+      QTest::newRow( "hsl color subtract" ) << "color_hslf(0,0,0.5) - 0.2" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+      QTest::newRow( "hsl color subtract 2" ) << "color_hslf(0.75,0.5,0.5) - 0.3" << false << QVariant( QColor::fromRgbF( 0.2f, 0.0f, 0.45f, 1.0f ) );
+      QTest::newRow( "hsl color subtract underflow" ) << "color_hslf(0,0,0.2) - 0.5" << false << QVariant( QColor::fromRgbF( 0.0f, 0.0f, 0.0f, 1.0f ) );
+
+      // HSL color multiplication
+      QTest::newRow( "hsl color multiply" ) << "color_hslf(0,0,0.5) * 0.5" << false << QVariant( QColor::fromRgbF( 0.25f, 0.25f, 0.25f, 1.0f ) );
+      QTest::newRow( "hsl color multiply overflow" ) << "color_hslf(0,0,0.5) * 3" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
+      // HSL color division
+      QTest::newRow( "hsl color divide" ) << "color_hslf(0,0,0.8) / 2" << false << QVariant( QColor::fromRgbF( 0.4f, 0.4f, 0.4f, 1.0f ) );
+      QTest::newRow( "hsl color divide zero" ) << "color_hslf(0,0,0.5) / 0" << false << QVariant();
+
+      // HSV color addition
+      QTest::newRow( "hsv color add" ) << "color_hsvf(0,0,0.5) + 0.2" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+      QTest::newRow( "hsv color add overflow" ) << "color_hsvf(0,0,0.8) + 0.5" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
+      // HSV color subtraction
+      QTest::newRow( "hsv color subtract" ) << "color_hsvf(0,0,0.5) - 0.2" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+      QTest::newRow( "hsv color subtract underflow" ) << "color_hsvf(0,0,0.2) - 0.5" << false << QVariant( QColor::fromRgbF( 0.0f, 0.0f, 0.0f, 1.0f ) );
+
+      // HSV color multiplication
+      QTest::newRow( "hsv color multiply" ) << "color_hsvf(0,0,0.5) * 0.5" << false << QVariant( QColor::fromRgbF( 0.25f, 0.25f, 0.25f, 1.0f ) );
+      QTest::newRow( "hsv color multiply overflow" ) << "color_hsvf(0,0,0.5) * 3" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
+      // HSV color division
+      QTest::newRow( "hsv color divide" ) << "color_hsvf(0,0,0.8) / 2" << false << QVariant( QColor::fromRgbF( 0.4f, 0.4f, 0.4f, 1.0f ) );
+      QTest::newRow( "hsv color divide zero" ) << "color_hsvf(0,0,0.5) / 0" << false << QVariant();
+
+      // float + color
+      QTest::newRow( "float plus rgb color" ) << "0.1 + color_rgbf(0.4,0.6,0.8)" << false << QVariant( QColor::fromRgbF( 0.5, 0.7, 0.9, 1.0 ) );
+      QTest::newRow( "float plus rgb color overflow" ) << "1 + color_rgbf(0.8,0.8,0.8)" << false << QVariant( QColor::fromRgbF( 1.0, 1.0, 1.0, 1.0 ) );
+      QTest::newRow( "float plus cmyk color" ) << "0.1 + color_cmykf(0.4,0.6,0.8,0.2)" << false << QVariant( QColor::fromCmykF( 0.5, 0.7, 0.9, 0.3, 1.0 ) );
+      QTest::newRow( "float plus hsl color" ) << "0.2 + color_hslf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+      QTest::newRow( "float plus hsv color" ) << "0.2 + color_hsvf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+
+      // float - color
+      QTest::newRow( "float minus rgb color" ) << "1.0 - color_rgbf(0.4,0.6,0.8)" << false << QVariant( QColor::fromRgbF( 0.6, 0.4, 0.2, 1.0 ) );
+      QTest::newRow( "float minus rgb color underflow" ) << "0.5 - color_rgbf(0.4,0.6,0.8)" << false << QVariant( QColor::fromRgbF( 0.1, 0.0, 0.0, 1.0 ) );
+      QTest::newRow( "float minus cmyk color" ) << "1.0 - color_cmykf(0.4,0.6,0.8,0.2)" << false << QVariant( QColor::fromCmykF( 0.6, 0.4, 0.2, 0.8, 1.0 ) );
+      QTest::newRow( "float minus cmyk color underflow" ) << "0.5 - color_cmykf(0.4,0.6,0.8,0.2)" << false << QVariant( QColor::fromCmykF( 0.1, 0.0, 0.0, 0.3, 1.0 ) );
+      QTest::newRow( "float minus hsl color" ) << "0.8 - color_hslf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+      QTest::newRow( "float minus hsv color" ) << "0.8 - color_hsvf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+
+      // float divided by color
+      QTest::newRow( "float divide color error" ) << "1.0 / color_rgbf(0.4,0.6,0.8)" << true << QVariant();
+
+      // RGB color + RGB color
+      QTest::newRow( "rgb color add color" ) << "color_rgbf(0.4,0.6,0.8) + color_rgbf(0.1,0.2,0.1)" << false << QVariant( QColor::fromRgbF( 0.5, 0.8, 0.9, 1.0 ) );
+      QTest::newRow( "rgb color add color overflow" ) << "color_rgbf(0.8,0.8,0.8) + color_rgbf(0.5,0.5,0.5)" << false << QVariant( QColor::fromRgbF( 1.0, 1.0, 1.0, 1.0 ) );
+      QTest::newRow( "rgb color add color alpha" ) << "color_rgbf(0.4,0.6,0.8,0.5) + color_rgbf(0.1,0.2,0.1,0.9)" << false << QVariant( QColor::fromRgbF( 0.5, 0.8, 0.9, 0.5 ) );
+      QTest::newRow( "rgb color subtract color" ) << "color_rgbf(0.4,0.6,0.8) - color_rgbf(0.1,0.1,0.3)" << false << QVariant( QColor::fromRgbF( 0.3, 0.5, 0.5, 1.0 ) );
+      QTest::newRow( "rgb color subtract color underflow" ) << "color_rgbf(0.1,0.1,0.1) - color_rgbf(0.5,0.5,0.5)" << false << QVariant( QColor::fromRgbF( 0.0, 0.0, 0.0, 1.0 ) );
+      QTest::newRow( "rgb color multiply color" ) << "color_rgbf(0.4,0.6,0.8) * color_rgbf(0.5,0.5,0.5)" << false << QVariant( QColor::fromRgbF( 0.2, 0.3, 0.4, 1.0 ) );
+      QTest::newRow( "rgb color divide color" ) << "color_rgbf(0.4,0.6,0.8) / color_rgbf(0.5,0.5,0.5)" << false << QVariant( QColor::fromRgbF( 0.8, 1.0, 1.0, 1.0 ) );
+
+      // CMYK color + CMYK color
+      QTest::newRow( "cmyk color add color" ) << "color_cmykf(0.4,0.6,0.8,0.2) + color_cmykf(0.1,0.1,0.1,0.1)" << false << QVariant( QColor::fromCmykF( 0.5, 0.7, 0.9, 0.3, 1.0 ) );
+      QTest::newRow( "cmyk color add color overflow" ) << "color_cmykf(0.8,0.8,0.8,0.8) + color_cmykf(0.5,0.5,0.5,0.5)" << false << QVariant( QColor::fromCmykF( 1.0, 1.0, 1.0, 1.0, 1.0 ) );
+      QTest::newRow( "cmyk color add color alpha" ) << "color_cmykf(0.4,0.6,0.8,0.2,0.5) + color_cmykf(0.1,0.1,0.1,0.1,0.9)" << false << QVariant( QColor::fromCmykF( 0.5, 0.7, 0.9, 0.3, 0.5 ) );
+      QTest::newRow( "cmyk color subtract color" ) << "color_cmykf(0.4,0.6,0.8,0.2) - color_cmykf(0.1,0.1,0.3,0.1)" << false << QVariant( QColor::fromCmykF( 0.3, 0.5, 0.5, 0.1, 1.0 ) );
+      QTest::newRow( "cmyk color subtract color underflow" ) << "color_cmykf(0.1,0.1,0.1,0.1) - color_cmykf(0.5,0.5,0.5,0.5)" << false << QVariant( QColor::fromCmykF( 0.0, 0.0, 0.0, 0.0, 1.0 ) );
+      QTest::newRow( "cmyk color multiply color" ) << "color_cmykf(0.4,0.6,0.8,0.2) * color_cmykf(0.5,0.5,0.5,0.5)" << false << QVariant( QColor::fromCmykF( 0.2, 0.3, 0.4, 0.1, 1.0 ) );
+      QTest::newRow( "cmyk color divide color" ) << "color_cmykf(0.4,0.6,0.8,0.2) / color_cmykf(0.5,0.5,0.5,0.5)" << false << QVariant( QColor::fromCmykF( 0.8, 1.0, 1.0, 0.4, 1.0 ) );
+
+      // HSL color + HSL color
+      QTest::newRow( "hsl color add color" ) << "color_hslf(0,0,0.5) + color_hslf(0,0,0.2)" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+      QTest::newRow( "hsl color add color overflow" ) << "color_hslf(0,0,0.8) + color_hslf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+      QTest::newRow( "hsl color subtract color" ) << "color_hslf(0,0,0.7) - color_hslf(0,0,0.2)" << false << QVariant( QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) );
+      QTest::newRow( "hsl color subtract color underflow" ) << "color_hslf(0,0,0.1) - color_hslf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.0f, 0.0f, 0.0f, 1.0f ) );
+      QTest::newRow( "hsl color multiply color" ) << "color_hslf(0,0,0.5) * color_hslf(0,0,0.6)" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+      QTest::newRow( "hsl color divide color" ) << "color_hslf(0,0,0.8) / color_hslf(0,0,0.4)" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
+      // HSV color + HSV color
+      QTest::newRow( "hsv color add color" ) << "color_hsvf(0,0,0.5) + color_hsvf(0,0,0.2)" << false << QVariant( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
+      QTest::newRow( "hsv color add color overflow" ) << "color_hsvf(0,0,0.8) + color_hsvf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+      QTest::newRow( "hsv color subtract color" ) << "color_hsvf(0,0,0.7) - color_hsvf(0,0,0.2)" << false << QVariant( QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) );
+      QTest::newRow( "hsv color subtract color underflow" ) << "color_hsvf(0,0,0.1) - color_hsvf(0,0,0.5)" << false << QVariant( QColor::fromRgbF( 0.0f, 0.0f, 0.0f, 1.0f ) );
+      QTest::newRow( "hsv color multiply color" ) << "color_hsvf(0,0,0.5) * color_hsvf(0,0,0.6)" << false << QVariant( QColor::fromRgbF( 0.3f, 0.3f, 0.3f, 1.0f ) );
+      QTest::newRow( "hsv color divide color" ) << "color_hsvf(0,0,0.8) / color_hsvf(0,0,0.4)" << false << QVariant( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
+
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );

@@ -2210,6 +2210,7 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
     case QgsStyle::SmartgroupEntity:
     case QgsStyle::LegendPatchShapeEntity:
     case QgsStyle::Symbol3DEntity:
+    case QgsStyle::MaterialSettingsEntity:
       return;
 
     case QgsStyle::TextFormatEntity:

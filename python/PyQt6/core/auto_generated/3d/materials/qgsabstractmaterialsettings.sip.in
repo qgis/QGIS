@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsabstractmaterialsettings.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAbstractMaterialSettings /Abstract/
+{
+%Docstring(signature="appended")
+Abstract base class for material settings.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+%End
+
+%TypeHeaderCode
+#include "qgsabstractmaterialsettings.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    {
+      sipType = sipType_QgsGoochMaterialSettings;
+    }
+    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    {
+      sipType = sipType_QgsPhongMaterialSettings;
+    }
+    else if ( sipCpp->type() == "phongtextured" )
+    {
+      sipType = sipType_QgsPhongTexturedMaterialSettings;
+    }
+    else if ( sipCpp->type() == "simpleline" )
+    {
+      sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else if ( sipCpp->type() == "null" )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
+    }
+    else if ( sipCpp->type() == "metalrough" )
+    {
+      sipType = sipType_QgsMetalRoughMaterialSettings;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+    virtual ~QgsAbstractMaterialSettings();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique type name for the material.
+%End
+
+    virtual QgsAbstractMaterialSettings *clone() const = 0 /Factory/;
+%Docstring
+Clones the material settings.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
+%Docstring
+Reads settings from a DOM ``element``
+%End
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
+%Docstring
+Writes settings to a DOM ``element``
+%End
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+%Docstring
+Returns ``True`` if this settings exactly matches an ``other`` settings.
+
+.. versionadded:: 3.42
+%End
+
+    enum class Property /BaseType=IntEnum/
+    {
+      Diffuse,
+      Ambient,
+      Warm,
+      Cool,
+      Specular
+    };
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the material property collection, used for data defined overrides.
+
+.. versionadded:: 4.2
+%End
+
+    QgsPropertyCollection dataDefinedProperties() const;
+%Docstring
+Returns the symbol material property collection, used for data defined
+overrides.
+
+.. versionadded:: 4.2
+%End
+
+    const QgsPropertiesDefinition &propertyDefinitions() const;
+%Docstring
+Returns a reference to the material properties definition, used for data
+defined overrides.
+
+.. versionadded:: 4.2
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsabstractmaterialsettings.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

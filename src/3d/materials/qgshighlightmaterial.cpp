@@ -31,7 +31,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-QgsHighlightMaterial::QgsHighlightMaterial( QgsMaterialSettingsRenderingTechnique technique, QNode *parent )
+QgsHighlightMaterial::QgsHighlightMaterial( Qgis::MaterialRenderingTechnique technique, QNode *parent )
   : QgsMaterial( parent )
 {
   init( technique );
@@ -39,7 +39,7 @@ QgsHighlightMaterial::QgsHighlightMaterial( QgsMaterialSettingsRenderingTechniqu
 
 QgsHighlightMaterial::~QgsHighlightMaterial() = default;
 
-void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique renderingTechnique )
+void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechnique )
 {
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
@@ -53,21 +53,22 @@ void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique rendering
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
   switch ( renderingTechnique )
   {
-    case QgsMaterialSettingsRenderingTechnique::Triangles:
-    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
-    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
-    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     {
       shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
       break;
     }
-    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
     {
       shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
       break;
     }
-    case QgsMaterialSettingsRenderingTechnique::Lines:
-    case QgsMaterialSettingsRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::Billboards:
     {
       // Lines are single color and do not need the highlight material
       // Billboards are not supported yet

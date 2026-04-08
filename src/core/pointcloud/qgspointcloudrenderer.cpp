@@ -71,6 +71,8 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   settings.setSize( 1 );
   textFormat.setBuffer( settings );
   mLabelTextFormat = std::move( textFormat );
+  mElevationShadingRenderer.setActiveEyeDomeLighting( false ); // we explicitly set shader effects to false, in case some are turned on by default
+  mElevationShadingRenderer.setActiveHillshading( false );
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
@@ -221,6 +223,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setLabelTextFormat( mLabelTextFormat );
   destination->setZoomOutBehavior( mZoomOutBehavior );
   destination->setOverviewSwitchingScale( mOverviewSwitchingScale );
+  destination->setElevationShadingRenderer( mElevationShadingRenderer );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -247,6 +250,12 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   }
   mZoomOutBehavior = qgsEnumKeyToValue( element.attribute( u"zoomOutBehavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
   mOverviewSwitchingScale = element.attribute( u"overviewSwitchingScale"_s, u"1.0"_s ).toDouble();
+
+  const QDomNode elevationShadingNode = element.namedItem( u"elevation-shading-renderer"_s );
+  if ( !elevationShadingNode.isNull() )
+  {
+    mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
+  }
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -280,6 +289,11 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   {
     element.setAttribute( u"overviewSwitchingScale"_s, qgsDoubleToString( mOverviewSwitchingScale ) );
   }
+
+  QDomDocument doc = element.ownerDocument();
+  QDomElement elevationShadingNode = doc.createElement( u"elevation-shading-renderer"_s );
+  mElevationShadingRenderer.writeXml( elevationShadingNode, context );
+  element.appendChild( elevationShadingNode );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
@@ -387,6 +401,11 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
   return selectedPoints;
+}
+
+QgsElevationShadingRenderer QgsPointCloudRenderer::elevationShadingRenderer() const
+{
+  return mElevationShadingRenderer;
 }
 
 //

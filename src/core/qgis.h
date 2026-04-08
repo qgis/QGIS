@@ -1013,6 +1013,25 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( BrowserItemCapabilities )
 
     /**
+     * Browser item filter flags.
+     *
+     * \since QGIS 4.2
+     */
+    enum class BrowserItemFilterFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      HideWhenNotFilteringByLayerType = 1 << 0, //!< Item should be hidden from the view when no layer type filter is in place
+    };
+    Q_ENUM( BrowserItemFilterFlag )
+
+    /**
+     * Browser item filter flags.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( BrowserItemFilterFlags, BrowserItemFilterFlag )
+    Q_FLAG( BrowserItemFilterFlags )
+
+    /**
      * Capabilities for data item providers.
      *
      * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapability
@@ -1022,10 +1041,10 @@ int QgisEvent = QEvent::User + 1;
     enum class DataItemProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, DataCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities SIP_MONKEYPATCH_COMPAT_NAME( NoDataCapabilities ) = 0, //!< No capabilities
-      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1, //!< Can provides items which corresponds to files
-      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1, //!< Can provides items which corresponds to directories
-      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2, //!< Can provides items which corresponds to databases
-      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3, //!< Network/internet source
+      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1,                        //!< Can provides items which corresponds to files
+      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1,              //!< Can provides items which corresponds to directories
+      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2,           //!< Can provides items which corresponds to databases
+      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3,           //!< Network/internet source
     };
     Q_ENUM( DataItemProviderCapability )
 
@@ -4297,6 +4316,27 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( Point3DShape )
 
     /**
+     * Material rendering techniques.
+     *
+     * \warning This is not considered stable API, and may change in future QGIS releases. It is
+     * exposed to the Python bindings as a tech preview only.
+     *
+     * \since QGIS 4.2
+     */
+    enum class MaterialRenderingTechnique : int
+    {
+      Triangles,                 //!< Triangle based rendering (default)
+      Lines,                     //!< Line based rendering, requires line data
+      InstancedPoints,           //!< Instanced based rendering, requiring triangles and point data
+      Points,                    //!< Point based rendering, requires point data
+      TrianglesWithFixedTexture, //!< Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
+      TrianglesFromModel,        //!< Triangle based rendering, using a model object source
+      TrianglesDataDefined,      //!< Triangle based rendering with possibility of datadefined color
+      Billboards,                //!< Flat billboard rendering
+    };
+    Q_ENUM( MaterialRenderingTechnique )
+
+    /**
      * Light source types for 3D scenes.
      *
      * \since QGIS 3.26
@@ -4556,6 +4596,32 @@ int QgisEvent = QEvent::User + 1;
       SceneServer,                                                 //!< SceneServer
     };
     Q_ENUM( ArcGisRestServiceType )
+
+    /**
+     * Available ArcGIS REST service capabilities.
+     *
+     * This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
+     * extended in future with additional capabilities when required.
+     *
+     * \since QGIS 4.2
+     */
+    enum class ArcGisRestServiceCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Map = 1 << 0,    //!< Render map
+      Query = 1 << 1,  //!< Query features
+      Update = 1 << 2, //!< Update features
+      Delete = 1 << 3, //!< Delete features
+      Create = 1 << 4, //!< Create features
+    };
+    Q_ENUM( ArcGisRestServiceCapability )
+
+    /**
+     * Available ArcGIS REST service capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( ArcGisRestServiceCapabilities, ArcGisRestServiceCapability )
+    Q_FLAG( ArcGisRestServiceCapabilities )
 
     /**
      * Relationship types.
@@ -6774,6 +6840,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemFilterFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderConnectionCapabilities2 )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DatabaseProviderTableImportCapabilities )
@@ -6858,6 +6925,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

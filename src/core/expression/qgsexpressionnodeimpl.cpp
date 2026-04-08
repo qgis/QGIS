@@ -20,6 +20,7 @@
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
+#include <QColor>
 #include <QDate>
 #include <QDateTime>
 #include <QRegularExpression>
@@ -471,6 +472,136 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
         return QgsInterval( datetime1 - datetime2 );
+      }
+      else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv ) && vL.userType() == QMetaType::Type::QColor && vR.userType() == QMetaType::Type::QColor )
+      {
+        bool isQColor = false;
+        const QColor colorL = QgsExpressionUtils::getColorValue( vL, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+        const QColor colorR = QgsExpressionUtils::getColorValue( vR, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+
+        if ( !colorL.isValid() || !colorR.isValid() )
+        {
+          parent->setEvalErrorString( tr( "Cannot perform operation on invalid color" ) );
+          return QVariant();
+        }
+
+        QColor::Spec colorLSpec = colorL.spec();
+        QColor::Spec colorRSpec = colorR.spec();
+
+        switch ( colorLSpec )
+        {
+          case QColor::Cmyk:
+          {
+            if ( colorRSpec != QColor::Cmyk )
+            {
+              parent->setEvalErrorString( tr( "Cannot combine a CMYK color with a non-CMYK color" ) );
+              return QVariant();
+            }
+
+            float lc, lm, ly, lk, la, rc, rm, ry, rk, ra;
+            colorL.getCmykF( &lc, &lm, &ly, &lk, &la );
+            colorR.getCmykF( &rc, &rm, &ry, &rk, &ra );
+            return QColor::fromCmykF(
+              static_cast<float>( std::clamp( computeDouble( lc, rc ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lm, rm ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( ly, ry ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( lk, rk ), 0.0, 1.0 ) ),
+              la
+            );
+          }
+          case QColor::Hsl:
+          case QColor::Hsv:
+          case QColor::Rgb:
+          case QColor::ExtendedRgb:
+          {
+            if ( colorRSpec == QColor::Cmyk )
+            {
+              parent->setEvalErrorString( tr( "Cannot combine a non-CMYK color with a CMYK color" ) );
+              return QVariant();
+            }
+
+            float lr, lg, lb, la, rr, rg, rb, ra;
+            colorL.getRgbF( &lr, &lg, &lb, &la );
+            colorR.getRgbF( &rr, &rg, &rb, &ra );
+            QColor result = QColor::
+              fromRgbF( static_cast<float>( std::clamp( computeDouble( lr, rr ), 0.0, 1.0 ) ), static_cast<float>( std::clamp( computeDouble( lg, rg ), 0.0, 1.0 ) ), static_cast<float>( std::clamp( computeDouble( lb, rb ), 0.0, 1.0 ) ), la );
+            return result;
+          }
+          default:
+            return QVariant();
+        }
+      }
+      else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv )
+                && ( ( ( vL.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vR ) ) || ( ( vR.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vL ) ) ) )
+      {
+        const bool colorLeft = vL.userType() == QMetaType::Type::QColor;
+        bool isQColor = false;
+        const QColor color = QgsExpressionUtils::getColorValue( colorLeft ? vL : vR, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+
+        if ( !color.isValid() )
+        {
+          parent->setEvalErrorString( tr( "Cannot perform operation on invalid color" ) );
+          return QVariant();
+        }
+
+        const double value = QgsExpressionUtils::getDoubleValue( colorLeft ? vR : vL, parent );
+        ENSURE_NO_EVAL_ERROR
+
+        if ( mOp == boDiv && value == 0.0 )
+        {
+          return QVariant();
+        }
+
+        // let's not divide with color
+        if ( !colorLeft && mOp == boDiv )
+        {
+          parent->setEvalErrorString( tr( "Can't perform / with a color value on the right" ) );
+          return QVariant();
+        }
+
+        switch ( color.spec() )
+        {
+          case QColor::Cmyk:
+          {
+            float c, m, y, k, a;
+            color.getCmykF( &c, &m, &y, &k, &a );
+            const double dc = static_cast<double>( c );
+            const double dm = static_cast<double>( m );
+            const double dy = static_cast<double>( y );
+            const double dk = static_cast<double>( k );
+
+            return QColor::fromCmykF(
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dc : value, colorLeft ? value : dc ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dm : value, colorLeft ? value : dm ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dy : value, colorLeft ? value : dy ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dk : value, colorLeft ? value : dk ), 0.0, 1.0 ) ),
+              a
+            );
+          }
+          case QColor::Hsl:
+          case QColor::Hsv:
+          case QColor::Rgb:
+          case QColor::ExtendedRgb: // color_rgbf constructor clamps it to 0-1, so we do the same here
+          {
+            float r, g, b, a;
+            color.getRgbF( &r, &g, &b, &a );
+            const double dr = static_cast<double>( r );
+            const double dg = static_cast<double>( g );
+            const double db = static_cast<double>( b );
+
+            return QColor::fromRgbF(
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dr : value, colorLeft ? value : dr ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? dg : value, colorLeft ? value : dg ), 0.0, 1.0 ) ),
+              static_cast<float>( std::clamp( computeDouble( colorLeft ? db : value, colorLeft ? value : db ), 0.0, 1.0 ) ),
+              a
+            );
+          }
+          default:
+            return QVariant();
+        }
       }
       else
       {

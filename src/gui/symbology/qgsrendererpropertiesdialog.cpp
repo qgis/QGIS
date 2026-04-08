@@ -184,9 +184,7 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
 }
 
 QgsRendererPropertiesDialog::~QgsRendererPropertiesDialog()
-{
-  delete mPaintEffect;
-}
+{}
 
 void QgsRendererPropertiesDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
@@ -361,8 +359,8 @@ void QgsRendererPropertiesDialog::syncToLayer()
   {
     if ( mLayer->renderer()->paintEffect() )
     {
-      mPaintEffect = mLayer->renderer()->paintEffect()->clone();
-      mEffectWidget->setPaintEffect( mPaintEffect );
+      mPaintEffect.reset( mLayer->renderer()->paintEffect()->clone() );
+      mEffectWidget->setPaintEffect( mPaintEffect.get() );
     }
 
     mOrderBy = mLayer->renderer()->orderBy();

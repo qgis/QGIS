@@ -167,6 +167,13 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      */
     QgsStyle::StyleEntity currentEntityType() const;
 
+    /**
+     * Returns the associated proxy model.
+     *
+     * \since QGIS 4.2
+     */
+    QgsStyleProxyModel *proxyModel();
+
   protected:
     void showEvent( QShowEvent *event ) override;
 

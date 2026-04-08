@@ -15,8 +15,10 @@
 
 #include "qgs3dexportobject.h"
 
+#include "qgs3d.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgslogger.h"
+#include "qgsmaterial3dhandler.h"
 
 #include <QDir>
 #include <QImage>
@@ -112,7 +114,7 @@ void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesB
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
   mMaterialParameters.clear();
-  QMap<QString, QString> parameters = material->toExportParameters();
+  QMap<QString, QString> parameters = Qgs3D::toMaterialExportParameters( material );
   for ( auto it = parameters.begin(); it != parameters.end(); ++it )
   {
     mMaterialParameters[it.key()] = it.value();

@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgsmaptool.h"
+#include "qobjectuniqueptr.h"
 
 #include <QRect>
 
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate the user has canceled the current zoom operation
     bool mCanceled = false;
 
-    QgsRubberBand *mRubberBand = nullptr;
+    QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     QCursor mZoomOutCursor;
     QCursor mZoomInCursor;

@@ -34,13 +34,9 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     QString type() const override { return u"Dummy"_s; }
     static QgsAbstractMaterialSettings *create() { return new DummyMaterialSettings(); }
     DummyMaterialSettings *clone() const override { return new DummyMaterialSettings(); }
-    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique ) { return true; }
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique ) { return true; }
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
     void writeXml( QDomElement &, const QgsReadWriteContext & ) const override {}
-    void addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const override {}
-    QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const override { return nullptr; }
-    QMap<QString, QString> toExportParameters() const override { return QMap<QString, QString>(); }
-    QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext & ) const override { return QByteArray(); }
     bool equals( const QgsAbstractMaterialSettings * ) const override { return true; }
 };
 
@@ -110,9 +106,7 @@ void TestQgsMaterialRegistry::instanceHasDefaultMaterials()
   //(assumes that there is some default materials)
   QgsMaterialRegistry *registry = Qgs3D::materialRegistry();
 
-  // should be empty until initialized
-  QVERIFY( registry->materialSettingsTypes().empty() );
-  Qgs3D::initialize();
+  // should already have materials present
   QVERIFY( registry->materialSettingsTypes().length() > 0 );
 }
 
@@ -159,7 +153,7 @@ void TestQgsMaterialRegistry::createMaterial()
   QVERIFY( dummySymbol );
 
   //try creating a bad material
-  material.reset( registry->createMaterialSettings( u"bad material"_s ) );
+  material = registry->createMaterialSettings( u"bad material"_s );
   QVERIFY( !material.get() );
 }
 

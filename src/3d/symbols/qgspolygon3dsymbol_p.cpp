@@ -15,6 +15,7 @@
 
 #include "qgspolygon3dsymbol_p.h"
 
+#include "qgs3d.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsfeature3dhandler_p.h"
@@ -22,6 +23,7 @@
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmessagelog.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -241,7 +243,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
 
 void QgsPolygon3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsPolygon3DSymbolHandler::PolygonData &out )
 {
-  const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context );
+  const QByteArray bytes = Qgs3D::materialDataDefinedVertexColorsAsByte( mSymbol->materialSettings(), context );
   out.materialDataDefined.append( bytes.repeated( verticesCount ) );
 }
 
@@ -378,7 +380,9 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   geometry->setIndexBufferData( indexBuffer, indexCount );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, vertexCount, polyData.materialDataDefined );
+  {
+    Qgs3D::applyMaterialDataDefinedToGeometry( mSymbol->materialSettings(), geometry, vertexCount, polyData.materialDataDefined );
+  }
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
@@ -425,8 +429,7 @@ QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symb
   materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
-  QgsMaterial *material
-    = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  QgsMaterial *material = Qgs3D::toMaterial( symbol->materialSettings(), dataDefined ? Qgis::MaterialRenderingTechnique::TrianglesDataDefined : Qgis::MaterialRenderingTechnique::Triangles, materialContext );
   applyCullingMode( symbol->cullingMode(), material );
   return material;
 }

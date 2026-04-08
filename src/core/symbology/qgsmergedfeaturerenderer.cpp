@@ -268,7 +268,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
       // fix the polygon if it is not valid
       if ( !geom.isGeosValid() )
       {
-        geom = geom.buffer( 0, 0 );
+        geom = geom.buffer( 0, 0, context.feedback() );
       }
       break;
 
@@ -317,7 +317,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
     {
       case QgsMergedFeatureRenderer::Merge:
       {
-        QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+        QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries, QgsGeometryParameters(), context.feedback() ) );
         if ( unioned.type() == Qgis::GeometryType::Line )
           unioned = unioned.mergeLines();
         feat.setGeometry( unioned );
@@ -327,10 +327,10 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
       case QgsMergedFeatureRenderer::MergeAndInvert:
       {
         // compute the unary union on the polygons
-        const QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
+        const QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries, QgsGeometryParameters(), context.feedback() ) );
         // compute the difference with the extent
         const QgsGeometry rect = QgsGeometry::fromPolygonXY( mExtentPolygon );
-        const QgsGeometry final = rect.difference( unioned );
+        const QgsGeometry final = rect.difference( unioned, QgsGeometryParameters(), context.feedback() );
         feat.setGeometry( final );
         break;
       }

@@ -48,6 +48,13 @@ class GUI_EXPORT QgsPercentageWidget : public QWidget
      */
     double value() const;
 
+    /**
+     * Returns the spin box part of the widget.
+     *
+     * \since QGIS 4.2
+     */
+    QgsDoubleSpinBox *spinBox();
+
   public slots:
 
     /**

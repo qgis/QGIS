@@ -18,18 +18,26 @@
 #include "qgis.h"
 #include "qgssimplelinematerialsettings.h"
 
+#include <QString>
+
 #include "moc_qgssimplelinematerialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"simpleline"_s );
 
   QgsSimpleLineMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsSimpleLineMaterialWidget::changed );
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsSimpleLineMaterialWidget::changed );
+
+  connect( this, &QgsSimpleLineMaterialWidget::changed, this, &QgsSimpleLineMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsSimpleLineMaterialWidget::create()
@@ -47,9 +55,11 @@ void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
   mPropertyCollection = settings->dataDefinedProperties();
   mAmbientDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
+  updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsSimpleLineMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsSimpleLineMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
@@ -57,5 +67,19 @@ QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, mAmbientDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
+}
+
+void QgsSimpleLineMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
+}
+
+void QgsSimpleLineMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
 }

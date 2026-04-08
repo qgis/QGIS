@@ -9,5 +9,6 @@ try:
     QgsMapLayerUtils.launderLayerName = staticmethod(QgsMapLayerUtils.launderLayerName)
     QgsMapLayerUtils.isOpenStreetMapLayer = staticmethod(QgsMapLayerUtils.isOpenStreetMapLayer)
     QgsMapLayerUtils.layerTypeToString = staticmethod(QgsMapLayerUtils.layerTypeToString)
+    QgsMapLayerUtils.layerToolTip = staticmethod(QgsMapLayerUtils.layerToolTip)
 except (NameError, AttributeError):
     pass

@@ -197,11 +197,11 @@ void TestQgsMapToolEditBlankSegments::testSelectFeature()
   QVERIFY( FID_IS_NULL( mMapToolEditBlankSegments->mCurrentFeatureId ) );
 
   // select first feature
-  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolEditBlankSegments->mCurrentFeatureId, 1 );
 
   QCOMPARE( nbRubberBandVisible(), 0 );
-  utils.mouseMove( 1, 1 );
+  utils.mouseMove( 0, 1 );
   QCOMPARE( nbRubberBandVisible(), 1 ); // start point rubber band
 
   // escape
@@ -210,7 +210,7 @@ void TestQgsMapToolEditBlankSegments::testSelectFeature()
   QCOMPARE( nbRubberBandVisible(), 0 );
 
   // select second feature
-  utils.mouseClick( 21, 1, Qt::LeftButton );
+  utils.mouseClick( 20, 1, Qt::LeftButton );
   QCOMPARE( mMapToolEditBlankSegments->mCurrentFeatureId, 2 );
   utils.mouseMove( 21, 1 );
   QCOMPARE( nbRubberBandVisible(), 1 );
@@ -228,7 +228,7 @@ void TestQgsMapToolEditBlankSegments::testCreateBlankSegment()
 
   QVERIFY( FID_IS_NULL( mMapToolEditBlankSegments->mCurrentFeatureId ) );
 
-  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolEditBlankSegments->mCurrentFeatureId, 1 );
 
   utils.mouseClick( 11, 2, Qt::LeftButton );

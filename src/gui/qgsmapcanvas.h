@@ -55,6 +55,7 @@ class QGraphicsScene;
 class QgsMapToPixel;
 class QgsMapLayer;
 class QgsHighlight;
+class QgsSettingsEntryString;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
@@ -935,6 +936,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setStatusBar( QgsStatusBar *bar );
 
+    static const QgsSettingsEntryString *settingsCustomCoordinateCrs SIP_SKIP;
+
   public slots:
 
     //! Repaints the canvas map
@@ -1448,7 +1451,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     bool mDrawRenderingStats = false;
 
     //! Optionally use cache with rendered map layers for the current map settings
-    QgsMapRendererCache *mCache = nullptr;
+    std::unique_ptr<QgsMapRendererCache> mCache;
 
     QTimer *mResizeTimer = nullptr;
     QTimer *mRefreshTimer = nullptr;

@@ -1,4 +1,6 @@
 set(QGIS_GUI_SRCS
+  3d/qgsmaterialwidget.cpp
+
   actions/qgsactionmenu.cpp
   actions/qgsmaplayeraction.cpp
   actions/qgsmaplayeractioncontext.cpp
@@ -1110,6 +1112,8 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  3d/qgsmaterialwidget.h
+
   actions/qgsactionmenu.h
   actions/qgsmaplayeraction.h
   actions/qgsmaplayeractioncontext.h
@@ -1926,6 +1930,7 @@ target_include_directories(qgis_gui SYSTEM PUBLIC
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/3d
   ${CMAKE_SOURCE_DIR}/src/gui/actions
   ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig

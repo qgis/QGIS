@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest(
-  const QgsPointCloudNodeId &node,
+  QgsPointCloudNodeId node,
   const QString &uri,
   const QString &dataType,
   const QgsPointCloudAttributeCollection &attributes,
