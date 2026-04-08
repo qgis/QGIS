@@ -52,7 +52,7 @@ uniform float gamma = 2.2;
 
 
 #ifdef NORMAL_MAP
-mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
+mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
     // This allows building the tangentMatrix below by simply transposing the
@@ -65,11 +65,9 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
     // which is +1 for a right hand system, and -1 for a left hand system.
     vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
 
-    // Construct matrix to transform from world space to tangent space
-    // This is the transpose of the tangentToWorld transformation matrix
+    // Construct matrix to transform from tangent space to world space
     mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
-    mat3 worldToTangentMatrix = transpose(tangentToWorldMatrix);
-    return worldToTangentMatrix;
+    return tangentToWorldMatrix;
 }
 #endif
 
@@ -385,7 +383,7 @@ void main()
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n = normalize(((transpose(((calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent)))) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
+    vec3 n = normalize(((calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
 #else
 
 #ifdef FLAT_SHADING
