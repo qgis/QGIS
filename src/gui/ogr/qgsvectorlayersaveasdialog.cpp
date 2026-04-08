@@ -764,11 +764,10 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
         layerOptionsLayout->addRow( control.first, control.second );
       }
 
-      // for GeoiJSON we need to track changes of the RFC7946 option to update CRS accordingly
+      // for GeoJSON we need to track changes of the RFC7946 option to update CRS accordingly
       if ( sFormat == "GeoJSON"_L1 )
       {
-        QComboBox *cmbRfc7946 = mLayerOptionsGroupBox->findChild<QComboBox *>( "RFC7946"_L1 );
-        if ( cmbRfc7946 )
+        if ( QComboBox *cmbRfc7946 = mLayerOptionsGroupBox->findChild<QComboBox *>( "RFC7946"_L1 ) )
         {
           connect( cmbRfc7946, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::setCrsForFormat );
         }
