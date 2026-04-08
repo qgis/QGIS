@@ -367,6 +367,7 @@ QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorM
   char *wkbHex;
   size_t len = 0;
   sfcgal_geometry_as_wkb( geom, &wkbHex, &len );
+  CHECK_SUCCESS( errorMsg, QByteArray() );
   QByteArray wkbArray( wkbHex, static_cast<int>( len ) );
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
@@ -375,7 +376,6 @@ QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorM
   free( wkbHex );
 #endif
 
-  CHECK_SUCCESS( errorMsg, QByteArray() );
   return wkbArray;
 }
 
