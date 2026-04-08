@@ -2,7 +2,7 @@
   "name": "geom_from_geojson",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns a geometry from a GeoJSON representation of geometry.",
+  "description": "Returns a geometry from a GeoJSON  Geometry fragments. It throws an error if you try to use it on a whole JSON document (Feature or FeatureCollection).",
   "arguments": [{
     "arg": "geojson",
     "description": "GeoJSON representation of a geometry as a string"
