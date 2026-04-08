@@ -91,7 +91,7 @@ void adsModelNormalMapped(const in vec3 worldPos,
         // Calculate the specular factor
         float specular = 0.0;
         if (diffuse > 0.0 && shininess > 0.0) {
-            float normFactor = (shininess + 2.0) / 2.0;
+            float normFactor = (shininess + 2.0) / (2.0 * 3.14159);
             vec3 r = reflect(-s, n);   // Reflection direction in tangent space
             specular = normFactor * pow(max(dot(r, v), 0.0), shininess);
         }
@@ -160,7 +160,7 @@ void adsModel(const in vec3 worldPos,
         // Calculate the specular factor
         float specular = 0.0;
         if (diffuse > 0.0 && shininess > 0.0) {
-            float normFactor = (shininess + 2.0) / 2.0;
+            float normFactor = (shininess + 2.0) / (2.0 * 3.14159);
             vec3 r = reflect(-s, n);   // Reflection direction in world space
             specular = normFactor * pow(max(dot(r, worldView), 0.0), shininess);
         }
