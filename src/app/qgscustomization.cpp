@@ -45,7 +45,7 @@
 #include <QString>
 #include <QToolButton>
 #include <QWidgetAction>
-#include <qbuffer.h>
+#include <QBuffer>
 
 using namespace Qt::StringLiterals;
 
