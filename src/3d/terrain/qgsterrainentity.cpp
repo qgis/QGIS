@@ -71,7 +71,10 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
+  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, [this]() {
+    invalidateMapImages();
+    emit onTerrainElevationOffsetChanged();
+  } );
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
