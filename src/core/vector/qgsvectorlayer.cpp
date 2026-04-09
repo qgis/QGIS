@@ -3222,7 +3222,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     node.appendChild( aliasElem );
 
     //custom comments
-    QDomElement customCommentElem = doc.createElement( u"customcomments"_s );
+    QDomElement customCommentElem = doc.createElement( u"customComments"_s );
     for ( const QgsField &field : std::as_const( mFields ) )
     {
       //if empty ("") we store it, if null we don't store it
