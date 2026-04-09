@@ -1791,7 +1791,10 @@ Qgis::RasterColorInterpretation QgsArcGisRestUtils::colorInterpretationFromBandN
     return Qgis::RasterColorInterpretation::BlueBand;
   else if ( bandName.compare( "Alpha"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::RasterColorInterpretation::AlphaBand;
-  else if ( bandName.compare( "NIR"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "NearIR"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "NarrowNIR"_L1, Qt::CaseInsensitive ) == 0 )
+  else if ( bandName.compare( "NIR"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NearInfrared"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NearIR"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NarrowNIR"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::RasterColorInterpretation::NIRBand;
   else if ( bandName.startsWith( "SWIR"_L1, Qt::CaseInsensitive ) )
     return Qgis::RasterColorInterpretation::SWIRBand;
