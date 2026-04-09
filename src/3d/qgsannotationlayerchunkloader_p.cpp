@@ -570,12 +570,15 @@ QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
 
   // choose the smaller root extent between context and mLayer ones:
   QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
-  QgsRectangle extent = context.extent().contains( layerExtentInMapCrs ) ? layerExtentInMapCrs : context.extent();
-  QgsBox3D rootBox3D( extent, zMin, zMax );
+  QgsRectangle extent = context.extent().intersect( layerExtentInMapCrs );
+  if ( !extent.isEmpty() )
+  {
+    QgsBox3D rootBox3D( extent, zMin, zMax );
 
-  // add small padding to avoid clipping of point features located at the edge of the bounding box
-  rootBox3D.grow( 1.0 );
-  setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+    // add small padding to avoid clipping of point features located at the edge of the bounding box
+    rootBox3D.grow( 1.0 );
+    setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+  }
 }
 
 QgsChunkLoader *QgsAnnotationLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
