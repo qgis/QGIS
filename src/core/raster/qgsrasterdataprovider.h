@@ -173,7 +173,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Returns a string color name representation of a color interpretation.
      * It is translated since QGIS 3.40
      */
-    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
+    static QString colorName( Qgis::RasterColorInterpretation colorInterpretation );
 
     //! Reload data (data could change)
     virtual bool reload() { return true; }
