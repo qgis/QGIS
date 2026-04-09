@@ -21,6 +21,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QDomElement;
 class QgsProject;
 class QgsReadWriteContext;
@@ -46,6 +48,27 @@ namespace Qt3DCore
  */
 class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+
+    // QgsMeshLayer3DRenderer is not available in Python bindings
+    const QString type = sipCpp->type();
+
+    if ( sipCpp->type() == "annotation"_L1 )
+      sipType = sipFindType( "QgsAnnotationLayer3DRenderer" );
+    else if ( sipCpp->type() == "pointcloud"_L1 )
+      sipType = sipFindType( "QgsPointCloudLayer3DRenderer" );
+    else if ( sipCpp->type() == "rulebased"_L1 )
+      sipType = sipFindType( "QgsRuleBased3DRenderer" );
+    else if ( sipCpp->type() == "tiledscene"_L1 )
+      sipType = sipFindType( "QgsTiledSceneLayer3DRenderer" );
+    else if ( sipCpp->type() == "vector"_L1 )
+      sipType = sipFindType( "QgsVectorLayer3DRenderer" );
+    else
+      sipType = nullptr;
+  SIP_END
+#endif
+
   public:
     virtual ~QgsAbstract3DRenderer() = default;
 
