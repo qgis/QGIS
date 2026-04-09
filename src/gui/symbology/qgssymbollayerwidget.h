@@ -525,9 +525,7 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void toggleMapToolEditBlankSegments( bool toggled );
     void toggleMapToolAddExtraItem( bool toggled );
     void toggleMapToolModifyExtraItem( bool toggled );
-
-    void updateBlankSegmentsWidget();
-    void updateExtraItemsWidget();
+    void updatePerFeatureCustomizationWidget();
 
   private:
     // Returns blank segments field index, -1 if no dd property field has been set
