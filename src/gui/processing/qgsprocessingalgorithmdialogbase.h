@@ -304,8 +304,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void resetGui();
 
     /**
-     * Returns TRUE if the dialog is currently running an algorithm. 
-     * 
+     * Returns TRUE if the dialog is currently running an algorithm.
+     *
      * If the algorithm has not yet started or has finished executing then FALSE will be returned.
      *
      * \note Unlike the isFinalized() method, isRunning() only provides
