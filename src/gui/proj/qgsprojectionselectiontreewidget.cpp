@@ -482,6 +482,12 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   if ( !currentCrs.isValid() )
     return;
 
+  mAreaCanvas->setVisible( mShowMap );
+  if ( mShowMap && !currentCrs.isEarthCrs() )
+  {
+    mAreaCanvas->hide();
+  }
+
   QgsRectangle rect = currentCrs.bounds();
   QString extentString = tr( "Extent not known" );
   mAreaCanvas->setPreviewRect( rect );
