@@ -1833,6 +1833,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     /**
        * Returns a map of all the custom comments.
+       * Key is the attribute name and value the custom comment for that attribute
        * \since QGIS 4.2
        */
     QgsStringMap attributeCustomComments() const;

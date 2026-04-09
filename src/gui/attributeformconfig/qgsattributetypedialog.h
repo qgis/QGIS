@@ -102,13 +102,15 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     QString alias() const;
 
     /**
-     * Sets the custom comment
+     * Sets the displayed comment.
+     * Sets the comment to be displayed. Defaults to the provider comment if \a customComment is NULL.
      * \since QGIS 4.2
      */
-    void setCustomComment( const QString &customComment );
+    void setDisplayedComment( const QString &customComment );
 
     /**
-     * Returns the custom comment
+     * Returns the custom comment.
+     * Returns NULL if the displayed comment matches the provider comment.
      * \since QGIS 4.2
      */
     QString customComment() const;

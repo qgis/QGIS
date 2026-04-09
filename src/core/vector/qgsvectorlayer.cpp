@@ -2622,12 +2622,12 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // custom comments
     // mAttributeCustomCommentMap is cleared, because when a custom comment is null the provider comment should be considered
     mAttributeCustomCommentMap.clear();
-    QDomNode customCommentsNode = layerNode.namedItem( u"customcomments"_s );
+    QDomNode customCommentsNode = layerNode.namedItem( u"customComments"_s );
     if ( !customCommentsNode.isNull() )
     {
       QDomElement customCommentEntryElem;
 
-      QDomNodeList customCommentNodeList = customCommentsNode.toElement().elementsByTagName( u"customcomment"_s );
+      QDomNodeList customCommentNodeList = customCommentsNode.toElement().elementsByTagName( u"customComment"_s );
       for ( int i = 0; i < customCommentNodeList.size(); ++i )
       {
         customCommentEntryElem = customCommentNodeList.at( i ).toElement();
@@ -2648,6 +2648,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         //empty values are important as well (to override provider comments with nothing)
         QString customComment = customCommentEntryElem.attribute( u"value"_s );
 
+        if ( fields().lookupField( field ) < 0 )
+        {
+          QgsDebugMsgLevel( u"Warning: Field %1 not found in layer %2 to load custom comment from setting "_s.arg( field, name() ), 2 );
+          continue;
+        }
         mAttributeCustomCommentMap.insert( field, customComment );
       }
     }
@@ -3230,7 +3235,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       if ( customComment.isNull() )
         continue;
 
-      QDomElement customCommentEntryElem = doc.createElement( u"customcomment"_s );
+      QDomElement customCommentEntryElem = doc.createElement( u"customComment"_s );
       customCommentEntryElem.setAttribute( u"field"_s, field.name() );
       customCommentEntryElem.setAttribute( u"index"_s, mFields.indexFromName( field.name() ) );
       customCommentEntryElem.setAttribute( u"value"_s, customComment );
@@ -3784,7 +3789,7 @@ void QgsVectorLayer::setFieldCustomComment( int attIndex, const QString &customC
   mAttributeCustomCommentMap.insert( name, customCommentString );
   mFields[attIndex].setCustomComment( customCommentString );
   mEditFormConfig.setFields( mFields );
-  emit layerModified(); // TODO[MD]: should have a different signal?
+  emit layerModified();
 }
 
 void QgsVectorLayer::removeFieldCustomComment( int attIndex )

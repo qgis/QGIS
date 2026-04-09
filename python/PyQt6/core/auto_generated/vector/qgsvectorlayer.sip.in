@@ -1949,7 +1949,8 @@ Returns the custom comment for the field.
 
     QgsStringMap attributeCustomComments() const;
 %Docstring
-Returns a map of all the custom comments.
+Returns a map of all the custom comments. Key is the attribute name and
+value the custom comment for that attribute
 
 .. versionadded:: 4.2
 %End

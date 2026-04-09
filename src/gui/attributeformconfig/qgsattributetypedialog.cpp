@@ -88,21 +88,21 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     // Reset custom comment to provider comment
     setComment( mComment );
   } );
-  connect( mCustomComment, &QLineEdit::textChanged, this, [this]( const QString &text ) {
+  connect( mDisplayedComment, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     // The clear button should only be visible when there is a (possibly empty) custom comment
-    bool isActionAdded = mCustomComment->actions().contains( mClearAction );
+    bool isActionAdded = mDisplayedComment->actions().contains( mClearAction );
     if ( mComment != text )
     {
       if ( !isActionAdded )
       {
-        mCustomComment->addAction( mClearAction, QLineEdit::TrailingPosition );
+        mDisplayedComment->addAction( mClearAction, QLineEdit::TrailingPosition );
       }
     }
     else
     {
       if ( isActionAdded )
       {
-        mCustomComment->removeAction( mClearAction );
+        mDisplayedComment->removeAction( mClearAction );
       }
     }
   } );
@@ -526,17 +526,19 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
-void QgsAttributeTypeDialog::setCustomComment( const QString &customComment )
+void QgsAttributeTypeDialog::setDisplayedComment( const QString &customComment )
 {
   if ( customComment.isNull() )
-    mCustomComment->setText( mComment );
+    mDisplayedComment->setText( mComment );
   else
-    mCustomComment->setText( customComment );
+    mDisplayedComment->setText( customComment );
 }
 
 QString QgsAttributeTypeDialog::customComment() const
 {
-  return mCustomComment->text();
+  if ( mDisplayedComment->text() == mComment )
+    return QString();
+  return mDisplayedComment->text();
 }
 
 void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
@@ -559,7 +561,7 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
   mComment = comment;
-  mCustomComment->setText( mComment );
+  mDisplayedComment->setText( mComment );
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )

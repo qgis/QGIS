@@ -76,7 +76,7 @@
        </widget>
       </item>
       <item row="1" column="1" colspan="4">
-       <widget class="QLineEdit" name="mCustomComment">
+       <widget class="QLineEdit" name="mDisplayedComment">
         <property name="clearButtonEnabled">
          <bool>false</bool>
         </property>
