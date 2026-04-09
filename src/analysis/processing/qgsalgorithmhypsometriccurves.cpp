@@ -37,7 +37,7 @@ QString QgsHypsometricCurvesAlgorithm::displayName() const
 
 QStringList QgsHypsometricCurvesAlgorithm::tags() const
 {
-  return QObject::tr( "dem,hipsometric,curves,area,elevation,distribution" ).split( ',' );
+  return QObject::tr( "dem,hypsometric,curves,area,elevation,distribution" ).split( ',' );
 }
 
 QString QgsHypsometricCurvesAlgorithm::group() const
@@ -126,6 +126,8 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   QgsFeatureIterator it = source->getFeatures( request );
   QgsFeature f;
 
+  QVector<double> elevations;
+
   while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
@@ -171,8 +173,9 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       mRasterExtent.yMaximum() - startRow * mCellSizeY
     );
 
-    QVector<double> elevations;
-    elevations.reserve( nCellsX * nCellsY );
+
+    elevations.clear();
+    elevations.reserve( static_cast<qsizetype>( nCellsX ) * nCellsY );
 
     auto collectValue = [&]( double value, const QgsPointXY & ) {
       if ( mHasNoDataValue && qgsDoubleNear( value, mNodataValue ) )
@@ -212,12 +215,26 @@ void QgsHypsometricCurvesAlgorithm::calculateHypsometry( const QVector<double> &
   double minValue = *std::ranges::min_element( elevations );
   double maxValue = *std::ranges::max_element( elevations );
 
+  const qgssize bins = static_cast<qgssize>( std::ceil( ( maxValue - minValue ) / mStep ) );
+  if ( bins > MAX_BINS )
+  {
+    feedback->reportError( QObject::tr( "The combination of elevation range %1 – %2 and step %3 requires too many histograms bins. Please use a larger step value." ).arg( minValue ).arg( maxValue ).arg( mStep ), true );
+    return;
+  }
+
   std::map<double, qgssize> histogram;
   {
     double startValue = minValue;
     double tmpValue = minValue + mStep;
     while ( startValue < maxValue )
     {
+      // prevent endless loop when adding mStep does not advance tmpValue,
+      // e.g. when tmpValue is very large
+      if ( tmpValue <= startValue )
+      {
+        break;
+      }
+
       histogram[tmpValue] = 0;
       startValue = tmpValue;
       tmpValue += mStep;

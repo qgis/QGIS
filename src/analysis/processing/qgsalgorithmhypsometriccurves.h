@@ -51,7 +51,7 @@ class QgsHypsometricCurvesAlgorithm : public QgsProcessingAlgorithm
 
     std::unique_ptr<QgsRasterInterface> mRasterInterface;
     bool mHasNoDataValue = false;
-    float mNodataValue = -1;
+    double mNodataValue = -1;
     QgsRectangle mRasterExtent;
     QgsCoordinateReferenceSystem mCrs;
     double mCellSizeX = 0;
@@ -60,6 +60,8 @@ class QgsHypsometricCurvesAlgorithm : public QgsProcessingAlgorithm
     double mNbCellsYProvider = 0;
     bool mUsePercentage = false;
     double mStep = 0;
+
+    static constexpr qgssize MAX_BINS = 1000;
 };
 
 ///@endcond PRIVATE
