@@ -1720,3 +1720,58 @@ Qgis::ArcGisRestServiceCapabilities QgsArcGisRestUtils::serviceCapabilitiesFromS
 
   return res;
 }
+
+Qgis::DataType QgsArcGisRestUtils::dataTypeFromString( const QString &pixelType )
+{
+  if ( pixelType.compare( "U8"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U4"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U2"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U1"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Byte;
+  }
+  else if ( pixelType.compare( "S8"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int8;
+  }
+  else if ( pixelType.compare( "U16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::UInt16;
+  }
+  else if ( pixelType.compare( "S16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int16;
+  }
+  else if ( pixelType.compare( "U32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::UInt32;
+  }
+  else if ( pixelType.compare( "S32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int32;
+  }
+  else if ( pixelType.compare( "F32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Float32;
+  }
+  else if ( pixelType.compare( "F64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Float64;
+  }
+  else if ( pixelType.compare( "C64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C64 = 32-bit real + 32-bit imaginary
+    return Qgis::DataType::CFloat32;
+  }
+  else if ( pixelType.compare( "C128"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C128 = 64-bit real + 64-bit imaginary
+    return Qgis::DataType::CFloat64;
+  }
+  else
+  {
+    QgsDebugError( u"Unknown pixelType: %1"_s.arg( pixelType ) );
+  }
+
+  return Qgis::DataType::UnknownDataType;
+}

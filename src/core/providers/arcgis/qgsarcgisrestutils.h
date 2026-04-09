@@ -281,6 +281,13 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static Qgis::ArcGisRestServiceCapabilities serviceCapabilitiesFromString( const QString &capabilities );
 
+    /**
+     * Returns the raster data type corresponding to an ESRI pixelType string.
+     *
+     * \since QGIS 4.2
+     */
+    static Qgis::DataType dataTypeFromString( const QString &pixelType );
+
   private:
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
