@@ -2537,6 +2537,7 @@ void TestQgsProcessingAlgsPt2::hypsometricCurves()
   parameters.insert( u"STEP"_s, 10.0 );
   parameters.insert( u"USE_PERCENTAGE"_s, false );
   parameters.insert( u"OUTPUT_DIRECTORY"_s, tmpDir.path() );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2603,6 +2604,17 @@ void TestQgsProcessingAlgsPt2::hypsometricCurves()
   QCOMPARE( data.size(), 1 );
   QGSCOMPARENEAR( data[0].elevation, 179.39601, 1e-3 );
   QGSCOMPARENEAR( data[0].area, 1.9999999999997158e-08, 1e-3 );
+
+  QgsVectorLayer *hypsometryLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 3 ).name(), u"polygon_id"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 2 ).name(), u"area"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 1 ).name(), u"elevation"_s );
+  QCOMPARE( hypsometryLayer->featureCount(), 24 );
+  QgsFeatureIterator it = hypsometryLayer->getFeatures( QgsFeatureIds() << 24 );
+  it.nextFeature( f );
+  QCOMPARE( f.attribute( u"polygon_id"_s ), 4 );
+  QGSCOMPARENEAR( f.attribute( u"area"_s ).toDouble(), 1.9999999999997158e-08, 1e-3 );
+  QGSCOMPARENEAR( f.attribute( u"elevation"_s ).toDouble(), 179.39601, 1e-3 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

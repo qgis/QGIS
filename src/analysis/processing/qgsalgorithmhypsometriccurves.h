@@ -47,7 +47,7 @@ class QgsHypsometricCurvesAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
   private:
-    void calculateHypsometry( const QVector<double> &elevations, const QString &filePath, QgsProcessingFeedback *feedback ) const;
+    QMap<double, double> calculateHypsometry( const QVector<double> &elevations, QgsProcessingFeedback *feedback ) const;
 
     std::unique_ptr<QgsRasterInterface> mRasterInterface;
     bool mHasNoDataValue = false;

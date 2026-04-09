@@ -81,6 +81,7 @@ void QgsHypsometricCurvesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( u"STEP"_s, QObject::tr( "Step" ), Qgis::ProcessingNumberParameterType::Double, 100, false, 0 ) );
   addParameter( new QgsProcessingParameterBoolean( u"USE_PERCENTAGE"_s, QObject::tr( "Use % of area instead of absolute value" ), false ) );
   addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Hypsometric curves" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Hypsometric curves" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 }
 
 bool QgsHypsometricCurvesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -118,6 +119,19 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   {
     throw QgsProcessingException( QObject::tr( "Could not create output directory '%1'." ).arg( outputPath ) );
   }
+
+  QgsFields sourceFields = source->fields();
+  QgsFields newFields = QgsFields();
+  newFields.append( QgsField( u"polygon_id"_s, QMetaType::Type::Int, QString(), 20 ) );
+  newFields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"elevation"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+
+  const QgsFields outputFields = QgsProcessingUtils::combineFields( sourceFields, newFields );
+
+  QString destId;
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, outputFields, Qgis::WkbType::NoGeometry, source->sourceCrs() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const long long featureCount = source->featureCount();
   const double progressStep = featureCount > 0 ? 100.0 / static_cast<double>( featureCount ) : 0.0;
@@ -200,22 +214,70 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       continue;
     }
 
+    QMap<double, double> hypsometry = calculateHypsometry( elevations, feedback );
+    if ( hypsometry.isEmpty() )
+    {
+      current++;
+      continue;
+    }
+
     const QString csvPath = QDir( outputPath ).filePath( u"histogram_%1_%2.csv"_s.arg( source->sourceName() ).arg( f.id() ) );
-    calculateHypsometry( elevations, csvPath, feedback );
+    QFile outFile( csvPath );
+    if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      feedback->reportError( QObject::tr( "Could not open output file '%1' for writing." ).arg( csvPath ) );
+      current++;
+      continue;
+    }
+
+    QTextStream stream( &outFile );
+    stream.setEncoding( QStringConverter::Utf8 );
+    stream.setRealNumberNotation( QTextStream::SmartNotation );
+    stream.setRealNumberPrecision( std::numeric_limits<double>::max_digits10 );
+    stream << QObject::tr( "Area" ) << ',' << QObject::tr( "Elevation" ) << '\n';
+
+    for ( auto it = hypsometry.cbegin(); it != hypsometry.cend(); ++it )
+    {
+      stream << it.value() << ',' << it.key() << '\n';
+    }
+    outFile.close();
+
+    if ( sink )
+    {
+      QgsAttributes sourceAttributes = f.attributes();
+      for ( auto it = hypsometry.cbegin(); it != hypsometry.cend(); ++it )
+      {
+        QgsFeature feat;
+        QgsAttributes attributes = sourceAttributes;
+        feat.setFields( outputFields );
+        attributes.append( f.id() );
+        attributes.append( it.value() ); // area
+        attributes.append( it.key() );   // elevation
+        feat.setAttributes( attributes );
+        if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        {
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+        }
+      }
+    }
 
     current++;
   }
 
   QVariantMap results;
   results.insert( u"OUTPUT_DIRECTORY"_s, outputPath );
+  if ( sink )
+  {
+    results.insert( u"OUTPUT"_s, destId );
+  }
   return results;
 }
 
-void QgsHypsometricCurvesAlgorithm::calculateHypsometry( const QVector<double> &elevations, const QString &filePath, QgsProcessingFeedback *feedback ) const
+QMap<double, double> QgsHypsometricCurvesAlgorithm::calculateHypsometry( const QVector<double> &elevations, QgsProcessingFeedback *feedback ) const
 {
   if ( elevations.isEmpty() )
   {
-    return;
+    return {};
   }
 
   double minValue = *std::ranges::min_element( elevations );
@@ -225,7 +287,7 @@ void QgsHypsometricCurvesAlgorithm::calculateHypsometry( const QVector<double> &
   if ( bins > MAX_BINS )
   {
     feedback->reportError( QObject::tr( "The combination of elevation range %1 – %2 and step %3 requires too many histograms bins. Please use a larger step value." ).arg( minValue ).arg( maxValue ).arg( mStep ), true );
-    return;
+    return {};
   }
 
   std::map<double, qgssize> histogram;
@@ -260,38 +322,21 @@ void QgsHypsometricCurvesAlgorithm::calculateHypsometry( const QVector<double> &
   const double multiplier = mUsePercentage ? 100.0 / totalPixels : mCellSizeX * mCellSizeY;
 
   // hypsometric data: key = upper bin value, value = area
-  std::map<double, double> data;
+  QMap<double, double> data;
+
   for ( const auto &[key, count] : histogram )
   {
     data[key] = static_cast<double>( count ) * multiplier;
   }
 
   double cumulative = 0.0;
-  for ( auto &[elevation, area] : data )
+  for ( auto &area : data )
   {
     cumulative += area;
     area = cumulative;
   }
 
-  QFile outFile( filePath );
-  if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
-  {
-    feedback->reportError( QObject::tr( "Could not open output file '%1' for writing." ).arg( filePath ) );
-    return;
-  }
-
-  QTextStream stream( &outFile );
-  stream.setEncoding( QStringConverter::Utf8 );
-  stream.setRealNumberNotation( QTextStream::SmartNotation );
-  stream.setRealNumberPrecision( std::numeric_limits<double>::max_digits10 );
-  stream << QObject::tr( "Area" ) << ',' << QObject::tr( "Elevation" ) << '\n';
-
-  for ( const auto &[elevation, area] : data )
-  {
-    stream << area << ',' << elevation << '\n';
-  }
-
-  outFile.close();
+  return data;
 }
 
 ///@endcond
