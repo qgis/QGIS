@@ -11,6 +11,7 @@
 
 
 
+
 class QgsAbstract3DRenderer /Abstract/
 {
 %Docstring(signature="appended")
@@ -27,6 +28,24 @@ store large amount of data within a renderer (e.g. arrays of vertices).
 
 %TypeHeaderCode
 #include "qgsabstract3drenderer.h"
+%End
+%ConvertToSubClassCode
+
+    // QgsMeshLayer3DRenderer is not available in Python bindings
+    const QString type = sipCpp->type();
+
+    if ( sipCpp->type() == QLatin1String( "annotation" ) )
+      sipType = sipFindType( "QgsAnnotationLayer3DRenderer" );
+    else if ( sipCpp->type() == QLatin1String( "pointcloud" ) )
+      sipType = sipFindType( "QgsPointCloudLayer3DRenderer" );
+    else if ( sipCpp->type() == QLatin1String( "rulebased" ) )
+      sipType = sipFindType( "QgsRuleBased3DRenderer" );
+    else if ( sipCpp->type() == QLatin1String( "tiledscene" ) )
+      sipType = sipFindType( "QgsTiledSceneLayer3DRenderer" );
+    else if ( sipCpp->type() == QLatin1String( "vector" ) )
+      sipType = sipFindType( "QgsVectorLayer3DRenderer" );
+    else
+      sipType = nullptr;
 %End
   public:
     virtual ~QgsAbstract3DRenderer();
