@@ -69,6 +69,7 @@
          <addaction name="mExpandNewAction"/>
          <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
+         <addaction name="mLimitResultsAction"/>
          <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
@@ -287,6 +288,18 @@
    </property>
    <property name="toolTip">
     <string>Clear Results</string>
+   </property>
+  </action>
+    <action name="mLimitResultsAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLimitResults.svg</normaloff>:/images/themes/default/mActionLimitResults.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Limit Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Limit Results</string>
    </property>
   </action>
   <action name="mActionCopy">

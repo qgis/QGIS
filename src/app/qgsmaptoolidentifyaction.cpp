@@ -152,12 +152,14 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     // according to dialog size also the first time, see also #9377
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       resultsDialog()->QDialog::show();
-
-    QList<IdentifyResult>::const_iterator result;
-    for ( result = results.constBegin(); result != results.constEnd(); ++result )
-    {
+    
+    int count = 1;
+    QList<IdentifyResult>::const_iterator result = results.constBegin();
+    while (result != results.constEnd() && count <= 3) {
       resultsDialog()->addFeature( *result );
-    }
+      ++result;
+      ++count;
+    };
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
