@@ -233,6 +233,13 @@ Parses a capabilities string to known values.
 .. versionadded:: 4.2
 %End
 
+    static Qgis::DataType dataTypeFromString( const QString &pixelType );
+%Docstring
+Returns the raster data type corresponding to an ESRI pixelType string.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);

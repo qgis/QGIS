@@ -940,6 +940,61 @@ class TestQgsArcGisRestUtils(QgisTestCase):
             | Qgis.ArcGisRestServiceCapability.Map,
         )
 
+    def testPixelTypeToDataType(self):
+        """
+        Test QgsArcGisRestUtils.dataTypeFromString
+        """
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString(""), Qgis.DataType.UnknownDataType
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("asdasdas"),
+            Qgis.DataType.UnknownDataType,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("c128"), Qgis.DataType.CFloat64
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("C64"), Qgis.DataType.CFloat32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("F32"), Qgis.DataType.Float32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("F64"), Qgis.DataType.Float64
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("S16"), Qgis.DataType.Int16
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("S32"), Qgis.DataType.Int32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("s8"), Qgis.DataType.Int8
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u1"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u16"), Qgis.DataType.UInt16
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u2"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u4"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u32"), Qgis.DataType.UInt32
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("u8"), Qgis.DataType.Byte
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.dataTypeFromString("unknown"),
+            Qgis.DataType.UnknownDataType,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
