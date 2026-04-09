@@ -27,11 +27,11 @@
 
 double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, const QgsPointXY &point )
 {
-  if ( !crs.isEarthCrs() )
+  const QgsCoordinateReferenceSystem geographicCrs = crs.toGeographicCrs();
+  if ( !geographicCrs.isValid() )
     return 0.0;
 
-  // step 1 - transform point into WGS84 geographic crs
-  const QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext );
+  const QgsCoordinateTransform transform( crs, geographicCrs, transformContext );
 
   if ( !transform.isValid() )
   {
