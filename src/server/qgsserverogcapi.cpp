@@ -138,6 +138,8 @@ QString QgsServerOgcApi::profileToString( const Profile &profile )
     case Profile::NONE:
       return QString();
   }
+  Q_UNREACHABLE();
+  return QString();
 }
 
 QString QgsServerOgcApi::profileToUri( const Profile &profile )
@@ -153,6 +155,8 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
     case Profile::NONE:
       return QString();
   }
+  Q_UNREACHABLE();
+  return QString();
 }
 
 std::string QgsServerOgcApi::relToString( const Rel &rel )

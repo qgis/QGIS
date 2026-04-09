@@ -1575,6 +1575,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &a
           throw QgsServerApiInternalServerError( u"Feature is not valid"_s );
         }
 
+        // FIXME: in JSON-FG we might have a different CRS than 4326,
+        // we should check for a crs member in the JSON and use it if present
+
         // Transform geometry
         if ( mapLayer->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
         {
