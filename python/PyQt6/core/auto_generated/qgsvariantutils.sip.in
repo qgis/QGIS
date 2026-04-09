@@ -84,6 +84,7 @@ string is generated with elements separated by ‘;’.
 
 .. versionadded:: 4.0
 %End
+
 };
 
 /************************************************************************
