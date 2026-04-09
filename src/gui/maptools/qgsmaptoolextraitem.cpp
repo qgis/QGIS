@@ -91,8 +91,7 @@ QgsMapToolExtraItemBase::QgsMapToolExtraItemBase( QgsMapCanvas *canvas, QgsVecto
   , mLayer( layer )
   , mSymbolLayer( symbolLayer )
   , mExtraItemsFieldIndex( extraItemsFieldIndex )
-{
-}
+{}
 
 void QgsMapToolExtraItemBase::loadFeatureExtraItems()
 {
@@ -135,9 +134,7 @@ void QgsMapToolExtraItemBase::updateAttribute()
   for ( const QObjectUniquePtr<QgsExtraItemRubberBand> &extraItem : mExtraItems )
   {
     QgsPointXY point = extraItem->position();
-    strExtraItems << qgsDoubleToString( point.x() ) + " "
-                       + qgsDoubleToString( point.y() ) + " "
-                       + qgsDoubleToString( extraItem->rotation() );
+    strExtraItems << qgsDoubleToString( point.x() ) + " " + qgsDoubleToString( point.y() ) + " " + qgsDoubleToString( extraItem->rotation() );
   }
 
   QString strNewExtraItems = strExtraItems.join( "," );
@@ -157,10 +154,11 @@ void QgsMapToolExtraItemBase::updateAttribute()
 void QgsMapToolExtraItemBase::selectFeature( QgsMapMouseEvent *event )
 {
   // find the closest feature to the pressed position
-  const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( event->pos(), QgsPointLocator::Area );
+  const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( event->pos(), QgsPointLocator::Edge );
   if ( !m.isValid() )
   {
-    emit messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
+    emit
+      messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -647,10 +645,7 @@ void QgsMapToolModifyExtraItems::keyPressEvent( QKeyEvent *event )
         mCopiedItemsTopLeft = mMouseHandles->sceneBoundingRect().topLeft();
         event->ignore();
       }
-      else if ( event->key() == Qt::Key_Left
-                || event->key() == Qt::Key_Right
-                || event->key() == Qt::Key_Up
-                || event->key() == Qt::Key_Down )
+      else if ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down )
       {
         const int pixels = ( event->modifiers() & Qt::ShiftModifier ) ? 1 : 50;
         int deltaX = 0;
