@@ -208,6 +208,9 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
 
+
+    const int getMaxResults() const;
+
     //! Map tool was deactivated
     void deactivate();
 
@@ -229,6 +232,8 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     QgsExpressionContextScope expressionContextScope() const;
 
     QgsMapToolSelectionHandler::SelectionMode selectionMode() const;
+
+    void showMoreFeatures();
 
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );

@@ -30,6 +30,7 @@
 #include "qgsmaplayeraction.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettingsentryenumflag.h"
@@ -152,15 +153,22 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     // according to dialog size also the first time, see also #9377
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       resultsDialog()->QDialog::show();
+    
+    int maxResults = resultsDialog()->getMaxResults();
+    int count = 1;
+    QList<IdentifyResult>::const_iterator result = results.constBegin();
 
-    QList<IdentifyResult>::const_iterator result;
-    for ( result = results.constBegin(); result != results.constEnd(); ++result )
-    {
+    while (result != results.constEnd() && count <= maxResults) {
       resultsDialog()->addFeature( *result );
-    }
+      ++result;
+      ++count;
+    };
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
+    if (results.size() > maxResults) {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Hidden Features" ), tr( "Some features not displayed in Identify Results, use the Show More Features button." ), Qgis::MessageLevel::Warning );
+    }
   }
 
   // update possible view modes

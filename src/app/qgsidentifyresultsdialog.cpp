@@ -130,6 +130,7 @@ const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidth = ne
 
 const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidthTable = new QgsSettingsEntryInteger( u"identify-column-width-table"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
+const int maxResults = 20;
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -472,6 +473,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 #endif
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
+  connect( mShowMoreFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::showMoreFeatures );
   connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
@@ -1864,6 +1866,15 @@ void QgsIdentifyResultsDialog::clear()
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
   mActionPrint->setDisabled( true );
+}
+
+void QgsIdentifyResultsDialog::showMoreFeatures() {
+  QgisApp::instance()->messageBar()->pushMessage( tr( "AAA" ), tr( "BBB." ), Qgis::MessageLevel::Warning );
+}
+
+const int QgsIdentifyResultsDialog::getMaxResults() const
+{
+  return maxResults;
 }
 
 void QgsIdentifyResultsDialog::updateViewModes()

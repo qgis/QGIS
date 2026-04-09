@@ -594,6 +594,7 @@
         <file>themes/default/mLayoutItemTable.svg</file>
         <file>themes/default/mMessageLog.svg</file>
         <file>themes/default/mMessageLogRead.svg</file>
+        <file>themes/default/mShowMoreFeatures.svg</file>
         <file>themes/default/north_arrow.svg</file>
         <file>themes/default/diagramNone.svg</file>
         <file>themes/default/pie-chart.svg</file>
