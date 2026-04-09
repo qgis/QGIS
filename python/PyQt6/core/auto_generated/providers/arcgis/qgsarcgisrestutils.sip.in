@@ -240,6 +240,17 @@ Returns the raster data type corresponding to an ESRI pixelType string.
 .. versionadded:: 4.2
 %End
 
+    static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
+%Docstring
+Attempts to match arbitrary band name strings to a QGIS raster color
+interpretation.
+
+Since band names are free-form strings, this is a best-effort
+translation only.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);
