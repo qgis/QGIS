@@ -353,7 +353,7 @@ void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overr
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mDestCRS = crs;
-  mScaleCalculator.setEllipsoid( crs.ellipsoidAcronym() );
+  setEllipsoid( crs.ellipsoidAcronym() );
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
   updateDerived();
@@ -374,6 +374,7 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
   else
   {
     mEllipsoid = ellipsoid;
+    mScaleCalculator.setEllipsoid( ellipsoid );
     return true;
   }
 }
