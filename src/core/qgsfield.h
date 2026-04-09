@@ -374,7 +374,7 @@ class CORE_EXPORT QgsField
 
     /**
      * Returns the custom comment for the field.
-     * an empty string when there is an empty string as a custom comment and NULL if no custom comment has been defined.
+     * an empty string when custom comment require to be empty and NULL if no custom comment has been defined and the provider one should be used.
      * \see setCustomComment()
      */
     QString customComment() const SIP_HOLDGIL;
