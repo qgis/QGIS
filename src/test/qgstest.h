@@ -53,23 +53,22 @@
 
 using namespace Qt::StringLiterals;
 
-#define QGSTEST_MAIN( TestObject )                            \
-  QT_BEGIN_NAMESPACE                                          \
-  QT_END_NAMESPACE                                            \
-  int main( int argc, char *argv[] )                          \
-  {                                                           \
-    QCoreApplication::setOrganizationName( u"QGIS"_s );       \
-    QCoreApplication::setOrganizationDomain( u"qgis.org"_s ); \
-    QCoreApplication::setApplicationName( u"QGIS-TEST"_s );   \
-    const QTemporaryDir settingsDir;                          \
-    qputenv( "QGIS_CUSTOM_CONFIG_PATH",                       \
-      settingsDir.path().toUtf8() );                          \
-    QgsApplication app( argc, argv, false );                  \
-    app.setAttribute( Qt::AA_Use96Dpi, true );                \
-    QTEST_DISABLE_KEYPAD_NAVIGATION                           \
-    TestObject tc;                                            \
-    QTEST_SET_MAIN_SOURCE_PATH                                \
-    return QTest::qExec( &tc, argc, argv );                   \
+#define QGSTEST_MAIN( TestObject )                                     \
+  QT_BEGIN_NAMESPACE                                                   \
+  QT_END_NAMESPACE                                                     \
+  int main( int argc, char *argv[] )                                   \
+  {                                                                    \
+    QCoreApplication::setOrganizationName( u"QGIS"_s );                \
+    QCoreApplication::setOrganizationDomain( u"qgis.org"_s );          \
+    QCoreApplication::setApplicationName( u"QGIS-TEST"_s );            \
+    const QTemporaryDir settingsDir;                                   \
+    qputenv( "QGIS_CUSTOM_CONFIG_PATH", settingsDir.path().toUtf8() ); \
+    QgsApplication app( argc, argv, false );                           \
+    app.setAttribute( Qt::AA_Use96Dpi, true );                         \
+    QTEST_DISABLE_KEYPAD_NAVIGATION                                    \
+    TestObject tc;                                                     \
+    QTEST_SET_MAIN_SOURCE_PATH                                         \
+    return QTest::qExec( &tc, argc, argv );                            \
   }
 
 
