@@ -54,6 +54,7 @@ class TestQgsMapToolEllipse : public QObject
     void testEllipseFromFociNotEnoughPoints();
 
     void testTransientGeometrySignalCenterPoint();
+    void testTransientGeometrySignalCenterPointLine();
     void testTransientGeometrySignalCenter2Points();
     void testTransientGeometrySignalExtent();
     void testTransientGeometrySignalFoci();
@@ -81,7 +82,7 @@ class TestQgsMapToolEllipse : public QObject
 
     void initAttributs();
 
-    void resetMapTool( QgsMapToolShapeMetadata *metadata );
+    void resetMapTool( QgsMapToolShapeMetadata *metadata, QgsMapToolCapture::CaptureMode mode );
 
     QgsFeatureId drawEllipseFromCenterAndPoint();
     QgsFeatureId drawEllipseFromCenterAndPointWithDeletedVertex();
@@ -116,6 +117,10 @@ void TestQgsMapToolEllipse::initTestCase()
   mVectorLayerMap["XY"] = std::make_unique<QgsVectorLayer>( u"LineString?crs=EPSG:27700"_s, u"layer line "_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XY"]->isValid() );
   layerList << mVectorLayerMap["XY"].get();
+
+  mVectorLayerMap["Polygon"] = std::make_unique<QgsVectorLayer>( u"Polygon?crs=EPSG:27700"_s, u"layer line "_s, u"memory"_s );
+  QVERIFY( mVectorLayerMap["Polygon"]->isValid() );
+  layerList << mVectorLayerMap["Polygon"].get();
 
   mVectorLayerMap["XYZ"] = std::make_unique<QgsVectorLayer>( u"LineStringZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XYZ"]->isValid() );
@@ -375,22 +380,25 @@ void TestQgsMapToolEllipse::cleanupTestCase()
   {
     mVectorLayerMap[coordinate].reset();
   }
+  mVectorLayerMap["Polygon"].reset();
 
   delete mMapTool;
 
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolEllipse::resetMapTool( QgsMapToolShapeMetadata *metadata )
+void TestQgsMapToolEllipse::resetMapTool( QgsMapToolShapeMetadata *metadata, QgsMapToolCapture::CaptureMode mode )
 {
-  mMapTool->clean();
+  delete mMapTool;
+  mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), mode );
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mCanvas->setMapTool( mMapTool );
   mMapTool->setCurrentShapeMapTool( metadata );
 }
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPoint()
 {
-  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -402,7 +410,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPoint()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPointWithDeletedVertex()
 {
-  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
@@ -416,7 +424,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAndPointWithDeletedVert
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2Points()
 {
-  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -429,7 +437,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2Points()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2PointsWithDeletedVertex()
 {
-  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -444,7 +452,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd2PointsWithDeletedVe
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtent()
 {
-  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -456,7 +464,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtent()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtentWithDeletedVertex()
 {
-  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
@@ -470,7 +478,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromExtentWithDeletedVertex()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFoci()
 {
-  resetMapTool( new QgsMapToolShapeEllipseFociMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::LeftButton );
@@ -484,7 +492,7 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFoci()
 
 QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFociWithDeletedVertex()
 {
-  resetMapTool( new QgsMapToolShapeEllipseFociMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 4, 1, Qt::LeftButton );
@@ -508,6 +516,8 @@ void TestQgsMapToolEllipse::testEllipse_data()
 
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( Z );
   QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( M );
+
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
 
   QgsFeatureId newFid;
   QgsFeature f;
@@ -560,7 +570,7 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPointNotEnoughPoints()
   const long long count = layer->featureCount();
 
   QgsMapToolShapeEllipseCenterPointMetadata md;
-  resetMapTool( &md );
+  resetMapTool( &md, QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::RightButton );
@@ -583,7 +593,7 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsNotEnoughPoints()
   const long long count = layer->featureCount();
 
   QgsMapToolShapeEllipseCenter2PointsMetadata md;
-  resetMapTool( &md );
+  resetMapTool( &md, QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::RightButton );
@@ -615,7 +625,7 @@ void TestQgsMapToolEllipse::testEllipseFromExtentNotEnoughPoints()
   const long long count = layer->featureCount();
 
   QgsMapToolShapeEllipseExtentMetadata md;
-  resetMapTool( &md );
+  resetMapTool( &md, QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::RightButton );
@@ -638,7 +648,7 @@ void TestQgsMapToolEllipse::testEllipseFromFociNotEnoughPoints()
   const long long count = layer->featureCount();
 
   QgsMapToolShapeEllipseFociMetadata md;
-  resetMapTool( &md );
+  resetMapTool( &md, QgsMapToolCapture::CaptureMode::CaptureLine );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::RightButton );
@@ -663,11 +673,11 @@ void TestQgsMapToolEllipse::testEllipseFromFociNotEnoughPoints()
 
 void TestQgsMapToolEllipse::testTransientGeometrySignalCenterPoint()
 {
-  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  QgsVectorLayer *layer = mVectorLayerMap["Polygon"].get();
   mCanvas->setCurrentLayer( layer );
   layer->startEditing();
 
-  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata(), QgsMapToolCapture::CaptureMode::CapturePolygon );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
@@ -685,13 +695,37 @@ void TestQgsMapToolEllipse::testTransientGeometrySignalCenterPoint()
   layer->rollBack();
 }
 
-void TestQgsMapToolEllipse::testTransientGeometrySignalCenter2Points()
+void TestQgsMapToolEllipse::testTransientGeometrySignalCenterPointLine()
 {
   QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
   mCanvas->setCurrentLayer( layer );
   layer->startEditing();
 
-  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseCenterPointMetadata(), QgsMapToolCapture::CaptureMode::CaptureLine );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ).left( 142 ), u"LineString (2 0, 2 -0.1, 2 -0.1, 2 -0.2, 1.9 -0.3, 1.9 -0.3, 1.8 -0.4, 1.8 -0.4, 1.7 -0.5, 1.7 -0.6, 1.6 -0.6, 1.5 -0.7, 1.4 -0.7, 1.3 -0.8, 1"_s );
+
+  utils.mouseMove( 2, 2 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ).left( 142 ), u"LineString (2 0, 2 -0.1, 2 -0.3, 2 -0.4, 1.9 -0.5, 1.9 -0.6, 1.8 -0.8, 1.8 -0.9, 1.7 -1, 1.7 -1.1, 1.6 -1.2, 1.5 -1.3, 1.4 -1.4, 1.3 -1.5, 1.2"_s );
+
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  layer->rollBack();
+}
+
+void TestQgsMapToolEllipse::testTransientGeometrySignalCenter2Points()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["Polygon"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  resetMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata(), QgsMapToolCapture::CaptureMode::CapturePolygon );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
@@ -713,11 +747,11 @@ void TestQgsMapToolEllipse::testTransientGeometrySignalCenter2Points()
 
 void TestQgsMapToolEllipse::testTransientGeometrySignalExtent()
 {
-  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  QgsVectorLayer *layer = mVectorLayerMap["Polygon"].get();
   mCanvas->setCurrentLayer( layer );
   layer->startEditing();
 
-  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseExtentMetadata(), QgsMapToolCapture::CaptureMode::CapturePolygon );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
@@ -738,11 +772,11 @@ void TestQgsMapToolEllipse::testTransientGeometrySignalExtent()
 
 void TestQgsMapToolEllipse::testTransientGeometrySignalFoci()
 {
-  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  QgsVectorLayer *layer = mVectorLayerMap["Polygon"].get();
   mCanvas->setCurrentLayer( layer );
   layer->startEditing();
 
-  resetMapTool( new QgsMapToolShapeEllipseFociMetadata() );
+  resetMapTool( new QgsMapToolShapeEllipseFociMetadata(), QgsMapToolCapture::CaptureMode::CapturePolygon );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );

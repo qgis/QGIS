@@ -13,6 +13,7 @@ set(QGIS_TEST_HDRS
 add_library(qgis_test ${LIBRARY_TYPE}
   ${QGIS_TEST_HDRS}
 )
+set_target_properties(qgis_test PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(qgis_test PUBLIC
   ${CMAKE_SOURCE_DIR}/src/test

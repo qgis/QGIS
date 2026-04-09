@@ -136,7 +136,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     QgsHighlight *mHighlight = nullptr;
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
-    QgsFeature *mOwnedFeature = nullptr;
+    std::unique_ptr<QgsFeature> mOwnedFeature;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;

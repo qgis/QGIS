@@ -135,6 +135,7 @@ try:
     QgsApplication.fieldFormatterRegistry = staticmethod(QgsApplication.fieldFormatterRegistry)
     QgsApplication.renderer3DRegistry = staticmethod(QgsApplication.renderer3DRegistry)
     QgsApplication.symbol3DRegistry = staticmethod(QgsApplication.symbol3DRegistry)
+    QgsApplication.materialRegistry = staticmethod(QgsApplication.materialRegistry)
     QgsApplication.scaleBarRendererRegistry = staticmethod(QgsApplication.scaleBarRendererRegistry)
     QgsApplication.labelingEngineRuleRegistry = staticmethod(QgsApplication.labelingEngineRuleRegistry)
     QgsApplication.symbolConverterRegistry = staticmethod(QgsApplication.symbolConverterRegistry)

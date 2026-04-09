@@ -236,6 +236,8 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
+    const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
 
   private:
     QString mFolder;
@@ -245,6 +247,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QString mUrlPrefix;
     Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
     bool mForceRefresh = false;
+    QgsMimeDataUtils::Uri mAllLayersMapServerUri;
 };
 
 /**
@@ -284,10 +287,14 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
     QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     bool equal( const QgsDataItem *other ) override;
 
+    void setAllLayersMapServerUri( const QgsMimeDataUtils::Uri &uri ) { mAllLayersMapServerUri = uri; }
+    const QgsMimeDataUtils::Uri &allLayersMapServerUri() const { return mAllLayersMapServerUri; }
+
   private:
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
+    QgsMimeDataUtils::Uri mAllLayersMapServerUri;
 };
 
 /**
@@ -326,8 +333,17 @@ class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
       const QString &authcfg,
       const QgsHttpHeaders &headers,
       const QString urlPrefix,
-      Qgis::BrowserLayerType geometryType
+      Qgis::BrowserLayerType geometryType,
+      bool isMapServerWithQueryCapability,
+      const QString &mapServerFormat,
+      const QString &mapServerLayerId
     );
+
+    QgsMimeDataUtils::Uri mapServerMimeUri() const;
+    QList< LayerUriWithDetails > layerUrisWithDetails() const override;
+
+  private:
+    QString mMapServerUri;
 };
 
 /**
@@ -348,13 +364,18 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
       const QString &format,
       const QString &authcfg,
       const QgsHttpHeaders &headers,
-      const QString &urlPrefix
+      const QString &urlPrefix,
+      bool isMapServerWithQueryCapability
     );
+    Qgis::BrowserItemFilterFlags filterFlags() const override;
+
+
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
   private:
     QString mSupportedFormats;
+    bool mIsMapServerWithQueryCapability = false;
 };
 
 /**

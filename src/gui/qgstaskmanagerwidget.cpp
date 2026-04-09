@@ -72,9 +72,7 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
 }
 
 QgsTaskManagerWidget::~QgsTaskManagerWidget()
-{
-  delete mModel;
-}
+{}
 
 
 void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, int end )

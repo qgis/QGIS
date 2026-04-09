@@ -44,6 +44,7 @@ class CORE_EXPORT QgsSettingsTree
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( u"app"_s );
     static inline QgsSettingsTreeNode *sTreeAttributeForm = treeRoot()->createChildNode( u"attribute-form"_s );
+    static inline QgsSettingsTreeNode *sTreeColorWidgets = treeRoot()->createChildNode( u"color-widgets"_s );
     static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( u"connections"_s );
     static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( u"core"_s );
     static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
@@ -51,7 +52,10 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( u"fonts"_s );
     static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( u"geometry_validation"_s );
     static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( u"gps"_s );
+    static inline QgsSettingsTreeNode *sTreeGradientEditor = treeRoot()->createChildNode( u"gradient-editor"_s );
     static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( u"gui"_s );
+    static inline QgsSettingsTreeNode *sTreeHistogram = treeRoot()->createChildNode( u"histogram"_s );
+    static inline QgsSettingsTreeNode *sTreeIdentify = treeRoot()->createChildNode( u"identify"_s );
     static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( u"layer-tree"_s );
     static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( u"layout"_s );
     static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( u"locale"_s );
@@ -75,6 +79,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTree3DMap = treeRoot()->createChildNode( u"3dmap"_s );
     static inline QgsSettingsTreeNode *sTreeRasterHistogram = sTreeRaster->createChildNode( u"histogram"_s );
     static inline QgsSettingsTreeNode *sTreeCad = sTreeDigitizing->createChildNode( u"cad"_s );
+    static inline QgsSettingsTreeNode *sTreeSqlite3 = sTreeDatabase->createChildNode( u"sqlite3"_s );
 
 #endif
 

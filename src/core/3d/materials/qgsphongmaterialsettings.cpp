@@ -1,0 +1,94 @@
+/***************************************************************************
+  qgsphongmaterialsettings.cpp
+  --------------------------------------
+  Date                 : July 2017
+  Copyright            : (C) 2017 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsphongmaterialsettings.h"
+
+#include "qgscolorutils.h"
+
+#include <QMap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+QString QgsPhongMaterialSettings::type() const
+{
+  return u"phong"_s;
+}
+
+bool QgsPhongMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    case Qgis::MaterialRenderingTechnique::Points:
+    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
+    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
+    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+      return true;
+
+    case Qgis::MaterialRenderingTechnique::Lines:
+    case Qgis::MaterialRenderingTechnique::Billboards:
+      return false;
+  }
+  return false;
+}
+
+QgsAbstractMaterialSettings *QgsPhongMaterialSettings::create()
+{
+  return new QgsPhongMaterialSettings();
+}
+
+QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
+{
+  return new QgsPhongMaterialSettings( *this );
+}
+
+bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsPhongMaterialSettings *otherPhong = dynamic_cast<const QgsPhongMaterialSettings *>( other );
+  if ( !otherPhong )
+    return false;
+
+  return *this == *otherPhong;
+}
+
+void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
+  mDiffuse = QgsColorUtils::colorFromString( elem.attribute( u"diffuse"_s, u"178,178,178"_s ) );
+  mSpecular = QgsColorUtils::colorFromString( elem.attribute( u"specular"_s, u"255,255,255"_s ) );
+  mShininess = elem.attribute( u"shininess"_s ).toDouble();
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
+  mAmbientCoefficient = elem.attribute( u"ka"_s, u"1.0"_s ).toDouble();
+  mDiffuseCoefficient = elem.attribute( u"kd"_s, u"1.0"_s ).toDouble();
+  mSpecularCoefficient = elem.attribute( u"ks"_s, u"1.0"_s ).toDouble();
+
+  QgsAbstractMaterialSettings::readXml( elem, context );
+}
+
+void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+{
+  elem.setAttribute( u"ambient"_s, QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( u"diffuse"_s, QgsColorUtils::colorToString( mDiffuse ) );
+  elem.setAttribute( u"specular"_s, QgsColorUtils::colorToString( mSpecular ) );
+  elem.setAttribute( u"shininess"_s, mShininess );
+  elem.setAttribute( u"opacity"_s, mOpacity );
+  elem.setAttribute( u"ka"_s, mAmbientCoefficient );
+  elem.setAttribute( u"kd"_s, mDiffuseCoefficient );
+  elem.setAttribute( u"ks"_s, mSpecularCoefficient );
+
+  QgsAbstractMaterialSettings::writeXml( elem, context );
+}

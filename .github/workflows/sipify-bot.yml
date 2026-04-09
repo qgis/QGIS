@@ -7,13 +7,18 @@ on:
       - master
       - release-*
 
+permissions:
+  content: write
+
 jobs:
   sipify:
     if: github.repository == 'qgis/QGIS'
+    env:
+      COMMIT_MESSAGE: "auto sipify 🍺"
     runs-on: [ubuntu-latest]
     steps:
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: '3.13'
 
@@ -25,15 +30,27 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' }}
         id: comment-branch
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ssh-key: ${{ secrets.SIPIFY_KEY }}
+          persist-credentials: true  # We need to persist credentials because of later git push
+
+      - name: Skip if auto sipify commit
+        id: check
+        run: |
+          if [[ "$(git log -1 --format='%s')" == "$COMMIT_MESSAGE" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: run sipify
+        if: steps.check.outputs.skip != 'true'
         run: ./scripts/sipify_all.sh -m
 
       - name: commit
+        if: steps.check.outputs.skip != 'true'
         run: |
           git config user.name qgis-bot
-          git config user.email bot@qgis.org
+          git config user.email qgis-bot@users.noreply.github.com
           git add .
-          git commit -m "auto sipify 🍺" || echo "nothing to commit"
+          git commit -m "$COMMIT_MESSAGE" || echo "nothing to commit"
           git push

@@ -365,7 +365,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudDataProvider::traverseTree(
   if ( childrenError < maxError )
     return nodes;
 
-  for ( const QgsPointCloudNodeId &nn : node.children() )
+  for ( QgsPointCloudNodeId nn : node.children() )
   {
     const QgsPointCloudNode childNode = pc.getNode( nn );
     if ( extentGeometry.intersects( childNode.bounds().toRectangle() ) )

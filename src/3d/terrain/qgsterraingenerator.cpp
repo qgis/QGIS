@@ -32,7 +32,7 @@ QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) cons
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin * map.terrainSettings()->verticalScale(), te.xMaximum(), te.yMaximum(), hMax * map.terrainSettings()->verticalScale() );
+  return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin, te.xMaximum(), te.yMaximum(), hMax );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
@@ -46,8 +46,8 @@ float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   // TODO: makes sense to have kind of default implementation?
-  hMin = 0;
-  hMax = 8848;
+  hMin = Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE;
+  hMax = Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE;
 }
 
 QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )

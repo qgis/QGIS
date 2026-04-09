@@ -632,7 +632,6 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
-  delete mModel;
   mParameterWidgetWrappers.clear();
 }
 

@@ -34,16 +34,19 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
 
     static QgsMaterialSettingsWidget *create();
 
-    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) final;
+    void setTechnique( Qgis::MaterialRenderingTechnique technique ) final;
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
-    QgsAbstractMaterialSettings *settings() override;
+    std::unique_ptr< QgsAbstractMaterialSettings > settings() final;
 
     bool hasOpacity() const { return mHasOpacity; }
     void setHasOpacity( const bool opacity );
-
+  public slots:
+    void setPreviewVisible( bool visible ) final;
   private slots:
 
     void updateWidgetState();
+
+    void updatePreview();
 
   private:
     bool mHasOpacity; //! whether to display the opacity slider

@@ -1458,9 +1458,19 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     mModelProxy->setFilterRole( 0 );
     QgsDebugMsgLevel( "PluginManager filter changed to :" + text, 3 );
   }
-
   const QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
-  mModelProxy->setFilterRegularExpression( filterRegExp );
+
+  if ( filterRegExp.isValid() )
+  {
+    mModelProxy->setFilterRegularExpression( filterRegExp );
+  }
+  else
+  {
+    const QString safeText = QRegularExpression::escape( text );
+
+    const QRegularExpression safeFilterRegExp( safeText, QRegularExpression::CaseInsensitiveOption );
+    mModelProxy->setFilterRegularExpression( safeFilterRegExp );
+  }
 }
 
 void QgsPluginManager::buttonUpgradeAll_clicked()
@@ -1761,4 +1771,9 @@ void QgsPluginManager::pushMessage( const QString &text, Qgis::MessageLevel leve
 void QgsPluginManager::showHelp()
 {
   QgsHelp::openHelp( u"plugins/plugins.html"_s );
+}
+
+void QgsPluginManager::search( const QString &searchTerm )
+{
+  leFilter->setText( searchTerm );
 }

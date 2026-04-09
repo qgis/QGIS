@@ -741,8 +741,11 @@ void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle
   QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Write );
   QgsDebugMsgLevel( u"Putting oauth2 bundle for authcfg: %1"_s.arg( authcfg ), 2 );
   mOAuth2ConfigCache.insert( authcfg, bundle );
-  // Restart the timer so that we have a full interval before the next cleanup
-  mCacheHousekeepingTimer.start();
+// Restart the timer so that we have a full interval before the next cleanup
+// Suppress warning: Potential leak of memory pointed to by 'callable' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
+  QMetaObject::invokeMethod( &mCacheHousekeepingTimer, qOverload<>( &QTimer::start ), Qt::QueuedConnection );
+#endif
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )

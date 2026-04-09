@@ -7,6 +7,7 @@ set(QGIS_3D_SRCS
   qgs3daxissettings.cpp
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgsabstractfeaturebasedchunkedentity.cpp
   qgsabstractvectorlayer3drenderer.cpp
   qgsannotationlayer3drenderer.cpp
   qgsannotationlayerchunkloader_p.cpp
@@ -72,19 +73,18 @@ set(QGIS_3D_SRCS
   lights/qgslightsource.cpp
   lights/qgspointlightsettings.cpp
 
-  materials/qgsabstractmaterialsettings.cpp
   materials/qgsglobematerial.cpp
-  materials/qgsgoochmaterialsettings.cpp
+  materials/qgsgoochmaterial3dhandler.cpp
   materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
-  materials/qgsmaterialregistry.cpp
+  materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.cpp
-  materials/qgsmetalroughmaterialsettings.cpp
-  materials/qgsnullmaterialsettings.cpp
-  materials/qgsphongmaterialsettings.cpp
+  materials/qgsmetalroughmaterial3dhandler.cpp
+  materials/qgsnullmaterial3dhandler.cpp
+  materials/qgsphongmaterial3dhandler.cpp
   materials/qgsphongtexturedmaterial.cpp
-  materials/qgsphongtexturedmaterialsettings.cpp
-  materials/qgssimplelinematerialsettings.cpp
+  materials/qgsphongtexturedmaterial3dhandler.cpp
+  materials/qgssimplelinematerial3dhandler.cpp
   materials/qgstexturematerial.cpp
 
   processing/qgs3dalgorithms.cpp
@@ -167,6 +167,7 @@ set(QGIS_3D_HDRS
   qgs3dwiredmesh_p.h
   qgsaabb.h
   qgsabstract3dengine.h
+  qgsabstractfeaturebasedchunkedentity.h
   qgsabstractvectorlayer3drenderer.h
   qgsannotationlayer3drenderer.h
   qgsannotationlayerchunkloader_p.h
@@ -203,19 +204,18 @@ set(QGIS_3D_HDRS
   lights/qgslightsource.h
   lights/qgspointlightsettings.h
 
-  materials/qgsabstractmaterialsettings.h
   materials/qgsglobematerial.h
-  materials/qgsgoochmaterialsettings.h
+  materials/qgsgoochmaterial3dhandler.h
   materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
-  materials/qgsmaterialregistry.h
+  materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.h
-  materials/qgsmetalroughmaterialsettings.h
-  materials/qgsnullmaterialsettings.h
-  materials/qgsphongmaterialsettings.h
+  materials/qgsmetalroughmaterial3dhandler.h
+  materials/qgsnullmaterial3dhandler.h
+  materials/qgsphongmaterial3dhandler.h
   materials/qgsphongtexturedmaterial.h
-  materials/qgsphongtexturedmaterialsettings.h
-  materials/qgssimplelinematerialsettings.h
+  materials/qgsphongtexturedmaterial3dhandler.h
+  materials/qgssimplelinematerial3dhandler.h
   materials/qgstexturematerial.h
 
   framegraph/qgsabstractrenderview.h

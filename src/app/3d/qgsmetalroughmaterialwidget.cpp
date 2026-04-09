@@ -16,29 +16,40 @@
 #include "qgsmetalroughmaterialwidget.h"
 
 #include "qgis.h"
+#include "qgsdoublespinbox.h"
 #include "qgsmetalroughmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsmetalroughmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
-  mSpinMetalness->setClearValue( 0, tr( "None" ) );
-  mSpinRoughness->setClearValue( 0, tr( "None" ) );
+  mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"metalrough"_s );
 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
+  // clear has no meaning here
+  mMetalnessWidget->spinBox()->setShowClearButton( false );
+  mRoughnessWidget->spinBox()->setShowClearButton( false );
+
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
+  connect( mMetalnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
     emit changed();
   } );
-  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
+  connect( mRoughnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
     emit changed();
   } );
+
+  connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
@@ -46,7 +57,7 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
   return new QgsMetalRoughMaterialWidget();
 }
 
-void QgsMetalRoughMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
+void QgsMetalRoughMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique )
 {}
 
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
@@ -55,23 +66,38 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
   if ( !material )
     return;
   mButtonBaseColor->setColor( material->baseColor() );
-  mSpinMetalness->setValue( material->metalness() );
-  mSpinRoughness->setValue( material->roughness() );
+  mMetalnessWidget->setValue( material->metalness() );
+  mRoughnessWidget->setValue( material->roughness() );
 
   mPropertyCollection = settings->dataDefinedProperties();
 
   updateWidgetState();
+  updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsMetalRoughMaterialSettings>();
   m->setBaseColor( mButtonBaseColor->color() );
-  m->setMetalness( static_cast<float>( mSpinMetalness->value() ) );
-  m->setRoughness( static_cast<float>( mSpinRoughness->value() ) );
+  m->setMetalness( mMetalnessWidget->value() );
+  m->setRoughness( mRoughnessWidget->value() );
   m->setDataDefinedProperties( mPropertyCollection );
-  return m.release();
+  return m;
+}
+
+void QgsMetalRoughMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
 }
 
 void QgsMetalRoughMaterialWidget::updateWidgetState()
 {}
+
+void QgsMetalRoughMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
+}

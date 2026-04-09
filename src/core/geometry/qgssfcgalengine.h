@@ -27,10 +27,9 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmatrix4x4.h"
 #include "qgspoint.h"
 #include "qgsvector3d.h"
-
-#include <QMatrix4x4>
 
 #define SIP_NO_FILE
 
@@ -708,7 +707,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param mat 4x4 transformation matrix
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QgsMatrix4x4 &mat, QString *errorMsg = nullptr );
 
     /**
      * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
@@ -740,7 +739,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param mat a transformation matrix
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QMatrix4x4 &mat = QMatrix4x4(), QString *errorMsg = nullptr );
+    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat = QgsMatrix4x4(), QString *errorMsg = nullptr );
 
     /**
      * Checks if \a primA and \a primB are equal.

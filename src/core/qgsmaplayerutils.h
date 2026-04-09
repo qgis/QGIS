@@ -126,6 +126,13 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 4.0
      */
     static QString layerTypeToString( Qgis::LayerType type );
+
+    /**
+     * Returns the consistent tooltip for the given layer.
+     *
+     * \since QGIS 4.2
+     */
+    static QString layerToolTip( const QgsMapLayer *layer );
 };
 
 #endif // QGSMAPLAYERUTILS_H

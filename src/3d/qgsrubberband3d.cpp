@@ -15,6 +15,7 @@
 
 #include "qgsrubberband3d.h"
 
+#include "qgs3d.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3dengine.h"
@@ -24,6 +25,7 @@
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmessagelog.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
@@ -137,7 +139,7 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
   polygonMaterialSettings.setAmbient( mColor );
   polygonMaterialSettings.setDiffuse( mColor );
   polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-  mPolygonMaterial = polygonMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() );
+  mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
   mPolygonEntity->addComponent( mPolygonMaterial );
 
   mPolygonTransform = new QgsGeoTransform;
@@ -250,7 +252,7 @@ void QgsRubberBand3D::setColor( const QColor color )
       polygonMaterialSettings.setAmbient( mColor );
       polygonMaterialSettings.setDiffuse( mColor );
       polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-      mPolygonMaterial = polygonMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() );
+      mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
       mPolygonEntity->addComponent( mPolygonMaterial );
     }
   }

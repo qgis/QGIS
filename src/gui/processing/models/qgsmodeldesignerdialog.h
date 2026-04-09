@@ -23,6 +23,7 @@
 #include "qgsmodelundocommand.h"
 #include "qgsprocessingmodelchilddependency.h"
 #include "qgsprocessingtoolboxmodel.h"
+#include "qobjectuniqueptr.h"
 
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
@@ -231,7 +232,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsModelViewToolPan *mPanTool = nullptr;
-    QgsModelViewToolSelect *mSelectTool = nullptr;
+    QObjectUniquePtr<QgsModelViewToolSelect> mSelectTool;
     QgsModelGraphicsScene *mScene = nullptr;
 
     bool mHasChanged = false;

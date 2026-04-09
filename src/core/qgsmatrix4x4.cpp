@@ -138,3 +138,72 @@ QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 )
   m.m[3][3] = m1.m[0][3] * m2.m[3][0] + m1.m[1][3] * m2.m[3][1] + m1.m[2][3] * m2.m[3][2] + m1.m[3][3] * m2.m[3][3];
   return m;
 }
+
+void QgsMatrix4x4::scale( const QgsVector3D &vector )
+{
+  m[0][0] *= vector.x();
+  m[0][1] *= vector.x();
+  m[0][2] *= vector.x();
+  m[0][3] *= vector.x();
+
+  m[1][0] *= vector.y();
+  m[1][1] *= vector.y();
+  m[1][2] *= vector.y();
+  m[1][3] *= vector.y();
+
+  m[2][0] *= vector.z();
+  m[2][1] *= vector.z();
+  m[2][2] *= vector.z();
+  m[2][3] *= vector.z();
+}
+
+void QgsMatrix4x4::rotate( double angle, double x, double y, double z )
+{
+  const double length = std::sqrt( x * x + y * y + z * z );
+  if ( qgsDoubleNear( length, 0.0 ) )
+  {
+    return;
+  }
+
+  const double nx = x / length;
+  const double ny = y / length;
+  const double nz = z / length;
+
+  const double angleRad = angle * M_PI / 180.0;
+  const double angleCos = std::cos( angleRad );
+  const double angleSin = std::sin( angleRad );
+  const double angleCosInv = 1.0 - angleCos;
+
+  const double nxny = nx * ny;
+  const double nxnz = nx * nz;
+  const double nynz = ny * nz;
+
+  // Rotation matrix
+  QgsMatrix4x4 rot;
+  rot.m[0][0] = angleCosInv * nx * nx + angleCos;
+  rot.m[0][1] = angleCosInv * nxny + nz * angleSin;
+  rot.m[0][2] = angleCosInv * nxnz - ny * angleSin;
+  rot.m[0][3] = 0.0;
+
+  rot.m[1][0] = angleCosInv * nxny - nz * angleSin;
+  rot.m[1][1] = angleCosInv * ny * ny + angleCos;
+  rot.m[1][2] = angleCosInv * nynz + nx * angleSin;
+  rot.m[1][3] = 0.0;
+
+  rot.m[2][0] = angleCosInv * nxnz + ny * angleSin;
+  rot.m[2][1] = angleCosInv * nynz - nx * angleSin;
+  rot.m[2][2] = angleCosInv * nz * nz + angleCos;
+  rot.m[2][3] = 0.0;
+
+  rot.m[3][0] = 0.0;
+  rot.m[3][1] = 0.0;
+  rot.m[3][2] = 0.0;
+  rot.m[3][3] = 1.0;
+
+  *this = *this * rot;
+}
+
+void QgsMatrix4x4::rotate( double angle, const QgsVector3D &vector )
+{
+  rotate( angle, vector.x(), vector.y(), vector.z() );
+}

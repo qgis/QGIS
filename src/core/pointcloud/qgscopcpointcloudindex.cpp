@@ -137,7 +137,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -186,7 +186,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   return block;
 }
 
-QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
     return nullptr; // TODO
@@ -197,7 +197,6 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
 
   if ( !fetchNodeHierarchy( n ) )
     return nullptr;
-  QMutexLocker locker( &mHierarchyMutex );
 
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
@@ -205,8 +204,11 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+
+  mHierarchyMutex.lock();
   auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
   int pointCount = mHierarchy.value( n );
+  mHierarchyMutex.unlock();
 
   return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), blockOffset, blockSize, pointCount, *mLazInfo.get(), mAuthCfg );
 }
@@ -333,7 +335,7 @@ bool QgsCopcPointCloudIndex::isValid() const
   return mIsValid;
 }
 
-bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const
+bool QgsCopcPointCloudIndex::fetchNodeHierarchy( QgsPointCloudNodeId n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
 
@@ -402,12 +404,12 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
   }
 }
 
-bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsCopcPointCloudIndex::hasNode( QgsPointCloudNodeId n ) const
 {
   return fetchNodeHierarchy( n );
 }
 
-QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsCopcPointCloudIndex::getNode( QgsPointCloudNodeId id ) const
 {
   bool nodeFound = fetchNodeHierarchy( id );
   Q_ASSERT( nodeFound );

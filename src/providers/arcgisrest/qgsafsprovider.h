@@ -101,7 +101,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     std::shared_ptr<QgsAfsSharedData> mSharedData;
     QString mLayerName;
     QString mLayerDescription;
-    QStringList mCapabilityStrings;
+    Qgis::ArcGisRestServiceCapabilities mCapabilities;
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
@@ -123,6 +123,7 @@ class QgsAfsProviderMetadata : public QgsProviderMetadata
   public:
     QgsAfsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

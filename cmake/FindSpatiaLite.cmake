@@ -17,8 +17,10 @@ if(PkgConfig_FOUND)
 endif()
 
 if(PC_SPATIALITE_FOUND)
-  add_library(spatialite::spatialite ALIAS PkgConfig::PC_SPATIALITE)
-  set(SPATIALITE_FOUND TRUE)
+  if(NOT TARGET spatialite::spatialite)
+    add_library(spatialite::spatialite ALIAS PkgConfig::PC_SPATIALITE)
+    set(SPATIALITE_FOUND TRUE)
+  endif()
 else()
   # Fallback for systems without PkgConfig, e.g. OSGeo4W
 

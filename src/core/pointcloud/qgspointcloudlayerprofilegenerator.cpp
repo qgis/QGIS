@@ -386,7 +386,7 @@ bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const 
     return false;
 
   std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
-  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  searchGeometryInLayerCrs.reset( curve.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
 
   try
@@ -516,7 +516,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGeneratorBase::traverseTre
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
-  for ( const QgsPointCloudNodeId &nn : node.children() )
+  for ( QgsPointCloudNodeId nn : node.children() )
   {
     nodes += traverseTree( pc, nn, maxErrorPixels, childrenErrorPixels, zRange, searchExtent );
   }
@@ -527,7 +527,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGeneratorBase::traverseTre
 int QgsPointCloudLayerProfileGeneratorBase::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
-  for ( const QgsPointCloudNodeId &n : nodes )
+  for ( QgsPointCloudNodeId n : nodes )
   {
     if ( mFeedback->isCanceled() )
       break;
@@ -560,7 +560,7 @@ int QgsPointCloudLayerProfileGeneratorBase::visitNodesAsync( const QVector<QgsPo
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
-    const QgsPointCloudNodeId &n = nodes[i];
+    QgsPointCloudNodeId n = nodes[i];
     const QString nStr = n.toString();
     QgsPointCloudBlockRequest *blockRequest = pc.asyncNodeData( n, request );
     blockRequests.append( blockRequest );
@@ -985,7 +985,7 @@ bool QgsTriangulatedPointCloudLayerProfileGenerator::generateProfile( const QgsP
     QgsGeos geosPoly( &triangle );
     geosPoly.prepareGeometry();
 
-    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve ) );
+    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve, nullptr, QgsGeometryParameters(), mFeedback.get() ) );
     if ( !intersectingGeom )
       continue;
 

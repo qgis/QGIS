@@ -74,7 +74,12 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
     case QgsStyle::Symbol3DEntity:
       this->setWindowTitle( tr( "Save New 3D Symbol" ) );
-      possibleEntities << QgsStyle::Symbol3DEntity;
+      possibleEntities << QgsStyle::Symbol3DEntity << QgsStyle::MaterialSettingsEntity;
+      break;
+
+    case QgsStyle::MaterialSettingsEntity:
+      this->setWindowTitle( tr( "Save New Material Settings" ) );
+      possibleEntities << QgsStyle::MaterialSettingsEntity;
       break;
 
     case QgsStyle::TagEntity:
@@ -130,6 +135,10 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
         case QgsStyle::Symbol3DEntity:
           mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "3D Symbol" ), e );
+          break;
+
+        case QgsStyle::MaterialSettingsEntity:
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "Material" ), e );
           break;
 
         case QgsStyle::TagEntity:

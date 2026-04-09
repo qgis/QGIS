@@ -668,7 +668,7 @@ Returns the number of features that are selected in this layer.
 .. seealso:: :py:func:`selectedFeatureIds`
 %End
 
-    void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    void selectByRect( const QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 %Docstring
 Selects features found within the search rectangle (in layer's
 coordinates)
@@ -746,7 +746,7 @@ Selects not selected features and deselects selected ones
 Select all the features
 %End
 
-    void invertSelectionInRectangle( QgsRectangle &rect );
+    void invertSelectionInRectangle( const QgsRectangle &rect );
 %Docstring
 Inverts selection of features found within the search rectangle (in
 layer's coordinates)

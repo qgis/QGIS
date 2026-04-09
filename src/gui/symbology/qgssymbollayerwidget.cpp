@@ -45,6 +45,7 @@
 #include "qgssvgselectorwidget.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QAbstractButton>
 #include <QAction>
@@ -55,6 +56,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMovie>
@@ -2072,6 +2074,18 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   }
 }
 
+bool QgsTemplatedLineSymbolLayerWidget::event( QEvent *event )
+{
+  if ( event->type() == QEvent::Show )
+  {
+    // Blank segments button is enabled only in dock mode. That requires for this widget to be
+    // parented which is not the case when we create the widget. So we update on show event
+    updateBlankSegmentsWidget();
+  }
+
+  return QgsSymbolLayerWidget::event( event );
+}
+
 void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   switch ( mSymbolType )
@@ -2171,6 +2185,12 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::changed, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
   connect( mBlankSegmentsDDButton, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+
+  if ( vectorLayer() )
+  {
+    connect( vectorLayer(), &QgsMapLayer::editingStarted, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+    connect( vectorLayer(), &QgsMapLayer::editingStopped, this, &QgsMarkerLineSymbolLayerWidget::updateBlankSegmentsWidget );
+  }
 
   updateBlankSegmentsWidget();
 }
@@ -2399,7 +2419,6 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
 
 void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 {
-  mEditBlankSegmentsBtn->setEnabled( blankSegmentsFieldIndex() > -1 );
   QString tooltip;
   switch ( mSymbolType )
   {
@@ -2412,9 +2431,25 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
       break;
   }
 
-  if ( !mEditBlankSegmentsBtn->isEnabled() )
+  if ( QgsPanelWidget *panelWidget = QgsPanelWidget::findParentPanel( this ); !panelWidget || !panelWidget->dockMode() )
   {
+    // It's not possible to edit blank segments from Layer properties dialog
+    mEditBlankSegmentsBtn->setEnabled( false );
+    tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because map canvas interaction is only possible from Layer Styling panel, Layer properties dialog doesn't allow blank segments creation." );
+  }
+  else if ( blankSegmentsFieldIndex() < 0 )
+  {
+    mEditBlankSegmentsBtn->setEnabled( false );
     tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because no valid field property has been set" );
+  }
+  else if ( !vectorLayer() || QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), blankSegmentsFieldIndex() ) )
+  {
+    mEditBlankSegmentsBtn->setEnabled( false );
+    tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because field property is not editable" );
+  }
+  else
+  {
+    mEditBlankSegmentsBtn->setEnabled( true );
   }
 
   mEditBlankSegmentsBtn->setToolTip( tooltip );
@@ -2423,7 +2458,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
 {
   const QgsProperty blankSegmentsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments );
-  return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field
+  return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
            ? vectorLayer()->fields().indexFromName( blankSegmentsProperty.field() )
            : -1;
 }

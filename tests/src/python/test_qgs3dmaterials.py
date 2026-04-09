@@ -8,15 +8,15 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis._3d import (
+from qgis.core import (
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
     QgsNullMaterialSettings,
     QgsPhongMaterialSettings,
     QgsPhongTexturedMaterialSettings,
+    QgsReadWriteContext,
     QgsSimpleLineMaterialSettings,
 )
-from qgis.core import QgsReadWriteContext
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
@@ -366,7 +366,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         # Test default values
         self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
-        self.assertEqual(settings.roughness(), 0.0)
+        self.assertEqual(settings.roughness(), 0.5)
 
         # Test setters/getters
         settings.setBaseColor(QColor(255, 0, 0))

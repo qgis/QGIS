@@ -10,6 +10,7 @@ try:
     QgsVectorTileUtils.formatXYZUrlTemplate = staticmethod(QgsVectorTileUtils.formatXYZUrlTemplate)
     QgsVectorTileUtils.checkXYZUrlTemplate = staticmethod(QgsVectorTileUtils.checkXYZUrlTemplate)
     QgsVectorTileUtils.loadSprites = staticmethod(QgsVectorTileUtils.loadSprites)
+    QgsVectorTileUtils.resolveMapboxUri = staticmethod(QgsVectorTileUtils.resolveMapboxUri)
     QgsVectorTileUtils.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass

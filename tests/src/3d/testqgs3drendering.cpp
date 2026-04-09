@@ -1891,62 +1891,73 @@ void TestQgs3DRendering::testInstancedRenderingTransform()
 void TestQgs3DRendering::testModelPointRendering_data()
 {
   QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QVariantMap>( "props" );
   QTest::addColumn<QgsPropertyCollection>( "dataDefinedProperties" );
   QTest::addColumn<bool>( "useClipping" );
   QTest::addColumn<QString>( "referenceImage" );
 
+  QVariantMap basePropertiesMap;
+  basePropertiesMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+
+
   QgsPropertyCollection ddProps;
   QMatrix4x4 uniformScale;
   uniformScale.scale( 100.0f );
-  QTest::newRow( "no transform no clip" ) << uniformScale << ddProps << false << u"model_rendering"_s;
-  QTest::newRow( "no transform clip" ) << uniformScale << ddProps << true << u"model_rendering_clipping"_s;
+  QTest::newRow( "no transform no clip" ) << uniformScale << basePropertiesMap << ddProps << false << u"model_rendering"_s;
+  QTest::newRow( "no transform clip" ) << uniformScale << basePropertiesMap << ddProps << true << u"model_rendering_clipping"_s;
 
   QMatrix4x4 scaleTransform;
   scaleTransform.scale( 150, 195, 60 );
-  QTest::newRow( "scale" ) << scaleTransform << ddProps << false << u"model_rendering_scale"_s;
+  QTest::newRow( "scale" ) << scaleTransform << basePropertiesMap << ddProps << false << u"model_rendering_scale"_s;
 
   QMatrix4x4 translateTransform;
   translateTransform.translate( 150, -150, 100 );
   translateTransform.scale( 100 );
-  QTest::newRow( "translate" ) << translateTransform << ddProps << false << u"model_rendering_translation"_s;
+  QTest::newRow( "translate" ) << translateTransform << basePropertiesMap << ddProps << false << u"model_rendering_translation"_s;
 
   QMatrix4x4 rotateTransform;
   rotateTransform.scale( 100 );
   rotateTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
-  QTest::newRow( "rotate" ) << rotateTransform << ddProps << false << u"model_rendering_rotation"_s;
+  QTest::newRow( "rotate" ) << rotateTransform << basePropertiesMap << ddProps << false << u"model_rendering_rotation"_s;
 
   QMatrix4x4 trsTransform;
   trsTransform.translate( 150, -150, 100 );
   trsTransform.scale( 150, 195, 60 );
   trsTransform.rotate( QQuaternion::fromEulerAngles( 20, 40, 15 ) );
 
-  QTest::newRow( "trs" ) << trsTransform << ddProps << false << u"model_rendering_trs"_s;
+  QTest::newRow( "trs" ) << trsTransform << basePropertiesMap << ddProps << false << u"model_rendering_trs"_s;
+
+  QVariantMap axisPropertiesMap = basePropertiesMap;
+  axisPropertiesMap[u"upAxis"_s] = u"y"_s;
+  axisPropertiesMap[u"forwardAxis"_s] = u"-z"_s;
+  QTest::newRow( "trs y up -z forward" ) << trsTransform << axisPropertiesMap << ddProps << false << u"model_rendering_trs_y_up"_s;
 
   ddProps.clear();
   ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 175 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 50 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 130 end"_s ) );
 
-  QTest::newRow( "scale with data defined props" ) << scaleTransform << ddProps << false << u"model_rendering_dd_scale"_s;
+  QTest::newRow( "scale with data defined props" ) << scaleTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_scale"_s;
 
   ddProps.clear();
   ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then 45 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -10 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 90 end"_s ) );
 
-  QTest::newRow( "rotation with data defined props" ) << rotateTransform << ddProps << false << u"model_rendering_dd_rotation"_s;
+  QTest::newRow( "rotation with data defined props" ) << rotateTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_rotation"_s;
 
   ddProps.clear();
   ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationX, QgsProperty::fromExpression( u"case when \"field1\" = 1 then -150 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then 150 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then -90 end"_s ) );
 
-  QTest::newRow( "translation with data defined props" ) << translateTransform << ddProps << false << u"model_rendering_dd_translation"_s;
+  QTest::newRow( "translation with data defined props" ) << translateTransform << basePropertiesMap << ddProps << false << u"model_rendering_dd_translation"_s;
 }
 
 void TestQgs3DRendering::testModelPointRendering()
 {
   QFETCH( QMatrix4x4, transform );
+  QFETCH( QVariantMap, props );
   QFETCH( QgsPropertyCollection, dataDefinedProperties );
   QFETCH( bool, useClipping );
   QFETCH( QString, referenceImage );
@@ -1976,9 +1987,7 @@ void TestQgs3DRendering::testModelPointRendering()
 
   QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
   symbol->setShape( Qgis::Point3DShape::Model );
-  QVariantMap vMap;
-  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
-  symbol->setShapeProperties( vMap );
+  symbol->setShapeProperties( props );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::green );
   symbol->setMaterialSettings( materialSettings.clone() );

@@ -14126,6 +14126,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(poly.boundingBox().intersects(bbox))
         self.assertTrue(poly.intersects(bbox))  # was failing here!
 
+        # also test zero width/zero height empty bboxes
+        self.assertTrue(poly.intersects(QgsRectangle(-1, 1, 42, 1)))
+        self.assertTrue(poly.intersects(QgsRectangle(1, -1, 1, 42)))
+
     def testSplitGeometry(self):
         """
         splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
@@ -14804,6 +14808,106 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             qgs_gc.asWkt(),
             "GeometryCollection (Point (1 2),LineString (3 4, 5 6),Polygon ((0 0, 1 0, 1 1, 0 1, 0 0)))",
+        )
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31100, "GEOS 3.11 required")
+    def testConcaveHullOfPolygons(self):
+        """
+        Test QgsGeometry.concaveHullOfPolygons
+        """
+        l1 = QgsGeometry.fromWkt("MULTIPOLYGON EMPTY")
+        self.assertEqual(
+            l1.concaveHullOfPolygons(1, False, True).asWkt(), "Polygon EMPTY"
+        )
+        l1 = QgsGeometry.fromWkt("POLYGON ((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9))")
+        g = l1.concaveHullOfPolygons(1, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9))",
+        )
+        l1 = QgsGeometry.fromWkt("POLYGON ((1 9, 5 8, 9 9, 4 4, 7 1, 2 1, 1 9))")
+        g = l1.concaveHullOfPolygons(1, False, False)
+        g.normalize()
+        self.assertEqual(g.asWkt(), "Polygon ((1 9, 9 9, 7 1, 2 1, 1 9))")
+        l1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((100 200, 100 300, 150 250, 200 300, 200 200, 100 200)), ((100 100, 200 100, 150 50, 100 100)))"
+        )
+        g = l1.concaveHullOfPolygons(1, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.asWkt(),
+            "Polygon ((100 100, 100 200, 100 300, 150 250, 200 300, 200 200, 200 100, 150 50, 100 100))",
+        )
+        l1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((100 200, 100 300, 150 250, 200 300, 200 200, 100 200)), ((100 100, 200 100, 150 50, 100 100)))"
+        )
+        g = l1.concaveHullOfPolygons(1, False, False)
+        g.normalize()
+        self.assertEqual(
+            g.asWkt(),
+            "Polygon ((100 100, 100 200, 100 300, 200 300, 200 200, 200 100, 150 50, 100 100))",
+        )
+
+        l1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((1 9, 5 8, 9 9, 9 6, 6 4, 4 4, 1 6, 1 9)), ((1 1, 4 3, 6 3, 9 1, 1 1)))"
+        )
+        g = l1.concaveHullOfPolygons(0, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.asWkt(),
+            "MultiPolygon (((1 6, 1 9, 5 8, 9 9, 9 6, 6 4, 4 4, 1 6)),((1 1, 4 3, 6 3, 9 1, 1 1)))",
+        )
+        g = l1.concaveHullOfPolygons(1, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((1 1, 1 6, 1 9, 5 8, 9 9, 9 6, 9 1, 1 1))",
+        )
+
+        l1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((0 7, 4 10, 3 7, 5 6, 4 5, 0 7)), ((4 0, 0 2, 3 4, 5 3, 4 0)), ((9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 6 3, 7 4, 7 6, 5 9, 9 10)))"
+        )
+        g = l1.concaveHullOfPolygons(0, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.asWkt(),
+            "MultiPolygon (((5 9, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 6 3, 7 4, 7 6, 5 9)),((0 7, 4 10, 3 7, 5 6, 4 5, 0 7)),((0 2, 3 4, 5 3, 4 0, 0 2)))",
+        )
+        g = l1.concaveHullOfPolygons(0.2, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((0 2, 3 4, 4 5, 0 7, 4 10, 5 9, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 6 3, 5 3, 4 0, 0 2))",
+        )
+        g = l1.concaveHullOfPolygons(0.5, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((0 2, 3 4, 4 5, 0 7, 4 10, 5 9, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 4 0, 0 2))",
+        )
+        g = l1.concaveHullOfPolygons(1, False, True)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((0 2, 0 7, 4 10, 9 10, 8 8, 10 9, 8 5, 10 3, 7 0, 4 0, 0 2))",
+        )
+
+        # with hole
+        l1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON (((1 9, 5 9, 5 7, 3 7, 3 5, 1 5, 1 9)), ((1 4, 3 4, 3 2, 5 2, 5 0, 1 0, 1 4)), ((6 9, 8 9, 9 5, 8 0, 6 0, 6 2, 8 5, 6 7, 6 9)))"
+        )
+        g = l1.concaveHullOfPolygons(0, True, False)
+        g.normalize()
+        self.assertEqual(
+            g.asWkt(),
+            "MultiPolygon (((6 0, 6 2, 8 5, 6 7, 6 9, 8 9, 9 5, 8 0, 6 0)),((1 5, 1 9, 5 9, 5 7, 3 7, 3 5, 1 5)),((1 0, 1 4, 3 4, 3 2, 5 2, 5 0, 1 0)))",
+        )
+        g = l1.concaveHullOfPolygons(1, True, False)
+        g.normalize()
+        self.assertEqual(
+            g.constGet().simplifiedTypeRef().asWkt(),
+            "Polygon ((1 0, 1 4, 1 5, 1 9, 5 9, 6 9, 8 9, 9 5, 8 0, 6 0, 5 0, 1 0))",
         )
 
 

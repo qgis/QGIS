@@ -319,9 +319,21 @@ class QgsPluginInstaller(QObject):
         self.exportPluginsToManager()
 
     # ----------------------------------------- #
-    def showPluginManagerWhenReady(self, *params):
-        """Open the plugin manager window. If fetching is still in progress, it shows the progress window first"""
-        """ Optionally pass the index of tab to be opened in params """
+    def showPluginManagerWhenReady(
+        self, tab_index: int = -1, search_term: str = ""
+    ) -> None:
+        """
+        Open the plugin manager window.
+
+        If fetching is still in progress, it shows the progress window first
+        Optionally pass the index of tab to be opened and a search term
+        to filter plugins in the manager
+
+        :param tab_index: index of the tab to be opened
+        :type tab_index: int
+        :param search_term: text used to filter plugins in the manager
+        :type search_term: str
+        """
         if self.message_bar_widget:
             if not sip.isdeleted(self.message_bar_widget):
                 iface.messageBar().popWidget(self.message_bar_widget)
@@ -331,13 +343,16 @@ class QgsPluginInstaller(QObject):
         self.exportRepositoriesToManager()
         self.exportPluginsToManager()
 
-        # finally, show the plugin manager window
-        tabIndex = -1
-        if len(params) == 1:
-            indx = str(params[0])
-            if indx.isdigit() and int(indx) > -1 and int(indx) < 7:
-                tabIndex = int(indx)
-        iface.pluginManagerInterface().showPluginManager(tabIndex)
+        # Finally, show the plugin manager window
+        # Ensure that the index is within a valid range
+        try:
+            tab_index = int(tab_index)
+            if tab_index < 0 or tab_index > 6:
+                tab_index = -1
+        except (ValueError, TypeError):
+            tab_index = -1
+
+        iface.pluginManagerInterface().showPluginManager(tab_index, search_term)
 
     # ----------------------------------------- #
     def onManagerClose(self):

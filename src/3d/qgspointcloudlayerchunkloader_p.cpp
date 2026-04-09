@@ -315,7 +315,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
     {
       connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
       connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
-      connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n, const int &indexPosition ) {
+      connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( QgsPointCloudNodeId n, int indexPosition ) {
         if ( indexPosition != mIndexPosition )
           return;
 

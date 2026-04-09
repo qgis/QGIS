@@ -125,6 +125,13 @@ Returns the translated name of the type for a given layer type.
 
 .. versionadded:: 4.0
 %End
+
+    static QString layerToolTip( const QgsMapLayer *layer );
+%Docstring
+Returns the consistent tooltip for the given layer.
+
+.. versionadded:: 4.2
+%End
 };
 
 /************************************************************************
