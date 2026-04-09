@@ -2,7 +2,7 @@
   "name": "make_rectangle_3points",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Creates a rectangle from 3 points.",
+  "description": "Creates a rectangle from 3 points, the first two of which define its first side.",
   "arguments": [{
     "arg": "point1",
     "description": "First point."
@@ -16,14 +16,14 @@
     "arg": "option",
     "optional": true,
     "default": "0",
-    "description": "An optional argument to construct the rectangle. By default this value is 0. Value can be:<ul><li>0 (distance): Second distance is equal to the distance between 2nd and 3rd point.</li><li>1 (projected): Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension.</li></ul>"
+    "description": "An optional argument to construct the second side of the rectangle. By default this value is 0. Value can be:<ul><li>0 (distance): The length of the second size is equal to the distance between the 2nd and 3rd points.</li><li>1 (projected): The length of the second size is equal to the distance of the perpendicular projection of the 3rd point on the first segment or its extension.</li></ul>The second segment is always drawn on the side covering the third point."
   }],
   "examples": [{
-    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0))",
-    "returns": "'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"
+    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 0))",
+    "returns": "'Polygon ((0 0, 0 5, 3.60555128 5, 3.60555128 0, 0 0))'"
   }, {
-    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))",
-    "returns": "'Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))'"
+    "expression": "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 1))",
+    "returns": "'Polygon ((0 0, 0 5, 3 5, 3 0, 0 0))'"
   }],
   "tags": ["rectangle", "points"]
 }
