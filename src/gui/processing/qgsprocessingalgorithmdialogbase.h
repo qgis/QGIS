@@ -304,20 +304,22 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void resetGui();
 
     /**
-     * Returns if the dialog is considered running an algorithm.
+     * Returns TRUE if the dialog is currently running an algorithm. 
+     * 
+     * If the algorithm has not yet started or has finished executing then FALSE will be returned.
      *
-     * \note Unlike the isFinalized method isRunning only provides
-     * information about the state of dialog is not tied to the
+     * \note Unlike the isFinalized() method, isRunning() only provides
+     * information about the state of dialog and is not tied to the
      * deletion mechanisms of the dialog window
      *
-     * \see isFinalized
+     * \see isFinalized()
      *
      * \since QGIS 4.2
      */
     virtual bool isRunning();
 
     /**
-     * Forces the dialog to close by detaching any running task of the dialog THEN closing the dialog.
+     * Forces the dialog to close by detaching any running task from the dialog THEN closing the dialog.
      *
      * \since QGIS 4.2
      */

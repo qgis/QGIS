@@ -1116,14 +1116,14 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   {
     QMessageBox messageBox;
     messageBox.setWindowTitle( tr( "The model is already running" ) );
-    messageBox.setText( tr( "The model is already running" ) );
+    messageBox.setText( tr( "This model is already running." ) );
     messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
 
     QAbstractButton *buttonShowRunningAlg = messageBox.button( QMessageBox::StandardButton::Ok );
-    buttonShowRunningAlg->setText( tr( "Show algorithm" ) );
+    buttonShowRunningAlg->setText( tr( "Show Progress" ) );
 
     QAbstractButton *buttonReRun = messageBox.button( QMessageBox::StandardButton::RestoreDefaults );
-    buttonReRun->setText( tr( "Re-run algorithm" ) );
+    buttonReRun->setText( tr( "Cancel and Restart Model" ) );
 
     int r = messageBox.exec();
 
