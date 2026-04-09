@@ -468,50 +468,9 @@ QgsAmsProvider *QgsAmsProvider::clone() const
   return provider;
 }
 
-static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
-{
-  QString result;
-  if ( !title.isEmpty() )
-  {
-    result += u"<tr><td class=\"highlight\">%1</td><td></td></tr>"_s.arg( title );
-  }
-  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
-  {
-    const QVariantMap childMap = it.value().toMap();
-    const QVariantList childList = it.value().toList();
-    if ( !childList.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
-      for ( const QVariant &v : childList )
-      {
-        const QVariantMap grandChildMap = v.toMap();
-        if ( !grandChildMap.isEmpty() )
-        {
-          result += u"<li><table>%1</table></li>"_s.arg( dumpVariantMap( grandChildMap ) );
-        }
-        else
-        {
-          result += u"<li>%1</li>"_s.arg( QgsStringUtils::insertLinks( v.toString() ) );
-        }
-      }
-      result += "</ul></td></tr>"_L1;
-    }
-    else if ( !childMap.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), dumpVariantMap( childMap ) );
-    }
-    else
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>"_s.arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
-    }
-  }
-  return result;
-}
-
 QString QgsAmsProvider::htmlMetadata() const
 {
-  // This must return the content of a HTML table starting by tr and ending by tr
-  return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
+  return QgsVariantUtils::variantToHtml( mServiceInfo, tr( "Service Info" ) ) + QgsVariantUtils::variantToHtml( mLayerInfo, tr( "Layer Info" ) );
 }
 
 static bool _fuzzyContainsRect( const QRectF &r1, const QRectF &r2 )
