@@ -288,6 +288,15 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static Qgis::DataType dataTypeFromString( const QString &pixelType );
 
+    /**
+     * Attempts to match arbitrary band name strings to a QGIS raster color interpretation.
+     *
+     * Since band names are free-form strings, this is a best-effort translation only.
+     *
+     * \since QGIS 4.2
+     */
+    static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
+
   private:
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.

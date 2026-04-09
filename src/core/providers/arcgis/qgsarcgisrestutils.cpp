@@ -1775,3 +1775,52 @@ Qgis::DataType QgsArcGisRestUtils::dataTypeFromString( const QString &pixelType 
 
   return Qgis::DataType::UnknownDataType;
 }
+
+Qgis::RasterColorInterpretation QgsArcGisRestUtils::colorInterpretationFromBandName( const QString &bandName )
+{
+  if ( bandName.isEmpty() )
+  {
+    return Qgis::RasterColorInterpretation::Undefined;
+  }
+
+  if ( bandName.compare( "Red"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::RedBand;
+  else if ( bandName.compare( "Green"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::GreenBand;
+  else if ( bandName.compare( "Blue"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::BlueBand;
+  else if ( bandName.compare( "Alpha"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::AlphaBand;
+  else if ( bandName.compare( "NIR"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "NearIR"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "NarrowNIR"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::NIRBand;
+  else if ( bandName.startsWith( "SWIR"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::SWIRBand;
+  else if ( bandName.startsWith( "VRE"_L1, Qt::CaseInsensitive ) || bandName.compare( "RedEdge"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::RedEdgeBand;
+  else if ( bandName.startsWith( "Coastal"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::CoastalBand;
+  else if ( bandName.startsWith( "Pan"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::PanBand;
+  else if ( bandName.startsWith( "Thermal"_L1, Qt::CaseInsensitive ) || bandName.startsWith( "TIR"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::TIRBand;
+  else if ( bandName.compare( "Gray"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "Grey"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::GrayIndex;
+  else if ( bandName.compare( "Cyan"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::CyanBand;
+  else if ( bandName.compare( "Magenta"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::MagentaBand;
+  else if ( bandName.compare( "Yellow"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::YellowBand;
+  else if ( bandName.compare( "Black"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::BlackBand;
+  else if ( bandName.compare( "Hue"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::HueBand;
+  else if ( bandName.compare( "Saturation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::SaturationBand;
+  else if ( bandName.compare( "Lightness"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::LightnessBand;
+
+  // we don't log failures here -- a lot of bands will have non-interpretable names,
+  // eg "Band 1"
+  return Qgis::RasterColorInterpretation::Undefined;
+}

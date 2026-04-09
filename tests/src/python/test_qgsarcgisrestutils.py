@@ -995,6 +995,99 @@ class TestQgsArcGisRestUtils(QgisTestCase):
             Qgis.DataType.UnknownDataType,
         )
 
+    def testColorInterpretationFromBand(self):
+        """
+        Test QgsArcGisRestUtils.colorInterpretationFromBandName
+        """
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName(""),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("bAnd_1"),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("0"),
+            Qgis.RasterColorInterpretation.Undefined,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Red"),
+            Qgis.RasterColorInterpretation.RedBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("green"),
+            Qgis.RasterColorInterpretation.GreenBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("BLUE"),
+            Qgis.RasterColorInterpretation.BlueBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("alpha"),
+            Qgis.RasterColorInterpretation.AlphaBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("NIR"),
+            Qgis.RasterColorInterpretation.NIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("NearIR"),
+            Qgis.RasterColorInterpretation.NIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("SWIR 1"),
+            Qgis.RasterColorInterpretation.SWIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("swir2"),
+            Qgis.RasterColorInterpretation.SWIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("VRE 1"),
+            Qgis.RasterColorInterpretation.RedEdgeBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("RedEdge"),
+            Qgis.RasterColorInterpretation.RedEdgeBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("CoastalAerosol"),
+            Qgis.RasterColorInterpretation.CoastalBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Pan"),
+            Qgis.RasterColorInterpretation.PanBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Thermal"),
+            Qgis.RasterColorInterpretation.TIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("TIR"),
+            Qgis.RasterColorInterpretation.TIRBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Gray"),
+            Qgis.RasterColorInterpretation.GrayIndex,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Grey"),
+            Qgis.RasterColorInterpretation.GrayIndex,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Cyan"),
+            Qgis.RasterColorInterpretation.CyanBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Magenta"),
+            Qgis.RasterColorInterpretation.MagentaBand,
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.colorInterpretationFromBandName("Hue"),
+            Qgis.RasterColorInterpretation.HueBand,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
