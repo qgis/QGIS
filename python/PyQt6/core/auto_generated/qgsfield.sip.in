@@ -380,9 +380,9 @@ Sets the alias for the field (the friendly displayed name of the field
 
     QString customComment() const /HoldGIL/;
 %Docstring
-Returns the custom comment for the field. an empty string when there is
-an empty string as a custom comment and NULL if no custom comment has
-been defined.
+Returns the custom comment for the field. an empty string when custom
+comment require to be empty and NULL if no custom comment has been
+defined and the provider one should be used.
 
 .. seealso:: :py:func:`setCustomComment`
 %End
