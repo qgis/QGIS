@@ -53,8 +53,14 @@ QString QgsHypsometricCurvesAlgorithm::groupId() const
 QString QgsHypsometricCurvesAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm computes hypsometric curves for an input Digital Elevation Model (DEM).\n\n"
-    "Curves are produced as table files in an output folder specified by the user."
+    "This algorithm computes hypsometric curves for an input Digital Elevation Model (DEM) "
+    "clipped to the boundaries of features from a vector layer.\n\n"
+    "A hypsometric curve is a cumulative distribution function of elevations within a "
+    "geographic area. It illustrates the relationship between altitude and area, providing "
+    "insight into the geomorphological maturity of a catchment or landscape. The curve "
+    "plots the total area (either absolute or percentage) found at or below a specific elevation.\n\n"
+    "The algorithm generates one CSV file for each feature in the boundary layer. These "
+    "files contain two columns: the cumulative area and the corresponding elevation level."
   );
 }
 
