@@ -33,6 +33,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QBuffer>
 #include <QDir>
 #include <QDockWidget>
 #include <QDomDocument>
@@ -45,7 +46,6 @@
 #include <QString>
 #include <QToolButton>
 #include <QWidgetAction>
-#include <QBuffer>
 
 using namespace Qt::StringLiterals;
 
