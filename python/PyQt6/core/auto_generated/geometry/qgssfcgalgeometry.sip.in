@@ -76,7 +76,7 @@ Copy constructor
 
 
 
-    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const;
+    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const  /Factory/;
 %Docstring
 Returns the geometry converted to a QGIS geometry object. This method is
 slow to call, as it always involves re-conversion of the underlying
@@ -116,12 +116,12 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> clone() const;
+    std::unique_ptr<QgsSfcgalGeometry> clone() const /Factory/;
 %Docstring
 Clones the geometry by performing a deep copy
 %End
 
-    static std::unique_ptr<QgsSfcgalGeometry> fromWkb( const QgsConstWkbPtr &wkbPtr );
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkb( const QgsConstWkbPtr &wkbPtr )  /Factory/;
 %Docstring
 Creates a new geometry from a WKB byte pointer
 
@@ -145,7 +145,7 @@ Export the geometry as WKB
                             operation
 %End
 
-    static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt );
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt )  /Factory/;
 %Docstring
 Creates a new geometry from a WKT string.
 
@@ -173,7 +173,7 @@ Export the geometry as WKT
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> boundary() const;
+    std::unique_ptr<QgsSfcgalGeometry> boundary() const  /Factory/;
 %Docstring
 Returns the closure of the combinatorial boundary of the geometry (ie
 the topological boundary of the geometry). For instance, a polygon
@@ -414,7 +414,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const;
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const  /Factory/;
 %Docstring
 Translate this geometry by vector ``translation``.
 
@@ -430,7 +430,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const  /Factory/;
 %Docstring
 Scale this geometry by vector ``scaleFactor``.
 
@@ -444,7 +444,7 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const  /Factory/;
 %Docstring
 2D Rotate this geometry around point ``center`` by angle ``angle``
 
@@ -457,7 +457,7 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const  /Factory/;
 %Docstring
 3D Rotate this geometry around axis ``axisVector`` by angle ``angle``
 
@@ -472,7 +472,7 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const;
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QgsMatrix4x4 &mat ) const  /Factory/;
 %Docstring
 Apply 3D matrix transform ``mat`` to geometry ``geom``
 
@@ -512,7 +512,7 @@ Checks if ``otherGeom`` intersects this.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const  /Factory/;
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 
@@ -524,7 +524,7 @@ Calculate the intersection of this and ``otherGeom``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const  /Factory/;
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 
@@ -536,7 +536,7 @@ Calculate the intersection of this and ``otherGeom``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const  /Factory/;
 %Docstring
 Calculate the combination of this and ``geomList``.
 
@@ -548,7 +548,7 @@ Calculate the combination of this and ``geomList``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const  /Factory/;
 %Docstring
 Calculate the difference of this and ``otherGeom``.
 
@@ -560,7 +560,7 @@ Calculate the difference of this and ``otherGeom``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const  /Factory/;
 %Docstring
 Calculate the difference of this and ``otherGeom``.
 
@@ -572,7 +572,7 @@ Calculate the difference of this and ``otherGeom``.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> triangulate() const;
+    std::unique_ptr<QgsSfcgalGeometry> triangulate() const  /Factory/;
 %Docstring
 Triangulates this geometry using constraint 2D Delaunay Triangulation
 (keep Z if defined)
@@ -583,7 +583,7 @@ Triangulates this geometry using constraint 2D Delaunay Triangulation
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> convexHull() const;
+    std::unique_ptr<QgsSfcgalGeometry> convexHull() const  /Factory/;
 %Docstring
 Calculate the convex hull (bounding box).
 
@@ -593,7 +593,7 @@ Calculate the convex hull (bounding box).
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> envelope() const;
+    std::unique_ptr<QgsSfcgalGeometry> envelope() const  /Factory/;
 %Docstring
 Calculate the envelope (bounding box).
 
@@ -621,7 +621,7 @@ a 2D covers test is carried out.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const  /Factory/;
 %Docstring
 Calculate a 3D buffer where all points are at ``distance`` from the
 original geometry. A negative distance shrinks the geometry rather than
@@ -638,7 +638,7 @@ fails, a null pointer is returned.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const  /Factory/;
 %Docstring
 Calculate a 2D buffer where all points are at ``distance`` from the
 original geometry. A negative distance shrinks the geometry rather than
@@ -655,7 +655,7 @@ expanding it. If the operation fails, a null pointer is returned.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const;
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const  /Factory/;
 %Docstring
 Simplifies a geometry using the CGAL algorithm
 
@@ -673,7 +673,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const;
+    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const  /Factory/;
 %Docstring
 Calculate an extrusion of the original geometry. If the operation fails,
 a null pointer is returned.
@@ -686,7 +686,7 @@ a null pointer is returned.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const;
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const  /Factory/;
 %Docstring
 Calculate a 2D approximate medial axis of ``geom`` based on its straight
 skeleton. The approximate medial axis is a simplified representation of
@@ -700,7 +700,7 @@ null pointer is returned.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> toSolid() const;
+    std::unique_ptr<QgsSfcgalGeometry> toSolid() const  /Factory/;
 %Docstring
 Converts the geometry to a Solid geometry. The geometry must be of type
 PolyhedralSurface
@@ -713,7 +713,7 @@ PolyhedralSurface
 .. versionadded:: 4.2
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const;
+    std::unique_ptr<QgsSfcgalGeometry> toPolyhedralSurface() const  /Factory/;
 %Docstring
 Converts the geometry to a PolyhedralSurface geometry. The geometry must
 be of type Solid
@@ -728,7 +728,7 @@ be of type Solid
 
 
 
-    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size )  /Factory/;
 %Docstring
 Create a cube primitive
 
@@ -778,7 +778,7 @@ Updates parameter value
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const;
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const  /Factory/;
 %Docstring
 Converts the current primitive to geometry. Works only with primitives.
 
