@@ -63,7 +63,10 @@ QString QgsExtrudeAlgorithm::shortHelpString() const
     "Each feature is displaced according to the X, Y, and Z extrusion parameters: "
     "X and Y control the horizontal displacement, while Z controls the vertical elevation. "
     "Setting only the Z parameter produces vertical extrusions, whereas combining X, Y, and Z "
-    "allows the creation of non-vertical extrusions.\n\n"
+    "allows the creation of non-vertical extrusions. Negative values are supported, enabling extrusions "
+    "in the opposite direction.\n\n"
+    "If the input features already carry Z values, those values are preserved and used as the base "
+    "elevation of the extruded geometry.\n\n"
     "For MultiPolygon geometries, each part is extruded separately, producing one output feature per part.\n\n"
     "Output geometries are of type PolyhedralSurfaceZ, representing the extruded surface of each input feature."
   );
