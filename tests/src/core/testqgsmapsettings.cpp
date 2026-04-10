@@ -632,9 +632,21 @@ void TestQgsMapSettings::testExpressionContext()
   QCOMPARE( r.toLongLong(), 5LL );
 
   // if ellipsoid is set explicitly, use precise ellipsoid-based scale calculation instead of the rough approximation
-  ms.setEllipsoid( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).ellipsoidAcronym() );
+  QgsCoordinateReferenceSystem crs( u"EPSG:4326"_s );
+
+  QgsMapSettings ms1;
+  QgsExpressionContext c1;
+
+  ms1.setDestinationCrs( crs );
+  ms1.setEllipsoid( crs.ellipsoidAcronym() );
+  ms1.setOutputSize( QSize( 5000, 5000 ) );
+  ms1.setExtent( QgsRectangle( -1, 0, 2, 2 ) );
+  ms1.setRotation( -32 );
+
+  c1 << QgsExpressionContextUtils::mapSettingsScope( ms1 );
+
   e = QgsExpression( u"$scale"_s );
-  r = e.evaluate( &c );
+  r = e.evaluate( &c1 );
   QGSCOMPARENEAR( r.toDouble(), 247965, 10.0 );
 }
 
