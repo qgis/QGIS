@@ -48,8 +48,9 @@ uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
 
-#pragma include light.inc.frag
+const float PI = 3.14159265359;
 
+#pragma include light.inc.frag
 
 #ifdef NORMAL_MAP
 mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
@@ -117,7 +118,7 @@ float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
     // Blinn-Phong approximation - see
     // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
     float specPower = 2.0 / (alpha * alpha) - 2.0;
-    return (specPower + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), specPower);
+    return (specPower + 2.0) / (2.0 * PI) * pow(max(dot(n, h), 0.0), specPower);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
@@ -215,7 +216,7 @@ vec3 pbrModel(const in int lightIndex,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
-    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / 3.14159;
+    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / PI;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
