@@ -32,8 +32,8 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
-  : QDialog( nullptr, f )
+Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
   , mTool( tool )
 {
   setupUi( this );

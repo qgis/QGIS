@@ -29,7 +29,7 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
   public:
     // Constructor
-    Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f = Qt::WindowFlags() );
+    Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, QWidget *parent, Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Save position
     void saveWindowLocation();
