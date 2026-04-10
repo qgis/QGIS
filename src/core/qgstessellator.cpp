@@ -175,7 +175,9 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   setBackFacesEnabled( addBackFaces );
   setAddTextureUVs( addTextureCoords );
   setInputZValueIgnored( noZ );
+  Q_NOWARN_DEPRECATED_PUSH
   setTextureRotation( textureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade, float textureRotation )
@@ -187,7 +189,9 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   setInvertNormals( invertNormals );
   setBackFacesEnabled( addBackFaces );
   setInputZValueIgnored( noZ );
+  Q_NOWARN_DEPRECATED_PUSH
   setTextureRotation( textureRotation );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsTessellator::setOrigin( const QgsVector3D &origin )

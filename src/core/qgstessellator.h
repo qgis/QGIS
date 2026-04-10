@@ -109,15 +109,15 @@ class CORE_EXPORT QgsTessellator
 
     /**
      * Sets the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now.
      */
-    void setTextureRotation( float rotation );
+    Q_DECL_DEPRECATED void setTextureRotation( float rotation ) SIP_DEPRECATED;
 
     /**
      * Returns the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now.
      */
-    float textureRotation() const { return mTextureRotation; }
+    Q_DECL_DEPRECATED float textureRotation() const SIP_DEPRECATED { return mTextureRotation; }
 
     /**
      * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).

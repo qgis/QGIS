@@ -107,7 +107,6 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
@@ -121,7 +120,6 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
