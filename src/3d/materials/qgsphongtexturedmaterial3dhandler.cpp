@@ -91,13 +91,10 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
 
       texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
       texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-      texture->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
-
-      texture->setSamples( 4 );
 
       texture->setGenerateMipMaps( true );
       texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-      texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+      texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
 
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
