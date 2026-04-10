@@ -630,6 +630,12 @@ void TestQgsMapSettings::testExpressionContext()
   e = QgsExpression( u"@frame_number"_s );
   r = e.evaluate( &c );
   QCOMPARE( r.toLongLong(), 5LL );
+
+  // if ellipsoid is set explicitly, use precise ellipsoid-based scale calculation instead of the rough approximation
+  ms.setEllipsoid( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).ellipsoidAcronym() );
+  e = QgsExpression( u"$scale"_s );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247965, 10.0 );
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
