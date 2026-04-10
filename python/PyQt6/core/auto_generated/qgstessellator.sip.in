@@ -111,18 +111,22 @@ Returns which faces are generated during extrusion.
 .. versionadded:: 4.0
 %End
 
-    void setTextureRotation( float rotation );
+ void setTextureRotation( float rotation ) /Deprecated="Since 4.2. Handled in shaders now."/;
 %Docstring
 Sets the rotation of texture UV coordinates (in degrees).
 
-.. versionadded:: 4.0
+.. deprecated:: 4.2
+
+   Handled in shaders now.
 %End
 
-    float textureRotation() const;
+ float textureRotation() const /Deprecated="Since 4.2. Handled in shaders now."/;
 %Docstring
 Returns the rotation of texture UV coordinates (in degrees).
 
-.. versionadded:: 4.0
+.. deprecated:: 4.2
+
+   Handled in shaders now.
 %End
 
     void setAddTextureUVs( bool addTextureUVs );
