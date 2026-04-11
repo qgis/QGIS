@@ -127,9 +127,6 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  setWindowModality( Qt::WindowModality::NonModal );
-  setWindowFlags( windowFlags() | Qt::WindowMinimizeButtonHint | Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint );
-
   txtLog->setOpenLinks( false );
   connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 

@@ -1165,7 +1165,9 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmDialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmDialog->setParameters( mModel->designerParameterValues() );
 
-    Qt::WindowFlags flags = Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint;
+    setWindowModality( Qt::WindowModality::NonModal );
+
+    Qt::WindowFlags flags = Qt::Window;
     mAlgorithmDialog->setWindowFlags( flags );
 
     connect( mAlgorithmDialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
