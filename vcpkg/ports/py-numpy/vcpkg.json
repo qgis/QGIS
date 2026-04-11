@@ -1,0 +1,43 @@
+{
+  "name": "py-numpy",
+  "version": "2.4.3",
+  "port-version": 1,
+  "description": "The fundamental package for scientific computing with Python.",
+  "homepage": "https://www.numpy.org/",
+  "license": "BSD-3-Clause",
+  "dependencies": [
+    {
+      "name": "blas",
+      "platform": "!osx"
+    },
+    {
+      "name": "lapack",
+      "platform": "!osx"
+    },
+    {
+      "name": "py-cython",
+      "host": true
+    },
+    {
+      "name": "py-gpep517",
+      "host": true
+    },
+    {
+      "name": "py-meson",
+      "host": true
+    },
+    "python3",
+    {
+      "name": "python3",
+      "host": true
+    },
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    },
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}

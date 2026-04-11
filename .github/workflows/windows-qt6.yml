@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - armwin
   pull_request:
   release:
     types: ['published']
@@ -18,8 +19,17 @@ permissions:
 
 jobs:
   build:
-    name: build (windows)
-    runs-on: windows-2022
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+            triplet: x64-windows-release
+            arch: amd64
+          - os: windows-11-arm
+            triplet: arm64-windows-release
+            arch: arm64
+    name: build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: 🐣 Checkout
@@ -28,6 +38,7 @@ jobs:
           fetch-depth: 2
 
       - name: 🔨 Uninstall system cmake
+        if: matrix.os == 'windows-2022'
         shell: bash
         run: |
           choco uninstall cmake.install
@@ -39,6 +50,8 @@ jobs:
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
+        with:
+          arch: ${{ matrix.arch }}
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
@@ -78,8 +91,8 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release \
                 -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
-                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D VCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
+                -D VCPKG_HOST_TRIPLET=${{ matrix.triplet }} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
@@ -118,7 +131,7 @@ jobs:
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v7
         with:
-          name: qgis-sdk-x64-windows
+          name: qgis-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -126,15 +139,15 @@ jobs:
         uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: build-logs-x64-windows
+          name: build-logs-${{ matrix.triplet }}
           path: |
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v7
-        id: artifact-win64-qt6
+        id: artifact-upload
         with:
-          name: qgis-windows-qt6
+          name: qgis-${{ matrix.triplet }}
           path: |
             build/*-win64.zip
 
@@ -146,6 +159,6 @@ jobs:
           marker: mingw64-qt6
           body: |
             ### 🪟 Windows Qt6 builds
-            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-upload.outputs.artifact-url }}).
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

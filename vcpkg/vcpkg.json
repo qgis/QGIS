@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
+      "baseline": "b5e5ed4fdbe56eac15086f18c78260161a1fbe64",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "a3f181f299a54a0d67e6e60cac746ea265adfb29",
+        "baseline": "a51e3f98048eff592842b08bd29bc329961a5660",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -17,8 +17,7 @@
           "gdal",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
-          "vcpkg-tool-rust",
-          "pybind11"
+          "vcpkg-tool-rust"
         ]
       }
     ],
@@ -184,7 +183,10 @@
             "qtserialport"
           ]
         },
-        "py-pysal",
+        {
+          "name": "py-pysal",
+          "platform": "!(windows & arm)"
+        },
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
@@ -192,7 +194,7 @@
         "py-requests",
         {
           "name": "py-scipy",
-          "platform": "!windows"
+          "platform": "!(windows & arm)"
         },
         "py-shapely",
         "py-six",
