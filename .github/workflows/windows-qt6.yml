@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - armwin
   pull_request:
   release:
     types: ['published']
@@ -18,8 +19,17 @@ permissions:
 
 jobs:
   build:
-    name: build (windows)
-    runs-on: windows-2022
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+            triplet: x64-windows-release
+            arch: amd64
+          - os: windows-11-arm
+            triplet: arm64-windows-release
+            arch: arm64
+    name: build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: 🐣 Checkout
@@ -29,6 +39,7 @@ jobs:
           persist-credentials: false
 
       - name: 🔨 Uninstall system cmake
+        if: matrix.os == 'windows-2022'
         shell: bash
         run: |
           choco uninstall cmake.install
@@ -40,6 +51,8 @@ jobs:
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
+        with:
+          arch: ${{ matrix.arch }}
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
@@ -56,7 +69,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 #v1.2
         with:
           max-size: 1G
-          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.arch }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
           save: ${{ github.event_name == 'push' }}
 
       - name: 🛍️ Tune ccache configuration
@@ -79,13 +92,13 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release \
                 -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
-                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D VCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
+                -D VCPKG_HOST_TRIPLET=${{ matrix.triplet }} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
-                -D WITH_SFCGAL=ON \
+                -D WITH_SFCGAL=OFF \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
                 -D ENABLE_UNITY_BUILDS=OFF \
@@ -120,7 +133,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         with:
-          name: qgis-sdk-x64-windows
+          name: qgis-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -129,20 +142,18 @@ jobs:
 
         if: failure()
         with:
-          name: build-logs-x64-windows
+          name: build-logs-${{ matrix.triplet }}
           path: |
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-
-        id: artifact-win64-qt6
+        id: artifact-upload
         with:
-          name: qgis-windows-qt6
+          name: qgis-${{ matrix.triplet }}
           archive: false
           path: |
             build/*-win64.zip
-
 
       - name: Schedule download comment
         uses: ./.github/actions/post_sticky_comment
@@ -151,7 +162,7 @@ jobs:
           marker: mingw64-qt6
           body: |
             ### 🪟 Windows Qt6 builds
-            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-upload.outputs.artifact-url }}).
             To execute locally, unzip the downloaded zip file and run `bin\qgis-bin.exe` in the extracted directory.
             You might be prompted by Windows Defender click "Run anyway"
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
