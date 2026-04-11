@@ -374,6 +374,8 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
   {
     mEllipsoid = ellipsoid;
     mScaleCalculator.setEllipsoid( ellipsoid );
+    // Since mScaleCalculator ellipsoid have changed, force a recalculation of the scale.
+    updateDerived();
     return true;
   }
 }
