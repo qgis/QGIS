@@ -99,6 +99,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
   const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
+  const bool requiresTangents = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents();
 
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
@@ -107,6 +108,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
+  tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outNormal.tessellator = std::move( tessellator );
@@ -118,6 +120,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
+  tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outSelected.tessellator = std::move( tessellator );
@@ -365,8 +368,13 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   const int vertexCount = polyData.tessellator->uniqueVertexCount();
   const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
-  QgsTessellatedPolygonGeometry *geometry
-    = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates() );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry(
+    true,
+    mSymbol->invertNormals(),
+    mSymbol->addBackFaces(),
+    mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates(),
+    mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents()
+  );
 
   geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );
