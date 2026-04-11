@@ -131,62 +131,91 @@ Returns the rotation of texture UV coordinates (in degrees).
 
     void setAddTextureUVs( bool addTextureUVs );
 %Docstring
-Sets whether texture UV coordinates should be added to the output data
-(``True``) or not (``False``).
+Sets whether texture UV coordinates should be added to the output data.
+
+.. seealso:: :py:func:`hasTextureUVs`
 
 .. versionadded:: 4.0
 %End
 
     bool hasTextureUVs() const;
 %Docstring
-Returns whether texture UV coordinates are being added to the output
-data (``True``) or not (``False``).
+Returns ``True`` if texture UV coordinates are being added to the output
+data.
+
+.. seealso:: :py:func:`setAddTextureUVs`
 
 .. versionadded:: 4.0
 %End
 
     void setAddNormals( bool addNormals );
 %Docstring
-Sets whether normals should be added to the output data (``True``) or
-not (``False``).
+Sets whether normals should be added to the output data.
+
+.. seealso:: :py:func:`hasNormals`
 
 .. versionadded:: 4.0
 %End
 
     bool hasNormals() const;
 %Docstring
-Returns whether normals are being added to the output data (``True``) or
-not (``False``).
+Returns ``True`` if normals are being added to the output data.
+
+.. seealso:: :py:func:`setAddNormals`
 
 .. versionadded:: 4.0
 %End
 
+    void setAddTangents( bool addTangents );
+%Docstring
+Sets whether tangents should be added to the output data.
+
+.. seealso:: :py:func:`hasTangents`
+
+.. versionadded:: 4.2
+%End
+
+    bool hasTangents() const;
+%Docstring
+Returns ``True`` if tangents are being added to the output data.
+
+.. seealso:: :py:func:`setAddTangents`
+
+.. versionadded:: 4.2
+%End
+
     void setBackFacesEnabled( bool addBackFaces );
 %Docstring
-Sets whether back faces should be added to the output data (``True``) or
-not (``False``).
+Sets whether back faces should be added to the output data.
+
+.. seealso:: :py:func:`hasBackFacesEnabled`
 
 .. versionadded:: 4.0
 %End
 
     bool hasBackFacesEnabled() const;
 %Docstring
-Returns whether back faces are being added to the output data (``True``)
-or not (``False``).
+Returns ``True`` if back faces are being added to the output data.
+
+.. seealso:: :py:func:`setBackFacesEnabled`
 
 .. versionadded:: 4.0
 %End
 
     void setInvertNormals( bool invertNormals );
 %Docstring
-Sets whether normals should be inverted (``True``) or not (``False``).
+Sets whether normals should be inverted.
+
+.. seealso:: :py:func:`hasInvertedNormals`
 
 .. versionadded:: 4.0
 %End
 
     bool hasInvertedNormals() const;
 %Docstring
-Returns whether normals are inverted (``True``) or not (``False``).
+Returns ``True`` if normals are inverted.
+
+.. seealso:: :py:func:`setInvertNormals`
 
 .. versionadded:: 4.0
 %End

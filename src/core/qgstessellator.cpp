@@ -43,6 +43,23 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   QVector3D vn = QVector3D( -dy, dx, 0 );
   vn.normalize();
 
+  QVector4D vt;
+  if ( mAddTangents )
+  {
+    // first make tangents following the walls horizontally
+    QVector3D tangentDir( dx, dy, 0 );
+    tangentDir.normalize();
+
+    // if we flipped the direction of U along the wall, then we'll need to adjust the tangent accordingly
+    // so that it's always pointing in the direction of increasing U
+    if ( u2 < u1 )
+    {
+      tangentDir = -tangentDir;
+    }
+
+    vt = QVector4D( tangentDir.x(), tangentDir.y(), tangentDir.z(), 1.0f );
+  }
+
   // here, we have to flip the z coordinate from an "increasing vertically" axis
   // to a "decreasing vertically" axis -- otherwise textures are rendered upside down.
   // we align textures so that the bottom of the texture is aligned to the bottom of
@@ -58,6 +75,8 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   mData << pt1.x() << pt1.y() << pt1.z() + height;
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
+  if ( mAddTangents )
+    mData << vt.x() << vt.y() << vt.z() << vt.w();
   if ( mAddTextureCoords )
     mData << u1 << v0;
 
@@ -66,6 +85,8 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   mData << pt2.x() << pt2.y() << pt2.z() + height;
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
+  if ( mAddTangents )
+    mData << vt.x() << vt.y() << vt.z() << vt.w();
   if ( mAddTextureCoords )
     mData << u2 << v1;
 
@@ -74,6 +95,8 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   mData << pt1.x() << pt1.y() << pt1.z();
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
+  if ( mAddTangents )
+    mData << vt.x() << vt.y() << vt.z() << vt.w();
   if ( mAddTextureCoords )
     mData << u1 << v2;
 
@@ -88,6 +111,8 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   mData << pt2.x() << pt2.y() << pt2.z();
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
+  if ( mAddTangents )
+    mData << vt.x() << vt.y() << vt.z() << vt.w();
   if ( mAddTextureCoords )
     mData << u2 << v3;
 }
@@ -180,6 +205,12 @@ void QgsTessellator::setAddNormals( bool addNormals )
   updateStride();
 }
 
+void QgsTessellator::setAddTangents( bool addTangents )
+{
+  mAddTangents = addTangents;
+  updateStride();
+}
+
 void QgsTessellator::setAddTextureUVs( bool addTextureUVs )
 {
   mAddTextureCoords = addTextureUVs;
@@ -199,6 +230,8 @@ void QgsTessellator::updateStride()
   mStride = 3 * sizeof( float );
   if ( mAddNormals )
     mStride += 3 * sizeof( float );
+  if ( mAddTangents )
+    mStride += 4 * sizeof( float );
   if ( mAddTextureCoords )
     mStride += 2 * sizeof( float );
 }
@@ -636,6 +669,7 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
 void QgsTessellator::addVertex(
   const QVector3D &point,
   const QVector3D &normal,
+  const QVector4D &tangent,
   float extrusionHeight,
   QMatrix4x4 *transformMatrix,
   const QgsPoint *originOffset,
@@ -645,7 +679,7 @@ void QgsTessellator::addVertex(
 )
 {
   const QVector3D pt = applyTransformWithExtrusion( point, extrusionHeight, transformMatrix, originOffset );
-  const VertexPoint vertex( pt, normal );
+  const VertexPoint vertex( pt, normal, tangent );
   if ( vertexBuffer->contains( vertex ) )
   {
     unsigned int index = vertexBuffer->value( vertex );
@@ -661,6 +695,10 @@ void QgsTessellator::addVertex(
     if ( mAddNormals )
     {
       mData << normal.x() << normal.y() << normal.z();
+    }
+    if ( mAddTangents )
+    {
+      mData << tangent.x() << tangent.y() << tangent.z() << tangent.w();
     }
     if ( mAddTextureCoords )
     {
@@ -679,7 +717,7 @@ void QgsTessellator::addVertex(
   }
 }
 
-void QgsTessellator::addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool isFloor )
+void QgsTessellator::addVertex( const QVector3D &point, const QVector3D &normal, const QVector4D &tangent, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool isFloor )
 {
   const QVector3D pt = applyTransformWithExtrusion( point, extrusionHeight, transformMatrix, originOffset );
   mIndexBuffer << uniqueVertexCount();
@@ -687,6 +725,10 @@ void QgsTessellator::addVertex( const QVector3D &point, const QVector3D &normal,
   if ( mAddNormals )
   {
     mData << normal.x() << normal.y() << normal.z();
+  }
+  if ( mAddTangents )
+  {
+    mData << tangent.x() << tangent.y() << tangent.z() << tangent.w();
   }
   if ( mAddTextureCoords )
   {
@@ -711,6 +753,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     return;
 
   const QVector3D pNormal = !mInputZValueIgnored ? calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mOrigin.z(), mInvertNormals, extrusionHeight ) : QVector3D();
+  // calculate the tangent for the flat polygon (roof and floor)
+  const QVector4D frontTangent( 1.0f, 0.0f, 0.0f, 1.0f );
+  const QVector4D floorFrontTangent( -1.0f, 0.0f, 0.0f, 1.0f );
+  // back face tangent
+  const QVector4D backTangent( frontTangent.x(), frontTangent.y(), frontTangent.z(), -1.0f );
+  const QVector4D floorBackTangent( floorFrontTangent.x(), floorFrontTangent.y(), floorFrontTangent.z(), -1.0f );
+
   const int pCount = exterior->numPoints();
   if ( pCount == 0 )
     return;
@@ -748,7 +797,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       for ( const QVector3D &point : points )
       {
-        addVertex( point, normal, extrusionHeight, &base, &extrusionOrigin );
+        addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin );
       }
 
       if ( mAddBackFaces )
@@ -756,7 +805,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         for ( size_t i = points.size(); i-- > 0; )
         {
           const QVector3D &point = points[i];
-          addVertex( point, -normal, extrusionHeight, &base, &extrusionOrigin );
+          addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin );
         }
       }
 
@@ -764,7 +813,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       {
         for ( const QVector3D &point : points )
         {
-          addVertex( point, normal, 0.0, &base, &extrusionOrigin, true );
+          addVertex( point, normal, floorFrontTangent, 0.0, &base, &extrusionOrigin, true );
         }
 
         if ( mAddBackFaces )
@@ -772,7 +821,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           for ( size_t i = points.size(); i-- > 0; )
           {
             const QVector3D &point = points[i];
-            addVertex( point, -normal, 0.0, &base, &extrusionOrigin, true );
+            addVertex( point, -normal, floorBackTangent, 0.0, &base, &extrusionOrigin, true );
           }
         }
       }
@@ -838,7 +887,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           // roof
           for ( const QVector3D &point : points )
           {
-            addVertex( point, normal, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+            addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
           }
 
           if ( mAddBackFaces )
@@ -846,7 +895,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             for ( size_t i = points.size(); i-- > 0; )
             {
               const QVector3D &point = points[i];
-              addVertex( point, -normal, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+              addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
             }
           }
 
@@ -854,7 +903,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           {
             for ( const QVector3D &point : points )
             {
-              addVertex( point, normal, 0.0, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize, true );
+              addVertex( point, normal, floorFrontTangent, 0.0, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize, true );
             }
 
             if ( mAddBackFaces )
@@ -862,7 +911,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
               for ( size_t i = points.size(); i-- > 0; )
               {
                 const QVector3D &point = points[i];
-                addVertex( point, -normal, 0.0, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize, true );
+                addVertex( point, -normal, floorBackTangent, 0.0, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize, true );
               }
             }
           }

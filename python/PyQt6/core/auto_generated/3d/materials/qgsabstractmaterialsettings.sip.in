@@ -99,6 +99,14 @@ generated during triangulation.
 .. versionadded:: 4.2
 %End
 
+    virtual bool requiresTangents() const;
+%Docstring
+Returns ``True`` if the material requires tangents generated during
+triangulation.
+
+.. versionadded:: 4.2
+%End
+
     enum class Property /BaseType=IntEnum/
     {
       Diffuse,
