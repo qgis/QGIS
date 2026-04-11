@@ -1807,6 +1807,13 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   if ( parsedUri.hasParam( QStringLiteral( "tilePixelRatio" ) ) )
     tilePixelRatio = parsedUri.param( QStringLiteral( "tilePixelRatio" ) ).toDouble();
 
+  if ( tilePixelRatio == 0 && parsedUri.param( QStringLiteral( "url" ) ).contains( QLatin1String( "openstreetmap.org" ), Qt::CaseInsensitive ) )
+  {
+    // pixel ratio of XYZ tiles served on openstreetmap.org known, set accordingly to insure
+    // tile downloads are not skyrocketing on high screen/output DPI.
+    tilePixelRatio = 1;
+  }
+
   if ( tilePixelRatio != 0 )
   {
     // known tile pixel ratio - will be doing auto-scaling of tiles based on output DPI
