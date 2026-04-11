@@ -280,8 +280,9 @@ QMap<double, double> QgsHypsometricCurvesAlgorithm::calculateHypsometry( const Q
     return {};
   }
 
-  double minValue = *std::ranges::min_element( elevations );
-  double maxValue = *std::ranges::max_element( elevations );
+  const auto [minIt, maxIt] = std::minmax_element( elevations.begin(), elevations.end() );
+  const double minValue = *minIt;
+  const double maxValue = *maxIt;
 
   const qgssize bins = static_cast<qgssize>( std::ceil( ( maxValue - minValue ) / mStep ) );
   if ( bins > MAX_BINS )
