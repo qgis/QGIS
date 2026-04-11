@@ -80,7 +80,7 @@ void QgsHypsometricCurvesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( u"BOUNDARY_LAYER"_s, QObject::tr( "Boundary layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterNumber( u"STEP"_s, QObject::tr( "Step" ), Qgis::ProcessingNumberParameterType::Double, 100, false, 0 ) );
   addParameter( new QgsProcessingParameterBoolean( u"USE_PERCENTAGE"_s, QObject::tr( "Use % of area instead of absolute value" ), false ) );
-  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Hypsometric curves" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Hypsometric curves" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Hypsometric curves" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 }
 
@@ -115,7 +115,7 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   }
 
   const QString outputPath = parameterAsString( parameters, u"OUTPUT_DIRECTORY"_s, context );
-  if ( !QDir().mkpath( outputPath ) )
+  if ( !outputPath.isEmpty() && !QDir().mkpath( outputPath ) )
   {
     throw QgsProcessingException( QObject::tr( "Could not create output directory '%1'." ).arg( outputPath ) );
   }
@@ -130,7 +130,7 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
 
   QString destId;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, outputFields, Qgis::WkbType::NoGeometry, source->sourceCrs() ) );
-  if ( !sink )
+  if ( parameters.value( u"OUTPUT"_s ).isValid() && !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const long long featureCount = source->featureCount();
@@ -221,26 +221,29 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
       continue;
     }
 
-    const QString csvPath = QDir( outputPath ).filePath( u"histogram_%1_%2.csv"_s.arg( source->sourceName() ).arg( f.id() ) );
-    QFile outFile( csvPath );
-    if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( !outputPath.isEmpty() )
     {
-      feedback->reportError( QObject::tr( "Could not open output file '%1' for writing." ).arg( csvPath ) );
-      current++;
-      continue;
-    }
+      const QString csvPath = QDir( outputPath ).filePath( u"histogram_%1_%2.csv"_s.arg( source->sourceName() ).arg( f.id() ) );
+      QFile outFile( csvPath );
+      if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+      {
+        feedback->reportError( QObject::tr( "Could not open output file '%1' for writing." ).arg( csvPath ) );
+        current++;
+        continue;
+      }
 
-    QTextStream stream( &outFile );
-    stream.setEncoding( QStringConverter::Utf8 );
-    stream.setRealNumberNotation( QTextStream::SmartNotation );
-    stream.setRealNumberPrecision( std::numeric_limits<double>::max_digits10 );
-    stream << QObject::tr( "Area" ) << ',' << QObject::tr( "Elevation" ) << '\n';
+      QTextStream stream( &outFile );
+      stream.setEncoding( QStringConverter::Utf8 );
+      stream.setRealNumberNotation( QTextStream::SmartNotation );
+      stream.setRealNumberPrecision( std::numeric_limits<double>::max_digits10 );
+      stream << QObject::tr( "Area" ) << ',' << QObject::tr( "Elevation" ) << '\n';
 
-    for ( auto it = hypsometry.cbegin(); it != hypsometry.cend(); ++it )
-    {
-      stream << it.value() << ',' << it.key() << '\n';
+      for ( auto it = hypsometry.cbegin(); it != hypsometry.cend(); ++it )
+      {
+        stream << it.value() << ',' << it.key() << '\n';
+      }
+      outFile.close();
     }
-    outFile.close();
 
     if ( sink )
     {
