@@ -63,6 +63,7 @@ class APP_EXPORT QgsGpsInformationWidget : public QgsPanelWidget, private Ui::Qg
     void gpsDisconnected();
     void gpsConnected();
     void updateTrackInformation();
+    void onCanvasCrsChanged();
 
   private:
     void setStatusIndicator( Qgis::GpsFixStatus statusValue );
