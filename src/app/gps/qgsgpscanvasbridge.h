@@ -75,8 +75,6 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
     void updateGpsDistanceStatusMessage( bool forceDisplay );
 
   private:
-    bool mEarthCrs = true;
-
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 

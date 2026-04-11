@@ -91,8 +91,6 @@ class APP_EXPORT QgsAppGpsDigitizing : public QgsGpsLogger
     void createRubberBand();
     QVariant timestamp( QgsVectorLayer *vlayer, int idx ) const;
 
-    bool mEarthCrs = true;
-
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
