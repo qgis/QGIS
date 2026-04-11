@@ -78,7 +78,9 @@ void QgsHypsometricCurvesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_DEM"_s, QObject::tr( "DEM to analyze" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( u"BOUNDARY_LAYER"_s, QObject::tr( "Boundary layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterNumber( u"STEP"_s, QObject::tr( "Step" ), Qgis::ProcessingNumberParameterType::Double, 100, false, 0 ) );
+  auto stepParam = std::make_unique<QgsProcessingParameterNumber>( u"STEP"_s, QObject::tr( "Step" ), Qgis::ProcessingNumberParameterType::Double, 100, false, 0 );
+  stepParam->setHelp( QObject::tr( "The vertical interval (elevation increment) used to group data. A smaller step results in a smoother, more detailed curve." ) );
+  addParameter( stepParam.release() );
   addParameter( new QgsProcessingParameterBoolean( u"USE_PERCENTAGE"_s, QObject::tr( "Use % of area instead of absolute value" ), false ) );
   addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Hypsometric curves" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Hypsometric curves" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
