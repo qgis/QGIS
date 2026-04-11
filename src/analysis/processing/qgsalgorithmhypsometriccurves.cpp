@@ -60,7 +60,9 @@ QString QgsHypsometricCurvesAlgorithm::shortHelpString() const
     "insight into the geomorphological maturity of a catchment or landscape. The curve "
     "plots the total area (either absolute or percentage) found at or below a specific elevation.\n\n"
     "The algorithm generates one CSV file for each feature in the boundary layer. These "
-    "files contain two columns: the cumulative area and the corresponding elevation level."
+    "files contain two columns: the cumulative area and the corresponding elevation level.\n\n"
+    "Note: Only raster pixels whose centroids are located within the boundary of a feature are "
+    "considered in the calculation for that feature."
   );
 }
 
