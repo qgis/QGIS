@@ -169,8 +169,7 @@ class TestQgsArrowIterator(QgisTestCase):
         iterator.setSchema(schema)
 
         stream = iterator.toArrayStream()
-        reader = pa.RecordBatchReader._import_from_c(stream.cArrayStreamAddress())
-        df = geopandas.GeoDataFrame.from_arrow(reader)
+        df = geopandas.GeoDataFrame.from_arrow(stream)
 
         assert list(df.id) == list(range(1, 11))
         assert df.crs == "EPSG:4326"

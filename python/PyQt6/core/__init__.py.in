@@ -144,6 +144,25 @@ def _processing_output_layer_repr(self):
 QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
 
+def _arrow_array_stream_export(self, requested_schema=None):
+    """
+    Export this stream as an Arrow PyCapsule.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+    allowing QgsArrowArrayStream to be consumed directly by pyarrow,
+    geopandas, and other Arrow-compatible libraries.
+
+    :param requested_schema: Optional schema to request (currently ignored).
+    :returns: A PyCapsule containing the ArrowArrayStream pointer.
+    """
+    import pyarrow as pa
+
+    reader = pa.RecordBatchReader._import_from_c(self.cArrayStreamAddress())
+    return reader.__arrow_c_stream__()
+
+
+QgsArrowArrayStream.__arrow_c_stream__ = _arrow_array_stream_export
+
 
 # Classes patched
 QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
@@ -826,15 +845,15 @@ try:
    def _vector_layer_as_geopandas(self) -> _gpd.GeoDataFrame:
        """
        Returns the vector layer as a GeoPandas GeoDataFrame.
-       
+
        :raises QgsNotSupportedException: if geopandas is not available on the system
-       
+
        .. versionadded:: 4.0
        """
        features = list(self.getFeatures())
-       
+
        geometries = [feat.geometry().as_shapely() if not feat.geometry().isEmpty() else None for feat in features]
-       
+
        field_names = [field.name() for field in self.fields()]
        data = {field_name: [feat[field_index] for feat in features] for field_index, field_name in enumerate(field_names)}
 
@@ -897,8 +916,8 @@ Creates a new geometry from a shapely object.
 QgsVectorLayer.as_geopandas.__doc__ = """
 Returns the vector layer as a GeoPandas GeoDataFrame.
 
-All features from the layer are converted to a GeoDataFrame, including their geometries 
-(converted to shapely objects) and all attribute values. The CRS is preserved from the 
+All features from the layer are converted to a GeoDataFrame, including their geometries
+(converted to shapely objects) and all attribute values. The CRS is preserved from the
 original layer.
 
 :raises QgsNotSupportedException: if geopandas is not available on the system
