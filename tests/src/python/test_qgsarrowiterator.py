@@ -108,7 +108,7 @@ class TestQgsArrowIterator(QgisTestCase):
         schema = QgsArrowIterator.inferSchema(layer)
         self.assertTrue(schema.isValid())
 
-        pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
+        pa_schema = pa.schema(schema)
         assert pa_schema.names == ["id", "name", "geometry"]
         assert pa_schema.types == [pa.int32(), pa.string(), pa.binary()]
 
@@ -122,7 +122,7 @@ class TestQgsArrowIterator(QgisTestCase):
     def test_infer_schema_no_crs(self):
         layer = self.create_test_layer_with_geometry(QgsCoordinateReferenceSystem())
         schema = QgsArrowIterator.inferSchema(layer)
-        pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
+        pa_schema = pa.schema(schema)
         geometry_field_metadata = pa_schema.field("geometry").metadata
         geoarrow_metadata = json.loads(
             geometry_field_metadata[b"ARROW:extension:metadata"]
@@ -168,8 +168,7 @@ class TestQgsArrowIterator(QgisTestCase):
         iterator = QgsArrowIterator(layer.getFeatures())
         iterator.setSchema(schema)
 
-        stream = iterator.toArrayStream()
-        df = geopandas.GeoDataFrame.from_arrow(stream)
+        df = geopandas.GeoDataFrame.from_arrow(iterator.toArrayStream())
 
         assert list(df.id) == list(range(1, 11))
         assert df.crs == "EPSG:4326"
@@ -197,14 +196,12 @@ class TestQgsArrowIterator(QgisTestCase):
 
         iterator = QgsArrowIterator(layer.getFeatures())
         iterator.setSchema(schema)
-        stream = iterator.toArrayStream()
-        reader = pa.RecordBatchReader._import_from_c(stream.cArrayStreamAddress())
 
         with self.assertRaises(pa.lib.ArrowInvalid) as ctx:
-            reader.read_next_batch() is stream
-        assert (
-            str(ctx.exception)
-            == "Can't convert variant of type 'QString' to Arrow type 'dense_union'"
+            pa.table(iterator.toArrayStream())
+        self.assertIn(
+            "Can't convert variant of type 'QString' to Arrow type 'dense_union'",
+            str(ctx.exception),
         )
 
     def test_type_int(self):
@@ -212,7 +209,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.Int, [1, 2, None, 4, 5]
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        pa_inferred = pa.schema(inferred)
         assert pa_inferred == pa.schema({"f": pa.int32()})
 
         for pa_type in [
@@ -242,8 +239,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.Double, [1.0, 2.0, None, 4.0, 5.0]
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.float64()})
+        assert pa.schema(inferred) == pa.schema({"f": pa.float64()})
 
         for pa_type in [pa.float32(), pa.float64()]:
             pa_schema = pa.schema({"f": pa_type})
@@ -263,8 +259,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.QString, ["a", "b", None, "d", "e"]
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.string()})
+        assert pa.schema(inferred) == pa.schema({"f": pa.string()})
 
         for pa_type in [pa.string(), pa.large_string(), pa.string_view()]:
             pa_schema = pa.schema({"f": pa_type})
@@ -291,8 +286,7 @@ class TestQgsArrowIterator(QgisTestCase):
             ],
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.binary()})
+        assert pa.schema(inferred) == pa.schema({"f": pa.binary()})
 
         for pa_type in [pa.binary(), pa.large_binary(), pa.binary_view(), pa.binary(1)]:
             pa_schema = pa.schema({"f": pa_type})
@@ -312,8 +306,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.Bool, [True, False, None, True, False]
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.bool_()})
+        assert pa.schema(inferred) == pa.schema({"f": pa.bool_()})
 
         for pa_type in [pa.bool_()]:
             pa_schema = pa.schema({"f": pa_type})
@@ -337,8 +330,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QDate, q_dates)
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.date32()})
+        assert pa.schema(inferred) == pa.schema({"f": pa.date32()})
 
         for pa_type in [pa.date32(), pa.date64()]:
             pa_schema = pa.schema({"f": pa_type})
@@ -360,8 +352,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QTime, q_times)
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.time32("ms")})
+        assert pa.schema(inferred) == pa.schema({"f": pa.time32("ms")})
 
         for pa_type in [
             pa.time32("s"),
@@ -393,8 +384,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.QDateTime, q_datetimes
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.timestamp("ms", tz="UTC")})
+        assert pa.schema(inferred) == pa.schema({"f": pa.timestamp("ms", tz="UTC")})
 
         for pa_type in [
             pa.timestamp("s", "UTC"),
@@ -418,8 +408,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QStringList, items)
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.list_(pa.string())})
+        assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.string())})
 
         for pa_type in [pa.list_(pa.string())]:
             pa_schema = pa.schema({"f": pa_type})
@@ -439,8 +428,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Double
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.list_(pa.float64())})
+        assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.float64())})
 
         for pa_type in [
             pa.list_(pa.float64()),
@@ -465,8 +453,7 @@ class TestQgsArrowIterator(QgisTestCase):
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Int
         )
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.list_(pa.int32())})
+        assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.int32())})
 
         for pa_type in [
             pa.list_(pa.int32()),

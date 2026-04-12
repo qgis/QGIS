@@ -144,6 +144,26 @@ def _processing_output_layer_repr(self):
 QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
 
+
+def _arrow_schema_export(self):
+    """
+    Export this schema as an Arrow PyCapsule.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_schema__),
+    allowing QgsArrowSchema to be consumed directly by pyarrow
+    and other Arrow-compatible libraries.
+
+    :returns: A PyCapsule containing the ArrowSchema pointer.
+    """
+    import pyarrow as pa
+
+    field = pa.Field._import_from_c(self.cSchemaAddress())
+    return field.__arrow_c_schema__()
+
+
+QgsArrowSchema.__arrow_c_schema__ = _arrow_schema_export
+
+
 def _arrow_array_stream_export(self, requested_schema=None):
     """
     Export this stream as an Arrow PyCapsule.
