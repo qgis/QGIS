@@ -161,7 +161,52 @@ def _arrow_schema_export(self):
     return field.__arrow_c_schema__()
 
 
+@classmethod
+def _arrow_schema_from_arrow(cls, obj):
+    """
+    Create a QgsArrowSchema from any object implementing __arrow_c_schema__().
+
+    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.Schema).
+    :returns: A new QgsArrowSchema.
+    """
+    import pyarrow as pa
+
+    if isinstance(obj, cls):
+        return obj
+
+    if not hasattr(obj, "__arrow_c_schema__"):
+        raise TypeError(
+            f"Expected an object implementing __arrow_c_schema__(), got {type(obj).__name__}"
+        )
+
+    # Import via pyarrow to handle the capsule protocol
+    pa_schema = pa.schema(obj)
+    schema = cls()
+    pa_schema._export_to_c(schema.cSchemaAddress())
+    return schema
+
+
 QgsArrowSchema.__arrow_c_schema__ = _arrow_schema_export
+QgsArrowSchema.fromArrow = _arrow_schema_from_arrow
+
+
+# Wrap QgsArrowIterator.setSchema to accept objects with __arrow_c_schema__
+_original_setSchema = QgsArrowIterator.setSchema
+
+
+def _arrow_iterator_set_schema(self, schema):
+    """
+    Set the ArrowSchema for the output of all future batches.
+
+    Accepts either a QgsArrowSchema or any object implementing __arrow_c_schema__()
+    (e.g., pyarrow.Schema).
+    """
+    if not isinstance(schema, QgsArrowSchema):
+        schema = QgsArrowSchema.fromArrow(schema)
+    return _original_setSchema(self, schema)
+
+
+QgsArrowIterator.setSchema = _arrow_iterator_set_schema
 
 
 def _arrow_array_stream_export(self, requested_schema=None):

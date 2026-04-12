@@ -223,11 +223,9 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.uint64(),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch(
@@ -263,11 +261,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.string(), pa.large_string(), pa.string_view()]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch(
@@ -290,11 +286,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.binary(), pa.large_binary(), pa.binary_view(), pa.binary(1)]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch(
@@ -310,11 +304,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.bool_()]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch(
@@ -334,11 +326,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.date32(), pa.date64()]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": dates}, schema=pa_schema)
@@ -361,11 +351,9 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.time64("ns"),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": times}, schema=pa_schema)
@@ -394,11 +382,9 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.timestamp("ms", "America/Halifax"),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": datetimes}, schema=pa_schema)
@@ -412,11 +398,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.list_(pa.string())]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
@@ -437,11 +421,9 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.list_(pa.float32()),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
@@ -462,11 +444,9 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.list_(pa.int16()),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
@@ -478,11 +458,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.list_(pa.time32("s")), pa.month_day_nano_interval()]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
 
             with self.assertRaisesRegex(QgsException, "Can't convert"):
                 iterator.nextFeatures(5)
