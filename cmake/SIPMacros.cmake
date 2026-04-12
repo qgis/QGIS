@@ -119,10 +119,22 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
 
     # Make our common files available in the SIP build
     IF(WIN32)
-      set(SIP_PYTHONPATH "${CMAKE_SOURCE_DIR}\\python\\common;$ENV{PYTHONPATH}")
+      # Build the whole NAME=VALUE pair first, then pass it as one quoted argument to `cmake -E env`; otherwise ';' may be split by CMake.
+      SET(_sip_pythonpath_sep ";")
+      SET(_sip_common_pythonpath "${CMAKE_SOURCE_DIR}\\python\\common")
     ELSE()
-      set(SIP_PYTHONPATH "${CMAKE_SOURCE_DIR}/python/common:$ENV{PYTHONPATH}")
+      SET(_sip_pythonpath_sep ":")
+      SET(_sip_common_pythonpath "${CMAKE_SOURCE_DIR}/python/common")
     ENDIF()
+
+    IF(DEFINED ENV{PYTHONPATH} AND NOT "$ENV{PYTHONPATH}" STREQUAL "")
+      SET(SIP_PYTHONPATH "${_sip_common_pythonpath}${_sip_pythonpath_sep}$ENV{PYTHONPATH}")
+    ELSE()
+      SET(SIP_PYTHONPATH "${_sip_common_pythonpath}")
+    ENDIF()
+
+    # Keep PYTHONPATH assignment as a single argv element for cmake -E env.
+    SET(_sip_pythonpath_env "PYTHONPATH=${SIP_PYTHONPATH}")
 
     SET(_sip_disable_features ${SIP_DISABLE_FEATURES})
     LIST(TRANSFORM _sip_disable_features PREPEND --disable-feature=)
@@ -131,7 +143,7 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
 
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_sip_output_files}
-      COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${SIP_PYTHONPATH} ${SIPCMD}
+      COMMAND ${CMAKE_COMMAND} -E env "${_sip_pythonpath_env}" ${SIPCMD}
       WORKING_DIRECTORY ${_module_path}
       MAIN_DEPENDENCY ${_configured_module_sip}
       DEPENDS ${SIP_EXTRA_FILES_DEPEND}
