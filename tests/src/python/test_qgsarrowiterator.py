@@ -558,13 +558,17 @@ class TestQgsArrowIterator(QgisTestCase):
         table = reader.read_all()
 
         self.assertEqual(table["id"].to_pylist(), list(range(1, 11)))
-        self.assertEqual(table["name"].to_pylist(), [f"feat_{i + 1}" for i in range(10)])
+        self.assertEqual(
+            table["name"].to_pylist(), [f"feat_{i + 1}" for i in range(10)]
+        )
         self.assertEqual(len(table), 10)
 
     def test_arrow_stream_from_arrow(self):
         # Create a pyarrow RecordBatchReader
         pa_schema = pa.schema({"a": pa.int32(), "b": pa.string()})
-        batch = pa.record_batch({"a": [1, 2, 3], "b": ["x", "y", "z"]}, schema=pa_schema)
+        batch = pa.record_batch(
+            {"a": [1, 2, 3], "b": ["x", "y", "z"]}, schema=pa_schema
+        )
         reader = pa.RecordBatchReader.from_batches(pa_schema, [batch])
 
         # Convert to QgsArrowArrayStream
