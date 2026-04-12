@@ -233,6 +233,7 @@
 %Include auto_generated/./3d/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsmaterialregistry.sip
 %Include auto_generated/./3d/materials/qgsmetalroughmaterialsettings.sip
+%Include auto_generated/./3d/materials/qgsmetalroughtexturedmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsnullmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsphongmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsphongtexturedmaterialsettings.sip

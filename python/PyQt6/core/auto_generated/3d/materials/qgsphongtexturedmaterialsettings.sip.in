@@ -75,11 +75,8 @@ displayed texture in the 3D scene If the texture scale is less than 1
 the texture will be stretched
 %End
 
-    bool requiresTextureCoordinates() const;
-%Docstring
-Returns ``True`` if the material requires texture coordinates to be
-generated during triangulation.quiresTextureCoordinates
-%End
+    virtual bool requiresTextureCoordinates() const;
+
 
     double textureRotation() const;
 %Docstring
