@@ -461,6 +461,105 @@ class TestQgsArrowIterator(QgisTestCase):
             with self.assertRaisesRegex(QgsException, "Can't convert"):
                 iterator.nextFeatures(5)
 
+    def test_arrow_c_schema_protocol(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        schema = QgsArrowIterator.inferSchema(layer)
+
+        # Test that __arrow_c_schema__ is implemented
+        self.assertTrue(hasattr(schema, "__arrow_c_schema__"))
+
+        # Test that it returns a valid capsule that pyarrow can consume
+        capsule = schema.__arrow_c_schema__()
+        self.assertIsNotNone(capsule)
+
+        # Test consumption via pyarrow (using the capsule directly)
+        pa_schema_from_capsule = pa.Schema._import_from_c_capsule(capsule)
+        self.assertEqual(pa_schema_from_capsule.names, ["id", "name", "geometry"])
+
+    def test_arrow_c_schema_raw_address(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        schema = QgsArrowIterator.inferSchema(layer)
+
+        # Test importing via raw address
+        pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
+        self.assertEqual(pa_schema.names, ["id", "name", "geometry"])
+        self.assertEqual(pa_schema.types, [pa.int32(), pa.string(), pa.binary()])
+
+    def test_arrow_schema_from_arrow(self):
+        # Test creating from a pyarrow Schema
+        pa_schema = pa.schema({"a": pa.int32(), "b": pa.string()})
+        qgs_schema = QgsArrowSchema.fromArrow(pa_schema)
+
+        self.assertTrue(qgs_schema.isValid())
+
+        # Verify round-trip
+        pa_schema_back = pa.schema(qgs_schema)
+        self.assertEqual(pa_schema_back, pa_schema)
+
+        # Test that passing a QgsArrowSchema returns the same object
+        qgs_schema_original = QgsArrowIterator.inferSchema(
+            self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
+        )
+        qgs_schema2 = QgsArrowSchema.fromArrow(qgs_schema_original)
+        self.assertIs(qgs_schema2, qgs_schema_original)
+
+        # Test error on invalid input
+        with self.assertRaises(TypeError):
+            QgsArrowSchema.fromArrow("not a schema")
+
+    def test_arrow_schema_export_to_c_raw_address(self):
+        pa_schema = pa.schema({"x": pa.float64(), "y": pa.float64()})
+
+        # Create empty QgsArrowSchema and export pyarrow schema into it
+        qgs_schema = QgsArrowSchema()
+        pa_schema._export_to_c(qgs_schema.cSchemaAddress())
+
+        self.assertTrue(qgs_schema.isValid())
+
+        # Verify by importing back
+        pa_schema_back = pa.Schema._import_from_c(qgs_schema.cSchemaAddress())
+        self.assertEqual(pa_schema_back, pa_schema)
+
+    def test_arrow_c_stream_protocol(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        schema = QgsArrowIterator.inferSchema(layer)
+        iterator = QgsArrowIterator(layer.getFeatures())
+        iterator.setSchema(schema)
+
+        stream = iterator.toArrayStream()
+        capsule = stream.__arrow_c_stream__()
+
+        # Test consumption via pyarrow (using the capsule directly)
+        reader = pa.RecordBatchReader._import_from_c_capsule(capsule)
+        table = reader.read_all()
+
+        self.assertEqual(table["id"].to_pylist(), list(range(1, 11)))
+        self.assertEqual(len(table), 10)
+
+    def test_arrow_c_stream_raw_address(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        schema = QgsArrowIterator.inferSchema(layer)
+        iterator = QgsArrowIterator(layer.getFeatures())
+        iterator.setSchema(schema)
+
+        stream = iterator.toArrayStream()
+
+        # Test importing via raw address
+        reader = pa.RecordBatchReader._import_from_c(stream.cArrayStreamAddress())
+        table = reader.read_all()
+
+        self.assertEqual(table["id"].to_pylist(), list(range(1, 11)))
+        self.assertEqual(table["name"].to_pylist(), [f"feat_{i + 1}" for i in range(10)])
+        self.assertEqual(len(table), 10)
+
 
 if __name__ == "__main__":
     unittest.main()
