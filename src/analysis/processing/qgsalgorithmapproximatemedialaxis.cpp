@@ -104,6 +104,15 @@ Qgis::WkbType QgsApproximateMedialAxisAlgorithm::outputWkbType( Qgis::WkbType in
   return Qgis::WkbType::MultiLineString;
 }
 
+void QgsApproximateMedialAxisAlgorithm::initParameters( const QVariantMap & )
+{
+#ifdef WITH_SFCGAL
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  addParameter( new QgsProcessingParameterBoolean( u"EXTEND_TO_EDGES"_s, QObject::tr( "Extend end points to the polygon boundary" ), false ) );
+#endif
+#endif
+}
+
 bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( parameters )
@@ -111,6 +120,10 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
   Q_UNUSED( feedback )
 
 #ifdef WITH_SFCGAL
+  if ( parameterDefinition( u"EXTEND_TO_EDGES"_s ) )
+  {
+    mExtendToEdges = parameterAsBool( parameters, "EXTEND_TO_EDGES", context );
+  }
   return true;
 #else
   throw QgsProcessingException( QObject::tr( "This processing algorithm requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
@@ -141,7 +154,7 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
     {
       try
       {
-        std::unique_ptr<QgsSfcgalGeometry> outputSfcgalGeometry = inputSfcgalGeometry.approximateMedialAxis();
+        std::unique_ptr<QgsSfcgalGeometry> outputSfcgalGeometry = inputSfcgalGeometry.approximateMedialAxis( mExtendToEdges );
         outputGeometry = QgsGeometry( outputSfcgalGeometry->asQgisGeometry() );
         modifiedFeature.setGeometry( outputGeometry );
       }
