@@ -1111,6 +1111,18 @@ void TestQgsSfcgal::approximateMedialAxis()
   QString invalid_polygon_wkt = u"POLYGON((0 0, 4 0, 4 4, 0 4, 0 0),(4 2, 5 2, 5 3, 4 3, 4 2))"_s;
   QgsSfcgalGeometry sfcgalPoint( invalid_polygon_wkt );
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint.approximateMedialAxis(), QgsSfcgalException );
+
+  // new extendToEdges option if SFCGAL 2.3
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> simplifiedGeomExtended( sfcgalPolygon.approximateMedialAxis( true ) );
+  QVERIFY2( simplifiedGeomExtended->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE(
+    simplifiedGeomExtended->asWkt( 2 ),
+    "MULTILINESTRING ((4.65 0.10,2.34 0.70,2.05 0.74),(2.05 0.74,0.67 0.83),(-4.65 0.35,-1.57 -0.51,-1.01 -0.67),(0.75 4.90,0.66 1.61,0.70 1.08),(-3.80 -3.35,-1.21 -1.17,-0.77 -0.76),(-1.01 "
+    "-0.67,-0.73 -0.70),(0.70 1.08,0.71 1.04),(0.71 1.04,0.71 1.04),(0.71 1.04,0.65 0.83),(0.67 0.83,0.65 0.83),(0.65 0.83,0.05 0.19),(0.65 -4.55,-0.52 -0.79,-0.56 -0.63),(-0.77 -0.76,-0.73 "
+    "-0.70),(-0.73 -0.70,-0.56 -0.63),(0.05 0.19,-0.21 -0.18),(-0.21 -0.18,-0.45 -0.51),(-0.56 -0.63,-0.50 -0.57),(-0.45 -0.51,-0.50 -0.57))"
+  );
+#endif
 }
 
 void TestQgsSfcgal::primitiveCube()
