@@ -94,7 +94,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
+  const bool requiresTextureCoordinates = mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false;
 
   auto lineDataNormalTessellator = std::make_unique<QgsTessellator>();
   lineDataNormalTessellator->setOrigin( mChunkOrigin );
@@ -226,9 +226,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   const int vertexCount = vertexBuffer.count() / lineData.tessellator->stride();
   const size_t indexCount = lineData.tessellator->dataVerticesCount();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
-
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false );
   geometry->setVertexBufferData( vertexBuffer, vertexCount, lineData.triangleIndexFids, lineData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );
 

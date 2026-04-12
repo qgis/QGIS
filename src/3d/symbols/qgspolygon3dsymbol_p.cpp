@@ -99,6 +99,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  const bool requiresTextureCoordinates = mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false;
 
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
@@ -107,7 +108,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  tessellator->setAddTextureUVs( requiresTextureCoordinates );
   tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
@@ -120,7 +121,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  tessellator->setAddTextureUVs( requiresTextureCoordinates );
   tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
@@ -369,10 +370,8 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   const int vertexCount = polyData.tessellator->uniqueVertexCount();
   const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
-
   QgsTessellatedPolygonGeometry *geometry
-    = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+    = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates() );
 
   geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );
