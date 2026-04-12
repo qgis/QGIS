@@ -30,6 +30,7 @@ except ImportError:
     shapely = None
 
 from qgis.core import (
+    QgsArrowArrayStream,
     QgsArrowIterator,
     QgsArrowSchema,
     QgsCoordinateReferenceSystem,
@@ -559,6 +560,38 @@ class TestQgsArrowIterator(QgisTestCase):
         self.assertEqual(table["id"].to_pylist(), list(range(1, 11)))
         self.assertEqual(table["name"].to_pylist(), [f"feat_{i + 1}" for i in range(10)])
         self.assertEqual(len(table), 10)
+
+    def test_arrow_stream_from_arrow(self):
+        # Create a pyarrow RecordBatchReader
+        pa_schema = pa.schema({"a": pa.int32(), "b": pa.string()})
+        batch = pa.record_batch({"a": [1, 2, 3], "b": ["x", "y", "z"]}, schema=pa_schema)
+        reader = pa.RecordBatchReader.from_batches(pa_schema, [batch])
+
+        # Convert to QgsArrowArrayStream
+        qgs_stream = QgsArrowArrayStream.fromArrow(reader)
+        self.assertTrue(qgs_stream.isValid())
+
+        # Verify by consuming the stream
+        table = pa.table(qgs_stream)
+        self.assertEqual(table["a"].to_pylist(), [1, 2, 3])
+        self.assertEqual(table["b"].to_pylist(), ["x", "y", "z"])
+
+    def test_arrow_stream_from_arrow_identity(self):
+        # Create a QgsArrowArrayStream via iterator
+        layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
+        schema = QgsArrowIterator.inferSchema(layer)
+        iterator = QgsArrowIterator(layer.getFeatures())
+        iterator.setSchema(schema)
+        original_stream = iterator.toArrayStream()
+
+        # fromArrow should return the same object for QgsArrowArrayStream
+        stream2 = QgsArrowArrayStream.fromArrow(original_stream)
+        self.assertIs(stream2, original_stream)
+
+    def test_arrow_array_stream_from_arrow_error(self):
+        # Test error on invalid input
+        with self.assertRaises(TypeError):
+            QgsArrowArrayStream.fromArrow("not a stream")
 
 
 if __name__ == "__main__":

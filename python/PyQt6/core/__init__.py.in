@@ -226,7 +226,33 @@ def _arrow_array_stream_export(self, requested_schema=None):
     return reader.__arrow_c_stream__()
 
 
+@classmethod
+def _arrow_array_stream_from_arrow(cls, obj):
+    """
+    Create a QgsArrowArrayStream from any object implementing __arrow_c_stream__().
+
+    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.RecordBatchReader).
+    :returns: A new QgsArrowArrayStream.
+    """
+    import pyarrow as pa
+
+    if isinstance(obj, cls):
+        return obj
+
+    if not hasattr(obj, "__arrow_c_stream__"):
+        raise TypeError(
+            f"Expected an object implementing __arrow_c_stream__(), got {type(obj).__name__}"
+        )
+
+    # Import via pyarrow to handle the capsule protocol
+    reader = pa.RecordBatchReader.from_stream(obj)
+    stream = cls()
+    reader._export_to_c(stream.cArrayStreamAddress())
+    return stream
+
+
 QgsArrowArrayStream.__arrow_c_stream__ = _arrow_array_stream_export
+QgsArrowArrayStream.fromArrow = _arrow_array_stream_from_arrow
 
 
 # Classes patched
