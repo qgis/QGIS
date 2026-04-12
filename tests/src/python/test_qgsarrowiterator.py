@@ -191,11 +191,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         # With an incompatible schema, this should throw in get_next()
         pa_schema = pa.schema({"name": pa.union([], "dense")})
-        schema = QgsArrowSchema()
-        pa_schema._export_to_c(schema.cSchemaAddress())
 
         iterator = QgsArrowIterator(layer.getFeatures())
-        iterator.setSchema(schema)
+        iterator.setSchema(pa_schema)
 
         with self.assertRaises(pa.lib.ArrowInvalid) as ctx:
             pa.table(iterator.toArrayStream())
@@ -241,11 +239,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.float32(), pa.float64()]:
             pa_schema = pa.schema({"f": pa_type})
-            schema = QgsArrowSchema()
-            pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(schema)
+            iterator.setSchema(pa_schema)
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch(
