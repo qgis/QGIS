@@ -1150,6 +1150,9 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
         mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
         break;
     }
+
+    QgsFrameGraph *frameGraph = mEngine->frameGraph();
+    mSkybox->addComponent( frameGraph->forwardRenderView().renderLayer() );
   }
 }
 
