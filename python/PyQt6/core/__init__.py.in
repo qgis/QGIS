@@ -166,13 +166,21 @@ def _arrow_schema_from_arrow(cls, obj):
     """
     Create a QgsArrowSchema from any object implementing __arrow_c_schema__().
 
-    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.Schema).
+    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.Schema),
+                or a PyCapsule directly.
     :returns: A new QgsArrowSchema.
     """
     import pyarrow as pa
 
     if isinstance(obj, cls):
         return obj
+
+    # Handle PyCapsule directly (result of calling __arrow_c_schema__())
+    if type(obj).__name__ == "PyCapsule":
+        pa_schema = pa.Schema._import_from_c_capsule(obj)
+        schema = cls()
+        pa_schema._export_to_c(schema.cSchemaAddress())
+        return schema
 
     if not hasattr(obj, "__arrow_c_schema__"):
         raise TypeError(
@@ -207,6 +215,30 @@ def _arrow_iterator_set_schema(self, schema):
 
 
 QgsArrowIterator.setSchema = _arrow_iterator_set_schema
+
+
+def _arrow_iterator_stream_export(self, requested_schema=None):
+    """
+    Export this iterator as an Arrow PyCapsule stream.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+    allowing QgsArrowIterator to be consumed directly by pyarrow,
+    geopandas, and other Arrow-compatible libraries.
+
+    :param requested_schema: Optional schema to request. If provided, a copy of
+                             this iterator will have its schema set to avoid
+                             mutating the original.
+    :returns: A PyCapsule containing the ArrowArrayStream pointer.
+    """
+    if requested_schema is not None:
+        # Use SIP copy constructor to avoid mutating the original iterator's schema
+        iterator_copy = QgsArrowIterator(self)
+        iterator_copy.setSchema(requested_schema)
+        return iterator_copy.toArrayStream().__arrow_c_stream__()
+    return self.toArrayStream().__arrow_c_stream__()
+
+
+QgsArrowIterator.__arrow_c_stream__ = _arrow_iterator_stream_export
 
 
 def _arrow_array_stream_export(self, requested_schema=None):

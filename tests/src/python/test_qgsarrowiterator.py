@@ -597,6 +597,32 @@ class TestQgsArrowIterator(QgisTestCase):
         with self.assertRaises(TypeError):
             QgsArrowArrayStream.fromArrow("not a stream")
 
+    def test_type_int2(self):
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.Int, [1, 2, None, 4, 5]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.schema(inferred)
+        assert pa_inferred == pa.schema({"f": pa.int32()})
+
+        for pa_type in [
+            pa.int8(),
+            pa.int16(),
+            pa.int32(),
+            pa.int64(),
+            pa.uint8(),
+            pa.uint16(),
+            pa.uint32(),
+            pa.uint64(),
+        ]:
+            pa_schema = pa.schema({"f": pa_type})
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            pa_table = pa.table(iterator, pa_schema)
+            assert pa_table == pa.table(
+                {"f": [1, 2, None, 4, 5]}, schema=pa_schema
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
