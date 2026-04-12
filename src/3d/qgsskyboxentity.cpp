@@ -80,6 +80,10 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   mMesh->setXZMeshResolution( QSize( 2, 2 ) );
   mMesh->setYZMeshResolution( QSize( 2, 2 ) );
 
+  mMesh->setXExtent( 999999.0f );
+  mMesh->setYExtent( 999999.0f );
+  mMesh->setZExtent( 999999.0f );
+
   addComponent( mMesh );
   addComponent( mMaterial );
 }
