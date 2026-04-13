@@ -482,6 +482,7 @@ class CORE_EXPORT QgsArrowArrayStream
             struct ArrowArrayStream *capsuleStream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( capsule, "arrow_array_stream" ) );
             QgsArrowArrayStream *newStream = new QgsArrowArrayStream();
             memcpy(newStream->arrayStream(), capsuleStream, sizeof(struct ArrowArrayStream));
+            capsuleStream->release = nullptr;
             sipRes = sipConvertFromNewType( newStream, sipType_QgsArrowArrayStream, nullptr );
           }
           else

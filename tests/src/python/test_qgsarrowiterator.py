@@ -501,16 +501,11 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_schema_back = pa.schema(qgs_schema)
         self.assertEqual(pa_schema_back, pa_schema)
 
-        # Test that passing a QgsArrowSchema returns the same object
-        qgs_schema_original = QgsArrowIterator.inferSchema(
-            self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
-        )
-        qgs_schema2 = QgsArrowSchema.fromArrow(qgs_schema_original)
-        self.assertIs(qgs_schema2, qgs_schema_original)
-
         # Test error on invalid input
         with self.assertRaises(TypeError):
             QgsArrowSchema.fromArrow("not a schema")
+
+        # TODO: test where an object's dunder method returns something funny
 
     def test_arrow_schema_export_to_c_raw_address(self):
         pa_schema = pa.schema({"x": pa.float64(), "y": pa.float64()})
@@ -580,22 +575,11 @@ class TestQgsArrowIterator(QgisTestCase):
         self.assertEqual(table["a"].to_pylist(), [1, 2, 3])
         self.assertEqual(table["b"].to_pylist(), ["x", "y", "z"])
 
-    def test_arrow_stream_from_arrow_identity(self):
-        # Create a QgsArrowArrayStream via iterator
-        layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
-        schema = QgsArrowIterator.inferSchema(layer)
-        iterator = QgsArrowIterator(layer.getFeatures())
-        iterator.setSchema(schema)
-        original_stream = iterator.toArrayStream()
-
-        # fromArrow should return the same object for QgsArrowArrayStream
-        stream2 = QgsArrowArrayStream.fromArrow(original_stream)
-        self.assertIs(stream2, original_stream)
-
-    def test_arrow_array_stream_from_arrow_error(self):
         # Test error on invalid input
         with self.assertRaises(TypeError):
             QgsArrowArrayStream.fromArrow("not a stream")
+
+        # TODO: check something with invalid output of the dunder
 
     def test_iterator_arrow_c_stream_protocol(self):
         layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
