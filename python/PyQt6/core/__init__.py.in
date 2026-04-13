@@ -243,6 +243,32 @@ def _arrow_iterator_stream_export(self, requested_schema=None):
 QgsArrowIterator.__arrow_c_stream__ = _arrow_iterator_stream_export
 
 
+def _vector_layer_stream_export(self, requested_schema=None):
+    """
+    Export this layer as an Arrow PyCapsule stream.
+
+    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+    allowing QgsVectorLayer to be consumed directly by pyarrow,
+    geopandas, and other Arrow-compatible libraries.
+
+    :param requested_schema: Optional schema to request. If not provided,
+                             the schema will be inferred from the layer.
+    :returns: A PyCapsule containing the ArrowArrayStream pointer.
+    """
+    iterator = QgsArrowIterator(self.getFeatures())
+
+    if requested_schema is not None:
+        iterator.setSchema(requested_schema)
+    else:
+        inferred = QgsArrowIterator.inferSchema(self)
+        iterator.setSchema(inferred)
+
+    return iterator.toArrayStream().__arrow_c_stream__()
+
+
+QgsVectorLayer.__arrow_c_stream__ = _vector_layer_stream_export
+
+
 def _arrow_array_stream_export(self, requested_schema=None):
     """
     Export this stream as an Arrow PyCapsule.

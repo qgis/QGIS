@@ -597,31 +597,49 @@ class TestQgsArrowIterator(QgisTestCase):
         with self.assertRaises(TypeError):
             QgsArrowArrayStream.fromArrow("not a stream")
 
-    def test_type_int2(self):
-        layer = self.create_test_layer_single_field(
-            QMetaType.Type.Int, [1, 2, None, 4, 5]
-        )
+    def test_iterator_arrow_c_stream_protocol(self):
+        layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
+
+        # Check that we can request a schema
+        iterator = QgsArrowIterator(layer.getFeatures())
+        table = pa.table(iterator, pa.schema({"f": pa.float64()}))
+        self.assertEqual(table, pa.table({"f": [1.0, 2.0, 3.0]}))
+
+        # Check that we don't have to request a schema (uses inferred default)
+        iterator = QgsArrowIterator(layer.getFeatures())
         inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.schema(inferred)
-        assert pa_inferred == pa.schema({"f": pa.int32()})
+        iterator.setSchema(inferred)
+        table = pa.table(iterator)
+        self.assertEqual(
+            table, pa.table({"f": [1, 2, 3]}, schema=pa.schema({"f": pa.int32()}))
+        )
 
-        for pa_type in [
-            pa.int8(),
-            pa.int16(),
-            pa.int32(),
-            pa.int64(),
-            pa.uint8(),
-            pa.uint16(),
-            pa.uint32(),
-            pa.uint64(),
-        ]:
-            pa_schema = pa.schema({"f": pa_type})
+    def test_layer_arrow_c_stream_protocol(self):
+        layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
 
-            iterator = QgsArrowIterator(layer.getFeatures())
-            pa_table = pa.table(iterator, pa_schema)
-            assert pa_table == pa.table(
-                {"f": [1, 2, None, 4, 5]}, schema=pa_schema
-            )
+        # Check that we can request a schema on the layer directly
+        table = pa.table(layer, pa.schema({"f": pa.float64()}))
+        self.assertEqual(table, pa.table({"f": [1.0, 2.0, 3.0]}))
+
+        # Check that we don't have to request a schema (uses inferred default)
+        table = pa.table(layer)
+        self.assertEqual(
+            table, pa.table({"f": [1, 2, 3]}, schema=pa.schema({"f": pa.int32()}))
+        )
+
+    def test_layer_arrow_c_stream_protocol_with_geometry(self):
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        layer = self.create_test_layer_with_geometry(crs)
+
+        # Check direct consumption with inferred schema
+        df = geopandas.GeoDataFrame.from_arrow(layer)
+
+        self.assertEqual(list(df.id), list(range(1, 11)))
+        self.assertEqual(df.crs, "EPSG:4326")
+        self.assertEqual(
+            list(df.geometry.to_wkt()),
+            [f"POINT ({i} {i + 20})" for i in range(10)],
+        )
 
 
 if __name__ == "__main__":
