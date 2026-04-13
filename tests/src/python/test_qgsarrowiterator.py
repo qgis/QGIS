@@ -164,12 +164,7 @@ class TestQgsArrowIterator(QgisTestCase):
     def test_layer_to_stream(self):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
-
-        schema = QgsArrowIterator.inferSchema(layer)
-        iterator = QgsArrowIterator(layer.getFeatures())
-        iterator.setSchema(schema)
-
-        df = geopandas.GeoDataFrame.from_arrow(iterator.toArrayStream())
+        df = geopandas.GeoDataFrame.from_arrow(layer)
 
         assert list(df.id) == list(range(1, 11))
         assert df.crs == "EPSG:4326"
@@ -193,15 +188,11 @@ class TestQgsArrowIterator(QgisTestCase):
         # With an incompatible schema, this should throw in get_next()
         pa_schema = pa.schema({"name": pa.union([], "dense")})
 
-        iterator = QgsArrowIterator(layer.getFeatures())
-        iterator.setSchema(pa_schema)
-
-        with self.assertRaises(pa.lib.ArrowInvalid) as ctx:
-            pa.table(iterator.toArrayStream())
-        self.assertIn(
+        with self.assertRaisesRegex(
+            pa.lib.ArrowInvalid,
             "Can't convert variant of type 'QString' to Arrow type 'dense_union'",
-            str(ctx.exception),
-        )
+        ):
+            pa.table(layer, pa_schema)
 
     def test_type_int(self):
         layer = self.create_test_layer_single_field(
@@ -222,14 +213,8 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.uint64(),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch(
-                {"f": [1, 2, None, 4, 5]}, schema=pa_schema
-            )
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": [1, 2, None, 4, 5]}, schema=pa_schema)
 
     def test_type_double(self):
         layer = self.create_test_layer_single_field(
@@ -240,12 +225,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.float32(), pa.float64()]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch(
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table(
                 {"f": [1.0, 2.0, None, 4.0, 5.0]}, schema=pa_schema
             )
 
@@ -258,12 +239,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.string(), pa.large_string(), pa.string_view()]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch(
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table(
                 {"f": ["a", "b", None, "d", "e"]}, schema=pa_schema
             )
 
@@ -283,12 +260,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.binary(), pa.large_binary(), pa.binary_view(), pa.binary(1)]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch(
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table(
                 {"f": [b"a", b"b", None, b"d", b"e"]}, schema=pa_schema
             )
 
@@ -301,12 +274,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.bool_()]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch(
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table(
                 {"f": [True, False, None, True, False]}, schema=pa_schema
             )
 
@@ -323,12 +292,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.date32(), pa.date64()]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": dates}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": dates}, schema=pa_schema)
 
     def test_type_time(self):
         times = [datetime.time(17, 0, i) for i in range(5)]
@@ -348,12 +313,8 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.time64("ns"),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": times}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": times}, schema=pa_schema)
 
     def test_type_datetime(self):
         datetimes = [datetime.datetime(2020, 1, 1, 17, 0, i) for i in range(5)]
@@ -379,12 +340,8 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.timestamp("ms", "America/Halifax"),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": datetimes}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": datetimes}, schema=pa_schema)
 
     def test_type_string_list(self):
         items = [["a", "b"], ["c", "d"], None, ["e", "f"], ["g", "h"]]
@@ -395,12 +352,8 @@ class TestQgsArrowIterator(QgisTestCase):
 
         for pa_type in [pa.list_(pa.string())]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": items}, schema=pa_schema)
 
     def test_type_double_list(self):
         items = [[1.0, 2.0], [3.0, 4.0], None, [5.0, 6.0], [7.0, 8.0]]
@@ -418,12 +371,8 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.list_(pa.float32()),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": items}, schema=pa_schema)
 
     def test_type_int_list(self):
         items = [[1, 2], [3, 4], None, [5, 6], [7, 8]]
@@ -441,12 +390,8 @@ class TestQgsArrowIterator(QgisTestCase):
             pa.list_(pa.int16()),
         ]:
             pa_schema = pa.schema({"f": pa_type})
-
-            iterator = QgsArrowIterator(layer.getFeatures())
-            iterator.setSchema(pa_schema)
-            batch = iterator.nextFeatures(5)
-            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+            pa_table = pa.table(layer, pa_schema)
+            assert pa_table == pa.table({"f": items}, schema=pa_schema)
 
     def test_type_unsupported_conversion(self):
         layer = self.create_test_layer_single_field(
@@ -637,20 +582,6 @@ class TestQgsArrowIterator(QgisTestCase):
         table = pa.table(layer)
         self.assertEqual(
             table, pa.table({"f": [1, 2, 3]}, schema=pa.schema({"f": pa.int32()}))
-        )
-
-    def test_layer_arrow_c_stream_protocol_with_geometry(self):
-        crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        layer = self.create_test_layer_with_geometry(crs)
-
-        # Check direct consumption with inferred schema
-        df = geopandas.GeoDataFrame.from_arrow(layer)
-
-        self.assertEqual(list(df.id), list(range(1, 11)))
-        self.assertEqual(df.crs, "EPSG:4326")
-        self.assertEqual(
-            list(df.geometry.to_wkt()),
-            [f"POINT ({i} {i + 20})" for i in range(10)],
         )
 
 
