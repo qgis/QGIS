@@ -238,15 +238,21 @@ class CORE_EXPORT QgsArrowSchema
      * Create a QgsArrowSchema from any object implementing __arrow_c_schema__().
      *
      * \param obj An object implementing the Arrow PyCapsule interface (e.g., pyarrow.Schema),
-     *            or a PyCapsule directly. If obj is already a QgsArrowSchema, returns it unchanged.
-     * \returns A QgsArrowSchema (the same object if already a QgsArrowSchema, otherwise a new one).
+     *            or a PyCapsule directly.
+     * \returns A new QgsArrowSchema
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
      * \since QGIS 4.0
      */
     static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
     % MethodCode
-    // Check if it has __arrow_c_schema__ method
-    if ( PyObject_HasAttrString( a0, "__arrow_c_schema__" ) )
+    if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_schema" ) ) {
+      struct ArrowSchema *capsuleSchema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( a0, "arrow_schema" ) );
+      QgsArrowSchema *newSchema = new QgsArrowSchema();
+      memcpy(newSchema->schema(), capsuleSchema, sizeof(struct ArrowSchema));
+      capsuleSchema->release = nullptr;
+      sipRes = sipConvertFromNewType( newSchema, sipType_QgsArrowSchema, nullptr );
+    }
+    else if ( PyObject_HasAttrString( a0, "__arrow_c_schema__" ) )
     {
       PyObject *method = PyObject_GetAttrString( a0, "__arrow_c_schema__" );
       if ( method )
@@ -459,16 +465,23 @@ class CORE_EXPORT QgsArrowArrayStream
     /**
      * Create a QgsArrowArrayStream from any object implementing __arrow_c_stream__().
      *
-     * \param obj An object implementing the Arrow PyCapsule interface (e.g., pyarrow.RecordBatchReader).
-     *            If obj is already a QgsArrowArrayStream, returns it unchanged.
-     * \returns A QgsArrowArrayStream (the same object if already a QgsArrowArrayStream, otherwise a new one).
+     * \param obj An object implementing the Arrow PyCapsule interface (e.g., pyarrow.RecordBatchReader)
+                  or a capsule directly.
+     * \returns A new QgsArrowArrayStream
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
      * \since QGIS 4.0
      */
     static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
     % MethodCode
-    // Check if it has __arrow_c_stream__ method
-    if ( PyObject_HasAttrString( a0, "__arrow_c_stream__" ) )
+    if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_array_stream" ) )
+    {
+      struct ArrowArrayStream *capsuleStream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( a0, "arrow_array_stream" ) );
+      QgsArrowArrayStream *newStream = new QgsArrowArrayStream();
+      memcpy(newStream->arrayStream(), capsuleStream, sizeof(struct ArrowArrayStream));
+      capsuleStream->release = nullptr;
+      sipRes = sipConvertFromNewType( newStream, sipType_QgsArrowArrayStream, nullptr );
+    }
+    else if ( PyObject_HasAttrString( a0, "__arrow_c_stream__" ) )
     {
       PyObject *method = PyObject_GetAttrString( a0, "__arrow_c_stream__" );
       if ( method )
