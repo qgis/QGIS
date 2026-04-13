@@ -113,6 +113,12 @@ void QgsPhongMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *effe
   effect->addParameter( opacityParameter );
 }
 
+void QgsPhongMaterial3DHandler::addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *shaderProgram, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{
+  const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) );
+  shaderProgram->setFragmentShaderCode( fragmentShaderCode );
+}
+
 QByteArray QgsPhongMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
   const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
@@ -299,13 +305,12 @@ QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
-  const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) );
-
   if ( phongSettings->dataDefinedProperties().hasActiveProperties() )
   {
     // Load shader programs
     const QUrl urlVert( u"qrc:/shaders/phongDataDefined.vert"_s );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
+    const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) );
     const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "DATA_DEFINED" } ) );
     shaderProgram->setFragmentShaderCode( finalFragmentShaderCode );
     effect->addParameter( new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( phongSettings->shininess() ) ) );
@@ -316,7 +321,7 @@ QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     // Load shader programs
     const QUrl urlVert( u"qrc:/shaders/default.vert"_s );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-    shaderProgram->setFragmentShaderCode( fragmentShaderCode );
+    addFragmentShaderForInstancedPointsProgram( shaderProgram, settings, context );
     addParametersToEffect( effect, settings, context );
   }
 

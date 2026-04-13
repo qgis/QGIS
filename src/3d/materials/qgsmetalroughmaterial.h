@@ -71,6 +71,10 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      */
     bool flatShadingEnabled() const;
 
+    static void addFragmentShaderToProgram(
+      Qt3DRender::QShaderProgram *shaderProgram, bool usingColorMap, bool usingMetalnessMap, bool usingRoughnessMap, bool usingAmbientOcclusionMap, bool usingNormalMap, bool usingFlatShading
+    );
+
   public slots:
     void setBaseColor( const QVariant &baseColor );
     void setMetalness( const QVariant &metalness );

@@ -42,6 +42,10 @@ namespace Qt3DExtras
 {
   class Qt3DWindow;
 }
+namespace Qt3DRender
+{
+  class QShaderProgram;
+}
 
 /**
  * \ingroup qgis_3d
@@ -137,6 +141,14 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      * Adds parameters from the material \a settings to a destination \a effect.
      */
     virtual void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const = 0;
+
+    /**
+     * Adds the required fragment shader to a \a shaderProgram, for correct rendering of instanced points.
+     *
+     * The default implementation does nothing. This must be implemented for materials which support the
+     * instanced points technique.
+     */
+    virtual void addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *shaderProgram, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const;
 
     /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.

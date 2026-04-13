@@ -336,7 +336,15 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
 
     const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
     shaderProgram->setVertexShaderCode( finalVertexShaderCode );
-    shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
+    if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( symbol->materialSettings() ) )
+    {
+      handler->addFragmentShaderForInstancedPointsProgram( shaderProgram, symbol->materialSettings(), materialContext );
+    }
+    else
+    {
+      QgsDebugError( u"No material handler found!"_s );
+      shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
+    }
 
     Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
     renderPass->setShaderProgram( shaderProgram );

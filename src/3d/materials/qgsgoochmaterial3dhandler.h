@@ -38,6 +38,7 @@ class _3D_EXPORT QgsGoochMaterial3DHandler : public QgsAbstractMaterial3DHandler
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
+    void addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *shaderProgram, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
     QByteArray dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride( const QgsAbstractMaterialSettings *settings ) const override;
     void applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;

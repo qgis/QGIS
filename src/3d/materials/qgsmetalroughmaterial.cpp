@@ -247,25 +247,7 @@ void QgsMetalRoughMaterial::init()
 
 void QgsMetalRoughMaterial::updateFragmentShader()
 {
-  // pre-process fragment shader and add #defines based on whether using maps for some properties
-  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalrough.frag"_s ) );
-  QStringList defines;
-  if ( mUsingBaseColorMap )
-    defines += "BASE_COLOR_MAP";
-  if ( mUsingMetalnessMap )
-    defines += "METALNESS_MAP";
-  if ( mUsingRoughnessMap )
-    defines += "ROUGHNESS_MAP";
-  if ( mUsingAmbientOcclusionMap )
-    defines += "AMBIENT_OCCLUSION_MAP";
-  if ( mUsingNormalMap )
-    defines += "NORMAL_MAP";
-
-  if ( mFlatShading )
-    defines += "FLAT_SHADING";
-
-  QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
-  mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
+  addFragmentShaderToProgram( mMetalRoughGL3Shader, mUsingBaseColorMap, mUsingMetalnessMap, mUsingRoughnessMap, mUsingAmbientOcclusionMap, mUsingNormalMap, mFlatShading );
 }
 
 void QgsMetalRoughMaterial::handleTextureScaleChanged( const QVariant &var )
@@ -276,6 +258,30 @@ void QgsMetalRoughMaterial::handleTextureScaleChanged( const QVariant &var )
 bool QgsMetalRoughMaterial::flatShadingEnabled() const
 {
   return mFlatShading;
+}
+
+void QgsMetalRoughMaterial::addFragmentShaderToProgram(
+  Qt3DRender::QShaderProgram *shaderProgram, bool usingColorMap, bool usingMetalnessMap, bool usingRoughnessMap, bool usingAmbientOcclusionMap, bool usingNormalMap, bool usingFlatShading
+)
+{
+  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalrough.frag"_s ) );
+  QStringList defines;
+  if ( usingColorMap )
+    defines += "BASE_COLOR_MAP";
+  if ( usingMetalnessMap )
+    defines += "METALNESS_MAP";
+  if ( usingRoughnessMap )
+    defines += "ROUGHNESS_MAP";
+  if ( usingAmbientOcclusionMap )
+    defines += "AMBIENT_OCCLUSION_MAP";
+  if ( usingNormalMap )
+    defines += "NORMAL_MAP";
+
+  if ( usingFlatShading )
+    defines += "FLAT_SHADING";
+
+  QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
+  shaderProgram->setFragmentShaderCode( finalShaderCode );
 }
 
 void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )

@@ -35,6 +35,9 @@ QByteArray QgsAbstractMaterial3DHandler::dataDefinedVertexColorsAsByte( const Qg
   return QByteArray();
 }
 
+void QgsAbstractMaterial3DHandler::addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{}
+
 void QgsAbstractMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *settings, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
 {
   Q_UNUSED( settings )

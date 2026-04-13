@@ -34,11 +34,11 @@ bool QgsMetalRoughMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTe
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
       return true;
 
     case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
   }

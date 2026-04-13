@@ -59,6 +59,11 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
   return nullptr;
 }
 
+void QgsMetalRoughMaterial3DHandler::addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *shaderProgram, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{
+  QgsMetalRoughMaterial::addFragmentShaderToProgram( shaderProgram, false, false, false, false, false, false );
+}
+
 QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const QgsAbstractMaterialSettings * ) const
 {
   QMap<QString, QString> parameters;

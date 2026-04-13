@@ -81,6 +81,12 @@ void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *effe
   effect->addParameter( new Qt3DRender::QParameter( u"beta"_s, goochSettings->beta() ) );
 }
 
+void QgsGoochMaterial3DHandler::addFragmentShaderForInstancedPointsProgram( Qt3DRender::QShaderProgram *shaderProgram, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
+{
+  const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/gooch.frag"_s ) );
+  shaderProgram->setFragmentShaderCode( fragmentShaderCode );
+}
+
 QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
   const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
@@ -241,7 +247,7 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     //Load shader programs
     const QUrl urlVert( u"qrc:/shaders/default.vert"_s );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-    shaderProgram->setFragmentShaderCode( fragmentShaderCode );
+    addFragmentShaderForInstancedPointsProgram( shaderProgram, settings, context );
     addParametersToEffect( effect, settings, context );
   }
 
