@@ -189,7 +189,7 @@ class CORE_EXPORT QgsArrowSchema
     //! Set the index of the column in this schema that should be populated with a feature geometry
     void setGeometryColumnIndex( int geometryColumnIndex );
 
-// clang-format off
+    // clang-format off
 #ifdef SIP_RUN
     /**
      * Export this schema as an Arrow PyCapsule.
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsArrowSchema
     struct ArrowSchema mSchema {};
     int mGeometryColumnIndex = -1;
 
-// clang-format on
+    // clang-format on
 };
 
 /**
@@ -416,7 +416,7 @@ class CORE_EXPORT QgsArrowArrayStream
     //! Returns TRUE if this wrapper object holds a valid ArrowArray
     bool isValid() const;
 
-// clang-format off
+    // clang-format off
 #ifdef SIP_RUN
     /**
      * Export this stream as an Arrow PyCapsule.
@@ -467,7 +467,7 @@ class CORE_EXPORT QgsArrowArrayStream
      * Create a QgsArrowArrayStream from any object implementing __arrow_c_stream__().
      *
      * \param obj An object implementing the Arrow PyCapsule interface (e.g., pyarrow.RecordBatchReader)
-                  or a capsule directly.
+     *            or a capsule directly.
      * \returns A new QgsArrowArrayStream
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
      * \since QGIS 4.0
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsArrowArrayStream
     QgsArrowArrayStream( const QgsArrowArrayStream &other );
 #endif
 
-// clang-format on
+    // clang-format on
 };
 
 /**
