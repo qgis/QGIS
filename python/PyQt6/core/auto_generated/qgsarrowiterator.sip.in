@@ -168,6 +168,66 @@ Arrow-compatible libraries.
     }
 %End
 
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+%Docstring
+Create a QgsArrowSchema from any object implementing
+__arrow_c_schema__().
+
+:param obj: An object implementing the Arrow PyCapsule interface (e.g.,
+            pyarrow.Schema), or a PyCapsule directly. If obj is already
+            a QgsArrowSchema, returns it unchanged.
+
+:return: A QgsArrowSchema (the same object if already a QgsArrowSchema,
+         otherwise a new one).
+
+:raises TypeError: if obj does not implement the Arrow PyCapsule
+                   interface.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    // Check if it has __arrow_c_schema__ method
+    if ( PyObject_HasAttrString( a0, "__arrow_c_schema__" ) )
+    {
+      PyObject *method = PyObject_GetAttrString( a0, "__arrow_c_schema__" );
+      if ( method )
+      {
+        PyObject *capsule = PyObject_CallObject( method, nullptr );
+        Py_DECREF( method );
+        if ( capsule )
+        {
+          if ( PyCapsule_CheckExact( capsule ) && PyCapsule_IsValid( capsule, "arrow_schema" ) )
+          {
+            struct ArrowSchema *capsuleSchema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( capsule, "arrow_schema" ) );
+            QgsArrowSchema *newSchema = new QgsArrowSchema();
+            memcpy(newSchema->schema(), capsuleSchema, sizeof(struct ArrowSchema));
+            capsuleSchema->release = nullptr;
+            sipRes = sipConvertFromNewType( newSchema, sipType_QgsArrowSchema, nullptr );
+          }
+          else
+          {
+            PyErr_SetString( PyExc_TypeError, "__arrow_c_schema__() did not return a valid arrow_schema PyCapsule" );
+            sipIsErr = 1;
+          }
+          Py_DECREF( capsule );
+        }
+        else
+        {
+          sipIsErr = 1; // Exception already set by PyObject_CallObject
+        }
+      }
+      else
+      {
+        sipIsErr = 1; // Exception already set
+      }
+    }
+    else
+    {
+      PyErr_Format( PyExc_TypeError, "Expected an object implementing __arrow_c_schema__(), got %s", Py_TYPE( a0 )->tp_name );
+      sipIsErr = 1;
+    }
+%End
+
 };
 
 class QgsArrowArray
@@ -323,6 +383,65 @@ geopandas, and other Arrow-compatible libraries.
         free( exportedStream );
         sipIsErr = 1;
       }
+    }
+%End
+
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+%Docstring
+Create a QgsArrowArrayStream from any object implementing
+__arrow_c_stream__().
+
+:param obj: An object implementing the Arrow PyCapsule interface (e.g.,
+            pyarrow.RecordBatchReader). If obj is already a
+            QgsArrowArrayStream, returns it unchanged.
+
+:return: A QgsArrowArrayStream (the same object if already a
+         QgsArrowArrayStream, otherwise a new one).
+
+:raises TypeError: if obj does not implement the Arrow PyCapsule
+                   interface.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    // Check if it has __arrow_c_stream__ method
+    if ( PyObject_HasAttrString( a0, "__arrow_c_stream__" ) )
+    {
+      PyObject *method = PyObject_GetAttrString( a0, "__arrow_c_stream__" );
+      if ( method )
+      {
+        PyObject *capsule = PyObject_CallObject( method, nullptr );
+        Py_DECREF( method );
+        if ( capsule )
+        {
+          if ( PyCapsule_CheckExact( capsule ) && PyCapsule_IsValid( capsule, "arrow_array_stream" ) )
+          {
+            struct ArrowArrayStream *capsuleStream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( capsule, "arrow_array_stream" ) );
+            QgsArrowArrayStream *newStream = new QgsArrowArrayStream();
+            memcpy(newStream->arrayStream(), capsuleStream, sizeof(struct ArrowArrayStream));
+            sipRes = sipConvertFromNewType( newStream, sipType_QgsArrowArrayStream, nullptr );
+          }
+          else
+          {
+            PyErr_SetString( PyExc_TypeError, "__arrow_c_stream__() did not return a valid arrow_array_stream PyCapsule" );
+            sipIsErr = 1;
+          }
+          Py_DECREF( capsule );
+        }
+        else
+        {
+          sipIsErr = 1; // Exception already set by PyObject_CallObject
+        }
+      }
+      else
+      {
+        sipIsErr = 1; // Exception already set
+      }
+    }
+    else
+    {
+      PyErr_Format( PyExc_TypeError, "Expected an object implementing __arrow_c_stream__(), got %s", Py_TYPE( a0 )->tp_name );
+      sipIsErr = 1;
     }
 %End
 

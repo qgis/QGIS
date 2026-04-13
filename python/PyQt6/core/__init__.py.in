@@ -145,42 +145,6 @@ QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
 
 
-@classmethod
-def _arrow_schema_from_arrow(cls, obj):
-    """
-    Create a QgsArrowSchema from any object implementing __arrow_c_schema__().
-
-    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.Schema),
-                or a PyCapsule directly.
-    :returns: A new QgsArrowSchema.
-    """
-    import pyarrow as pa
-
-    if isinstance(obj, cls):
-        return obj
-
-    # Handle PyCapsule directly (result of calling __arrow_c_schema__())
-    if type(obj).__name__ == "PyCapsule":
-        pa_schema = pa.Schema._import_from_c_capsule(obj)
-        schema = cls()
-        pa_schema._export_to_c(schema.cSchemaAddress())
-        return schema
-
-    if not hasattr(obj, "__arrow_c_schema__"):
-        raise TypeError(
-            f"Expected an object implementing __arrow_c_schema__(), got {type(obj).__name__}"
-        )
-
-    # Import via pyarrow to handle the capsule protocol
-    pa_schema = pa.schema(obj)
-    schema = cls()
-    pa_schema._export_to_c(schema.cSchemaAddress())
-    return schema
-
-
-QgsArrowSchema.fromArrow = _arrow_schema_from_arrow
-
-
 # Wrap QgsArrowIterator.setSchema to accept objects with __arrow_c_schema__
 _original_setSchema = QgsArrowIterator.setSchema
 
@@ -250,34 +214,6 @@ def _vector_layer_stream_export(self, requested_schema=None):
 
 
 QgsVectorLayer.__arrow_c_stream__ = _vector_layer_stream_export
-
-
-@classmethod
-def _arrow_array_stream_from_arrow(cls, obj):
-    """
-    Create a QgsArrowArrayStream from any object implementing __arrow_c_stream__().
-
-    :param obj: An object implementing the Arrow PyCapsule interface (e.g., pyarrow.RecordBatchReader).
-    :returns: A new QgsArrowArrayStream.
-    """
-    import pyarrow as pa
-
-    if isinstance(obj, cls):
-        return obj
-
-    if not hasattr(obj, "__arrow_c_stream__"):
-        raise TypeError(
-            f"Expected an object implementing __arrow_c_stream__(), got {type(obj).__name__}"
-        )
-
-    # Import via pyarrow to handle the capsule protocol
-    reader = pa.RecordBatchReader.from_stream(obj)
-    stream = cls()
-    reader._export_to_c(stream.cArrayStreamAddress())
-    return stream
-
-
-QgsArrowArrayStream.fromArrow = _arrow_array_stream_from_arrow
 
 
 # Classes patched
