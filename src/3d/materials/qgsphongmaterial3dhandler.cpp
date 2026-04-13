@@ -308,6 +308,8 @@ QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
     const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "DATA_DEFINED" } ) );
     shaderProgram->setFragmentShaderCode( finalFragmentShaderCode );
+    effect->addParameter( new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( phongSettings->shininess() ) ) );
+    effect->addParameter( new Qt3DRender::QParameter( u"opacity"_s, static_cast<float>( phongSettings->opacity() ) ) );
   }
   else
   {
@@ -315,38 +317,8 @@ QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     const QUrl urlVert( u"qrc:/shaders/default.vert"_s );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
     shaderProgram->setFragmentShaderCode( fragmentShaderCode );
-
-    const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
-    const QColor diffuse = context.isSelected() ? context.selectionColor() : phongSettings->diffuse();
-
-    effect->addParameter( new Qt3DRender::QParameter(
-      u"ambientColor"_s,
-      QColor::fromRgbF(
-        static_cast< float >( ambient.redF() * phongSettings->ambientCoefficient() ),
-        static_cast< float >( ambient.greenF() * phongSettings->ambientCoefficient() ),
-        static_cast< float >( ambient.blueF() * phongSettings->ambientCoefficient() )
-      )
-    ) );
-    effect->addParameter( new Qt3DRender::QParameter(
-      u"diffuseColor"_s,
-      QColor::fromRgbF(
-        static_cast< float >( diffuse.redF() * phongSettings->diffuseCoefficient() ),
-        static_cast< float >( diffuse.greenF() * phongSettings->diffuseCoefficient() ),
-        static_cast< float >( diffuse.blueF() * phongSettings->diffuseCoefficient() )
-      )
-    ) );
-    effect->addParameter( new Qt3DRender::QParameter(
-      u"specularColor"_s,
-      QColor::fromRgbF(
-        static_cast< float >( phongSettings->specular().redF() * phongSettings->specularCoefficient() ),
-        static_cast< float >( phongSettings->specular().greenF() * phongSettings->specularCoefficient() ),
-        static_cast< float >( phongSettings->specular().blueF() * phongSettings->specularCoefficient() )
-      )
-    ) );
+    addParametersToEffect( effect, settings, context );
   }
-
-  effect->addParameter( new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( phongSettings->shininess() ) ) );
-  effect->addParameter( new Qt3DRender::QParameter( u"opacity"_s, static_cast<float>( phongSettings->opacity() ) ) );
 
   effect->addTechnique( technique );
   material->setEffect( effect );

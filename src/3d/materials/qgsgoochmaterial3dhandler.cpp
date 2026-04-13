@@ -64,8 +64,22 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
   return nullptr;
 }
 
-void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
-{}
+void QgsGoochMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
+{
+  const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
+  Q_ASSERT( goochSettings );
+
+  const QColor diffuseColor = context.isSelected() ? context.selectionColor() : goochSettings->diffuse();
+
+  effect->addParameter( new Qt3DRender::QParameter( u"kd"_s, diffuseColor ) );
+  effect->addParameter( new Qt3DRender::QParameter( u"ks"_s, goochSettings->specular() ) );
+  effect->addParameter( new Qt3DRender::QParameter( u"kblue"_s, goochSettings->cool() ) );
+  effect->addParameter( new Qt3DRender::QParameter( u"kyellow"_s, goochSettings->warm() ) );
+
+  effect->addParameter( new Qt3DRender::QParameter( u"shininess"_s, goochSettings->shininess() ) );
+  effect->addParameter( new Qt3DRender::QParameter( u"alpha"_s, goochSettings->alpha() ) );
+  effect->addParameter( new Qt3DRender::QParameter( u"beta"_s, goochSettings->beta() ) );
+}
 
 QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
@@ -218,6 +232,9 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
 
     const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "DATA_DEFINED" } ) );
     shaderProgram->setFragmentShaderCode( finalFragmentShaderCode );
+    technique->addParameter( new Qt3DRender::QParameter( u"shininess"_s, goochSettings->shininess() ) );
+    technique->addParameter( new Qt3DRender::QParameter( u"alpha"_s, goochSettings->alpha() ) );
+    technique->addParameter( new Qt3DRender::QParameter( u"beta"_s, goochSettings->beta() ) );
   }
   else
   {
@@ -225,20 +242,11 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     const QUrl urlVert( u"qrc:/shaders/default.vert"_s );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
     shaderProgram->setFragmentShaderCode( fragmentShaderCode );
-
-    const QColor diffuseColor = context.isSelected() ? context.selectionColor() : goochSettings->diffuse();
-    effect->addParameter( new Qt3DRender::QParameter( u"kd"_s, diffuseColor ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"ks"_s, goochSettings->specular() ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kblue"_s, goochSettings->cool() ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kyellow"_s, goochSettings->warm() ) );
+    addParametersToEffect( effect, settings, context );
   }
 
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
-
-  technique->addParameter( new Qt3DRender::QParameter( u"shininess"_s, goochSettings->shininess() ) );
-  technique->addParameter( new Qt3DRender::QParameter( u"alpha"_s, goochSettings->alpha() ) );
-  technique->addParameter( new Qt3DRender::QParameter( u"beta"_s, goochSettings->beta() ) );
 
   effect->addTechnique( technique );
   material->setEffect( effect );
