@@ -7319,6 +7319,13 @@ template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = n
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   int intValue = static_cast<int>( value );
+  if ( intValue == 0 )
+  {
+    if ( returnOk )
+      *returnOk = true;
+    return u"0"_s;
+  }
+
   const QByteArray ba = metaEnum.valueToKeys( intValue );
   // check that the int value does correspond to a flag
   // see https://stackoverflow.com/a/68495949/1548052
@@ -7345,6 +7352,14 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
       *returnOk = false;
     }
     return defaultValue;
+  }
+  else if ( keys == "0"_L1 )
+  {
+    if ( returnOk )
+    {
+      *returnOk = true;
+    }
+    return T();
   }
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
