@@ -501,11 +501,23 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_schema_back = pa.schema(qgs_schema)
         self.assertEqual(pa_schema_back, pa_schema)
 
+        # Test creating from a capsule directly
+        qgs_schema = QgsArrowSchema.fromArrow(pa_schema.__arrow_c_schema__())
+        self.assertTrue(qgs_schema.isValid())
+        pa_schema_back = pa.schema(qgs_schema)
+        self.assertEqual(pa_schema_back, pa_schema)
+
         # Test error on invalid input
-        with self.assertRaises(TypeError):
+        with self.assertRaisesRegex(
+            TypeError, "Expected an object implementing __arrow_c_schema__"
+        ):
             QgsArrowSchema.fromArrow("not a schema")
 
-        # TODO: test where an object's dunder method returns something funny
+        # Test error when an exporter's protocol method returns invalid capsule
+        with self.assertRaisesRegex(
+            TypeError, "did not return a valid arrow_schema PyCapsule"
+        ):
+            QgsArrowSchema.fromArrow(BadArrowExporter())
 
     def test_arrow_schema_export_to_c_raw_address(self):
         pa_schema = pa.schema({"x": pa.float64(), "y": pa.float64()})
@@ -572,14 +584,30 @@ class TestQgsArrowIterator(QgisTestCase):
 
         # Verify by consuming the stream
         table = pa.table(qgs_stream)
-        self.assertEqual(table["a"].to_pylist(), [1, 2, 3])
-        self.assertEqual(table["b"].to_pylist(), ["x", "y", "z"])
+        self.assertEqual(
+            table, pa.table({"a": [1, 2, 3], "b": ["x", "y", "z"]}, schema=pa_schema)
+        )
+
+        # Test the capsule directly
+        reader = pa.RecordBatchReader.from_batches(pa_schema, [batch])
+        qgs_stream = QgsArrowArrayStream.fromArrow(reader.__arrow_c_stream__())
+        self.assertTrue(qgs_stream.isValid())
+        table = pa.table(qgs_stream)
+        self.assertEqual(
+            table, pa.table({"a": [1, 2, 3], "b": ["x", "y", "z"]}, schema=pa_schema)
+        )
 
         # Test error on invalid input
-        with self.assertRaises(TypeError):
+        with self.assertRaisesRegex(
+            TypeError, "Expected an object implementing __arrow_c_stream__"
+        ):
             QgsArrowArrayStream.fromArrow("not a stream")
 
-        # TODO: check something with invalid output of the dunder
+        # Test error when an exporter's protocol method returns invalid capsule
+        with self.assertRaisesRegex(
+            TypeError, "did not return a valid arrow_array_stream PyCapsule"
+        ):
+            QgsArrowArrayStream.fromArrow(BadArrowExporter())
 
     def test_iterator_arrow_c_stream_protocol(self):
         layer = self.create_test_layer_single_field(QMetaType.Type.Int, [1, 2, 3])
@@ -624,6 +652,18 @@ class TestQgsArrowIterator(QgisTestCase):
             list(df.geometry.to_wkt()),
             [f"POINT ({i} {i + 20})" for i in range(10)],
         )
+
+
+class BadArrowExporter:
+    """Object implementing export methods that return invalid objects
+    for testing.
+    """
+
+    def __arrow_c_schema__(self):
+        return "not a capsule"
+
+    def __arrow_c_stream__(self):
+        return "not a capsule"
 
 
 if __name__ == "__main__":
