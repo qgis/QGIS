@@ -152,6 +152,7 @@ bool QgsExtrudeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 #endif
 }
 
+#ifdef WITH_SFCGAL
 std::optional<QgsGeometry> QgsExtrudeAlgorithm::extrudePolygon( const QgsAbstractGeometry *polygon, const QgsVector3D &extrusion, const QgsFeatureId &featureId, QgsProcessingFeedback *feedback )
 {
   try
@@ -171,6 +172,7 @@ std::optional<QgsGeometry> QgsExtrudeAlgorithm::extrudePolygon( const QgsAbstrac
     return std::nullopt;
   }
 }
+#endif
 
 QgsFeatureList QgsExtrudeAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {

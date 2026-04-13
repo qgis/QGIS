@@ -53,7 +53,9 @@ class QgsExtrudeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+#ifdef WITH_SFCGAL
     std::optional<QgsGeometry> extrudePolygon( const QgsAbstractGeometry *polygon, const QgsVector3D &extrusion, const QgsFeatureId &featureId, QgsProcessingFeedback *feedback );
+#endif
 
   private:
     double mExtrudeX = 0.0;
