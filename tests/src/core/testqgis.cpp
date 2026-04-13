@@ -763,6 +763,11 @@ void TestQgis::testQgsFlagValueToKeys()
   QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
+
+  // with no flags set
+  filters = QgsFieldProxyModel::Filters();
+  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"0"_s );
+  QCOMPARE( ok, true );
 }
 
 void TestQgis::testQgsFlagKeysToValue()
@@ -789,6 +794,13 @@ void TestQgis::testQgsFlagKeysToValue()
   // also try with an invalid int value
   QCOMPARE( qgsFlagKeysToValue( QString::number( -1 ), defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
+
+  // 0 = no flags set
+  QCOMPARE( qgsFlagKeysToValue( u"0"_s, defaultValue, true, &ok ), QgsFieldProxyModel::Filters() );
+  QCOMPARE( ok, true );
+  // "0" should work even if we aren't accepting ints
+  QCOMPARE( qgsFlagKeysToValue( u"0"_s, defaultValue, false, &ok ), QgsFieldProxyModel::Filters() );
+  QCOMPARE( ok, true );
 }
 
 void TestQgis::testQMapQVariantList()
