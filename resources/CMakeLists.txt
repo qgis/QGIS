@@ -79,6 +79,18 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/yarn_commands.cmake
   )
+
+  # see outputDir in: resources/server/src/landingpage/vue.config.js
+  cmake_path(
+    APPEND LANDINGPAGE_OUTPUT_PATH
+    "../../api/ogc/static/landingpage"
+    OUTPUT_VARIABLE LANDINGPAGE_YARN_OUTPUTDIR
+  )
+
+  install(
+    DIRECTORY ${LANDINGPAGE_YARN_OUTPUTDIR}
+    DESTINATION ${QGIS_DATA_DIR}/resources/server/api/ogc/static
+  )
 endif()
 
 # Apple specific handling
