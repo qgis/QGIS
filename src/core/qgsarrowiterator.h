@@ -189,8 +189,8 @@ class CORE_EXPORT QgsArrowSchema
     //! Set the index of the column in this schema that should be populated with a feature geometry
     void setGeometryColumnIndex( int geometryColumnIndex );
 
+// clang-format off
 #ifdef SIP_RUN
-    // clang-format off
     /**
      * Export this schema as an Arrow PyCapsule.
      *
@@ -292,12 +292,13 @@ class CORE_EXPORT QgsArrowSchema
       sipIsErr = 1;
     }
     % End
-    // clang-format on
 #endif
 
   private:
     struct ArrowSchema mSchema {};
     int mGeometryColumnIndex = -1;
+
+// clang-format on
 };
 
 /**
@@ -415,8 +416,8 @@ class CORE_EXPORT QgsArrowArrayStream
     //! Returns TRUE if this wrapper object holds a valid ArrowArray
     bool isValid() const;
 
+// clang-format off
 #ifdef SIP_RUN
-    // clang-format off
     /**
      * Export this stream as an Arrow PyCapsule.
      *
@@ -521,7 +522,6 @@ class CORE_EXPORT QgsArrowArrayStream
       sipIsErr = 1;
     }
     % End
-    // clang-format on
 #endif
 
   private:
@@ -530,6 +530,8 @@ class CORE_EXPORT QgsArrowArrayStream
 #ifdef SIP_RUN
     QgsArrowArrayStream( const QgsArrowArrayStream &other );
 #endif
+
+// clang-format on
 };
 
 /**
