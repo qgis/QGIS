@@ -189,6 +189,53 @@ class CORE_EXPORT QgsArrowSchema
     //! Set the index of the column in this schema that should be populated with a feature geometry
     void setGeometryColumnIndex( int geometryColumnIndex );
 
+#ifdef SIP_RUN
+    // clang-format off
+    /**
+     * Export this schema as an Arrow PyCapsule.
+     *
+     * This implements the Arrow PyCapsule interface (__arrow_c_schema__),
+     * allowing QgsArrowSchema to be consumed directly by pyarrow
+     * and other Arrow-compatible libraries.
+     *
+     * \returns A PyCapsule containing the ArrowSchema pointer.
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT __arrow_c_schema__();
+    % MethodCode
+    struct ArrowSchema *exportedSchema = static_cast<struct ArrowSchema *>( malloc( sizeof( struct ArrowSchema ) ) );
+    if ( !exportedSchema )
+    {
+      PyErr_SetString( PyExc_MemoryError, "Failed to allocate ArrowSchema" );
+      sipIsErr = 1;
+    }
+    else
+    {
+      memset( exportedSchema, 0, sizeof( struct ArrowSchema ) );
+      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedSchema ) );
+      sipRes = PyCapsule_New( exportedSchema, "arrow_schema", []( PyObject *capsule )
+      {
+        struct ArrowSchema *schema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( capsule, "arrow_schema" ) );
+        if ( schema && schema->release )
+        {
+          schema->release( schema );
+        }
+        free( schema );
+      } );
+      if ( !sipRes )
+      {
+        if ( exportedSchema->release )
+        {
+          exportedSchema->release( exportedSchema );
+        }
+        free( exportedSchema );
+        sipIsErr = 1;
+      }
+    }
+    % End
+    // clang-format on
+#endif
+
   private:
     struct ArrowSchema mSchema {};
     int mGeometryColumnIndex = -1;
@@ -308,6 +355,55 @@ class CORE_EXPORT QgsArrowArrayStream
 
     //! Returns TRUE if this wrapper object holds a valid ArrowArray
     bool isValid() const;
+
+#ifdef SIP_RUN
+    // clang-format off
+    /**
+     * Export this stream as an Arrow PyCapsule.
+     *
+     * This implements the Arrow PyCapsule interface (__arrow_c_stream__),
+     * allowing QgsArrowArrayStream to be consumed directly by pyarrow,
+     * geopandas, and other Arrow-compatible libraries.
+     *
+     * \param requested_schema Optional schema to request (currently ignored).
+     * \returns A PyCapsule containing the ArrowArrayStream pointer.
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT __arrow_c_stream__( SIP_PYOBJECT requested_schema = Py_None );
+    % MethodCode
+    Q_UNUSED( a0 ); // requested_schema is not used but required by the protocol signature
+    struct ArrowArrayStream *exportedStream = static_cast<struct ArrowArrayStream *>( malloc( sizeof( struct ArrowArrayStream ) ) );
+    if ( !exportedStream )
+    {
+      PyErr_SetString( PyExc_MemoryError, "Failed to allocate ArrowArrayStream" );
+      sipIsErr = 1;
+    }
+    else
+    {
+      memset( exportedStream, 0, sizeof( struct ArrowArrayStream ) );
+      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedStream ) );
+      sipRes = PyCapsule_New( exportedStream, "arrow_array_stream", []( PyObject *capsule )
+      {
+        struct ArrowArrayStream *stream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( capsule, "arrow_array_stream" ) );
+        if ( stream && stream->release )
+        {
+          stream->release( stream );
+        }
+        free( stream );
+      } );
+      if ( !sipRes )
+      {
+        if ( exportedStream->release )
+        {
+          exportedStream->release( exportedStream );
+        }
+        free( exportedStream );
+        sipIsErr = 1;
+      }
+    }
+    % End
+    // clang-format on
+#endif
 
   private:
     struct ArrowArrayStream mArrayStream {};

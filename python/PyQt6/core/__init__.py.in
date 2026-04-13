@@ -145,22 +145,6 @@ QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
 QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
 
 
-def _arrow_schema_export(self):
-    """
-    Export this schema as an Arrow PyCapsule.
-
-    This implements the Arrow PyCapsule interface (__arrow_c_schema__),
-    allowing QgsArrowSchema to be consumed directly by pyarrow
-    and other Arrow-compatible libraries.
-
-    :returns: A PyCapsule containing the ArrowSchema pointer.
-    """
-    import pyarrow as pa
-
-    field = pa.Field._import_from_c(self.cSchemaAddress())
-    return field.__arrow_c_schema__()
-
-
 @classmethod
 def _arrow_schema_from_arrow(cls, obj):
     """
@@ -194,7 +178,6 @@ def _arrow_schema_from_arrow(cls, obj):
     return schema
 
 
-QgsArrowSchema.__arrow_c_schema__ = _arrow_schema_export
 QgsArrowSchema.fromArrow = _arrow_schema_from_arrow
 
 
@@ -269,23 +252,6 @@ def _vector_layer_stream_export(self, requested_schema=None):
 QgsVectorLayer.__arrow_c_stream__ = _vector_layer_stream_export
 
 
-def _arrow_array_stream_export(self, requested_schema=None):
-    """
-    Export this stream as an Arrow PyCapsule.
-
-    This implements the Arrow PyCapsule interface (__arrow_c_stream__),
-    allowing QgsArrowArrayStream to be consumed directly by pyarrow,
-    geopandas, and other Arrow-compatible libraries.
-
-    :param requested_schema: Optional schema to request (currently ignored).
-    :returns: A PyCapsule containing the ArrowArrayStream pointer.
-    """
-    import pyarrow as pa
-
-    reader = pa.RecordBatchReader._import_from_c(self.cArrayStreamAddress())
-    return reader.__arrow_c_stream__()
-
-
 @classmethod
 def _arrow_array_stream_from_arrow(cls, obj):
     """
@@ -311,7 +277,6 @@ def _arrow_array_stream_from_arrow(cls, obj):
     return stream
 
 
-QgsArrowArrayStream.__arrow_c_stream__ = _arrow_array_stream_export
 QgsArrowArrayStream.fromArrow = _arrow_array_stream_from_arrow
 
 
