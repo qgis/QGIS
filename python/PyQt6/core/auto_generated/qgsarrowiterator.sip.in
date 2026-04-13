@@ -134,7 +134,7 @@ Arrow-compatible libraries.
 
 :return: A PyCapsule containing the ArrowSchema pointer.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 %MethodCode
     struct ArrowSchema *exportedSchema = static_cast<struct ArrowSchema *>( malloc( sizeof( struct ArrowSchema ) ) );
@@ -145,8 +145,8 @@ Arrow-compatible libraries.
     }
     else
     {
-      memset( exportedSchema, 0, sizeof( struct ArrowSchema ) );
-      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedSchema ) );
+      memcpy( exportedSchema, sipCpp->schema(), sizeof( struct ArrowSchema ) );
+      sipCpp->schema()->release = nullptr;
       sipRes = PyCapsule_New( exportedSchema, "arrow_schema", []( PyObject *capsule )
       {
         struct ArrowSchema *schema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( capsule, "arrow_schema" ) );
@@ -181,7 +181,7 @@ __arrow_c_schema__().
 :raises TypeError: if obj does not implement the Arrow PyCapsule
                    interface.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 %MethodCode
     if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_schema" ) ) {
@@ -355,7 +355,7 @@ geopandas, and other Arrow-compatible libraries.
 
 :return: A PyCapsule containing the ArrowArrayStream pointer.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 %MethodCode
     Q_UNUSED( a0 ); // requested_schema is not used but required by the protocol signature
@@ -367,8 +367,8 @@ geopandas, and other Arrow-compatible libraries.
     }
     else
     {
-      memset( exportedStream, 0, sizeof( struct ArrowArrayStream ) );
-      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedStream ) );
+      memcpy( exportedStream, sipCpp->arrayStream(), sizeof( struct ArrowArrayStream ) );
+      sipCpp->arrayStream()->release = nullptr;
       sipRes = PyCapsule_New( exportedStream, "arrow_array_stream", []( PyObject *capsule )
       {
         struct ArrowArrayStream *stream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( capsule, "arrow_array_stream" ) );
@@ -403,7 +403,7 @@ __arrow_c_stream__().
 :raises TypeError: if obj does not implement the Arrow PyCapsule
                    interface.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 %MethodCode
     if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_array_stream" ) )

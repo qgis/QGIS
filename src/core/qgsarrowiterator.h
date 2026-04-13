@@ -199,7 +199,7 @@ class CORE_EXPORT QgsArrowSchema
      * and other Arrow-compatible libraries.
      *
      * \returns A PyCapsule containing the ArrowSchema pointer.
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     SIP_PYOBJECT __arrow_c_schema__();
     % MethodCode
@@ -211,8 +211,8 @@ class CORE_EXPORT QgsArrowSchema
     }
     else
     {
-      memset( exportedSchema, 0, sizeof( struct ArrowSchema ) );
-      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedSchema ) );
+      memcpy( exportedSchema, sipCpp->schema(), sizeof( struct ArrowSchema ) );
+      sipCpp->schema()->release = nullptr;
       sipRes = PyCapsule_New( exportedSchema, "arrow_schema", []( PyObject *capsule )
       {
         struct ArrowSchema *schema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( capsule, "arrow_schema" ) );
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsArrowSchema
      *            or a PyCapsule directly.
      * \returns A new QgsArrowSchema
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
     % MethodCode
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsArrowArrayStream
      *
      * \param requested_schema Optional schema to request (currently ignored).
      * \returns A PyCapsule containing the ArrowArrayStream pointer.
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     SIP_PYOBJECT __arrow_c_stream__( SIP_PYOBJECT requested_schema = Py_None );
     % MethodCode
@@ -440,8 +440,8 @@ class CORE_EXPORT QgsArrowArrayStream
     }
     else
     {
-      memset( exportedStream, 0, sizeof( struct ArrowArrayStream ) );
-      sipCpp->exportToAddress( reinterpret_cast<unsigned long long>( exportedStream ) );
+      memcpy( exportedStream, sipCpp->arrayStream(), sizeof( struct ArrowArrayStream ) );
+      sipCpp->arrayStream()->release = nullptr;
       sipRes = PyCapsule_New( exportedStream, "arrow_array_stream", []( PyObject *capsule )
       {
         struct ArrowArrayStream *stream = static_cast<struct ArrowArrayStream *>( PyCapsule_GetPointer( capsule, "arrow_array_stream" ) );
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsArrowArrayStream
      *            or a capsule directly.
      * \returns A new QgsArrowArrayStream
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
     static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
     % MethodCode
