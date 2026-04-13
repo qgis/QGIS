@@ -211,6 +211,7 @@ def _arrow_iterator_set_schema(self, schema):
     """
     if not isinstance(schema, QgsArrowSchema):
         schema = QgsArrowSchema.fromArrow(schema)
+
     return _original_setSchema(self, schema)
 
 
@@ -235,6 +236,7 @@ def _arrow_iterator_stream_export(self, requested_schema=None):
         iterator_copy = QgsArrowIterator(self)
         iterator_copy.setSchema(requested_schema)
         return iterator_copy.toArrayStream().__arrow_c_stream__()
+
     return self.toArrayStream().__arrow_c_stream__()
 
 
