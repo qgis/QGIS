@@ -6589,4 +6589,204 @@
       </definition>
     </material>
   </materialsettings>
+  <symbols3d>
+    <symbol3d name="Birch tree" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="66,106,49,255" metalness="0" roughness="0.5" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/birch_tree.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="10 0 0 0 0 10 0 0 0 0 10 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Broad-leafed tree" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="18,93,44,255" metalness="0" roughness="1" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/broad-leaved_tree.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="15 0 0 0 0 15 0 0 0 0 15 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Car" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="243,28,31,255" metalness="0.433" roughness="0.5" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/car.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="4 0 0 0 0 4 0 0 0 0 4 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Conifer tree" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="53,114,74,255" metalness="0" roughness="1" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/conifer_tree.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="10 0 0 0 0 10 0 0 0 0 10 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="House" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="149,96,43,255" metalness="0" roughness="1" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/house.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="10 0 0 0 0 10 0 0 0 0 10 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Plant" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="62,111,86,255" metalness="0" roughness="1" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/plant.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="6 0 0 0 0 6 0 0 0 0 6 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Tractor" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="120,177,55,255" metalness="0.44799999999999995" roughness="0.50700000000000001" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/tractor.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="6 0 0 0 0 6 0 0 0 0 6 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Traffic cone" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="255,57,0,255" metalness="0" roughness="1" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/cone.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="4 0 0 0 0 4 0 0 0 0 4 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+    <symbol3d name="Truck" favorite="1" addedVersion="40200">
+      <definition material_type="metalrough" shape="model" type="point">
+        <data alt-clamping="terrain"/>
+        <material base="113,143,255,255" metalness="0.44799999999999995" roughness="0.50700000000000001" type="metalrough">
+          <data-defined-properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </data-defined-properties>
+        </material>
+        <shape-properties>
+          <Option type="Map">
+            <Option name="forwardAxis" type="QString" value="x"/>
+            <Option name="model" type="QString" value="inbuilt:/3d/truck.obj"/>
+            <Option name="upAxis" type="QString" value="y"/>
+          </Option>
+        </shape-properties>
+        <transform matrix="4 0 0 0 0 4 0 0 0 0 4 0 0 0 0 1"/>
+      </definition>
+    </symbol3d>
+  </symbols3d>
 </qgis_style>
