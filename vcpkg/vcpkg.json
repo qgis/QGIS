@@ -39,7 +39,8 @@
       "name": "gdal",
       "default-features": false,
       "features": [
-        "freexl"
+        "freexl",
+        "zstd"
       ]
     },
     "geos",
@@ -94,12 +95,6 @@
     "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
-    {
-      "name": "tiff",
-      "features": [
-        "zstd"
-      ]
-    },
     "zlib",
     "zstd"
   ],
