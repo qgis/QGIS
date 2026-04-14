@@ -33,9 +33,9 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 {
   setupUi( this );
 #if ENABLE_PANORAMIC_SKYBOX
-  skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ), QVariant::fromValue( QgsSkyboxEntity::SkyboxType::Panoramic ) );
+  skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ), QVariant::fromValue( Qgis::SkyboxType::Panoramic ) );
 #endif
-  skyboxTypeComboBox->addItem( tr( "Distinct Faces" ), QVariant::fromValue( QgsSkyboxEntity::SkyboxType::DistinctTextures ) );
+  skyboxTypeComboBox->addItem( tr( "Distinct Faces" ), QVariant::fromValue( Qgis::SkyboxType::DistinctTextures ) );
   connect( skyboxTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
 
   showSkyboxSettings( 0 );
@@ -60,7 +60,7 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
-  settings.setSkyboxType( skyboxTypeComboBox->currentData().value< QgsSkyboxEntity::SkyboxType >() );
+  settings.setSkyboxType( skyboxTypeComboBox->currentData().value< Qgis::SkyboxType >() );
 #if ENABLE_PANORAMIC_SKYBOX
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
 #endif
@@ -75,17 +75,17 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 
 void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
 {
-  const QgsSkyboxEntity::SkyboxType type = skyboxTypeComboBox->currentData().value< QgsSkyboxEntity::SkyboxType >();
+  const Qgis::SkyboxType type = skyboxTypeComboBox->currentData().value< Qgis::SkyboxType >();
   bool showPanoramicWidgets = false;
   bool showDistinctFacesWidgets = false;
   switch ( type )
   {
 #if ENABLE_PANORAMIC_SKYBOX
-    case QgsSkyboxEntity::SkyboxType::Panoramic:
+    case Qgis::SkyboxType::Panoramic:
       showPanoramicWidgets = true;
       break;
 #endif
-    case QgsSkyboxEntity::SkyboxType::DistinctTextures:
+    case Qgis::SkyboxType::DistinctTextures:
       showDistinctFacesWidgets = true;
       break;
   }

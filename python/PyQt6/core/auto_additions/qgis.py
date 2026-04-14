@@ -7779,6 +7779,17 @@ Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 # --
 Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.SkyboxType.DistinctTextures.__doc__ = "Cube map built from distinct textures"
+Qgis.SkyboxType.__doc__ = """Skybox types for 3D scenes.
+
+.. versionadded:: 4.2
+
+* ``DistinctTextures``: Cube map built from distinct textures
+
+"""
+# --
+Qgis.SkyboxType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
 Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"

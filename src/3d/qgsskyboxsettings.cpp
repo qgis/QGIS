@@ -49,10 +49,10 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
   const QgsPathResolver &pathResolver = context.pathResolver();
   const QString skyboxTypeStr = element.attribute( u"skybox-type"_s );
   if ( skyboxTypeStr == "Distinct Faces"_L1 )
-    mSkyboxType = QgsSkyboxEntity::SkyboxType::DistinctTextures;
+    mSkyboxType = Qgis::SkyboxType::DistinctTextures;
 #if ENABLE_PANORAMIC_SKYBOX
   else if ( skyboxTypeStr == "Panoramic Texture"_L1 )
-    mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
+    mSkyboxType = Qgis::SkyboxType::Panoramic;
   mPanoramicTexturePath = pathResolver.readPath( element.attribute( u"panoramic-texture-path"_s ) );
 #endif
   mCubeMapFacesPaths.clear();
@@ -68,12 +68,12 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   switch ( mSkyboxType )
   {
-    case QgsSkyboxEntity::SkyboxType::DistinctTextures:
+    case Qgis::SkyboxType::DistinctTextures:
       element.setAttribute( u"skybox-type"_s, u"Distinct Faces"_s );
       break;
 
 #if ENABLE_PANORAMIC_SKYBOX
-    case QgsSkyboxEntity::SkyboxType::Panoramic:
+    case Qgis::SkyboxType::Panoramic:
       element.setAttribute( u"skybox-type"_s, u"Panoramic Texture"_s );
       break;
 #endif
