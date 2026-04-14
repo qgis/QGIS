@@ -252,6 +252,10 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     //! Remove results
     void clear();
 
+    void limitResults();
+
+    int* getMaxResults();
+
     void updateViewModes();
 
     void show();

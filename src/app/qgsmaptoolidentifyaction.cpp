@@ -153,9 +153,11 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       resultsDialog()->QDialog::show();
     
+    int* pmaxResults = resultsDialog()->getMaxResults();
+
     int count = 1;
     QList<IdentifyResult>::const_iterator result = results.constBegin();
-    while (result != results.constEnd() && count <= 3) {
+    while (result != results.constEnd() && count <= *pmaxResults) {
       resultsDialog()->addFeature( *result );
       ++result;
       ++count;

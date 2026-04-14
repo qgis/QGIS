@@ -27,6 +27,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFont>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMenu>
 #include <QMenuBar>
@@ -130,6 +131,8 @@ const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidth = ne
 
 const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidthTable = new QgsSettingsEntryInteger( u"identify-column-width-table"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
+int maxResults = 20;
+int* pmaxResults = &maxResults;
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -472,6 +475,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 #endif
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
+  connect( mLimitResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::limitResults );
   connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
@@ -1864,6 +1868,21 @@ void QgsIdentifyResultsDialog::clear()
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
   mActionPrint->setDisabled( true );
+}
+
+void QgsIdentifyResultsDialog::limitResults()
+{
+  // QMessageBox::information(nullptr, "Title", "Message text here.");
+  int newMaxResults = QInputDialog::getInt(nullptr, "Limit Results", "Maximum features to display (1-1,000)", *pmaxResults, 1, 1000);
+  if (newMaxResults > *pmaxResults) {
+    QgsIdentifyResultsDialog::clear();
+  }
+  *pmaxResults = newMaxResults;
+}
+
+int* QgsIdentifyResultsDialog::getMaxResults()
+{
+  return pmaxResults;
 }
 
 void QgsIdentifyResultsDialog::updateViewModes()
