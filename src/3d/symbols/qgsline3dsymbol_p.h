@@ -37,7 +37,7 @@ class QgsVectorLayer;
 namespace Qgs3DSymbolImpl
 {
   //! factory method for QgsLine3DSymbol
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
+  QgsFeature3DHandler *handlerForLine3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 } // namespace Qgs3DSymbolImpl
 
 /// @endcond

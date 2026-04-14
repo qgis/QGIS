@@ -11,6 +11,33 @@
 
 
 
+class QgsMaterialSettingsInterface
+{
+%Docstring(signature="appended")
+Interface for 3D material settings of a symbol.
+
+Provides access to and allows modification of the 3D material settings
+associated with a symbol.
+
+Classes that manage 3D material settings must implement this interface.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsabstract3dsymbol.h"
+%End
+  public:
+    virtual ~QgsMaterialSettingsInterface();
+
+
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ ) = 0;
+%Docstring
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
+%End
+};
 
 class QgsAbstract3DSymbol
 {

@@ -10,7 +10,7 @@
 
 
 
-class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
+class QgsPoint3DSymbol : QgsAbstract3DSymbol, QgsMaterialSettingsInterface /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 3D symbol that draws point geometries as 3D objects using one of the
@@ -67,12 +67,13 @@ Sets method that determines altitude (whether to clamp to feature to
 terrain)
 %End
 
-    QgsAbstractMaterialSettings *materialSettings() const;
+    virtual QgsAbstractMaterialSettings *materialSettings() const;
+
 %Docstring
 Returns material settings used for shading of the symbol
 %End
 
-    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
 %Docstring
 Sets the ``material`` settings used for shading of the symbol.
 

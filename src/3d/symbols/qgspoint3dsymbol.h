@@ -33,7 +33,7 @@ class QgsMarkerSymbol;
  * exposed to the Python bindings as a tech preview only.
  *
  */
-class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
+class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol, public QgsMaterialSettingsInterface SIP_NODEFAULTCTORS
 {
   public:
     //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
@@ -64,14 +64,14 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material settings used for shading of the symbol
-    QgsAbstractMaterialSettings *materialSettings() const;
+    QgsAbstractMaterialSettings *materialSettings() const override;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
      *
      * Ownership of \a material is transferred to the symbol.
      */
-    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
+    virtual void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER ) override;
 
     //! Returns shape enum value from a string
     static Qgis::Point3DShape shapeFromString( const QString &shape );
