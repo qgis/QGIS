@@ -15,6 +15,10 @@
 
 #include "qgsskyboxentity.h"
 
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
+#include "qgsimagetexture.h"
+
 #include <QString>
 #include <QUrl>
 #include <Qt3DCore/QEntity>
@@ -172,11 +176,16 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   {
     const Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
     const QString texturePath = it.value();
-    Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
-    image->setFace( face );
-    image->setMirrored( false );
-    image->setSource( QUrl::fromUserInput( texturePath ) );
-    mCubeMap->addTextureImage( image );
-    mFacesTextureImages.push_back( image );
+
+    bool fitsInCache = false;
+    const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( texturePath, QSize(), true, 1.0, fitsInCache );
+    ( void ) fitsInCache;
+    if ( textureSourceImage.isNull() )
+      continue;
+
+    auto textureImage = new QgsImageTexture( textureSourceImage );
+    textureImage->setFace( face );
+    mCubeMap->addTextureImage( textureImage );
+    mFacesTextureImages.push_back( textureImage );
   }
 }

@@ -16,6 +16,7 @@
 #ifndef QGSSKYBOXENTITY_H
 #define QGSSKYBOXENTITY_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 
 #include <QMap>
@@ -131,7 +132,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   private:
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
-    QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;
+    QVector<Qt3DRender::QAbstractTextureImage *> mFacesTextureImages;
     Qt3DRender::QTextureCubeMap *mCubeMap = nullptr;
 };
 
