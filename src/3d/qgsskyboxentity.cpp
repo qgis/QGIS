@@ -88,6 +88,7 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   addComponent( mMaterial );
 }
 
+#if ENABLE_PANORAMIC_SKYBOX
 // Panoramic skybox
 
 QgsPanoramicSkyboxEntity::QgsPanoramicSkyboxEntity( const QString &texturePath, QNode *parent )
@@ -112,6 +113,8 @@ void QgsPanoramicSkyboxEntity::reloadTexture()
   mLoadedTexture->setSource( QUrl::fromUserInput( mTexturePath ) );
 }
 
+#endif
+
 // 6 faces skybox
 
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
@@ -127,6 +130,11 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const Q
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = negY;
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = negZ;
   reloadTexture();
+}
+
+QgsSkyboxEntity::SkyboxType QgsCubeFacesSkyboxEntity::type() const
+{
+  return SkyboxType::DistinctTextures;
 }
 
 void QgsCubeFacesSkyboxEntity::init()

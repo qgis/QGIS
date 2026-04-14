@@ -45,6 +45,8 @@ namespace Qt3DRender
 
 class QgsImageTexture;
 
+// this is broken for z-up coordinate system
+#define ENABLE_PANORAMIC_SKYBOX 0
 
 /**
  * \brief Base class for all skybox types.
@@ -58,11 +60,14 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Skybox type enumeration
-    enum SkyboxType
+    enum class SkyboxType
     {
-      PanoramicSkybox,
-      DistinctTexturesSkybox
+#if ENABLE_PANORAMIC_SKYBOX
+    // Panoramic,
+#endif
+      DistinctTextures, //!< Cube map built from distinct textures
     };
+    Q_ENUM( SkyboxType )
 
   public:
     //! Constructor
@@ -81,6 +86,9 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mGammaStrengthParameter = nullptr;
     Qt3DRender::QParameter *mTextureParameter = nullptr;
 };
+
+
+#if ENABLE_PANORAMIC_SKYBOX
 
 /**
  * \brief A skybox constructed from a panoramic image.
@@ -109,6 +117,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
     Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
 };
+#endif
 
 /**
  * \brief A skybox constructed from 6 cube faces.
@@ -123,9 +132,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   public:
     //! Constructs a skybox from 6 different images
     QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
-
-    //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::DistinctTexturesSkybox; }
+    SkyboxType type() const override;
 
   private:
     void init();
