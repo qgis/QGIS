@@ -17,12 +17,12 @@ from qgis.core import (
     Qgis,
     QgsGpsLogger,
     QgsNmeaConnection,
-    QgsSettings,
+    QgsSettingsTree,
     QgsVectorLayer,
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime
+from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime, Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
@@ -57,18 +57,15 @@ class TestQgsGpsLogger(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestQgsGpsLogger.com")
-        QCoreApplication.setApplicationName("TestQgsGpsLogger")
-        QgsSettings().clear()
-
         start_app()
 
-        settings = QgsSettings()
-        settings.setValue("/gps/leap-seconds", 48)
-        settings.setValue("/gps/timestamp-offset-from-utc", 3000)
-        settings.setValue("/gps/timestamp-time-spec", "OffsetFromUTC")
+        QgsSettingsTree.node("gps").childSetting("leap-seconds").setValue(48)
+        QgsSettingsTree.node("gps").childSetting("timestamp-offset-from-utc").setValue(
+            3000
+        )
+        QgsSettingsTree.node("gps").childSetting("timestamp-time-spec").setValue(
+            Qt.TimeSpec.OffsetFromUTC
+        )
 
     def test_setters(self):
         logger = QgsVectorLayerGpsLogger(None)
