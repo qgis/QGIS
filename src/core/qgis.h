@@ -4349,6 +4349,19 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LightSourceType )
 
     /**
+     * Skybox types for 3D scenes.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SkyboxType : int
+    {
+      // this is broken for z-up coordinate system
+      // Panoramic,
+      DistinctTextures, //!< Cube map built from distinct textures
+    };
+    Q_ENUM( SkyboxType )
+
+    /**
      * The navigation mode used by 3D cameras.
      *
      * \since QGIS 3.30

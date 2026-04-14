@@ -49,9 +49,9 @@ class _3D_EXPORT QgsSkyboxSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns the type of the skybox
-    QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
+    Qgis::SkyboxType skyboxType() const { return mSkyboxType; }
     //! Sets the type of the skybox
-    void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
+    void setSkyboxType( Qgis::SkyboxType type ) { mSkyboxType = type; }
 
 #if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
@@ -73,7 +73,7 @@ class _3D_EXPORT QgsSkyboxSettings
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
   private:
-    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::SkyboxType::DistinctTextures;
+    Qgis::SkyboxType mSkyboxType = Qgis::SkyboxType::DistinctTextures;
 
 #if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;

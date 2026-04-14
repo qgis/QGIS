@@ -2436,6 +2436,13 @@ The development version
       Directional,
     };
 
+    enum class SkyboxType /BaseType=IntEnum/
+    {
+      // this is broken for z-up coordinate system
+      // Panoramic,
+      DistinctTextures,
+    };
+
     enum class NavigationMode /BaseType=IntEnum/
     {
       TerrainBased,
