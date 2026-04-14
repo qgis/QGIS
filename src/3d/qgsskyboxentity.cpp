@@ -168,7 +168,7 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   for ( Qt3DRender::QAbstractTextureImage *textureImage : mFacesTextureImages )
   {
     mCubeMap->removeTextureImage( textureImage );
-    delete textureImage;
+    textureImage->deleteLater();
   }
   mFacesTextureImages.clear();
 
