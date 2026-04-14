@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include "qgsdecorationimage.h"
+#include "qgsfilecontentsourcelineedit.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsimagecache.h"
@@ -72,8 +73,8 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   grpEnable->setChecked( mDeco.enabled() );
   connect( grpEnable, &QGroupBox::toggled, this, [this] { updateEnabledColorButtons(); } );
 
-  wgtImagePath->setFilePath( mDeco.imagePath() );
-  connect( wgtImagePath, &QgsFileWidget::fileChanged, this, &QgsDecorationImageDialog::updateImagePath );
+  wgtImagePath->setSource( mDeco.imagePath() );
+  connect( wgtImagePath, &QgsImageSourceLineEdit::sourceChanged, this, &QgsDecorationImageDialog::updateImagePath );
   updateImagePath( mDeco.imagePath() );
 
   pbnChangeColor->setAllowOpacity( true );

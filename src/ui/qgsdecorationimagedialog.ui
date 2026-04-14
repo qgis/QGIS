@@ -74,7 +74,7 @@
        </widget>
       </item>
       <item row="0" column="2" colspan="3">
-       <widget class="QgsFileWidget" name="wgtImagePath" native="true"/>
+       <widget class="QgsImageSourceLineEdit" name="wgtImagePath" native="true"/>
       </item>
       <item row="1" column="1">
        <widget class="QLabel" name="colorLabel">
@@ -319,9 +319,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFileWidget</class>
+   <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

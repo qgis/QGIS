@@ -123,9 +123,14 @@ QString QgsDecorationImage::imagePath()
 {
   if ( !mImagePath.isEmpty() )
   {
+    if ( mImagePath.startsWith( "base64:"_L1, Qt::CaseInsensitive ) || mImagePath.startsWith( "http://"_L1, Qt::CaseInsensitive ) || mImagePath.startsWith( "https://"_L1, Qt::CaseInsensitive ) )
+    {
+      return mImagePath;
+    }
+
     QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mImagePath, QgsProject::instance()->pathResolver() );
-    const bool validSvg = QFileInfo::exists( resolvedPath );
-    if ( validSvg )
+    const bool validFile = QFileInfo::exists( resolvedPath );
+    if ( validFile )
     {
       return resolvedPath;
     }
