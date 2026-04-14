@@ -27,6 +27,8 @@
 class QgsReadWriteContext;
 class QDomElement;
 
+// this is broken for z-up coordinate system
+#define ENABLE_PANORAMIC_SKYBOX 0
 
 /**
  * \brief Contains the configuration of a skybox entity.
@@ -51,10 +53,12 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Sets the type of the skybox
     void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
 
+#if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
     QString panoramicTexturePath() const { return mPanoramicTexturePath; }
     //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
     void setPanoramicTexturePath( const QString &texturePath ) { mPanoramicTexturePath = texturePath; }
+#endif
 
     /**
      * Returns a map containing the path of each texture specified by the user.
@@ -69,10 +73,12 @@ class _3D_EXPORT QgsSkyboxSettings
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
   private:
-    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
-    //
+    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::SkyboxType::DistinctTextures;
+
+#if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;
-    //
+#endif
+
     QMap<QString, QString> mCubeMapFacesPaths;
 };
 

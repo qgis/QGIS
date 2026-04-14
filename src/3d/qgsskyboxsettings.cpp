@@ -25,7 +25,9 @@ using namespace Qt::StringLiterals;
 
 QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
   : mSkyboxType( other.mSkyboxType )
+#if ENABLE_PANORAMIC_SKYBOX
   , mPanoramicTexturePath( other.mPanoramicTexturePath )
+#endif
   , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
 {}
 
@@ -35,7 +37,9 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
     return *this;
 
   this->mSkyboxType = rhs.mSkyboxType;
+#if ENABLE_PANORAMIC_SKYBOX
   this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
+#endif
   this->mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;
   return *this;
 }
@@ -45,10 +49,12 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
   const QgsPathResolver &pathResolver = context.pathResolver();
   const QString skyboxTypeStr = element.attribute( u"skybox-type"_s );
   if ( skyboxTypeStr == "Distinct Faces"_L1 )
-    mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
+    mSkyboxType = QgsSkyboxEntity::SkyboxType::DistinctTextures;
+#if ENABLE_PANORAMIC_SKYBOX
   else if ( skyboxTypeStr == "Panoramic Texture"_L1 )
     mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
   mPanoramicTexturePath = pathResolver.readPath( element.attribute( u"panoramic-texture-path"_s ) );
+#endif
   mCubeMapFacesPaths.clear();
   mCubeMapFacesPaths[u"posX"_s] = pathResolver.readPath( element.attribute( u"posX-texture-path"_s ) );
   mCubeMapFacesPaths[u"posY"_s] = pathResolver.readPath( element.attribute( u"posY-texture-path"_s ) );
@@ -62,16 +68,21 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   switch ( mSkyboxType )
   {
-    case QgsSkyboxEntity::DistinctTexturesSkybox:
+    case QgsSkyboxEntity::SkyboxType::DistinctTextures:
       element.setAttribute( u"skybox-type"_s, u"Distinct Faces"_s );
       break;
-    case QgsSkyboxEntity::PanoramicSkybox:
+
+#if ENABLE_PANORAMIC_SKYBOX
+    case QgsSkyboxEntity::SkyboxType::Panoramic:
       element.setAttribute( u"skybox-type"_s, u"Panoramic Texture"_s );
       break;
+#endif
   }
 
   const QgsPathResolver &pathResolver = context.pathResolver();
+#if ENABLE_PANORAMIC_SKYBOX
   element.setAttribute( u"panoramic-texture-path"_s, pathResolver.writePath( mPanoramicTexturePath ) );
+#endif
   element.setAttribute( u"posX-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posX"_s] ) );
   element.setAttribute( u"posY-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posY"_s] ) );
   element.setAttribute( u"posZ-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posZ"_s] ) );

@@ -1140,13 +1140,15 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     QMap<QString, QString> faces;
     switch ( skyboxSettings.skyboxType() )
     {
-      case QgsSkyboxEntity::DistinctTexturesSkybox:
+      case QgsSkyboxEntity::SkyboxType::DistinctTextures:
         faces = skyboxSettings.cubeMapFacesPaths();
         mSkybox = new QgsCubeFacesSkyboxEntity( faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
         break;
-      case QgsSkyboxEntity::PanoramicSkybox:
+#if 0 // this is broken for z-up coordinate system
+      case QgsSkyboxEntity::SkyboxType::Panoramic:
         mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
         break;
+#endif
     }
 
     QgsFrameGraph *frameGraph = mEngine->frameGraph();
