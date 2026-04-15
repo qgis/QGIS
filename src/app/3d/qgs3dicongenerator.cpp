@@ -160,7 +160,7 @@ void Qgs3DIconGenerator::generateThumbnailForMaterial( QgsStyle *style, const QS
   if ( thumbnail.isNull() )
   {
     thumbnail = renderMaterial( settings.get() );
-    thumbnail.save( targetFileName, "WEBP" );
+    thumbnail.save( targetFileName, "WEBP", 97 );
   }
 
   const QList<QSize> sizes = iconSizes();
