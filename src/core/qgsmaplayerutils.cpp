@@ -197,11 +197,21 @@ QString QgsMapLayerUtils::launderLayerName( const QString &name )
 
 bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
 {
-  if ( layer->providerType() == "wms"_L1 )
+  if ( !layer || !layer->dataProvider() )
   {
-    if ( const QgsProviderMetadata *metadata = layer->providerMetadata() )
+    return false;
+  }
+
+  return QgsMapLayerUtils::isOpenStreetMapUri( layer->source(), layer->providerType() );
+}
+
+bool QgsMapLayerUtils::isOpenStreetMapUri( const QString &uri, const QString &providerType )
+{
+  if ( providerType == "wms"_L1 )
+  {
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType ) )
     {
-      QVariantMap details = metadata->decodeUri( layer->source() );
+      QVariantMap details = metadata->decodeUri( uri );
       QUrl url( details.value( u"url"_s ).toString() );
       if ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) )
       {

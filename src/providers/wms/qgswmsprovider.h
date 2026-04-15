@@ -534,9 +534,6 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! add image FORMAT parameter to url
     void setFormatQueryItem( QUrlQuery &url );
 
-    //! Returns true if the data source URI is on an OpenStreetMap server
-    bool isOpenStreetMapServer( const QgsDataSourceUri &uri ) const;
-
     //! Name of the stored connection
     QString mConnectionName;
 
