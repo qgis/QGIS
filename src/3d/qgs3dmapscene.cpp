@@ -1142,7 +1142,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     {
       case Qgis::SkyboxType::DistinctTextures:
         faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity( faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
+        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
         break;
 #if 0 // this is broken for z-up coordinate system
       case Qgis::SkyboxType::Panoramic:

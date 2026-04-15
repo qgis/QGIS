@@ -7790,6 +7790,25 @@ Qgis.SkyboxType.__doc__ = """Skybox types for 3D scenes.
 # --
 Qgis.SkyboxType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.SkyboxCubeMapping.NativeZUp.__doc__ = "Textures exported for Z-up (+X Right, +Y Forward, +Z Up)"
+Qgis.SkyboxCubeMapping.OpenGLYUp.__doc__ = "Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)"
+Qgis.SkyboxCubeMapping.GodotYUp.__doc__ = "Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)"
+Qgis.SkyboxCubeMapping.UnrealEngineZUp.__doc__ = "Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)"
+Qgis.SkyboxCubeMapping.LeftHandedYUpMirrored.__doc__ = "Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)"
+Qgis.SkyboxCubeMapping.__doc__ = """Skybox texture cube mapping for distinct texture skyboxes.
+
+.. versionadded:: 4.2
+
+* ``NativeZUp``: Textures exported for Z-up (+X Right, +Y Forward, +Z Up)
+* ``OpenGLYUp``: Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)
+* ``GodotYUp``: Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)
+* ``UnrealEngineZUp``: Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)
+* ``LeftHandedYUpMirrored``: Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)
+
+"""
+# --
+Qgis.SkyboxCubeMapping.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
 Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"

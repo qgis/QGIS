@@ -121,17 +121,20 @@ void QgsPanoramicSkyboxEntity::reloadTexture()
 
 // 6 faces skybox
 
-QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
+QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity(
+  Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent
+)
   : QgsSkyboxEntity( parent )
+  , mMappingType( mapping )
+  , mSourcePosX( posX )
+  , mSourcePosY( posY )
+  , mSourcePosZ( posZ )
+  , mSourceNegX( negX )
+  , mSourceNegY( negY )
+  , mSourceNegZ( negZ )
   , mGlShader( new Qt3DRender::QShaderProgram() )
 {
   init();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = posX;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = posY;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = posZ;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = negX;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = negY;
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = negZ;
   reloadTexture();
 }
 
@@ -146,13 +149,6 @@ void QgsCubeFacesSkyboxEntity::init()
   mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/skybox.frag"_s ) ) );
   mGl3RenderPass->setShaderProgram( mGlShader );
 
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = QString();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = QString();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = QString();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = QString();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = QString();
-  mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = QString();
-
   mTextureParameter->setName( "skyboxTexture" );
 }
 
@@ -164,31 +160,34 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   newCubeMap->setGenerateMipMaps( false );
   newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
 
-  QList<Qt3DRender::QAbstractTextureImage *> newFaces;
-
   // all faces must have the SAME size, so take the maximum size from the input images
   int maxSize = 0;
-  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
+  for ( const QString &texturePath : { mSourcePosX, mSourcePosY, mSourcePosZ, mSourceNegX, mSourceNegY, mSourceNegZ } )
   {
-    const QString texturePath = it.value();
     const QSize size = QgsApplication::imageCache()->originalSize( texturePath, true );
     maxSize = std::max( maxSize, std::max( size.width(), size.height() ) );
   }
 
+  QList<Qt3DRender::QAbstractTextureImage *> newFaces;
+  const QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, FaceTransformation> faceConfigs = generateFaceTransformation();
   const QSize faceSize( maxSize, maxSize );
-  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
+  for ( auto it = faceConfigs.begin(); it != faceConfigs.end(); ++it )
   {
     const Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
-    const QString texturePath = it.value();
+    const FaceTransformation &config = it.value();
 
     bool fitsInCache = false;
-    const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( texturePath, faceSize, true, 1.0, fitsInCache );
+    const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( config.path, faceSize, true, 1.0, fitsInCache );
     ( void ) fitsInCache;
     QImage finalImage = textureSourceImage;
     if ( finalImage.isNull() )
     {
       finalImage = QImage( faceSize.width(), faceSize.height(), QImage::Format_RGB32 );
       finalImage.fill( Qt::white );
+    }
+    else if ( config.mirrorHorizontal || config.mirrorVertical )
+    {
+      finalImage = finalImage.mirrored( config.mirrorHorizontal, config.mirrorVertical );
     }
 
     auto textureImage = new QgsImageTexture( finalImage, newCubeMap );
@@ -205,4 +204,58 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   }
   mCubeMap = newCubeMap;
   mFacesTextureImages = newFaces;
+}
+
+QMap<Qt3DRender::QAbstractTexture::CubeMapFace, QgsCubeFacesSkyboxEntity::FaceTransformation> QgsCubeFacesSkyboxEntity::generateFaceTransformation() const
+{
+  QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, FaceTransformation> faceConfigs;
+  switch ( mMappingType )
+  {
+    case Qgis::SkyboxCubeMapping::NativeZUp:
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = { mSourcePosX, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = { mSourceNegX, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = { mSourcePosY, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = { mSourceNegY, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = { mSourcePosZ, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = { mSourceNegZ, false, false };
+      break;
+
+    case Qgis::SkyboxCubeMapping::OpenGLYUp:
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = { mSourcePosX, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = { mSourceNegX, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = { mSourceNegZ, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = { mSourcePosZ, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = { mSourcePosY, false, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = { mSourceNegY, false, false };
+      break;
+
+    case Qgis::SkyboxCubeMapping::GodotYUp:
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = { mSourcePosX, false, true };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = { mSourceNegX, false, true };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = { mSourceNegZ, false, true };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = { mSourcePosZ, false, true };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = { mSourcePosY, false, true };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = { mSourceNegY, false, true };
+      break;
+
+    case Qgis::SkyboxCubeMapping::UnrealEngineZUp:
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = { mSourcePosY, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = { mSourceNegY, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = { mSourcePosX, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = { mSourceNegX, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = { mSourcePosZ, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = { mSourceNegZ, true, false };
+      break;
+
+    case Qgis::SkyboxCubeMapping::LeftHandedYUpMirrored:
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = { mSourcePosX, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeX] = { mSourceNegX, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = { mSourcePosZ, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeY] = { mSourceNegZ, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = { mSourcePosY, true, false };
+      faceConfigs[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = { mSourceNegY, true, false };
+      break;
+  }
+
+  return faceConfigs;
 }

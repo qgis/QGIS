@@ -2443,6 +2443,15 @@ The development version
       DistinctTextures,
     };
 
+    enum class SkyboxCubeMapping /BaseType=IntEnum/
+    {
+      NativeZUp,
+      OpenGLYUp,
+      GodotYUp,
+      UnrealEngineZUp,
+      LeftHandedYUpMirrored,
+    };
+
     enum class NavigationMode /BaseType=IntEnum/
     {
       TerrainBased,

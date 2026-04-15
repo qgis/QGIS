@@ -72,6 +72,22 @@ class _3D_EXPORT QgsSkyboxSettings
      */
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
+    /**
+     * Returns the cube face mapping scheme.
+     *
+     * \see setCubeMapping()
+     * \since QGIS 4.2
+     */
+    Qgis::SkyboxCubeMapping cubeMapping() const;
+
+    /**
+     * Sets the cube face \a mapping scheme.
+     *
+     * \see cubeMapping()
+     * \since QGIS 4.2
+     */
+    void setCubeMapping( Qgis::SkyboxCubeMapping mapping );
+
   private:
     Qgis::SkyboxType mSkyboxType = Qgis::SkyboxType::DistinctTextures;
 
@@ -79,6 +95,7 @@ class _3D_EXPORT QgsSkyboxSettings
     QString mPanoramicTexturePath;
 #endif
 
+    Qgis::SkyboxCubeMapping mCubeMapping = Qgis::SkyboxCubeMapping::NativeZUp;
     QMap<QString, QString> mCubeMapFacesPaths;
 };
 

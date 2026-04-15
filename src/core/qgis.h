@@ -4362,6 +4362,21 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( SkyboxType )
 
     /**
+     * Skybox texture cube mapping for distinct texture skyboxes.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SkyboxCubeMapping : int
+    {
+      NativeZUp,             //!< Textures exported for Z-up (+X Right, +Y Forward, +Z Up)
+      OpenGLYUp,             //!< Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)
+      GodotYUp,              //!< Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)
+      UnrealEngineZUp,       //!< Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)
+      LeftHandedYUpMirrored, //!< Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)
+    };
+    Q_ENUM( SkyboxCubeMapping )
+
+    /**
      * The navigation mode used by 3D cameras.
      *
      * \since QGIS 3.30
