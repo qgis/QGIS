@@ -30,6 +30,7 @@
 #include "qgsmaplayeraction.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettingsentryenumflag.h"
@@ -165,6 +166,9 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
+    if (results.size() > *pmaxResults) {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Hidden Features" ), tr( "Some features not displayed in Identify Results panel due to max results limit." ), Qgis::MessageLevel::Warning );
+    }
   }
 
   // update possible view modes
