@@ -109,15 +109,15 @@ class CORE_EXPORT QgsTessellator
 
     /**
      * Sets the rotation of texture UV coordinates (in degrees).
-     * \deprecated QGIS 4.2. Handled in shaders now.
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
     Q_DECL_DEPRECATED void setTextureRotation( float rotation ) SIP_DEPRECATED;
 
     /**
      * Returns the rotation of texture UV coordinates (in degrees).
-     * \deprecated QGIS 4.2. Handled in shaders now.
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
-    Q_DECL_DEPRECATED float textureRotation() const SIP_DEPRECATED { return mTextureRotation; }
+    Q_DECL_DEPRECATED float textureRotation() const SIP_DEPRECATED { return 0; }
 
     /**
      * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
@@ -302,7 +302,6 @@ class CORE_EXPORT QgsTessellator
     bool mInputZValueIgnored = false;
     Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
     Qgis::TriangulationAlgorithm mTriangulationAlgorithm = Qgis::TriangulationAlgorithm::ConstrainedDelaunay;
-    float mTextureRotation = 0.0f;
     float mScale = 1.0f;
     QString mError;
 
