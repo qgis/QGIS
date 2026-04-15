@@ -232,6 +232,7 @@ if (PDAL_2_5_OR_HIGHER)
     ${PDAL_LIBRARIES}
     GDAL::GDAL
     Threads::Threads
+    libzip::zip
   )
 
   install(TARGETS pdal_wrench
