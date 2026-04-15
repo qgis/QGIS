@@ -23,7 +23,9 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
-#include <qstringliteral.h>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolExtraItem : public QgsTest
 {
@@ -31,7 +33,8 @@ class TestQgsMapToolExtraItem : public QgsTest
 
   public:
     TestQgsMapToolExtraItem()
-      : QgsTest( u"Extra Item Map Tool Tests"_s ) {}
+      : QgsTest( u"Extra Item Map Tool Tests"_s )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -93,8 +96,7 @@ void TestQgsMapToolExtraItem::initTestCase()
 }
 
 void TestQgsMapToolExtraItem::cleanupTestCase()
-{
-}
+{}
 
 void TestQgsMapToolExtraItem::init()
 {
@@ -116,8 +118,7 @@ int TestQgsMapToolExtraItem::nbRubberBandVisible() const
   int result = 0;
   for ( QGraphicsItem *item : mCanvas->items() )
   {
-    if ( QgsRubberBand *rubberBand = dynamic_cast<QgsRubberBand *>( item );
-         rubberBand && rubberBand->isVisible() )
+    if ( QgsRubberBand *rubberBand = dynamic_cast<QgsRubberBand *>( item ); rubberBand && rubberBand->isVisible() )
     {
       result++;
     }
@@ -132,13 +133,43 @@ void TestQgsMapToolExtraItem::compareExtraItems( const QString &strExtraItems, c
   const QgsExtraItemUtils::ExtraItems &extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
   QVERIFY( error.isEmpty() );
 
-  QVERIFY2( expectedExtraItems.count() == extraItems.count(), u"Extra item number differs (Actual: %1 != Expected: %2). Returned extra items: %3"_s.arg( extraItems.count() ).arg( expectedExtraItems.count() ).arg( strExtraItems ).toLatin1().constData() );
+  QVERIFY2(
+    expectedExtraItems.count() == extraItems.count(),
+    u"Extra item number differs (Actual: %1 != Expected: %2). Returned extra items: %3"_s.arg( extraItems.count() ).arg( expectedExtraItems.count() ).arg( strExtraItems ).toLatin1().constData()
+  );
 
   for ( int iExtraItem = 0; iExtraItem < expectedExtraItems.count(); iExtraItem++ )
   {
-    QVERIFY2( qgsDoubleNear( std::get<0>( extraItems.at( iExtraItem ) ), std::get<0>( expectedExtraItems.at( iExtraItem ) ), 0.1 ), QString( "Value differs (Actual: %1 != Expected: %2) for X value of extra item %3. Returned extra items: %4" ).arg( std::get<0>( extraItems.at( iExtraItem ) ) ).arg( std::get<0>( expectedExtraItems.at( iExtraItem ) ) ).arg( iExtraItem ).arg( strExtraItems ).toLatin1().constData() );
-    QVERIFY2( qgsDoubleNear( std::get<1>( extraItems.at( iExtraItem ) ), std::get<1>( expectedExtraItems.at( iExtraItem ) ), 0.1 ), QString( "Value differs (Actual: %1 != Expected: %2) for Y value of extra item %3. Returned extra items: %4" ).arg( std::get<1>( extraItems.at( iExtraItem ) ) ).arg( std::get<1>( expectedExtraItems.at( iExtraItem ) ) ).arg( iExtraItem ).arg( strExtraItems ).toLatin1().constData() );
-    QVERIFY2( qgsDoubleNear( std::get<2>( extraItems.at( iExtraItem ) ), std::get<2>( expectedExtraItems.at( iExtraItem ) ), 0.1 ), QString( "Value differs (Actual: %1 != Expected: %2) for rotation angle of extra item %3. Returned extra items: %4" ).arg( std::get<2>( extraItems.at( iExtraItem ) ) ).arg( std::get<2>( expectedExtraItems.at( iExtraItem ) ) ).arg( iExtraItem ).arg( strExtraItems ).toLatin1().constData() );
+    QVERIFY2(
+      qgsDoubleNear( std::get<0>( extraItems.at( iExtraItem ) ), std::get<0>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      QString( "Value differs (Actual: %1 != Expected: %2) for X value of extra item %3. Returned extra items: %4" )
+        .arg( std::get<0>( extraItems.at( iExtraItem ) ) )
+        .arg( std::get<0>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( iExtraItem )
+        .arg( strExtraItems )
+        .toLatin1()
+        .constData()
+    );
+    QVERIFY2(
+      qgsDoubleNear( std::get<1>( extraItems.at( iExtraItem ) ), std::get<1>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      QString( "Value differs (Actual: %1 != Expected: %2) for Y value of extra item %3. Returned extra items: %4" )
+        .arg( std::get<1>( extraItems.at( iExtraItem ) ) )
+        .arg( std::get<1>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( iExtraItem )
+        .arg( strExtraItems )
+        .toLatin1()
+        .constData()
+    );
+    QVERIFY2(
+      qgsDoubleNear( std::get<2>( extraItems.at( iExtraItem ) ), std::get<2>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      QString( "Value differs (Actual: %1 != Expected: %2) for rotation angle of extra item %3. Returned extra items: %4" )
+        .arg( std::get<2>( extraItems.at( iExtraItem ) ) )
+        .arg( std::get<2>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( iExtraItem )
+        .arg( strExtraItems )
+        .toLatin1()
+        .constData()
+    );
   }
 }
 
@@ -149,7 +180,7 @@ void TestQgsMapToolExtraItem::testSelectFeature()
   QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
 
   // select first feature
-  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolAddExtraItems->mFeatureId, 1 );
   QCOMPARE( nbRubberBandVisible(), 0 );
 
@@ -159,7 +190,7 @@ void TestQgsMapToolExtraItem::testSelectFeature()
   QCOMPARE( nbRubberBandVisible(), 0 );
 
   // select second feature
-  utils.mouseClick( 21, 1, Qt::LeftButton );
+  utils.mouseClick( 20, 1, Qt::LeftButton );
   QCOMPARE( mMapToolAddExtraItems->mFeatureId, 2 );
 
   // escape
@@ -176,7 +207,7 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
   QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
 
   // select first feature
-  utilsAdd.mouseClick( 1, 1, Qt::LeftButton );
+  utilsAdd.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolAddExtraItems->mFeatureId, 1 );
   QCOMPARE( nbRubberBandVisible(), 0 );
 
@@ -206,7 +237,7 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
   QVERIFY( FID_IS_NULL( mMapToolModifyExtraItems->mFeatureId ) );
 
   // select first feature
-  utilsModify.mouseClick( 1, 1, Qt::LeftButton );
+  utilsModify.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolModifyExtraItems->mFeatureId, 1 );
   QCOMPARE( nbRubberBandVisible(), 3 );
 
