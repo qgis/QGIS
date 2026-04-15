@@ -1824,3 +1824,54 @@ Qgis::RasterColorInterpretation QgsArcGisRestUtils::colorInterpretationFromBandN
   // eg "Band 1"
   return Qgis::RasterColorInterpretation::Undefined;
 }
+
+double QgsArcGisRestUtils::defaultNoDataForDataType( Qgis::DataType type, bool &ok )
+{
+  ok = false;
+  switch ( type )
+  {
+    case Qgis::DataType::UnknownDataType:
+      return 0;
+
+    case Qgis::DataType::Byte:
+      ok = true;
+      return std::numeric_limits<quint8>::max();
+
+    case Qgis::DataType::Int8:
+      ok = true;
+      return std::numeric_limits<qint8>::lowest();
+
+    case Qgis::DataType::UInt16:
+      ok = true;
+      return std::numeric_limits<quint16>::max();
+
+    case Qgis::DataType::Int16:
+      ok = true;
+      return std::numeric_limits<qint16>::lowest();
+
+    case Qgis::DataType::UInt32:
+      ok = true;
+      return std::numeric_limits<quint32>::max();
+
+    case Qgis::DataType::Int32:
+      ok = true;
+      return std::numeric_limits<qint32>::lowest();
+
+    case Qgis::DataType::Float32:
+      ok = true;
+      return std::numeric_limits<float>::quiet_NaN();
+
+    case Qgis::DataType::Float64:
+      ok = true;
+      return std::numeric_limits<double>::quiet_NaN();
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      return 0;
+  }
+  BUILTIN_UNREACHABLE
+}
