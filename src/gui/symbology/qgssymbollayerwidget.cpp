@@ -2435,7 +2435,7 @@ void QgsTemplatedLineSymbolLayerWidget::setAverageAngle( double val )
 
 void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool toggled )
 {
-  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolEditBlankSegments.get() )
+  if ( !toggled || ( mMapToolEditBlankSegments.get() && context().mapCanvas()->mapTool() == mMapToolEditBlankSegments.get() ) )
     return;
 
   switch ( mSymbolType )
@@ -2455,7 +2455,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
 
 void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem( bool toggled )
 {
-  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolAddExtraItem.get() )
+  if ( !toggled || ( mMapToolAddExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolAddExtraItem.get() ) )
     return;
 
   mMapToolAddExtraItem.reset( new QgsMapToolAddExtraItem( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
@@ -2465,7 +2465,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem( bool toggled 
 
 void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem( bool toggled )
 {
-  if ( !toggled || context().mapCanvas()->mapTool() == mMapToolModifyExtraItem.get() )
+  if ( !toggled || ( mMapToolModifyExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolModifyExtraItem.get() ) )
     return;
 
   mMapToolModifyExtraItem.reset( new QgsMapToolModifyExtraItems( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
