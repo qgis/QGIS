@@ -43,6 +43,7 @@ try:
     QgsArcGisRestUtils.serviceCapabilitiesFromString = staticmethod(QgsArcGisRestUtils.serviceCapabilitiesFromString)
     QgsArcGisRestUtils.dataTypeFromString = staticmethod(QgsArcGisRestUtils.dataTypeFromString)
     QgsArcGisRestUtils.colorInterpretationFromBandName = staticmethod(QgsArcGisRestUtils.colorInterpretationFromBandName)
+    QgsArcGisRestUtils.defaultNoDataForDataType = staticmethod(QgsArcGisRestUtils.defaultNoDataForDataType)
     QgsArcGisRestUtils.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass

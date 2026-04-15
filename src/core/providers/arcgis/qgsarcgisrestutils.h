@@ -297,6 +297,18 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
 
+    /**
+     * Returns a sensible no-data value to use for the specified data \a type.
+     *
+     * \param type data type
+     * \param ok will be set to TRUE if there IS a sensible nodata value for the specified type
+     *
+     * \returns suggested nodata value, if one exists
+     *
+     * \since QGIS 4.2
+     */
+    static double defaultNoDataForDataType( Qgis::DataType type, bool &ok SIP_OUT );
+
   private:
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.

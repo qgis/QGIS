@@ -12,6 +12,7 @@ __author__ = "(C) 2022 by Nyall Dawson"
 __date__ = "14/07/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
+import math
 import unittest
 
 from qgis.core import (
@@ -1086,6 +1087,79 @@ class TestQgsArcGisRestUtils(QgisTestCase):
         self.assertEqual(
             QgsArcGisRestUtils.colorInterpretationFromBandName("Hue"),
             Qgis.RasterColorInterpretation.HueBand,
+        )
+
+    def test_nodata_for_data_type(self):
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UnknownDataType),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Byte), (255, True)
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int8),
+            (-128, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UInt16),
+            (65535, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int16),
+            (-32768, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.UInt32),
+            (4294967295, True),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Int32),
+            (-2147483648, True),
+        )
+        self.assertTrue(
+            math.isnan(
+                QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float32)[0]
+            )
+        )
+        self.assertTrue(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float32)[1]
+        )
+
+        self.assertTrue(
+            math.isnan(
+                QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float64)[0]
+            )
+        )
+        self.assertTrue(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.Float64)[1]
+        )
+
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CInt16),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CInt32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CFloat32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.CFloat64),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(Qgis.DataType.ARGB32),
+            (0, False),
+        )
+        self.assertEqual(
+            QgsArcGisRestUtils.defaultNoDataForDataType(
+                Qgis.DataType.ARGB32_Premultiplied
+            ),
+            (0, False),
         )
 
 
