@@ -207,19 +207,24 @@ bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
 
 bool QgsMapLayerUtils::isOpenStreetMapUri( const QString &uri, const QString &providerType )
 {
+  QUrl url;
   if ( providerType == "wms"_L1 )
   {
     if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType ) )
     {
       QVariantMap details = metadata->decodeUri( uri );
-      QUrl url( details.value( u"url"_s ).toString() );
-      if ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) )
-      {
-        return true;
-      }
+      url = QUrl( details.value( u"url"_s ).toString() );
     }
   }
-  return false;
+  else if ( providerType == "xyzvectortiles"_L1 )
+  {
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType ) )
+    {
+      QVariantMap details = metadata->decodeUri( uri );
+      url = QUrl( details.value( u"url"_s ).toString() );
+    }
+  }
+  return !url.isEmpty() && ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) );
 }
 
 QString QgsMapLayerUtils::layerTypeToString( Qgis::LayerType type )
