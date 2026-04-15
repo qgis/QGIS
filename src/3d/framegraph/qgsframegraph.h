@@ -292,6 +292,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     // the other for storage of parameters for use in shaders. Here we are
     // using it for storage of parameters only, not for filtering!
     Qt3DRender::QRenderPassFilter *mGlobalParamsStorage = nullptr;
+    Qt3DRender::QParameter *mEnvironmentLightModeParam = nullptr;
 
     // Post processing pass branch nodes:
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;

@@ -5,6 +5,11 @@
 
 // defines are added here as a pre-processing step
 
+uniform samplerCube globalSpecularMap;
+uniform int globalSpecularMipLevels;
+uniform vec3 envLightSh[9];
+uniform int envLightMode; // 1 = Skybox IBL, 0 = Solid Background
+
 in vec3 worldPosition;
 
 #ifndef FLAT_SHADING
@@ -190,34 +195,6 @@ float remapRoughness(const in float roughness)
     return max(roughness * roughness, minRoughness);
 }
 
-float alphaToMipLevel(float alpha)
-{
-    float specPower = 2.0 / (alpha * alpha) - 2.0;
-
-    // We use the mip level calculation from Lys' default power drop, which in
-    // turn is a slight modification of that used in Marmoset Toolbag. See
-    // https://docs.knaldtech.com/doku.php?id=specular_lys for details.
-    // For now we assume a max specular power of 999999 which gives
-    // maxGlossiness = 1.
-    const float k0 = 0.00098;
-    const float k1 = 0.9921;
-    float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
-
-    // Lookup the number of mips in the specular envmap
-    int mipLevels = 9; // envLight.specularMipLevels;
-
-    // Offset of smallest miplevel we should use (corresponds to specular
-    // power of 1). I.e. in the 32x32 sized mip.
-    const float mipOffset = 5.0;
-
-    // The final factor is really 1 - g / g_max but as mentioned above g_max
-    // is 1 by definition here so we can avoid the division. If we make the
-    // max specular power for the spec map configurable, this will need to
-    // be handled properly.
-    float mipLevel = (mipLevels - 1.0 - mipOffset) * (1.0 - glossiness);
-    return mipLevel;
-}
-
 float normalDistribution(const in float nDotH, const in float alpha)
 {
     // Trowbridge-Reitz GGX
@@ -353,7 +330,26 @@ vec3 pbrModel(const in int lightIndex,
     return color;
 }
 
-vec3 pbrIblModel(const in vec3 wNormal,
+float roughnessToMipLevel(float roughness)
+{
+  // as per https://google.github.io/filament/Filament.md.html, section 5.3.11.11
+  float lod = float(globalSpecularMipLevels - 1) * roughness;
+  return max(lod, 0.0);
+}
+
+// analytical approximation of the split-sum for environment bidirectional reflectance distribution function
+// as per https://www.unrealengine.com/blog/physically-based-shading-on-mobile?lang=en-US
+vec2 environmentBrdfApproximation(const in float roughness, const in float viewDotNormal)
+{
+    vec4 c0 = vec4(-1.0, -0.0275, -0.572, 0.022);
+    vec4 c1 = vec4(1.0, 0.0425, 1.04, -0.04);
+    vec4 r = roughness * c0 + c1;
+    float a004 = min(r.x * r.x, exp2(-9.28 * viewDotNormal)) * r.x + r.y;
+    vec2 ab = vec2(-1.04, 1.04) * a004 + r.zw;
+    return ab;
+}
+
+vec3 pbrIblModelSphericalHarmonics(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
                  const in float metalness,
@@ -367,48 +363,50 @@ vec3 pbrIblModel(const in vec3 wNormal,
     // to the l vector for punctual light sources. Armed with this, calculate
     // the usual factors needed
     vec3 n = wNormal;
-    vec3 l = reflect(-wView, n);
+    vec3 l = reflect(-wView, n); // r (filament)
     vec3 v = wView;
     vec3 h = normalize(l + v);
-    float vDotN = dot(v, n);
+    float vDotN = max(dot(v, n), 0.0); // NoV (filament)
     float lDotN = dot(l, n);
     float lDotH = dot(l, h);
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor; // * texture(envLight.irradiance, n).rgb;
+
+    // Calculate environmental irradiance from spherical harmonics
+    const float c1 = 0.429043;
+    const float c2 = 0.511664;
+    const float c3 = 0.743125;
+    const float c4 = 0.886227;
+    const float c5 = 0.247708;
+    vec3 envIrradiance =
+        c1 * envLightSh[8] * (wNormal.x * wNormal.x - wNormal.y * wNormal.y) +
+        c3 * envLightSh[6] * wNormal.z * wNormal.z +
+        c4 * envLightSh[0] -
+        c5 * envLightSh[6] +
+        2.0 * c1 * (envLightSh[4] * wNormal.x * wNormal.y + envLightSh[7] * wNormal.x * wNormal.z + envLightSh[5] * wNormal.y * wNormal.z) +
+        2.0 * c2 * (envLightSh[3] * wNormal.x + envLightSh[1] * wNormal.y + envLightSh[2] * wNormal.z);
+    envIrradiance = max(envIrradiance, vec3(0.0));
+
+    vec3 diffuse = diffuseColor * envIrradiance;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
-    vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h, roughness, true);
 
-    float lod = alphaToMipLevel(alpha);
-//#define DEBUG_SPECULAR_LODS
-#ifdef DEBUG_SPECULAR_LODS
-    if (lod > 7.0)
-        return vec3(1.0, 0.0, 0.0);
-    else if (lod > 6.0)
-        return vec3(1.0, 0.333, 0.0);
-    else if (lod > 5.0)
-        return vec3(1.0, 1.0, 0.0);
-    else if (lod > 4.0)
-        return vec3(0.666, 1.0, 0.0);
-    else if (lod > 3.0)
-        return vec3(0.0, 1.0, 0.666);
-    else if (lod > 2.0)
-        return vec3(0.0, 0.666, 1.0);
-    else if (lod > 1.0)
-        return vec3(0.0, 0.0, 1.0);
-    else if (lod > 0.0)
-        return vec3(1.0, 0.0, 1.0);
-#endif
-    vec3 specularSkyColor = vec3(1.0);//textureLod(envLight.specular, l, lod).rgb;
-    vec3 specular = specularSkyColor * specularFactor;
+    float lod = roughnessToMipLevel(roughness);
+
+    // convert Z-up reflection to Y-up for OpenGL cubemap lookup
+    vec3 yUpReflect = vec3(l.x, l.z, -l.y);
+    vec3 indirectSpecular = textureLod(globalSpecularMap, yUpReflect, lod).rgb;
+
+    // apply split-sum approximation for image based lighting specular
+    vec2 environmentBrdf = environmentBrdfApproximation(roughness, vDotN);
+    vec3 specular = indirectSpecular * (F0 * environmentBrdf.x + environmentBrdf.y);
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelSchlickRoughness(F0, max(vDotN, 0.0), roughness);
+    vec3 kS = fresnelSchlickRoughness(F0, vDotN, roughness);
     vec3 color = specular + diffuse * (vec3(1.0) - kS);
 
     // Reduce by ambient occlusion amount
@@ -431,15 +429,16 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
 
-#if 0
-    cLinear += pbrIblModel(worldNormal,
-                           worldView,
-                           baseColor.rgb,
-                           metalness,
-                           roughness,
-                           alpha,
-                           ambientOcclusion);
-#endif
+    if ( envLightMode == 1 )
+    {
+        cLinear += pbrIblModelSphericalHarmonics(worldNormal,
+                               worldView,
+                               baseColor.rgb,
+                               metalness,
+                               roughness,
+                               alpha,
+                               ambientOcclusion);
+    }
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
