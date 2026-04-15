@@ -38,6 +38,7 @@
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgslogger.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
@@ -857,9 +858,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     const QgsWmtsTileMatrix *tm = nullptr;
     std::unique_ptr<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
-    QgsDataSourceUri parsedUri;
-    parsedUri.setEncodedUri( dataSourceUri() );
-    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && isOpenStreetMapServer( parsedUri );
+    const bool drawCacheOnly = feedback && feedback->renderContext().testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) && QgsMapLayerUtils::isOpenStreetMapUri( dataSourceUri(), u"wms"_s );
 
     if ( mSettings.mTiled )
     {
@@ -1814,7 +1813,7 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   // metadata
   if ( mSettings.mXyz )
   {
-    if ( isOpenStreetMapServer( parsedUri ) )
+    if ( QgsMapLayerUtils::isOpenStreetMapUri( uri, u"wms"_s ) )
     {
       mLayerMetadata.setTitle( tr( "OpenStreetMap tiles" ) );
       mLayerMetadata.setIdentifier( tr( "OpenStreetMap tiles" ) );
@@ -1859,7 +1858,7 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   if ( parsedUri.hasParam( u"tilePixelRatio"_s ) )
     tilePixelRatio = parsedUri.param( u"tilePixelRatio"_s ).toDouble();
 
-  if ( tilePixelRatio == 0 && isOpenStreetMapServer( parsedUri ) )
+  if ( tilePixelRatio == 0 && QgsMapLayerUtils::isOpenStreetMapUri( uri, u"wms"_s ) )
   {
     // pixel ratio of XYZ tiles served on openstreetmap.org known, set accordingly to insure
     // tile downloads are not skyrocketing on high screen/output DPI.
@@ -5249,11 +5248,6 @@ void QgsWmsProvider::setSRSQueryItem( QUrlQuery &url )
 bool QgsWmsProvider::ignoreExtents() const
 {
   return mSettings.mIgnoreReportedLayerExtents;
-}
-
-bool QgsWmsProvider::isOpenStreetMapServer( const QgsDataSourceUri &uri ) const
-{
-  return uri.param( u"url"_s ).contains( ".openstreetmap.org"_L1, Qt::CaseInsensitive ) || uri.param( u"url"_s ).contains( ".osm.org"_L1, Qt::CaseInsensitive );
 }
 
 // ----------
