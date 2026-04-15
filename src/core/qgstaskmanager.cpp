@@ -443,7 +443,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
   if ( task->thread() != this->thread() )
   {
     QgsDebugMsgLevel( u"Task \"%1\" created in background thread, pushing to main thread"_s.arg( task->description() ), 1 );
-#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 7, 0 )
     if ( !task->moveToThread( this->thread() ) )
     {
       QgsDebugError( u"Failed to move task \"%1\" from background thread to task manager thread"_s.arg( task->description() ) );
