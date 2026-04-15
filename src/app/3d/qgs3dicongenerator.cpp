@@ -219,6 +219,7 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   engine.setRootEntity( root );
   engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
+  // same trick as we use in the 3d rendering tests to ensure that we get a non-empty image
   for ( int i = 0; i < 2; i++ )
   {
     Qt3DLogic::QFrameAction *frameAction = new Qt3DLogic::QFrameAction();
