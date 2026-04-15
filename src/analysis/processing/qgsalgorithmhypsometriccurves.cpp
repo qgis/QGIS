@@ -272,7 +272,10 @@ QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &
   }
 
   QVariantMap results;
-  results.insert( u"OUTPUT_DIRECTORY"_s, outputPath );
+  if ( !outputPath.isEmpty() )
+  {
+    results.insert( u"OUTPUT_DIRECTORY"_s, outputPath );
+  }
   if ( sink )
   {
     results.insert( u"OUTPUT"_s, destId );
