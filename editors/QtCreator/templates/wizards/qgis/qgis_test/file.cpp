@@ -37,33 +37,25 @@ private slots:
   // Add your test methods here
 };
 
-void %
-{
-  CN
-}
+void % { CN }
 ::initTestCase()
-{}
-
-void %
 {
-  CN
 }
+
+void % { CN }
 ::cleanupTestCase()
-{}
-
-void %
 {
-  CN
 }
+
+void % { CN }
 ::init()
-{}
-
-void %
 {
-  CN
 }
+
+void % { CN }
 ::cleanup()
-{}
+{
+}
 
 QGSTEST_MAIN( % { CN } )
 #include "%{JS: Cpp.classToFileName('%{Class}', '.moc')}"
