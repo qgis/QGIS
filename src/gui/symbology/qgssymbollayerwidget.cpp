@@ -2475,23 +2475,28 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem( bool toggl
 
 void QgsTemplatedLineSymbolLayerWidget::updatePerFeatureCustomizationWidget()
 {
-  QString tooltipEditBlankSegment;
-  QString tooltipAddExtraItem;
-  QString tooltipModifyExtraItem;
+  QString tooltipEditBlankSegment = u"<b>"_s;
+  QString tooltipAddExtraItem = u"<b>"_s;
+  QString tooltipModifyExtraItem = u"<b>"_s;
   switch ( mSymbolType )
   {
     case TemplatedSymbolType::Hash:
-      tooltipEditBlankSegment = tr( "Tool to create blank segments where hashed lines won't be displayed" );
-      tooltipAddExtraItem = tr( "Tool to add extra hash being displayed with the hashed line" );
-      tooltipModifyExtraItem = tr( "Tool to select and modify (move, rotate, delete) extra hashes being displayed with the hashed line" );
+      tooltipEditBlankSegment += tr( "Create blank segments where hashed lines won't be displayed" );
+      tooltipAddExtraItem += tr( "Add extra hash being displayed with the hashed line" );
+      tooltipModifyExtraItem += tr( "Select and modify (move, rotate, delete) extra hashes being displayed with the hashed line" );
       break;
 
     case TemplatedSymbolType::Marker:
-      tooltipEditBlankSegment = tr( "Tool to create blank segments where marker lines won't be displayed" );
-      tooltipAddExtraItem = tr( "Tool to add extra marker being displayed with the marker line" );
-      tooltipModifyExtraItem = tr( "Tool to select and modify (move, rotate, delete) extra markers being displayed with the marker line" );
+      tooltipEditBlankSegment += tr( "Create blank segments where marker lines won't be displayed" );
+      tooltipAddExtraItem += tr( "Add extra marker being displayed with the marker line" );
+      tooltipModifyExtraItem += tr( "Select and modify (move, rotate, delete) extra markers being displayed with the marker line" );
       break;
   }
+
+  const QString info = u"</b><br/>"_s + tr( "First click to select the line you want to operate on" );
+  tooltipEditBlankSegment += info;
+  tooltipAddExtraItem += info;
+  tooltipModifyExtraItem += info;
 
   mEditBlankSegmentsAction->setEnabled( false );
   mAddExtraItemAction->setEnabled( false );
