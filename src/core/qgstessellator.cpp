@@ -34,18 +34,6 @@
 #include <QtDebug>
 #include <QtMath>
 
-static std::pair<float, float> rotateCoords( float x, float y, float origin_x, float origin_y, float r )
-{
-  r = qDegreesToRadians( r );
-  float x0 = x - origin_x, y0 = y - origin_y;
-  // p0 = x0 + i * y0
-  // rot = cos(r) + i * sin(r)
-  // p0 * rot = x0 * cos(r) - y0 * sin(r) + i * [ x0 * sin(r) + y0 * cos(r) ]
-  const float x1 = origin_x + x0 * qCos( r ) - y0 * qSin( r );
-  const float y1 = origin_y + x0 * qSin( r ) + y0 * qCos( r );
-  return std::make_pair( x1, y1 );
-}
-
 void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height )
 {
   const float dx = pt2.x() - pt1.x();
@@ -106,13 +94,6 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   textureCoordinates.push_back( u3 );
   textureCoordinates.push_back( v3 );
 
-  for ( int i = 0; i < textureCoordinates.size(); i += 2 )
-  {
-    const std::pair<float, float> rotated = rotateCoords( textureCoordinates[i], textureCoordinates[i + 1], 0, 0, mTextureRotation );
-    textureCoordinates[i] = rotated.first;
-    textureCoordinates[i + 1] = rotated.second;
-  }
-
   // triangle 1 vertex 1
   mIndexBuffer << uniqueVertexCount();
   if ( mOutputZUp )
@@ -166,7 +147,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
 
 QgsTessellator::QgsTessellator() = default;
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade, float textureRotation )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade, float )
 {
   setOrigin( QgsVector3D( originX, originY, 0 ) );
   setAddNormals( addNormals );
@@ -175,12 +156,9 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   setBackFacesEnabled( addBackFaces );
   setAddTextureUVs( addTextureCoords );
   setInputZValueIgnored( noZ );
-  Q_NOWARN_DEPRECATED_PUSH
-  setTextureRotation( textureRotation );
-  Q_NOWARN_DEPRECATED_POP
 }
 
-QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade, float textureRotation )
+QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords, int facade, float )
 {
   setAddTextureUVs( addTextureCoords );
   setExtrusionFacesLegacy( facade );
@@ -189,9 +167,6 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   setInvertNormals( invertNormals );
   setBackFacesEnabled( addBackFaces );
   setInputZValueIgnored( noZ );
-  Q_NOWARN_DEPRECATED_PUSH
-  setTextureRotation( textureRotation );
-  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsTessellator::setOrigin( const QgsVector3D &origin )
@@ -239,10 +214,8 @@ void QgsTessellator::setExtrusionFacesLegacy( int facade )
   }
 }
 
-void QgsTessellator::setTextureRotation( float rotation )
-{
-  mTextureRotation = rotation;
-}
+void QgsTessellator::setTextureRotation( float )
+{}
 
 void QgsTessellator::setBackFacesEnabled( bool addBackFaces )
 {
@@ -729,8 +702,7 @@ void QgsTessellator::addVertex(
     }
     if ( mAddTextureCoords )
     {
-      const std::pair<float, float> pr = rotateCoords( static_cast<float>( point.x() ), static_cast<float>( point.y() ), 0.0f, 0.0f, mTextureRotation );
-      mData << pr.first << pr.second;
+      mData << point.x() << point.y();
     }
   }
 }
@@ -746,8 +718,7 @@ void QgsTessellator::addVertex( const QVector3D &point, const QVector3D &normal,
   }
   if ( mAddTextureCoords )
   {
-    const std::pair<float, float> pr = rotateCoords( static_cast<float>( point.x() ), static_cast<float>( point.y() ), 0.0f, 0.0f, mTextureRotation );
-    mData << pr.first << pr.second;
+    mData << point.x() << point.y();
   }
 }
 
