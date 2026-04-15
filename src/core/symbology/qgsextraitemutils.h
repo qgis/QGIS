@@ -16,24 +16,27 @@
 #ifndef QGSEXTRAITEMUTILS_H
 #define QGSEXTRAITEMUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgis_core.h"
 
 #include <QPair>
 
+#define SIP_NO_FILE
+
 class QgsRenderContext;
 
 /**
  * \ingroup core
- * \brief Helper class to manipulate extra items
+ * \brief Helper class to manipulate extra items. Extra items are used to draw extra markers or
+ * hashes at given position when rendering a marker or hash line symbol layer. There are represented
+ * with a X, Y position in layer unit and a rotation in degree.
+ *
  * \since QGIS 4.2
 */
 class CORE_EXPORT QgsExtraItemUtils
 {
   public:
-
     typedef QList<std::tuple<double, double, double>> ExtraItems;
 
     /**
@@ -48,7 +51,6 @@ class CORE_EXPORT QgsExtraItemUtils
     static ExtraItems parseExtraItems( const QString &strExtraItems, QString &error );
 
   private:
-
 };
 
 #endif
