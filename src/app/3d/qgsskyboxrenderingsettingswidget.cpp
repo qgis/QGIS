@@ -38,6 +38,11 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
   skyboxTypeComboBox->addItem( tr( "Distinct Faces" ), QVariant::fromValue( Qgis::SkyboxType::DistinctTextures ) );
   connect( skyboxTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
 
+  mMappingComboBox->addItem( tr( "Native (Z-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::NativeZUp ) );
+  mMappingComboBox->addItem( tr( "OpenGL / WebGL (Y-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::OpenGLYUp ) );
+  mMappingComboBox->addItem( tr( "Godot Engine (Y-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::GodotYUp ) );
+  mMappingComboBox->addItem( tr( "Unreal Engine (Z-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::UnrealEngineZUp ) );
+  mMappingComboBox->addItem( tr( "Unity Engine / Left-Handed (Y-Up)" ), QVariant::fromValue( Qgis::SkyboxCubeMapping::LeftHandedYUpMirrored ) );
   showSkyboxSettings( 0 );
 }
 
@@ -55,6 +60,8 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
   negXImageSource->setSource( cubeMapFaces[u"negX"_s] );
   negYImageSource->setSource( cubeMapFaces[u"negY"_s] );
   negZImageSource->setSource( cubeMapFaces[u"negZ"_s] );
+
+  mMappingComboBox->setCurrentIndex( mMappingComboBox->findData( QVariant::fromValue( skyboxSettings.cubeMapping() ) ) );
 }
 
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
@@ -70,6 +77,7 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   settings.setCubeMapFace( u"negX"_s, negXImageSource->source() );
   settings.setCubeMapFace( u"negY"_s, negYImageSource->source() );
   settings.setCubeMapFace( u"negZ"_s, negZImageSource->source() );
+  settings.setCubeMapping( mMappingComboBox->currentData().value< Qgis::SkyboxCubeMapping >() );
   return settings;
 }
 
@@ -90,19 +98,6 @@ void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
       break;
   }
 
-  panoramicTextureLabel->setVisible( showPanoramicWidgets );
-  panoramicTextureImageSource->setVisible( showPanoramicWidgets );
-
-  negXImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  negXImageSource->setVisible( showDistinctFacesWidgets );
-  negYImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  negYImageSource->setVisible( showDistinctFacesWidgets );
-  negZImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  negZImageSource->setVisible( showDistinctFacesWidgets );
-  posXImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  posXImageSource->setVisible( showDistinctFacesWidgets );
-  posYImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  posYImageSource->setVisible( showDistinctFacesWidgets );
-  posZImageSourceLabel->setVisible( showDistinctFacesWidgets );
-  posZImageSource->setVisible( showDistinctFacesWidgets );
+  mPanoramicWidget->setVisible( showPanoramicWidgets );
+  mCubeMapWidget->setVisible( showDistinctFacesWidgets );
 }

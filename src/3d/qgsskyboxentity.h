@@ -110,6 +110,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 };
 #endif
 
+
 /**
  * \brief A skybox constructed from 6 cube faces.
  *
@@ -122,7 +123,9 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
 
   public:
     //! Constructs a skybox from 6 different images
-    QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
+    QgsCubeFacesSkyboxEntity(
+      Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr
+    );
     Qgis::SkyboxType type() const override;
 
   private:
@@ -130,7 +133,23 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     void reloadTexture();
 
   private:
-    QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
+    struct FaceTransformation
+    {
+        QString path;
+        bool mirrorHorizontal = false;
+        bool mirrorVertical = false;
+    };
+
+    QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, FaceTransformation> generateFaceTransformation() const;
+
+    Qgis::SkyboxCubeMapping mMappingType = Qgis::SkyboxCubeMapping::NativeZUp;
+    QString mSourcePosX;
+    QString mSourcePosY;
+    QString mSourcePosZ;
+    QString mSourceNegX;
+    QString mSourceNegY;
+    QString mSourceNegZ;
+
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
     QVector<Qt3DRender::QAbstractTextureImage *> mFacesTextureImages;
     Qt3DRender::QTextureCubeMap *mCubeMap = nullptr;

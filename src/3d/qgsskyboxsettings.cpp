@@ -28,6 +28,7 @@ QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
 #if ENABLE_PANORAMIC_SKYBOX
   , mPanoramicTexturePath( other.mPanoramicTexturePath )
 #endif
+  , mCubeMapping( other.mCubeMapping )
   , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
 {}
 
@@ -41,6 +42,7 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
   this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
 #endif
   this->mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;
+  this->mCubeMapping = rhs.mCubeMapping;
   return *this;
 }
 
@@ -62,6 +64,7 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
   mCubeMapFacesPaths[u"negX"_s] = pathResolver.readPath( element.attribute( u"negX-texture-path"_s ) );
   mCubeMapFacesPaths[u"negY"_s] = pathResolver.readPath( element.attribute( u"negY-texture-path"_s ) );
   mCubeMapFacesPaths[u"negZ"_s] = pathResolver.readPath( element.attribute( u"negZ-texture-path"_s ) );
+  mCubeMapping = qgsEnumKeyToValue( element.attribute( u"mapping"_s ), Qgis::SkyboxCubeMapping::NativeZUp );
 }
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -89,4 +92,15 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   element.setAttribute( u"negX-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negX"_s] ) );
   element.setAttribute( u"negY-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negY"_s] ) );
   element.setAttribute( u"negZ-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negZ"_s] ) );
+  element.setAttribute( u"mapping"_s, qgsEnumValueToKey( mCubeMapping ) );
+}
+
+Qgis::SkyboxCubeMapping QgsSkyboxSettings::cubeMapping() const
+{
+  return mCubeMapping;
+}
+
+void QgsSkyboxSettings::setCubeMapping( Qgis::SkyboxCubeMapping mapping )
+{
+  mCubeMapping = mapping;
 }
