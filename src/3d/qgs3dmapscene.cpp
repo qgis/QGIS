@@ -34,6 +34,7 @@
 #include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
+#include "qgsenvironmentlight.h"
 #include "qgseventtracing.h"
 #include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
@@ -86,6 +87,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QEnvironmentLight>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QRenderPass>
@@ -211,6 +213,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
+
+  mEnvironmentLight = new QgsEnvironmentLight( mEngine->frameGraph(), this );
 
   connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
   onBackgroundSettingsChanged();
@@ -1190,7 +1194,10 @@ void Qgs3DMapScene::onBackgroundSettingsChanged()
 
   const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
   if ( !settings )
+  {
+    mEnvironmentLight->setMode( QgsEnvironmentLight::Mode::Disabled );
     return;
+  }
 
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
 
@@ -1199,11 +1206,17 @@ void Qgs3DMapScene::onBackgroundSettingsChanged()
     const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
     const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
     mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
+    qgis::down_cast< QgsSkyboxEntity * >( mBackgroundEntity )->updateEnvironmentLight( mEnvironmentLight );
   }
   else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
   {
     const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
     mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
+    mEnvironmentLight->setMode( QgsEnvironmentLight::Mode::Disabled );
+  }
+  else
+  {
+    mEnvironmentLight->setMode( QgsEnvironmentLight::Mode::Disabled );
   }
 
   mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
