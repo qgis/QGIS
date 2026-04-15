@@ -60,7 +60,7 @@ bool Clip::checkArgs()
         }
     }
 
-    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
     {
         isStreaming = false;
     }
@@ -101,26 +101,7 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
                 fullEnvelope = envelope;
             else
                 fullEnvelope.Merge(envelope);
-
-            char* wkt_ptr = nullptr;
-            OGR_G_ExportToWkt(hGeometry, &wkt_ptr);
-            const std::string wkt(wkt_ptr);
-            CPLFree(wkt_ptr);
-
-            SpatialReference pdalSrs;
-            if ( OGRSpatialReferenceH srs = OGR_G_GetSpatialReference(hGeometry) )
-            {
-                char *srsWkt_ptr = nullptr;
-                const OGRErr err = OSRExportToWkt(srs, &srsWkt_ptr);
-                if ( err== OGRERR_NONE )
-                {
-                  const std::string srsWkt = std::string(srsWkt_ptr);
-                  pdalSrs = SpatialReference( srsWkt );
-                }
-                CPLFree(srsWkt_ptr);
-            }
-
-            crop_opts.add(pdal::Option("polygon", pdal::Polygon(wkt, pdalSrs)));
+            crop_opts.add(pdal::Option("polygon", pdal::Polygon(hGeometry)));
         }
         OGR_F_Destroy( hFeature );
     }
@@ -181,7 +162,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     if (!loadPolygons(polygonFile, crop_opts, bbox))
         return;
 
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();

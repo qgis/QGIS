@@ -335,7 +335,7 @@ void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFil
     for (std::string f : tileOutputFiles)
         args.push_back(f);
 
-    if (ends_with(outputFile, ".vpc"))
+    if (isVpcFilename(outputFile))
     {
         // now build a new output VPC
         buildVpc(args);
@@ -368,7 +368,7 @@ std::string tileOutputFileName(const std::string &outputFile, const std::string 
 
     // output is not a VPC, it will be merged later into a single file,
     // use las to avoid zipping the file, it will be removed after merging
-    if (!ends_with(outputFile, ".vpc"))
+    if (!isVpcFilename(outputFile))
     {
         return fullFileNameWithoutExt + ".las";
     }

@@ -111,7 +111,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, double r
 
 void Boundary::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // VPC handling
         VirtualPointCloud vpc;
