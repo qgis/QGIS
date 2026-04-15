@@ -128,7 +128,7 @@ if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
 else()
   set(SIP_MOVABLE_STR "Movable,")
 endif()
-if(QT_VERSION VERSION_LESS 6.5.0)
+if(Qt6Core_VERSION_MINOR LESS 5)
 # https://github.com/qgis/QGIS/issues/57760
 # https://www.riverbankcomputing.com/pipermail/pyqt/2024-June/045923.html
 set(SIP_QLIST_QINT64 [[

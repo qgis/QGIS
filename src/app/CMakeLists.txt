@@ -506,7 +506,7 @@ if(QGISPOSTFIX)
 endif()
 
 # NO_GENERATE_EXTRA_QMLDIRS was added in Qt 6.9.0
-if(QT_VERSION VERSION_LESS 6.9.0)
+if(Qt6Core_VERSION_MINOR LESS 9)
 qt_add_qml_module(qgis_app
     URI org.qgis.app
     VERSION 1.0
