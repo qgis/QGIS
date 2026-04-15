@@ -436,7 +436,7 @@ void qgisCrash( int signal )
  */
 void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString &msg )
 {
-  const auto encodedMsg = msg.toLocal8Bit();
+  const QByteArray encodedMsg = msg.toLocal8Bit();
   switch ( type )
   {
     case QtDebugMsg:
