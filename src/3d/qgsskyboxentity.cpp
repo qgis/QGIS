@@ -124,7 +124,6 @@ void QgsPanoramicSkyboxEntity::reloadTexture()
 QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent )
   : QgsSkyboxEntity( parent )
   , mGlShader( new Qt3DRender::QShaderProgram() )
-  , mCubeMap( new Qt3DRender::QTextureCubeMap( this ) )
 {
   init();
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = posX;
@@ -147,11 +146,6 @@ void QgsCubeFacesSkyboxEntity::init()
   mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/skybox.frag"_s ) ) );
   mGl3RenderPass->setShaderProgram( mGlShader );
 
-  mCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
-  mCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
-  mCubeMap->setGenerateMipMaps( false );
-  mCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
-
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveX] = QString();
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveY] = QString();
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapPositiveZ] = QString();
@@ -160,32 +154,55 @@ void QgsCubeFacesSkyboxEntity::init()
   mCubeFacesPaths[Qt3DRender::QTextureCubeMap::CubeMapNegativeZ] = QString();
 
   mTextureParameter->setName( "skyboxTexture" );
-  mTextureParameter->setValue( QVariant::fromValue( mCubeMap ) );
 }
 
 void QgsCubeFacesSkyboxEntity::reloadTexture()
 {
-  for ( Qt3DRender::QAbstractTextureImage *textureImage : mFacesTextureImages )
-  {
-    mCubeMap->removeTextureImage( textureImage );
-    textureImage->deleteLater();
-  }
-  mFacesTextureImages.clear();
+  auto *newCubeMap = new Qt3DRender::QTextureCubeMap( this );
+  newCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
+  newCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
+  newCubeMap->setGenerateMipMaps( false );
+  newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
 
+  QList<Qt3DRender::QAbstractTextureImage *> newFaces;
+
+  // all faces must have the SAME size, so take the maximum size from the input images
+  int maxSize = 0;
+  for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
+  {
+    const QString texturePath = it.value();
+    const QSize size = QgsApplication::imageCache()->originalSize( texturePath, true );
+    maxSize = std::max( maxSize, std::max( size.width(), size.height() ) );
+  }
+
+  const QSize faceSize( maxSize, maxSize );
   for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
   {
     const Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
     const QString texturePath = it.value();
 
     bool fitsInCache = false;
-    const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( texturePath, QSize(), true, 1.0, fitsInCache );
+    const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( texturePath, faceSize, true, 1.0, fitsInCache );
     ( void ) fitsInCache;
-    if ( textureSourceImage.isNull() )
-      continue;
+    QImage finalImage = textureSourceImage;
+    if ( finalImage.isNull() )
+    {
+      finalImage = QImage( faceSize.width(), faceSize.height(), QImage::Format_RGB32 );
+      finalImage.fill( Qt::white );
+    }
 
-    auto textureImage = new QgsImageTexture( textureSourceImage );
+    auto textureImage = new QgsImageTexture( finalImage, newCubeMap );
     textureImage->setFace( face );
-    mCubeMap->addTextureImage( textureImage );
-    mFacesTextureImages.push_back( textureImage );
+    newCubeMap->addTextureImage( textureImage );
+    newFaces.push_back( textureImage );
   }
+
+  mTextureParameter->setValue( QVariant::fromValue( newCubeMap ) );
+
+  if ( mCubeMap )
+  {
+    mCubeMap->deleteLater();
+  }
+  mCubeMap = newCubeMap;
+  mFacesTextureImages = newFaces;
 }
