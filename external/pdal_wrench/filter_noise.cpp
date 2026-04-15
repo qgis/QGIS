@@ -65,7 +65,7 @@ bool FilterNoise::checkArgs()
         }
     }
 
-    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
     {
         isStreaming = false;
     }
@@ -163,7 +163,7 @@ void FilterNoise::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>
         noiseFilterOptions.add(pdal::Option("multiplier", statisticalMultiplier));
     }
 
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();
