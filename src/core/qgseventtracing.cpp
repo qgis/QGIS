@@ -18,15 +18,14 @@
 
 #include <future>
 
-#include "qgslogger.h"
-
 #include <QCoreApplication>
 #include <QFile>
 #include <QString>
 #include <QThread>
-#include <qmutex.h>
 
 #ifdef HAVE_TRACY
+#include "qgslogger.h"
+
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyC.h"
 #endif
@@ -143,6 +142,7 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
   return true;
 }
 
+#ifdef HAVE_TRACY
 // Utility type for storing Tracy zones based on this key
 struct NameAndId
 {
@@ -165,6 +165,7 @@ struct TracyZoneDummyThread
     QByteArray nameHandle;
     bool occupied;
 };
+#endif
 
 void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &category, const QString &name, const QString &id )
 {
@@ -291,6 +292,10 @@ void QgsEventTracing::setFloatVariable( const char *name, double value, bool con
   if ( !continuous ) // Disable interpolation
     TracyPlotConfig( name, tracy::PlotFormatType::Number, true, false, 0 );
   TracyPlot( name, value );
+#else
+  Q_UNUSED( name );
+  Q_UNUSED( value );
+  Q_UNUSED( continuous );
 #endif
 }
 
@@ -300,6 +305,10 @@ void QgsEventTracing::setIntVariable( const char *name, int64_t value, bool cont
   if ( !continuous ) // Disable interpolation
     TracyPlotConfig( name, tracy::PlotFormatType::Number, true, false, 0 );
   TracyPlot( name, value );
+#else
+  Q_UNUSED( name );
+  Q_UNUSED( value );
+  Q_UNUSED( continuous );
 #endif
 }
 

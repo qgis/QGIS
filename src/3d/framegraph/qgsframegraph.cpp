@@ -162,11 +162,11 @@ void QgsFrameGraph::onThumbnailCaptureCompleted( Qt3DRender::QRenderCaptureReply
 {
   reply->deleteLater();
 
+#ifdef HAVE_TRACY
   // Convert to RGBA8888 format (required by Tracy)
   QImage rgbaImage = reply->image().convertToFormat( QImage::Format_RGBA8888 );
 
   // Send to Tracy
-#ifdef HAVE_TRACY
   FrameImage(
     rgbaImage.constBits(),
     static_cast<uint16_t>( rgbaImage.width() ),
