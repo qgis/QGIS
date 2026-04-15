@@ -2553,8 +2553,10 @@ int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
 
 int QgsTemplatedLineSymbolLayerWidget::extraItemsFieldIndex() const
 {
-  const QgsProperty &extraItemsProperty = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::ExtraItems );
-  return extraItemsProperty && extraItemsProperty.isActive() && extraItemsProperty.propertyType() == Qgis::PropertyType::Field ? vectorLayer()->fields().indexFromName( extraItemsProperty.field() ) : -1;
+  const QgsProperty &extraItemsProperty = mLayer ? mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::ExtraItems ) : QgsProperty();
+  return extraItemsProperty && extraItemsProperty.isActive() && extraItemsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
+           ? vectorLayer()->fields().indexFromName( extraItemsProperty.field() )
+           : -1;
 }
 
 

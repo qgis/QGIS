@@ -1382,6 +1382,32 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::SegmentCenter, blankSegments );
     }
   }
+
+  QList<std::tuple<double, double, double>> extraItems;
+  if ( !mBlockExtraItemsRendering && mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
+  {
+    const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
+    QString error;
+    extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
+
+    if ( !error.isEmpty() )
+    {
+      QgsDebugError( u"Badly formatted extra items '%1', skip it: %2"_s.arg( strExtraItems ).arg( error ) );
+    }
+    else
+    {
+      const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
+      for ( const std::tuple<double, double, double> &extraItem : extraItems )
+      {
+        QPointF mapPoint( std::get<0>( extraItem ), std::get<1>( extraItem ) );
+        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+
+        setSymbolLineAngle( std::get<2>( extraItem ) );
+
+        renderSymbol( mapPoint, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
+      }
+    }
+  }
 }
 
 void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
@@ -1410,6 +1436,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
         scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
 
       renderPolyline( points, context );
+      mBlockExtraItemsRendering = true; // render extra items only once
       break;
     }
     case InteriorRingsOnly:
@@ -1435,6 +1462,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
             scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, i + 1, true ) );
 
           renderPolyline( rings->at( i ), context );
+          mBlockExtraItemsRendering = true; // render extra items only once
         }
         mOffset = -mOffset;
         mRingIndex = 0;
@@ -1445,32 +1473,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
     }
   }
 
-  QList<std::tuple<double, double, double>> extraItems;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
-  {
-    const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
-    QString error;
-    extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
-
-    if ( !error.isEmpty() )
-    {
-      QgsDebugError( u"Badly formatted extra items '%1', skip it: %2"_s.arg( strExtraItems ).arg( error ) );
-    }
-    else
-    {
-      const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
-      for ( const std::tuple<double, double, double> &extraItem : extraItems )
-      {
-        QPointF mapPoint( std::get<0>( extraItem ), std::get<1>( extraItem ) );
-        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
-
-        setSymbolLineAngle( std::get<2>( extraItem ) );
-
-        renderSymbol( mapPoint, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
-      }
-    }
-  }
-
+  mBlockExtraItemsRendering = false;
 }
 
 Qgis::RenderUnit QgsTemplatedLineSymbolLayerBase::outputUnit() const

@@ -1087,6 +1087,10 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     Qgis::RenderUnit mTrimDistanceEndUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mTrimDistanceEndMapUnitScale;
 
+    // We need to block render extra items. When rendering a multi geometry
+    // we have to render extra items only once
+    bool mBlockExtraItemsRendering = false;
+
     friend class TestQgsMarkerLineSymbol;
 };
 
