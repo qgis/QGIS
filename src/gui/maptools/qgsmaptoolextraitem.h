@@ -186,6 +186,14 @@ class GUI_EXPORT QgsMapToolModifyExtraItems : public QgsMapToolExtraItemBase
 
   private:
     /**
+     * Returns a position moved by \a deltaX horizontally and \a deltaY vertically regarding current layer
+     * and canvas settings
+     * \a deltaX and \a deltaY are expressed in pixels.
+     * \a position coordinates is expressed in layer coordinates.
+     */
+    QgsPointXY movePosition( const QgsPointXY &position, double deltaX, double deltaY ) const;
+
+    /**
  * \ingroup gui
  * \brief Handles drawing of extra items selection outlines and mouse handles, and
  * allows moving and rotating selected items

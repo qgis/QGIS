@@ -25,8 +25,6 @@
 
 #include <qgraphicssceneevent.h>
 
-///////////
-
 /**
  * \ingroup gui
  * \brief Rubber band for one extra item.
@@ -51,16 +49,15 @@ class QgsExtraItemRubberBand : public QgsRubberBand
     QgsExtraItemRubberBand( QgsPointXY position, double rotation, QgsMapCanvas *mapCanvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer );
 
     /**
-     * Attempt to move this item by \a deltaX horizontally and \a deltaY vertically.
-     * \a deltaX and \a deltaY are expressed in pixels.
+     * Set extra item \a position in layer coordinates
      */
-    void attemptMoveBy( double deltaX, double deltaY );
+    void setPosition( QgsPointXY position );
 
     /**
-     * Attempt to rotate this item by \a deltaDegree around its center.
-     * \a deltaDegree is expressed in degree
+     * Set extra item \a rotation around its center.
+     * \a rotation is expressed in degree
      */
-    void attemptRotateBy( double deltaDegree );
+    void setRotation( double rotation );
 
     /**
      * Returns position in layer CRS
@@ -303,21 +300,15 @@ QgsExtraItemRubberBand::QgsExtraItemRubberBand( QgsPointXY position, double rota
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgsExtraItemRubberBand::update );
 }
 
-void QgsExtraItemRubberBand::attemptMoveBy( double deltaX, double deltaY )
+void QgsExtraItemRubberBand::setPosition( QgsPointXY position )
 {
-  const double mupp = mMapCanvas->mapSettings().mapUnitsPerPixel();
-  QgsVector translation( deltaX * mupp, -deltaY * mupp );
-
-  QgsPointXY mapPoint = mMapCanvas->mapSettings().layerToMapCoordinates( mLayer, mPosition );
-  mapPoint += translation;
-  mPosition = mMapCanvas->mapSettings().mapToLayerCoordinates( mLayer, mapPoint );
-
+  mPosition = position;
   update();
 }
 
-void QgsExtraItemRubberBand::attemptRotateBy( double deltaDegree )
+void QgsExtraItemRubberBand::setRotation( double rotation )
 {
-  mRotation = std::fmod( mRotation + deltaDegree + 360., 360.0 );
+  mRotation = rotation;
   update();
 }
 
@@ -688,18 +679,29 @@ void QgsMapToolModifyExtraItems::keyPressEvent( QKeyEvent *event )
   }
 }
 
+QgsPointXY QgsMapToolModifyExtraItems::movePosition( const QgsPointXY &position, double deltaX, double deltaY ) const
+{
+  const double mupp = canvas()->mapSettings().mapUnitsPerPixel();
+  QgsVector translation( deltaX * mupp, -deltaY * mupp );
+
+  QgsPointXY mapPoint = canvas()->mapSettings().layerToMapCoordinates( mLayer, position );
+  mapPoint += translation;
+  return canvas()->mapSettings().mapToLayerCoordinates( mLayer, mapPoint );
+}
+
+
 void QgsMapToolModifyExtraItems::attemptMoveBy( QGraphicsItem *item, double deltaX, double deltaY )
 {
   QgsExtraItemRubberBand *rubberBand = qgis::down_cast<QgsExtraItemRubberBand *>( item );
-  rubberBand->attemptMoveBy( deltaX, deltaY );
+  rubberBand->setPosition( movePosition( rubberBand->position(), deltaX, deltaY ) );
   updateAttribute();
 }
 
 void QgsMapToolModifyExtraItems::attemptRotateBy( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY )
 {
   QgsExtraItemRubberBand *rubberBand = qgis::down_cast<QgsExtraItemRubberBand *>( item );
-  rubberBand->attemptMoveBy( deltaCenterX, deltaCenterY );
-  rubberBand->attemptRotateBy( deltaDegree );
+  rubberBand->setPosition( movePosition( rubberBand->position(), deltaCenterX, deltaCenterY ) );
+  rubberBand->setRotation( std::fmod( rubberBand->rotation() + deltaDegree + 360., 360.0 ) );
   updateAttribute();
 }
 
