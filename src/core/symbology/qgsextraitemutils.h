@@ -37,7 +37,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsExtraItemUtils
 {
   public:
-    typedef QList<std::tuple<double, double, double>> ExtraItems;
+    typedef QList<std::pair<QPointF, double>> ExtraItems;
 
     /**
        * Parse extra items string representation \a strExtraItems

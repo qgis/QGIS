@@ -114,13 +114,9 @@ void QgsMapToolExtraItemBase::loadFeatureExtraItems()
 
   mExtraItems.clear();
 
-  for ( std::tuple<double, double, double> extraItem : extraItems )
+  for ( std::pair<QPointF, double> extraItem : extraItems )
   {
-    const double x = std::get<0>( extraItem );
-    const double y = std::get<1>( extraItem );
-    const double angle = std::get<2>( extraItem );
-
-    QgsExtraItemRubberBand *rubberBand = new QgsExtraItemRubberBand( QgsPointXY( x, y ), angle, mCanvas, mLayer, mSymbolLayer );
+    QgsExtraItemRubberBand *rubberBand = new QgsExtraItemRubberBand( extraItem.first, extraItem.second, mCanvas, mLayer, mSymbolLayer );
     mExtraItems.push_back( rubberBand );
   }
 }

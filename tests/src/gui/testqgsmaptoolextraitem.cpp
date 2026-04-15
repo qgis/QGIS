@@ -46,7 +46,7 @@ class TestQgsMapToolExtraItem : public QgsTest
     void testAddModifyExtraItems();
 
   private:
-    void compareExtraItems( const QString &strExtraItems, const QList<std::tuple<double, double, double>> &expected );
+    void compareExtraItems( const QString &strExtraItems, const QgsExtraItemUtils::ExtraItems &expected );
     int nbRubberBandVisible() const;
 
     QObjectUniquePtr<QgsMapToolModifyExtraItems> mMapToolModifyExtraItems;
@@ -141,30 +141,30 @@ void TestQgsMapToolExtraItem::compareExtraItems( const QString &strExtraItems, c
   for ( int iExtraItem = 0; iExtraItem < expectedExtraItems.count(); iExtraItem++ )
   {
     QVERIFY2(
-      qgsDoubleNear( std::get<0>( extraItems.at( iExtraItem ) ), std::get<0>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      qgsDoubleNear( extraItems.at( iExtraItem ).first.x(), expectedExtraItems.at( iExtraItem ).first.x(), 0.1 ),
       QString( "Value differs (Actual: %1 != Expected: %2) for X value of extra item %3. Returned extra items: %4" )
-        .arg( std::get<0>( extraItems.at( iExtraItem ) ) )
-        .arg( std::get<0>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( extraItems.at( iExtraItem ).first.x() )
+        .arg( expectedExtraItems.at( iExtraItem ).first.x() )
         .arg( iExtraItem )
         .arg( strExtraItems )
         .toLatin1()
         .constData()
     );
     QVERIFY2(
-      qgsDoubleNear( std::get<1>( extraItems.at( iExtraItem ) ), std::get<1>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      qgsDoubleNear( extraItems.at( iExtraItem ).first.y(), expectedExtraItems.at( iExtraItem ).first.y(), 0.1 ),
       QString( "Value differs (Actual: %1 != Expected: %2) for Y value of extra item %3. Returned extra items: %4" )
-        .arg( std::get<1>( extraItems.at( iExtraItem ) ) )
-        .arg( std::get<1>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( extraItems.at( iExtraItem ).first.y() )
+        .arg( expectedExtraItems.at( iExtraItem ).first.y() )
         .arg( iExtraItem )
         .arg( strExtraItems )
         .toLatin1()
         .constData()
     );
     QVERIFY2(
-      qgsDoubleNear( std::get<2>( extraItems.at( iExtraItem ) ), std::get<2>( expectedExtraItems.at( iExtraItem ) ), 0.1 ),
+      qgsDoubleNear( extraItems.at( iExtraItem ).second, expectedExtraItems.at( iExtraItem ).second, 0.1 ),
       QString( "Value differs (Actual: %1 != Expected: %2) for rotation angle of extra item %3. Returned extra items: %4" )
-        .arg( std::get<2>( extraItems.at( iExtraItem ) ) )
-        .arg( std::get<2>( expectedExtraItems.at( iExtraItem ) ) )
+        .arg( extraItems.at( iExtraItem ).second )
+        .arg( expectedExtraItems.at( iExtraItem ).second )
         .arg( iExtraItem )
         .arg( strExtraItems )
         .toLatin1()
@@ -224,7 +224,7 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
   QgsFeature feat = mLayer->getFeature( 1 );
   QVERIFY( feat.isValid() );
 
-  compareExtraItems( feat.attribute( 1 ).toString(), { { 2., 3., 0. }, { 4, 5, 0 }, { 6, 7, 0 } } );
+  compareExtraItems( feat.attribute( 1 ).toString(), { { { 2., 3. }, 0. }, { { 4, 5 }, 0 }, { { 6, 7 }, 0 } } );
 
   // escape
   utilsAdd.keyClick( Qt::Key_Escape );
@@ -257,7 +257,7 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
 
   feat = mLayer->getFeature( 1 );
   QVERIFY( feat.isValid() );
-  compareExtraItems( feat.attribute( 1 ).toString(), { { 2., 3., 0. }, { 7 /* 4 + 1 + 2 */, 12 /* 5 + 3 + 4 */, 42 }, { 6, 7, 0 } } );
+  compareExtraItems( feat.attribute( 1 ).toString(), { { { 2., 3. }, 0. }, { { 7 /* 4 + 1 + 2 */, 12 } /* 5 + 3 + 4 */, 42 }, { { 6, 7 }, 0 } } );
 
   utilsModify.keyClick( Qt::Key_Delete );
   QCOMPARE( nbRubberBandVisible(), 2 );
@@ -266,7 +266,7 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
 
   feat = mLayer->getFeature( 1 );
   QVERIFY( feat.isValid() );
-  compareExtraItems( feat.attribute( 1 ).toString(), { { 2., 3., 0. }, { 6, 7, 0 } } );
+  compareExtraItems( feat.attribute( 1 ).toString(), { { { 2., 3. }, 0. }, { { 6, 7 }, 0 } } );
 
   // select first extra item
   utilsModify.mouseClick( 2, 3, Qt::LeftButton );

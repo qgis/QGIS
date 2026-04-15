@@ -1383,7 +1383,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
     }
   }
 
-  QList<std::tuple<double, double, double>> extraItems;
+  QgsExtraItemUtils::ExtraItems extraItems;
   if ( !mBlockExtraItemsRendering && mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
   {
     const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
@@ -1397,14 +1397,13 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
     else
     {
       const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
-      for ( const std::tuple<double, double, double> &extraItem : extraItems )
+      for ( std::pair<QPointF, double> &extraItem : extraItems )
       {
-        QPointF mapPoint( std::get<0>( extraItem ), std::get<1>( extraItem ) );
-        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+        mtp.transformInPlace( extraItem.first.rx(), extraItem.first.ry() );
 
-        setSymbolLineAngle( std::get<2>( extraItem ) );
+        setSymbolLineAngle( extraItem.second );
 
-        renderSymbol( mapPoint, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
+        renderSymbol( extraItem.first, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
       }
     }
   }

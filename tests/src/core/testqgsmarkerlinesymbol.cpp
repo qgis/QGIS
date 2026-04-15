@@ -719,10 +719,10 @@ void TestQgsMarkerLineSymbol::parseExtraItems_data()
   QTest::addColumn<QgsExtraItemUtils::ExtraItems>( "expectedExtraItems" );
   QTest::addColumn<bool>( "ok" );
 
-  QTest::newRow( "simple" ) << u"1 2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { 1, 2, 3 }, { 3, 4, 5 } } << true;
-  QTest::newRow( "simple with tab" ) << u"1		2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { 1, 2, 3 }, { 3, 4, 5 } } << true;
+  QTest::newRow( "simple" ) << u"1 2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
+  QTest::newRow( "simple with tab" ) << u"1		2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
   QTest::newRow( "Error: text instead of number" ) << u"test"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: Negative coordinates" ) << u"-1	2 3, 3 -4 5"_s << QgsExtraItemUtils::ExtraItems { { -1, 2, 3 }, { 3, -4, 5 } } << true;
+  QTest::newRow( "Error: Negative coordinates" ) << u"-1	2 3, 3 -4 5"_s << QgsExtraItemUtils::ExtraItems { { { -1, 2 }, 3 }, { { 3, -4 }, 5 } } << true;
   QTest::newRow( "Error: angle negative" ) << u"1 2 -20"_s << QgsExtraItemUtils::ExtraItems {} << false;
   QTest::newRow( "Error: angle > 360" ) << u"1 2 400"_s << QgsExtraItemUtils::ExtraItems {} << false;
   QTest::newRow( "Error: bad formatted number" ) << u"1.a56 2 3"_s << QgsExtraItemUtils::ExtraItems {} << false;

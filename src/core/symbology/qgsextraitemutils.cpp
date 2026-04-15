@@ -15,6 +15,7 @@
 
 #include "qgsextraitemutils.h"
 
+#include <QPointF>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -22,11 +23,10 @@ using namespace Qt::StringLiterals;
 QgsExtraItemUtils::ExtraItems QgsExtraItemUtils::parseExtraItems( const QString &strExtraItems, QString &error )
 {
   QString currentNumber;
-  QList<std::tuple<double, double, double>> extraItems;
+  ExtraItems extraItems;
   int nbNumbers = 0;
 
-  auto addNumber = [&extraItems, &currentNumber, &nbNumbers]( const QChar & c ) -> QString
-  {
+  auto addNumber = [&extraItems, &currentNumber, &nbNumbers]( const QChar &c ) -> QString {
     if ( c == ',' && nbNumbers == 0 )
     {
       return u"Missing number"_s;
@@ -48,11 +48,11 @@ QgsExtraItemUtils::ExtraItems QgsExtraItemUtils::parseExtraItems( const QString 
         switch ( nbNumbers )
         {
           case 0:
-            extraItems.append( { number, 0, 0 } );
+            extraItems.append( { { number, 0 }, 0 } );
             break;
 
           case 1:
-            std::get<1>( extraItems.back() ) = number;
+            extraItems.back().first.setY( number );
             break;
 
           case 2:
@@ -61,7 +61,7 @@ QgsExtraItemUtils::ExtraItems QgsExtraItemUtils::parseExtraItems( const QString 
               return u"Angle must be between 0° and 360°"_s;
             }
 
-            std::get<2>( extraItems.back() ) = number;
+            extraItems.back().second = number;
             break;
 
           default:
