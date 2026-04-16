@@ -49,10 +49,6 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsMapBoxGlStyleConverter.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsMapBoxGlStyleConverter")
-        QgsSettings().clear()
         start_app()
 
     def testNoLayer(self):

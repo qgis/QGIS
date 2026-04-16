@@ -29,7 +29,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -57,10 +57,6 @@ class TestPackageLayers(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsPackageLayers.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsPackageLayers")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()

@@ -23,7 +23,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 
@@ -34,10 +34,6 @@ class StyleStorageTestCaseBase(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("%s.com" % __name__)
-        QCoreApplication.setApplicationName(__name__)
-        QgsSettings().clear()
         start_app()
 
 

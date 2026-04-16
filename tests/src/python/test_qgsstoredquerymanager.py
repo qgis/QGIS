@@ -14,7 +14,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import QgsGui
-from qgis.PyQt.QtCore import QCoreApplication, QLocale
+from qgis.PyQt.QtCore import QLocale
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath

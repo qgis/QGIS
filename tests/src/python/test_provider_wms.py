@@ -25,7 +25,6 @@ from qgis.core import (
     QgsSettings,
     QgsWmsUtils,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from raster_provider_test_base import RasterProviderTestCase
 from utilities import unitTestDataPath
@@ -37,10 +36,6 @@ class TestPyQgsWMSProvider(QgisTestCase, RasterProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWMSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsWMSProvider")
-        QgsSettings().clear()
         start_app()
         cls.TEST_DATA_DIR = unitTestDataPath()
 
