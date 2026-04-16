@@ -38,10 +38,6 @@ class TestQgsBookmarkManager(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsBookmarkManager.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsBookmarkManager")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 

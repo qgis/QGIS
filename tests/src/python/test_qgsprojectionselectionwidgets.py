@@ -24,7 +24,6 @@ from qgis.gui import (
     QgsProjectionSelectionTreeWidget,
     QgsProjectionSelectionWidget,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.testing import QgisTestCase, start_app
@@ -38,10 +37,6 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
-        QgsSettings().clear()
         start_app()
 
         QgsSettings().setValue("/projections/defaultProjectCrs", "EPSG:4326")

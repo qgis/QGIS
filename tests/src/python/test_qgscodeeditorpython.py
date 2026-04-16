@@ -16,7 +16,7 @@ import unittest
 
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorPython
-from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.testing import QgisTestCase, start_app
 
@@ -29,9 +29,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsCodeEditorPython.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsCodeEditorPython")
         start_app()
 
     def setUp(self):

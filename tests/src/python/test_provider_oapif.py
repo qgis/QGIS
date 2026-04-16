@@ -33,7 +33,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
+from qgis.PyQt.QtCore import QDateTime, QMetaType, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 
@@ -192,10 +192,6 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsOapifProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsOapifProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

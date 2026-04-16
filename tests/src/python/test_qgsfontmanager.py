@@ -21,7 +21,7 @@ from qgis.core import (
     QgsSettings,
     QgsTextFormat,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -36,10 +36,6 @@ class TestQgsFontManager(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsFontManager.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsFontManager")
-        QgsSettings().clear()
         start_app()
 
     def test_family_replacement(self):

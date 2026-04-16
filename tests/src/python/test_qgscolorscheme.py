@@ -18,7 +18,6 @@ from qgis.core import (
     QgsSettings,
     QgsUserColorScheme,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 
@@ -49,10 +48,6 @@ class TestQgsColorScheme(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         start_app()
 
     def testCreateScheme(self):

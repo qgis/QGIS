@@ -46,9 +46,6 @@ class TestQgsSerialPortSensor(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsSerialPortSensor.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsSerialPortSensor")
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 

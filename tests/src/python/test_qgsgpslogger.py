@@ -22,7 +22,7 @@ from qgis.core import (
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime, Qt
+from qgis.PyQt.QtCore import QBuffer, QDateTime, Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
