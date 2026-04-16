@@ -613,10 +613,9 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   map->setCrs( mProject->crs() );
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
-  QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 1.0 );
-  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
-  map->setLightSources( { defaultLight.clone() } );
+  QgsDirectionalLightSettings directionalLight;
+  directionalLight.setDirection( QgsVector3D( 0.32, 0.27, -0.91 ) );
+  map->setLightSources( { directionalLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs(), map->transformContext() );
@@ -626,7 +625,7 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 100, 45, 0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( -60, -360, 10 ), 60, 60, 0 );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
