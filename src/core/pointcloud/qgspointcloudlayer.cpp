@@ -1290,7 +1290,7 @@ QgsPointCloudIndex QgsPointCloudLayer::overview() const
 
   const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
 
-  if ( vpcProvider->overviews.isEmpty() )
+  if ( vpcProvider->overviews().isEmpty() )
     return QgsPointCloudIndex();
 
   return vpcProvider->overviews().first();
