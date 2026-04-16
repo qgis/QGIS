@@ -18,9 +18,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "qgswmsdescribelayer.h"
 
+#include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsrequest.h"
@@ -74,6 +74,18 @@ namespace QgsWms
     {
       throw QgsServiceException( u"InvalidParameterValue"_s, u"Layers is empty"_s, 400 );
     }
+
+    //when there is no layer with the requested name (or only one that is an opaque child) it should return a OGC_LayerNotDefined
+    QStringList nonOpaqueChildNames;
+    collectNonOpaqueChildLayerNames( project->layerTreeRoot(), nonOpaqueChildNames );
+    auto firstOpaqueChildInNickname = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layername ) { return !nonOpaqueChildNames.contains( layername ); } );
+    if ( firstOpaqueChildInNickname != layersList.cend() )
+    {
+      QgsWmsParameter param( QgsWmsParameter::LAYER );
+      param.mValue = *firstOpaqueChildInNickname;
+      throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
+    }
+
     QDomDocument myDocument = QDomDocument();
 
     const QDomNode header = myDocument.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s );
@@ -127,6 +139,7 @@ namespace QgsWms
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     // WCS layers
     const QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
+
 
     for ( QgsMapLayer *layer : project->mapLayers() )
     {
