@@ -803,6 +803,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setIs2DMapOverlayEnabled( bool enabled );
 
+    /**
+     * Sets whether multisample anti-aliasing (MSAA) is enabled
+     * \see isMsaaEnabled()
+     * \since QGIS 4.2
+     */
+    void setMsaaEnabled( bool enabled );
+
+    /**
+     * Returns whether multisample anti-aliasing (MSAA) is enabled
+     * \see setMsaaEnabled()
+     * \since QGIS 4.2
+     */
+    bool isMsaaEnabled() const;
 
   signals:
 
@@ -935,6 +948,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.18
      */
     void eyeDomeLightingDistanceChanged();
+
+    /**
+     * Emitted when the MSAA enabled flag has changed
+     * \since QGIS 4.2
+     */
+    void msaaEnabledChanged();
 
     /**
      * Emitted when shadow map debugging has changed
@@ -1118,6 +1137,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
+
+    bool mMsaaEnabled = false;
 
     Qgis::ViewSyncModeFlags mViewSyncMode;
     bool mVisualizeViewFrustum = false;

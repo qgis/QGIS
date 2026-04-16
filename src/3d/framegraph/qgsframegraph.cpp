@@ -267,6 +267,15 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   rubberBandsPass->setObjectName( "rubberBandsPass" );
   rubberBandsPass->setParent( mMainViewPort );
 
+  mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mMainViewPort );
+  mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
+  mMsaaBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
+  mMsaaBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
+  mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+  mMsaaBlitNode->setEnabled( false );
+
   // shadow rendering pass
   constructShadowRenderPass();
 
@@ -479,6 +488,9 @@ void QgsFrameGraph::setSize( QSize s )
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
+
+  mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
 }
 
 Qt3DRender::QRenderCapture *QgsFrameGraph::renderCapture()
@@ -497,6 +509,15 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   forwardRenderView().setDebugOverlayEnabled( enabled );
+}
+
+void QgsFrameGraph::setMsaaEnabled( bool enabled )
+{
+  Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();
+  forwardRenderView().setMsaaEnabled( enabled );
+  highlightsRenderView().setRenderTarget( target );
+  mRubberBandsRenderTargetSelector->setTarget( target );
+  mMsaaBlitNode->setEnabled( enabled );
 }
 
 void QgsFrameGraph::removeClipPlanes()

@@ -254,6 +254,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // Ambient occlusion
   mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
 
+  mMsaaCheckBox->setChecked( map->isMsaaEnabled() );
+
   // ==================
   // Page: General
 
@@ -380,6 +382,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
+
+  mMap->setMsaaEnabled( mMsaaCheckBox->isChecked() );
 
   Qgis::ViewSyncModeFlags viewSyncMode;
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, mSync2DTo3DCheckbox->isChecked() );
