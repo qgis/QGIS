@@ -282,11 +282,18 @@ class CORE_EXPORT QgsTessellator
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
     QVector3D applyTransformWithExtrusion( const QVector3D point, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
     void addVertex(
-      const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer, const size_t &vertexBufferOffset
+      const QVector3D &point,
+      const QVector3D &normal,
+      float extrusionHeight,
+      QMatrix4x4 *transformMatrix,
+      const QgsPoint *originOffset,
+      QHash<VertexPoint, unsigned int> *vertexBuffer,
+      const size_t &vertexBufferOffset,
+      bool isFloor = false
     );
-    void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
+    void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool isFloor = false );
     void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );
-    void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height );
+    void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height, float u1, float u2 );
     void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
     std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
