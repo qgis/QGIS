@@ -15,6 +15,7 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.server import QgsServerSettings, QgsServerSettingsEnv
 from qgis.testing import unittest
 from utilities import unitTestDataPath
@@ -151,6 +152,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_priority(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
+        QCoreApplication.setOrganizationName(dpath)
 
         # load settings
         os.environ[env] = self.testdata_path
@@ -180,6 +182,7 @@ class TestQgsServerSettings(unittest.TestCase):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
         ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
+        QCoreApplication.setOrganizationName(dpath)
 
         # load settings
         os.environ[env] = self.testdata_path
@@ -203,6 +206,7 @@ class TestQgsServerSettings(unittest.TestCase):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf1"
         ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
+        QCoreApplication.setOrganizationName(dpath)
 
         # load settings
         os.environ[env] = self.testdata_path
