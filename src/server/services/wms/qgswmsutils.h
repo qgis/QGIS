@@ -23,6 +23,7 @@
 #ifndef QGSWMSUTILS_H
 #define QGSWMSUTILS_H
 
+#include "qgslayertreegroup.h"
 #include "qgsmodule.h"
 #include "qgsserversettings.h"
 
@@ -69,6 +70,13 @@ namespace QgsWms
    * Write image response
    */
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr, int imageQuality = -1 );
+
+  /**
+   * Collects all child names (layers and groups) in the project, that are not part of an opaque group.
+   * This is kind of a whitelist for requests that should return an error on inexistent or opaque group children.
+   */
+  void collectNonOpaqueChildLayerNames( const QgsLayerTreeGroup *group, QStringList &nonOpaqueChildNames );
+
 } // namespace QgsWms
 
 #endif

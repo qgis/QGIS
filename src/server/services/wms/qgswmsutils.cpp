@@ -21,6 +21,7 @@
 
 #include "qgswmsutils.h"
 
+#include "qgslayertree.h"
 #include "qgsmediancut.h"
 #include "qgsmodule.h"
 #include "qgsproject.h"
@@ -175,4 +176,40 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat, parameter );
     }
   }
+
+  void collectNonOpaqueChildLayerNames( const QgsLayerTreeGroup *group, QStringList &nonOpaqueChildNames )
+  {
+    // return empty list, when this group is opaque, otherwise collect the children
+    if ( !group->isWmsOpaque() )
+    {
+      for ( QgsLayerTreeNode *child : group->children() )
+      {
+        QString name;
+        if ( QgsLayerTree::isGroup( child ) )
+        {
+          auto groupNode = QgsLayerTree::toGroup( child );
+          name = groupNode->serverProperties()->shortName();
+
+          if ( name.isEmpty() )
+            name = groupNode->name();
+
+          // go on in the recursive init
+          collectNonOpaqueChildLayerNames( groupNode, nonOpaqueChildNames );
+        }
+        else if ( QgsLayerTree::isLayer( child ) )
+        {
+          // only emit the nick for later use
+          auto layerNode = QgsLayerTree::toLayer( child );
+          if ( layerNode->layer() )
+            name = layerNode->layer()->serverProperties()->shortName();
+
+          if ( name.isEmpty() )
+            name = layerNode->name();
+        }
+
+        nonOpaqueChildNames << name;
+      }
+    }
+  }
+
 } // namespace QgsWms
