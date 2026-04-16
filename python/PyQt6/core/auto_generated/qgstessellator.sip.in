@@ -205,24 +205,28 @@ Returns the algorithm used for triangulation.
 .. versionadded:: 4.0
 %End
 
-    void setOutputZUp( bool zUp );
+ void setOutputZUp( bool zUp ) /Deprecated="Since 4.2. Has no effect no, outputs are always z-up."/;
 %Docstring
 Sets whether the "up" direction should be the Z axis on output
 (``True``), otherwise the "up" direction will be the Y axis (``False``).
 The default value is ``False`` (to keep compatibility for existing
 tessellator use cases).
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Has no effect no, outputs are always z-up.
 %End
 
-    bool isOutputZUp() const;
+ bool isOutputZUp() const /Deprecated="Since 4.2. Has no effect no, outputs are always z-up."/;
 %Docstring
 Returns whether the "up" direction should be the Z axis on output
 (``True``), otherwise the "up" direction will be the Y axis (``False``).
 The default value is ``False`` (to keep compatibility for existing
 tessellator use cases).
 
-.. versionadded:: 3.42
+.. deprecated:: 4.2
+
+   Has no effect no, outputs are always z-up.
 %End
 
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );

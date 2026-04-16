@@ -112,9 +112,6 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 
-  mLineDataNormal.tessellator->setOutputZUp( true );
-  mLineDataSelected.tessellator->setOutputZUp( true );
-
   return true;
 }
 
