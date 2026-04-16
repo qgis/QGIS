@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgdalutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsGdalUtils
+{
+%Docstring(signature="appended")
+Utilities for working with GDAL.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsgdalutils.h"
+%End
+  public:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    static bool supportsTiffLercCompression();
+%Docstring
+Returns ``True`` if the GDAL library used by this QGIS install supports
+the LERC compression technique for TIFF files.
+
+.. seealso:: :py:func:`supportsMrfLercCompression`
+
+.. versionadded:: 4.2
+%End
+
+    static bool supportsMrfLercCompression();
+%Docstring
+Returns ``True`` if the GDAL library used by this QGIS install supports
+the LERC compression technique for MRF files.
+
+.. seealso:: :py:func:`supportsTiffLercCompression`
+
+.. versionadded:: 4.2
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgdalutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

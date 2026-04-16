@@ -75,6 +75,7 @@
 %Include auto_generated/qgsfilefiltergenerator.sip
 %Include auto_generated/qgsfileutils.sip
 %Include auto_generated/qgsfontutils.sip
+%Include auto_generated/qgsgdalutils.sip
 %Include auto_generated/qgsgeometryoptions.sip
 %Include auto_generated/qgsgeometrysimplifier.sip
 %Include auto_generated/qgsgeometryvalidator.sip

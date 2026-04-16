@@ -1014,6 +1014,34 @@ QString QgsGdalUtils::gdalDocumentationUrlForDriver( GDALDriverH hDriver )
   return QString();
 }
 
+bool QgsGdalUtils::supportsMrfLercCompression()
+{
+  GDALDriverH hDriver = GDALGetDriverByName( "MRF" );
+  if ( hDriver )
+  {
+    const char *creationOptions = GDALGetMetadataItem( hDriver, GDAL_DMD_CREATIONOPTIONLIST, NULL );
+    if ( creationOptions && strstr( creationOptions, "LERC" ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsGdalUtils::supportsTiffLercCompression()
+{
+  GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
+  if ( hDriver )
+  {
+    const char *creationOptions = GDALGetMetadataItem( hDriver, GDAL_DMD_CREATIONOPTIONLIST, NULL );
+    if ( creationOptions && strstr( creationOptions, "LERC" ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options )
 {
   QString vsiPrefix = prefix;
