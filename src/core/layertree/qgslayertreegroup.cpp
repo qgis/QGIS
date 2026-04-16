@@ -45,6 +45,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
+  , mWmsIsOpaque( other.mWmsIsOpaque )
 {
   other.serverProperties()->copyTo( mServerProperties.get() );
 
@@ -522,6 +523,8 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->mWmsHasTimeDimension = element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1;
 
+  groupNode->mWmsIsOpaque = element.attribute( u"wms-is-opaque"_s, u"0"_s ) == "1"_L1;
+
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( u"groupLayer"_s ) );
 
   readLegacyServerProperties( groupNode );
@@ -582,6 +585,11 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   if ( mWmsHasTimeDimension )
   {
     elem.setAttribute( u"wms-has-time-dimension"_s, u"1"_s );
+  }
+
+  if ( mWmsIsOpaque )
+  {
+    elem.setAttribute( u"wms-is-opaque"_s, u"1"_s );
   }
 
   elem.setAttribute( u"groupLayer"_s, mGroupLayer.layerId );
@@ -865,4 +873,14 @@ void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
 bool QgsLayerTreeGroup::hasWmsTimeDimension() const
 {
   return mWmsHasTimeDimension;
+}
+
+void QgsLayerTreeGroup::setIsWmsOpaque( bool isWmsOpaque )
+{
+  mWmsIsOpaque = isWmsOpaque;
+}
+
+bool QgsLayerTreeGroup::isWmsOpaque() const
+{
+  return mWmsIsOpaque;
 }

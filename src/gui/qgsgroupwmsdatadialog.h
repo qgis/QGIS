@@ -114,6 +114,26 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
     bool hasTimeDimension() const;
 
     /**
+     * Returns whether the group should be treated as an opaque layer.
+     * If TRUE, the layer group will behave like a single layer, rather
+     * than a collection of individual layers.
+     *
+     * \see setIsOpaque()
+     * \since QGIS 4.2
+     */
+    bool isOpaque() const;
+
+    /**
+     * Sets whether the group should be treated as an opaque layer.
+     * \param isOpaque if TRUE, the layer group will behave like a single layer.
+     * If FALSE, it behaves as a standard group.
+     *
+     * \see isOpaque()
+     * \since QGIS 4.2
+     */
+    void setIsOpaque( bool isOpaque );
+
+    /**
      * Returns QGIS Server Properties for the layer tree group
      * \since QGIS 3.44
      */

@@ -412,6 +412,30 @@ returned.
 .. versionadded:: 3.44
 %End
 
+    bool isWmsOpaque() const;
+%Docstring
+Returns whether the group in WMS should be treated as an opaque layer.
+If ``True``, the layer group will behave like a single layer, rather
+than a collection of individual layers.
+
+.. seealso:: :py:func:`setIsWmsOpaque`
+
+.. versionadded:: 4.2
+%End
+
+    void setIsWmsOpaque( bool isWmsOpaque );
+%Docstring
+Sets whether the group in WMS should be treated as an opaque layer.
+
+:param isWmsOpaque: if ``True``, the layer group will behave like a
+                    single layer. If ``False``, it behaves as a standard
+                    group.
+
+.. seealso:: :py:func:`isWmsOpaque`
+
+.. versionadded:: 4.2
+%End
+
   protected slots:
 
     void nodeVisibilityChanged( QgsLayerTreeNode *node );

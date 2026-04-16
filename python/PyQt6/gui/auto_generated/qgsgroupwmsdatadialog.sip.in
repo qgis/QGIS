@@ -120,6 +120,29 @@ returned.
 .. versionadded:: 3.44
 %End
 
+    bool isOpaque() const;
+%Docstring
+Returns whether the group should be treated as an opaque layer. If
+``True``, the layer group will behave like a single layer, rather than a
+collection of individual layers.
+
+.. seealso:: :py:func:`setIsOpaque`
+
+.. versionadded:: 4.2
+%End
+
+    void setIsOpaque( bool isOpaque );
+%Docstring
+Sets whether the group should be treated as an opaque layer.
+
+:param isOpaque: if ``True``, the layer group will behave like a single
+                 layer. If ``False``, it behaves as a standard group.
+
+.. seealso:: :py:func:`isOpaque`
+
+.. versionadded:: 4.2
+%End
+
     QgsMapLayerServerProperties *serverProperties();
 %Docstring
 Returns QGIS Server Properties for the layer tree group

@@ -396,6 +396,26 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     bool hasWmsTimeDimension() const;
 
+    /**
+     * Returns whether the group in WMS should be treated as an opaque layer.
+     * If TRUE, the layer group will behave like a single layer, rather
+     * than a collection of individual layers.
+     *
+     * \see setIsWmsOpaque()
+     * \since QGIS 4.2
+     */
+    bool isWmsOpaque() const;
+
+    /**
+     * Sets whether the group in WMS should be treated as an opaque layer.
+     * \param isWmsOpaque if TRUE, the layer group will behave like a single layer.
+     * If FALSE, it behaves as a standard group.
+     *
+     * \see isWmsOpaque()
+     * \since QGIS 4.2
+     */
+    void setIsWmsOpaque( bool isWmsOpaque );
+
   protected slots:
 
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
@@ -453,6 +473,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Stores information about server properties
      */
     std::unique_ptr< QgsMapLayerServerProperties > mServerProperties;
+
+    bool mWmsIsOpaque = false;
 };
 
 
