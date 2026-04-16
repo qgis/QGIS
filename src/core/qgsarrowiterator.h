@@ -17,6 +17,7 @@
 #define QGSARROWITERATOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 
@@ -243,7 +244,7 @@ class CORE_EXPORT QgsArrowSchema
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
      * \since QGIS 4.2
      */
-    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj ) SIP_TYPEHINT( QgsArrowSchema );
     % MethodCode
     if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_schema" ) ) {
       struct ArrowSchema *capsuleSchema = static_cast<struct ArrowSchema *>( PyCapsule_GetPointer( a0, "arrow_schema" ) );
@@ -472,7 +473,7 @@ class CORE_EXPORT QgsArrowArrayStream
      * \throws TypeError if obj does not implement the Arrow PyCapsule interface.
      * \since QGIS 4.2
      */
-    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj ) SIP_TYPEHINT( QgsArrowArrayStream );
     % MethodCode
     if ( PyCapsule_CheckExact( a0 ) && PyCapsule_IsValid( a0, "arrow_array_stream" ) )
     {

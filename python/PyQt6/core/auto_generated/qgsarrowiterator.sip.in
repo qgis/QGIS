@@ -168,7 +168,7 @@ Arrow-compatible libraries.
     }
 %End
 
-    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj ) /TypeHint="QgsArrowSchema"/;
 %Docstring
 Create a QgsArrowSchema from any object implementing
 __arrow_c_schema__().
@@ -390,7 +390,7 @@ geopandas, and other Arrow-compatible libraries.
     }
 %End
 
-    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj );
+    static SIP_PYOBJECT fromArrow( SIP_PYOBJECT obj ) /TypeHint="QgsArrowArrayStream"/;
 %Docstring
 Create a QgsArrowArrayStream from any object implementing
 __arrow_c_stream__().
