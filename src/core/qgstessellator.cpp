@@ -40,7 +40,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
   const float dy = pt2.y() - pt1.y();
 
   // perpendicular vector in plane to [x,y] is [-y,x]
-  QVector3D vn = mOutputZUp ? QVector3D( -dy, dx, 0 ) : QVector3D( -dy, 0, -dx );
+  QVector3D vn = QVector3D( -dy, dx, 0 );
   vn.normalize();
 
   float u0, v0;
@@ -96,10 +96,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
 
   // triangle 1 vertex 1
   mIndexBuffer << uniqueVertexCount();
-  if ( mOutputZUp )
-    mData << pt1.x() << pt1.y() << pt1.z() + height;
-  else
-    mData << pt1.x() << pt1.z() + height << -pt1.y();
+  mData << pt1.x() << pt1.y() << pt1.z() + height;
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
   if ( mAddTextureCoords )
@@ -107,10 +104,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
 
   // triangle 1 vertex 2
   mIndexBuffer << uniqueVertexCount();
-  if ( mOutputZUp )
-    mData << pt2.x() << pt2.y() << pt2.z() + height;
-  else
-    mData << pt2.x() << pt2.z() + height << -pt2.y();
+  mData << pt2.x() << pt2.y() << pt2.z() + height;
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
   if ( mAddTextureCoords )
@@ -118,10 +112,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
 
   // triangle 1 vertex 3
   mIndexBuffer << uniqueVertexCount();
-  if ( mOutputZUp )
-    mData << pt1.x() << pt1.y() << pt1.z();
-  else
-    mData << pt1.x() << pt1.z() << -pt1.y();
+  mData << pt1.x() << pt1.y() << pt1.z();
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
   if ( mAddTextureCoords )
@@ -135,10 +126,7 @@ void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D
 
   // triangle 2 vertex 3
   mIndexBuffer << uniqueVertexCount();
-  if ( mOutputZUp )
-    mData << pt2.x() << pt2.y() << pt2.z();
-  else
-    mData << pt2.x() << pt2.z() << -pt2.y();
+  mData << pt2.x() << pt2.y() << pt2.z();
   if ( mAddNormals )
     mData << vn.x() << vn.y() << vn.z();
   if ( mAddTextureCoords )
@@ -243,6 +231,9 @@ void QgsTessellator::setTriangulationAlgorithm( Qgis::TriangulationAlgorithm alg
 {
   mTriangulationAlgorithm = algorithm;
 }
+
+void QgsTessellator::setOutputZUp( bool )
+{}
 
 void QgsTessellator::updateStride()
 {
@@ -558,12 +549,7 @@ QVector3D QgsTessellator::applyTransformWithExtrusion( const QVector3D point, fl
   if ( fz > mZMax )
     mZMax = static_cast<float>( fz );
 
-  // NOLINTBEGIN(bugprone-branch-clone);
-  if ( mOutputZUp )
-    return QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
-  else
-    return QVector3D( static_cast<float>( fx ), static_cast<float>( fz ), static_cast<float>( -fy ) );
-  // NOLINTEND(bugprone-branch-clone)
+  return QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
 }
 
 
@@ -750,15 +736,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     calculateBaseTransform( pNormal, &base );
     polygonNew.reset( transformPolygonToNewBase( polygon, extrusionOrigin, &base, mScale ) );
 
-    QVector3D normal;
-    if ( !mOutputZUp )
-    {
-      normal = QVector3D( pNormal.x(), pNormal.z(), -pNormal.y() );
-    }
-    else
-    {
-      normal = pNormal;
-    }
+    QVector3D normal = pNormal;
     // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
     base = base.transposed();
 
@@ -935,21 +913,10 @@ std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
     const uint32_t index2 = mIndexBuffer[i + 1] * noOfElements;
     const uint32_t index3 = mIndexBuffer[i + 2] * noOfElements;
 
-    if ( mOutputZUp )
-    {
-      const QgsPoint p1( mData[index1], mData[index1 + 1], mData[index1 + 2] );
-      const QgsPoint p2( mData[index2], mData[index2 + 1], mData[index2 + 2] );
-      const QgsPoint p3( mData[index3], mData[index3 + 1], mData[index3 + 2] );
-      mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
-    }
-    else
-    {
-      // tessellator geometry is x, z, -y
-      const QgsPoint p1( mData[index1], -mData[index1 + 2], mData[index1 + 1] );
-      const QgsPoint p2( mData[index2], -mData[index2 + 2], mData[index2 + 1] );
-      const QgsPoint p3( mData[index3], -mData[index3 + 2], mData[index3 + 1] );
-      mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
-    }
+    const QgsPoint p1( mData[index1], mData[index1 + 1], mData[index1 + 2] );
+    const QgsPoint p2( mData[index2], mData[index2 + 1], mData[index2 + 2] );
+    const QgsPoint p3( mData[index3], mData[index3 + 1], mData[index3 + 2] );
+    mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
   }
 
   return mp;

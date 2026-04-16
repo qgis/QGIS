@@ -98,17 +98,15 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
-  const bool requiresTextureCoordinates = mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false;
+  const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
 
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
-  tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
-  tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outNormal.tessellator = std::move( tessellator );
@@ -118,10 +116,8 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
-  tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setAddTextureUVs( requiresTextureCoordinates );
-  tessellator->setOutputZUp( true );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outSelected.tessellator = std::move( tessellator );
