@@ -15,6 +15,7 @@ QgsAttributeTableConfig.AddFeatureMethod.__doc__ = """The way to add features in
 
 """
 # --
+QgsAttributeTableConfig.AddFeatureMethod.baseClass = QgsAttributeTableConfig
 try:
     QgsAttributeTableConfig.ColumnConfig.__attribute_docs__ = {'type': 'The type of this column.', 'name': 'The name of the attribute if this column represents a field', 'hidden': 'Flag that controls if the column is hidden', 'width': 'Width of column, or -1 for default width'}
     QgsAttributeTableConfig.ColumnConfig.__annotations__ = {'type': 'QgsAttributeTableConfig.Type', 'name': str, 'hidden': bool, 'width': int}

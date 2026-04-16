@@ -21,6 +21,9 @@ The configuration is specific for one vector layer.
 #include "qgsattributetableconfig.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     enum Type /BaseType=IntEnum/
     {
       Field,
@@ -53,6 +56,7 @@ The configuration is specific for one vector layer.
       Form,
       Table
     };
+
 
     QgsAttributeTableConfig();
 

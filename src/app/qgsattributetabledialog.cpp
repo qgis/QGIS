@@ -180,7 +180,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     method = mLayer->attributeTableConfig().addFeatureMethod();
   if ( method == QgsAttributeTableConfig::AddFeatureMethod::Unset )
   {
-    const QString lastMethod = settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ).toString();
+    const QString lastMethod = settings.value( u"/qgis/attribute-table/default-add-feature-method"_s ).toString();
     method = ( lastMethod == "attributeForm"_L1 ) ? QgsAttributeTableConfig::AddFeatureMethod::Form : QgsAttributeTableConfig::AddFeatureMethod::Table;
   }
   mAddFeatureButton->setDefaultAction( ( method == QgsAttributeTableConfig::AddFeatureMethod::Form ) ? mActionAddFeatureViaAttributeForm : mActionAddFeature );
@@ -732,7 +732,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
 
   //remember as last used mode ...
   QgsSettings s;
-  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeTable"_s );
+  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeTable"_s );
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeature );
   //... and set for the current layer
@@ -768,7 +768,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
 
   //remember as last used mode ...
   QgsSettings s;
-  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeForm"_s );
+  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeForm"_s );
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeatureViaAttributeForm );
   //... and set for the current layer

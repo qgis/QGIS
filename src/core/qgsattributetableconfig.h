@@ -34,6 +34,8 @@ class QgsFields;
  */
 class CORE_EXPORT QgsAttributeTableConfig
 {
+    Q_GADGET
+
   public:
     /**
      * The type of an attribute table column.
@@ -85,6 +87,8 @@ class CORE_EXPORT QgsAttributeTableConfig
       Form,  //!< Opens a new Attributeform-Dialog
       Table  //!< Adds a new row (or a form embedded in the attribute table depending on the view)
     };
+    Q_ENUM( AddFeatureMethod )
+
 
     QgsAttributeTableConfig() = default;
 

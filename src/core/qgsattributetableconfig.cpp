@@ -184,10 +184,7 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
     else
       mActionWidgetStyle = DropDown;
 
-    if ( configNode.toElement().attribute( u"addFeatureMethod"_s ) == "form"_L1 )
-      mAddFeatureMethod = AddFeatureMethod::Form;
-    else if ( configNode.toElement().attribute( u"addFeatureMethod"_s ) == "table"_L1 )
-      mAddFeatureMethod = AddFeatureMethod::Table;
+    mAddFeatureMethod = qgsEnumKeyToValue( configNode.toElement().attribute( u"addFeatureMethod"_s ), AddFeatureMethod::Unset );
   }
   else
   {
@@ -293,7 +290,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
   configElement.setAttribute( u"sortOrder"_s, mSortOrder );
 
   if ( mAddFeatureMethod != AddFeatureMethod::Unset )
-    configElement.setAttribute( u"addFeatureMethod"_s, mAddFeatureMethod == AddFeatureMethod::Form ? "form" : "table" );
+    configElement.setAttribute( u"addFeatureMethod"_s, qgsEnumValueToKey( mAddFeatureMethod ) );
 
   QDomElement columnsElement = doc.createElement( u"columns"_s );
 
