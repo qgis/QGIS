@@ -123,7 +123,7 @@ class CORE_EXPORT QgsMapLayerUtils
     /**
      * Returns TRUE if the \a uri for a given \a provider is served by OpenStreetMap server.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.2
      */
     static bool isOpenStreetMapUri( const QString &uri, const QString &providerType );
 
