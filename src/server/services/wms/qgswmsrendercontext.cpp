@@ -21,6 +21,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 #include <QString>
 
@@ -44,6 +45,18 @@ QgsWmsRenderContext::~QgsWmsRenderContext()
 void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
 {
   mParameters = parameters;
+
+  // Throw a LayerNotDefined when the required layer is an opaque child (or not existent at all)
+  QStringList nonOpaqueChildNames;
+  collectNonOpaqueChildLayerNames( mProject->layerTreeRoot(), nonOpaqueChildNames );
+  const QStringList layersList = mParameters.queryLayersNickname() + mParameters.allLayersNickname();
+  auto firstOpaqueChildInNickname = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layername ) { return !nonOpaqueChildNames.contains( layername ); } );
+  if ( firstOpaqueChildInNickname != layersList.cend() )
+  {
+    QgsWmsParameter param( QgsWmsParameter::LAYER );
+    param.mValue = *firstOpaqueChildInNickname;
+    throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
+  }
 
   initRestrictedLayers();
   initNicknameLayers();
