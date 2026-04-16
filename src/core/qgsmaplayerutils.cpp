@@ -197,7 +197,7 @@ QString QgsMapLayerUtils::launderLayerName( const QString &name )
 
 bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
 {
-  if ( !layer || !layer->dataProvider() )
+  if ( !layer )
   {
     return false;
   }
