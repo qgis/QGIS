@@ -61,6 +61,7 @@ Performs raster layer calculations.
       MemoryError,
       BandError,
       CalculationError,
+      OpenCLKernelBuildError
     };
 
 

@@ -24,6 +24,9 @@ QgsRasterCalculator.BandError.__doc__ = "Invalid band number for input"
 QgsRasterCalculator.CalculationError = QgsRasterCalculator.Result.CalculationError
 QgsRasterCalculator.CalculationError.is_monkey_patched = True
 QgsRasterCalculator.CalculationError.__doc__ = "Error occurred while performing calculation"
+QgsRasterCalculator.OpenCLKernelBuildError = QgsRasterCalculator.Result.OpenCLKernelBuildError
+QgsRasterCalculator.OpenCLKernelBuildError.is_monkey_patched = True
+QgsRasterCalculator.OpenCLKernelBuildError.__doc__ = "Error building OpenCL kernel"
 QgsRasterCalculator.Result.__doc__ = """Result of the calculation
 
 * ``Success``: Calculation successful
@@ -34,6 +37,7 @@ QgsRasterCalculator.Result.__doc__ = """Result of the calculation
 * ``MemoryError``: Error allocating memory for result
 * ``BandError``: Invalid band number for input
 * ``CalculationError``: Error occurred while performing calculation
+* ``OpenCLKernelBuildError``: Error building OpenCL kernel
 
 """
 # --
