@@ -736,7 +736,9 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeature );
   //... and set for the current layer
-  mLayer->attributeTableConfig().setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Table );
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Table );
+  mLayer->setAttributeTableConfig( config );
 
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
@@ -772,7 +774,9 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeatureViaAttributeForm );
   //... and set for the current layer
-  mLayer->attributeTableConfig().setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Form );
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Form );
+  mLayer->setAttributeTableConfig( config );
 
   QgsFeature f;
   QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QUuid(), -1, this );
