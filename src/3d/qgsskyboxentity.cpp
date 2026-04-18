@@ -180,6 +180,16 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
     {
       finalImage = QImage( faceSize.width(), faceSize.height(), QImage::Format_RGB32 );
       finalImage.fill( Qt::white );
+      QPainter p;
+      p.begin( &finalImage );
+      //draw a checkerboard background for missing texture images
+      uchar pixDataRGB[] = { 150, 150, 150, 255, 100, 100, 100, 255, 100, 100, 100, 255, 150, 150, 150, 255 };
+      const QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+      const QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+      QBrush checkerBrush;
+      checkerBrush.setTexture( pix );
+      p.fillRect( finalImage.rect(), checkerBrush );
+      p.end();
     }
     else if ( config.mirrorHorizontal || config.mirrorVertical )
     {
