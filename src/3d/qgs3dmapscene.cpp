@@ -1135,6 +1135,8 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     mSkybox = nullptr;
   }
 
+  mEngine->setFrustumCullingEnabled( !mMap.isSkyboxEnabled() );
+
   if ( mMap.isSkyboxEnabled() )
   {
     QMap<QString, QString> faces;
