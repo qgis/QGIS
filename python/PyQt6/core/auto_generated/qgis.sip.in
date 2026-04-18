@@ -2438,9 +2438,9 @@ The development version
 
     enum class SkyboxType /BaseType=IntEnum/
     {
-      // this is broken for z-up coordinate system
-      // Panoramic,
       DistinctTextures,
+      // this is currently broken for z-up coordinate system
+      //Panoramic, //!< Panoramic texture
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/
