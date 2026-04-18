@@ -74,6 +74,13 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     QString roughnessTexturePath() const { return mRoughnessTexturePath; }
 
     /**
+     * Returns the path to the normal texture map.
+     *
+     * \see setNormalTexturePath()
+     */
+    QString normalTexturePath() const { return mNormalTexturePath; }
+
+    /**
      * Returns the path to the ambient occlusion texture map.
      *
      * \see setAmbientOcclusionTexturePath()
@@ -119,6 +126,13 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setRoughnessTexturePath( const QString &path ) { mRoughnessTexturePath = path; }
 
     /**
+     * Sets the \a path to the normal texture map.
+     *
+     * \see normalTexturePath()
+     */
+    void setNormalTexturePath( const QString &path ) { mNormalTexturePath = path; }
+
+    /**
      * Sets the \a path to the ambient occlusion texture map.
      *
      * \see ambientOcclusionTexturePath()
@@ -143,6 +157,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
     bool requiresTextureCoordinates() const override;
+    bool requiresTangents() const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
@@ -151,6 +166,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
       return mBaseColorTexturePath == other.mBaseColorTexturePath
              && mMetalnessTexturePath == other.mMetalnessTexturePath
              && mRoughnessTexturePath == other.mRoughnessTexturePath
+             && mNormalTexturePath == other.mNormalTexturePath
              && mAmbientOcclusionTexturePath == other.mAmbientOcclusionTexturePath
              && qgsDoubleNear( mTextureScale, other.mTextureScale )
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
@@ -161,6 +177,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     QString mBaseColorTexturePath;
     QString mMetalnessTexturePath;
     QString mRoughnessTexturePath;
+    QString mNormalTexturePath;
     QString mAmbientOcclusionTexturePath;
 
     double mTextureScale { 1.0 };

@@ -449,6 +449,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertFalse(settings.metalnessTexturePath())
         self.assertFalse(settings.roughnessTexturePath())
         self.assertFalse(settings.ambientOcclusionTexturePath())
+        self.assertFalse(settings.normalTexturePath())
         self.assertEqual(settings.textureScale(), 1)
         self.assertEqual(settings.textureRotation(), 0)
 
@@ -471,6 +472,9 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
             settings.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
         )
 
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertEqual(settings.normalTexturePath(), "/path/to/normal_texture.png")
+
         settings.setTextureScale(12.1)
         self.assertEqual(settings.textureScale(), 12.1)
         settings.setTextureRotation(45)
@@ -482,6 +486,8 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
         settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
         settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
 
@@ -496,6 +502,7 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertEqual(
             cloned.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
         )
+        self.assertEqual(cloned.normalTexturePath(), "/path/to/normal_texture.png")
         self.assertEqual(cloned.textureScale(), 12.1)
         self.assertEqual(cloned.textureRotation(), 45)
 
@@ -523,6 +530,11 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings2.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
         self.assertNotEqual(settings1, settings2)
         settings1.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setNormalTexturePath("/path/to/normal_texture.png")
         self.assertEqual(settings1, settings2)
 
         settings2.setTextureScale(9)
@@ -553,6 +565,8 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
         settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
         settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
 
