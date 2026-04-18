@@ -42,6 +42,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( u"ambientOcclusionMap"_s, QVariant(), this ) )
   , mNormalMapParameter( new Qt3DRender::QParameter( u"normalMap"_s, QVariant(), this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
+  , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
   , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
   , mMetalRoughGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
@@ -205,6 +206,11 @@ void QgsMetalRoughMaterial::setTextureScale( float textureScale )
   mTextureScaleParameter->setValue( textureScale );
 }
 
+void QgsMetalRoughMaterial::setTextureRotation( float textureRotation )
+{
+  mTextureRotationParameter->setValue( textureRotation );
+}
+
 void QgsMetalRoughMaterial::init()
 {
   QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::baseColorChanged );
@@ -214,7 +220,9 @@ void QgsMetalRoughMaterial::init()
   QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::normalChanged );
   connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
 
-  mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+  const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
+  const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ROTATION" } ) );
+  mMetalRoughGL3Shader->setVertexShaderCode( finalVertexShaderCode );
 
   updateFragmentShader();
 
@@ -241,6 +249,7 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
+  mMetalRoughEffect->addParameter( mTextureRotationParameter );
 
   setEffect( mMetalRoughEffect );
 }

@@ -108,6 +108,7 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
 void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughTexturedMaterialSettings *texturedSettings, QgsMetalRoughMaterial *material )
 {
   material->setTextureScale( static_cast<float>( texturedSettings->textureScale() ) );
+  material->setTextureRotation( static_cast<float>( texturedSettings->textureRotation() ) );
 
   // base color
   if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath() ) )
