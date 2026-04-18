@@ -4355,9 +4355,9 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class SkyboxType : int
     {
-      // this is broken for z-up coordinate system
-      // Panoramic,
       DistinctTextures, //!< Cube map built from distinct textures
+      // this is currently broken for z-up coordinate system
+      //Panoramic, //!< Panoramic texture
     };
     Q_ENUM( SkyboxType )
 
