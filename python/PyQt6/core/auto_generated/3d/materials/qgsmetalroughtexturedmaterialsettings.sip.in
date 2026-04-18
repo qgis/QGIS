@@ -70,6 +70,13 @@ Returns the path to the roughness texture map.
 .. seealso:: :py:func:`setRoughnessTexturePath`
 %End
 
+    QString normalTexturePath() const;
+%Docstring
+Returns the path to the normal texture map.
+
+.. seealso:: :py:func:`setNormalTexturePath`
+%End
+
     QString ambientOcclusionTexturePath() const;
 %Docstring
 Returns the path to the ambient occlusion texture map.
@@ -116,6 +123,13 @@ Sets the ``path`` to the roughness texture map.
 .. seealso:: :py:func:`roughnessTexturePath`
 %End
 
+    void setNormalTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the normal texture map.
+
+.. seealso:: :py:func:`normalTexturePath`
+%End
+
     void setAmbientOcclusionTexturePath( const QString &path );
 %Docstring
 Sets the ``path`` to the ambient occlusion texture map.
@@ -142,6 +156,8 @@ Sets the texture ``rotation``, in degrees.
 %End
 
     virtual bool requiresTextureCoordinates() const;
+
+    virtual bool requiresTangents() const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 

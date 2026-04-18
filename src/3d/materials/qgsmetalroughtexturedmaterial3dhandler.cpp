@@ -146,6 +146,17 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
     material->setRoughness( 0.5 );
   }
 
+  if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath() ) )
+  {
+    // takes ownership of texture
+    material->setNormal( QVariant::fromValue( normalTex ) );
+  }
+  else
+  {
+    // default to none
+    material->setNormal( QVariant() );
+  }
+
   // ambient occlusion
   if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath() ) )
   {
