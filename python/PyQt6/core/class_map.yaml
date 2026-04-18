@@ -9831,11 +9831,12 @@ QgsMapLayerTemporalProperties: src/core/qgsmaplayertemporalproperties.h#L43
 QgsMapLayerUtils.combinedExtent: src/core/qgsmaplayerutils.h#L46
 QgsMapLayerUtils.databaseConnection: src/core/qgsmaplayerutils.h#L53
 QgsMapLayerUtils.isOpenStreetMapLayer: src/core/qgsmaplayerutils.h#L121
+QgsMapLayerUtils.isOpenStreetMapUri: src/core/qgsmaplayerutils.h#L128
 QgsMapLayerUtils.launderLayerName: src/core/qgsmaplayerutils.h#L114
 QgsMapLayerUtils.layerRefersToUri: src/core/qgsmaplayerutils.h#L80
 QgsMapLayerUtils.layerSourceMatchesPath: src/core/qgsmaplayerutils.h#L62
-QgsMapLayerUtils.layerToolTip: src/core/qgsmaplayerutils.h#L135
-QgsMapLayerUtils.layerTypeToString: src/core/qgsmaplayerutils.h#L128
+QgsMapLayerUtils.layerToolTip: src/core/qgsmaplayerutils.h#L142
+QgsMapLayerUtils.layerTypeToString: src/core/qgsmaplayerutils.h#L135
 QgsMapLayerUtils.updateLayerSourcePath: src/core/qgsmaplayerutils.h#L90
 QgsMapLayerUtils: src/core/qgsmaplayerutils.h#L38
 QgsMapRendererAbstractCustomPainterJob.preparePainter: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L47
