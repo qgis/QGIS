@@ -5109,6 +5109,9 @@ QgsFractionNumericFormat.useDedicatedUnicodeCharacters: src/core/numericformats/
 QgsFractionNumericFormat.useUnicodeSuperSubscript: src/core/numericformats/qgsfractionnumericformat.h#L69
 QgsFractionNumericFormat.visibleName: src/core/numericformats/qgsfractionnumericformat.h#L40
 QgsFractionNumericFormat: src/core/numericformats/qgsfractionnumericformat.h#L31
+QgsGdalUtils.supportsMrfLercCompression: src/core/qgsgdalutils.h#L389
+QgsGdalUtils.supportsTiffLercCompression: src/core/qgsgdalutils.h#L381
+QgsGdalUtils: src/core/qgsgdalutils.h#L99
 QgsGenericNumericTransformer.clone: src/core/qgspropertytransformer.h#L343
 QgsGenericNumericTransformer.exponent: src/core/qgspropertytransformer.h#L415
 QgsGenericNumericTransformer.fromExpression: src/core/qgspropertytransformer.h#L361
