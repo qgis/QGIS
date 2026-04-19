@@ -399,7 +399,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
-  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
+  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( this );
 
   mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
@@ -660,7 +660,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
 
-    if ( mCanvas->mapTool() )
+    if ( mCanvas->mapTool() && mCanvas->mapTool() == mMapToolChangeAttribute )
       mCanvas->setMapTool( nullptr );
 
     return;

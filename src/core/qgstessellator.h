@@ -109,15 +109,15 @@ class CORE_EXPORT QgsTessellator
 
     /**
      * Sets the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
-    void setTextureRotation( float rotation );
+    Q_DECL_DEPRECATED void setTextureRotation( float rotation ) SIP_DEPRECATED;
 
     /**
      * Returns the rotation of texture UV coordinates (in degrees).
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Handled in shaders now. No longer has any effect on the texture coordinates.
      */
-    float textureRotation() const { return mTextureRotation; }
+    Q_DECL_DEPRECATED float textureRotation() const SIP_DEPRECATED { return 0; }
 
     /**
      * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
@@ -183,17 +183,17 @@ class CORE_EXPORT QgsTessellator
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
      * otherwise the "up" direction will be the Y axis (FALSE). The default
      * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
+     * \deprecated QGIS 4.2. Has no effect no, outputs are always z-up.
      */
-    void setOutputZUp( bool zUp ) { mOutputZUp = zUp; }
+    Q_DECL_DEPRECATED void setOutputZUp( bool zUp ) SIP_DEPRECATED;
 
     /**
      * Returns whether the "up" direction should be the Z axis on output (TRUE),
      * otherwise the "up" direction will be the Y axis (FALSE). The default
      * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
+     * \deprecated QGIS 4.2. Has no effect no, outputs are always z-up.
      */
-    bool isOutputZUp() const { return mOutputZUp; }
+    Q_DECL_DEPRECATED bool isOutputZUp() const SIP_DEPRECATED { return true; }
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -296,13 +296,11 @@ class CORE_EXPORT QgsTessellator
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     bool mAddTextureCoords = false;
-    bool mOutputZUp = false;
     QVector<float> mData;
     int mStride = 3 * sizeof( float );
     bool mInputZValueIgnored = false;
     Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
     Qgis::TriangulationAlgorithm mTriangulationAlgorithm = Qgis::TriangulationAlgorithm::ConstrainedDelaunay;
-    float mTextureRotation = 0.0f;
     float mScale = 1.0f;
     QString mError;
 

@@ -3040,7 +3040,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   }
 
   const QList<ItemDetails> items = selectedItems();
-  mActionCopyItem->setEnabled( !items.isEmpty() && ( items.at( 0 ).entityType != QgsStyle::ColorrampEntity ) );
+  mActionCopyItem->setEnabled( !items.isEmpty() && ( items.at( 0 ).entityType != QgsStyle::ColorrampEntity && items.at( 0 ).entityType != QgsStyle::MaterialSettingsEntity ) );
 
   bool enablePaste = false;
   std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );

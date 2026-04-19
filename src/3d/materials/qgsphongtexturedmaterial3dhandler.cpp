@@ -98,6 +98,7 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
 
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );
+      material->setDiffuseTextureRotation( static_cast<float>( phongSettings->textureRotation() ) );
 
       return material;
     }
@@ -157,6 +158,8 @@ bool QgsPhongTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *s
 
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordScale"_s ) )
     p->setValue( phongSettings->textureScale() );
+  if ( Qt3DRender::QParameter *p = findParameter( effect, u"texCoordRotation"_s ) )
+    p->setValue( phongSettings->textureRotation() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"specularColor"_s ) )
     p->setValue( phongSettings->specular() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )

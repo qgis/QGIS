@@ -226,12 +226,14 @@ if (PDAL_2_5_OR_HIGHER)
 
   target_include_directories(pdal_wrench PRIVATE
     ${CMAKE_SOURCE_DIR}/external
+    ${LIBZIP_INCLUDE_DIRS}
   )
 
   target_link_libraries (pdal_wrench PRIVATE
     ${PDAL_LIBRARIES}
     GDAL::GDAL
     Threads::Threads
+    ${LIBZIP_LIBRARY}
   )
 
   install(TARGETS pdal_wrench

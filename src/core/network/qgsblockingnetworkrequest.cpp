@@ -488,7 +488,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 
         mReplyContent = QgsNetworkReplyContent( mReply );
         const QByteArray content = mReply->readAll();
-        if ( !( mRequestFlags & RequestFlag::EmptyResponseIsValid ) && content.isEmpty() && !mGotNonEmptyResponse && mMethod == Qgis::HttpMethod::Get )
+        if ( !( mRequestFlags & RequestFlag::EmptyResponseIsValid ) && content.isEmpty() && !mGotNonEmptyResponse && mMethod == Qgis::HttpMethod::Get && ( !mFeedback || !mFeedback->isCanceled() ) )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = ServerExceptionError;
@@ -502,7 +502,7 @@ void QgsBlockingNetworkRequest::replyFinished()
     }
     else
     {
-      if ( mReply->error() != QNetworkReply::OperationCanceledError )
+      if ( mReply->error() != QNetworkReply::OperationCanceledError && ( !mFeedback || !mFeedback->isCanceled() ) )
       {
         mErrorMessage = mReply->errorString();
         mErrorCode = ServerExceptionError;

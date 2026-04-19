@@ -28,7 +28,6 @@ import re
 import sys
 from typing import Any, Optional
 
-import qgis.utils
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -37,9 +36,7 @@ from qgis.core import (
     QgsSettings,
     QgsSettingsTree,
 )
-from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import (
-    QByteArray,
     QCoreApplication,
     QDate,
     QDir,
@@ -299,7 +296,6 @@ class Repositories(QObject):
 
     def timeForChecking(self) -> bool:
         """determine whether it's the time for checking for news and updates now"""
-        settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
             interval = (

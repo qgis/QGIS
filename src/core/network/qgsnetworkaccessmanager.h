@@ -60,6 +60,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
       AttributeInitiatorClass = QNetworkRequest::User + 3000, //!< Class name of original object which created the request
       AttributeInitiatorRequestId,                            //!< Internal ID used by originator object to identify requests
       AttributeOriginalHeaders,                               //!< Internal ID used to store original request headers, used when checking against previously cached responses. \since QGIS 4.0
+      AttributeUserAgentSuffix,                               //!< Custom string to append to the default User-Agent header \since QGIS 4.2
     };
 
     QgsNetworkRequestParameters() = default;

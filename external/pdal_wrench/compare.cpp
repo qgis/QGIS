@@ -45,12 +45,12 @@ void ComparePointClouds::addArgs()
 bool ComparePointClouds::checkArgs() 
 {
 
-  if (ends_with(inputFile, ".vpc")) {
+  if (isVpcFilename(inputFile)) {
     std::cerr << "input cannot be a VPC file" << std::endl;
     return false;
   }
 
-  if (ends_with(comparedInputFile, ".vpc")) {
+  if (isVpcFilename(comparedInputFile)) {
     std::cerr << "compared input cannot be a VPC file" << std::endl;
     return false;
   }

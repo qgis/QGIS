@@ -465,7 +465,7 @@
            <widget class="QWidget" name="tabMaterialSettings">
             <attribute name="icon">
              <iconset resource="../../images/images.qrc">
-              <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+              <normaloff>:/images/themes/default/mIconPhongMaterial.svg</normaloff>:/images/themes/default/mIconPhongMaterial.svg</iconset>
             </attribute>
             <attribute name="title">
              <string>Materials</string>

@@ -26,23 +26,20 @@ import json
 import os
 import shutil
 import zipfile
-from functools import partial
 
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsMessageLog,
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
     QgsSettings,
     QgsSettingsTree,
 )
-from qgis.gui import QgsHelp, QgsMessageBar, QgsPasswordLineEdit
+from qgis.gui import QgsHelp, QgsPasswordLineEdit
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
     QDateTime,
     QDir,
-    QFile,
     QFileInfo,
     QObject,
     Qt,
@@ -57,7 +54,6 @@ from qgis.PyQt.QtWidgets import (
     QFrame,
     QLabel,
     QMessageBox,
-    QPushButton,
     QVBoxLayout,
 )
 from qgis.utils import (
@@ -776,8 +772,6 @@ class QgsPluginInstaller(QObject):
             )
             if len(metadatafiles) > 0:
                 pluginName = os.path.split(metadatafiles[0])[0]
-
-        pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
         if not pluginName:
             msg_box = QMessageBox()

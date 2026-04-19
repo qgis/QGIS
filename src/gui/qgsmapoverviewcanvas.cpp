@@ -20,6 +20,8 @@
 
 #include <limits>
 
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -232,6 +234,15 @@ void QgsMapOverviewCanvas::refresh()
   QgsDebugMsgLevel( u"oveview - starting new"_s, 2 );
 
   mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
+
+  // build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::mapSettingsScope( mSettings );
+  if ( QgsProject::instance() )
+  {
+    expressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  }
+  mSettings.setExpressionContext( expressionContext );
 
   // TODO: setup overview mode
   mJob = new QgsMapRendererSequentialJob( mSettings );
