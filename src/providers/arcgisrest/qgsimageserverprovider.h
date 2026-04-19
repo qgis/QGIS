@@ -81,6 +81,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     bool mValid = false;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;
+    Qgis::ArcGisRestServiceCapabilities mCapabilities;
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     double mPixelSizeX = 1;

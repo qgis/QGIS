@@ -66,10 +66,27 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   if ( !serviceUrl.isEmpty() )
     mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders, mUrlPrefix );
 
+  mCapabilities = QgsArcGisRestUtils::serviceCapabilitiesFromString( mServiceInfo.value( u"capabilities"_s ).toString() );
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Image ) )
+  {
+    // not an image service
+    appendError( QgsErrorMessage( tr( "Service does not have Image capability -- it is likely not an ESRI ImageService" ) ) );
+    mValid = false;
+    return;
+  }
+
+  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
+  {
+    // not an image service
+    appendError( QgsErrorMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ) ) );
+    mValid = false;
+    return;
+  }
+
   bool ok = false;
 
   // determine if GDAL was built was lerc support, and the service supports it
-  if ( QgsGdalUtils::supportsLercCompression() )
+  if ( QgsGdalUtils::supportsMrfLercCompression() )
   {
     const double serverVersion = mServiceInfo.value( u"currentVersion"_s ).toDouble( &ok );
     if ( ok && serverVersion >= 10.5 )
