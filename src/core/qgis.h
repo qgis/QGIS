@@ -4607,11 +4607,13 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class ArcGisRestServiceCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Map = 1 << 0,    //!< Render map
-      Query = 1 << 1,  //!< Query features
-      Update = 1 << 2, //!< Update features
-      Delete = 1 << 3, //!< Delete features
-      Create = 1 << 4, //!< Create features
+      Map = 1 << 0,       //!< Render map
+      Query = 1 << 1,     //!< Query features
+      Update = 1 << 2,    //!< Update features
+      Delete = 1 << 3,    //!< Delete features
+      Create = 1 << 4,    //!< Create features
+      Image = 1 << 5,     //!< Image capabilities
+      TilesOnly = 1 << 6, //!< Service supports tiled image requests only
     };
     Q_ENUM( ArcGisRestServiceCapability )
 

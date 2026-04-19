@@ -8172,6 +8172,8 @@ Qgis.ArcGisRestServiceCapability.Query.__doc__ = "Query features"
 Qgis.ArcGisRestServiceCapability.Update.__doc__ = "Update features"
 Qgis.ArcGisRestServiceCapability.Delete.__doc__ = "Delete features"
 Qgis.ArcGisRestServiceCapability.Create.__doc__ = "Create features"
+Qgis.ArcGisRestServiceCapability.Image.__doc__ = "Image capabilities"
+Qgis.ArcGisRestServiceCapability.TilesOnly.__doc__ = "Service supports tiled image requests only"
 Qgis.ArcGisRestServiceCapability.__doc__ = """Available ArcGIS REST service capabilities.
 
 This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
@@ -8184,6 +8186,8 @@ extended in future with additional capabilities when required.
 * ``Update``: Update features
 * ``Delete``: Delete features
 * ``Create``: Create features
+* ``Image``: Image capabilities
+* ``TilesOnly``: Service supports tiled image requests only
 
 """
 # --

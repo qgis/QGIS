@@ -1717,6 +1717,8 @@ Qgis::ArcGisRestServiceCapabilities QgsArcGisRestUtils::serviceCapabilitiesFromS
   res.setFlag( Qgis::ArcGisRestServiceCapability::Update, parts.contains( "update"_L1, Qt::CaseInsensitive ) );
   res.setFlag( Qgis::ArcGisRestServiceCapability::Delete, parts.contains( "delete"_L1, Qt::CaseInsensitive ) );
   res.setFlag( Qgis::ArcGisRestServiceCapability::Create, parts.contains( "create"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Image, parts.contains( "image"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::TilesOnly, parts.contains( "tilesonly"_L1, Qt::CaseInsensitive ) );
 
   return res;
 }

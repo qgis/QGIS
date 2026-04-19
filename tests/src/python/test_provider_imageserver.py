@@ -330,7 +330,8 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         )
         self.assertFalse(rl.isValid())
         self.assertEqual(
-            rl.dataProvider().error().summary(), "Service is not an ESRI ImageService"
+            rl.dataProvider().error().summary(),
+            "Service does not have Image capability -- it is likely not an ESRI ImageService",
         )
 
     def test_basic(self):
@@ -1253,7 +1254,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
   "serviceDescription" : "",
   "description" : "",
   "type" : "ImageServer",
-  "capabilities" : "Image,TilesOnly",
+  "capabilities" : "Image",
   "copyrightText" : "",
   "serviceItemId" : "4915fa5b342d412fa5188681751491eb",
   "meanPixelSize" : 463.8312116386403,
@@ -1431,7 +1432,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().sourceNoDataValue(1), 32767.0)
 
     @unittest.skipIf(
-        not QgsGdalUtils.supportsLercCompression(),
+        not QgsGdalUtils.supportsMrfLercCompression(),
         "GDAL build with LERC support required",
     )
     def test_fetch_block_lerc(self):
@@ -1445,6 +1446,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
                 b"""{
   "currentVersion": 10.91,
   "pixelType": "F32",
+  "capabilities": "Image",
   "fullExtent": {
     "xmin": 0,
     "ymin": 0,
@@ -1516,6 +1518,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
                 b"""{
   "currentVersion": 10.91,
   "pixelType": "U16",
+  "capabilities": "Image",
   "fullExtent": {
     "xmin": 0,
     "ymin": 0,
@@ -1590,6 +1593,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
       "wkid": 4326
     }
   },
+  "capabilities": "Image",
   "bandCount": 1,
   "type": "ImageServer",
   "serviceSourceType": "esriImageServiceSourceTypeDataset",
