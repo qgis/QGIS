@@ -3,11 +3,11 @@
 in float vHeight;
 out vec4 fragColor;
 
-uniform vec4 topColor;
-uniform vec4 bottomColor;
+uniform vec3 topColor;
+uniform vec3 bottomColor;
 
 void main()
 {
     float t = vHeight * 0.5 + 0.5;
-    fragColor = mix( bottomColor, topColor, t );
+    fragColor = vec4( mix( bottomColor, topColor, t ), 1.0 );
 }
