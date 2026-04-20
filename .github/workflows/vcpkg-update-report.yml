@@ -14,25 +14,12 @@ permissions:
   pull-requests: write
 
 jobs:
-  vcpkg-bump:
-    runs-on: ubuntu-latest
-    if: github.repository == 'qgis/QGIS'
-    permissions:
-      contents: write
-      pull-requests: write
+  vcpkg-check:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
         with:
-          ssh-key: ${{ secrets.VCPKG_BUMPER_KEY }}
-
-      - name: Resolve latest baselines
-        id: baselines
-        run: python3 scripts/bump_vcpkg_baselines.py vcpkg/vcpkg.json
-
-      - name: Create pull request
-        if: steps.baselines.outputs.updated == 'true'
-        uses: peter-evans/create-pull-request@v8
           fetch-depth: 30
           persist-credentials: false
 
@@ -48,11 +35,8 @@ jobs:
         uses: ./.github/actions/post_sticky_comment
         if: github.event_name == 'pull_request'
         with:
-          branch: vcpkg-bumps/auto
-          delete-branch: true
-          commit-message: "Bump vcpkg baselines"
-          title: "Bump vcpkg baselines"
+          marker: vcpkg-report
           body: |
-            Automated vcpkg baseline bump.
-
-            ${{ steps.baselines.outputs.summary }}
+            ### 🧮 Vcpkg update report
+            ${{ steps.vcpkg_diff.outputs.report }}
+          pr: ${{ github.event.number }}
