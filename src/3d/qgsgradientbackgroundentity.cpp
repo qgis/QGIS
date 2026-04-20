@@ -17,11 +17,15 @@
 
 #include <QString>
 #include <QUrl>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DRender/QCullFace>
+#include <QVector>
+#include <QVector3D>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QNoDepthMask>
@@ -41,10 +45,10 @@ QgsGradientBackgroundEntity::QgsGradientBackgroundEntity( const QColor &topColor
   , mGl3Technique( new Qt3DRender::QTechnique( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
   , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
-  , mMesh( new Qt3DExtras::QCuboidMesh( this ) )
+  , mMesh( new Qt3DRender::QGeometryRenderer( this ) )
   , mGlShader( new Qt3DRender::QShaderProgram( this ) )
-  , mTopColorParameter( new Qt3DRender::QParameter( u"topColor"_s, QVector4D( topColor.redF(), topColor.greenF(), topColor.blueF(), topColor.alphaF() ) ) )
-  , mBottomColorParameter( new Qt3DRender::QParameter( u"bottomColor"_s, QVector4D( bottomColor.redF(), bottomColor.greenF(), bottomColor.blueF(), bottomColor.alphaF() ) ) )
+  , mTopColorParameter( new Qt3DRender::QParameter( u"topColor"_s, QVector3D( topColor.redF(), topColor.greenF(), topColor.blueF() ) ) )
+  , mBottomColorParameter( new Qt3DRender::QParameter( u"bottomColor"_s, QVector3D( bottomColor.redF(), bottomColor.greenF(), bottomColor.blueF() ) ) )
 {
   mGl3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mGl3Technique->graphicsApiFilter()->setMajorVersion( 3 );
@@ -57,13 +61,10 @@ QgsGradientBackgroundEntity::QgsGradientBackgroundEntity( const QColor &topColor
 
   mGl3Technique->addFilterKey( mFilterKey );
 
-  Qt3DRender::QCullFace *cullFront = new Qt3DRender::QCullFace();
-  cullFront->setMode( Qt3DRender::QCullFace::Front );
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest();
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
   Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask();
 
-  mGl3RenderPass->addRenderState( cullFront );
   mGl3RenderPass->addRenderState( depthTest );
   mGl3RenderPass->addRenderState( noDepthMask );
 
@@ -78,9 +79,28 @@ QgsGradientBackgroundEntity::QgsGradientBackgroundEntity( const QColor &topColor
   mMaterial->addParameter( mTopColorParameter );
   mMaterial->addParameter( mBottomColorParameter );
 
-  mMesh->setXYMeshResolution( QSize( 2, 2 ) );
-  mMesh->setXZMeshResolution( QSize( 2, 2 ) );
-  mMesh->setYZMeshResolution( QSize( 2, 2 ) );
+  Qt3DCore::QGeometry *geom = new Qt3DCore::QGeometry( this );
+  Qt3DCore::QAttribute *posAttr = new Qt3DCore::QAttribute( this );
+  // clang-format off
+  const QVector<float> verts = { -1.0f, -1.0f, 0.0f,
+                                  1.0f, -1.0f, 0.0f,
+                                 -1.0f,  1.0f, 0.0f,
+                                 -1.0f,  1.0f, 0.0f,
+                                  1.0f, -1.0f, 0.0f,
+                                  1.0f,  1.0f, 0.0f };
+  // clang-format on
+  Qt3DCore::QBuffer *vbo = new Qt3DCore::QBuffer( this );
+  vbo->setData( QByteArray( reinterpret_cast<const char *>( verts.constData() ), verts.size() * sizeof( float ) ) );
+  posAttr->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  posAttr->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  posAttr->setVertexSize( 3 );
+  posAttr->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  posAttr->setBuffer( vbo );
+  posAttr->setByteStride( 3 * sizeof( float ) );
+  posAttr->setCount( 6 );
+  geom->addAttribute( posAttr );
+  mMesh->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
+  mMesh->setGeometry( geom );
 
   addComponent( mMesh );
   addComponent( mMaterial );
