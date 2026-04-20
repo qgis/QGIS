@@ -65,6 +65,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.history_log_id = None
         self.history_details = {}
 
+        self._is_running = False
+
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
 
@@ -226,6 +228,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.cancelButton().setEnabled(False)
 
             self.iterateParam = None
+            self._is_running = True
 
             for param in self.algorithm().parameterDefinitions():
                 if (
@@ -458,6 +461,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.resetGui()
                 return
 
+        self._is_running = False
         self.setExecuted(True)
         self.setResults(result)
         self.setInfo(
@@ -478,3 +482,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     ),
                     escapeHtml=False,
                 )
+
+    def isRunning(self):
+        return self._is_running

@@ -147,6 +147,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsPanelWidget *mainWidget();
 
     /**
+     * Shows and raises the dialog
+     *
+     * \since QGIS 4.2
+     */
+    void showDialog();
+
+    /**
      * Switches the dialog to the log page.
      */
     void showLog();
@@ -201,6 +208,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * \since QGIS 3.24
      */
     virtual void setParameters( const QVariantMap &values );
+
+
+    /**
+     * Returns the dialog's cancel button.
+     */
+    QPushButton *cancelButton();
 
   public slots:
 
@@ -285,6 +298,33 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     void showParameters();
 
+    /**
+     * Resets the dialog's gui, ready for another algorithm execution.
+     */
+    void resetGui();
+
+    /**
+     * Returns TRUE if the dialog is currently running an algorithm.
+     *
+     * If the algorithm has not yet started or has finished executing then FALSE will be returned.
+     *
+     * \note Unlike the isFinalized() method, isRunning() only provides
+     * information about the state of dialog and is not tied to the
+     * deletion mechanisms of the dialog window
+     *
+     * \see isFinalized()
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool isRunning();
+
+    /**
+     * Forces the dialog to close by detaching any running task from the dialog THEN closing the dialog.
+     *
+     * \since QGIS 4.2
+     */
+    void forceClose();
+
     void reject() override;
 
   protected:
@@ -295,10 +335,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     QPushButton *runButton();
 
-    /**
-     * Returns the dialog's cancel button.
-     */
-    QPushButton *cancelButton();
 
     /**
      * Returns the dialog's change parameters button.
@@ -343,11 +379,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * Displays an info \a message in the dialog's log.
      */
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
-
-    /**
-     * Resets the dialog's gui, ready for another algorithm execution.
-     */
-    void resetGui();
 
     /**
      * For subclasses to register their own GUI controls to be reset, ready
