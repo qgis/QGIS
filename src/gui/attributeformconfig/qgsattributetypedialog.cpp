@@ -84,28 +84,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   const QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
   mClearAction = new QAction( clearIcon, tr( "clear" ), this );
   mClearAction->setCheckable( false );
-  connect( mClearAction, &QAction::triggered, this, [this]() {
-    // Reset custom comment to provider comment
-    setComment( mComment );
-  } );
-  connect( mDisplayedComment, &QLineEdit::textChanged, this, [this]( const QString &text ) {
-    // The clear button should only be visible when there is a (possibly empty) custom comment
-    bool isActionAdded = mDisplayedComment->actions().contains( mClearAction );
-    if ( mComment != text )
-    {
-      if ( !isActionAdded )
-      {
-        mDisplayedComment->addAction( mClearAction, QLineEdit::TrailingPosition );
-      }
-    }
-    else
-    {
-      if ( isActionAdded )
-      {
-        mDisplayedComment->removeAction( mClearAction );
-      }
-    }
-  } );
+  connect( mClearAction, &QAction::triggered, this, [this]() { mDisplayedComment->setText( mComment ); } );
+  connect( mDisplayedComment, &QLineEdit::textChanged, this, &QgsAttributeTypeDialog::displayedCommentChanged );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
@@ -526,20 +506,58 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
-void QgsAttributeTypeDialog::setDisplayedComment( const QString &customComment )
+void QgsAttributeTypeDialog::setCustomComment( const QString &customComment )
 {
-  if ( customComment.isNull() )
-    mDisplayedComment->setText( mComment );
-  else
-    mDisplayedComment->setText( customComment );
+  mCustomComment = customComment;
+
+  updateDisplayedComment();
 }
 
 QString QgsAttributeTypeDialog::customComment() const
 {
-  if ( mDisplayedComment->text() == mComment )
-    return QString();
-  return mDisplayedComment->text();
+  return mCustomComment;
 }
+
+void QgsAttributeTypeDialog::updateDisplayedComment()
+{
+  if ( mCustomComment.isNull() )
+  {
+    mDisplayedComment->setText( mComment );
+  }
+  else
+  {
+    mDisplayedComment->setText( mCustomComment );
+  }
+}
+
+void QgsAttributeTypeDialog::displayedCommentChanged()
+{
+  // The clear button should only be visible when there is a (possibly empty) custom comment
+  bool isActionAdded = mDisplayedComment->actions().contains( mClearAction );
+
+  if ( mDisplayedComment->text() == mComment )
+  {
+    // When the displayed comment text equals the provider comment, the custom comment should be reset
+    mCustomComment = QString();
+    // ...and the clear action should not be visible
+    if ( isActionAdded )
+    {
+      mDisplayedComment->removeAction( mClearAction );
+    }
+  }
+  else
+  {
+    // When the displayed comment text equals not the provider comment, the custom comment should be changed
+    mCustomComment = mDisplayedComment->text();
+
+    // ...and the clear action should be visible
+    if ( !isActionAdded )
+    {
+      mDisplayedComment->addAction( mClearAction, QLineEdit::TrailingPosition );
+    }
+  }
+}
+
 
 void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
 {
@@ -561,7 +579,8 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
   mComment = comment;
-  mDisplayedComment->setText( mComment );
+
+  updateDisplayedComment();
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
