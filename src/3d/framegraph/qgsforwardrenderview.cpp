@@ -78,39 +78,48 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
   mDepthTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mDepthTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
-  mRegularRenderTarget = new Qt3DRender::QRenderTarget;
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
   Qt3DRender::QRenderTargetOutput *renderTargetDepthOutput = new Qt3DRender::QRenderTargetOutput;
   renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
   renderTargetDepthOutput->setTexture( mDepthTexture );
-  mRegularRenderTarget->addOutput( renderTargetDepthOutput );
+  renderTarget->addOutput( renderTargetDepthOutput );
 
   Qt3DRender::QRenderTargetOutput *renderTargetColorOutput = new Qt3DRender::QRenderTargetOutput;
   renderTargetColorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
   renderTargetColorOutput->setTexture( mColorTexture );
-  mRegularRenderTarget->addOutput( renderTargetColorOutput );
+  renderTarget->addOutput( renderTargetColorOutput );
 
+  return renderTarget;
+}
+
+Qt3DRender::QRenderTarget *QgsForwardRenderView::buildMsaaTarget()
+{
   mColorTextureMS = new Qt3DRender::QTexture2DMultisample;
   mColorTextureMS->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mColorTextureMS->setSamples( 4 );
   mColorTextureMS->setGenerateMipMaps( false );
+  mColorTextureMS->setWidth( mCurrentWidth );
+  mColorTextureMS->setHeight( mCurrentHeight );
 
   mDepthTextureMS = new Qt3DRender::QTexture2DMultisample;
   mDepthTextureMS->setFormat( Qt3DRender::QAbstractTexture::D24S8 );
   mDepthTextureMS->setSamples( 4 );
   mDepthTextureMS->setGenerateMipMaps( false );
+  mDepthTextureMS->setWidth( mCurrentWidth );
+  mDepthTextureMS->setHeight( mCurrentHeight );
 
-  mMsaaRenderTarget = new Qt3DRender::QRenderTarget;
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
   Qt3DRender::QRenderTargetOutput *msaaDepthOutput = new Qt3DRender::QRenderTargetOutput;
   msaaDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
   msaaDepthOutput->setTexture( mDepthTextureMS );
-  mMsaaRenderTarget->addOutput( msaaDepthOutput );
+  renderTarget->addOutput( msaaDepthOutput );
 
   Qt3DRender::QRenderTargetOutput *msaaColorOutput = new Qt3DRender::QRenderTargetOutput;
   msaaColorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
   msaaColorOutput->setTexture( mColorTextureMS );
-  mMsaaRenderTarget->addOutput( msaaColorOutput );
+  renderTarget->addOutput( msaaColorOutput );
 
-  return mRegularRenderTarget;
+  return renderTarget;
 }
 
 /*
@@ -174,10 +183,10 @@ void QgsForwardRenderView::buildRenderPasses()
   mMsaaRenderState->setEnabled( false );
   mClipRenderStateSet->addRenderState( mMsaaRenderState );
 
-  Qt3DRender::QRenderTarget *renderTarget = buildTextures();
+  mRegularRenderTarget = buildTextures();
 
   mRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mClipRenderStateSet );
-  mRenderTargetSelector->setTarget( renderTarget );
+  mRenderTargetSelector->setTarget( mRegularRenderTarget );
 
   // first branch: opaque layer filter
   Qt3DRender::QLayerFilter *opaqueObjectsFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
@@ -264,12 +273,17 @@ void QgsForwardRenderView::buildRenderPasses()
 
 void QgsForwardRenderView::updateWindowResize( int width, int height )
 {
+  mCurrentWidth = width; // we need to store and update the attributes so we can set msaa textures w and h when enabled
+  mCurrentHeight = height;
   mColorTexture->setSize( width, height );
   mDepthTexture->setSize( width, height );
-  mColorTextureMS->setWidth( width );
-  mColorTextureMS->setHeight( height );
-  mDepthTextureMS->setWidth( width );
-  mDepthTextureMS->setHeight( height );
+  if ( mColorTextureMS )
+  {
+    mColorTextureMS->setWidth( width );
+    mColorTextureMS->setHeight( height );
+    mDepthTextureMS->setWidth( width );
+    mDepthTextureMS->setHeight( height );
+  }
 }
 
 
@@ -295,8 +309,17 @@ void QgsForwardRenderView::setDebugOverlayEnabled( bool enabled )
 
 void QgsForwardRenderView::setMsaaEnabled( bool enabled )
 {
+  if ( enabled && !mMsaaRenderTarget )
+    mMsaaRenderTarget = buildMsaaTarget();
   mMsaaRenderState->setEnabled( enabled );
   mRenderTargetSelector->setTarget( enabled ? mMsaaRenderTarget : mRegularRenderTarget );
+  if ( !enabled )
+  {
+    delete mMsaaRenderTarget;
+    mMsaaRenderTarget = nullptr;
+    mColorTextureMS = nullptr;
+    mDepthTextureMS = nullptr;
+  }
 }
 
 Qt3DRender::QTexture2D *QgsForwardRenderView::depthTexture() const

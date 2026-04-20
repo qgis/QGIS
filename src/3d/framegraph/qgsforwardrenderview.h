@@ -138,15 +138,19 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QTexture2DMultisample *mColorTextureMS = nullptr;
     Qt3DRender::QTexture2DMultisample *mDepthTextureMS = nullptr;
 
+    int mCurrentWidth = 0;
+    int mCurrentHeight = 0;
+
     /**
      * Builds the three forward passes needed by forward: one for solid objects, followed by two for transparent objects
      */
     void buildRenderPasses();
 
-    /**
-     * Build color and depth textures and add then to a new rendertarget
-     */
+    //! Builds the regular (single-sample) color and depth textures and render target.
     Qt3DRender::QRenderTarget *buildTextures();
+
+    //! Builds the multisampled color and depth textures and render target
+    Qt3DRender::QRenderTarget *buildMsaaTarget();
 };
 
 #endif // QGSFORWARDRENDERVIEW_H
