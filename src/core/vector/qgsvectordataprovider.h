@@ -106,6 +106,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override = 0;
 
     /**
+     * Query the provider for features specified in request as a stream of Arrow record batches. The default
+     * implementation builds Arrow output from the output of getFeatures(); however, vector data providers may
+     * override this to provide a more efficient implementation if data sources implement Arrow export directly.
+     *
+     * \param request feature request describing parameters of features to return
+     * \returns stream for matching features from provider
+     */
+    // virtual QgsArrowArrayStream getFeaturesArrow( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
+    /**
      * Returns the geometry type which is returned by this layer
      */
     Qgis::WkbType wkbType() const override = 0;
