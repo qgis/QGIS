@@ -76,6 +76,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
   protected:
     using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readNativeAttributeTable( QString *errorMessage = nullptr ) override;
 
   private:
     bool mValid = false;
@@ -108,6 +109,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QString mUrlPrefix;
     QString mAuthCfg;
     int mMaximumLercVersionSupported = 0;
+    bool mHasRat = false;
 
     /**
      * Resets cached image

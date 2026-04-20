@@ -23,7 +23,7 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QMetaType
 from qgis.testing import QgisTestCase, start_app
 from raster_provider_test_base import RasterProviderTestCase
 
@@ -1413,7 +1413,6 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
   "allowRasterFunction" : false,
   "hasHistograms" : true,
   "hasColormap" : false,
-  "hasRasterAttributeTable" : true,
   "exportTilesAllowed" : false,
   "maxExportTilesCount" : 100000,
   "hasMultidimensions" : false
@@ -1640,6 +1639,229 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertAlmostEqual(block.value(0, 1), 100, delta=15)
         self.assertAlmostEqual(block.value(1, 0), 150, delta=15)
         self.assertAlmostEqual(block.value(1, 1), 200, delta=15)
+
+    def test_raster_attribute_table(self):
+        """
+        Test fetching raster attribute table
+        """
+        endpoint = self.basetestpath + "/fetch_rat_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U8",
+  "extent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326
+    }
+  },
+  "capabilities": "Image",
+  "bandCount": 1,
+  "type": "ImageServer",
+  "serviceSourceType": "esriImageServiceSourceTypeDataset",
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  },
+ "hasRasterAttributeTable": true
+}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/rasterAttributeTable?f=json",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+                {
+ "objectIdFieldName": "OBJECTID",
+ "fields": [
+  {
+   "name": "OID",
+   "type": "esriFieldTypeOID",
+   "alias": "OID",
+   "domain": null
+  },
+  {
+   "name": "Value",
+   "type": "esriFieldTypeInteger",
+   "alias": "Value",
+   "domain": null
+  },
+  {
+   "name": "Count",
+   "type": "esriFieldTypeDouble",
+   "alias": "Count",
+   "domain": null
+  },
+  {
+   "name": "Red",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "Red",
+   "domain": null
+  },
+  {
+   "name": "Green",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "Green",
+   "domain": null
+  },
+  {
+   "name": "Blue",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "Blue",
+   "domain": null
+  },
+  {
+   "name": "ClassName",
+   "type": "esriFieldTypeString",
+   "alias": "ClassName",
+   "domain": null,
+   "length": 50
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OID": 0,
+    "Value": 11,
+    "Count": 466650898,
+    "Red": 71,
+    "Green": 107,
+    "Blue": 161,
+    "ClassName": "Open Water"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 1,
+    "Value": 12,
+    "Count": 1731114,
+    "Red": 209,
+    "Green": 222,
+    "Blue": 250,
+    "ClassName": "Perennial Snow/Ice"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 2,
+    "Value": 21,
+    "Count": 287572411,
+    "Red": 222,
+    "Green": 202,
+    "Blue": 202,
+    "ClassName": "Developed, Open Space"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 3,
+    "Value": 22,
+    "Count": 124755469,
+    "Red": 217,
+    "Green": 148,
+    "Blue": 130,
+    "ClassName": "Developed, Low Intensity"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 4,
+    "Value": 23,
+    "Count": 48230587,
+    "Red": 238,
+    "Green": 0,
+    "Blue": 0,
+    "ClassName": "Developed, Medium Intensity"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 5,
+    "Value": 24,
+    "Count": 16773628,
+    "Red": 171,
+    "Green": 0,
+    "Blue": 0,
+    "ClassName": "Developed, High Intensity"
+   }
+  },
+  {
+   "attributes": {
+    "OID": 6,
+    "Value": 31,
+    "Count": 106587346,
+    "Red": 179,
+    "Green": 174,
+    "Blue": 163,
+    "ClassName": "Barren Land"
+   }
+  }
+ ]
+}
+"""
+            )
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        rat = rl.dataProvider().attributeTable(1)
+        self.assertIsNotNone(rat)
+
+        self.assertTrue(rat.hasColor())
+
+        fields = rat.fields()
+        self.assertEqual(
+            [f.name for f in fields],
+            ["OID", "Value", "Count", "Red", "Green", "Blue", "ClassName"],
+        )
+        self.assertEqual(
+            [f.usage for f in fields],
+            [
+                Qgis.RasterAttributeTableFieldUsage.Generic,
+                Qgis.RasterAttributeTableFieldUsage.MinMax,
+                Qgis.RasterAttributeTableFieldUsage.PixelCount,
+                Qgis.RasterAttributeTableFieldUsage.Red,
+                Qgis.RasterAttributeTableFieldUsage.Green,
+                Qgis.RasterAttributeTableFieldUsage.Blue,
+                Qgis.RasterAttributeTableFieldUsage.Name,
+            ],
+        )
+        self.assertEqual(
+            [f.type for f in fields],
+            [
+                QMetaType.Type.LongLong,
+                QMetaType.Type.LongLong,
+                QMetaType.Type.Double,
+                QMetaType.Type.Int,
+                QMetaType.Type.Int,
+                QMetaType.Type.Int,
+                QMetaType.Type.QString,
+            ],
+        )
+        self.assertEqual(
+            rat.data(),
+            [
+                [0, 11, 466650898.0, 71, 107, 161, "Open Water"],
+                [1, 12, 1731114.0, 209, 222, 250, "Perennial Snow/Ice"],
+                [2, 21, 287572411.0, 222, 202, 202, "Developed, Open Space"],
+                [3, 22, 124755469.0, 217, 148, 130, "Developed, Low Intensity"],
+                [4, 23, 48230587.0, 238, 0, 0, "Developed, Medium Intensity"],
+                [5, 24, 16773628.0, 171, 0, 0, "Developed, High Intensity"],
+                [6, 31, 106587346.0, 179, 174, 163, "Barren Land"],
+            ],
+        )
 
 
 if __name__ == "__main__":
