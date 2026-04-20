@@ -20,6 +20,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "moc_qgsattributetableconfig.cpp"
+
 using namespace Qt::StringLiterals;
 
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
