@@ -22,7 +22,7 @@
 #include <QString>
 #include <QWidget>
 
-class QgsFilterLineEdit;
+class QgsFileDropEdit;
 class QToolButton;
 class QgsMessageBar;
 class QgsPropertyOverrideButton;
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     /**
      * Returns the widget's file filter string.
      */
-    virtual QString fileFilter() const = 0; // cppcheck-suppress pureVirtualCall
+    virtual QString fileFilter( bool includeAllFiles ) const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the select file dialog.
@@ -145,6 +145,9 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 ///@endcond
 #endif
 
+  protected:
+    SIP_SKIP QgsFileDropEdit *mFileLineEdit = nullptr;
+
   private slots:
     void selectFile();
     void selectUrl();
@@ -162,7 +165,6 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     Mode mMode = ModeFile;
     bool mPropertyOverrideButtonVisible = false;
 
-    QgsFilterLineEdit *mFileLineEdit = nullptr;
     QToolButton *mFileToolButton = nullptr;
     QgsPropertyOverrideButton *mPropertyOverrideButton = nullptr;
     QString mLastPathKey;
@@ -212,23 +214,20 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
-    QgsPictureSourceLineEditBase( Format format, QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QgsAbstractFileContentSourceLineEdit( parent )
-      , mFormat( format )
-    {}
+    QgsPictureSourceLineEditBase( Format format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     Format mFormat = Svg;
 
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QString fileFilter() const override;
-    QString selectFileTitle() const override;
-    QString fileFromUrlTitle() const override;
-    QString fileFromUrlText() const override;
-    QString embedFileTitle() const override;
-    QString extractFileTitle() const override;
-    QString defaultSettingsKey() const override;
+    QString fileFilter( bool includeAllFiles ) const final;
+    QString selectFileTitle() const final;
+    QString fileFromUrlTitle() const final;
+    QString fileFromUrlText() const final;
+    QString embedFileTitle() const final;
+    QString extractFileTitle() const final;
+    QString defaultSettingsKey() const final;
     ///@endcond
 #endif
 };
