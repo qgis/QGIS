@@ -211,16 +211,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
   pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
 
-  if ( mMap->isSkyboxEnabled() )
-  {
-    groupBoxBackground->setChecked( true );
-    comboBox->setCurrentIndex( 1 );
-  }
-  else
-  {
-    groupBoxBackground->setChecked( mMap->gradientBackgroundEnabled() );
-    comboBox->setCurrentIndex( 0 );
-  }
+  const Qgs3DMapSettings::BackgroundType bgType = mMap->backgroundType();
+  groupBoxBackground->setChecked( bgType != Qgs3DMapSettings::BackgroundType::None );
+  comboBox->setCurrentIndex( bgType == Qgs3DMapSettings::BackgroundType::Skybox ? 1 : 0 );
 
   // ==================
   // Page: Shadows
@@ -388,12 +381,14 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setLightSources( widgetLights->lightSources() );
 
-  const bool backgroundEnabled = groupBoxBackground->isChecked();
-  const bool gradientSelected = comboBox->currentIndex() == 0;
-  mMap->setGradientBackgroundEnabled( backgroundEnabled && gradientSelected );
+  if ( !groupBoxBackground->isChecked() )
+    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::None );
+  else if ( comboBox->currentIndex() == 1 )
+    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::Skybox );
+  else
+    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::Gradient );
   mMap->setGradientBackgroundTopColor( mBtnGradientTopColor->color() );
   mMap->setGradientBackgroundBottomColor( mBtnGradientBottomColor->color() );
-  mMap->setIsSkyboxEnabled( backgroundEnabled && !gradientSelected );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
 
   QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();

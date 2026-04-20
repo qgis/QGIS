@@ -149,7 +149,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::gradientBackgroundChanged, this, &Qgs3DMapScene::onGradientBackgroundChanged );
+  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onGradientBackgroundChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -1138,9 +1139,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
     mSkybox = nullptr;
   }
 
-  mEngine->setFrustumCullingEnabled( !mMap.isSkyboxEnabled() );
-
-  if ( mMap.isSkyboxEnabled() )
+  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Skybox )
   {
     QMap<QString, QString> faces;
     switch ( skyboxSettings.skyboxType() )
@@ -1169,7 +1168,7 @@ void Qgs3DMapScene::onGradientBackgroundChanged()
     mGradientBackground = nullptr;
   }
 
-  if ( mMap.gradientBackgroundEnabled() )
+  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Gradient )
   {
     mGradientBackground = new QgsGradientBackgroundEntity( mMap.gradientBackgroundTopColor(), mMap.gradientBackgroundBottomColor(), this );
     QgsFrameGraph *frameGraph = mEngine->frameGraph();
