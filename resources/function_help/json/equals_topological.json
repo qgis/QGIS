@@ -27,17 +27,13 @@
       "returns": "TRUE"
     },
     {
+      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( ( 1 0 ) )' ) )",
+      "returns": "FALSE"
+    },
+    {
       "expression": "equals_topological( geom_from_wkt( 'POINTZ( 0 0 -10 )' ), geom_from_wkt( 'POINTZ( 0 0 5 )' ) )",
       "returns": "TRUE",
       "note": "Z coordinates are ignored, so it passes"
-    },
-    {
-      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ), 'GEOS' )",
-      "returns": "TRUE"
-    },
-    {
-      "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ) )",
-      "returns": "TRUE"
     },
     {
       "expression": "equals_topological( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ), 'GEOS' )",

@@ -35,7 +35,7 @@
       "arg": "backend",
       "optional": true,
       "default": "'QGIS'",
-      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. 'GEOS' works only on 2D components (Z or M components are ignored) where 'QGIS' works on 2D, 3D and 4D."
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'.<ul><li>'QGIS' works on 2D, 3D and 4D</li><li>'GEOS' works only on 2D components (Z or M components are ignored)</li></ul>."
     }
   ],
   "examples": [
@@ -48,12 +48,8 @@
       "returns": "TRUE if the current feature's geometry is exactly the same as the geometry of a region whose population is greater than 10000"
     },
     {
-      "expression": "overlay_equals_exact('regions', name)",
-      "returns": "an array of names, for the regions exactly equal to the current feature"
-    },
-    {
-      "expression": "overlay_equals_exact('regions', name, backend:='QGIS')",
-      "returns": "an array of names, for the regions exactly equal to the current feature"
+      "expression": "overlay_equals_exact('regions', name, backend:='GEOS')",
+      "returns": "an array of names, for the regions exactly equal to the current feature (example with 'GEOS' backend)"
     },
     {
       "expression": "array_to_string(overlay_equals_exact('regions', name))",
