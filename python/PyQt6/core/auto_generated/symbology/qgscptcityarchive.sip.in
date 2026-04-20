@@ -21,6 +21,8 @@ Represents a CPT City color scheme.
 #include "qgscptcityarchive.h"
 %End
   public:
+
+
     QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 
@@ -50,7 +52,6 @@ Returns ``True`` if archive is empty
 
     QVector< QgsCptCityDataItem * > rootItems() const;
     QVector< QgsCptCityDataItem * > selectionItems() const;
-
 
   private:
     QgsCptCityArchive( const QgsCptCityArchive &rh );
