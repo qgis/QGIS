@@ -67,13 +67,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 {
     Q_OBJECT
   public:
-    //! Settings entry for recent projections auth IDs \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsRecentProjectionsAuthId SIP_SKIP;
 
-    //! Settings entry for recent projections WKT \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsRecentProjectionsWkt SIP_SKIP;
 
-    //! Settings entry for recent projections Proj4 \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsRecentProjectionsProj4 SIP_SKIP;
 
     /**
