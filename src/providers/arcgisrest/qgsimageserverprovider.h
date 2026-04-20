@@ -106,6 +106,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QgsLayerMetadata mLayerMetadata;
     QList<double> mResolutions;
     QString mUrlPrefix;
+    QString mAuthCfg;
     int mMaximumLercVersionSupported = 0;
 
     /**

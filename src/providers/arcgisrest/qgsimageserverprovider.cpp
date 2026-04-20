@@ -60,12 +60,11 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   QgsDataSourceUri dataSource( dataSourceUri() );
   mRequestHeaders = dataSource.httpHeaders();
   mUrlPrefix = dataSource.param( u"urlprefix"_s );
-
-  const QString authcfg = dataSource.authConfigId();
+  mAuthCfg = dataSource.authConfigId();
 
   const QString serviceUrl = dataSource.param( u"url"_s );
   if ( !serviceUrl.isEmpty() )
-    mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders, mUrlPrefix );
+    mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, mAuthCfg, mErrorTitle, mError, mRequestHeaders, mUrlPrefix );
 
   mCapabilities = QgsArcGisRestUtils::serviceCapabilitiesFromString( mServiceInfo.value( u"capabilities"_s ).toString() );
   if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::Image ) )
@@ -129,7 +128,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   else
   {
     layerUrl = dataSource.param( u"url"_s ) + "/" + dataSource.param( u"layer"_s );
-    mLayerInfo = QgsArcGisRestQueryUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders, mUrlPrefix );
+    mLayerInfo = QgsArcGisRestQueryUtils::getLayerInfo( layerUrl, mAuthCfg, mErrorTitle, mError, mRequestHeaders, mUrlPrefix );
   }
 
   QVariantMap extentData;
@@ -284,6 +283,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mValid( other.mValid )
   , mServiceInfo( other.mServiceInfo )
   , mLayerInfo( other.mLayerInfo )
+  , mCapabilities( other.mCapabilities )
   , mCrs( other.mCrs )
   , mExtent( other.mExtent )
   , mPixelSizeX( other.mPixelSizeX )
@@ -303,6 +303,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mLayerMetadata( other.mLayerMetadata )
   , mResolutions( other.mResolutions )
   , mUrlPrefix( other.mUrlPrefix )
+  , mAuthCfg( other.mAuthCfg )
   , mMaximumLercVersionSupported( other.mMaximumLercVersionSupported )
 // intentionally omitted:
 // - mErrorTitle
@@ -555,8 +556,7 @@ QgsRasterIdentifyResult QgsImageServerProvider::identify( const QgsPointXY &poin
   query.addQueryItem( u"geometry"_s, u"%1,%2"_s.arg( point.x(), 0, 'f' ).arg( point.y(), 0, 'f' ) );
   queryUrl.setQuery( query );
 
-  const QString authcfg = dataSource.authConfigId();
-  const QVariantMap queryResults = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, mErrorTitle, mError );
+  const QVariantMap queryResults = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, mAuthCfg, mErrorTitle, mError, mRequestHeaders, nullptr, mUrlPrefix );
   const QStringList values = queryResults.value( u"value"_s ).toString().split( ',' );
   for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
   {
@@ -664,6 +664,7 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   queryUrl = QgsArcGisRestQueryUtils::parseUrl( queryUrl );
 
   QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mAuthCfg );
   QNetworkRequest req( queryUrl );
   mRequestHeaders.updateNetworkRequest( req );
   QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
