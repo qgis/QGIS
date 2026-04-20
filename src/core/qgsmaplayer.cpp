@@ -2842,7 +2842,6 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   m3DRenderer.reset( renderer );
 
   emit renderer3DChanged();
-  emit repaintRequested();
   trigger3DUpdate();
 }
 
