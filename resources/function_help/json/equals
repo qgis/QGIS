@@ -2,7 +2,7 @@
   "name": "equals",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Alias for 'equals_exact' function with default geometry backend QGIS. Tests whether two geometries are equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
+  "description": "Alias for 'equals_exact' function with default geometry backend QGIS. Tests whether two geometries are point-by-point exactly equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"

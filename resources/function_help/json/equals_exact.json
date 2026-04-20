@@ -33,6 +33,7 @@
     {
       "expression": "equals_exact( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ) )",
       "returns": "FALSE"
+      "note": "Not the same type, so it fails"
     },
     {
       "expression": "equals_exact( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ), 'GEOS' )",

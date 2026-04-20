@@ -18,13 +18,13 @@
       "arg": "backend",
       "optional": true,
       "default": "'QGIS'",
-      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. 'GEOS' works only on 2D components (Z or M components are ignored) where 'QGIS' works on 2D, 3D and 4D. Also, 'GEOS' compares coordinates by using 2D Euclidean distance where 'QGIS' uses component per component comparison."
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'.<ul><li>'QGIS' works on 2D, 3D and 4D geometries and applies component per component comparison</li><li>'GEOS' works only on 2D components (Z or M components are ignored) and compares coordinates by using 2D Euclidean distance.</li></ul>"
     },
     {
       "arg": "epsilon",
       "optional": true,
       "default": "1e-8",
-      "description": "maximum difference for coordinates between the objects"
+      "description": "maximum difference for coordinates between the vertices"
     }
   ],
   "examples": [
