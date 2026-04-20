@@ -96,7 +96,7 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
-const QgsSettingsEntryInteger *QgsImageCache::settingsMaxImageCacheSize = new QgsSettingsEntryInteger( u"max-image-cache-size"_s, QgsSettingsTree::sTreeRendering, 0 );
+const QgsSettingsEntryInteger *QgsImageCache::settingsMaxImageCacheSize = new QgsSettingsEntryInteger( u"max-image-size"_s, QgsSettingsTree::sTreeNetworkCache, 0 );
 
 QgsImageCache::QgsImageCache( QObject *parent )
   : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
