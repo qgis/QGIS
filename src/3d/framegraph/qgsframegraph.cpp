@@ -269,12 +269,11 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mMainViewPort );
   mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
-  mMsaaBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
-  mMsaaBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
-  mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
-  mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
-  mMsaaBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
   mMsaaBlitNode->setEnabled( false );
+
+  mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mMainViewPort );
+  mMsaaDepthBlitNode->setObjectName( "MsaaDepthBlitFramebuffer" );
+  mMsaaDepthBlitNode->setEnabled( false );
 
   // shadow rendering pass
   constructShadowRenderPass();
@@ -491,6 +490,8 @@ void QgsFrameGraph::setSize( QSize s )
 
   mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
   mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaDepthBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaDepthBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
 }
 
 Qt3DRender::QRenderCapture *QgsFrameGraph::renderCapture()
@@ -513,11 +514,44 @@ void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 
 void QgsFrameGraph::setMsaaEnabled( bool enabled )
 {
-  Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();
+  mMsaaEnabled = enabled;
+
+  if ( !enabled && mMsaaBlitConfigured )
+  {
+    mMsaaBlitNode->setSource( nullptr );
+    mMsaaBlitNode->setDestination( nullptr );
+    mMsaaDepthBlitNode->setSource( nullptr );
+    mMsaaDepthBlitNode->setDestination( nullptr );
+    mMsaaBlitConfigured = false;
+  }
+
   forwardRenderView().setMsaaEnabled( enabled );
+
+  if ( enabled && !mMsaaBlitConfigured )
+  {
+    mMsaaBlitConfigured = true;
+    mMsaaBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
+    mMsaaBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
+    mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaBlitNode->setSourceAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+    mMsaaBlitNode->setDestinationAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+    mMsaaBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+
+    mMsaaDepthBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
+    mMsaaDepthBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
+    mMsaaDepthBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaDepthBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaDepthBlitNode->setSourceAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
+    mMsaaDepthBlitNode->setDestinationAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
+    mMsaaDepthBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+  }
+
+  Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();
   highlightsRenderView().setRenderTarget( target );
   mRubberBandsRenderTargetSelector->setTarget( target );
   mMsaaBlitNode->setEnabled( enabled );
+  mMsaaDepthBlitNode->setEnabled( enabled );
 }
 
 void QgsFrameGraph::removeClipPlanes()
