@@ -85,6 +85,8 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     return;
   }
 
+  mHasRat = mServiceInfo.value( u"hasRasterAttributeTable"_s ).toBool();
+
   bool ok = false;
 
   // determine if GDAL was built was lerc support, and the service supports it
@@ -305,6 +307,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mUrlPrefix( other.mUrlPrefix )
   , mAuthCfg( other.mAuthCfg )
   , mMaximumLercVersionSupported( other.mMaximumLercVersionSupported )
+  , mHasRat( other.mHasRat )
 // intentionally omitted:
 // - mErrorTitle
 // - mError
@@ -790,6 +793,100 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   }
 
   return err == CE_None;
+}
+
+bool QgsImageServerProvider::readNativeAttributeTable( QString *errorMessage )
+{
+  if ( !mHasRat || !mValid )
+    return false;
+
+  QgsDataSourceUri dataSource( dataSourceUri() );
+  QString url = dataSource.param( u"url"_s );
+  if ( !dataSource.param( u"layer"_s ).isEmpty() )
+  {
+    url += u"/"_s + dataSource.param( u"layer"_s );
+  }
+  url += "/rasterAttributeTable"_L1;
+
+  QUrl queryUrl( url );
+  QUrlQuery query( queryUrl );
+  query.addQueryItem( u"f"_s, u"json"_s );
+  queryUrl.setQuery( query );
+
+  QString errorTitle;
+  QString errorText;
+  const QVariantMap results = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, mAuthCfg, errorTitle, errorText, mRequestHeaders, nullptr, mUrlPrefix );
+  if ( !errorText.isEmpty() )
+  {
+    if ( errorMessage && !errorText.isEmpty() )
+      *errorMessage = errorText;
+    return false;
+  }
+
+  auto rat = std::make_unique<QgsRasterAttributeTable>();
+
+  const QVariantList jsonFields = results.value( u"fields"_s ).toList();
+  QStringList fieldNames;
+  for ( const QVariant &jsonField : jsonFields )
+  {
+    const QVariantMap fieldDef = jsonField.toMap();
+    const QString name = fieldDef.value( u"name"_s ).toString();
+    fieldNames << name;
+    const QString alias = fieldDef.value( u"alias"_s ).toString();
+
+    const QString type = fieldDef.value( u"type"_s ).toString();
+    const QMetaType::Type metaType = QgsArcGisRestUtils::convertFieldType( type );
+
+    Qgis::RasterAttributeTableFieldUsage usage = Qgis::RasterAttributeTableFieldUsage::Generic;
+    if ( name.compare( "Value"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::MinMax;
+    }
+    else if ( name.compare( "Count"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::PixelCount;
+    }
+    else if ( name.compare( "Red"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::Red;
+    }
+    else if ( name.compare( "Green"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::Green;
+    }
+    else if ( name.compare( "Blue"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::Blue;
+    }
+    else if ( name.compare( "ClassName"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      usage = Qgis::RasterAttributeTableFieldUsage::Name;
+    }
+
+    rat->appendField( name, usage, metaType );
+  }
+
+  const QVariantList featureList = results.value( u"features"_s ).toList();
+  for ( const QVariant &feature : featureList )
+  {
+    QVariantList rowData;
+    const QVariantMap featureData = feature.toMap();
+    const QVariantMap attributes = featureData.value( u"attributes"_s ).toMap();
+    for ( const QString &fieldName : std::as_const( fieldNames ) )
+    {
+      rowData << attributes.value( fieldName );
+    }
+    rat->appendRow( rowData );
+  }
+
+  if ( !rat->isValid( errorMessage ) )
+  {
+    return false;
+  }
+  rat->setDirty( false );
+
+  setAttributeTable( 1, rat.release() );
+  return true;
 }
 
 QgsImageServerProviderMetadata::QgsImageServerProviderMetadata()
