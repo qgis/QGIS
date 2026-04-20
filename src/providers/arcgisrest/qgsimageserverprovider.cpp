@@ -832,8 +832,6 @@ bool QgsImageServerProvider::readNativeAttributeTable( QString *errorMessage )
     const QVariantMap fieldDef = jsonField.toMap();
     const QString name = fieldDef.value( u"name"_s ).toString();
     fieldNames << name;
-    const QString alias = fieldDef.value( u"alias"_s ).toString();
-
     const QString type = fieldDef.value( u"type"_s ).toString();
     const QMetaType::Type metaType = QgsArcGisRestUtils::convertFieldType( type );
 
