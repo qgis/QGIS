@@ -28,6 +28,7 @@
 #include "qgsgdalutils.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsstringutils.h"
@@ -71,6 +72,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   {
     // not an image service
     appendError( QgsErrorMessage( tr( "Service does not have Image capability -- it is likely not an ESRI ImageService" ) ) );
+    QgsMessageLog::logMessage( tr( "Service does not have Image capability -- it is likely not an ESRI ImageService" ), tr( "ImageServer" ) );
     mValid = false;
     return;
   }
@@ -79,6 +81,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   {
     // not an image service
     appendError( QgsErrorMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ) ) );
+    QgsMessageLog::logMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ), tr( "ImageServer" ) );
     mValid = false;
     return;
   }
