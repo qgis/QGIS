@@ -30,7 +30,7 @@ Definition of the world.
   public:
     enum class BackgroundType
     {
-      None,
+      NoBackground,
       Gradient,
       Skybox,
     };

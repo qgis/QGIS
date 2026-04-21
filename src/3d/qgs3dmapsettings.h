@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Background rendering type for the 3D map view
     enum class BackgroundType
     {
-      None,
+      NoBackground,
       Gradient,
       Skybox,
     };
@@ -1164,7 +1164,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    BackgroundType mBackgroundType = BackgroundType::None;
+    BackgroundType mBackgroundType = BackgroundType::NoBackground;
     QColor mGradientBackgroundTopColor = QColor( 0, 128, 255 );
     QColor mGradientBackgroundBottomColor = Qt::black;
 
