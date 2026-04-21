@@ -13,19 +13,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ui_qgstopocentricwidget.h"
 #include "qgstopocentricwidget.h"
 
 #include <QDoubleSpinBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QSlider>
 #include <QTimer>
+#include <QVBoxLayout>
 
 #include "moc_qgstopocentricwidget.cpp"
 
 QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   : QWidget( parent )
 {
-  setupUi( this );
+  doubleSpinBoxX = new QDoubleSpinBox();
+  horizontalSliderX = new QSlider( Qt::Horizontal );
+  doubleSpinBoxY = new QDoubleSpinBox();
+  horizontalSliderY = new QSlider( Qt::Horizontal );
+
+  QHBoxLayout *latLayout = new QHBoxLayout();
+  latLayout->addWidget( new QLabel( tr( "Latitude:" ) ) );
+  latLayout->addWidget( horizontalSliderX );
+  latLayout->addWidget( doubleSpinBoxX );
+
+  QHBoxLayout *lonLayout = new QHBoxLayout();
+  lonLayout->addWidget( new QLabel( tr( "Longitude:" ) ) );
+  lonLayout->addWidget( horizontalSliderY );
+  lonLayout->addWidget( doubleSpinBoxY );
+
+  QLabel *titleLabel = new QLabel( tr( "Topocentric origin:" ) );
+  titleLabel->setAlignment( Qt::AlignCenter );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 6, 6, 6, 6 );
+  layout->addWidget( titleLabel );
+  layout->addLayout( latLayout );
+  layout->addLayout( lonLayout );
 
   doubleSpinBoxX->setRange( -90.0, 90.0 );
   doubleSpinBoxX->setDecimals( 1 );

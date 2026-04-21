@@ -16,17 +16,18 @@
 #ifndef QGSTOPOCENTRICWIDGET_H
 #define QGSTOPOCENTRICWIDGET_H
 
-#include "ui_qgstopocentricwidget.h"
-
 #include "qgis_app.h"
 
 #include <QTimer>
 #include <QWidget>
 
+class QDoubleSpinBox;
+class QSlider;
+
 /**
  * Widget for displaying and editing the topocentric projection origin
  */
-class APP_EXPORT QgsTopocentricWidget : public QWidget, private Ui::QgsTopocentricWidget
+class APP_EXPORT QgsTopocentricWidget : public QWidget
 {
     Q_OBJECT
 
@@ -50,6 +51,10 @@ class APP_EXPORT QgsTopocentricWidget : public QWidget, private Ui::QgsTopocentr
     void originChanged( double latitude, double longitude );
 
   private:
+    QDoubleSpinBox *doubleSpinBoxX = nullptr;
+    QSlider *horizontalSliderX = nullptr;
+    QDoubleSpinBox *doubleSpinBoxY = nullptr;
+    QSlider *horizontalSliderY = nullptr;
     QTimer *mEditTimer = nullptr;
 };
 
