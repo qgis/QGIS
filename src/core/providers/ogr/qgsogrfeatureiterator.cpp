@@ -695,16 +695,27 @@ bool QgsOgrFeatureIterator::close()
   return true;
 }
 
-QgsArrowArrayStream QgsOgrFeatureIterator::getArrowStream( int batchSize )
+QgsArrowArrayStream QgsOgrFeatureIterator::getArrowStream( int batchSize, bool includeFid )
 {
   QgsArrowArrayStream out;
+
+  char **options = nullptr;
 
   // The GEOMETRY_METADATA_ENCODING=GEOARROW option ensures that the extension metadata
   // that carries the geometry-ness of geometry, including the CRS, is added to geometry
   // columns. It is only available in GDAL 3.8.0 and later; however, we check for that
   // one level higher and return the default stream implementation if this is the case.
-  char **options = nullptr;
   options = CSLSetNameValue( options, "GEOMETRY_METADATA_ENCODING", "GEOARROW" );
+
+  if ( includeFid )
+  {
+    options = CSLSetNameValue( options, "INCLUDE_FID", "YES" );
+  }
+  else
+  {
+    options = CSLSetNameValue( options, "INCLUDE_FID", "NO" );
+  }
+
   if ( batchSize > 0 )
   {
     options = CSLSetNameValue( options, "MAX_FEATURES_IN_BATCH", QString::number( batchSize ).toUtf8().constData() );

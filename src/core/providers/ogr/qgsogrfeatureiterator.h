@@ -80,7 +80,7 @@ class QgsOgrFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<
 
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
 
-    QgsArrowArrayStream getArrowStream( int batchSize = -1 );
+    QgsArrowArrayStream getArrowStream( int batchSize = -1, bool includeFid = false );
 
   protected:
     bool checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature );

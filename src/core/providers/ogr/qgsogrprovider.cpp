@@ -50,6 +50,7 @@ using namespace Qt::StringLiterals;
 
 #include <memory>
 #include <nlohmann/json.hpp>
+#include <nanoarrow/nanoarrow.h>
 
 #define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>             // to collect version information
@@ -1348,15 +1349,17 @@ QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request
 
 QgsArrowSchema QgsOgrProvider::inferArrowSchema( const QgsArrowInferSchemaOptions &options ) const
 {
-  if (!options.geometryColumnName().isEmpty()) {
-    throw QgsException("geometryColumnName option is not supported by QgsOgrProvider");
+  if ( !options.geometryColumnName().isEmpty() )
+  {
+    throw QgsException( "geometryColumnName option is not supported by QgsOgrProvider" );
   }
 
   QgsArrowArrayStream stream = getFeaturesArrow();
   QgsArrowSchema out;
-  int ec = stream.arrayStream()->get_schema(stream.arrayStream(), out.schema());
-  if (ec != 0) {
-    throw QgsException("Failed to get schema from QgsOgrProvider ArrowArrayStream");
+  int ec = stream.arrayStream()->get_schema( stream.arrayStream(), out.schema() );
+  if ( ec != 0 )
+  {
+    throw QgsException( "Failed to get schema from QgsOgrProvider ArrowArrayStream" );
   }
 
   return out;
@@ -1368,14 +1371,18 @@ namespace
   {
       struct QgsOgrProviderArrayStreamPrivate
       {
-          QgsArrowArrayStream ogrStream;
-          QgsOgrFeatureIterator iterator;
+          QgsArrowArrayStream mOgrStream;
+          QString mGeometryColumnNameIfNone;
+          QgsOgrFeatureIterator mIterator;
+          struct ArrowError mError;
 
-          QgsOgrProviderArrayStreamPrivate( int batchSize, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
-            : iterator( source, true, request, transaction )
+          QgsOgrProviderArrayStreamPrivate( int batchSize, QString geometryColumnNameIfNone, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
+            : mGeometryColumnNameIfNone( geometryColumnNameIfNone )
+            , mIterator( source, true, request, transaction )
           {
-            ogrStream = iterator.getArrowStream( batchSize );
-            if ( !ogrStream.isValid() )
+            ArrowErrorInit( &mError );
+            mOgrStream = mIterator.getArrowStream( batchSize );
+            if ( !mOgrStream.isValid() )
             {
               throw QgsException( "Failed to create ArrowArrayStream from GDAL layer" );
             }
@@ -1385,36 +1392,65 @@ namespace
       static int GetSchema( struct ArrowArrayStream *stream, ArrowSchema *out )
       {
         auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
-        return priv->ogrStream.arrayStream()->get_schema( priv->ogrStream.arrayStream(), out );
+        ArrowErrorInit( &priv->mError );
+
+        QgsArrowSchema schema;
+        NANOARROW_RETURN_NOT_OK( priv->mOgrStream.arrayStream()->get_schema( priv->mOgrStream.arrayStream(), schema.schema() ) );
+
+        QgsArrowSchema schemaClone;
+        NANOARROW_RETURN_NOT_OK_WITH_ERROR( ArrowSchemaDeepCopy( schema.schema(), schemaClone.schema() ), &priv->mError );
+        struct ArrowSchemaView child_view;
+        for ( int64_t i = 0; i < schemaClone.schema()->n_children; ++i )
+        {
+          struct ArrowSchema *child = schemaClone.schema()->children[i];
+          NANOARROW_RETURN_NOT_OK( ArrowSchemaViewInit( &child_view, child, &priv->mError ) );
+          bool isUnnamedGeometry = child->name && strcmp( child->name, "wkb_geometry" ) == 0 && child_view.extension_name.size_bytes == strlen( "geoarrow.wkb" );
+          if ( isUnnamedGeometry )
+          {
+            NANOARROW_RETURN_NOT_OK_WITH_ERROR( ArrowSchemaSetName( child, priv->mGeometryColumnNameIfNone.toUtf8().constData() ), &priv->mError );
+          }
+        }
+
+        ArrowSchemaMove( schemaClone.schema(), out );
+        return 0;
       }
 
       static int GetNext( struct ArrowArrayStream *stream, ArrowArray *out )
       {
         auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
-        return priv->ogrStream.arrayStream()->get_next( priv->ogrStream.arrayStream(), out );
+        ArrowErrorInit( &priv->mError );
+        // TODO: Should we or can we check for cancellation here?
+        return priv->mOgrStream.arrayStream()->get_next( priv->mOgrStream.arrayStream(), out );
       }
 
       static const char *GetLastError( struct ArrowArrayStream *stream )
       {
         auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
-        return priv->ogrStream.arrayStream()->get_last_error( priv->ogrStream.arrayStream() );
+        if ( priv->mError.message[0] != '\0' )
+        {
+          return priv->mError.message;
+        }
+        else
+        {
+          return priv->mOgrStream.arrayStream()->get_last_error( priv->mOgrStream.arrayStream() );
+        }
       }
 
       static void Release( struct ArrowArrayStream *stream )
       {
         auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
-        priv->ogrStream.arrayStream()->release( priv->ogrStream.arrayStream() );
+        priv->mOgrStream.arrayStream()->release( priv->mOgrStream.arrayStream() );
         delete priv;
         stream->private_data = nullptr;
         stream->release = nullptr;
       }
 
-      static void Init( struct ArrowArrayStream *stream, int batchSize, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
+      static void Init( struct ArrowArrayStream *stream, int batchSize, QString geometryColumnName, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
       {
         // Create private data first. This may throw if the OGR stream creation fails.
         // Only initialize the stream struct if construction succeeds, so that on exception
         // the stream remains zeroed (a valid "released" state per Arrow spec).
-        auto *priv = new QgsOgrProviderArrayStreamPrivate( batchSize, source, request, transaction );
+        auto *priv = new QgsOgrProviderArrayStreamPrivate( batchSize, geometryColumnName, source, request, transaction );
 
         stream->get_schema = GetSchema;
         stream->get_next = GetNext;
@@ -1440,8 +1476,12 @@ QgsArrowArrayStream QgsOgrProvider::getFeaturesArrow( int batchSize, const QgsAr
     return QgsFeatureSource::getFeaturesArrow( batchSize, schema, request );
   }
 
+  // We may have to modify the geometry column name to align with the generic implementation
+  // TODO: maybe the generic implementation should use wkb_geometry to avoid the mismatch
+  QString geometryColumnNameIfNone = QString( "geometry" );
+
   QgsArrowArrayStream out;
-  QgsOgrProviderArrayStream::Init( out.arrayStream(), batchSize, static_cast<QgsOgrFeatureSource *>( featureSource() ), request, mTransaction );
+  QgsOgrProviderArrayStream::Init( out.arrayStream(), batchSize, geometryColumnNameIfNone, static_cast<QgsOgrFeatureSource *>( featureSource() ), request, mTransaction );
   return out;
 #endif
 }

@@ -5264,7 +5264,15 @@ class PyQgsOGRProvider(QgisTestCase):
         pa_schema = pa.schema(vl.inferArrowSchema())
         self.assertEqual(
             pa_schema.names,
-            ["Class", "Heading", "Importance", "Pilots", "Cabin Crew", "Staff", "geometry"],
+            [
+                "Class",
+                "Heading",
+                "Importance",
+                "Pilots",
+                "Cabin Crew",
+                "Staff",
+                "geometry",
+            ],
         )
         geometry = pa_schema.field("geometry")
         self.assertTrue(b"ARROW:extension:name" in geometry.metadata)
