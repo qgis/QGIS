@@ -205,7 +205,8 @@ void QgsTerrainEntity::invalidateMapImages()
 void QgsTerrainEntity::onLayersChanged()
 {
   // disconnect all watched layers
-  for ( QgsMapLayer *layer : mLayers.keys() )
+  const QList<QgsMapLayer *> keys = mLayers.keys();
+  for ( QgsMapLayer *layer : keys )
   {
     disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
     disconnect( layer, &QgsMapLayer::styleChanged, this, &QgsTerrainEntity::onLayerStyleChanged );
@@ -213,7 +214,8 @@ void QgsTerrainEntity::onLayersChanged()
 
   // connect on all layer renderer3DChanged and styleChanged signals
   // then keep if they have or not a 3D renderer
-  for ( QgsMapLayer *layer : mMapSettings->layers() )
+  const QList<QgsMapLayer *> layers = mMapSettings->layers();
+  for ( QgsMapLayer *layer : layers )
   {
     mLayers[layer] = static_cast< bool >( layer->renderer3D() );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
