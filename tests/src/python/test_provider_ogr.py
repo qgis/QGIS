@@ -23,6 +23,11 @@ import time
 import unittest
 from datetime import datetime
 
+try:
+    import pyarrow as pa
+except ImportError:
+    pa = None
+
 import mockedwebserver
 from osgeo import gdal, ogr  # NOQA
 from qgis.core import (
@@ -5248,6 +5253,26 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(
             metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
         )
+
+    @unittest.skipIf(pa is None, "pyarrow is not available")
+    def testArrowArrayStream(self):
+        """Test Arrow array stream from OGR provider"""
+        source = os.path.join(TEST_DATA_DIR, "points.shp")
+        vl = QgsVectorLayer(source, "test", "ogr")
+        self.assertTrue(vl.isValid())
+
+        pa_schema = pa.schema(vl.inferArrowSchema())
+        self.assertEqual(
+            pa_schema.names,
+            ["Class", "Heading", "Importance", "Pilots", "Cabin Crew", "Staff", "geometry"],
+        )
+        geometry = pa_schema.field("geometry")
+        self.assertTrue(b"ARROW:extension:name" in geometry.metadata)
+        self.assertEqual(geometry.metadata[b"ARROW:extension:name"], b"geoarrow.wkb")
+
+        tab = pa.table(vl)
+        self.assertEqual(len(tab), 17)
+        self.assertEqual(tab.schema, pa_schema)
 
 
 if __name__ == "__main__":

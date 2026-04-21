@@ -1348,22 +1348,101 @@ QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request
 
 QgsArrowSchema QgsOgrProvider::inferArrowSchema( const QgsArrowInferSchemaOptions &options ) const
 {
-  return QgsArrowSchema();
+  if (!options.geometryColumnName().isEmpty()) {
+    throw QgsException("geometryColumnName option is not supported by QgsOgrProvider");
+  }
+
+  QgsArrowArrayStream stream = getFeaturesArrow();
+  QgsArrowSchema out;
+  int ec = stream.arrayStream()->get_schema(stream.arrayStream(), out.schema());
+  if (ec != 0) {
+    throw QgsException("Failed to get schema from QgsOgrProvider ArrowArrayStream");
+  }
+
+  return out;
 }
+
+namespace
+{
+  struct QgsOgrProviderArrayStream
+  {
+      struct QgsOgrProviderArrayStreamPrivate
+      {
+          QgsArrowArrayStream ogrStream;
+          QgsOgrFeatureIterator iterator;
+
+          QgsOgrProviderArrayStreamPrivate( int batchSize, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
+            : iterator( source, true, request, transaction )
+          {
+            ogrStream = iterator.getArrowStream( batchSize );
+            if ( !ogrStream.isValid() )
+            {
+              throw QgsException( "Failed to create ArrowArrayStream from GDAL layer" );
+            }
+          }
+      };
+
+      static int GetSchema( struct ArrowArrayStream *stream, ArrowSchema *out )
+      {
+        auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
+        return priv->ogrStream.arrayStream()->get_schema( priv->ogrStream.arrayStream(), out );
+      }
+
+      static int GetNext( struct ArrowArrayStream *stream, ArrowArray *out )
+      {
+        auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
+        return priv->ogrStream.arrayStream()->get_next( priv->ogrStream.arrayStream(), out );
+      }
+
+      static const char *GetLastError( struct ArrowArrayStream *stream )
+      {
+        auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
+        return priv->ogrStream.arrayStream()->get_last_error( priv->ogrStream.arrayStream() );
+      }
+
+      static void Release( struct ArrowArrayStream *stream )
+      {
+        auto *priv = static_cast<QgsOgrProviderArrayStreamPrivate *>( stream->private_data );
+        priv->ogrStream.arrayStream()->release( priv->ogrStream.arrayStream() );
+        delete priv;
+        stream->private_data = nullptr;
+        stream->release = nullptr;
+      }
+
+      static void Init( struct ArrowArrayStream *stream, int batchSize, QgsOgrFeatureSource *source, const QgsFeatureRequest &request, QgsOgrTransaction *transaction )
+      {
+        // Create private data first. This may throw if the OGR stream creation fails.
+        // Only initialize the stream struct if construction succeeds, so that on exception
+        // the stream remains zeroed (a valid "released" state per Arrow spec).
+        auto *priv = new QgsOgrProviderArrayStreamPrivate( batchSize, source, request, transaction );
+
+        stream->get_schema = GetSchema;
+        stream->get_next = GetNext;
+        stream->get_last_error = GetLastError;
+        stream->release = Release;
+        stream->private_data = priv;
+      }
+  };
+} //namespace
+
 
 QgsArrowArrayStream QgsOgrProvider::getFeaturesArrow( int batchSize, const QgsArrowSchema &schema, const QgsFeatureRequest &request ) const
 {
+  // Before GDAL 3.8.0, there is no option to set extension type metadata to propagate
+  // the geometry-ness and CRS via Arrow. With some work we could add it here but for now
+  // we just use the generic implementation for this case.
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 8, 0 )
-// TODO: return super implenetation
+  return QgsFeatureSource::getFeaturesArrow( batchSize, schema, request );
 #else
   if ( schema.isValid() )
   {
-    // TODO: return super implenetation (schema request not implemented)
+    // schema request not implemented for OGR - fall back to the generic implementation
+    return QgsFeatureSource::getFeaturesArrow( batchSize, schema, request );
   }
 
-  // TODO: we need to sort out lifetimes. Probably need a custom arrow stream impl.
-  QgsOgrFeatureIterator it( static_cast<QgsOgrFeatureSource *>( featureSource() ), true, request, mTransaction );
-  return it.getArrowStream( batchSize );
+  QgsArrowArrayStream out;
+  QgsOgrProviderArrayStream::Init( out.arrayStream(), batchSize, static_cast<QgsOgrFeatureSource *>( featureSource() ), request, mTransaction );
+  return out;
 #endif
 }
 
