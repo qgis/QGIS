@@ -558,19 +558,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCheckMonitorDirectories->setChecked( QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->value() );
 
   //set the default projection behavior radio buttons
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       radCrsNoAction->setChecked( true );
       break;
-    case PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
       radPromptForProjection->setChecked( true );
       break;
-    case UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
       radUseProjectProjection->setChecked( true );
       break;
-    case UseDefaultCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
       radUseGlobalProjection->setChecked( true );
       break;
   }
@@ -1718,19 +1718,19 @@ void QgsOptions::saveOptions()
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::PromptUserForCrs );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::UseProjectCrs );
   }
   else if ( radCrsNoAction->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::NoAction );
   }
   else
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::UseDefaultCrs );
   }
 
   mSettings->setValue( u"/Projections/layerDefaultCrs"_s, mLayerDefaultCrs.authid() );

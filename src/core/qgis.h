@@ -2585,6 +2585,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( CrsWktVariant )
 
     /**
+     * Behavior to use when encountering a layer with an unknown (invalid) CRS.
+     *
+     * \since QGIS 4.2
+     */
+    enum class UnknownLayerCrsBehavior : int
+    {
+      NoAction = 0,         //!< Take no action and leave as unknown CRS
+      PromptUserForCrs = 1, //!< User is prompted for a CRS choice
+      UseProjectCrs = 2,    //!< Copy the current project's CRS
+      UseDefaultCrs = 3,    //!< Use the default layer CRS set via QGIS options
+    };
+    Q_ENUM( UnknownLayerCrsBehavior )
+
+    /**
      * Cartesian axes.
      *
      * \since QGIS 3.34

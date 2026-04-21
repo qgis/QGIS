@@ -190,6 +190,9 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureDisplayUni
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureAreaUnits
   = new QgsSettingsEntryString( u"area-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Area display units (encoded unit string)"_s );
 
+const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *QgsSettingsRegistryCore::settingsUnknownCrsBehavior
+  = new QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior>( u"unknown-crs-behavior"_s, QgsSettingsTree::sTreeCrs, Qgis::UnknownLayerCrsBehavior::NoAction, u"Behavior when encountering a layer with an unknown CRS"_s );
+
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
 
@@ -257,6 +260,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsProject::settingsAnonymizeSavedProjects->copyValueFromKey( u"core/projects/anonymize_saved_projects"_s, true );
   QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"qgis/defaultProjectPathsRelative"_s, true );
   QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"/qgis/defaultProjectPathsRelative"_s, true );
+  // old key was stored under QgsSettings::App, i.e. "app/projections/unknownCrsBehavior"
+  settingsUnknownCrsBehavior->copyValueFromKey( u"app/projections/unknownCrsBehavior"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );
