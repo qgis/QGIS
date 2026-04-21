@@ -1346,6 +1346,27 @@ QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsOgrFeatureIterator( static_cast<QgsOgrFeatureSource *>( featureSource() ), true, request, mTransaction ) );
 }
 
+QgsArrowSchema QgsOgrProvider::inferArrowSchema( const QgsArrowInferSchemaOptions &options ) const
+{
+  return QgsArrowSchema();
+}
+
+QgsArrowArrayStream QgsOgrProvider::getFeaturesArrow( int batchSize, const QgsArrowSchema &schema, const QgsFeatureRequest &request ) const
+{
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 8, 0 )
+// TODO: return super implenetation
+#else
+  if ( schema.isValid() )
+  {
+    // TODO: return super implenetation (schema request not implemented)
+  }
+
+  // TODO: we need to sort out lifetimes. Probably need a custom arrow stream impl.
+  QgsOgrFeatureIterator it( static_cast<QgsOgrFeatureSource *>( featureSource() ), true, request, mTransaction );
+  return it.getArrowStream( batchSize );
+#endif
+}
+
 unsigned char *QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 {
   OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
