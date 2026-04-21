@@ -3684,6 +3684,18 @@ The development version
       Observation,
       FeatureOfInterest,
       MultiDatastream,
+      Deployment,
+      ObservingProcedure,
+      Sampling,
+      SamplingProcedure,
+      Sampler,
+      PreparationStep,
+      PreparationProcedure,
+      ThingRelation,
+      RelationRole,
+      FeatureRelation,
+      DatastreamRelation,
+      ObservationRelation,
     };
 
     enum class ColorModel /BaseType=IntEnum/
