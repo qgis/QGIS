@@ -257,6 +257,14 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mIsSkyboxEnabled = elemSkybox.attribute( u"skybox-enabled"_s ).toInt();
   mSkyboxSettings.readXml( elemSkybox, context );
 
+  QDomElement elemGradientBackground = elem.firstChildElement( u"gradient-background"_s );
+  if ( !elemGradientBackground.isNull() )
+  {
+    mGradientBackgroundEnabled = elemGradientBackground.attribute( u"enabled"_s ).toInt();
+    mGradientBackgroundTopColor = QgsColorUtils::colorFromString( elemGradientBackground.attribute( u"top-color"_s ) );
+    mGradientBackgroundBottomColor = QgsColorUtils::colorFromString( elemGradientBackground.attribute( u"bottom-color"_s ) );
+  }
+
   QDomElement elemShadows = elem.firstChildElement( u"shadow-rendering"_s );
   mShadowSettings.readXml( elemShadows, context );
 
@@ -396,6 +404,12 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemSkybox.setAttribute( u"skybox-enabled"_s, mIsSkyboxEnabled );
   mSkyboxSettings.writeXml( elemSkybox, context );
   elem.appendChild( elemSkybox );
+
+  QDomElement elemGradientBackground = doc.createElement( u"gradient-background"_s );
+  elemGradientBackground.setAttribute( u"enabled"_s, mGradientBackgroundEnabled );
+  elemGradientBackground.setAttribute( u"top-color"_s, QgsColorUtils::colorToString( mGradientBackgroundTopColor ) );
+  elemGradientBackground.setAttribute( u"bottom-color"_s, QgsColorUtils::colorToString( mGradientBackgroundBottomColor ) );
+  elem.appendChild( elemGradientBackground );
 
   QDomElement elemShadows = doc.createElement( u"shadow-rendering"_s );
   mShadowSettings.writeXml( elemShadows, context );
@@ -633,6 +647,78 @@ QColor Qgs3DMapSettings::backgroundColor() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mBackgroundColor;
+}
+
+bool Qgs3DMapSettings::gradientBackgroundEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGradientBackgroundEnabled;
+}
+
+void Qgs3DMapSettings::setGradientBackgroundEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( enabled == mGradientBackgroundEnabled )
+    return;
+
+  mGradientBackgroundEnabled = enabled;
+  emit gradientBackgroundChanged();
+}
+
+QColor Qgs3DMapSettings::gradientBackgroundTopColor() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGradientBackgroundTopColor;
+}
+
+void Qgs3DMapSettings::setGradientBackgroundTopColor( const QColor &color )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( color == mGradientBackgroundTopColor )
+    return;
+
+  mGradientBackgroundTopColor = color;
+  emit gradientBackgroundChanged();
+}
+
+QColor Qgs3DMapSettings::gradientBackgroundBottomColor() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGradientBackgroundBottomColor;
+}
+
+void Qgs3DMapSettings::setGradientBackgroundBottomColor( const QColor &color )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( color == mGradientBackgroundBottomColor )
+    return;
+
+  mGradientBackgroundBottomColor = color;
+  emit gradientBackgroundChanged();
+}
+
+void Qgs3DMapSettings::setRubberBandsDepthTestFunction( Qt3DRender::QDepthTest::DepthFunction function )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mRubberBandsDepthTestFunction == function )
+    return;
+
+  mRubberBandsDepthTestFunction = function;
+  emit rubberBandsDepthTestFunctionChanged();
+}
+
+Qt3DRender::QDepthTest::DepthFunction Qgs3DMapSettings::rubberBandsDepthTestFunction() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mRubberBandsDepthTestFunction;
 }
 
 void Qgs3DMapSettings::setSelectionColor( const QColor &color )
@@ -1508,6 +1594,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::gradientBackgroundChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
