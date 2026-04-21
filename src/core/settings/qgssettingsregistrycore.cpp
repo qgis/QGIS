@@ -269,6 +269,17 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerDefaultCrs->copyValueFromKey( u"/Projections/layerDefaultCrs"_s, true );
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"qgis/application_full_name"_s, true );
   QgsApplication::settingsApplicationFullName->copyValueFromKey( u"/qgis/application_full_name"_s, true );
+
+  // gdal/skipDrivers was a comma-joined string; convert to a proper QStringList
+  {
+    QgsSettings s;
+    if ( s.contains( u"gdal/skipDrivers"_s ) )
+    {
+      const QString joined = s.value( u"gdal/skipDrivers"_s ).toString();
+      QgsApplication::settingsSkippedGdalDrivers->setValue( joined.isEmpty() ? QStringList() : joined.split( ','_L1 ) );
+      s.remove( u"gdal/skipDrivers"_s );
+    }
+  }
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );

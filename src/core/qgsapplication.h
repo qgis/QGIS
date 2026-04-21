@@ -181,6 +181,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   static const QgsSettingsEntryString *settingsApplicationFullName SIP_SKIP;
 
+  static const QgsSettingsEntryStringList *settingsSkippedGdalDrivers SIP_SKIP;
+
   /**
    * Constructor for QgsApplication.
    *
