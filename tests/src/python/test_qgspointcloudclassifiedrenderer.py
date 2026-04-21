@@ -594,6 +594,57 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
             )
         )
 
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def testRenderExpression(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/copc/extrabytes-dataset.copc.laz",
+            "test",
+            "copc",
+        )
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(
+            layer
+        )
+        renderer = QgsPointCloudClassifiedRenderer("Classification", categories)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        from qgis.core import QgsProperty, QgsPropertyCollection
+
+        colorExpr = (
+            "color_rgb(\n"
+            "    color_part(@point_color, 'red') + 50,\n"
+            "    color_part(@point_color, 'green') + 50,\n"
+            "    color_part(@point_color, 'blue') + 50\n"
+            ")"
+        )
+        props = QgsPropertyCollection()
+        props.setProperty(
+            QgsPointCloudRenderer.Property.Color,
+            QgsProperty.fromExpression(colorExpr),
+        )
+        layer.renderer().setDataDefinedProperties(props)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(layer.extent())
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "classified_render_expression",
+                "classified_render_expression",
+                mapsettings,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
