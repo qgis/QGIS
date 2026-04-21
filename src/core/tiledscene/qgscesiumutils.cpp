@@ -249,7 +249,7 @@ static QVector<QgsCesiumUtils::TileContents> extractGltfFromCmpt( const QByteArr
       result.append( QgsCesiumUtils::extractTileContent( innerTile ) );
     }
 
-    offset += innerByteLength;
+    offset += static_cast<int>( innerByteLength );
   }
 
   return result;
