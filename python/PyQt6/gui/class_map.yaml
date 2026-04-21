@@ -701,7 +701,7 @@ QgsAlignmentComboBox.setCurrentAlignment: src/gui/qgsalignmentcombobox.h#L86
 QgsAlignmentComboBox.setCurrentAlignment: src/gui/qgsalignmentcombobox.h#L93
 QgsAlignmentComboBox.verticalAlignment: src/gui/qgsalignmentcombobox.h#L79
 QgsAlignmentComboBox: src/gui/qgsalignmentcombobox.h#L36
-QgsAnimatedImageSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L295
+QgsAnimatedImageSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L294
 QgsAnimatedMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L748
 QgsAnimatedMarkerSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L753
 QgsAnimatedMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L751
@@ -3577,7 +3577,7 @@ QgsIdentifyMenu.setShowFeatureActions: src/gui/qgsidentifymenu.h#L139
 QgsIdentifyMenu.showFeatureActions: src/gui/qgsidentifymenu.h#L140
 QgsIdentifyMenu.styleHighlight: src/gui/qgsidentifymenu.h#L181
 QgsIdentifyMenu: src/gui/qgsidentifymenu.h#L52
-QgsImageSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L271
+QgsImageSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L270
 QgsInputControllerManager.available2DMapControllers: src/gui/inputcontroller/qgsinputcontrollermanager.h#L59
 QgsInputControllerManager.available3DMapControllers: src/gui/inputcontroller/qgsinputcontrollermanager.h#L105
 QgsInputControllerManager.create2DMapController: src/gui/inputcontroller/qgsinputcontrollermanager.h#L85
@@ -5531,8 +5531,8 @@ QgsPercentageWidget.spinBox: src/gui/qgspercentagewidget.h#L56
 QgsPercentageWidget.value: src/gui/qgspercentagewidget.h#L49
 QgsPercentageWidget.valueChanged: src/gui/qgspercentagewidget.h#L76
 QgsPercentageWidget: src/gui/qgspercentagewidget.h#L33
-QgsPictureSourceLineEditBase.setMode: src/gui/qgsfilecontentsourcelineedit.h#L209
-QgsPictureSourceLineEditBase: src/gui/qgsfilecontentsourcelineedit.h#L186
+QgsPictureSourceLineEditBase.setMode: src/gui/qgsfilecontentsourcelineedit.h#L211
+QgsPictureSourceLineEditBase: src/gui/qgsfilecontentsourcelineedit.h#L188
 QgsPieChartPlotWidget.create: src/gui/plot/qgsplotwidget.h#L206
 QgsPieChartPlotWidget.createPlot: src/gui/plot/qgsplotwidget.h#L203
 QgsPieChartPlotWidget.setPlot: src/gui/plot/qgsplotwidget.h#L202
@@ -7442,7 +7442,7 @@ QgsSvgSelectorWidget.sourceLineEdit: src/gui/symbology/qgssvgselectorwidget.h#L3
 QgsSvgSelectorWidget.svgParametersChanged: src/gui/symbology/qgssvgselectorwidget.h#L452
 QgsSvgSelectorWidget.svgSelected: src/gui/symbology/qgssvgselectorwidget.h#L446
 QgsSvgSelectorWidget: src/gui/symbology/qgssvgselectorwidget.h#L372
-QgsSvgSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L248
+QgsSvgSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L247
 QgsSymbolAnimationSettingsDialog.animationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L84
 QgsSymbolAnimationSettingsDialog.setAnimationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L77
 QgsSymbolAnimationSettingsDialog: src/gui/symbology/qgssymbolanimationsettingswidget.h#L65
