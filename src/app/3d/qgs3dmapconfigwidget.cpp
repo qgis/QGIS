@@ -16,6 +16,7 @@
 #include "qgs3dmapconfigwidget.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
@@ -33,6 +34,7 @@
 #include "qgsquantizedmeshterrainsettings.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsstackedwidget.h"
@@ -398,6 +400,7 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
 
+  Qgs3DMapCanvasWidget::settingMsaaEnabled->setValue( mMsaaCheckBox->isChecked() );
   mMap->setMsaaEnabled( mMsaaCheckBox->isChecked() );
 
   Qgis::ViewSyncModeFlags viewSyncMode;
