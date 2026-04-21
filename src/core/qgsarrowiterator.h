@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
 
 #ifndef ARROW_C_DATA_INTERFACE
 #define ARROW_C_DATA_INTERFACE
@@ -573,13 +572,6 @@ class CORE_EXPORT QgsArrowIterator
      * requested type or on internal error when building the array.
      */
     QgsArrowArray nextFeatures( int n ) SIP_THROW( QgsException );
-
-    /**
-     * Infer the QgsArrowSchema for a given QgsVectorLayer
-     *
-     * \throws QgsException if one or more attribute fields is of an unsupported type.
-     */
-    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) SIP_THROW( QgsException );
 
     /**
      * Infer the QgsArrowSchema from components

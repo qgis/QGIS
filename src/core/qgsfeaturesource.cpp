@@ -17,12 +17,40 @@
 
 #include "qgsfeaturesource.h"
 
+#include "qgsarrowiterator.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeedback.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+
+QgsArrowSchema QgsFeatureSource::inferArrowSchema( const QgsArrowInferSchemaOptions &options ) const SIP_THROW( QgsException )
+{
+  bool hasGeometry = wkbType() != Qgis::WkbType::NoGeometry;
+  return QgsArrowIterator::inferSchema( fields(), hasGeometry, sourceCrs(), options );
+}
+
+QgsArrowArrayStream QgsFeatureSource::getFeaturesArrow( int batchSize, const QgsArrowSchema &schema, const QgsFeatureRequest &request ) const
+{
+  QgsFeatureIterator features = getFeatures( request );
+  QgsArrowIterator arrowFeatures( features );
+
+  if (schema.isValid()) {
+  arrowFeatures.setSchema( schema );
+  } else {
+    arrowFeatures.setSchema(inferArrowSchema());
+  }
+
+  if ( batchSize == -1 )
+  {
+    return arrowFeatures.toArrayStream();
+  }
+  else
+  {
+    return arrowFeatures.toArrayStream( batchSize );
+  }
+}
 
 Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const
 {

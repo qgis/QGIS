@@ -509,15 +509,6 @@ If no features remain, the returned array will be invalid (i.e.,
                       error when building the array.
 %End
 
-    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
-%Docstring
-Infer the :py:class:`QgsArrowSchema` for a given
-:py:class:`QgsVectorLayer`
-
-:raises QgsException: if one or more attribute fields is of an
-                      unsupported type.
-%End
-
     static QgsArrowSchema inferSchema(
       const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
     );

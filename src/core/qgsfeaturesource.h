@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsarrowiterator.h"
 #include "qgsfeaturerequest.h"
 
 class QgsFeatureIterator;
@@ -64,6 +65,32 @@ class CORE_EXPORT QgsFeatureSource
      * Returns the geometry type for features returned by this source.
      */
     virtual Qgis::WkbType wkbType() const = 0;
+
+    /**
+     * Infer the Arrow schema for this feature source. The schema returned by this method should match
+     * the schema returned by getFeaturesArrow() without an explicit schema.
+     *
+     * \throws QgsException if one or more attribute fields is of an unsupported type.
+     * \since QGIS 4.2
+     */
+    virtual QgsArrowSchema inferArrowSchema( const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) const SIP_THROW( QgsException );
+
+    /**
+     * Query the provider for features specified in request as a stream of Arrow record batches. The default
+     * implementation builds Arrow output from the output of getFeatures(); however, sources may
+     * override this to provide a more efficient implementation if data sources implement Arrow export directly.
+     *
+     * \param schema The Arrow schema to use. If a released schema is provided (invalid), the resulting stream
+     *               should have a schema that matches the output of inferArrowSchema().
+     * \param batchSize The maximum number of features to include in each batch, or -1 to let the source
+     *                  determine the optimal batch size.
+     * \param request feature request describing parameters of features to return
+     * \returns stream for matching features from provider
+     * \since QGIS 4.2
+     */
+    virtual QgsArrowArrayStream getFeaturesArrow( int batchSize = -1, const QgsArrowSchema &schema = QgsArrowSchema(), const QgsFeatureRequest &request = QgsFeatureRequest() ) const SIP_THROW(
+      QgsException
+    );
 
 #ifdef SIP_RUN
     // clang-format off
