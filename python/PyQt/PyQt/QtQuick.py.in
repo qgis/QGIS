@@ -15,4 +15,4 @@
 ***************************************************************************
 """
 
-from PyQt@QT_VERSION_MAJOR@.QtQuic import *
+from PyQt@QT_VERSION_MAJOR@.QtQuick import *
