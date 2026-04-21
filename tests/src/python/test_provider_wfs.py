@@ -1447,7 +1447,8 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
@@ -7348,7 +7349,8 @@ Can't recognize service requested.
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         # Transaction response failure (no modifications)
