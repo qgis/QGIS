@@ -84,6 +84,13 @@ Returns the type of the item currently selected in the widget.
 .. seealso:: :py:func:`currentItemName`
 %End
 
+    QgsStyleProxyModel *proxyModel();
+%Docstring
+Returns the associated proxy model.
+
+.. versionadded:: 4.2
+%End
+
   protected:
     virtual void showEvent( QShowEvent *event );
 

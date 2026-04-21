@@ -487,6 +487,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool addSymbol3D( const QString &type );
     bool editSymbol3D();
 
+    bool addMaterialSettings();
+    bool editMaterialSettings();
+
     void addStyleDatabase( bool createNew );
 
     friend class QgsStyleExportImportDialog;

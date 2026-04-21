@@ -62,9 +62,6 @@ void TestQgsCoordinateReferenceSystemRegistry::initTestCase()
   QgsApplication::init( mTempFolder );
   QgsApplication::createDatabase();
   QgsApplication::initQgis();
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QSettings().clear();
 

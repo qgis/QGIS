@@ -16,6 +16,7 @@ import unittest
 
 from qgis.core import (
     NULL,
+    Qgis,
     QgsArcGisRestContext,
     QgsArcGisRestUtils,
     QgsCoordinateReferenceSystem,
@@ -912,6 +913,31 @@ class TestQgsArcGisRestUtils(QgisTestCase):
                 "nullable": False,
                 "type": "esriFieldTypeSmallInteger",
             },
+        )
+
+    def test_serviceCapabilitiesFromString(self):
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapabilities())
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("update")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapability.Update)
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("UPDATE")
+        self.assertEqual(res, Qgis.ArcGisRestServiceCapability.Update)
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString("UPDATE,query")
+        self.assertEqual(
+            res,
+            Qgis.ArcGisRestServiceCapability.Update
+            | Qgis.ArcGisRestServiceCapability.Query,
+        )
+        res = QgsArcGisRestUtils.serviceCapabilitiesFromString(
+            "UPDATE,query,Delete,Create,map"
+        )
+        self.assertEqual(
+            res,
+            Qgis.ArcGisRestServiceCapability.Update
+            | Qgis.ArcGisRestServiceCapability.Query
+            | Qgis.ArcGisRestServiceCapability.Delete
+            | Qgis.ArcGisRestServiceCapability.Create
+            | Qgis.ArcGisRestServiceCapability.Map,
         )
 
 

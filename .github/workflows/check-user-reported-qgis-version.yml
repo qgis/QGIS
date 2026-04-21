@@ -1,4 +1,4 @@
-name: Check if user is running the latest version of QGIS 
+name: Check if user is running the latest version of QGIS
 
 on:
   issues:
@@ -12,13 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Get version details
         run: |
           python ./scripts/get_latest_qgis_versions.py --release="stable" --github_token=${{ secrets.GITHUB_TOKEN }} >> $GITHUB_ENV
       - name: Write comment
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  #  v8.0.0
         with:
           script: |
             const {ISSUE_BODY, QGIS_VERSION_LTR_PATCH, QGIS_VERSION_STABLE_PATCH} = process.env // Latest released version identified using get_latest_qgis_versions
@@ -29,20 +31,20 @@ jobs:
               // Returns 0 if version1 = version2
 
               // Assume parameters are string and follow the semantic version : major.minor.patch
-              
+
               var version1 = version1.split(".").map(x => parseInt(x))
               var version2 = version2.split(".").map(x => parseInt(x))
-              
-              //Major version 
+
+              //Major version
               if ( version1[0] < version2[0] ){
                 return -1
               }
               else if ( version1[0] > version2[0] ) {
                 return 1
               }
-              
+
               //Minor version2
-              
+
               if ( version1[1] < version2[1] ){
                 return -1
               }

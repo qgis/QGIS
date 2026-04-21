@@ -65,7 +65,9 @@ email                : sherman at mrcc.com
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
+#include "qgssettingstree.h"
 #include "qgsstatusbar.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
@@ -102,6 +104,8 @@ email                : sherman at mrcc.com
 #include "moc_qgsmapcanvas.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsMapCanvas::settingsCustomCoordinateCrs = new QgsSettingsEntryString( u"custom-coordinate-crs"_s, QgsSettingsTree::sTreeMap, QString() );
 
 /**
  * \ingroup gui
@@ -284,8 +288,6 @@ QgsMapCanvas::~QgsMapCanvas()
   qDeleteAll( mScene->items() );
 
   mScene->deleteLater(); // crashes in python tests on windows
-
-  delete mCache;
 }
 
 void QgsMapCanvas::addOverlayWidget( QWidget *widget, Qt::Edge edge )
@@ -652,19 +654,18 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
 
   if ( enabled )
   {
-    mCache = new QgsMapRendererCache;
+    mCache = std::make_unique<QgsMapRendererCache>();
   }
   else
   {
-    delete mCache;
-    mCache = nullptr;
+    mCache.reset();
   }
   mPreviousRenderedItemResults.reset();
 }
 
 bool QgsMapCanvas::isCachingEnabled() const
 {
-  return nullptr != mCache;
+  return nullptr != mCache.get();
 }
 
 void QgsMapCanvas::clearCache()
@@ -680,7 +681,7 @@ void QgsMapCanvas::clearCache()
 
 QgsMapRendererCache *QgsMapCanvas::cache()
 {
-  return mCache;
+  return mCache.get();
 }
 
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
@@ -858,7 +859,7 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererSequentialJob( renderSettings );
 
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
-  mJob->setCache( mCache );
+  mJob->setCache( mCache.get() );
   mJob->setLayerRenderingTimeHints( mLastLayerRenderTime );
 
   mJob->start();
@@ -1284,7 +1285,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     addCoordinateFormat( wgs84.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), wgs84 );
 
   QgsSettings settings;
-  const QString customCrsString = settings.value( u"qgis/custom_coordinate_crs"_s ).toString();
+  const QString customCrsString = QgsMapCanvas::settingsCustomCoordinateCrs->value();
   if ( !customCrsString.isEmpty() )
   {
     QgsCoordinateReferenceSystem customCrs( customCrsString );
@@ -1300,7 +1301,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
     if ( selector.exec() )
     {
-      QgsSettings().setValue( u"qgis/custom_coordinate_crs"_s, selector.crs().authid().isEmpty() ? selector.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : selector.crs().authid() );
+      QgsMapCanvas::settingsCustomCoordinateCrs->setValue( selector.crs().authid().isEmpty() ? selector.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : selector.crs().authid() );
     }
   } );
   copyCoordinateMenu->addAction( setCustomCrsAction );

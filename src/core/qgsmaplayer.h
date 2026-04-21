@@ -561,7 +561,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 SIP_FACTORY;
 
     //! Returns the extent of the layer.
-    virtual QgsRectangle extent() const;
+    Q_INVOKABLE virtual QgsRectangle extent() const;
 
     /**
      * Returns the 3D extent of the layer.
@@ -577,7 +577,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
      * \since QGIS 3.20
      */
-    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
+    Q_INVOKABLE QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource

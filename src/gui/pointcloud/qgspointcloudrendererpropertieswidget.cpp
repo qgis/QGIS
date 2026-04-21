@@ -16,6 +16,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgselevationshadingrenderer.h"
 #include "qgsfontbutton.h"
 #include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
@@ -115,6 +116,18 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::BottomToTop ) );
   mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::TopToBottom ) );
 
+  connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mEdlDistanceSpinBox->setClearValue( 0.5 );
+  mEdlStrengthSpinBox->setClearValue( 1000 );
+  connect( mEdlStrengthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mHillshadingZFactorSpinBox->setClearValue( 1.0 );
+  connect( mHillshadingZFactorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
   mMaxErrorUnitWidget->setUnits(
     { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
   );
@@ -130,6 +143,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  connect( mEyeDomeLightingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadeGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleCheckBox, &QCheckBox::clicked, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -259,6 +275,24 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
           mLabelOptions->setEnabled( true );
       }
     }
+
+    QgsElevationShadingRenderer shadingRenderer = mLayer->renderer()->elevationShadingRenderer();
+
+    mEyeDomeLightingGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
+    mHillshadeGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
+
+    mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
+    mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
+    mEdlDistanceUnit->setUnits(
+      { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
+    );
+    mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
+    mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillshadingMultidirectional() );
+    mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillshadingZFactor() );
+
+    mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
+    mDirectionalLightWidget->setAzimuth( shadingRenderer.lightAzimuth() );
+    mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
   }
 
   mBlockChangedSignal = false;
@@ -307,6 +341,22 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
 
   mLayer->renderer()->setOverviewSwitchingScale( overviewSwitchingScale() );
+
+  QgsElevationShadingRenderer shadingRenderer;
+
+  shadingRenderer.setActiveEyeDomeLighting( mEyeDomeLightingGroupBox->isChecked() );
+  shadingRenderer.setActiveHillshading( mHillshadeGroupBox->isChecked() );
+  shadingRenderer.setActive( mEyeDomeLightingGroupBox->isChecked() || mHillshadeGroupBox->isChecked() );
+  shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
+  shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
+  shadingRenderer.setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
+  shadingRenderer.setHillshadingMultidirectional( mHillshadingMultidirCheckBox->isChecked() );
+  shadingRenderer.setHillshadingZFactor( mHillshadingZFactorSpinBox->value() );
+
+  shadingRenderer.setLightAltitude( mDirectionalLightWidget->altitude() );
+  shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
+
+  mLayer->renderer()->setElevationShadingRenderer( shadingRenderer );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

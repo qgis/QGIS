@@ -19,7 +19,6 @@ from qgis.core import (
     QgsSettings,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -30,10 +29,6 @@ class TestQgsProcessingParameters(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingParameters.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingParameters")
-        QgsSettings().clear()
         Processing.initialize()
         cls.registry = QgsApplication.instance().processingRegistry()
 

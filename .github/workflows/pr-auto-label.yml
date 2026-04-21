@@ -1,7 +1,7 @@
 name: "🌈 Triage"
 
 on:
-  pull_request_target:
+  pull_request_target:   # zizmor: ignore[dangerous-triggers]
     types: [ opened, synchronize, reopened ]
 
 permissions:
@@ -15,6 +15,6 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v6
+      - uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b  # v6.0.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"

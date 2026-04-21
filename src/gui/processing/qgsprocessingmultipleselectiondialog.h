@@ -114,8 +114,9 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
      * Adds a new option to the widget.
      *
      * \a icon added in QGIS 4.0
+     * \a tooltip added in QGIS 4.2
      */
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon(), const QString &tooltip = QString() );
     //! Returns pointer to the list view
     QListView *listView() const { return mSelectionList; }
 

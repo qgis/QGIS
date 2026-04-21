@@ -274,6 +274,13 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static Qgis::ArcGisRestServiceType serviceTypeFromString( const QString &type );
 
+    /**
+     * Parses a capabilities string to known values.
+     *
+     * \since QGIS 4.2
+     */
+    static Qgis::ArcGisRestServiceCapabilities serviceCapabilitiesFromString( const QString &capabilities );
+
   private:
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.

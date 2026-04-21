@@ -40,6 +40,7 @@ try:
     QgsArcGisRestUtils.variantToAttributeValue = staticmethod(QgsArcGisRestUtils.variantToAttributeValue)
     QgsArcGisRestUtils.fieldDefinitionToJson = staticmethod(QgsArcGisRestUtils.fieldDefinitionToJson)
     QgsArcGisRestUtils.serviceTypeFromString = staticmethod(QgsArcGisRestUtils.serviceTypeFromString)
+    QgsArcGisRestUtils.serviceCapabilitiesFromString = staticmethod(QgsArcGisRestUtils.serviceCapabilitiesFromString)
     QgsArcGisRestUtils.__group__ = ['providers', 'arcgis']
 except (NameError, AttributeError):
     pass

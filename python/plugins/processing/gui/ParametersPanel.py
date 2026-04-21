@@ -41,6 +41,7 @@ from qgis.gui import (
     QgsProcessingParametersWidget,
     QgsProcessingParameterWidgetContext,
 )
+from qgis.PyQt.QtWidgets import QLabel, QSizePolicy, QVBoxLayout, QWidget
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -52,6 +53,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
     def __init__(self, parent, alg, in_place=False, active_layer=None):
         super().__init__(alg, parent)
         self.in_place = in_place
+
         self.active_layer = active_layer
 
         self.wrappers = {}
@@ -99,6 +101,25 @@ class ParametersPanel(QgsProcessingParametersWidget):
         in_place_input_parameter_name = "INPUT"
         if hasattr(self.algorithm(), "inputParameterName"):
             in_place_input_parameter_name = self.algorithm().inputParameterName()
+
+        # If there are no parameters to show because it's in-place, we add the info label.
+        # Still, it needs the following steps to create the parameter widgets (even when hidden).
+        if self.in_place and not [
+            d
+            for d in self.algorithm().parameterDefinitions()
+            if d.name() not in (in_place_input_parameter_name, "OUTPUT")
+        ]:
+            widget = QWidget(self)
+            layout = QVBoxLayout(widget)
+            label = QLabel(widget)
+            label.setWordWrap(True)
+            info_text = self.tr(
+                "<i>No additional parameters are required. This algorithm will activate edit mode and modify the features on layer <b>{layername}</b> in place.</i>"
+            ).format(layername=self.active_layer.name())
+            label.setText(info_text)
+            layout.addWidget(label)
+            layout.addStretch()
+            self.addExtraWidget(widget)
 
         # Create widgets and put them in layouts
         for param in self.algorithm().parameterDefinitions():

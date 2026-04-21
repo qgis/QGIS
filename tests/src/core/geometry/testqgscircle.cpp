@@ -484,13 +484,13 @@ void TestQgsCircle::toCircularString()
   std::unique_ptr<QgsCircularString> cs( QgsCircle( QgsPoint( 0, 0 ), 5 ).toCircularString() );
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
 
-  cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5 ).toCircularString( true ) );
+  cs = QgsCircle( QgsPoint( 0, 0 ), 5 ).toCircularString( true );
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
 
-  cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString() );
+  cs = QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString();
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
 
-  cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString( true ) );
+  cs = QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString( true );
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (-3.54 3.54, 3.54 3.54, 3.54 -3.54, -3.54 -3.54, -3.54 3.54)" ) );
 }
 

@@ -251,7 +251,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   if ( !clipGeometry.isEmpty() )
   {
     const Qgis::GeometryType expectedType = geom.type();
-    geom = geom.intersection( clipGeometry );
+    geom = geom.intersection( clipGeometry, QgsGeometryParameters(), context.feedback() );
     geom.convertGeometryCollectionToSubclass( expectedType );
   }
   if ( geom.isEmpty() )

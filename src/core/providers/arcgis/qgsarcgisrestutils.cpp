@@ -1706,3 +1706,17 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
 
   return Qgis::ArcGisRestServiceType::Unknown;
 }
+
+Qgis::ArcGisRestServiceCapabilities QgsArcGisRestUtils::serviceCapabilitiesFromString( const QString &capabilities )
+{
+  const QStringList parts = capabilities.split( ',' );
+
+  Qgis::ArcGisRestServiceCapabilities res;
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Query, parts.contains( "query"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Map, parts.contains( "map"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Update, parts.contains( "update"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Delete, parts.contains( "delete"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Create, parts.contains( "create"_L1, Qt::CaseInsensitive ) );
+
+  return res;
+}

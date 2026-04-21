@@ -48,11 +48,12 @@ uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
 
+const float PI = 3.14159265359;
+
 #pragma include light.inc.frag
 
-
 #ifdef NORMAL_MAP
-mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
+mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
     // This allows building the tangentMatrix below by simply transposing the
@@ -65,11 +66,9 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
     // which is +1 for a right hand system, and -1 for a left hand system.
     vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
 
-    // Construct matrix to transform from world space to tangent space
-    // This is the transpose of the tangentToWorld transformation matrix
+    // Construct matrix to transform from tangent space to world space
     mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
-    mat3 worldToTangentMatrix = transpose(tangentToWorldMatrix);
-    return worldToTangentMatrix;
+    return tangentToWorldMatrix;
 }
 #endif
 
@@ -119,7 +118,7 @@ float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
     // Blinn-Phong approximation - see
     // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
     float specPower = 2.0 / (alpha * alpha) - 2.0;
-    return (specPower + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), specPower);
+    return (specPower + 2.0) / (2.0 * PI) * pow(max(dot(n, h), 0.0), specPower);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
@@ -217,7 +216,7 @@ vec3 pbrModel(const in int lightIndex,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
-    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / 3.14159;
+    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / PI;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
@@ -261,7 +260,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor * texture(envLight.irradiance, l).rgb;
+    vec3 diffuse = diffuseColor * texture(envLight.irradiance, n).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
@@ -385,7 +384,7 @@ void main()
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n = normalize(((transpose(((calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent)))) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
+    vec3 n = normalize(((calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
 #else
 
 #ifdef FLAT_SHADING

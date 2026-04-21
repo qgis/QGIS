@@ -151,6 +151,7 @@ Item {
                 onClicked: (mouse) => {
                              if (mouse.button == Qt.LeftButton && isEnabled) {
                                welcomeScreenController.openProject(ProjectPath);
+                               welcomeScreenController.hideScene();
                              } else if (mouse.button == Qt.RightButton) {
                                recentProjectsMenu.projectIndex = index;
                                recentProjectsMenu.projectPinned = Pinned;
@@ -318,12 +319,15 @@ Item {
                     switch (Type) {
                     case TemplateProjectsModel.TemplateType.Blank:
                       welcomeScreenController.createBlankProject(); //#spellok
+                      welcomeScreenController.hideScene();
                       return;
                     case TemplateProjectsModel.TemplateType.Basemap:
                       welcomeScreenController.createProjectFromBasemap();
+                      welcomeScreenController.hideScene();
                       return;
                     default:
                       welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                      welcomeScreenController.hideScene();
                       return;
                     }
                   } else if (mouse.button == Qt.RightButton) {

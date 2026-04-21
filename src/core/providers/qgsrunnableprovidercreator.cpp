@@ -15,8 +15,10 @@
  ***************************************************************************/
 #include "qgsrunnableprovidercreator.h"
 
+#include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsthreadingutils.h"
 
 #include <QDebug>
 #include <QString>
@@ -40,10 +42,19 @@ QgsRunnableProviderCreator::QgsRunnableProviderCreator(
 
 void QgsRunnableProviderCreator::run()
 {
+  QgsScopedThreadName threadName( u"pcreate:%1"_s.arg( mProviderKey ) );
+  QgsDebugMsgLevel( u"Creating provider in parallel for %1: %2 - %3 in thread %4"_s.arg( mLayerId, mProviderKey, mDataSource, QgsThreadingUtils::threadDescription( QThread::currentThread() ) ), 2 );
+
   // should use thread-local profiler
   QgsScopedRuntimeProfile profile( "Create data providers/" + mLayerId, u"projectload"_s );
   mDataProvider.reset( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, mOptions, mFlags ) );
-  mDataProvider->moveToThread( QObject::thread() );
+
+  QgsDebugMsgLevel( u"Created provider for %1: %2 - %3 belongs to thread %4"_s.arg( mLayerId, mProviderKey, mDataSource, QgsThreadingUtils::threadDescription( mDataProvider->thread() ) ), 2 );
+
+  // detach from thread, so that the creator of QgsRunnableProviderCreator can "pull" the data provider
+  // (we can't push it to a thread here, because we don't know what the target thread for the owner will be)
+  mDataProvider->moveToThread( nullptr );
+
   emit providerCreated( mDataProvider->isValid(), mLayerId );
 }
 

@@ -226,6 +226,13 @@ Converts a string value to a REST service type.
 .. versionadded:: 3.28
 %End
 
+    static Qgis::ArcGisRestServiceCapabilities serviceCapabilitiesFromString( const QString &capabilities );
+%Docstring
+Parses a capabilities string to known values.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);

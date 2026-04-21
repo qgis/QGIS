@@ -16,6 +16,7 @@ set(PYQT_COMPAT_FILES
   QtMultimedia.py
   QtNetwork.py
   QtXml.py
+  QtQuick.py
   QtQuickWidgets.py
   QtSql.py
   QtTest.py

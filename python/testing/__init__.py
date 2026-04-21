@@ -1105,12 +1105,16 @@ def start_app(cleanup=True):
             Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True
         )
 
-        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
-        # no need to mess with it here.
-        QGISAPP = QgsApplication(argvb, myGuiFlag)
+        QCoreApplication.setOrganizationName("QGIS")
+        QCoreApplication.setOrganizationDomain("qgis.org")
+        QCoreApplication.setApplicationName("QGIS-TEST")
 
         tmpdir = tempfile.mkdtemp("", "QGIS-PythonTestConfigPath-")
         os.environ["QGIS_CUSTOM_CONFIG_PATH"] = tmpdir
+
+        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
+        # no need to mess with it here.
+        QGISAPP = QgsApplication(argvb, myGuiFlag)
 
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
