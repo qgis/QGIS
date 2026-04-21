@@ -198,6 +198,42 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns background color of the 3D map view
     QColor backgroundColor() const;
 
+    /**
+     * Returns whether the gradient background is enabled for the 3D map view
+     * \since QGIS 4.2
+     */
+    bool gradientBackgroundEnabled() const;
+
+    /**
+     * Sets whether the gradient background is enabled for the 3D map view
+     * \since QGIS 4.2
+     */
+    void setGradientBackgroundEnabled( bool enabled );
+
+    /**
+     * Sets the top color of the gradient background of the 3D map view
+     * \since QGIS 4.2
+     */
+    void setGradientBackgroundTopColor( const QColor &color );
+
+    /**
+     * Returns the top color of the gradient background of the 3D map view
+     * \since QGIS 4.2
+     */
+    QColor gradientBackgroundTopColor() const;
+
+    /**
+     * Sets the bottom color of the gradient background of the 3D map view
+     * \since QGIS 4.2
+     */
+    void setGradientBackgroundBottomColor( const QColor &color );
+
+    /**
+     * Returns the bottom color of the gradient background of the 3D map view
+     * \since QGIS 4.2
+     */
+    QColor gradientBackgroundBottomColor() const;
+
     //! Sets color used for selected features
     void setSelectionColor( const QColor &color );
     //! Returns color used for selected features
@@ -1069,6 +1105,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void show2DMapOverlayChanged();
 
+    void gradientBackgroundChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -1081,9 +1119,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
-    QgsCoordinateReferenceSystem mCrs;                      //!< Destination coordinate system of the world
-    QColor mBackgroundColor = Qt::black;                    //!< Background color of the scene
-    QColor mSelectionColor;                                 //!< Color to be used for selected map features
+    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
+    QColor mBackgroundColor = Qt::black; //!< Background color of the scene
+    QColor mSelectionColor;              //!< Color to be used for selected map features
+    bool mGradientBackgroundEnabled = false;
+    QColor mGradientBackgroundTopColor = QColor( 0, 128, 255 );
+    QColor mGradientBackgroundBottomColor = Qt::black;
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
     std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
     bool mTerrainShadingEnabled = false;              //!< Whether terrain should be shaded taking lights into account

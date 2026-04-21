@@ -20,6 +20,7 @@
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettingswidget.h"
+#include "qgscolorbutton.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsguiutils.h"
@@ -198,11 +199,28 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
   // ==================
-  // Page: Skybox
+  // Background (gradient / skybox)
+  comboBox->addItem( tr( "Gradient" ) );
+  comboBox->addItem( tr( "Skybox" ) );
+  connect( comboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stackedWidget, &QStackedWidget::setCurrentIndex );
+
+  mBtnGradientTopColor->setColor( mMap->gradientBackgroundTopColor() );
+  mBtnGradientBottomColor->setColor( mMap->gradientBackgroundBottomColor() );
+
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
   mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
-  groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
-  groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
+  pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
+
+  if ( mMap->isSkyboxEnabled() )
+  {
+    groupBoxBackground->setChecked( true );
+    comboBox->setCurrentIndex( 1 );
+  }
+  else
+  {
+    groupBoxBackground->setChecked( mMap->gradientBackgroundEnabled() );
+    comboBox->setCurrentIndex( 0 );
+  }
 
   // ==================
   // Page: Shadows
@@ -369,8 +387,15 @@ void Qgs3DMapConfigWidget::apply()
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setLightSources( widgetLights->lightSources() );
-  mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
+
+  const bool backgroundEnabled = groupBoxBackground->isChecked();
+  const bool gradientSelected = comboBox->currentIndex() == 0;
+  mMap->setGradientBackgroundEnabled( backgroundEnabled && gradientSelected );
+  mMap->setGradientBackgroundTopColor( mBtnGradientTopColor->color() );
+  mMap->setGradientBackgroundBottomColor( mBtnGradientBottomColor->color() );
+  mMap->setIsSkyboxEnabled( backgroundEnabled && !gradientSelected );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+
   QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );

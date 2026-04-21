@@ -206,6 +206,48 @@ Sets background color of the 3D map view
 Returns background color of the 3D map view
 %End
 
+    bool gradientBackgroundEnabled() const;
+%Docstring
+Returns whether the gradient background is enabled for the 3D map view
+
+.. versionadded:: 4.2
+%End
+
+    void setGradientBackgroundEnabled( bool enabled );
+%Docstring
+Sets whether the gradient background is enabled for the 3D map view
+
+.. versionadded:: 4.2
+%End
+
+    void setGradientBackgroundTopColor( const QColor &color );
+%Docstring
+Sets the top color of the gradient background of the 3D map view
+
+.. versionadded:: 4.2
+%End
+
+    QColor gradientBackgroundTopColor() const;
+%Docstring
+Returns the top color of the gradient background of the 3D map view
+
+.. versionadded:: 4.2
+%End
+
+    void setGradientBackgroundBottomColor( const QColor &color );
+%Docstring
+Sets the bottom color of the gradient background of the 3D map view
+
+.. versionadded:: 4.2
+%End
+
+    QColor gradientBackgroundBottomColor() const;
+%Docstring
+Returns the bottom color of the gradient background of the 3D map view
+
+.. versionadded:: 4.2
+%End
+
     void setSelectionColor( const QColor &color );
 %Docstring
 Sets color used for selected features
@@ -1205,6 +1247,8 @@ Emitted when the 2D map overlay is enabled or disabled
 
 .. versionadded:: 4.0
 %End
+
+    void gradientBackgroundChanged();
 
   private:
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
