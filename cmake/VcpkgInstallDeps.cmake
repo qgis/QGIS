@@ -138,9 +138,7 @@ if(NOT EMSCRIPTEN)
       set(bat_file "${CMAKE_BINARY_DIR}/bundled_program/${py_name}.bat")
       file(WRITE "${bat_file}"
 "@echo off
-cd /d \"%~dp0\"
-set CURRENT_WORK_DIR=%cd%
-python -u \"%CURRENT_WORK_DIR%\\Scripts\\${py_name}.py\" %*
+\"%~dp0python.exe\" -u \"%~dp0Scripts\\${py_name}.py\" %*
 "
     )
     
