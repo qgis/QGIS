@@ -660,7 +660,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
       return;
 
     case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       break;
 
     case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
@@ -918,7 +918,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
     case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::MessageLevel::Warning );
       break;

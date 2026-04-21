@@ -193,6 +193,9 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureAreaUnits
 const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *QgsSettingsRegistryCore::settingsUnknownCrsBehavior
   = new QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior>( u"unknown-crs-behavior"_s, QgsSettingsTree::sTreeCrs, Qgis::UnknownLayerCrsBehavior::NoAction, u"Behavior when encountering a layer with an unknown CRS"_s );
 
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsLayerDefaultCrs
+  = new QgsSettingsEntryString( u"layer-default-crs"_s, QgsSettingsTree::sTreeCrs, u"EPSG:4326"_s, u"Default CRS used for layers with unknown CRS when the unknown CRS behavior is set to UseDefaultCrs"_s );
+
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
 
@@ -262,6 +265,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"/qgis/defaultProjectPathsRelative"_s, true );
   // old key was stored under QgsSettings::App, i.e. "app/projections/unknownCrsBehavior"
   settingsUnknownCrsBehavior->copyValueFromKey( u"app/projections/unknownCrsBehavior"_s, true );
+  settingsLayerDefaultCrs->copyValueFromKey( u"Projections/layerDefaultCrs"_s, true );
+  settingsLayerDefaultCrs->copyValueFromKey( u"/Projections/layerDefaultCrs"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );

@@ -575,7 +575,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
       break;
   }
 
-  QString myLayerDefaultCrs = mSettings->value( u"/Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString();
+  QString myLayerDefaultCrs = QgsSettingsRegistryCore::settingsLayerDefaultCrs->value();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
@@ -1733,7 +1733,7 @@ void QgsOptions::saveOptions()
     QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::UseDefaultCrs );
   }
 
-  mSettings->setValue( u"/Projections/layerDefaultCrs"_s, mLayerDefaultCrs.authid() );
+  QgsSettingsRegistryCore::settingsLayerDefaultCrs->setValue( mLayerDefaultCrs.authid() );
   mSettings->setValue( u"/projections/defaultProjectCrs"_s, leProjectGlobalCrs->crs().authid(), QgsSettings::App );
   mSettings->setEnumValue( u"/projections/newProjectCrsBehavior"_s, radProjectUseCrsOfFirstLayer->isChecked() ? QgsGui::UseCrsOfFirstLayerAdded : QgsGui::UsePresetCrs, QgsSettings::App );
   mSettings->setValue( u"/projections/promptWhenMultipleTransformsExist"_s, mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );

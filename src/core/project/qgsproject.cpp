@@ -5087,7 +5087,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    const QString layerDefaultCrs = mSettings.value( u"/Projections/layerDefaultCrs"_s, u"EPSG:4326"_s ).toString();
+    const QString layerDefaultCrs = QgsSettingsRegistryCore::settingsLayerDefaultCrs->value();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 
