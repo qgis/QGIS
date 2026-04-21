@@ -187,6 +187,9 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsMeasureDecimalPl
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureDisplayUnits
   = new QgsSettingsEntryString( u"display-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Distance display units (encoded unit string)"_s );
 
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureAreaUnits
+  = new QgsSettingsEntryString( u"area-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Area display units (encoded unit string)"_s );
+
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
 
@@ -244,6 +247,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsMeasureDecimalPlaces->copyValueFromKey( u"/qgis/measure/decimalplaces"_s, true );
   settingsMeasureDisplayUnits->copyValueFromKey( u"qgis/measure/displayunits"_s, true );
   settingsMeasureDisplayUnits->copyValueFromKey( u"/qgis/measure/displayunits"_s, true );
+  settingsMeasureAreaUnits->copyValueFromKey( u"qgis/measure/areaunits"_s, true );
+  settingsMeasureAreaUnits->copyValueFromKey( u"/qgis/measure/areaunits"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );

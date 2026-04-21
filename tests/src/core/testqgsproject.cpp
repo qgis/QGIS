@@ -356,7 +356,6 @@ void TestQgsProject::testProjectUnits()
   // DISTANCE
 
   //first set a default QGIS distance unit
-  QgsSettings s;
   QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Feet ) );
 
   QgsProject *prj = new QgsProject;
@@ -375,14 +374,14 @@ void TestQgsProject::testProjectUnits()
   // AREA
 
   //first set a default QGIS area unit
-  s.setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( Qgis::AreaUnit::SquareYards ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::AreaUnit::SquareYards ) );
 
   // new project should inherit QGIS default area unit
   prj->clear();
   QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( Qgis::AreaUnit::Acres ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::AreaUnit::Acres ) );
   QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //test setting new units for project

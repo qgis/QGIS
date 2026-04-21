@@ -650,7 +650,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAreaUnitsComboBox->addItem( tr( "Square Degrees" ), static_cast<int>( Qgis::AreaUnit::SquareDegrees ) );
   mAreaUnitsComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::AreaUnit::Unknown ) );
 
-  Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( u"/qgis/measure/areaunits"_s ).toString(), &ok );
+  Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( QgsSettingsRegistryCore::settingsMeasureAreaUnits->value(), &ok );
   if ( !ok )
     areaUnits = Qgis::AreaUnit::SquareMeters;
   mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( static_cast<int>( areaUnits ) ) );
@@ -1747,7 +1747,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   Qgis::AreaUnit areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
-  mSettings->setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( areaUnit ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( areaUnit ) );
 
   Qgis::AngleUnit angleUnit = static_cast<Qgis::AngleUnit>( mAngleUnitsComboBox->currentData().toInt() );
   mSettings->setValue( u"/qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( angleUnit ) );

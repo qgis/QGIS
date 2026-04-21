@@ -1292,7 +1292,7 @@ void QgsProject::clear()
   const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value(), &ok );
   setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
-  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( u"/qgis/measure/areaunits"_s ).toString(), &ok );
+  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( QgsSettingsRegistryCore::settingsMeasureAreaUnits->value(), &ok );
   setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
 
   setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalMiddle );

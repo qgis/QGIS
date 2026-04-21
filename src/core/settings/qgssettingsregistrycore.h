@@ -215,6 +215,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for distance display units
     static const QgsSettingsEntryString *settingsMeasureDisplayUnits;
 
+    //! Settings entry for area display units
+    static const QgsSettingsEntryString *settingsMeasureAreaUnits;
+
     //! Settings entry for layer tree insertion method
     static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
 
