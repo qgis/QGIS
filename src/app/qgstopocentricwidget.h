@@ -40,10 +40,10 @@ class APP_EXPORT QgsTopocentricWidget : public QWidget, private Ui::QgsTopocentr
     double longitude() const;
 
     //! Sets the latitude of the topocentric origin in degrees.
-    void setLatitude( double lat );
+    void setLatitude( double latitude );
 
     //! Sets the longitude of the topocentric origin in degrees.
-    void setLongitude( double lon );
+    void setLongitude( double longitude );
 
   signals:
     //! Emitted when the origin coordinates change.

@@ -14711,7 +14711,7 @@ void QgisApp::updateCrsStatusBar()
     {
       if ( !isTopocentric )
       {
-        const QgsCoordinateReferenceSystem topoCrs = projectCrs.topocentricCrs( 0.0, 0.0 );
+        const QgsCoordinateReferenceSystem topoCrs = projectCrs.toTopocentricCrs( 0.0, 0.0 );
         if ( topoCrs.isValid() )
         {
           QgsProject::instance()->setCrs( topoCrs );
@@ -14728,7 +14728,7 @@ void QgisApp::updateCrsStatusBar()
         mTopocentricMenu->addAction( wa );
 
         connect( mTopocentricWidget, &QgsTopocentricWidget::originChanged, this, [this]( double latitude, double longitude ) {
-          const QgsCoordinateReferenceSystem newCrs = QgsProject::instance()->crs().topocentricCrs( latitude, longitude );
+          const QgsCoordinateReferenceSystem newCrs = QgsProject::instance()->crs().toTopocentricCrs( latitude, longitude );
 
           if ( !newCrs.isValid() )
             return;

@@ -77,12 +77,12 @@ double QgsTopocentricWidget::longitude() const
   return doubleSpinBoxY->value();
 }
 
-void QgsTopocentricWidget::setLatitude( double lat )
+void QgsTopocentricWidget::setLatitude( double latitude )
 {
-  doubleSpinBoxX->setValue( lat );
+  doubleSpinBoxX->setValue( latitude );
 }
 
-void QgsTopocentricWidget::setLongitude( double lon )
+void QgsTopocentricWidget::setLongitude( double longitude )
 {
-  doubleSpinBoxY->setValue( lon );
+  doubleSpinBoxY->setValue( longitude );
 }

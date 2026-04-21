@@ -1312,10 +1312,11 @@ Returns ``True`` if the CRS has a vertical axis.
 Returns auth id of related geographic CRS
 %End
 
-    bool topocentricOrigin( double &latDeg /Out/, double &lonDeg /Out/ ) const;
+    bool topocentricOrigin( double &latitude /Out/, double &longitude /Out/ ) const;
 %Docstring
-Returns ``True`` if this CRS is a topocentric compatible CRS. ``latDeg``
-and ``lonDeg`` is the origin latitude and longitude in decimal degrees.
+Returns ``True`` if this CRS is a topocentric compatible CRS.
+``latitude`` and ``longitude`` is the origin latitude and longitude in
+decimal degrees.
 
 .. versionadded:: 4.2
 %End
@@ -1329,10 +1330,10 @@ Geocentric, or when the CRS is already topocentric.
 .. versionadded:: 4.2
 %End
 
-    QgsCoordinateReferenceSystem topocentricCrs( double latDeg, double lonDeg ) const;
+    QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
 %Docstring
 Constructs a topocentric CRS derived from this CRS with origin at
-``latDeg``, ``lonDeg`` in decimal degrees.
+``latitude``, ``longitude`` in decimal degrees.
 
 If the CRS is not topocentric compatible, returns invalid CRS.
 

@@ -3249,6 +3249,9 @@ bool QgsCoordinateReferenceSystem::topocentricOrigin( double &latDeg, double &lo
 
     const QString paramCode( code ? code : "" );
 
+    // 8834 - latitude of topocentric origin
+    // 8835 - longitude of topocentric origin
+    // 8836 - height of topocentric origin (not used)
     if ( paramCode == "8834"_L1 )
     {
       latDeg = value * unitConvFactor * 180.0 / M_PI;
@@ -3276,7 +3279,7 @@ bool QgsCoordinateReferenceSystem::isTopocentricCompatible() const
   return topocentricOrigin( lat, lon );
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::topocentricCrs( double latDeg, double lonDeg ) const
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( double latitude, double longitude ) const
 {
   if ( !isValid() )
     return QgsCoordinateReferenceSystem();
@@ -3352,8 +3355,8 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::topocentricCrs( doubl
                       "AXIS[\"(Y)\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],"
                       "AXIS[\"(Z)\",up,ORDER[3],LENGTHUNIT[\"metre\",1]]]"_s
                       .arg( baseWkt )
-                      .arg( qgsDoubleToString( latDeg ) )
-                      .arg( qgsDoubleToString( lonDeg ) );
+                      .arg( qgsDoubleToString( latitude ) )
+                      .arg( qgsDoubleToString( longitude ) );
 
   QgsProjUtils::proj_pj_unique_ptr topocentric(
     proj_create_from_wkt( ctx, wkt.toUtf8().constData(), nullptr, nullptr, nullptr )

@@ -1115,11 +1115,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns TRUE if this CRS is a topocentric compatible CRS.
-     * \a latDeg and \a lonDeg is the origin latitude and longitude in decimal degrees.
+     * \a latitude and \a longitude is the origin latitude and longitude in decimal degrees.
      *
      * \since QGIS 4.2
      */
-    bool topocentricOrigin( double &latDeg SIP_OUT, double &lonDeg SIP_OUT ) const;
+    bool topocentricOrigin( double &latitude SIP_OUT, double &longitude SIP_OUT ) const;
 
     /**
      * Returns TRUE if this CRS can serve as a base for building a topocentric
@@ -1132,13 +1132,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Constructs a topocentric CRS derived from this CRS with origin
-     * at \a latDeg, \a lonDeg in decimal degrees.
+     * at \a latitude, \a longitude in decimal degrees.
      *
      * If the CRS is not topocentric compatible, returns invalid CRS.
      *
      * \since QGIS 4.2
      */
-    QgsCoordinateReferenceSystem topocentricCrs( double latDeg, double lonDeg ) const;
+    QgsCoordinateReferenceSystem toTopocentricCrs( double latitude, double longitude ) const;
 
 #ifdef SIP_RUN
     // clang-format off
