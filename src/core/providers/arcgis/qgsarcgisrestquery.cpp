@@ -38,6 +38,109 @@
 
 using namespace Qt::StringLiterals;
 
+Qgis::ArcGisRestServiceType QgsArcGisRestQueryUtils::sniffServiceTypeFromUrl( const QUrl &url )
+{
+  if ( url.isEmpty() || !url.isValid() )
+  {
+    return Qgis::ArcGisRestServiceType::Unknown;
+  }
+
+  const QString path = url.path();
+  if ( path.isEmpty() )
+  {
+    return Qgis::ArcGisRestServiceType::Unknown;
+  }
+  const QStringList pathSegments = path.split( '/', Qt::SkipEmptyParts );
+
+  // iterate backwards through the URL segments.
+  // we want to catch both root services (.../FeatureServer)
+  // and layer-specific URLs (.../FeatureServer/0 or .../FeatureServer/query)
+  for ( const QString &segment : pathSegments | std::views::reverse )
+  {
+    if ( segment.compare( "FeatureServer"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      return Qgis::ArcGisRestServiceType::FeatureServer;
+    }
+    if ( segment.compare( "MapServer"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      return Qgis::ArcGisRestServiceType::MapServer;
+    }
+    if ( segment.compare( "ImageServer"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      return Qgis::ArcGisRestServiceType::ImageServer;
+    }
+    if ( segment.compare( "SceneServer"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      return Qgis::ArcGisRestServiceType::SceneServer;
+    }
+  }
+
+  return Qgis::ArcGisRestServiceType::Unknown;
+}
+
+Qgis::ArcGisRestServiceType QgsArcGisRestQueryUtils::sniffServiceTypeFromJson( const QVariantMap &json )
+{
+  if ( json.empty() )
+  {
+    return Qgis::ArcGisRestServiceType::Unknown;
+  }
+
+  // try to sniff an imageserver
+  if ( json.contains( u"pixelSizeX"_s )
+       || json.contains( u"bandCount"_s )
+       || json.contains( u"mensurationCapabilities"_s )
+       || json.value( u"serviceDataType"_s ).toString().startsWith( "esriImageService"_L1, Qt::CaseInsensitive ) )
+  {
+    return Qgis::ArcGisRestServiceType::ImageServer;
+  }
+
+  // try to sniff a mapserver
+  if ( json.contains( u"mapName"_s ) || json.contains( u"singleFusedMapCache"_s ) ) // note that imageservers also have this tag, hence why we checked for those first
+  {
+    return Qgis::ArcGisRestServiceType::MapServer;
+  }
+
+  // try to sniff FeatureServer
+  if ( json.contains( u"hasVersionedData"_s ) || json.contains( u"syncEnabled"_s ) || json.contains( u"allowGeometryUpdates"_s ) || json.contains( u"supportsDisconnectedEditing"_s ) )
+  {
+    return Qgis::ArcGisRestServiceType::FeatureServer;
+  }
+
+  // try to sniff SceneServer -- this works for direct layer endpoints (e.g. SceneServer/0)
+  if ( json.contains( u"store"_s ) && json.contains( u"layerType"_s ) )
+  {
+    return Qgis::ArcGisRestServiceType::SceneServer;
+  }
+
+  if ( json.contains( u"layers"_s ) )
+  {
+    const QVariantList layersList = json.value( u"layers"_s ).toList();
+    if ( !layersList.empty() )
+    {
+      const QVariantMap firstLayer = layersList.first().toMap();
+      // "layerType" is distinct to SceneServer layers:
+      if ( firstLayer.contains( u"layerType"_s ) || firstLayer.contains( u"store"_s ) )
+      {
+        return Qgis::ArcGisRestServiceType::SceneServer;
+      }
+    }
+  }
+
+  // catch feature-server layer-level endpoints (e.g. MapServer/0)
+  // this can detect feature servers only -- eg for a mapserver layer it will be flagged
+  // as a feature server
+  if ( json.contains( u"type"_s ) )
+  {
+    const QString typeStr = json.value( u"type"_s ).toString();
+    if ( typeStr.compare( "Feature Layer"_L1, Qt::CaseInsensitive ) == 0 || typeStr.compare( "Table"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      return Qgis::ArcGisRestServiceType::FeatureServer;
+    }
+  }
+
+  return Qgis::ArcGisRestServiceType::Unknown;
+}
+
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo(
   const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, bool forceRefresh
 )

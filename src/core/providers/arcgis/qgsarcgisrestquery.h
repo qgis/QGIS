@@ -52,6 +52,18 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     };
 
     /**
+     * Attempts to resolve the service type from a \a url.
+     *
+     * This may not be successful, e.g. when the service is sitting behind an internal proxy.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromUrl( const QUrl &url );
+
+    /**
+     * Attempts to resolve the service type from a \a json definition.
+     */
+    static Qgis::ArcGisRestServiceType sniffServiceTypeFromJson( const QVariantMap &json );
+
+    /**
      * Retrieves JSON service info for the specified base URL.
      */
     static QVariantMap getServiceInfo(
