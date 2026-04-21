@@ -168,4 +168,16 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
     // default to none
     material->setAmbientOcclusion( QVariant() );
   }
+
+  if ( Qt3DRender::QTexture2D *emissionTex = loadTexture( texturedSettings->emissionTexturePath() ) )
+  {
+    material->setEmission( QVariant::fromValue( emissionTex ) );
+  }
+  else
+  {
+    // default to none
+    material->setEmission( QVariant() );
+  }
+
+  material->setEmissionFactor( texturedSettings->emissionFactor() );
 };

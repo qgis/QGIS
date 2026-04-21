@@ -39,7 +39,12 @@ uniform sampler2D normalMap;
 in vec4 worldTangent;
 #endif
 
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)
+#ifdef EMISSION_MAP
+uniform sampler2D emissionMap;
+uniform float emissiveFactor = 1;
+#endif
+
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
 #endif
 
@@ -329,7 +334,8 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float ambientOcclusion,
                         const in vec3 worldPosition,
                         const in vec3 worldView,
-                        const in vec3 worldNormal)
+                        const in vec3 worldNormal,
+                        const in vec2 activeTexCoord)
 {
     vec3 cLinear = vec3(0.0);
 
@@ -356,6 +362,11 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             ambientOcclusion);
     }
 
+#ifdef EMISSION_MAP
+    vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
+    cLinear += emission;
+#endif
+
     // Apply exposure correction
     cLinear *= pow(2.0, exposure);
 
@@ -373,33 +384,42 @@ out vec4 fragColor;
 
 void main()
 {
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+    vec2 activeTexCoord = texCoord;
+#else
+    // unused
+    vec2 activeTexCoord = vec2(0.0f, 0.0f);
+#endif
+
+    vec3 worldView = normalize(eyePosition - worldPosition);
+
 #ifdef BASE_COLOR_MAP
-    vec4 c = texture(baseColorMap, texCoord);
+    vec4 c = texture(baseColorMap, activeTexCoord);
 #else
     vec4 c = baseColor;
 #endif
 
 #ifdef METALNESS_MAP
-    float m = texture(metalnessMap, texCoord).r;
+    float m = texture(metalnessMap, activeTexCoord).r;
 #else
     float m = metalness;
 #endif
 
 #ifdef ROUGHNESS_MAP
-    float r = texture(roughnessMap, texCoord).r;
+    float r = texture(roughnessMap, activeTexCoord).r;
 #else
     float r = roughness;
 #endif
 
 #ifdef AMBIENT_OCCLUSION_MAP
-    float ao = texture(ambientOcclusionMap, texCoord).r;
+    float ao = texture(ambientOcclusionMap, activeTexCoord).r;
 #else
     float ao = 1.0;
 #endif
 
 #ifdef NORMAL_MAP
     vec3 n;
-    vec3 mapN = texture(normalMap, texCoord).rgb * 2.0 - 1.0;
+    vec3 mapN = texture(normalMap, activeTexCoord).rgb * 2.0 - 1.0;
     if (length(worldTangent.xyz) > 0.001)
     {
         // use model tangents if they exist
@@ -408,7 +428,7 @@ void main()
     else
     {
         // fall back to derivative tangents if we don't have model tangents (worse quality)
-        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, texCoord);
+        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
         n = normalize(transposedTBN * mapN);
     }
 #else
@@ -424,6 +444,6 @@ void main()
 
     fragColor = metalRoughFunction(c, m, r, ao,
                                    worldPosition,
-                                   normalize(eyePosition - worldPosition),
-                                   n);
+                                   worldView,
+                                   n, activeTexCoord);
 }
