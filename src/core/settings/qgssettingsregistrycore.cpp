@@ -280,6 +280,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       s.remove( u"gdal/skipDrivers"_s );
     }
   }
+
+  QgsDirectoryParamWidget::settingsDirectoryHiddenColumns->copyValueFromKey( u"dataitem/directoryHiddenColumns"_s, true );
+  QgsDirectoryParamWidget::settingsDirectoryHiddenColumns->copyValueFromKey( u"/dataitem/directoryHiddenColumns"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );

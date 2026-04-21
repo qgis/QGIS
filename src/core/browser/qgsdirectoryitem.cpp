@@ -51,6 +51,9 @@ const QgsSettingsEntryStringList *QgsDirectoryItem::settingsAlwaysMonitorItemUri
 const QgsSettingsEntryInteger *QgsDirectoryItem::settingsMinScanInterval
   = new QgsSettingsEntryInteger( u"minscaninterval"_s, QgsSettingsTree::sTreeBrowser, 10000, u"Minimum interval (in milliseconds) between two successive scans of a directory in the browser."_s );
 
+const QgsSettingsEntryVariant *QgsDirectoryParamWidget::settingsDirectoryHiddenColumns
+  = new QgsSettingsEntryVariant( u"directory-hidden-columns"_s, QgsSettingsTree::sTreeBrowser, QVariant( QVariantList() ), u"Indices of columns hidden in the directory browser parameter widget"_s );
+
 //
 // QgsDirectoryItem
 //
@@ -613,8 +616,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   addTopLevelItems( items );
 
   // hide columns that are not requested
-  const QgsSettings settings;
-  const QList<QVariant> lst = settings.value( u"dataitem/directoryHiddenColumns"_s ).toList();
+  const QList<QVariant> lst = settingsDirectoryHiddenColumns->value().toList();
   for ( const QVariant &colVariant : lst )
   {
     setColumnHidden( colVariant.toInt(), true );
@@ -652,14 +654,13 @@ void QgsDirectoryParamWidget::showHideColumn()
   setColumnHidden( columnIndex, !isColumnHidden( columnIndex ) );
 
   // save in settings
-  QgsSettings settings;
   QList<QVariant> lst;
   for ( int i = 0; i < columnCount(); i++ )
   {
     if ( isColumnHidden( i ) )
       lst.append( QVariant( i ) );
   }
-  settings.setValue( u"dataitem/directoryHiddenColumns"_s, lst );
+  settingsDirectoryHiddenColumns->setValue( lst );
 }
 
 //

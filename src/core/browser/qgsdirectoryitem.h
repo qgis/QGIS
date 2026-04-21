@@ -32,6 +32,7 @@ class QMouseEvent;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryStringList;
+class QgsSettingsEntryVariant;
 
 /**
  * \ingroup core
@@ -259,6 +260,8 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryVariant *settingsDirectoryHiddenColumns SIP_SKIP;
+
     QgsDirectoryParamWidget( const QString &path, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
