@@ -12491,6 +12491,18 @@ Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifie
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
 Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
+Qgis.SensorThingsEntity.Deployment.__doc__ = "A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservingProcedure.__doc__ = "An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampling.__doc__ = "The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.SamplingProcedure.__doc__ = "The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampler.__doc__ = "The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationStep.__doc__ = "When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationProcedure.__doc__ = "After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ThingRelation.__doc__ = "A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.RelationRole.__doc__ = "The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureRelation.__doc__ = "A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.DatastreamRelation.__doc__ = "A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservationRelation.__doc__ = "A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 
 .. versionadded:: 3.36
@@ -12507,6 +12519,54 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
 
   .. versionadded:: 3.38
+
+* ``Deployment``: A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``ObservingProcedure``: An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``Sampling``: The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``SamplingProcedure``: The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``Sampler``: The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationStep``: When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationProcedure``: After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ThingRelation``: A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``RelationRole``: The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``FeatureRelation``: A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``DatastreamRelation``: A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ObservationRelation``: A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
 
 
 """
