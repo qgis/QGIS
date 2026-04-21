@@ -131,6 +131,8 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryString *QgsApplication::settingsApplicationFullName = new QgsSettingsEntryString( u"full-name"_s, QgsSettingsTree::sTreeApp, QString() );
+
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
 const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( u"overrideFlag"_s, QgsSettingsTree::sTreeLocale, false );
@@ -1499,8 +1501,11 @@ QString QgsApplication::applicationFullName()
     return *sApplicationFullName();
 
   //last resort
-  QgsSettings settings;
-  *sApplicationFullName() = settings.value( u"/qgis/application_full_name"_s, u"%1 %2"_s.arg( applicationName(), platform() ) ).toString();
+  const QString storedFullName = settingsApplicationFullName->value();
+  if ( !storedFullName.isEmpty() )
+    *sApplicationFullName() = storedFullName;
+  else
+    *sApplicationFullName() = u"%1 %2"_s.arg( applicationName(), platform() );
   return *sApplicationFullName();
 }
 

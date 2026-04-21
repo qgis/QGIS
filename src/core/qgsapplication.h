@@ -179,6 +179,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const char *QGIS_APPLICATION_NAME;
 #ifndef SIP_RUN
 
+  static const QgsSettingsEntryString *settingsApplicationFullName SIP_SKIP;
+
   /**
    * Constructor for QgsApplication.
    *
@@ -510,7 +512,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the QGIS application full name.
    *
    * It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or
-   * the /qgis/application_full_name in the QGIS config file.
+   * the app/full-name setting in the QGIS config file.
    *
    * By default it is equal to applicationName()+' '+platform()
    *
