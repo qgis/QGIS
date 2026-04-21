@@ -41,6 +41,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
   , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( u"ambientOcclusionMap"_s, QVariant(), this ) )
   , mNormalMapParameter( new Qt3DRender::QParameter( u"normalMap"_s, QVariant(), this ) )
+  , mEmissionMapParameter( new Qt3DRender::QParameter( u"emissionMap"_s, QVariant(), this ) )
+  , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
   , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
@@ -201,6 +203,32 @@ void QgsMetalRoughMaterial::setNormal( const QVariant &normal )
     updateFragmentShader();
 }
 
+void QgsMetalRoughMaterial::setEmission( const QVariant &emission )
+{
+  mEmissionMapParameter->setValue( emission );
+  bool oldUsingEmissionMap = mUsingEmissionMap;
+
+  if ( emission.value<Qt3DRender::QAbstractTexture *>() )
+  {
+    mUsingEmissionMap = true;
+    mMetalRoughEffect->addParameter( mEmissionMapParameter );
+  }
+  else
+  {
+    mUsingEmissionMap = false;
+    if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
+      mMetalRoughEffect->removeParameter( mEmissionMapParameter );
+  }
+
+  if ( oldUsingEmissionMap != mUsingEmissionMap )
+    updateFragmentShader();
+}
+
+void QgsMetalRoughMaterial::setEmissionFactor( double factor )
+{
+  mEmissionFactorParameter->setValue( factor );
+}
+
 void QgsMetalRoughMaterial::setTextureScale( float textureScale )
 {
   mTextureScaleParameter->setValue( textureScale );
@@ -244,10 +272,14 @@ void QgsMetalRoughMaterial::init()
   mBaseColorMapParameter->setParent( mMetalRoughEffect );
   mMetalnessMapParameter->setParent( mMetalRoughEffect );
   mRoughnessMapParameter->setParent( mMetalRoughEffect );
+  mNormalMapParameter->setParent( mMetalRoughEffect );
+  mAmbientOcclusionMapParameter->setParent( mMetalRoughEffect );
+  mEmissionMapParameter->setParent( mMetalRoughEffect );
 
   mMetalRoughEffect->addParameter( mBaseColorParameter );
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
+  mMetalRoughEffect->addParameter( mEmissionFactorParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
   mMetalRoughEffect->addParameter( mTextureRotationParameter );
 
@@ -269,6 +301,8 @@ void QgsMetalRoughMaterial::updateFragmentShader()
     defines += "AMBIENT_OCCLUSION_MAP";
   if ( mUsingNormalMap )
     defines += "NORMAL_MAP";
+  if ( mUsingEmissionMap )
+    defines += "EMISSION_MAP";
 
   if ( mFlatShading )
     defines += "FLAT_SHADING";

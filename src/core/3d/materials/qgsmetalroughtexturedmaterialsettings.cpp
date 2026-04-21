@@ -81,6 +81,8 @@ void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, co
   mRoughnessTexturePath = elem.attribute( u"roughness_texture_path"_s, QString() );
   mNormalTexturePath = elem.attribute( u"normal_texture_path"_s, QString() );
   mAmbientOcclusionTexturePath = elem.attribute( u"ambient_occlusion_texture_path"_s, QString() );
+  mEmissionTexturePath = elem.attribute( u"emission_texture_path"_s, QString() );
+  mEmissionFactor = elem.attribute( u"emission_factor"_s, QString( "1.0" ) ).toDouble();
   mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
   mTextureRotation = elem.attribute( u"texture_rotation"_s, QString( "0.0" ) ).toDouble();
 
@@ -93,7 +95,10 @@ void QgsMetalRoughTexturedMaterialSettings::writeXml( QDomElement &elem, const Q
   elem.setAttribute( u"metalness_texture_path"_s, mMetalnessTexturePath );
   elem.setAttribute( u"roughness_texture_path"_s, mRoughnessTexturePath );
   elem.setAttribute( u"normal_texture_path"_s, mNormalTexturePath );
+  elem.setAttribute( u"emission_texture_path"_s, mEmissionTexturePath );
   elem.setAttribute( u"ambient_occlusion_texture_path"_s, mAmbientOcclusionTexturePath );
+  if ( !qgsDoubleNear( mEmissionFactor, 1.0 ) )
+    elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
   elem.setAttribute( u"texture_scale"_s, mTextureScale );
   elem.setAttribute( u"texture_rotation"_s, mTextureRotation );
 

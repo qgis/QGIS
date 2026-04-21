@@ -77,6 +77,28 @@ Returns the path to the normal texture map.
 .. seealso:: :py:func:`setNormalTexturePath`
 %End
 
+    QString emissionTexturePath() const;
+%Docstring
+Returns the path to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
+%End
+
+    double emissionFactor() const;
+%Docstring
+Returns the emission factor, which dictates the strength of the emission
+effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
     QString ambientOcclusionTexturePath() const;
 %Docstring
 Returns the path to the ambient occlusion texture map.
@@ -135,6 +157,28 @@ Sets the ``path`` to the normal texture map.
 Sets the ``path`` to the ambient occlusion texture map.
 
 .. seealso:: :py:func:`ambientOcclusionTexturePath`
+%End
+
+    void setEmissionTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
+    void setEmissionFactor( double factor );
+%Docstring
+Sets the emission ``factor``, which dictates the strength of the
+emission effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
 %End
 
     void setTextureScale( double scale );

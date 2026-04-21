@@ -77,6 +77,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     void setRoughness( const QVariant &roughness );
     void setAmbientOcclusion( const QVariant &ambientOcclusion );
     void setNormal( const QVariant &normal );
+    void setEmission( const QVariant &emission );
+    void setEmissionFactor( double factor );
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );
@@ -103,6 +105,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;
     Qt3DRender::QParameter *mAmbientOcclusionMapParameter = nullptr;
     Qt3DRender::QParameter *mNormalMapParameter = nullptr;
+    Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
+    Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
     Qt3DRender::QEffect *mMetalRoughEffect = nullptr;
@@ -115,6 +119,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingRoughnessMap = false;
     bool mUsingAmbientOcclusionMap = false;
     bool mUsingNormalMap = false;
+    bool mUsingEmissionMap = false;
     bool mFlatShading = false;
 };
 
