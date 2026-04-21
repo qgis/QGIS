@@ -255,6 +255,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
   QgsProject::settingsAnonymizeNewProjects->copyValueFromKey( u"core/projects/anonymize_new_projects"_s, true );
   QgsProject::settingsAnonymizeSavedProjects->copyValueFromKey( u"core/projects/anonymize_saved_projects"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"qgis/defaultProjectPathsRelative"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"/qgis/defaultProjectPathsRelative"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );

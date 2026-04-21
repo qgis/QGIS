@@ -855,9 +855,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast<int>( Qgis::FilePathType::Absolute ) );
   mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast<int>( Qgis::FilePathType::Relative ) );
-  mDefaultPathsComboBox->setCurrentIndex( mDefaultPathsComboBox->findData(
-    static_cast<int>( mSettings->value( u"/qgis/defaultProjectPathsRelative"_s, QVariant( true ) ).toBool() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute )
-  ) );
+  mDefaultPathsComboBox->setCurrentIndex(
+    mDefaultPathsComboBox->findData( static_cast<int>( QgsProject::settingsDefaultProjectPathsRelative->value() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute ) )
+  );
 
   Qgis::ProjectFileFormat defaultProjectFileFormat = mSettings->enumValue( u"/qgis/defaultProjectFileFormat"_s, Qgis::ProjectFileFormat::Qgz );
   mFileFormatQgzButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz );
@@ -1702,7 +1702,7 @@ void QgsOptions::saveOptions()
   }
   QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->setValue( untrustedProjectsFoldersList );
 
-  mSettings->setValue( u"/qgis/defaultProjectPathsRelative"_s, static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
   mSettings->setEnumValue( u"/qgis/defaultProjectFileFormat"_s, mFileFormatQgsButton->isChecked() ? Qgis::ProjectFileFormat::Qgs : Qgis::ProjectFileFormat::Qgz );
 

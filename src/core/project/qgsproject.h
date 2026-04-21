@@ -138,6 +138,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
   public:
     static const QgsSettingsEntryBool *settingsAnonymizeNewProjects SIP_SKIP;
     static const QgsSettingsEntryBool *settingsAnonymizeSavedProjects SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsDefaultProjectPathsRelative SIP_SKIP;
 
     // *INDENT-OFF*
 

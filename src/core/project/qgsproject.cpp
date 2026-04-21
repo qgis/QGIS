@@ -117,6 +117,8 @@ const QgsSettingsEntryBool *QgsProject::settingsAnonymizeNewProjects = new QgsSe
 
 const QgsSettingsEntryBool *QgsProject::settingsAnonymizeSavedProjects = new QgsSettingsEntryBool( u"anonymize-saved"_s, QgsSettingsTree::sTreeProject, false );
 
+const QgsSettingsEntryBool *QgsProject::settingsDefaultProjectPathsRelative = new QgsSettingsEntryBool( u"default-project-paths-relative"_s, QgsSettingsTree::sTreeCore, true );
+
 
 /**
  * Takes the given scope and key and convert them to a string list of key
@@ -1344,7 +1346,7 @@ void QgsProject::clear()
   writeEntry( u"PositionPrecision"_s, u"/Automatic"_s, true );
   writeEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 2 );
 
-  const bool defaultRelativePaths = mSettings.value( u"/qgis/defaultProjectPathsRelative"_s, true ).toBool();
+  const bool defaultRelativePaths = settingsDefaultProjectPathsRelative->value();
   setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
 
   setBackgroundColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );

@@ -784,20 +784,19 @@ void TestQgsProject::testCrsExpressions()
 
 void TestQgsProject::testDefaultRelativePaths()
 {
-  QgsSettings s;
-  const bool bk_defaultRelativePaths = s.value( u"/qgis/defaultProjectPathsRelative"_s, QVariant( true ) ).toBool();
+  const bool bk_defaultRelativePaths = QgsProject::settingsDefaultProjectPathsRelative->value();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( true );
   QgsProject p1;
   const bool p1PathsAbsolute = p1.readBoolEntry( u"Paths"_s, u"/Absolute"_s, false );
   const Qgis::FilePathType p1Type = p1.filePathStorage();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, false );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( false );
   p1.clear();
   const bool p1PathsAbsolute_2 = p1.readBoolEntry( u"Paths"_s, u"/Absolute"_s, false );
   const Qgis::FilePathType p2Type = p1.filePathStorage();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, bk_defaultRelativePaths );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( bk_defaultRelativePaths );
 
   QCOMPARE( p1PathsAbsolute, false );
   QCOMPARE( p1PathsAbsolute_2, true );
