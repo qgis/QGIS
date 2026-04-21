@@ -71,7 +71,9 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssensormanager.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingstree.h"
 #include "qgssnappingconfig.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsthreadingutils.h"
@@ -110,6 +112,11 @@ using namespace Qt::StringLiterals;
 
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
+
+const QgsSettingsEntryBool *QgsProject::settingsAnonymizeNewProjects = new QgsSettingsEntryBool( u"anonymize-new"_s, QgsSettingsTree::sTreeProject, false );
+
+const QgsSettingsEntryBool *QgsProject::settingsAnonymizeSavedProjects = new QgsSettingsEntryBool( u"anonymize-saved"_s, QgsSettingsTree::sTreeProject, false );
+
 
 /**
  * Takes the given scope and key and convert them to a string list of key
@@ -1269,7 +1276,7 @@ void QgsProject::clear()
   mCrs3D = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
-  if ( !mSettings.value( u"projects/anonymize_new_projects"_s, false, QgsSettings::Core ).toBool() )
+  if ( !settingsAnonymizeNewProjects->value() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -3338,7 +3345,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( u"projectname"_s, title() );
   qgisNode.setAttribute( u"version"_s, Qgis::version() );
 
-  if ( !mSettings.value( u"projects/anonymize_saved_projects"_s, false, QgsSettings::Core ).toBool() )
+  if ( !settingsAnonymizeSavedProjects->value() )
   {
     const QString newSaveUser = QgsApplication::userLoginName();
     const QString newSaveUserFull = QgsApplication::userFullName();

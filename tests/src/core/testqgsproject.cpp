@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayerutils.h"
@@ -608,8 +609,7 @@ void TestQgsProject::projectSaveUser()
   QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
   QCOMPARE( p.lastSaveVersion().text(), QgsProjectVersion( Qgis::version() ).text() );
 
-  QgsSettings s;
-  s.setValue( u"projects/anonymize_saved_projects"_s, true, QgsSettings::Core );
+  QgsProject::settingsAnonymizeSavedProjects->setValue( true );
 
   p.write();
 
@@ -619,7 +619,7 @@ void TestQgsProject::projectSaveUser()
   QVERIFY( !p.metadata().creationDateTime().isValid() );
   QVERIFY( !p.lastSaveDateTime().isValid() );
 
-  s.setValue( u"projects/anonymize_saved_projects"_s, false, QgsSettings::Core );
+  QgsProject::settingsAnonymizeSavedProjects->setValue( false );
 
   p.write();
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );

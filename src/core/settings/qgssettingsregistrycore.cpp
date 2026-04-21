@@ -36,6 +36,7 @@
 #include "qgsopenclutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsrasterrendererregistry.h"
@@ -247,6 +248,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  QgsProject::settingsAnonymizeNewProjects->copyValueFromKey( u"core/projects/anonymize_new_projects"_s, true );
+  QgsProject::settingsAnonymizeSavedProjects->copyValueFromKey( u"core/projects/anonymize_saved_projects"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );
