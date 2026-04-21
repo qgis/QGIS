@@ -1,11 +1,11 @@
 # The following has been generated automatically from src/3d/qgs3dmapsettings.h
 # monkey patching scoped based enum
-Qgs3DMapSettings.BackgroundType.None.__doc__ = ""
+Qgs3DMapSettings.BackgroundType.NoBackground.__doc__ = ""
 Qgs3DMapSettings.BackgroundType.Gradient.__doc__ = ""
 Qgs3DMapSettings.BackgroundType.Skybox.__doc__ = ""
 Qgs3DMapSettings.BackgroundType.__doc__ = """Background rendering type for the 3D map view
 
-* ``None``: 
+* ``NoBackground``: 
 * ``Gradient``: 
 * ``Skybox``: 
 

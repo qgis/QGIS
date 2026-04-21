@@ -271,7 +271,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   else if ( bgType == "gradient"_L1 && !elemGradientBackground.isNull() )
     mBackgroundType = BackgroundType::Gradient;
   else
-    mBackgroundType = BackgroundType::None;
+    mBackgroundType = BackgroundType::NoBackground;
 
   QDomElement elemShadows = elem.firstChildElement( u"shadow-rendering"_s );
   mShadowSettings.readXml( elemShadows, context );
@@ -418,7 +418,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     case BackgroundType::Gradient:
       bgTypeStr = u"gradient"_s;
       break;
-    case BackgroundType::None:
+    case BackgroundType::NoBackground:
       bgTypeStr = u"none"_s;
       break;
   }
@@ -1381,7 +1381,7 @@ void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  setBackgroundType( enabled ? BackgroundType::Skybox : BackgroundType::None );
+  setBackgroundType( enabled ? BackgroundType::Skybox : BackgroundType::NoBackground );
 }
 
 bool Qgs3DMapSettings::isFpsCounterEnabled() const
