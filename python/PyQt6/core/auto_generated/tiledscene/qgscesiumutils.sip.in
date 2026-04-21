@@ -76,6 +76,27 @@ Parses tile content. Returns empty byte array on error.
 
    cmpt, pnts, i3dm tile types are currently not supported
 %End
+
+    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext );
+%Docstring
+Calculates oriented bounding box in EPSG:4978 from "region" defined with
+min/max lat/lon coordinates in EPSG:4978.
+
+.. note::
+
+   added in QGIS 4.2
+%End
+
+    static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl );
+%Docstring
+Copies any query items from the base URL to the content URI - to
+replicate undocumented Cesium JS behavior that is used at least by
+Google Tiles.
+
+.. note::
+
+   added in QGIS 4.2
+%End
 };
 
 /************************************************************************
