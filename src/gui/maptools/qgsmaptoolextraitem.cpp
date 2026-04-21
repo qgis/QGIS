@@ -15,13 +15,13 @@
 
 #include "qgsmaptoolextraitem.h"
 
-#include "qgsextraitemutils.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
+#include "qgssymbollayerutils.h"
 
 #include <qgraphicssceneevent.h>
 
@@ -102,7 +102,7 @@ void QgsMapToolExtraItemBase::loadFeatureExtraItems()
   QString currentExtraItems = feature.attribute( mExtraItemsFieldIndex ).toString();
 
   QString error;
-  QgsExtraItemUtils::ExtraItems extraItems = QgsExtraItemUtils::parseExtraItems( currentExtraItems, error );
+  QgsSymbolLayerUtils::ExtraItems extraItems = QgsSymbolLayerUtils::parseExtraItems( currentExtraItems, error );
   if ( !error.isEmpty() )
   {
     emit messageEmitted( tr( "Error while parsing feature extra items: %1" ).arg( error ), Qgis::MessageLevel::Critical );

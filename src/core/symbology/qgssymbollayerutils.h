@@ -1195,6 +1195,30 @@ class CORE_EXPORT QgsSymbolLayerUtils
         + ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s )
       );
     }
+
+    /**
+     * Extra items are used to draw extra markers or hashes at given position when rendering
+     * a marker or hash line symbol layer.
+     *
+     * An extra item is represented by a pair of a position in layer unit and a rotation in degree.
+     *
+     * \since QGIS 4.2
+     */
+    typedef QList<std::pair<QPointF, double>> ExtraItems;
+
+    /**
+       * Parse extra items string representation \a strExtraItems
+       *
+       * Extra items format is expected to be in the form "2.5 4.5 8.1,2 7 0, 4 8 12" where each
+       * triplet represent respectively X, Y, Angle where X,Y is the extra item position expressed in its layer CRS unit,
+       * and Angle is the item rotation angle in degree
+       *
+       * Returns a list of extra items
+       *
+       * \since QGIS 4.2
+       */
+    static ExtraItems parseExtraItems( const QString &strExtraItems, QString &error );
+
 #endif
     ///@endcond
 };

@@ -5818,3 +5818,117 @@ void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
 {
   changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }
+
+QgsSymbolLayerUtils::ExtraItems QgsSymbolLayerUtils::parseExtraItems( const QString &strExtraItems, QString &error )
+{
+  QString currentNumber;
+  ExtraItems extraItems;
+  int nbNumbers = 0;
+
+  auto addNumber = [&extraItems, &currentNumber, &nbNumbers]( const QChar &c ) -> QString {
+    if ( c == ',' && nbNumbers == 0 )
+    {
+      return u"Missing number"_s;
+    }
+    else if ( nbNumbers >= 3 )
+    {
+      return u"Too many number"_s;
+    }
+    else
+    {
+      bool ok;
+      const double number = currentNumber.toDouble( &ok );
+      if ( !ok )
+      {
+        return u"bad formatted number '%1'"_s.arg( currentNumber );
+      }
+      else
+      {
+        switch ( nbNumbers )
+        {
+          case 0:
+            extraItems.append( { { number, 0 }, 0 } );
+            break;
+
+          case 1:
+            extraItems.back().first.setY( number );
+            break;
+
+          case 2:
+            if ( number < 0 || number > 360 )
+            {
+              return u"Angle must be between 0° and 360°"_s;
+            }
+
+            extraItems.back().second = number;
+            break;
+
+          default:
+            return u"Too many number"_s;
+        }
+
+        nbNumbers++;
+        currentNumber.clear();
+      }
+    }
+
+    return QString();
+  };
+
+  int iChar = 0;
+  for ( const QChar &c : strExtraItems )
+  {
+    if ( !currentNumber.isEmpty() && ( c.isSpace() || c == "," ) )
+    {
+      error = addNumber( c );
+    }
+
+    if ( !error.isEmpty() )
+    {
+      break;
+    }
+
+    if ( c == ',' )
+    {
+      if ( extraItems.count() == 0 )
+      {
+        error = u"No elements, Not expecting ','"_s;
+      }
+      nbNumbers = 0;
+    }
+    else if ( c.isNumber() || c == '.' || c == '-' )
+    {
+      currentNumber.append( c );
+    }
+    else if ( !c.isSpace() )
+    {
+      error = u"Invalid character '%1'"_s.arg( c );
+    }
+
+    if ( !error.isEmpty() )
+    {
+      break;
+    }
+
+    iChar++;
+  }
+
+  // This is the end but there may have still a number to add
+  if ( error.isEmpty() && !currentNumber.isEmpty() )
+  {
+    error = addNumber( ' ' );
+  }
+
+  if ( error.isEmpty() && nbNumbers != 0 && nbNumbers != 3 )
+  {
+    error = u"Missing number"_s;
+  }
+
+  if ( !error.isEmpty() )
+  {
+    extraItems.clear();
+    error += u" (column: %1)"_s.arg( iChar );
+  }
+
+  return extraItems;
+}

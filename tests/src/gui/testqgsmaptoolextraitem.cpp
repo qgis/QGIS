@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsextraitemutils.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolextraitem.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
@@ -46,7 +46,7 @@ class TestQgsMapToolExtraItem : public QgsTest
     void testAddModifyExtraItems();
 
   private:
-    void compareExtraItems( const QString &strExtraItems, const QgsExtraItemUtils::ExtraItems &expected );
+    void compareExtraItems( const QString &strExtraItems, const QgsSymbolLayerUtils::ExtraItems &expected );
     int nbRubberBandVisible() const;
 
     QObjectUniquePtr<QgsMapToolModifyExtraItems> mMapToolModifyExtraItems;
@@ -127,10 +127,10 @@ int TestQgsMapToolExtraItem::nbRubberBandVisible() const
   return result;
 }
 
-void TestQgsMapToolExtraItem::compareExtraItems( const QString &strExtraItems, const QgsExtraItemUtils::ExtraItems &expectedExtraItems )
+void TestQgsMapToolExtraItem::compareExtraItems( const QString &strExtraItems, const QgsSymbolLayerUtils::ExtraItems &expectedExtraItems )
 {
   QString error;
-  const QgsExtraItemUtils::ExtraItems &extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
+  const QgsSymbolLayerUtils::ExtraItems &extraItems = QgsSymbolLayerUtils::parseExtraItems( strExtraItems, error );
   QVERIFY( error.isEmpty() );
 
   QVERIFY2(

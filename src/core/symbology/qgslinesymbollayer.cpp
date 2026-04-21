@@ -26,7 +26,6 @@
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsextraitemutils.h"
 #include "qgsfeedback.h"
 #include "qgsfillsymbol.h"
 #include "qgsgeometrysimplifier.h"
@@ -1383,12 +1382,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &pts, QgsS
     }
   }
 
-  QgsExtraItemUtils::ExtraItems extraItems;
+  QgsSymbolLayerUtils::ExtraItems extraItems;
   if ( !mBlockExtraItemsRendering && mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
   {
     const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
     QString error;
-    extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
+    extraItems = QgsSymbolLayerUtils::parseExtraItems( strExtraItems, error );
 
     if ( !error.isEmpty() )
     {

@@ -29,14 +29,14 @@ using namespace Qt::StringLiterals;
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgspallabeling.h"
-#include "qgsextraitemutils.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
@@ -716,31 +716,31 @@ void TestQgsMarkerLineSymbol::parseBlankSegmentsMapUnits()
 void TestQgsMarkerLineSymbol::parseExtraItems_data()
 {
   QTest::addColumn<QString>( "strExtraItems" );
-  QTest::addColumn<QgsExtraItemUtils::ExtraItems>( "expectedExtraItems" );
+  QTest::addColumn<QgsSymbolLayerUtils::ExtraItems>( "expectedExtraItems" );
   QTest::addColumn<bool>( "ok" );
 
-  QTest::newRow( "simple" ) << u"1 2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
-  QTest::newRow( "simple with tab" ) << u"1		2 3, 3 4 5"_s << QgsExtraItemUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
-  QTest::newRow( "Error: text instead of number" ) << u"test"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: Negative coordinates" ) << u"-1	2 3, 3 -4 5"_s << QgsExtraItemUtils::ExtraItems { { { -1, 2 }, 3 }, { { 3, -4 }, 5 } } << true;
-  QTest::newRow( "Error: angle negative" ) << u"1 2 -20"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: angle > 360" ) << u"1 2 400"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: bad formatted number" ) << u"1.a56 2 3"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: too many number" ) << u"1.56 2 3 4"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "Error: missing number" ) << u"1.56 2"_s << QgsExtraItemUtils::ExtraItems {} << false;
-  QTest::newRow( "empty" ) << u""_s << QgsExtraItemUtils::ExtraItems {} << true;
-  QTest::newRow( "empty with spaces" ) << u"  "_s << QgsExtraItemUtils::ExtraItems {} << true;
+  QTest::newRow( "simple" ) << u"1 2 3, 3 4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
+  QTest::newRow( "simple with tab" ) << u"1		2 3, 3 4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
+  QTest::newRow( "Error: text instead of number" ) << u"test"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: Negative coordinates" ) << u"-1	2 3, 3 -4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { -1, 2 }, 3 }, { { 3, -4 }, 5 } } << true;
+  QTest::newRow( "Error: angle negative" ) << u"1 2 -20"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: angle > 360" ) << u"1 2 400"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: bad formatted number" ) << u"1.a56 2 3"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: too many number" ) << u"1.56 2 3 4"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: missing number" ) << u"1.56 2"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "empty" ) << u""_s << QgsSymbolLayerUtils::ExtraItems {} << true;
+  QTest::newRow( "empty with spaces" ) << u"  "_s << QgsSymbolLayerUtils::ExtraItems {} << true;
 }
 
 void TestQgsMarkerLineSymbol::parseExtraItems()
 {
   QFETCH( QString, strExtraItems );
-  QFETCH( QgsExtraItemUtils::ExtraItems, expectedExtraItems );
+  QFETCH( QgsSymbolLayerUtils::ExtraItems, expectedExtraItems );
   QFETCH( bool, ok );
 
   QgsRenderContext rc;
   QString error;
-  QgsExtraItemUtils::ExtraItems extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
+  QgsSymbolLayerUtils::ExtraItems extraItems = QgsSymbolLayerUtils::parseExtraItems( strExtraItems, error );
 
   QCOMPARE( ok, error.isEmpty() );
   QCOMPARE( extraItems, expectedExtraItems );
