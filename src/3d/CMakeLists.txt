@@ -142,6 +142,7 @@ set(QGIS_3D_SRCS
 
   terrain/qgs3dterrainregistry.cpp
   terrain/qgsabstractterrainsettings.cpp
+  terrain/qgsdemheightmapcache_p.cpp
   terrain/qgsdemterraingenerator.cpp
   terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
@@ -319,6 +320,7 @@ set(QGIS_3D_PRIVATE_HDRS
   symbols/qgspoint3dsymbol_p.h
   symbols/qgspolygon3dsymbol_p.h
   symbols/qgspointcloud3dsymbol_p.h
+  terrain/qgsdemheightmapcache_p.h
   terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsterraintexturegenerator_p.h
