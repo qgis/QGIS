@@ -441,7 +441,8 @@ sol_pos solpos(double lon, double lat, double e, JulianDay JD, GeoCentricSolPos 
 	//double aplpha_prime;
 	double dpsi, deps, eps, dalpha;
 	double h;
-	sol_pos P;
+       sol_pos P;
+       P.E = 0;
 	
 	// aberation correction
 	dtau=deg2rad(-20.4898/3600.0)/GP.rad;
