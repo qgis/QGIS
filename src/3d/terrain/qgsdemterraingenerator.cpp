@@ -19,6 +19,7 @@
 
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdemheightmapcache_p.h"
 #include "qgsdemterraintileloader_p.h"
 #include "qgsrasterlayer.h"
 
@@ -29,10 +30,10 @@ QgsTerrainGenerator *QgsDemTerrainGenerator::create()
   return new QgsDemTerrainGenerator();
 }
 
+QgsDemTerrainGenerator::QgsDemTerrainGenerator()
+{}
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
-{
-  delete mHeightMapGenerator;
-}
+{}
 
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
@@ -78,16 +79,44 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
 float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
 {
   Q_UNUSED( context )
-  if ( mHeightMapGenerator )
-    return mHeightMapGenerator->heightAt( x, y );
-  else
-    return std::numeric_limits<float>::quiet_NaN();
+  float height = 0.0f;
+  int quality = 0;
+  if ( mCache )
+    mCache->heightAndQualityAt( x, y, height, quality );
+  return height;
 }
+
+int QgsDemTerrainGenerator::qualityAt( double x, double y, const Qgs3DRenderContext &context ) const
+{
+  Q_UNUSED( context )
+  float height = 0.0f;
+  int quality = 0;
+  if ( mCache )
+    mCache->heightAndQualityAt( x, y, height, quality );
+  return quality;
+}
+
+void QgsDemTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
+{
+  if ( mCache )
+    mCache->heightMinMax( hMin, hMax );
+}
+
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
+  // save root node for futur height map searches
+  if ( node->parent() == nullptr )
+  {
+    mRootNode = node;
+    if ( mCache )
+      mCache->setTerrainRootNode( node );
+  }
+
   // A bit of a hack to make cloning terrain generator work properly
-  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
+  if ( mTerrain )
+    return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
+  return nullptr;
 }
 
 void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
@@ -106,15 +135,17 @@ void QgsDemTerrainGenerator::updateGenerator()
     const QgsRectangle intersectExtent = mExtent.intersect( layerExtent );
 
     mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
-    delete mHeightMapGenerator;
-    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+    mHeightMapGenerator = std::make_unique<QgsDemHeightMapGenerator>( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+
+    mCache = std::make_unique<QgsDemHeightMapCache>( mHeightMapGenerator.get(), mResolution, mMaxLevel / 2, mRootNode );
+
     mIsValid = true;
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
-    delete mHeightMapGenerator;
-    mHeightMapGenerator = nullptr;
+    mCache.reset();
+    mHeightMapGenerator.reset();
     mIsValid = false;
   }
 }
