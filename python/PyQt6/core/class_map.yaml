@@ -2277,7 +2277,7 @@ QgsCentroidFillSymbolLayer: src/core/symbology/qgsfillsymbollayer.h#L2503
 QgsCesiumUtils.QgsCesiumUtils: src/core/tiledscene/qgscesiumutils.h#L100
 QgsCesiumUtils.QgsCesiumUtils: src/core/tiledscene/qgscesiumutils.h#L118
 QgsCesiumUtils.extractGltfFromB3dm: src/core/tiledscene/qgscesiumutils.h#L113
-QgsCesiumUtils.extractGltfFromTileContent: src/core/tiledscene/qgscesiumutils.h#L133
+QgsCesiumUtils.extractGltfFromTileContent: src/core/tiledscene/qgscesiumutils.h#L135
 QgsCesiumUtils.parseBox: src/core/tiledscene/qgscesiumutils.h#L75
 QgsCesiumUtils.parseRegion: src/core/tiledscene/qgscesiumutils.h#L60
 QgsCesiumUtils.parseSphere: src/core/tiledscene/qgscesiumutils.h#L90
