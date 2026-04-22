@@ -40,11 +40,16 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryBool *QgsDirectoryItem::settingsMonitorDirectoriesInBrowser = new QgsSettingsEntryBool( u"monitor-directories-in-browser"_s, QgsSettingsTree::sTreeQgis, true, QString() );
-const QgsSettingsEntryStringList *QgsDirectoryItem::settingsHiddenPaths = new QgsSettingsEntryStringList( u"hiddenPaths"_s, QgsSettingsTree::sTreeBrowser, QStringList() );
-const QgsSettingsEntryStringList *QgsDirectoryItem::settingsDisableMonitorItemUris = new QgsSettingsEntryStringList( u"disableMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList() );
-const QgsSettingsEntryStringList *QgsDirectoryItem::settingsAlwaysMonitorItemUris = new QgsSettingsEntryStringList( u"alwaysMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList() );
-const QgsSettingsEntryInteger *QgsDirectoryItem::settingsMinScanInterval = new QgsSettingsEntryInteger( u"minscaninterval"_s, QgsSettingsTree::sTreeBrowser, 10000 );
+const QgsSettingsEntryBool *QgsDirectoryItem::settingsMonitorDirectoriesInBrowser
+  = new QgsSettingsEntryBool( u"monitor-directories-in-browser"_s, QgsSettingsTree::sTreeQgis, true, u"If true, directories are automatically monitored and refreshed in the browser when their contents change outside of QGIS."_s );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsHiddenPaths
+  = new QgsSettingsEntryStringList( u"hiddenPaths"_s, QgsSettingsTree::sTreeBrowser, QStringList(), u"List of directory paths which should be hidden from the browser."_s );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsDisableMonitorItemUris
+  = new QgsSettingsEntryStringList( u"disableMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"List of browser item URIs for which automatic monitoring is explicitly disabled."_s );
+const QgsSettingsEntryStringList *QgsDirectoryItem::settingsAlwaysMonitorItemUris
+  = new QgsSettingsEntryStringList( u"alwaysMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"List of browser item URIs for which automatic monitoring is always enabled, regardless of other monitoring rules."_s );
+const QgsSettingsEntryInteger *QgsDirectoryItem::settingsMinScanInterval
+  = new QgsSettingsEntryInteger( u"minscaninterval"_s, QgsSettingsTree::sTreeBrowser, 10000, u"Minimum interval (in milliseconds) between two successive scans of a directory in the browser."_s );
 
 //
 // QgsDirectoryItem

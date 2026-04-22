@@ -298,7 +298,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
 #ifndef SIP_RUN
 
-    //! Settings entry for default encoding \\since QGIS 4.0.1
     static const QgsSettingsEntryString *settingsDefaultEncoding SIP_SKIP;
 
     /**

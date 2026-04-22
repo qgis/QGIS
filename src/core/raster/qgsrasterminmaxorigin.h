@@ -118,10 +118,8 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     static Qgis::RasterRangeAccuracy statAccuracyFromString( const QString &accuracy );
 
 #ifndef SIP_RUN
-    //! Settings entry for cumulative cut lower limit \since QGIS 4.0.1
     static const QgsSettingsEntryDouble *settingsCumulativeCutLower SIP_SKIP;
 
-    //! Settings entry for cumulative cut upper limit \since QGIS 4.0.1
     static const QgsSettingsEntryDouble *settingsCumulativeCutUpper SIP_SKIP;
 #endif
 

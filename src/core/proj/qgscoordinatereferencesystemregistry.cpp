@@ -43,11 +43,11 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId
-  = new QgsSettingsEntryStringList( u"recent-projections-auth-id"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+  = new QgsSettingsEntryStringList( u"recent-projections-auth-id"_s, QgsSettingsTree::sTreeCrs, QStringList(), u"Authority identifiers (e.g. \"EPSG:4326\") of the most recently used coordinate reference systems."_s );
 const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt
-  = new QgsSettingsEntryStringList( u"recent-projections-wkt"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+  = new QgsSettingsEntryStringList( u"recent-projections-wkt"_s, QgsSettingsTree::sTreeCrs, QStringList(), u"WKT definitions of the most recently used coordinate reference systems, kept in sync with the corresponding authority identifier list."_s );
 const QgsSettingsEntryStringList *QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4
-  = new QgsSettingsEntryStringList( u"recent-projections-proj4"_s, QgsSettingsTree::sTreeCrs, QStringList() );
+  = new QgsSettingsEntryStringList( u"recent-projections-proj4"_s, QgsSettingsTree::sTreeCrs, QStringList(), u"PROJ.4 strings of the most recently used coordinate reference systems, kept in sync with the corresponding authority identifier list."_s );
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )

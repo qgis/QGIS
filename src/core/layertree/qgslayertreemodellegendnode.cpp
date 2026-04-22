@@ -340,8 +340,10 @@ void QgsLayerTreeModelLegendNode::toggleAllItems()
 
 double QgsSymbolLegendNode::MINIMUM_SIZE = -1.0;
 double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
-const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize = new QgsSettingsEntryDouble( u"symbol-minimum-size"_s, QgsSettingsTree::sTreeLayerTree, 0.5 );
-const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize = new QgsSettingsEntryDouble( u"symbol-maximum-size"_s, QgsSettingsTree::sTreeLayerTree, 20.0 );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMinimumSize
+  = new QgsSettingsEntryDouble( u"symbol-minimum-size"_s, QgsSettingsTree::sTreeLayerTree, 0.5, u"Minimum size (in millimeters) at which symbols are rendered in the layer tree legend. Symbols smaller than this size are scaled up for readability."_s );
+const QgsSettingsEntryDouble *QgsSymbolLegendNode::settingsLegendSymbolMaximumSize
+  = new QgsSettingsEntryDouble( u"symbol-maximum-size"_s, QgsSettingsTree::sTreeLayerTree, 20.0, u"Maximum size (in millimeters) at which symbols are rendered in the layer tree legend. Symbols larger than this size are scaled down to fit."_s );
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
