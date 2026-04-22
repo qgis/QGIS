@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <proj.h>
+#include <proj_constants.h>
 #include <proj_experimental.h>
 #include <sqlite3.h>
 
@@ -3241,23 +3242,17 @@ bool QgsCoordinateReferenceSystem::topocentricOrigin( double &latDeg, double &lo
     const char *paramName = nullptr, *authName = nullptr, *code = nullptr, *valueString = nullptr, *unitName = nullptr, *unitAuthName = nullptr, *unitCode = nullptr, *unitCategory = nullptr;
     double value = 0.0;
     double unitConvFactor = 1.0;
-    if ( !proj_coordoperation_get_param( ctx, conversion.get(), i,
-                                         &paramName, &authName, &code,
-                                         &value, &valueString, &unitConvFactor,
-                                         &unitName, &unitAuthName, &unitCode, &unitCategory ) )
+    if ( !proj_coordoperation_get_param( ctx, conversion.get(), i, &paramName, &authName, &code, &value, &valueString, &unitConvFactor, &unitName, &unitAuthName, &unitCode, &unitCategory ) )
       continue;
 
-    const QString paramCode( code ? code : "" );
+    const int paramCode = QString( code ).toInt();
 
-    // 8834 - latitude of topocentric origin
-    // 8835 - longitude of topocentric origin
-    // 8836 - height of topocentric origin (not used)
-    if ( paramCode == "8834"_L1 )
+    if ( paramCode == EPSG_CODE_PARAMETER_LATITUDE_TOPOGRAPHIC_ORIGIN )
     {
       latDeg = value * unitConvFactor * 180.0 / M_PI;
       hasLat = true;
     }
-    else if ( paramCode == "8835"_L1 )
+    else if ( paramCode == EPSG_CODE_PARAMETER_LONGITUDE_TOPOGRAPHIC_ORIGIN )
     {
       lonDeg = value * unitConvFactor * 180.0 / M_PI;
       hasLon = true;
@@ -3314,16 +3309,12 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
 
   if ( proj_get_type( geodeticCrs.get() ) == PJ_TYPE_GEOCENTRIC_CRS )
   {
-    QgsProjUtils::proj_pj_unique_ptr cs( proj_create_ellipsoidal_2D_cs(
-                                           ctx, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Degree", 0 ) );
+    QgsProjUtils::proj_pj_unique_ptr cs( proj_create_ellipsoidal_2D_cs( ctx, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Degree", 0 ) );
     QgsProjUtils::proj_pj_unique_ptr datum( proj_crs_get_datum( ctx, geodeticCrs.get() ) );
     QgsProjUtils::proj_pj_unique_ptr datumEnsemble( proj_crs_get_datum_ensemble( ctx, geodeticCrs.get() ) );
     if ( !datum && !datumEnsemble )
       return QgsCoordinateReferenceSystem();
-    geodeticCrs.reset( proj_create_geographic_crs_from_datum(
-                         ctx, nullptr, datum ? datum.get() : datumEnsemble.get(),
-                         cs.get()
-                       ) );
+    geodeticCrs.reset( proj_create_geographic_crs_from_datum( ctx, nullptr, datum ? datum.get() : datumEnsemble.get(), cs.get() ) );
     if ( !geodeticCrs )
       return QgsCoordinateReferenceSystem();
   }
@@ -3333,9 +3324,7 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
     return QgsCoordinateReferenceSystem();
 
   QString baseWkt = QString::fromUtf8( projWkt );
-  if ( baseWkt.startsWith( "GEOGRAPHICCRS["_L1 ) )
-    baseWkt.replace( 0, 14, "BASEGEOGCRS["_L1 );
-  else if ( baseWkt.startsWith( "GEOGCRS["_L1 ) )
+  if ( baseWkt.startsWith( "GEOGCRS["_L1 ) )
     baseWkt.replace( 0, 8, "BASEGEOGCRS["_L1 );
   else
     return QgsCoordinateReferenceSystem();
@@ -3353,14 +3342,11 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( dou
                       "CS[Cartesian,3],"
                       "AXIS[\"(X)\",east,ORDER[1],LENGTHUNIT[\"metre\",1]],"
                       "AXIS[\"(Y)\",north,ORDER[2],LENGTHUNIT[\"metre\",1]],"
-                      "AXIS[\"(Z)\",up,ORDER[3],LENGTHUNIT[\"metre\",1]]]"_s
-                      .arg( baseWkt )
-                      .arg( qgsDoubleToString( latitude ) )
-                      .arg( qgsDoubleToString( longitude ) );
+                      "AXIS[\"(Z)\",up,ORDER[3],LENGTHUNIT[\"metre\",1]]]"_s.arg( baseWkt )
+                        .arg( qgsDoubleToString( latitude ) )
+                        .arg( qgsDoubleToString( longitude ) );
 
-  QgsProjUtils::proj_pj_unique_ptr topocentric(
-    proj_create_from_wkt( ctx, wkt.toUtf8().constData(), nullptr, nullptr, nullptr )
-  );
+  QgsProjUtils::proj_pj_unique_ptr topocentric( proj_create_from_wkt( ctx, wkt.toUtf8().constData(), nullptr, nullptr, nullptr ) );
   if ( !topocentric )
     return QgsCoordinateReferenceSystem();
 
