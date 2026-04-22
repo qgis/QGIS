@@ -35,9 +35,9 @@
 using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsUserProfileManager::settingsOverrideLocalProfile
-  = new QgsSettingsEntryBool( u"overrideLocalProfile"_s, QgsSettingsTree::sTreeCore, false, u"If true, QGIS always starts with the profile defined by \"defaultProfile\", overriding any user-specific selection."_s );
+  = new QgsSettingsEntryBool( u"override-local"_s, QgsSettingsTree::sTreeProfile, false, u"If true, QGIS always starts with the profile defined by \"default\", overriding any user-specific selection."_s );
 const QgsSettingsEntryString *QgsUserProfileManager::settingsDefaultProfile
-  = new QgsSettingsEntryString( u"defaultProfile"_s, QgsSettingsTree::sTreeCore, u"default"_s, u"Name of the user profile loaded by default on QGIS startup."_s );
+  = new QgsSettingsEntryString( u"default"_s, QgsSettingsTree::sTreeProfile, u"default"_s, u"Name of the user profile loaded by default on QGIS startup."_s );
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
