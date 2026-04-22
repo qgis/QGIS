@@ -70,6 +70,20 @@ mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent
     mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
     return tangentToWorldMatrix;
 }
+
+mat3 calcTangentSpace(const in vec3 wNormal, const in vec3 wPosition, const in vec2 uv)
+{
+    vec3 Q1 = dFdx(wPosition);
+    vec3 Q2 = dFdy(wPosition);
+    vec2 st1 = dFdx(uv);
+    vec2 st2 = dFdy(uv);
+
+    vec3 N = normalize(wNormal);
+    vec3 T = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B = -normalize(cross(N, T));
+
+    return mat3(T, B, N);
+}
 #endif
 
 
@@ -384,7 +398,19 @@ void main()
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n = normalize(((calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
+    vec3 n;
+    vec3 mapN = texture(normalMap, texCoord).rgb * 2.0 - 1.0;
+    if (length(worldTangent.xyz) > 0.001)
+    {
+        // use model tangents if they exist
+        n = normalize(calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * mapN);
+    }
+    else
+    {
+        // fall back to derivative tangents if we don't have model tangents (worse quality)
+        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, texCoord);
+        n = normalize(transposedTBN * mapN);
+    }
 #else
 
 #ifdef FLAT_SHADING
