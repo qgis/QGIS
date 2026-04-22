@@ -309,6 +309,12 @@ vec3 gammaCorrect(const in vec3 color)
     return pow(color, vec3(1.0 / gamma));
 }
 
+// converts RGB to linear
+vec3 linearCorrect(const in vec3 color)
+{
+    return pow(color, vec3(gamma));
+}
+
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
@@ -361,8 +367,9 @@ void main()
 {
 #ifdef BASE_COLOR_MAP
     vec4 c = texture(baseColorMap, texCoord);
+    c.rgb = linearCorrect(c.rgb);
 #else
-    vec4 c = baseColor;
+    vec4 c = vec4(linearCorrect(baseColor.rgb), baseColor.a);
 #endif
 
 #ifdef METALNESS_MAP
