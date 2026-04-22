@@ -185,9 +185,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
     ~QgsImageCache() override;
 
-#ifndef SIP_RUN
     static const QgsSettingsEntryInteger *settingsMaxImageCacheSize SIP_SKIP;
-#endif
 
     /**
      * Returns the maximum size of the cache, in bytes.

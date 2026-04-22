@@ -335,10 +335,10 @@ void TestQgsImageCache::dpi()
 
 void TestQgsImageCache::cachesize()
 {
-  uint cacheSize = 100000000;
+  const int cacheSize = 100000000;
   QgsImageCache::settingsMaxImageCacheSize->setValue( cacheSize );
   QgsImageCache cache;
-  QCOMPARE( cache.mMaxCacheSize, cacheSize );
+  QCOMPARE( cache.mMaxCacheSize, static_cast<long>( cacheSize ) );
 }
 
 void TestQgsImageCache::frameCount()

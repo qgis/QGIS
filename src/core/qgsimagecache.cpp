@@ -96,7 +96,8 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
-const QgsSettingsEntryInteger *QgsImageCache::settingsMaxImageCacheSize = new QgsSettingsEntryInteger( u"max-image-size"_s, QgsSettingsTree::sTreeNetworkCache, 0 );
+const QgsSettingsEntryInteger *QgsImageCache::settingsMaxImageCacheSize
+  = new QgsSettingsEntryInteger( u"max-image-size"_s, QgsSettingsTree::sTreeNetworkCache, 0, u"Maximum size (in bytes) of the image cache. If 0, a default value is calculated based on the system memory."_s, Qgis::SettingsOptions(), 0 /* minimum */ );
 
 QgsImageCache::QgsImageCache( QObject *parent )
   : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
