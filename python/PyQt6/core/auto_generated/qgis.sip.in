@@ -2469,6 +2469,7 @@ The development version
     {
       Point,
       Directional,
+      Sun,
     };
 
     enum class Map3DBackgroundType /BaseType=IntEnum/

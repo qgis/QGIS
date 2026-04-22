@@ -7852,12 +7852,17 @@ Qgis.ShadowQuality.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.Sun.__doc__ = "Sun based light source \n.. versionadded:: 4.2"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 
 .. versionadded:: 3.26
 
 * ``Point``: Point light source
 * ``Directional``: Directional light source
+* ``Sun``: Sun based light source
+
+  .. versionadded:: 4.2
+
 
 """
 # --
