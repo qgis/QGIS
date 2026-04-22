@@ -92,7 +92,6 @@
       "host": true
     },
     "qtsvg",
-    "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
     "zlib",
