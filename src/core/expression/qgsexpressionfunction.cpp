@@ -9894,7 +9894,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( u"return_details"_s, true, false, false )
           << QgsExpressionFunction::Parameter( u"sort_by_intersection_size"_s, true, QString(), false )
           << QgsExpressionFunction::Parameter( u"backend"_s, true, defaultBackend, false )
-          << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-8, false ),
+          << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-4, false ),
         i.value(),
         u"GeometryGroup"_s,
         QString(),
@@ -10080,7 +10080,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
              << QgsExpressionFunction::Parameter( u"backend"_s, true, u"QGIS"_s )
-             << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-8 ),
+             << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-4 ),
            fcnIsEqualsFuzzy,
            u"GeometryGroup"_s
          )

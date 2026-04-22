@@ -478,7 +478,7 @@ The GEOS implementation is chosen by default.
 .. versionadded:: 4.2
 %End
 
-    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon = 1e-4, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
 %Docstring
 Compares the geometry with another geometry within the tolerance
 ``epsilon`` using the specified ``backend``.
