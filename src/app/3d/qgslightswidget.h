@@ -20,6 +20,7 @@
 
 #include "qgsdirectionallightsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgssunlightsettings.h"
 
 #include <QWidget>
 
@@ -30,7 +31,8 @@ class QgsLightsModel : public QAbstractListModel
     enum LightType
     {
       Point,
-      Directional
+      Directional,
+      Sun
     };
 
     enum Role
@@ -47,19 +49,24 @@ class QgsLightsModel : public QAbstractListModel
 
     void setPointLights( const QList<QgsPointLightSettings> &lights );
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &lights );
+    void setSunLights( const QList<QgsSunLightSettings> &lights );
 
     QList<QgsPointLightSettings> pointLights() const;
     QList<QgsDirectionalLightSettings> directionalLights() const;
+    QList<QgsSunLightSettings> sunLights() const;
 
     void setPointLightSettings( int index, const QgsPointLightSettings &light );
     void setDirectionalLightSettings( int index, const QgsDirectionalLightSettings &light );
+    void setSunLightSettings( int index, const QgsSunLightSettings &light );
 
     QModelIndex addPointLight( const QgsPointLightSettings &light );
     QModelIndex addDirectionalLight( const QgsDirectionalLightSettings &light );
+    QModelIndex addSunLight( const QgsSunLightSettings &light );
 
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
+    QList<QgsSunLightSettings> mSunLights;
 };
 
 /**
@@ -97,9 +104,13 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void setAzimuthAltitude();
     void onDirectionChange();
 
+    void updateCurrentSunLightParameters();
+    void onAddSunLight();
+
   private:
     void showSettingsForPointLight( const QgsPointLightSettings &settings );
     void showSettingsForDirectionalLight( const QgsDirectionalLightSettings &settings );
+    void showSettingsForSunLight( const QgsSunLightSettings &settings );
 
   private:
     double mDirectionX = 0;
