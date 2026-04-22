@@ -146,8 +146,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   connect( mActionOpenFieldCalculator, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered );
   connect( mActionDeleteSelected, &QAction::triggered, this, &QgsAttributeTableDialog::mActionDeleteSelected_triggered );
   connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
-  connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
-  connect( mActionAddFeatureViaAttributeTable, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
+  connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered );
   connect( mActionAddFeatureViaAttributeForm, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
@@ -170,12 +169,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
 
   QgsSettings settings;
 
-  mActionAddFeature->setMenu( new QMenu( mActionAddFeature->parentWidget() ) );
-  mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeTable );
-  mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeForm );
-  mActionAddFeature->setIcon(
-    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == "attributeForm"_L1 ? mActionAddFeatureViaAttributeForm->icon() : mActionAddFeatureViaAttributeTable->icon()
-  );
+  mAddFeatureButton = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mActionAddFeature ) );
+  mAddFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mAddFeatureButton->addAction( mActionAddFeature );
+  mAddFeatureButton->addAction( mActionAddFeatureViaAttributeForm );
+
+  //set the add feature method according to the layer settings or as fall back use the last one
+  QgsAttributeTableConfig::AddFeatureMethod method = QgsAttributeTableConfig::AddFeatureMethod::Unset;
+  if ( mLayer )
+    method = mLayer->attributeTableConfig().addFeatureMethod();
+  if ( method == QgsAttributeTableConfig::AddFeatureMethod::Unset )
+  {
+    const QString lastMethod = settings.value( u"/qgis/attribute-table/default-add-feature-method"_s ).toString();
+    method = ( lastMethod == "attributeForm"_L1 ) ? QgsAttributeTableConfig::AddFeatureMethod::Form : QgsAttributeTableConfig::AddFeatureMethod::Table;
+  }
+  mAddFeatureButton->setDefaultAction( ( method == QgsAttributeTableConfig::AddFeatureMethod::Form ) ? mActionAddFeatureViaAttributeForm : mActionAddFeature );
 
   // Fix selection color on losing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
@@ -336,8 +344,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   mTableViewButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOpenTable.svg"_s ) );
   mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s ) );
   mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( u"/mIconExpressionSelect.svg"_s ) );
-  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionNewTableRow.svg"_s ) );
   mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( u"/mAction.svg"_s ) );
+  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionNewTableRow.svg"_s ) );
+  mActionAddFeatureViaAttributeForm->setIcon( QgsApplication::getThemeIcon( u"/mIconFormSelect.svg"_s ) );
 
   // toggle editing
   Qgis::VectorProviderCapabilities capabilities = ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->capabilities() : Qgis::VectorProviderCapabilities();
@@ -363,6 +372,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     mToolbar->removeAction( mActionCutSelectedRows );
   }
   mActionAddFeature->setEnabled( canAddFeatures && mLayer && mLayer->isEditable() );
+  mActionAddFeatureViaAttributeForm->setEnabled( canAddFeatures && mLayer && mLayer->isEditable() );
   mActionPasteFeatures->setEnabled( canAddFeatures && mLayer && mLayer->isEditable() );
   if ( !canAddFeatures )
   {
@@ -715,24 +725,20 @@ void QgsAttributeTableDialog::mActionReload_triggered()
   mMainView->masterModel()->layer()->reload();
 }
 
-void QgsAttributeTableDialog::mActionAddFeature_triggered()
-{
-  QgsSettings s;
-
-  if ( s.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == "attributeForm"_L1 )
-    mActionAddFeatureViaAttributeForm_triggered();
-  else
-    mActionAddFeatureViaAttributeTable_triggered();
-}
-
 void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
 {
   if ( !mLayer->isEditable() )
     return;
 
+  //remember as last used mode ...
   QgsSettings s;
-  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeTable"_s );
-  mActionAddFeature->setIcon( mActionAddFeatureViaAttributeTable->icon() );
+  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeTable"_s );
+  //... change the button's action ...
+  mAddFeatureButton->setDefaultAction( mActionAddFeature );
+  //... and set for the current layer
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Table );
+  mLayer->setAttributeTableConfig( config );
 
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
@@ -762,12 +768,17 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   if ( !mLayer->isEditable() )
     return;
 
+  //remember as last used mode ...
   QgsSettings s;
-  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeForm"_s );
-  mActionAddFeature->setIcon( mActionAddFeatureViaAttributeForm->icon() );
+  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeForm"_s );
+  //... change the button's action ...
+  mAddFeatureButton->setDefaultAction( mActionAddFeatureViaAttributeForm );
+  //... and set for the current layer
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setAddFeatureMethod( QgsAttributeTableConfig::AddFeatureMethod::Form );
+  mLayer->setAttributeTableConfig( config );
 
   QgsFeature f;
-
   QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QUuid(), -1, this );
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
@@ -943,6 +954,7 @@ void QgsAttributeTableDialog::editingToggled()
   mActionDeleteSelected->setEnabled( canDeleteFeatures && isEditable && mLayer->selectedFeatureCount() > 0 );
   mActionCutSelectedRows->setEnabled( canDeleteFeatures && isEditable && mLayer->selectedFeatureCount() > 0 );
   mActionAddFeature->setEnabled( canAddFeatures && isEditable );
+  mActionAddFeatureViaAttributeForm->setEnabled( canAddFeatures && isEditable );
   mActionPasteFeatures->setEnabled( canAddFeatures && isEditable );
   mActionToggleEditing->setEnabled( ( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->readOnly() );
 

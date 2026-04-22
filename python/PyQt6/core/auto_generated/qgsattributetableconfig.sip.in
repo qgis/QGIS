@@ -21,6 +21,9 @@ The configuration is specific for one vector layer.
 #include "qgsattributetableconfig.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     enum Type /BaseType=IntEnum/
     {
       Field,
@@ -46,6 +49,14 @@ The configuration is specific for one vector layer.
       ButtonList,
       DropDown
     };
+
+    enum class AddFeatureMethod /BaseType=IntEnum/
+    {
+      Unset,
+      Form,
+      Table
+    };
+
 
     QgsAttributeTableConfig();
 
@@ -136,6 +147,26 @@ Gets the expression used for sorting.
     void setSortExpression( const QString &sortExpression );
 %Docstring
 Set the sort expression used for sorting.
+%End
+
+    AddFeatureMethod addFeatureMethod() const;
+%Docstring
+Returns the method that defines how features are added (single form or
+embedded in a table).
+
+.. seealso:: :py:func:`setAddFeatureMethod`
+
+.. versionadded:: 4.2
+%End
+
+    void setAddFeatureMethod( const AddFeatureMethod addFeatureMethod );
+%Docstring
+Sets the ``addFeatureMethod`` that defines how features are added
+(single form or embedded in a table).
+
+.. seealso:: :py:func:`addFeatureMethod`
+
+.. versionadded:: 4.2
 %End
 
 
