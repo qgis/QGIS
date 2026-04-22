@@ -45,6 +45,7 @@
 #include <QStatusBar>
 #include <QString>
 #include <QVariant>
+#include <QDebug>
 
 #include "moc_qgsmaptoolidentifyaction.cpp"
 
@@ -152,6 +153,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
+      qDebug() << "Total results:" << results.size();
       resultsDialog()->QDialog::show();
     
     int maxResults = resultsDialog()->getMaxResults();
@@ -173,6 +175,25 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
   // update possible view modes
   resultsDialog()->updateViewModes();
+
+  // Remove previous connection to avoid adding new features to results
+  if (mMoreFeaturesConnection) {
+    QObject::disconnect( mMoreFeaturesConnection );
+  };
+
+  mMoreFeaturesConnection = connect( resultsDialog(), &QgsIdentifyResultsDialog::moreFeaturesRequested, this, [this, results ]() {
+    this->handleShowMoreFeatures( results );
+  } );
+
+}
+
+void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l ) {  
+  // MITODO
+  // Create a collection of already displayed features
+  // Create a collection of remaining features e.g. results minus displayed features
+  // If button is clicked, add 20 more features
+  // If remaining != 0, display message
+  qDebug() << "Total results:" << l.size();
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
