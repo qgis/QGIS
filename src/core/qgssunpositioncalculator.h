@@ -77,6 +77,8 @@ struct CORE_EXPORT QgsSunPositionResult
  *
  * This class is a high-level wrapper around the freespa algorithm for calculating solar position and events.
  *
+ * \warning This class only supports sun position calculation from the Earth. Other celestial bodies are not supported.
+ *
  * \since QGIS 4.2
  */
 class CORE_EXPORT QgsSunPositionCalculator
@@ -94,6 +96,8 @@ class CORE_EXPORT QgsSunPositionCalculator
      * \param temperature the local temperature used for refraction correction, in degrees Celsius.
      *
      * \returns A QgsSunPositionResult containing the calculated solar angles and event times.
+     *
+     * \warning This method only supports sun position calculation from the Earth. Other celestial bodies are not supported.
      *
      * \throws QgsCsException if the point could not be transformed to WGS84
      * \throws QgsInvalidArgumentException when the specified arguments are invalid
