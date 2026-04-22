@@ -93,7 +93,7 @@ error or for unsupported tile types (pnts, i3dm).
 .. versionadded:: 4.2
 %End
 
-    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext );
+    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Calculates oriented bounding box in EPSG:4978 from "region" defined with
 min/max lat/lon coordinates in EPSG:4978.

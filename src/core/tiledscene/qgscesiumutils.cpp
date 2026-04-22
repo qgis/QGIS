@@ -307,7 +307,7 @@ QVector<QgsCesiumUtils::TileContents> QgsCesiumUtils::extractTileContent( const 
   return result;
 }
 
-QgsTiledSceneBoundingVolume QgsCesiumUtils::boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext )
+QgsTiledSceneBoundingVolume QgsCesiumUtils::boundingVolumeFromRegion( const QgsBox3D &region, const QgsCoordinateTransformContext &transformContext )
 {
   if ( region.width() > 20 || region.height() > 20 )
   {

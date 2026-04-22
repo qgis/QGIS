@@ -152,7 +152,7 @@ class CORE_EXPORT QgsCesiumUtils
      * Calculates oriented bounding box in EPSG:4978 from "region" defined with min/max lat/lon coordinates in EPSG:4978.
      * \note added in QGIS 4.2
      */
-    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, QgsCoordinateTransformContext &transformContext );
+    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, const QgsCoordinateTransformContext &transformContext );
 
     /**
      * Copies any query items from the base URL to the content URI - to replicate undocumented
