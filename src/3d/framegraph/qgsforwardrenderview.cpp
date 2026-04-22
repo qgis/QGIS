@@ -136,7 +136,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildMsaaTarget()
  *                         +-----------------+
  *                                  |
  *                         +-----------------+
- *                         | QRenderStateSet |  define clip planes
+ *                         | QRenderStateSet |  define clip planes (MSAA on/off)
  *                         +-----------------+
  *                                  |
  *                      +-----------------------+
