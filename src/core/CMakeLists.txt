@@ -1119,7 +1119,9 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 endif()
 
-set_source_files_properties(${CMAKE_SOURCE_DIR}/external/freespa/freespa.c PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-unused-variable")
+if(NOT MSVC)
+  set_source_files_properties(${CMAKE_SOURCE_DIR}/external/freespa/freespa.c PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-unused-variable")
+endif()
 
 if(NOT MSVC)
   set_source_files_properties(
