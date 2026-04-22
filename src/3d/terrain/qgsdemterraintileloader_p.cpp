@@ -42,28 +42,6 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
-{
-  const float *zBits = ( const float * ) heightMap.constData();
-  int zCount = heightMap.count() / sizeof( float );
-  bool first = true;
-
-  zMin = zMax = std::numeric_limits<float>::quiet_NaN();
-  for ( int i = 0; i < zCount; ++i )
-  {
-    float z = zBits[i];
-    if ( std::isnan( z ) )
-      continue;
-    if ( first )
-    {
-      zMin = zMax = z;
-      first = false;
-    }
-    zMin = std::min( zMin, z );
-    zMax = std::max( zMax, z );
-  }
-}
-
 
 QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator )
   : QgsTerrainTileLoader( terrain, node )
@@ -99,7 +77,7 @@ void QgsDemTerrainTileLoader::start()
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   float zMin, zMax;
-  _heightMapMinMax( mHeightMap, zMin, zMax );
+  QgsTerrainGenerator::computeHeightMapMinMax( mHeightMap, zMin, zMax );
 
   if ( std::isnan( zMin ) || std::isnan( zMax ) )
   {
