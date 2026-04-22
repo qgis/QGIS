@@ -46,7 +46,7 @@ class TestQgsMapToolEditBlankSegments : public QgsTest
     void testCreateBlankSegment();
 
   private:
-    void compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsBlankSegmentUtils::BlankSegments>> &expected );
+    void compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsSymbolLayerUtils::BlankSegments>> &expected );
     int nbRubberBandVisible() const;
 
     QObjectUniquePtr<QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>> mMapToolEditBlankSegments;
@@ -123,10 +123,10 @@ int TestQgsMapToolEditBlankSegments::nbRubberBandVisible() const
   return result;
 }
 
-void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsBlankSegmentUtils::BlankSegments>> &expectedBlankSegments )
+void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBlankSegments, const QList<QList<QgsSymbolLayerUtils::BlankSegments>> &expectedBlankSegments )
 {
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, QgsRenderContext(), Qgis::RenderUnit::Pixels, error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blankSegments = QgsSymbolLayerUtils::parseBlankSegments( strBlankSegments, QgsRenderContext(), Qgis::RenderUnit::Pixels, error );
   QVERIFY( error.isEmpty() );
 
   QVERIFY2(
@@ -136,8 +136,8 @@ void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBl
 
   for ( int iPart = 0; iPart < expectedBlankSegments.count(); iPart++ )
   {
-    const QList<QgsBlankSegmentUtils::BlankSegments> &expectedRings = expectedBlankSegments.at( iPart );
-    const QList<QgsBlankSegmentUtils::BlankSegments> &rings = blankSegments.at( iPart );
+    const QList<QgsSymbolLayerUtils::BlankSegments> &expectedRings = expectedBlankSegments.at( iPart );
+    const QList<QgsSymbolLayerUtils::BlankSegments> &rings = blankSegments.at( iPart );
     QVERIFY2(
       expectedRings.count() == rings.count(),
       u"Rings number differs (Actual: %1 != Expected: %2) for part %3. Returned blank segments: %4"_s.arg( rings.count() ).arg( expectedRings.count() ).arg( iPart ).arg( strBlankSegments ).toLatin1().constData()
@@ -145,8 +145,8 @@ void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBl
 
     for ( int iRing = 0; iRing < rings.count(); iRing++ )
     {
-      const QgsBlankSegmentUtils::BlankSegments &expectedSegments = expectedRings.at( iRing );
-      const QgsBlankSegmentUtils::BlankSegments &segments = rings.at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &expectedSegments = expectedRings.at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &segments = rings.at( iRing );
       QVERIFY2(
         expectedSegments.count() == segments.count(),
         u"Segments number differs (Actual: %1 != Expected: %2) for part %3 and ring %4. Returned blank segments: %5"_s.arg( segments.count() )

@@ -814,7 +814,7 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
   if ( !mSymbolLayer )
     return;
 
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments;
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blankSegments;
   for ( const QObjectUniquePtr<QgsBlankSegmentRubberBand> &blankSegment : mBlankSegments )
   {
     try
@@ -825,12 +825,12 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
       if ( partIndex >= blankSegments.count() )
         blankSegments.resize( partIndex + 1 );
 
-      QList<QgsBlankSegmentUtils::BlankSegments> &rings = blankSegments[partIndex];
+      QList<QgsSymbolLayerUtils::BlankSegments> &rings = blankSegments[partIndex];
       const int ringIndex = blankSegment->getRingIndex();
       if ( ringIndex >= rings.count() )
         rings.resize( ringIndex + 1 );
 
-      QgsBlankSegmentUtils::BlankSegments &segments = rings[ringIndex];
+      QgsSymbolLayerUtils::BlankSegments &segments = rings[ringIndex];
       segments << startEndDistance;
     }
     catch ( std::invalid_argument &e )
@@ -841,10 +841,10 @@ void QgsMapToolEditBlankSegmentsBase::updateAttribute()
   }
 
   QStringList strParts;
-  for ( QList<QgsBlankSegmentUtils::BlankSegments> &part : blankSegments )
+  for ( QList<QgsSymbolLayerUtils::BlankSegments> &part : blankSegments )
   {
     QStringList strRings;
-    for ( QgsBlankSegmentUtils::BlankSegments &ring : part )
+    for ( QgsSymbolLayerUtils::BlankSegments &ring : part )
     {
       std::sort( ring.begin(), ring.end() );
       QStringList strDistances;
@@ -904,7 +904,7 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
     return;
 
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> allBlankSegments = QgsBlankSegmentUtils::parseBlankSegments( currentBlankSegments, context, mSymbolLayer->blankSegmentsUnit(), error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> allBlankSegments = QgsSymbolLayerUtils::parseBlankSegments( currentBlankSegments, context, mSymbolLayer->blankSegmentsUnit(), error );
   if ( !error.isEmpty() )
   {
     emit messageEmitted( tr( "Error while parsing feature blank segments: %1" ).arg( error ), Qgis::MessageLevel::Critical );
@@ -920,7 +920,7 @@ void QgsMapToolEditBlankSegmentsBase::loadFeaturePoints()
       if ( iPart >= allBlankSegments.count() || iRing >= allBlankSegments.at( iPart ).count() )
         continue;
 
-      const QgsBlankSegmentUtils::BlankSegments &blankSegments = allBlankSegments.at( iPart ).at( iRing );
+      const QgsSymbolLayerUtils::BlankSegments &blankSegments = allBlankSegments.at( iPart ).at( iRing );
 
       double currentLength = 0;
       int iPoint = 0;

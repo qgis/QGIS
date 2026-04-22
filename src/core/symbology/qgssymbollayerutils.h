@@ -1197,6 +1197,31 @@ class CORE_EXPORT QgsSymbolLayerUtils
     }
 
     /**
+     * Blank segments are used to defined segments of marker/hash line symbol layer where markers/hashes
+     * are not displayed.
+     *
+     * A blank segment is represented by a pair of start and end distance expressed in a user selected unit
+     *
+     * \since QGIS 4.0
+     */
+    typedef QList<QPair<double, double>> BlankSegments;
+
+    /**
+     * Parse blank segments string representation \a strBlankSegments
+     *
+     * Blank segments format is expected to be in the form (((2.90402 7.36,11.8776 30.4499),()),((2 7))) with 3 levels
+     * of parenthesis like MultiPolygon to deal with multi parts and inner rings. Empty opening-closing parenthesis are allowed
+     * to define the lack of blank segments for some multi part or inner rings.
+     *
+     * The blank segments are expected to be expressed in \a unit and converted in pixels regarding render context \a renderContext
+     * \a error is populated with a descritive message if the string representation is not well formatted
+     * Returns a list of start and end distance expressed in pixels for each part and rings
+     *
+     * \since QGIS 4.0
+     */
+    static QList<QList<BlankSegments>> parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error );
+
+    /**
      * Extra items are used to draw extra markers or hashes at given position when rendering
      * a marker or hash line symbol layer.
      *
