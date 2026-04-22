@@ -50,6 +50,10 @@ datetime.
 This class is a high-level wrapper around the freespa algorithm for
 calculating solar position and events.
 
+.. warning::
+
+   This class only supports sun position calculation from the Earth. Other celestial bodies are not supported.
+
 .. versionadded:: 4.2
 %End
 
@@ -83,6 +87,10 @@ Calculates the solar position and events for a given point and time.
 
 :return: A :py:class:`QgsSunPositionResult` containing the calculated
          solar angles and event times.
+
+.. warning::
+
+   This method only supports sun position calculation from the Earth. Other celestial bodies are not supported.
 
 :raises QgsCsException: if the point could not be transformed to WGS84
 
