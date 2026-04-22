@@ -62,9 +62,7 @@ QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   mEditTimer = new QTimer( this );
   mEditTimer->setSingleShot( true );
   mEditTimer->setInterval( 250 );
-  connect( mEditTimer, &QTimer::timeout, this, [this]() {
-    emit originChanged( latitude(), longitude() );
-  } );
+  connect( mEditTimer, &QTimer::timeout, this, [this]() { emit originChanged( latitude(), longitude() ); } );
 
   connect( horizontalSliderX, &QSlider::valueChanged, this, [this]( int v ) {
     QSignalBlocker blocker( doubleSpinBoxX );
