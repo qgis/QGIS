@@ -4404,6 +4404,7 @@ int QgisEvent = QEvent::User + 1;
     {
       Point,       //!< Point light source
       Directional, //!< Directional light source
+      Sun,         //!< Sun based light source \since QGIS 4.2
     };
     Q_ENUM( LightSourceType )
 
