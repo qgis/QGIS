@@ -91,6 +91,15 @@
       "default-features": false,
       "host": true
     },
+    {
+      "name": "qtmultimedia",
+      "default-features": false,
+      "platform": "emscripten"
+    },
+    {
+      "name": "qtmultimedia",
+      "platform": "!emscripten"
+    },
     "qtsvg",
     "qt5compat",
     "qtkeychain-qt6",
@@ -258,7 +267,6 @@
       "description": "Determines whether QGIS gui should be built",
       "dependencies": [
         "qscintilla",
-        "qtmultimedia",
         "qwt"
       ]
     },
