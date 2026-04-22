@@ -104,6 +104,11 @@
 
 using namespace Qt::StringLiterals;
 
+#include "qgsdemterraingenerator.h"
+#include "qgsline3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
+#include "qgsvectorlayerchunkloader_p.h"
+
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
@@ -659,6 +664,12 @@ void Qgs3DMapScene::createTerrainDeferred()
     mTerrain = new QgsTerrainEntity( &mMap );
     mTerrain->setObjectName( u"Terrain"_s );
     terrainOrGlobe = mTerrain;
+
+    // when terrain generator is DEM, we watch for new hi-res tile are downloaded in order to correct the elevation of entities
+    if ( const QgsTerrainGeneratorWithCache *demGen = dynamic_cast<const QgsTerrainGeneratorWithCache *>( mMap.terrainGenerator() ) )
+    {
+      connect( demGen->heightMapCache(), &QgsDemHeightMapCache::maxResTileReceived, this, &Qgs3DMapScene::onNewDemTileReceived );
+    }
   }
 
   if ( terrainOrGlobe )
@@ -808,7 +819,9 @@ void Qgs3DMapScene::addSceneEntity( Qgs3DMapSceneEntity *sceneNewEntity )
 
   connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
 
-  onCameraChanged(); // needed for chunked entities
+  // needed for chunked entities
+  updateScene( true );
+  updateCameraNearFarPlanes();
 }
 
 void Qgs3DMapScene::removeSceneEntity( Qgs3DMapSceneEntity *sceneEntity )
@@ -1507,6 +1520,86 @@ void Qgs3DMapScene::onOriginChanged()
       newPlanes.append( plane );
     }
     enableClipping( newPlanes );
+  }
+}
+
+void Qgs3DMapScene::onNewDemTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent )
+{
+  Q_UNUSED( tileId );
+
+  // search for vector layer
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
+  {
+    bool doReloadNodes = false;
+    QgsMapLayer *layer = it.key();
+    Qt3DCore::QEntity *rootEntity = it.value();
+    Qgis::LayerType layerType = layer->type();
+    switch ( layerType )
+    {
+      case Qgis::LayerType::Vector:
+        // use QgsVectorLayerChunkedEntity::applyTerrainOffset?
+        // search for 3D symbols which need DEM elevation
+        if ( QgsVectorLayer3DRenderer *renderer = dynamic_cast<QgsVectorLayer3DRenderer *>( layer->renderer3D() ) )
+        {
+          if ( renderer->symbol()->type() == "point" )
+          {
+            const QgsPoint3DSymbol *symb = dynamic_cast<const QgsPoint3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+          else if ( renderer->symbol()->type() == "line" )
+          {
+            const QgsLine3DSymbol *symb = dynamic_cast<const QgsLine3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+          else if ( renderer->symbol()->type() == "polygon" )
+          {
+            const QgsPolygon3DSymbol *symb = dynamic_cast<const QgsPolygon3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+
+    // search chunk nodes of vector layer who intersect the new DEM hi-res tile
+    if ( doReloadNodes )
+    {
+      if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( rootEntity ) )
+      {
+        QList<QgsChunkNode *> nodesToReload;
+        const QList<QgsChunkNode *> activeNodes = c->activeNodes();
+
+        // search within all active chunknodes of current entity
+        for ( QgsChunkNode *n : activeNodes )
+        {
+          if ( n->box3D().toRectangle().intersects( extent ) && ( n->state() == QgsChunkNode::Loaded ) )
+          {
+            nodesToReload << n;
+          }
+        }
+
+        // tag all intersecting nodes to reload
+        if ( !nodesToReload.isEmpty() )
+        {
+          switch ( layerType )
+          {
+            case Qgis::LayerType::Vector:
+            {
+              QgsVectorLayerChunkedEntity *vlc = qobject_cast<QgsVectorLayerChunkedEntity *>( rootEntity );
+              vlc->updateNodes( nodesToReload );
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      }
+    }
   }
 }
 
