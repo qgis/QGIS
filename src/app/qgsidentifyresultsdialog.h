@@ -253,6 +253,8 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     //! Emitted when all feature highlights are removed
     void highlightsCleared();
 
+    void moreFeaturesRequested();
+
   public slots:
     //! Remove results
     void clear();
