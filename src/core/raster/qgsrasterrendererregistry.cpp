@@ -39,11 +39,16 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultRedBand = new QgsSettingsEntryInteger( u"default-red-band"_s, QgsSettingsTree::sTreeRaster, 1 );
-const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultGreenBand = new QgsSettingsEntryInteger( u"default-green-band"_s, QgsSettingsTree::sTreeRaster, 2 );
-const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultBlueBand = new QgsSettingsEntryInteger( u"default-blue-band"_s, QgsSettingsTree::sTreeRaster, 3 );
-const QgsSettingsEntryBool *QgsRasterRendererRegistry::settingsUseStandardDeviation = new QgsSettingsEntryBool( u"use-standard-deviation"_s, QgsSettingsTree::sTreeRaster, false );
-const QgsSettingsEntryDouble *QgsRasterRendererRegistry::settingsDefaultStandardDeviation = new QgsSettingsEntryDouble( u"default-standard-deviation"_s, QgsSettingsTree::sTreeRaster, 2.0 );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultRedBand
+  = new QgsSettingsEntryInteger( u"default-red-band"_s, QgsSettingsTree::sTreeRaster, 1, u"Default band number assigned to the red channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultGreenBand
+  = new QgsSettingsEntryInteger( u"default-green-band"_s, QgsSettingsTree::sTreeRaster, 2, u"Default band number assigned to the green channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryInteger *QgsRasterRendererRegistry::settingsDefaultBlueBand
+  = new QgsSettingsEntryInteger( u"default-blue-band"_s, QgsSettingsTree::sTreeRaster, 3, u"Default band number assigned to the blue channel when creating an RGB renderer for a multi-band raster."_s );
+const QgsSettingsEntryBool *QgsRasterRendererRegistry::settingsUseStandardDeviation
+  = new QgsSettingsEntryBool( u"use-standard-deviation"_s, QgsSettingsTree::sTreeRaster, false, u"If true, newly created raster renderers use a standard-deviation based contrast enhancement by default."_s );
+const QgsSettingsEntryDouble *QgsRasterRendererRegistry::settingsDefaultStandardDeviation
+  = new QgsSettingsEntryDouble( u"default-standard-deviation"_s, QgsSettingsTree::sTreeRaster, 2.0, u"Default standard deviation multiplier used to compute min/max values for raster contrast enhancement when \"use-standard-deviation\" is enabled."_s );
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(
   const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction, QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities

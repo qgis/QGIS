@@ -173,22 +173,14 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 #ifndef SIP_RUN
 
-    /**
-     * Settings entry for monitor directories in browser.
-     * \since QGIS 4.0.1
-     */
     static const QgsSettingsEntryBool *settingsMonitorDirectoriesInBrowser;
 
-    //! Settings entry for hidden paths in browser \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsHiddenPaths SIP_SKIP;
 
-    //! Settings entry for paths that should never be monitored \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsDisableMonitorItemUris SIP_SKIP;
 
-    //! Settings entry for paths that should always be monitored \since QGIS 4.0.1
     static const QgsSettingsEntryStringList *settingsAlwaysMonitorItemUris SIP_SKIP;
 
-    //! Settings entry for minimum scan interval (ms) \since QGIS 4.0.1
     static const QgsSettingsEntryInteger *settingsMinScanInterval SIP_SKIP;
 #endif
 

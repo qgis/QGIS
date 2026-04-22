@@ -43,9 +43,10 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityBaseDir = new QgsSettingsEntryString( u"cptcity-base-dir"_s, QgsSettingsTree::sTreeColors, QString() );
+const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityBaseDir
+  = new QgsSettingsEntryString( u"cptcity-base-dir"_s, QgsSettingsTree::sTreeColors, QString(), u"Base directory where CPT-City color ramp archives are stored. If empty, the built-in location is used."_s );
 const QgsSettingsEntryString *QgsCptCityArchive::settingsCptCityArchiveName
-  = new QgsSettingsEntryString( u"cptcity-archive-name"_s, QgsSettingsTree::sTreeColors, QStringLiteral( DEFAULT_CPTCITY_ARCHIVE ) );
+  = new QgsSettingsEntryString( u"cptcity-archive-name"_s, QgsSettingsTree::sTreeColors, QStringLiteral( DEFAULT_CPTCITY_ARCHIVE ), u"Name of the CPT-City archive subdirectory used as the default source of color ramps."_s );
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;

@@ -220,7 +220,6 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
 
     bool handlesDirectoryPath( const QString &path ) override;
 
-    //! Settings entry for scan items in browser mode \since QGIS 4.0.1
     static const QgsSettingsEntryString *settingsScanItemsInBrowser;
 
   private:

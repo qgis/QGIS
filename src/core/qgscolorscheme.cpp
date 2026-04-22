@@ -32,10 +32,14 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryVariant *QgsRecentColorScheme::settingsRecentColors = new QgsSettingsEntryVariant( u"recent"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteColors = new QgsSettingsEntryVariant( u"palette-colors"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteLabels = new QgsSettingsEntryVariant( u"palette-labels"_s, QgsSettingsTree::sTreeColors, QVariant() );
-const QgsSettingsEntryStringList *QgsUserColorScheme::settingsShowInMenuList = new QgsSettingsEntryStringList( u"show-in-menu-list"_s, QgsSettingsTree::sTreeColors, QStringList() );
+const QgsSettingsEntryVariant *QgsRecentColorScheme::settingsRecentColors
+  = new QgsSettingsEntryVariant( u"recent"_s, QgsSettingsTree::sTreeColors, QVariant(), u"List of recently used colors (stored as a QVariantList of colors)."_s );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteColors
+  = new QgsSettingsEntryVariant( u"palette-colors"_s, QgsSettingsTree::sTreeColors, QVariant(), u"User-defined custom color palette (stored as a QVariantList of colors), kept in sync with the associated labels."_s );
+const QgsSettingsEntryVariant *QgsCustomColorScheme::settingsPaletteLabels
+  = new QgsSettingsEntryVariant( u"palette-labels"_s, QgsSettingsTree::sTreeColors, QVariant(), u"Labels of the user-defined custom color palette entries, kept in sync with the associated colors."_s );
+const QgsSettingsEntryStringList *QgsUserColorScheme::settingsShowInMenuList
+  = new QgsSettingsEntryStringList( u"show-in-menu-list"_s, QgsSettingsTree::sTreeColors, QStringList(), u"List of user color scheme names which should be exposed in color picker menus."_s );
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {

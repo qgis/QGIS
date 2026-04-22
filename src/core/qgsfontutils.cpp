@@ -34,7 +34,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryStringList *QgsFontUtils::settingsRecentFontFamilies = new QgsSettingsEntryStringList( u"recent"_s, QgsSettingsTree::sTreeFonts, QStringList() );
+const QgsSettingsEntryStringList *QgsFontUtils::settingsRecentFontFamilies
+  = new QgsSettingsEntryStringList( u"recent"_s, QgsSettingsTree::sTreeFonts, QStringList(), u"List of recently used font families."_s );
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {

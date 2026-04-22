@@ -62,7 +62,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsVectorFileWriter::settingsDefaultEncoding = new QgsSettingsEntryString( u"encoding"_s, QgsSettingsTree::sTreeQgis, u"System"_s );
+const QgsSettingsEntryString *QgsVectorFileWriter::settingsDefaultEncoding
+  = new QgsSettingsEntryString( u"encoding"_s, QgsSettingsTree::sTreeQgis, u"System"_s, u"Default character encoding used when writing vector files. Use \"System\" to rely on the operating system default."_s );
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {

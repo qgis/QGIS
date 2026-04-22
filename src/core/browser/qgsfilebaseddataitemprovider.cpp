@@ -39,7 +39,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsFileBasedDataItemProvider::settingsScanItemsInBrowser = new QgsSettingsEntryString( u"scan-items"_s, QgsSettingsTree::sTreeBrowser, u"extension"_s );
+const QgsSettingsEntryString *QgsFileBasedDataItemProvider::settingsScanItemsInBrowser
+  = new QgsSettingsEntryString( u"scan-items"_s, QgsSettingsTree::sTreeBrowser, u"extension"_s, u"Strategy used to scan file-based items in the browser. Set to \"extension\" to identify items by their file extension only, or \"contents\" to open each file and probe its actual contents (slower but more accurate)."_s );
 
 //
 // QgsProviderSublayerItem

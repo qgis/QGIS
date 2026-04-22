@@ -56,11 +56,16 @@ void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint &offset )
   mLayout->undoStack()->endCommand();
 }
 
-const QgsSettingsEntryString *QgsLayoutGridSettings::settingsGridStyle = new QgsSettingsEntryString( u"grid-style"_s, QgsSettingsTree::sTreeLayout, u"Dots"_s );
-const QgsSettingsEntryColor *QgsLayoutGridSettings::settingsGridColor = new QgsSettingsEntryColor( u"grid-color"_s, QgsSettingsTree::sTreeLayout, QColor( 190, 190, 190, 100 ) );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridResolution = new QgsSettingsEntryDouble( u"resolution"_s, QgsSettingsTree::sTreeLayoutGrid, 10.0 );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetX = new QgsSettingsEntryDouble( u"offset-x"_s, QgsSettingsTree::sTreeLayoutGrid, 0 );
-const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetY = new QgsSettingsEntryDouble( u"offset-y"_s, QgsSettingsTree::sTreeLayoutGrid, 0 );
+const QgsSettingsEntryString *QgsLayoutGridSettings::settingsGridStyle
+  = new QgsSettingsEntryString( u"grid-style"_s, QgsSettingsTree::sTreeLayout, u"Dots"_s, u"Default rendering style for the layout designer grid. Accepted values are \"Solid\", \"Dots\" or \"Crosses\"."_s );
+const QgsSettingsEntryColor *QgsLayoutGridSettings::settingsGridColor
+  = new QgsSettingsEntryColor( u"grid-color"_s, QgsSettingsTree::sTreeLayout, QColor( 190, 190, 190, 100 ), u"Default color used to draw the layout designer grid."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridResolution
+  = new QgsSettingsEntryDouble( u"resolution"_s, QgsSettingsTree::sTreeLayoutGrid, 10.0, u"Default grid resolution (in millimeters) for newly created layouts."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetX
+  = new QgsSettingsEntryDouble( u"offset-x"_s, QgsSettingsTree::sTreeLayoutGrid, 0, u"Default grid horizontal offset (in millimeters) for newly created layouts."_s );
+const QgsSettingsEntryDouble *QgsLayoutGridSettings::settingsGridOffsetY
+  = new QgsSettingsEntryDouble( u"offset-y"_s, QgsSettingsTree::sTreeLayoutGrid, 0, u"Default grid vertical offset (in millimeters) for newly created layouts."_s );
 
 void QgsLayoutGridSettings::loadFromSettings()
 {

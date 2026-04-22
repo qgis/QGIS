@@ -27,7 +27,8 @@
 
 using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryInteger *QgsLayoutSnapper::settingsSnapTolerance = new QgsSettingsEntryInteger( u"snap-tolerance"_s, QgsSettingsTree::sTreeLayout, 5 );
+const QgsSettingsEntryInteger *QgsLayoutSnapper::settingsSnapTolerance
+  = new QgsSettingsEntryInteger( u"snap-tolerance"_s, QgsSettingsTree::sTreeLayout, 5, u"Default snapping tolerance (in pixels) used in the layout designer."_s );
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
