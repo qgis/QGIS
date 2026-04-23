@@ -84,6 +84,11 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the normal texture map. Takes ownership. Set to NULLPTR to remove.
     void setNormalTexture( Qt3DRender::QAbstractTexture *normal );
 
+    //! Sets the height texture map. Takes ownership. Set to NULLPTR to remove.
+    void setHeightTexture( Qt3DRender::QAbstractTexture *height );
+    //! Sets the parallax \a scale factor, which impacts the effect the height texture map has on the material.
+    void setParallaxScale( double scale );
+
     /**
      * Sets the emission texture map. Takes ownership. Set to NULLPTR to remove.
      *
@@ -111,6 +116,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mRoughnessMapParameter = nullptr;
     Qt3DRender::QParameter *mAmbientOcclusionMapParameter = nullptr;
     Qt3DRender::QParameter *mNormalMapParameter = nullptr;
+    Qt3DRender::QParameter *mHeightMapParameter = nullptr;
+    Qt3DRender::QParameter *mParallaxScaleParameter = nullptr;
     Qt3DRender::QParameter *mEmissionMapParameter = nullptr;
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
@@ -125,6 +132,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     bool mUsingRoughnessMap = false;
     bool mUsingAmbientOcclusionMap = false;
     bool mUsingNormalMap = false;
+    bool mUsingHeightMap = false;
     bool mUsingEmissionMap = false;
     bool mFlatShading = false;
 

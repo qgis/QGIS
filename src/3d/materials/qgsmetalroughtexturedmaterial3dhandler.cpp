@@ -167,6 +167,17 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
     material->setNormalTexture( nullptr );
   }
 
+  if ( Qt3DRender::QTexture2D *heightTex = loadTexture( texturedSettings->heightTexturePath(), false ) )
+  {
+    material->setHeightTexture( heightTex );
+  }
+  else
+  {
+    // default to none
+    material->setHeightTexture( nullptr );
+  }
+  material->setParallaxScale( texturedSettings->parallaxScale() );
+
   // ambient occlusion
   if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath(), false ) )
   {
