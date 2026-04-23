@@ -243,9 +243,9 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     Entry incomingEntry;
     const QVariantMap entryMap = e.toMap();
     incomingEntry.key = entryMap.value( u"pk"_s ).toInt();
-    incomingEntry.title = entryMap.value( u"title"_s ).toString();
+    incomingEntry.title = entryMap.value( u"title"_s ).toString().trimmed();
     incomingEntry.imageUrl = entryMap.value( u"image"_s ).toString();
-    incomingEntry.content = entryMap.value( u"content"_s ).toString();
+    incomingEntry.content = entryMap.value( u"content"_s ).toString().trimmed();
     incomingEntry.link = entryMap.value( u"url"_s ).toString();
     incomingEntry.sticky = entryMap.value( u"sticky"_s ).toBool();
     incomingEntry.published.setSecsSinceEpoch( entryMap.value( u"publish_from"_s ).toLongLong() );
