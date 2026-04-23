@@ -64,6 +64,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     static const QgsSettingsEntryString *settingsFeedEntryContent;
     static const QgsSettingsEntryString *settingsFeedEntryLink;
     static const QgsSettingsEntryBool *settingsFeedEntrySticky;
+    static const QgsSettingsEntryVariant *settingsFeedEntryPublished;
     static const QgsSettingsEntryVariant *settingsFeedEntryExpiry;
 #endif
 
@@ -95,6 +96,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
         //! TRUE if entry is "sticky" and should always be shown at the top
         bool sticky = false;
+
+        //! Entry publication date
+        QDateTime published;
 
         //! Optional auto-expiry time for entry
         QDateTime expiry;
