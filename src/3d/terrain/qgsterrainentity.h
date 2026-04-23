@@ -85,7 +85,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
 
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
     QHash<QgsMapLayer *, bool> mLayers;
 };
 

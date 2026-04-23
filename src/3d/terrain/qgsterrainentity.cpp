@@ -23,20 +23,13 @@
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdemterrainsettings.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshterrainsettings.h"
-#include "qgsquantizedmeshterrainsettings.h"
-#include "qgsrasterlayer.h"
 #include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgstiledscenelayer.h"
-#include "qgsvectorlayer.h"
 
 #include <QString>
 #include <Qt3DCore/QTransform>
