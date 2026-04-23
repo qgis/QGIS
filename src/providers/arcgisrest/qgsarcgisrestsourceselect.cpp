@@ -355,6 +355,12 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
+        Q_NOWARN_DEPRECATED_PUSH
+        emit addRasterLayer( uri, layerName, u"arcgisimageserver"_s );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Raster, uri, layerName, u"arcgisimageserver"_s );
+        break;
+
       case Qgis::ArcGisRestServiceType::GlobeServer:
       case Qgis::ArcGisRestServiceType::GPServer:
       case Qgis::ArcGisRestServiceType::GeocodeServer:
