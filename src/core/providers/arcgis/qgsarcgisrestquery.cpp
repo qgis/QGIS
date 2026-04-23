@@ -15,6 +15,8 @@
 
 #include "qgsarcgisrestquery.h"
 
+#include <ranges>
+
 #include "qgsapplication.h"
 #include "qgsarcgisrestutils.h"
 #include "qgsauthmanager.h"
@@ -55,7 +57,7 @@ Qgis::ArcGisRestServiceType QgsArcGisRestQueryUtils::sniffServiceTypeFromUrl( co
   // iterate backwards through the URL segments.
   // we want to catch both root services (.../FeatureServer)
   // and layer-specific URLs (.../FeatureServer/0 or .../FeatureServer/query)
-  for ( const QString &segment : pathSegments | std::views::reverse )
+  for ( const QString &segment : pathSegments | std::ranges::views::reverse )
   {
     if ( segment.compare( "FeatureServer"_L1, Qt::CaseInsensitive ) == 0 )
     {
