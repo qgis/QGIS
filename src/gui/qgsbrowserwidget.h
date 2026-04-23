@@ -160,6 +160,12 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     //! Hide current item
     void hideItem();
 
+    //! Open path dialog to navigate to a specific location
+    void openPath();
+
+    //! Navigate to the path entered in the location bar
+    void navigateToPath();
+
   private:
     //! Selection has changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
