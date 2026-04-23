@@ -2401,6 +2401,7 @@ if (WITH_COPC)
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/copc/qgscopcprovider.cpp
+      providers/vpc/qgspointcloudsubindexloader.cpp
       providers/vpc/qgsvirtualpointcloudprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
@@ -2408,6 +2409,7 @@ if (WITH_COPC)
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
+      providers/vpc/qgspointcloudsubindexloader.h
       providers/vpc/qgsvirtualpointcloudprovider.h
       pointcloud/qgscopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
