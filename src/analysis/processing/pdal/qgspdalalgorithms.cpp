@@ -98,7 +98,7 @@ QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerForm
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const
 {
-  return QStringList() << u"las"_s << u"laz"_s << u"copc.laz"_s << u"vpc"_s;
+  return QStringList() << u"las"_s << u"laz"_s << u"copc.laz"_s << u"vpc"_s << u"vpz"_s;
 }
 
 void QgsPdalAlgorithms::loadAlgorithms()

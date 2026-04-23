@@ -38,9 +38,11 @@
 #include "qgsproviderutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
+#include "qgsziputils.h"
 
 #include <QIcon>
 #include <QString>
+#include <QTemporaryDir>
 
 #include "moc_qgsvirtualpointcloudprovider.cpp"
 
@@ -50,6 +52,7 @@ using namespace Qt::StringLiterals;
 
 #define PROVIDER_KEY u"vpc"_s
 #define PROVIDER_DESCRIPTION u"Virtual point cloud data provider"_s
+
 
 QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
@@ -174,25 +177,31 @@ void QgsVirtualPointCloudProvider::parseFile()
     url.setUrl( path );
     QNetworkRequest request( url );
     const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg );
-    if ( reply.error() == QNetworkReply::NoError )
-    {
-      jsonData = reply.content();
-    }
-    else
+    if ( reply.error() != QNetworkReply::NoError )
     {
       appendError( QgsErrorMessage( u"Could not download file: %1"_s.arg( reply.errorString() ) ) );
       return;
     }
+
+    QTemporaryDir tmpDir;
+    QFile file( tmpDir.filePath( url.fileName() ) );
+    if ( !file.open( QFile::WriteOnly ) )
+    {
+      appendError( QgsErrorMessage( u"Could not create temporary file: %1"_s.arg( file.fileName() ) ) );
+      return;
+    }
+
+    file.write( reply.content() );
+    file.close();
+
     mAllLocalFiles = false;
+
+    jsonData = readFileContents( file.fileName() );
   }
   else
   {
     url = QUrl::fromLocalFile( path );
-    QFile file( url.toLocalFile() );
-    if ( file.open( QFile::ReadOnly ) )
-    {
-      jsonData = file.readAll();
-    }
+    jsonData = readFileContents( url.toLocalFile() );
   }
 
   if ( jsonData.isEmpty() )
@@ -467,6 +476,54 @@ void QgsVirtualPointCloudProvider::parseFile()
   populateAttributeCollection( attributeNames );
 }
 
+QByteArray QgsVirtualPointCloudProvider::readFileContents( const QString &path )
+{
+  std::unique_ptr<QTemporaryDir> tmpDir;
+  QString readFromFilename;
+  if ( path.endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
+  {
+    tmpDir = std::make_unique<QTemporaryDir>();
+    if ( !tmpDir->isValid() )
+    {
+      appendError( QgsErrorMessage( u"Could not create temporary folder"_s ) );
+      return {};
+    }
+    QStringList fileList;
+    if ( !QgsZipUtils::unzip( path, tmpDir->path(), fileList ) )
+    {
+      appendError( QgsErrorMessage( u"Could not open VPZ file"_s ) );
+      return {};
+    }
+
+    const QDir dir( tmpDir->path() );
+    const QStringList vpcFiles = dir.entryList( QStringList( u"*.vpc"_s ), QDir::Files );
+    if ( vpcFiles.isEmpty() )
+    {
+      appendError( QgsErrorMessage( u"VPZ file does not contain any VPCs"_s ) );
+      return {};
+    }
+    else if ( vpcFiles.size() > 1 )
+    {
+      appendError( QgsErrorMessage( u"VPZ file contains multiple VPCs"_s ) );
+      return {};
+    }
+
+    readFromFilename = dir.filePath( vpcFiles.first() );
+  }
+  else
+  {
+    readFromFilename = path;
+  }
+
+  QFile file( readFromFilename );
+  if ( !file.open( QFile::ReadOnly ) )
+  {
+    appendError( QgsErrorMessage( u"Could not open VPC file"_s ) );
+    return {};
+  }
+  return file.readAll();
+}
+
 QgsGeometry QgsVirtualPointCloudProvider::polygonBounds() const
 {
   return *mPolygonBounds;
@@ -659,7 +716,7 @@ QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvid
 QList<QgsProviderSublayerDetails> QgsVirtualPointCloudProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( u"file-name"_s ).toString().endsWith( ".vpc", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( isVpcFileName( parts.value( u"file-name"_s ).toString() ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
@@ -677,7 +734,7 @@ QList<QgsProviderSublayerDetails> QgsVirtualPointCloudProviderMetadata::querySub
 int QgsVirtualPointCloudProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( u"file-name"_s ).toString().endsWith( ".vpc", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( isVpcFileName( parts.value( u"file-name"_s ).toString() ) )
     return 100;
 
   return 0;
@@ -686,7 +743,7 @@ int QgsVirtualPointCloudProviderMetadata::priorityForUri( const QString &uri ) c
 QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( u"file-name"_s ).toString().endsWith( ".vpc", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( isVpcFileName( parts.value( u"file-name"_s ).toString() ) )
     return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
   return QList< Qgis::LayerType>();
@@ -725,7 +782,7 @@ QString QgsVirtualPointCloudProviderMetadata::filters( Qgis::FileFilterType type
       return QString();
 
     case Qgis::FileFilterType::PointCloud:
-      return QObject::tr( "Virtual Point Clouds" ) + u" (*.vpc *.VPC)"_s;
+      return QObject::tr( "Virtual Point Clouds" ) + u" (*.vpc *.VPC *.vpz *.VPZ)"_s;
   }
   return QString();
 }
@@ -738,6 +795,11 @@ QgsProviderMetadata::ProviderCapabilities QgsVirtualPointCloudProviderMetadata::
 QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::PointCloud };
+}
+
+bool QgsVirtualPointCloudProviderMetadata::isVpcFileName( const QString &name )
+{
+  return name.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || name.endsWith( ".vpz"_L1, Qt::CaseInsensitive );
 }
 
 QString QgsVirtualPointCloudProviderMetadata::encodeUri( const QVariantMap &parts ) const
