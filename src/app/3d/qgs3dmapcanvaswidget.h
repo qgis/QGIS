@@ -81,7 +81,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
   public:
     static const QgsSettingsEntryDouble *settingClippingTolerance;
     static const QgsSettingsEntryBool *settingCrossSectionToleranceLocked;
-    static const QgsSettingsEntryBool *settingMsaaEnabled;
 
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget() override;
