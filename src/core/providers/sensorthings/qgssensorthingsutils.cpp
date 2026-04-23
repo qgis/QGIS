@@ -280,6 +280,30 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &ty
     return Qgis::SensorThingsEntity::FeatureOfInterest;
   if ( trimmed.compare( "MultiDatastream"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
+  if ( trimmed.compare( "Deployment"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Deployment;
+  if ( trimmed.compare( "ObservingProcedure"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ObservingProcedure;
+  if ( trimmed.compare( "Sampling"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Sampling;
+  if ( trimmed.compare( "SamplingProcedure"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::SamplingProcedure;
+  if ( trimmed.compare( "Sampler"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Sampler;
+  if ( trimmed.compare( "PreparationStep"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::PreparationStep;
+  if ( trimmed.compare( "PreparationProcedure"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::PreparationProcedure;
+  if ( trimmed.compare( "ThingRelation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ThingRelation;
+  if ( trimmed.compare( "RelationRole"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::RelationRole;
+  if ( trimmed.compare( "FeatureRelation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::FeatureRelation;
+  if ( trimmed.compare( "DatastreamRelation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::DatastreamRelation;
+  if ( trimmed.compare( "ObservationRelation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ObservationRelation;
 
   return Qgis::SensorThingsEntity::Invalid;
 }
@@ -308,6 +332,30 @@ QString QgsSensorThingsUtils::displayString( Qgis::SensorThingsEntity type, bool
       return plural ? QObject::tr( "Features of Interest" ) : QObject::tr( "Feature of Interest" );
     case Qgis::SensorThingsEntity::MultiDatastream:
       return plural ? QObject::tr( "MultiDatastreams" ) : QObject::tr( "MultiDatastream" );
+    case Qgis::SensorThingsEntity::Deployment:
+      return plural ? QObject::tr( "Deployments" ) : QObject::tr( "Deployment" );
+    case Qgis::SensorThingsEntity::ObservingProcedure:
+      return plural ? QObject::tr( "Observing Procedures" ) : QObject::tr( "Observing Procedure" );
+    case Qgis::SensorThingsEntity::Sampling:
+      return plural ? QObject::tr( "Samplings" ) : QObject::tr( "Sampling" );
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+      return plural ? QObject::tr( "Sampling Procedures" ) : QObject::tr( "Sampling Procedure" );
+    case Qgis::SensorThingsEntity::Sampler:
+      return plural ? QObject::tr( "Samplers" ) : QObject::tr( "Sampler" );
+    case Qgis::SensorThingsEntity::PreparationStep:
+      return plural ? QObject::tr( "Preparation Steps" ) : QObject::tr( "Preparation Step" );
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+      return plural ? QObject::tr( "Preparation Procedures" ) : QObject::tr( "Preparation Procedure" );
+    case Qgis::SensorThingsEntity::ThingRelation:
+      return plural ? QObject::tr( "Thing Relations" ) : QObject::tr( "Thing Relation" );
+    case Qgis::SensorThingsEntity::RelationRole:
+      return plural ? QObject::tr( "Relation Roles" ) : QObject::tr( "Relation Role" );
+    case Qgis::SensorThingsEntity::FeatureRelation:
+      return plural ? QObject::tr( "Feature Relations" ) : QObject::tr( "Feature Relation" );
+    case Qgis::SensorThingsEntity::DatastreamRelation:
+      return plural ? QObject::tr( "Datastream Relations" ) : QObject::tr( "Datastream Relation" );
+    case Qgis::SensorThingsEntity::ObservationRelation:
+      return plural ? QObject::tr( "Observation Relations" ) : QObject::tr( "Observation Relation" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -333,6 +381,30 @@ Qgis::SensorThingsEntity QgsSensorThingsUtils::entitySetStringToEntity( const QS
     return Qgis::SensorThingsEntity::FeatureOfInterest;
   if ( trimmed.compare( "MultiDatastreams"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
+  if ( trimmed.compare( "Deployments"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Deployment;
+  if ( trimmed.compare( "ObservingProcedures"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ObservingProcedure;
+  if ( trimmed.compare( "Samplings"_L1, Qt::CaseInsensitive ) == 0 ) // confirm?
+    return Qgis::SensorThingsEntity::Sampling;
+  if ( trimmed.compare( "SamplingProcedures"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::SamplingProcedure;
+  if ( trimmed.compare( "Samplers"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::Sampler;
+  if ( trimmed.compare( "PreparationSteps"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::PreparationStep;
+  if ( trimmed.compare( "PreparationProcedures"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::PreparationProcedure;
+  if ( trimmed.compare( "ThingRelations"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ThingRelation;
+  if ( trimmed.compare( "RelationRoles"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::RelationRole;
+  if ( trimmed.compare( "FeatureRelations"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::FeatureRelation;
+  if ( trimmed.compare( "DatastreamRelations"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::DatastreamRelation;
+  if ( trimmed.compare( "ObservationRelations"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::SensorThingsEntity::ObservationRelation;
 
   return Qgis::SensorThingsEntity::Invalid;
 }
@@ -361,6 +433,30 @@ QString QgsSensorThingsUtils::entityToSetString( Qgis::SensorThingsEntity type )
       return u"FeaturesOfInterest"_s;
     case Qgis::SensorThingsEntity::MultiDatastream:
       return u"MultiDatastreams"_s;
+    case Qgis::SensorThingsEntity::Deployment:
+      return u"Deployments"_s;
+    case Qgis::SensorThingsEntity::ObservingProcedure:
+      return u"ObservingProcedures"_s;
+    case Qgis::SensorThingsEntity::Sampling:
+      return u"Samplings"_s; // confirm?
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+      return u"SamplingProcedures"_s;
+    case Qgis::SensorThingsEntity::Sampler:
+      return u"Samplers"_s;
+    case Qgis::SensorThingsEntity::PreparationStep:
+      return u"PreparationSteps"_s;
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+      return u"PreparationProcedures"_s;
+    case Qgis::SensorThingsEntity::ThingRelation:
+      return u"ThingRelations"_s;
+    case Qgis::SensorThingsEntity::RelationRole:
+      return u"RelationRoles"_s;
+    case Qgis::SensorThingsEntity::FeatureRelation:
+      return u"FeatureRelations"_s;
+    case Qgis::SensorThingsEntity::DatastreamRelation:
+      return u"DatastreamRelations"_s;
+    case Qgis::SensorThingsEntity::ObservationRelation:
+      return u"ObservationRelations"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -472,6 +568,113 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
         u"properties"_s,
         u"phenomenonTime"_s,
         u"resultTime"_s,
+      };
+
+    case Qgis::SensorThingsEntity::Deployment:
+      // https://hylkevds.github.io/24-046/24-046.html#observingprocedure
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+        u"reason"_s,
+        u"encodingType"_s,
+        u"position"_s,
+        u"time"_s,
+      };
+
+    case Qgis::SensorThingsEntity::ObservingProcedure:
+      // https://hylkevds.github.io/24-046/24-046.html#observingprocedure
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
+
+    case Qgis::SensorThingsEntity::Sampling:
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"encodingType"_s,
+        u"location"_s,
+        u"properties"_s,
+        u"time"_s,
+      };
+
+    case Qgis::SensorThingsEntity::SamplingProcedure:
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
+
+    case Qgis::SensorThingsEntity::Sampler:
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+        u"samplerType"_s,
+      };
+
+    case Qgis::SensorThingsEntity::PreparationStep:
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+        u"time"_s,
+      };
+
+    case Qgis::SensorThingsEntity::PreparationProcedure:
+      // https://hylkevds.github.io/24-046/24-046.html#sampling-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"description"_s,
+        u"properties"_s,
+      };
+
+    case Qgis::SensorThingsEntity::ThingRelation:
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
+      return { u"id"_s, u"externalTarget"_s };
+
+    case Qgis::SensorThingsEntity::DatastreamRelation:
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
+      return { u"id"_s, u"externalTarget"_s };
+
+    case Qgis::SensorThingsEntity::ObservationRelation:
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
+      return { u"id"_s, u"externalTarget"_s };
+
+    case Qgis::SensorThingsEntity::FeatureRelation:
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
+      return { u"id"_s, u"externalTarget"_s };
+
+    case Qgis::SensorThingsEntity::RelationRole:
+      // https://hylkevds.github.io/24-046/24-046.html#relations-extension
+      return {
+        u"id"_s,
+        u"name"_s,
+        u"definition"_s,
+        u"inverseName"_s,
+        u"inverseDefinition"_s,
+        u"description"_s,
+        u"properties"_s,
       };
   }
 
