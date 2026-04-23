@@ -76,7 +76,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void invalidateMapImages();
     void onLayersChanged();
     void onLayer3DRendererChanged();
-    void onLayerStyleChanged();
+    void onLayerStyleOrFeatureChanged();
     void onTerrainElevationOffsetChanged();
 
   private:
