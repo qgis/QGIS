@@ -94,11 +94,11 @@ Emitted when the selection changes in the widget.
 %End
 
   protected:
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon(), const QString &tooltip = QString() );
 %Docstring
 Adds a new option to the widget.
 
-``icon`` added in QGIS 4.0
+``icon`` added in QGIS 4.0 ``tooltip`` added in QGIS 4.2
 %End
     QListView *listView() const;
 %Docstring

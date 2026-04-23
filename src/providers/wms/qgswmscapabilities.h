@@ -660,7 +660,8 @@ enum QgsWmsTileAttribute
   TileIndex = QNetworkRequest::User + 1,
   TileRect = QNetworkRequest::User + 2,
   TileRetry = QNetworkRequest::User + 3,
-  TileUrl = QNetworkRequest::User + 4, //!< Original requested tile URL, before any redirects are applied
+  TileUrl = QNetworkRequest::User + 4,           //!< Original requested tile URL, before any redirects are applied
+  TileRendererUsage = QNetworkRequest::User + 5, //!< Renderer usage
 };
 
 enum QgsWmsDpiMode

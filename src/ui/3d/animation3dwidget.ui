@@ -82,7 +82,7 @@
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -105,145 +105,261 @@
         <property name="text">
          <string>Linear</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/Linear.svg</normaloff>:/images/themes/default/interpolation/Linear.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InQuad</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InQuad.svg</normaloff>:/images/themes/default/interpolation/InQuad.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutQuad</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutQuad.svg</normaloff>:/images/themes/default/interpolation/OutQuad.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutQuad</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutQuad.svg</normaloff>:/images/themes/default/interpolation/InOutQuad.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInQuad</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInQuad.svg</normaloff>:/images/themes/default/interpolation/OutInQuad.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InCubic</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InCubic.svg</normaloff>:/images/themes/default/interpolation/InCubic.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutCubic</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutCubic.svg</normaloff>:/images/themes/default/interpolation/OutCubic.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutCubic</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutCubic.svg</normaloff>:/images/themes/default/interpolation/InOutCubic.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInCubic</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInCubic.svg</normaloff>:/images/themes/default/interpolation/OutInCubic.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InQuart</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InQuart.svg</normaloff>:/images/themes/default/interpolation/InQuart.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutQuart</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutQuart.svg</normaloff>:/images/themes/default/interpolation/OutQuart.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutQuart</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutQuart.svg</normaloff>:/images/themes/default/interpolation/InOutQuart.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInQuart</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInQuart.svg</normaloff>:/images/themes/default/interpolation/OutInQuart.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InQuint</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InQuint.svg</normaloff>:/images/themes/default/interpolation/InQuint.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutQuint</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutQuint.svg</normaloff>:/images/themes/default/interpolation/OutQuint.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutQuint</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutQuint.svg</normaloff>:/images/themes/default/interpolation/InOutQuint.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInQuint</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInQuint.svg</normaloff>:/images/themes/default/interpolation/OutInQuint.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InSine</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InSine.svg</normaloff>:/images/themes/default/interpolation/InSine.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutSine</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutSine.svg</normaloff>:/images/themes/default/interpolation/OutSine.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutSine</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutSine.svg</normaloff>:/images/themes/default/interpolation/InOutSine.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInSine</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInSine.svg</normaloff>:/images/themes/default/interpolation/OutInSine.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InExpo</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InExpo.svg</normaloff>:/images/themes/default/interpolation/InExpo.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutExpo</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutExpo.svg</normaloff>:/images/themes/default/interpolation/OutExpo.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutExpo</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutExpo.svg</normaloff>:/images/themes/default/interpolation/InOutExpo.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutInExpo</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInExpo.svg</normaloff>:/images/themes/default/interpolation/OutInExpo.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InCirc</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InCirc.svg</normaloff>:/images/themes/default/interpolation/InCirc.svg</iconset>
         </property>
        </item>
        <item>
         <property name="text">
          <string>OutCirc</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutCirc.svg</normaloff>:/images/themes/default/interpolation/OutCirc.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>InOutCirc</string>
         </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/InOutCirc.svg</normaloff>:/images/themes/default/interpolation/InOutCirc.svg</iconset>
+        </property>
        </item>
        <item>
         <property name="text">
          <string>OutInCirc</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/interpolation/OutInCirc.svg</normaloff>:/images/themes/default/interpolation/OutInCirc.svg</iconset>
         </property>
        </item>
       </widget>
@@ -265,10 +381,10 @@
         <number>100</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="tickPosition">
-        <enum>QSlider::TicksBothSides</enum>
+        <enum>QSlider::TickPosition::TicksBothSides</enum>
        </property>
        <property name="tickInterval">
         <number>10</number>
@@ -301,6 +417,8 @@
   <tabstop>sliderTime</tabstop>
   <tabstop>mLoopingCheckBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

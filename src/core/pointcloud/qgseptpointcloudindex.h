@@ -41,13 +41,13 @@ class CORE_EXPORT QgsEptPointCloudIndex : public QgsAbstractPointCloudIndex
 
     void load( const QString &urlString, const QString &authcfg = QString() ) override;
 
-    std::unique_ptr<QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
-    bool hasNode( const QgsPointCloudNodeId &n ) const override;
+    std::unique_ptr<QgsPointCloudBlock> nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) override;
+    bool hasNode( QgsPointCloudNodeId n ) const override;
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
+    QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
     QgsPointCloudStatistics metadataStatistics() const override;
 
@@ -58,9 +58,9 @@ class CORE_EXPORT QgsEptPointCloudIndex : public QgsAbstractPointCloudIndex
     bool loadSchema( const QByteArray &dataJson );
     void loadManifest( const QByteArray &manifestJson );
     bool loadSchema( QFile &f );
-    bool loadSingleNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
-    QVector<QgsPointCloudNodeId> nodePathToRoot( const QgsPointCloudNodeId &nodeId ) const;
-    bool loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
+    bool loadSingleNodeHierarchy( QgsPointCloudNodeId nodeId ) const;
+    QVector<QgsPointCloudNodeId> nodePathToRoot( QgsPointCloudNodeId nodeId ) const;
+    bool loadNodeHierarchy( QgsPointCloudNodeId nodeId ) const;
 
     bool mIsValid = false;
     Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;

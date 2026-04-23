@@ -178,7 +178,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
         continue;
 
       nodes.append( node.id() );
-      for ( const QgsPointCloudNodeId &child : node.children() )
+      for ( QgsPointCloudNodeId child : node.children() )
       {
         queue.append( child );
       }
@@ -198,7 +198,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   QgsAbstract3DRenderer *renderer3D = layer->renderer3D();
 
   // QtConcurrent requires std::function, bare lambdas lead to compile errors.
-  std::function mapFn = [this, &searchPolygon, &mapToPixel3D, pc = std::move( pc ), &elevationProperties, renderer3D, mapExtent]( const QgsPointCloudNodeId &n ) {
+  std::function mapFn = [this, &searchPolygon, &mapToPixel3D, pc = std::move( pc ), &elevationProperties, renderer3D, mapExtent]( QgsPointCloudNodeId n ) {
     const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, pc, mapExtent, elevationProperties, renderer3D );
     if ( pts.isEmpty() )
       return SelectedPoints {};
@@ -227,7 +227,7 @@ bool Qgs3DMapToolPointCloudChangeAttribute::pointIsClipped( const QgsVector3D &m
 
 QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode(
   const QgsGeos &searchPolygon,
-  const QgsPointCloudNodeId &n,
+  QgsPointCloudNodeId n,
   const MapToPixel3D &mapToPixel3D,
   QgsPointCloudIndex pcIndex,
   QgsRectangle mapExtent,

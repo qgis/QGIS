@@ -174,6 +174,7 @@ void QgsElevationProfile::setProfileCurve( QgsCurve *curve )
     return;
   mProfileCurve.reset( curve );
   dirtyProject();
+  emit profileCurveChanged();
 }
 
 QgsCurve *QgsElevationProfile::profileCurve() const
@@ -188,6 +189,7 @@ void QgsElevationProfile::setTolerance( double tolerance )
 
   mTolerance = tolerance;
   dirtyProject();
+  emit toleranceChanged( mTolerance );
 }
 
 double QgsElevationProfile::tolerance() const

@@ -43,7 +43,10 @@ class TestQgsQueryBuilder : public QObject
 };
 
 void TestQgsQueryBuilder::initTestCase() // will be called before the first testfunction is executed.
-{}
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
 
 void TestQgsQueryBuilder::cleanupTestCase()
 {}

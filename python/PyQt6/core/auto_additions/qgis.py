@@ -1024,6 +1024,9 @@ QgsVectorDataProvider.ReloadData.__doc__ = "Provider is able to force reload dat
 QgsVectorDataProvider.FeatureSymbology = Qgis.VectorProviderCapability.FeatureSymbology
 QgsVectorDataProvider.FeatureSymbology.is_monkey_patched = True
 QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features \n.. versionadded:: 3.20"
+QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
+QgsVectorDataProvider.CacheData.is_monkey_patched = True
+QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1071,6 +1074,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 * ``FeatureSymbology``: Provider is able retrieve embedded symbology associated with individual features
 
   .. versionadded:: 3.20
+
+* ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 4.2
 
 * ``EditingCapabilities``: Bitmask of all editing capabilities
 
@@ -1864,6 +1871,20 @@ Qgis.BrowserItemCapabilities = lambda flags=0: Qgis.BrowserItemCapability(flags)
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 Qgis.BrowserItemCapabilities.baseClass = Qgis
 BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.BrowserItemFilterFlag.HideWhenNotFilteringByLayerType.__doc__ = "Item should be hidden from the view when no layer type filter is in place"
+Qgis.BrowserItemFilterFlag.__doc__ = """Browser item filter flags.
+
+.. versionadded:: 4.2
+
+* ``HideWhenNotFilteringByLayerType``: Item should be hidden from the view when no layer type filter is in place
+
+"""
+# --
+Qgis.BrowserItemFilterFlag.baseClass = Qgis
+Qgis.BrowserItemFilterFlags = lambda flags=0: Qgis.BrowserItemFilterFlag(flags)
+Qgis.BrowserItemFilterFlags.baseClass = Qgis
+BrowserItemFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsDataProvider.DataCapability = Qgis.DataItemProviderCapability
 # monkey patching scoped based enum
 QgsDataProvider.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
@@ -7722,6 +7743,36 @@ Qgis.Point3DShape.__doc__ = """3D point shape types.
 # --
 Qgis.Point3DShape.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MaterialRenderingTechnique.Triangles.__doc__ = "Triangle based rendering (default)"
+Qgis.MaterialRenderingTechnique.Lines.__doc__ = "Line based rendering, requires line data"
+Qgis.MaterialRenderingTechnique.InstancedPoints.__doc__ = "Instanced based rendering, requiring triangles and point data"
+Qgis.MaterialRenderingTechnique.Points.__doc__ = "Point based rendering, requires point data"
+Qgis.MaterialRenderingTechnique.TrianglesWithFixedTexture.__doc__ = "Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)"
+Qgis.MaterialRenderingTechnique.TrianglesFromModel.__doc__ = "Triangle based rendering, using a model object source"
+Qgis.MaterialRenderingTechnique.TrianglesDataDefined.__doc__ = "Triangle based rendering with possibility of datadefined color"
+Qgis.MaterialRenderingTechnique.Billboards.__doc__ = "Flat billboard rendering"
+Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+
+* ``Triangles``: Triangle based rendering (default)
+* ``Lines``: Line based rendering, requires line data
+* ``InstancedPoints``: Instanced based rendering, requiring triangles and point data
+* ``Points``: Point based rendering, requires point data
+* ``TrianglesWithFixedTexture``: Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
+* ``TrianglesFromModel``: Triangle based rendering, using a model object source
+* ``TrianglesDataDefined``: Triangle based rendering with possibility of datadefined color
+* ``Billboards``: Flat billboard rendering
+
+"""
+# --
+Qgis.MaterialRenderingTechnique.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
@@ -7734,6 +7785,36 @@ Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 """
 # --
 Qgis.LightSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SkyboxType.DistinctTextures.__doc__ = "Cube map built from distinct textures"
+Qgis.SkyboxType.__doc__ = """Skybox types for 3D scenes.
+
+.. versionadded:: 4.2
+
+* ``DistinctTextures``: Cube map built from distinct textures
+
+"""
+# --
+Qgis.SkyboxType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SkyboxCubeMapping.NativeZUp.__doc__ = "Textures exported for Z-up (+X Right, +Y Forward, +Z Up)"
+Qgis.SkyboxCubeMapping.OpenGLYUp.__doc__ = "Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)"
+Qgis.SkyboxCubeMapping.GodotYUp.__doc__ = "Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)"
+Qgis.SkyboxCubeMapping.UnrealEngineZUp.__doc__ = "Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)"
+Qgis.SkyboxCubeMapping.LeftHandedYUpMirrored.__doc__ = "Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)"
+Qgis.SkyboxCubeMapping.__doc__ = """Skybox texture cube mapping for distinct texture skyboxes.
+
+.. versionadded:: 4.2
+
+* ``NativeZUp``: Textures exported for Z-up (+X Right, +Y Forward, +Z Up)
+* ``OpenGLYUp``: Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)
+* ``GodotYUp``: Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)
+* ``UnrealEngineZUp``: Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)
+* ``LeftHandedYUpMirrored``: Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)
+
+"""
+# --
+Qgis.SkyboxCubeMapping.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
@@ -8122,6 +8203,35 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 """
 # --
 Qgis.ArcGisRestServiceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ArcGisRestServiceCapability.Map.__doc__ = "Render map"
+Qgis.ArcGisRestServiceCapability.Query.__doc__ = "Query features"
+Qgis.ArcGisRestServiceCapability.Update.__doc__ = "Update features"
+Qgis.ArcGisRestServiceCapability.Delete.__doc__ = "Delete features"
+Qgis.ArcGisRestServiceCapability.Create.__doc__ = "Create features"
+Qgis.ArcGisRestServiceCapability.Image.__doc__ = "Image capabilities"
+Qgis.ArcGisRestServiceCapability.TilesOnly.__doc__ = "Service supports tiled image requests only"
+Qgis.ArcGisRestServiceCapability.__doc__ = """Available ArcGIS REST service capabilities.
+
+This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
+extended in future with additional capabilities when required.
+
+.. versionadded:: 4.2
+
+* ``Map``: Render map
+* ``Query``: Query features
+* ``Update``: Update features
+* ``Delete``: Delete features
+* ``Create``: Create features
+* ``Image``: Image capabilities
+* ``TilesOnly``: Service supports tiled image requests only
+
+"""
+# --
+Qgis.ArcGisRestServiceCapability.baseClass = Qgis
+Qgis.ArcGisRestServiceCapabilities = lambda flags=0: Qgis.ArcGisRestServiceCapability(flags)
+Qgis.ArcGisRestServiceCapabilities.baseClass = Qgis
+ArcGisRestServiceCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRelation.RelationType = Qgis.RelationshipType
 # monkey patching scoped based enum
 QgsRelation.Normal = Qgis.RelationshipType.Normal

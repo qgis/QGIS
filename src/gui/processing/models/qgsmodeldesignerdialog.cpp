@@ -332,7 +332,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mToolsActionGroup->addAction( mActionPan );
   connect( mActionPan, &QAction::triggered, mPanTool, [this] { mView->setTool( mPanTool ); } );
 
-  mSelectTool = new QgsModelViewToolSelect( mView );
+  // We use a QObjectUniquePtr here because we want to delete QgsModelViewToolSelect
+  // mouse handles before everything else and don't want to wait for QObject destructor to destroy it
+  mSelectTool.reset( new QgsModelViewToolSelect( mView ) );
   mSelectTool->setAction( mActionSelectMoveItem );
 
   mToolsActionGroup->addAction( mActionSelectMoveItem );
@@ -402,7 +404,6 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
   settings.setValue( u"ModelDesigner/state"_s, saveState(), QgsSettings::App );
 
   mIgnoreUndoStackChanges++;
-  delete mSelectTool; // delete mouse handles before everything else
 }
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )

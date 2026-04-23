@@ -2743,7 +2743,7 @@ std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature(
   if ( !context.featureClipGeometry().isEmpty() )
   {
     const Qgis::GeometryType expectedType = geom.type();
-    geom = geom.intersection( context.featureClipGeometry() );
+    geom = geom.intersection( context.featureClipGeometry(), QgsGeometryParameters(), context.feedback() );
     geom.convertGeometryCollectionToSubclass( expectedType );
   }
 
@@ -4611,7 +4611,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   if ( mustClip )
   {
     // nice and fast, but can result in invalid geometries. At least it will potentially strip out a bunch of unwanted vertices upfront!
-    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox() );
+    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox(), context.feedback() );
     if ( clipGeom.isEmpty() )
       return QgsGeometry();
 
@@ -4638,7 +4638,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
         QgsGeometry partGeom( ( *it )->clone() );
         if ( !partGeom.isGeosValid() )
         {
-          partGeom = partGeom.makeValid();
+          partGeom = partGeom.makeValid( Qgis::MakeValidMethod::Linework, false, context.feedback() );
         }
         parts.append( partGeom );
       }
@@ -4646,7 +4646,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     else if ( !geom.isGeosValid() )
     {
-      QgsGeometry bufferGeom = geom.makeValid();
+      QgsGeometry bufferGeom = geom.makeValid( Qgis::MakeValidMethod::Linework, false, context.feedback() );
       if ( bufferGeom.isNull() )
       {
         QgsDebugError( u"Could not repair geometry: %1"_s.arg( bufferGeom.lastError() ) );
@@ -4659,7 +4659,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   if ( mustClipExact )
   {
     // now do the real intersection against the actual clip geometry
-    QgsGeometry clipGeom = geom.intersection( clipGeometry );
+    QgsGeometry clipGeom = geom.intersection( clipGeometry, QgsGeometryParameters(), context.feedback() );
     if ( clipGeom.isEmpty() )
     {
       return QgsGeometry();

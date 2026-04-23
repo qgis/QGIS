@@ -396,7 +396,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsMssqlProviderConn
 
   // Defaults to false
   const bool useGeometryColumnsOnly {
-    !table.isEmpty() && ( dsUri.hasParam( u"geometryColumnsOnly"_s ) && ( dsUri.param( u"geometryColumnsOnly"_s ) == "true"_L1 || dsUri.param( u"geometryColumnsOnly"_s ) == '1' ) )
+    table.isEmpty() && ( dsUri.hasParam( u"geometryColumnsOnly"_s ) && ( dsUri.param( u"geometryColumnsOnly"_s ) == "true"_L1 || dsUri.param( u"geometryColumnsOnly"_s ) == '1' ) )
   };
 
   // Defaults to true

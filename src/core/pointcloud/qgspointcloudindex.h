@@ -98,7 +98,10 @@ class CORE_EXPORT QgsPointCloudNodeId
 Q_DECLARE_TYPEINFO( QgsPointCloudNodeId, Q_PRIMITIVE_TYPE );
 
 //! Hash function for indexed nodes
-CORE_EXPORT uint qHash( QgsPointCloudNodeId id );
+inline size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 )
+{
+  return qHashMulti( seed, id.d(), id.x(), id.y(), id.z() );
+}
 
 #ifndef SIP_RUN
 
@@ -115,7 +118,7 @@ class CORE_EXPORT QgsPointCloudCacheKey
 {
   public:
     //! Ctor
-    QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri );
+    QgsPointCloudCacheKey( QgsPointCloudNodeId n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri );
 
     bool operator==( const QgsPointCloudCacheKey &other ) const;
 
@@ -139,7 +142,10 @@ class CORE_EXPORT QgsPointCloudCacheKey
 };
 
 //! Hash function for QgsPointCloudCacheKey
-uint qHash( const QgsPointCloudCacheKey &key );
+inline size_t qHash( const QgsPointCloudCacheKey &key, size_t seed = 0 )
+{
+  return qHashMulti( seed, key.node(), key.request(), key.uri(), key.subsetString() );
+}
 
 #endif // !SIP_RUN
 
@@ -159,7 +165,7 @@ class CORE_EXPORT QgsPointCloudNode
      * Constructs new node object. Should only be called by QgsAbstractPointCloudIndex::getNode().
      * Bounds should always be computed by QgsPointCloudNode::bounds().
      */
-    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds )
+    QgsPointCloudNode( QgsPointCloudNodeId id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds )
       : mId( id )
       , mPointCount( pointCount )
       , mChildIds( childIds )
@@ -252,10 +258,10 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     QgsPointCloudNodeId root() const { return QgsPointCloudNodeId( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
-    virtual bool hasNode( const QgsPointCloudNodeId &n ) const;
+    virtual bool hasNode( QgsPointCloudNodeId n ) const;
 
     //! Returns object for a given node
-    virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+    virtual QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const;
 
     //! Returns all attributes that are stored in the file
     QgsPointCloudAttributeCollection attributes() const;
@@ -268,7 +274,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual std::unique_ptr< QgsPointCloudBlock > nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) = 0;
+    virtual std::unique_ptr< QgsPointCloudBlock > nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) = 0;
 
     /**
      * Returns a handle responsible for loading a node data block
@@ -280,7 +286,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) = 0;
+    virtual QgsPointCloudBlockRequest *asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) = 0;
 
     /**
      * Tries to update the data for the specified nodes.
@@ -340,17 +346,17 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * If not found in the cache, nullptr is returned.
      * Caller takes ownership of the returned object.
      */
-    QgsPointCloudBlock *getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request );
+    QgsPointCloudBlock *getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request );
 
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
      */
-    void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const;
+    void storeNodeDataToCache( QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) const;
 
     /**
      * Stores existing \a data to the cache for the specified \a node, \a request, \a expression and \a uri. Ownership is not transferred, block gets cloned in the cache.
      */
-    static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
+    static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
 
     /**
      * Returns extra metadata that's not accessible through the other methods
@@ -496,14 +502,14 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::hasNode
     */
-    bool hasNode( const QgsPointCloudNodeId &id ) const;
+    bool hasNode( QgsPointCloudNodeId id ) const;
 
     /**
     * Returns object for a given node
     *
     * \see QgsAbstractPointCloudIndex::getNode
     */
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+    QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const;
 
     /**
     * Returns all attributes that are stored in the file
@@ -522,7 +528,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::nodeData
      */
-    std::unique_ptr< QgsPointCloudBlock > nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) SIP_SKIP;
+    std::unique_ptr< QgsPointCloudBlock > nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Returns a handle responsible for loading a node data block
@@ -536,7 +542,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::asyncNodeData
      */
-    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) SIP_SKIP;
+    QgsPointCloudBlockRequest *asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Tries to update the data for the specified nodes.
@@ -618,14 +624,14 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      *
      * \see QgsAbstractPointCloudIndex::getNodeDataFromCache
      */
-    QgsPointCloudBlock *getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
+    QgsPointCloudBlock *getNodeDataFromCache( QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
      *
      * \see QgsAbstractPointCloudIndex::storeNodeDataToCache
      */
-    void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
+    void storeNodeDataToCache( QgsPointCloudBlock *data, QgsPointCloudNodeId node, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Returns extra metadata that's not accessible through the other methods

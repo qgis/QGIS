@@ -149,7 +149,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr<QgsFeatureSink> &
       allPoints.addPartV2( qgsgeometry_cast<const QgsPoint *>( geom )->clone(), Qgis::WkbType::Point );
     }
   }
-  const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );
+  const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles, feedback );
 
   if ( concaveHull.isNull() && !concaveHull.lastError().isEmpty() )
   {

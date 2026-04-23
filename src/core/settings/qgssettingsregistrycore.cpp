@@ -16,22 +16,24 @@
 
 #include "pal.h"
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsdirectoryitem.h"
 #include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QSettings>
 #include <QString>
 #include <QThread>
 
@@ -130,6 +132,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatur
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers
   = new QgsSettingsEntryBool( u"show-legend-classifiers"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, classification attribute name is shown in the legend."_s );
 
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips
+  = new QgsSettingsEntryBool( u"show-id-in-layer-tooltips"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, layer IDs will be shown in the layer tooltips."_s );
+
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching
   = new QgsSettingsEntryBool( u"enable_wms_tile_prefetch"_s, QgsSettingsTree::sTreeWms, false, u"Whether to include WMS layers when rendering tiles adjacent to the visible map area"_s );
 
@@ -195,14 +200,6 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
-  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
-  // as it involves writing new values to the underlying ini files.
-  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
-  // so that only a single QgsSettings object is created and destroyed at the end of this method.
-  QgsSettings::holdFlush();
-
-  auto settings = QgsSettings::get();
-
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
@@ -273,6 +270,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsProxyExcludedUrls->copyValueFromKey( u"proxy/proxyExcludedUrls"_s, true );
   QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
+  QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
+  QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
@@ -303,9 +302,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // locator filters - added in 3.30
   {
-    settings->beginGroup( u"gui/locator_filters"_s );
-    const QStringList childKeys = settings->childKeys();
-    settings->endGroup();
+    QSettings &locatorSettings = QgsSettingsEntryBase::userSettings();
+    locatorSettings.beginGroup( u"gui/locator_filters"_s );
+    const QStringList childKeys = locatorSettings.childKeys();
+    locatorSettings.endGroup();
     for ( const QString &childKey : childKeys )
     {
       if ( childKey.startsWith( "enabled"_L1 ) )
@@ -450,7 +450,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
     {
-      const QStringList deviceNames = settings->value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
+      const QStringList deviceNames = QgsSettingsEntryBase::userSettings().value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
 
       for ( const QString &device : deviceNames )
       {
@@ -463,8 +463,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
-
-  QgsSettings::releaseFlush();
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()

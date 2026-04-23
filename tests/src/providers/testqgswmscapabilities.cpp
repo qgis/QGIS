@@ -689,6 +689,28 @@ class TestQgsWmsCapabilities : public QObject
 
       QCOMPARE( format, expectedFormat );
     }
+
+    void parseMultipleOperationAllowedEncodings()
+    {
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities4.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      const QString capabilitiesXml = QString::fromUtf8( content );
+
+      QgsWmsCapabilities capabilities;
+      QgsWmsCapabilityProperty prop;
+      QDomDocument doc;
+      doc.setContent( capabilitiesXml );
+      QDomElement root = doc.documentElement();
+      QDomElement capabilityElem = root.firstChildElement( "Capability" );
+      capabilities.parseCapability( capabilityElem, prop );
+
+      const QgsWmsOperationType &getFeatureInfo = prop.request.getFeatureInfo;
+      QCOMPARE( getFeatureInfo.allowedEncodings.size(), 3 );
+      QVERIFY( getFeatureInfo.allowedEncodings.contains( "text/plain" ) );
+      QVERIFY( getFeatureInfo.allowedEncodings.contains( "text/html" ) );
+      QVERIFY( getFeatureInfo.allowedEncodings.contains( "application/json" ) );
+    }
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

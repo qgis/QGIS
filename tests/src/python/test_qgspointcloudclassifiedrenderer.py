@@ -15,6 +15,10 @@ import unittest
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
+    QgsElevationShadingRenderer,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
     QgsLayerTreeLayer,
     QgsLayerTreeModelLegendNode,
     QgsMapSettings,
@@ -29,8 +33,10 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsRenderContext,
+    QgsSingleSymbolRenderer,
     QgsUnitTypes,
     QgsVector3D,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor
@@ -525,6 +531,66 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 "classified_render_extents", "classified_render_extents", mapsettings
+            )
+        )
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def testRenderShadingCoveredByPolygonHillshade(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/copc/extrabytes-dataset.copc.laz",
+            "test",
+            "copc",
+        )
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(3)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
+
+        shading_renderer = QgsElevationShadingRenderer()
+        shading_renderer.setActive(True)
+        shading_renderer.setActiveHillshading(True)
+        layer.renderer().setElevationShadingRenderer(shading_renderer)
+
+        polygon_layer = QgsVectorLayer(
+            f"Polygon?crs={layer.crs().authid()}", "polygon", "memory"
+        )
+        self.assertTrue(polygon_layer.isValid())
+
+        fill_symbol = QgsFillSymbol.createSimple(
+            {"color": "#ff0000", "outline_style": "no"}
+        )
+        polygon_layer.setRenderer(QgsSingleSymbolRenderer(fill_symbol))
+
+        feature = QgsFeature()
+        feature.setGeometry(
+            QgsGeometry.fromWkt(
+                "POLYGON(("
+                "527900.0 6210900.0, "
+                "527950.0 6210900.0, "
+                "527950.0 6211000.0, "
+                "527900.0 6211000.0, "
+                "527900.0 6210900.0"
+                "))"
+            )
+        )
+        polygon_layer.dataProvider().addFeatures([feature])
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(layer.extent())
+        mapsettings.setLayers([polygon_layer, layer])  # polygon covers the point cloud
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "classified_render_polygon_cover_hillshade",
+                "classified_render_polygon_cover_hillshade",
+                mapsettings,
             )
         )
 

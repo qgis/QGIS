@@ -64,6 +64,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometrymultipart.cpp
   processing/qgsalgorithmfixgeometryoverlap.cpp
@@ -97,6 +98,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconcavehullbyfeature.cpp
+  processing/qgsalgorithmconcavehullofpolygons.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
@@ -170,6 +172,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
+  processing/qgsalgorithmhypsometriccurves.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
@@ -222,6 +225,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
+  processing/qgsalgorithmrandomextractwithinsubsets.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
@@ -264,6 +268,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmselectbyattribute.cpp
+  processing/qgsalgorithmselectbyexpression.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
   processing/qgsalgorithmsetlayerencoding.cpp

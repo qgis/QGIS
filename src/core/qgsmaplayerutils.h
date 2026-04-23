@@ -114,11 +114,18 @@ class CORE_EXPORT QgsMapLayerUtils
     static QString launderLayerName( const QString &name );
 
     /**
-     * Returns TRUE if the layer is served by OpenStreetMap server.
+     * Returns TRUE if the \a layer is served by OpenStreetMap server.
      *
      * \since QGIS 3.40
      */
     static bool isOpenStreetMapLayer( QgsMapLayer *layer );
+
+    /**
+     * Returns TRUE if the \a uri for a given \a provider is served by OpenStreetMap server.
+     *
+     * \since QGIS 4.2
+     */
+    static bool isOpenStreetMapUri( const QString &uri, const QString &providerType );
 
     /**
      * Returns the translated name of the type for a given layer type.
@@ -126,6 +133,13 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 4.0
      */
     static QString layerTypeToString( Qgis::LayerType type );
+
+    /**
+     * Returns the consistent tooltip for the given layer.
+     *
+     * \since QGIS 4.2
+     */
+    static QString layerToolTip( const QgsMapLayer *layer );
 };
 
 #endif // QGSMAPLAYERUTILS_H

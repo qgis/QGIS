@@ -113,6 +113,14 @@ class CORE_EXPORT QgsVariantUtils
      * \since QGIS 4.0
      */
     static QString displayString( const QVariant &variant, int precision = -1 );
+
+    /**
+     * Exports a variant map to a HTML formatted representation.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.2
+     */
+    static QString variantToHtml( const QVariantMap &variant, const QString &title ) SIP_SKIP;
 };
 
 #endif // QGSVARIANTUTILS_H

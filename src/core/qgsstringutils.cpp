@@ -566,30 +566,39 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available
   const thread_local QRegularExpression urlRegEx(
-    u"((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))"_s
+    u"((?:(?:['\"\\(]?http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))"_s
   );
+  const thread_local QRegularExpression groupedStringRegEx( u"^(['\"\\(]+)(.*?)(?:['\")]+)"_s );
   const thread_local QRegularExpression protoRegEx( u"^(?:f|ht)tps?://|file://"_s );
   const thread_local QRegularExpression emailRegEx( u"([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)"_s );
 
-  int offset = 0;
+  std::size_t offset = 0;
   bool found = false;
   QRegularExpressionMatch match = urlRegEx.match( converted );
   while ( match.hasMatch() )
   {
     found = true;
     QString url = match.captured( 1 );
+    std::size_t urlStart = match.capturedStart( 1 );
+
     QString protoUrl = url;
+    const QRegularExpressionMatch groupedStringMatch = groupedStringRegEx.match( protoUrl );
+    if ( groupedStringMatch.hasMatch() )
+    {
+      url = groupedStringMatch.captured( 2 );
+      protoUrl = url;
+      urlStart += groupedStringMatch.capturedLength( 1 );
+    }
     if ( !protoRegEx.match( protoUrl ).hasMatch() )
     {
       protoUrl.prepend( "http://" );
     }
     QString anchor = u"<a href=\"%1\">%2</a>"_s.arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
-    converted.replace( match.capturedStart( 1 ), url.length(), anchor );
-    offset = match.capturedStart( 1 ) + anchor.length();
+    converted.replace( urlStart, url.length(), anchor );
+    offset = urlStart + anchor.length();
     match = urlRegEx.match( converted, offset );
   }
 
-  offset = 0;
   match = emailRegEx.match( converted );
   while ( match.hasMatch() )
   {

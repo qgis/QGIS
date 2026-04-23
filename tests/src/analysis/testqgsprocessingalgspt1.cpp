@@ -36,6 +36,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmultipolygon.h"
 #include "qgsnativealgorithms.h"
+#include "qgsogrproviderutils.h"
 #include "qgspallabeling.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingalgorithm.h"
@@ -227,11 +228,6 @@ void TestQgsProcessingAlgsPt1::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -284,7 +280,7 @@ void TestQgsProcessingAlgsPt1::initTestCase()
    * QgsApplication::initQgis()
    *       as any previously-set value would otherwise disappear.
    */
-  QgsSettings().setValue( "qgis/walForSqlite3", false );
+  QgsOgrProviderUtils::settingsWalForSqlite3->setValue( false );
 }
 
 void TestQgsProcessingAlgsPt1::cleanupTestCase()

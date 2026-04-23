@@ -1223,7 +1223,7 @@ void QgsSymbol::drawPreviewIcon(
         break;
     }
 
-    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2, context->feedback() );
     const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
 
     mBufferSettings->fillSymbol()->startRender( *context );
@@ -1744,7 +1744,7 @@ void QgsSymbol::renderFeature(
         // renderer settings, e.g. if polygons are being rendered using a rule based renderer based on the feature's area,
         // then we need to ensure that the original feature area is used instead of the clipped area..
         QgsGeos geos( processedGeometry );
-        std::unique_ptr< QgsAbstractGeometry > clippedGeom( geos.intersection( context.featureClipGeometry().constGet() ) );
+        std::unique_ptr< QgsAbstractGeometry > clippedGeom( geos.intersection( context.featureClipGeometry().constGet(), nullptr, QgsGeometryParameters(), context.feedback() ) );
         if ( clippedGeom )
         {
           temporaryGeometryContainer.set( clippedGeom.release() );
@@ -2135,7 +2135,7 @@ void QgsSymbol::renderFeature(
         break;
     }
 
-    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2, context.feedback() );
     const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
     for ( const QList< QPolygonF > &polygon : polygons )
     {

@@ -82,8 +82,6 @@ QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
 {
   mSingleSymbol.reset();
   mRenderer.reset();
-
-  delete mSelector;
 }
 
 QgsFeatureRenderer *QgsSingleSymbolRendererWidget::renderer()

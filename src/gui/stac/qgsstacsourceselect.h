@@ -108,7 +108,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     QUrl mNextPageUrl;
     int mCollectionsPageCounter = 0;
 
-    QgsStacController *mStac = nullptr;
+    std::unique_ptr<QgsStacController> mStac;
     QgsStacItemListModel *mItemsModel = nullptr;
     QgsStacSearchParametersDialog *mParametersDialog = nullptr;
     QObjectUniquePtr<QgsRubberBand> mCurrentItemBand;

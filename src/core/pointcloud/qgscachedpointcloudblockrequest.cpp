@@ -23,7 +23,7 @@
 
 QgsCachedPointCloudBlockRequest::QgsCachedPointCloudBlockRequest(
   QgsPointCloudBlock *block,
-  const QgsPointCloudNodeId &node,
+  QgsPointCloudNodeId node,
   const QString &uri,
   const QgsPointCloudAttributeCollection &attributes,
   const QgsPointCloudAttributeCollection &requestedAttributes,

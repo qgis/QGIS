@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgsiconutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmimedatautils.h"
 #include "qgspluginlayer.h"
@@ -265,7 +266,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   }
 }
 
-void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon icon )
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon icon, const QString &tooltip )
 {
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -283,6 +284,7 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
   item->setDropEnabled( false );
+  item->setToolTip( tooltip );
   if ( !icon.isNull() )
     item->setData( icon, Qt::DecorationRole );
   mModel->appendRow( item.release() );
@@ -679,7 +681,8 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
     }
 
-    addOption( id, title, false, true, icon );
+    QString tooltip = QgsMapLayerUtils::layerToolTip( layer );
+    addOption( id, title, false, true, icon, tooltip );
   };
 
   switch ( mParameter->layerType() )

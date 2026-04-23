@@ -42,6 +42,7 @@ Constructor for QgsLayerItem.
 
 
 
+
     Qgis::LayerType mapLayerType() const;
 %Docstring
 Returns the associated map layer type.

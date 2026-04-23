@@ -22,7 +22,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -37,11 +36,7 @@ class TestQgsConnectionRegistry(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
-        QgsSettings().clear()
 
         gpkg_original_path = (
             f"{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.gpkg"

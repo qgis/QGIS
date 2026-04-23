@@ -352,7 +352,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   const QList< QgsLabelBlockingRegion > blockingRegions = mMapSettings.labelBlockingRegions();
   for ( const QgsLabelBlockingRegion &region : blockingRegions )
   {
-    mapBoundaryGeom = mapBoundaryGeom.difference( region.geometry );
+    mapBoundaryGeom = mapBoundaryGeom.difference( region.geometry, QgsGeometryParameters(), context.feedback() );
   }
 
   if ( settings.flags() & Qgis::LabelingFlag::DrawCandidates )

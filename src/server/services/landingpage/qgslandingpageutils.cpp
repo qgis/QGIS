@@ -233,8 +233,9 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     if ( viewSettings && !viewSettings->defaultViewExtent().isEmpty() )
     {
       QgsRectangle extent { viewSettings->defaultViewExtent() };
-      // Need conversion?
-      if ( viewSettings->defaultViewExtent().crs().authid() != "EPSG:4326"_L1 )
+      // Only transform to EPSG:4326 for Earth-based CRS
+      const QgsCoordinateReferenceSystem viewCrs { viewSettings->defaultViewExtent().crs() };
+      if ( viewCrs.authid() != "EPSG:4326"_L1 && viewCrs.isEarthCrs() )
       {
         QgsCoordinateTransform ct { p->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
         extent = ct.transform( extent );
@@ -263,8 +264,8 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               canvasElement.firstChildElement( u"xmax"_s ).text().toDouble(),
               canvasElement.firstChildElement( u"ymax"_s ).text().toDouble(),
             };
-            // Need conversion?
-            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 )
+            // Only transform to EPSG:4326 for Earth-based CRS
+            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 && temporaryProject.crs().isEarthCrs() )
             {
               QgsCoordinateTransform ct { temporaryProject.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), temporaryProject.transformContext() };
               extent = ct.transform( extent );
@@ -298,7 +299,14 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     info["description"] = description.toStdString();
     // CRS
     const QStringList wmsOutputCrsList { QgsServerProjectUtils::wmsOutputCrsList( *p ) };
-    const QString crs = wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ? u"EPSG:4326"_s : wmsOutputCrsList.first();
+    // Prefer EPSG:4326 for Earth-based projects; for non-Earth use the first available CRS or project CRS
+    QString crs;
+    if ( p->crs().isEarthCrs() && ( wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ) )
+      crs = u"EPSG:4326"_s;
+    else if ( !wmsOutputCrsList.isEmpty() )
+      crs = wmsOutputCrsList.first();
+    else
+      crs = p->crs().authid();
     info["crs"] = crs.toStdString();
     // Typenames for WMS
     const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( *p ) };
@@ -349,13 +357,17 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
       }
     }
     info["extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
-    QgsRectangle geographicExtent { extent };
-    if ( targetCrs.authid() != "EPSG:4326"_L1 )
+    // geographic_extent is only meaningful for Earth-based projects (EPSG:4326 is Earth-specific)
+    if ( targetCrs.isEarthCrs() )
     {
-      QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
-      geographicExtent = ct.transform( geographicExtent );
+      QgsRectangle geographicExtent { extent };
+      if ( targetCrs.authid() != "EPSG:4326"_L1 )
+      {
+        QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
+        geographicExtent = ct.transform( geographicExtent );
+      }
+      info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
     }
-    info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
 
     // Metadata
     json metadata;
