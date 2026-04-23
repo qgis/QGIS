@@ -17,6 +17,8 @@
 
 #include "qgspointcloudindex.h"
 
+#include <algorithm>
+
 #include "qgsbox3d.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
@@ -52,6 +54,21 @@ QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z )
 QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const
 {
   return QgsPointCloudNodeId( mD - 1, mX / 2, mY / 2, mZ / 2 );
+}
+
+QVector<QgsPointCloudNodeId> QgsPointCloudNodeId::childrenNodes() const
+{
+  if ( !isValid() )
+    return {};
+
+  QVector<QgsPointCloudNodeId> children;
+  children.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    children.emplace_back( mD + 1, mX * 2 + dx, mY * 2 + dy, mZ * 2 + dz );
+  }
+  return children;
 }
 
 QgsPointCloudNodeId QgsPointCloudNodeId::fromString( const QString &str )
@@ -164,21 +181,8 @@ QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( QgsPointCloudNodeId id ) 
     pointCount = mHierarchy.value( id, -1 );
   }
 
-  QList<QgsPointCloudNodeId> children;
-  {
-    const int d = id.d() + 1;
-    const int x = id.x() * 2;
-    const int y = id.y() * 2;
-    const int z = id.z() * 2;
-
-    for ( int i = 0; i < 8; ++i )
-    {
-      int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-      const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-      if ( hasNode( n2 ) )
-        children.append( n2 );
-    }
-  }
+  QList<QgsPointCloudNodeId> children = id.childrenNodes();
+  children.erase( std::remove_if( children.begin(), children.end(), [this]( const QgsPointCloudNodeId &c ) { return !hasNode( c ); } ), children.end() );
 
   QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
@@ -467,6 +471,12 @@ QString QgsPointCloudIndex::uri() const
 {
   Q_ASSERT( mIndex );
   return mIndex->uri();
+}
+
+bool QgsPointCloudIndex::needsHierarchyFetching( const QgsPointCloudNodeId &n ) const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->needsHierarchyFetching( n );
 }
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
