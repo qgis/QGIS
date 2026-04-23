@@ -192,7 +192,7 @@ void QgsOverlayUtils::difference(
 
       if ( !geometriesB.isEmpty() )
       {
-        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB, parameters );
+        const QgsGeometry geomB = QgsGeometry::unaryUnion( geometriesB, parameters, feedback );
         if ( !geomB.lastError().isEmpty() )
         {
           // This may happen if input geometries from a layer do not line up well (for example polygons
@@ -202,7 +202,7 @@ void QgsOverlayUtils::difference(
           // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
           throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
         }
-        geom = geom.difference( geomB, parameters );
+        geom = geom.difference( geomB, parameters, feedback );
       }
 
       if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType, flags ) )
@@ -329,7 +329,7 @@ void QgsOverlayUtils::intersection(
       if ( !engine->intersects( tmpGeom.constGet() ) )
         continue;
 
-      QgsGeometry intGeom = geom.intersection( tmpGeom, parameters );
+      QgsGeometry intGeom = geom.intersection( tmpGeom, parameters, feedback );
       if ( !sanitizeIntersectionResult( intGeom, geometryType ) )
         continue;
 
@@ -418,7 +418,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       if ( !g1engine->intersects( g2.constGet() ) )
         continue;
 
-      QgsGeometry geomIntersection = g1.intersection( g2, parameters );
+      QgsGeometry geomIntersection = g1.intersection( g2, parameters, feedback );
       if ( !sanitizeIntersectionResult( geomIntersection, geometryType ) )
         continue;
 
@@ -454,7 +454,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f1
       //
 
-      QgsGeometry g12 = g1.difference( g2, parameters );
+      QgsGeometry g12 = g1.difference( g2, parameters, feedback );
 
       index.deleteFeature( f );
       geometries.remove( fid1 );
@@ -472,7 +472,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       // update f2
       //
 
-      QgsGeometry g21 = g2.difference( g1, parameters );
+      QgsGeometry g21 = g2.difference( g1, parameters, feedback );
 
       QgsFeature f2old( fid2 );
       f2old.setGeometry( g2 );

@@ -57,10 +57,6 @@ class TestQgsTileDownloadManager : public QObject
 
 void TestQgsTileDownloadManager::initTestCase()
 {
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsNetworkAccessManager::instance()->cache()->clear();

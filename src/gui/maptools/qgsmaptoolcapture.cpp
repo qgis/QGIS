@@ -442,12 +442,12 @@ void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
 {
   if ( activated )
   {
-    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
   else
   {
-    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
     mCurrentShapeMapTool->deactivate();
   }
 }
@@ -1742,6 +1742,31 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   }
 }
 
+void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+{
+  QgsReferencedGeometry correctedGeometry = geometry;
+
+  // ensure geometry type is consistent with expected type
+  if ( mCaptureMode == CapturePolygon )
+  {
+    if ( const auto curve = qgsgeometry_cast< const QgsCurve * >( correctedGeometry.constGet() ) )
+    {
+      auto convertedToPolygon = std::make_unique< QgsCurvePolygon >();
+      convertedToPolygon->setExteriorRing( curve->clone() );
+      correctedGeometry = QgsReferencedGeometry( QgsGeometry( std::move( convertedToPolygon ) ), correctedGeometry.crs() );
+    }
+  }
+  else if ( mCaptureMode == CaptureLine )
+  {
+    if ( const auto polygon = qgsgeometry_cast< const QgsCurvePolygon * >( correctedGeometry.constGet() ) )
+    {
+      std::unique_ptr< QgsCurve > exterior( polygon->exteriorRing()->clone() );
+      correctedGeometry = QgsReferencedGeometry( QgsGeometry( std::move( exterior ) ), correctedGeometry.crs() );
+    }
+  }
+
+  emit transientGeometryChanged( correctedGeometry );
+}
 
 void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {

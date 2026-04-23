@@ -50,6 +50,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
       ${CMAKE_SOURCE_DIR}/src/core/3d
+      ${CMAKE_SOURCE_DIR}/src/core/3d/materials
       ${CMAKE_SOURCE_DIR}/src/core/actions
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -104,6 +105,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/core/web
       ${CMAKE_SOURCE_DIR}/src/gui
+      ${CMAKE_SOURCE_DIR}/src/gui/3d
       ${CMAKE_SOURCE_DIR}/src/gui/actions
       ${CMAKE_SOURCE_DIR}/src/gui/annotations
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable

@@ -314,6 +314,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All 3D Symbols" ) );
       break;
 
+    case QgsStyle::MaterialSettingsEntity:
+      btnSaveSymbol->setText( tr( "Save Material…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save material to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Materials" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -333,6 +340,13 @@ void QgsStyleItemsListWidget::setEntityTypes( const QList<QgsStyle::StyleEntity>
     btnSaveSymbol->setToolTip( tr( "Save label settings or text format to styles" ) );
     if ( allGroup >= 0 )
       groupsCombo->setItemText( allGroup, tr( "All Settings" ) );
+  }
+  else if ( filters.length() == 2 && filters.contains( QgsStyle::Symbol3DEntity ) && filters.contains( QgsStyle::MaterialSettingsEntity ) )
+  {
+    btnSaveSymbol->setText( tr( "Save Symbol" ) );
+    btnSaveSymbol->setToolTip( tr( "Save 3D symbol or material to styles" ) );
+    if ( allGroup >= 0 )
+      groupsCombo->setItemText( allGroup, tr( "All Symbols" ) );
   }
 }
 
@@ -393,6 +407,11 @@ QgsStyle::StyleEntity QgsStyleItemsListWidget::currentEntityType() const
   return static_cast<QgsStyle::StyleEntity>( mModel->data( index, static_cast<int>( QgsStyleModel::CustomRole::Type ) ).toInt() );
 }
 
+QgsStyleProxyModel *QgsStyleItemsListWidget::proxyModel()
+{
+  return mModel;
+}
+
 void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
 {
   // restore header sizes on show event -- because this widget is used in multiple places simultaneously
@@ -442,6 +461,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::Symbol3DEntity:
         allText = tr( "All 3D Symbols" );
+        break;
+
+      case QgsStyle::MaterialSettingsEntity:
+        allText = tr( "All Materials" );
         break;
 
       case QgsStyle::TagEntity:

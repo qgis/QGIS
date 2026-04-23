@@ -337,6 +337,11 @@ QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata()
   : QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
 {}
 
+QgsProviderMetadata::ProviderCapabilities QgsSensorThingsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
+}
+
 QIcon QgsSensorThingsProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( u"mIconSensorThings.svg"_s );

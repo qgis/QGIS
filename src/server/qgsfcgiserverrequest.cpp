@@ -102,6 +102,10 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     {
       method = PatchMethod;
     }
+    else if ( strcmp( me, "OPTIONS" ) == 0 )
+    {
+      method = OptionsMethod;
+    }
   }
 
   if ( method == PostMethod || method == PutMethod || method == PatchMethod )

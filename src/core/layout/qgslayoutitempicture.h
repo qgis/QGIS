@@ -289,6 +289,44 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
     void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
+     * Returns TRUE if the picture item should by clipped to the associated item.
+     *
+     * \see setClipToItem
+     * \see clippingItem
+     * \since QGIS 4.2
+     */
+    bool clipToItem() const;
+
+    /**
+     * Sets whether the picture item should by clipped to the associated item.
+     *
+     * \see clipToItem
+     * \see setClippingItem
+     * \since QGIS 4.2
+     */
+    void setClipToItem( bool clipToItem );
+
+    /**
+     * Returns the item that will will provide the clipping path for the picture, or
+     * NULLPTR if no item is set.
+     *
+     * \see setClippingItem
+     * \see clipToItem
+     * \since QGIS 4.2
+     */
+    QgsLayoutItem *clippingItem() const;
+
+    /**
+     * Sets the \a item that will will provide the clipping path for the picture.
+     *
+     * \note The specified item must return the QgsLayoutItem::FlagProvidesClipPath flag.
+     * \see clippingItem
+     * \see setClipToItem
+     * \since QGIS 4.2
+     */
+    void setClippingItem( QgsLayoutItem *item );
+
+    /**
      * Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
      * \param context expression context for evaluating data defined picture sources
@@ -308,6 +346,7 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
+    QPainterPath framePath() const override;
     QSizeF applyItemSizeConstraint( QSizeF targetSize ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -352,6 +391,10 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
 
     QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
 
+    bool mClipToItem = false;
+    QPointer< QgsLayoutItem > mClippingItem;
+    QString mClippingItemUuid;
+
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QVariant &data );
 
@@ -372,6 +415,8 @@ class CORE_EXPORT QgsLayoutItemPicture : public QgsLayoutItem
     void loadLocalPicture( const QString &path );
 
     void loadPictureUsingCache( const QString &path );
+
+    QPainterPath customFramePath() const;
 
     QgsLayoutItemPicture( const QgsLayoutItemPicture & ) = delete;
     QgsLayoutItemPicture &operator=( const QgsLayoutItemPicture & ) = delete;

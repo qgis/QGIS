@@ -18,12 +18,18 @@
 #include "qgis.h"
 #include "qgsphongtexturedmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsphongtexturedmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
+  mPreviewWidget->hide();
+  mPreviewWidget->setMaterialType( u"phongtextured"_s );
 
   spinShininess->setClearValue( 0, tr( "None" ) );
 
@@ -42,6 +48,8 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
   connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
+
+  connect( this, &QgsPhongTexturedMaterialWidget::changed, this, &QgsPhongTexturedMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsPhongTexturedMaterialWidget::create()
@@ -65,9 +73,10 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   mPropertyCollection = settings->dataDefinedProperties();
 
   updateWidgetState();
+  updatePreview();
 }
 
-QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongTexturedMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsPhongTexturedMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
@@ -79,7 +88,13 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   m->setTextureRotation( textureRotationSpinBox->value() );
   m->setDataDefinedProperties( mPropertyCollection );
 
-  return m.release();
+  return m;
+}
+
+void QgsPhongTexturedMaterialWidget::setPreviewVisible( bool visible )
+{
+  mPreviewWidget->setVisible( visible );
+  updatePreview();
 }
 
 void QgsPhongTexturedMaterialWidget::updateWidgetState()
@@ -94,4 +109,12 @@ void QgsPhongTexturedMaterialWidget::updateWidgetState()
     btnSpecular->setEnabled( false );
     btnSpecular->setToolTip( tr( "Specular color is disabled because material has no shininess" ) );
   }
+}
+
+void QgsPhongTexturedMaterialWidget::updatePreview()
+{
+  if ( mPreviewWidget->isHidden() )
+    return;
+  const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
+  mPreviewWidget->updatePreview( newSettings.get() );
 }

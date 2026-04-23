@@ -290,10 +290,6 @@ void TestZipLayer::initTestCase()
   QFile::remove( QDir::tempPath() + "/testzip.zip" );
   QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
   mDataDir = QStringLiteral( TEST_DATA_DIR ) + "/zip/";
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   // save current zipSetting value
   mScanZipSetting = QgsSettingsRegistryCore::settingsScanZipInBrowser->value();

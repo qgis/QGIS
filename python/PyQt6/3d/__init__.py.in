@@ -62,3 +62,5 @@ QgsPoint3DSymbol.Model = _Qgis.Point3DShape.Model
 QgsPoint3DSymbol.Model.is_monkey_patched = True
 QgsPoint3DSymbol.Billboard = _Qgis.Point3DShape.Billboard
 QgsPoint3DSymbol.Billboard.is_monkey_patched = True
+
+from qgis.core import QgsAbstractMaterialSettings, QgsGoochMaterialSettings, QgsMaterialSettingsAbstractMetadata, QgsMaterialRegistry, QgsMetalRoughMaterialSettings, QgsNullMaterialSettings, QgsPhongMaterialSettings, QgsPhongTexturedMaterialSettings, QgsSimpleLineMaterialSettings

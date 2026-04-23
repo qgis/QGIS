@@ -59,6 +59,7 @@ const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowCons
   = new QgsSettingsEntryBool( u"cad-show-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides
   = new QgsSettingsEntryBool( u"cad-snap-to-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
+const QgsSettingsEntryDouble *QgsAdvancedDigitizingDockWidget::settingsCadCommonAngle = new QgsSettingsEntryDouble( u"common-angle"_s, QgsSettingsTree::sTreeCad, 0.0 );
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent, QgsUserInputWidget *userInputWidget )
@@ -66,7 +67,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   , mMapCanvas( canvas )
   , mUserInputWidget( userInputWidget )
   , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
-  , mCommonAngleConstraint( QgsSettings().value( u"/Cad/CommonAngle"_s, 0.0 ).toDouble() )
+  , mCommonAngleConstraint( settingsCadCommonAngle->value() )
 {
   setupUi( this );
 
@@ -939,7 +940,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     {
       it.value()->setChecked( true );
       mCommonAngleConstraint = it.key();
-      QgsSettings().setValue( u"/Cad/CommonAngle"_s, it.key() );
+      settingsCadCommonAngle->setValue( it.key() );
       mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
       emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
       return;

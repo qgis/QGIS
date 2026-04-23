@@ -44,11 +44,36 @@ Caller takes ownership of the returned symbol.
 Returns the symbol type handled by the widget.
 %End
 
+    virtual Qgis::MaterialRenderingTechnique renderingTechnique() const = 0;
+%Docstring
+Returns associated rendering technique.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void changed();
 %Docstring
 Emitted when the symbol is changed.
+%End
+
+    void renderingTechniqueChanged();
+%Docstring
+Emitted when the rendering technique associated with the symbol is
+changed.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
 %End
 };
 

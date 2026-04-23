@@ -11,8 +11,6 @@ __author__ = "elpaso@itopen.it"
 __date__ = "2018-05-29"
 __copyright__ = "Copyright 2018, GISCE-TI S.L."
 
-from configparser import NoOptionError, NoSectionError
-
 from qgis.utils import get_plugin_deps, metadataParser, updateAvailablePlugins
 
 from . import installer as plugin_installer

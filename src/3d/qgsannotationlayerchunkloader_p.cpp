@@ -568,10 +568,21 @@ QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
     return;
   }
 
-  QgsBox3D rootBox3D( context.extent(), zMin, zMax );
-  // add small padding to avoid clipping of point features located at the edge of the bounding box
-  rootBox3D.grow( 1.0 );
-  setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+  // choose the smaller root extent between context and mLayer ones:
+  QgsRectangle extent = context.extent();
+  const QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
+  if ( layerExtentInMapCrs.isValid() )
+  {
+    extent = context.extent().intersect( layerExtentInMapCrs );
+  }
+  if ( extent.isValid() )
+  {
+    QgsBox3D rootBox3D( extent, zMin, zMax );
+
+    // add small padding to avoid clipping of point features located at the edge of the bounding box
+    rootBox3D.grow( 1.0 );
+    setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+  }
 }
 
 QgsChunkLoader *QgsAnnotationLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -595,21 +606,14 @@ QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity(
   double zMin,
   double zMax
 )
-  : QgsChunkedEntity(
+  : QgsAbstractFeatureBasedChunkedEntity(
       map,
       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
       new QgsAnnotationLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ),
       true
     )
 {
-  mTransform = new Qt3DCore::QTransform;
-  if ( applyTerrainOffset() )
-  {
-    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
-  }
-  this->addComponent( mTransform );
-
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged );
+  onTerrainElevationOffsetChanged();
 }
 
 QgsAnnotationLayerChunkedEntity::~QgsAnnotationLayerChunkedEntity()
@@ -628,15 +632,11 @@ bool QgsAnnotationLayerChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
-void QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged()
+QList<QgsRayCastHit> QgsAnnotationLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
-  QgsDebugMsgLevel( u"QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
-  float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
-  if ( !applyTerrainOffset() )
-  {
-    newOffset = 0.0;
-  }
-  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
+  Q_UNUSED( ray )
+  Q_UNUSED( context )
+  return {};
 }
 
 

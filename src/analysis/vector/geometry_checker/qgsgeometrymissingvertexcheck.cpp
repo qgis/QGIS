@@ -154,13 +154,13 @@ void QgsGeometryMissingVertexCheck::processPolygon(
   auto boundaries = std::make_unique<QgsMultiPolygon>();
 
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( polygon->exteriorRing()->clone(), mContext->tolerance ) );
-  boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
+  boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5, nullptr, feedback ) );
 
   const int numRings = polygon->numInteriorRings();
   for ( int i = 0; i < numRings; ++i )
   {
     geomEngine.reset( QgsGeometry::createGeometryEngine( polygon->interiorRing( i ), mContext->tolerance ) );
-    boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
+    boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5, nullptr, feedback ) );
   }
 
   geomEngine.reset( QgsGeometry::createGeometryEngine( boundaries.get(), mContext->tolerance ) );

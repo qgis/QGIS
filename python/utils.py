@@ -410,6 +410,8 @@ def get_plugin_deps(plugin_id: str) -> dict[str, Optional[str]]:
         return result
 
     for dep in plugin_deps.split(","):
+        if not dep:
+            continue
         if "==" in dep:
             name, version_required = dep.split("==")
         else:

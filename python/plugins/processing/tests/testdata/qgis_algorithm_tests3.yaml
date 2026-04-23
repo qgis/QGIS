@@ -1142,7 +1142,7 @@ tests:
         name: points_weighted.gml
         compare: false
 
-  - algorithm: qgis:randomextractwithinsubsets
+  - algorithm: native:randomextractwithinsubsets
     name: Random extract within subset (subset smaller than number)
     params:
       FIELD: id2

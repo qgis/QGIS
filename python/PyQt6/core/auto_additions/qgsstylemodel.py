@@ -40,6 +40,9 @@ QgsStyleModel.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.Role.IsTitleRole = QgsStyleModel.CustomRole.IsTitle
 QgsStyleModel.IsTitleRole.is_monkey_patched = True
 QgsStyleModel.IsTitleRole.__doc__ = "True if the index corresponds to a title item \n.. versionadded:: 3.26"
+QgsStyleModel.MaterialType = QgsStyleModel.CustomRole.MaterialType
+QgsStyleModel.MaterialType.is_monkey_patched = True
+QgsStyleModel.MaterialType.__doc__ = "Material type (for material entities) \n.. versionadded:: 4.2"
 QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -90,6 +93,10 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 
 
   Available as ``QgsStyleModel.IsTitleRole`` in older QGIS releases.
+
+* ``MaterialType``: Material type (for material entities)
+
+  .. versionadded:: 4.2
 
 
 """

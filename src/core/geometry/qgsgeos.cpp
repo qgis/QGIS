@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <memory>
 
 #include "qgsabstractgeometry.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
@@ -45,14 +46,18 @@ using namespace Qt::StringLiterals;
     return r;                  \
   }
 
-#define CATCH_GEOS_WITH_ERRMSG( r ) \
-  catch ( QgsGeosException & e )    \
-  {                                 \
-    if ( errorMsg )                 \
-    {                               \
-      *errorMsg = e.what();         \
-    }                               \
-    return r;                       \
+#define CATCH_GEOS_WITH_ERRMSG( r )                                                 \
+  catch ( QgsGeosException & e )                                                    \
+  {                                                                                 \
+    if ( errorMsg )                                                                 \
+    {                                                                               \
+      *errorMsg = e.what();                                                         \
+      if ( errorMsg->startsWith( "InterruptedException"_L1, Qt::CaseInsensitive ) ) \
+      {                                                                             \
+        errorMsg->clear();                                                          \
+      }                                                                             \
+    }                                                                               \
+    return r;                                                                       \
   }
 
 /// @cond PRIVATE
@@ -194,7 +199,7 @@ QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
   return g;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -218,6 +223,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
 #else
 
   GEOSMakeValidParams *params = GEOSMakeValidParams_create_r( context );
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   switch ( method )
   {
     case Qgis::MakeValidMethod::Linework:
@@ -311,17 +317,17 @@ void QgsGeos::cacheGeos( Qgis::GeosCreationFlags flags ) const
   mGeos = asGeos( mGeometry, mPrecision, flags );
 }
 
-QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
-  return overlay( geom, OverlayIntersection, errorMsg, parameters ).release();
+  return overlay( geom, OverlayIntersection, errorMsg, parameters, feedback ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
-  return overlay( geom, OverlayDifference, errorMsg, parameters ).release();
+  return overlay( geom, OverlayDifference, errorMsg, parameters, feedback ).release();
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || rect.isNull() || rect.isEmpty() )
   {
@@ -330,6 +336,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QS
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr opGeom( GEOSClipByRect_r( QgsGeosContext::get(), mGeos.get(), rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() ) );
     return fromGeos( opGeom.get() );
   }
@@ -442,7 +449,7 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
   }
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -455,6 +462,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
   std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     subdivideRecursive( mGeos.get(), maxNodes, 0, parts.get(), mGeometry->boundingBox(), parameters.gridSize() );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
@@ -462,12 +470,12 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
   return std::move( parts );
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
-  return overlay( geom, OverlayUnion, errorMsg, parameters ).release();
+  return overlay( geom, OverlayUnion, errorMsg, parameters, feedback ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   std::vector<geos::unique_ptr> geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -480,6 +488,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr geomUnion;
   try
   {
@@ -499,7 +508,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   std::vector<geos::unique_ptr> geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -512,6 +521,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr geomUnion;
   try
   {
@@ -532,9 +542,9 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
-  return overlay( geom, OverlaySymDifference, errorMsg, parameters ).release();
+  return overlay( geom, OverlaySymDifference, errorMsg, parameters, feedback ).release();
 }
 
 static bool isZVerticalLine( const QgsAbstractGeometry *geom, double tolerance = 4 * std::numeric_limits<double>::epsilon() )
@@ -574,7 +584,7 @@ static bool isZVerticalLine( const QgsAbstractGeometry *geom, double tolerance =
   return isVertical;
 }
 
-double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -583,6 +593,7 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   }
 
   geos::unique_ptr otherGeosGeom;
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
 
   // GEOSPreparedDistance_r is not able to properly compute the distance if one
   // of the geometries if a vertical line (LineString Z((X Y Z1, X Y Z2, ..., X Y Zn))).
@@ -620,7 +631,7 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return distance;
 }
 
-double QgsGeos::distance( double x, double y, QString *errorMsg ) const
+double QgsGeos::distance( double x, double y, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -628,6 +639,7 @@ double QgsGeos::distance( double x, double y, QString *errorMsg ) const
     return distance;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr point = createGeosPointXY( x, y, false, 0, false, 0, 2, 0 );
   if ( !point )
     return distance;
@@ -649,7 +661,7 @@ double QgsGeos::distance( double x, double y, QString *errorMsg ) const
   return distance;
 }
 
-bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, QString *errorMsg ) const
+bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -658,7 +670,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
 
   if ( qgsDoubleNear( maxdist, 0.0 ) )
   {
-    return intersects( geom, errorMsg );
+    return intersects( geom, errorMsg, feedback );
   }
 
   geos::unique_ptr otherGeosGeom;
@@ -688,6 +700,7 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   double distance;
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   try
   {
     if ( mGeosPrepared && !isZVerticalLine( mGeometry->simplifiedTypeRef() ) )
@@ -712,10 +725,11 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
   return distance <= maxdist;
 }
 
-bool QgsGeos::contains( double x, double y, QString *errorMsg ) const
+bool QgsGeos::contains( double x, double y, QString *errorMsg, QgsFeedback *feedback ) const
 {
   bool result = false;
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   try
   {
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
@@ -755,7 +769,7 @@ bool QgsGeos::contains( double x, double y, QString *errorMsg ) const
   return result;
 }
 
-double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -763,6 +777,7 @@ double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *err
     return distance;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
   if ( !otherGeosGeom )
   {
@@ -778,7 +793,7 @@ double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *err
   return distance;
 }
 
-double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
+double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -786,6 +801,7 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
     return distance;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
   if ( !otherGeosGeom )
   {
@@ -801,7 +817,7 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
   return distance;
 }
 
-double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -809,6 +825,7 @@ double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *error
     return distance;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
   if ( !otherGeosGeom )
   {
@@ -824,7 +841,7 @@ double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *error
   return distance;
 }
 
-double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
+double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg, QgsFeedback *feedback ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -832,6 +849,7 @@ double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double 
     return distance;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
   if ( !otherGeosGeom )
   {
@@ -847,13 +865,14 @@ double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double 
   return distance;
 }
 
-bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
     return false;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 12 )
   // special optimised case for point intersects
   if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
@@ -880,27 +899,27 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) c
   return relation( geom, RelationIntersects, errorMsg );
 }
 
-bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  return relation( geom, RelationTouches, errorMsg );
+  return relation( geom, RelationTouches, errorMsg, feedback );
 }
 
-bool QgsGeos::crosses( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::crosses( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  return relation( geom, RelationCrosses, errorMsg );
+  return relation( geom, RelationCrosses, errorMsg, feedback );
 }
 
-bool QgsGeos::within( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::within( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  return relation( geom, RelationWithin, errorMsg );
+  return relation( geom, RelationWithin, errorMsg, feedback );
 }
 
-bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  return relation( geom, RelationOverlaps, errorMsg );
+  return relation( geom, RelationOverlaps, errorMsg, feedback );
 }
 
-bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -911,6 +930,7 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) con
   // special optimised case for point containment
   if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom->simplifiedTypeRef() ) )
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     if ( mGeosPrepared )
     {
       try
@@ -930,15 +950,15 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) con
   }
 #endif
 
-  return relation( geom, RelationContains, errorMsg );
+  return relation( geom, RelationContains, errorMsg, feedback );
 }
 
-bool QgsGeos::disjoint( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::disjoint( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  return relation( geom, RelationDisjoint, errorMsg );
+  return relation( geom, RelationDisjoint, errorMsg, feedback );
 }
 
-QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -953,6 +973,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) co
 
   QString result;
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   try
   {
     char *r = GEOSRelate_r( context, mGeos.get(), geosGeom.get() );
@@ -974,7 +995,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) co
   return result;
 }
 
-bool QgsGeos::relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg ) const
+bool QgsGeos::relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -989,6 +1010,8 @@ bool QgsGeos::relatePattern( const QgsAbstractGeometry *geom, const QString &pat
 
   bool result = false;
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+
   try
   {
     result = ( GEOSRelatePattern_r( context, mGeos.get(), geosGeom.get(), pattern.toLocal8Bit().constData() ) == 1 );
@@ -1900,7 +1923,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   return nullptr;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -1912,6 +1935,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
   {
     return nullptr;
   }
+
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
 
   const double gridSize = parameters.gridSize();
 
@@ -1992,7 +2017,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
   }
 }
 
-bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg ) const
+bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -2006,6 +2031,8 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+
   bool result = false;
   try
   {
@@ -2076,7 +2103,7 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
   return result;
 }
 
-QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2086,19 +2113,23 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *er
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+
     geos.reset( GEOSBuffer_r( QgsGeosContext::get(), mGeos.get(), distance, segments ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  geos::unique_ptr geos = buffer( mGeos.get(), distance, segments, endCapStyle, joinStyle, miterLimit, errorMsg );
+  geos::unique_ptr geos = buffer( mGeos.get(), distance, segments, endCapStyle, joinStyle, miterLimit, errorMsg, feedback );
   return fromGeos( geos.get() ).release();
 }
 
-geos::unique_ptr QgsGeos::buffer( const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg )
+geos::unique_ptr QgsGeos::buffer(
+  const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg, QgsFeedback *feedback
+)
 {
   if ( !geometry )
   {
@@ -2108,13 +2139,14 @@ geos::unique_ptr QgsGeos::buffer( const GEOSGeometry *geometry, double distance,
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSBufferWithStyle_r( QgsGeosContext::get(), geometry, distance, segments, static_cast< int >( endCapStyle ), static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return geos;
 }
 
-QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2123,13 +2155,14 @@ QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg ) co
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSTopologyPreserveSimplify_r( QgsGeosContext::get(), mGeos.get(), tolerance ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2138,13 +2171,14 @@ QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) 
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSInterpolate_r( QgsGeosContext::get(), mGeos.get(), distance ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
 }
 
-QgsPoint *QgsGeos::centroid( QString *errorMsg ) const
+QgsPoint *QgsGeos::centroid( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2158,6 +2192,7 @@ QgsPoint *QgsGeos::centroid( QString *errorMsg ) const
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSGetCentroid_r( context, mGeos.get() ) );
 
     if ( !geos )
@@ -2186,7 +2221,7 @@ QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
   return fromGeos( geos.get() ).release();
 }
 
-QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg ) const
+QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2200,6 +2235,7 @@ QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg ) const
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSPointOnSurface_r( context, mGeos.get() ) );
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
@@ -2215,7 +2251,7 @@ QgsPoint *QgsGeos::pointOnSurface( QString *errorMsg ) const
   return new QgsPoint( x, y );
 }
 
-QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2224,6 +2260,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr cHull( GEOSConvexHull_r( QgsGeosContext::get(), mGeos.get() ) );
     std::unique_ptr< QgsAbstractGeometry > cHullGeom = fromGeos( cHull.get() );
     return cHullGeom.release();
@@ -2231,7 +2268,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
   ( void ) allowHoles;
@@ -2246,6 +2283,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercen
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr concaveHull( GEOSConcaveHull_r( QgsGeosContext::get(), mGeos.get(), targetPercent, allowHoles ) );
     std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
     return concaveHullGeom;
@@ -2254,7 +2292,31 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercen
 #endif
 }
 
-Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::unique_ptr<QgsAbstractGeometry> *invalidEdges, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::concaveHullOfPolygons( double lengthRatio, bool allowHoles, bool isTight, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
+  ( void ) allowHoles;
+  ( void ) targetPercent;
+  ( void ) errorMsg;
+  throw QgsNotSupportedException( QObject::tr( "Calculating concaveHullOfPolygons requires a QGIS build based on GEOS 3.11 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr concaveHull( GEOSConcaveHullOfPolygons_r( QgsGeosContext::get(), mGeos.get(), lengthRatio, isTight ? 1 : 0, allowHoles ? 1 : 0 ) );
+    std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
+    return concaveHullGeom;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
+Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::unique_ptr<QgsAbstractGeometry> *invalidEdges, QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12
   ( void ) gapWidth;
@@ -2269,6 +2331,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
     return Qgis::CoverageValidityResult::Error;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
@@ -2299,7 +2362,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
 #endif
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12
   ( void ) tolerance;
@@ -2316,6 +2379,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double toleran
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr simplified( GEOSCoverageSimplifyVW_r( QgsGeosContext::get(), mGeos.get(), tolerance, preserveBoundary ? 1 : 0 ) );
     std::unique_ptr< QgsAbstractGeometry > simplifiedGeom = fromGeos( simplified.get() );
     return simplifiedGeom;
@@ -2324,7 +2388,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double toleran
 #endif
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2335,6 +2399,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg )
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr unioned( GEOSCoverageUnion_r( QgsGeosContext::get(), mGeos.get() ) );
     std::unique_ptr< QgsAbstractGeometry > result = fromGeos( unioned.get() );
     return result;
@@ -2342,7 +2407,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg )
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
+bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2352,6 +2417,8 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+
   try
   {
     GEOSGeometry *g1 = nullptr;
@@ -2404,7 +2471,7 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
   CATCH_GEOS_WITH_ERRMSG( false )
 }
 
-bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -2413,6 +2480,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) cons
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr geosGeom( asGeos( geom, mPrecision ) );
     if ( !geosGeom )
     {
@@ -2424,7 +2492,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometry *geom, QString *errorMsg ) cons
   CATCH_GEOS_WITH_ERRMSG( false )
 }
 
-bool QgsGeos::isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg ) const
+bool QgsGeos::isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !geom )
   {
@@ -2433,6 +2501,8 @@ bool QgsGeos::isFuzzyEqual( const QgsAbstractGeometry *geom, double epsilon, QSt
 
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+
     geos::unique_ptr geosGeom( asGeos( geom, mPrecision ) );
     if ( !geosGeom )
     {
@@ -2759,7 +2829,7 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   return geosPolygon;
 }
 
-geos::unique_ptr QgsGeos::offsetCurve( const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg )
+geos::unique_ptr QgsGeos::offsetCurve( const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg, QgsFeedback *feedback )
 {
   if ( !geometry )
     return nullptr;
@@ -2771,22 +2841,25 @@ geos::unique_ptr QgsGeos::offsetCurve( const GEOSGeometry *geometry, double dist
     // https://github.com/qgis/QGIS/issues/53165#issuecomment-1563470832
     if ( segments < 8 )
       segments = 8;
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     offset.reset( GEOSOffsetCurve_r( QgsGeosContext::get(), geometry, distance, segments, static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return offset;
 }
 
-QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg, QgsFeedback *feedback ) const
 {
-  geos::unique_ptr res = offsetCurve( mGeos.get(), distance, segments, joinStyle, miterLimit, errorMsg );
+  geos::unique_ptr res = offsetCurve( mGeos.get(), distance, segments, joinStyle, miterLimit, errorMsg, feedback );
   if ( !res )
     return nullptr;
 
   return fromGeos( res.get() ).release();
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer(
+  double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg, QgsFeedback *feedback
+) const
 {
   if ( !mGeos )
   {
@@ -2795,6 +2868,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
 
   geos::unique_ptr geos;
   GEOSContextHandle_t context = QgsGeosContext::get();
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   try
   {
     geos::buffer_params_unique_ptr bp( GEOSBufferParams_create_r( context ) );
@@ -2813,7 +2887,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tolerance, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tolerance, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2823,13 +2897,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tol
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSMaximumInscribedCircle_r( QgsGeosContext::get(), mGeos.get(), tolerance ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2843,13 +2918,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double toleran
     if ( boundary )
       boundaryGeos = asGeos( boundary );
 
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSLargestEmptyCircle_r( QgsGeosContext::get(), mGeos.get(), boundaryGeos.get(), tolerance ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2859,13 +2935,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) 
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSMinimumWidth_r( QgsGeosContext::get(), mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
-double QgsGeos::minimumClearance( QString *errorMsg ) const
+double QgsGeos::minimumClearance( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2876,6 +2953,7 @@ double QgsGeos::minimumClearance( QString *errorMsg ) const
   double res = 0;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     if ( GEOSMinimumClearance_r( QgsGeosContext::get(), mGeos.get(), &res ) != 0 )
       return std::numeric_limits< double >::quiet_NaN();
   }
@@ -2883,7 +2961,7 @@ double QgsGeos::minimumClearance( QString *errorMsg ) const
   return res;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2893,13 +2971,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *err
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSMinimumClearanceLine_r( QgsGeosContext::get(), mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::node( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::node( QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -2909,13 +2988,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::node( QString *errorMsg ) const
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSNode_r( QgsGeosContext::get(), mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || !other )
   {
@@ -2929,6 +3009,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::sharedPaths( const QgsAbstractGeom
     if ( !otherGeos )
       return nullptr;
 
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSSharedPaths_r( QgsGeosContext::get(), mGeos.get(), otherGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
@@ -3067,7 +3148,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
   }
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg, const QgsGeometryParameters &parameters ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg, const QgsGeometryParameters &parameters, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -3078,6 +3159,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg, c
   if ( GEOSGeomTypeId_r( context, mGeos.get() ) != GEOS_MULTILINESTRING )
     return nullptr;
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   geos::unique_ptr geos;
   try
   {
@@ -3094,7 +3176,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg, c
   return fromGeos( geos.get() );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || isEmpty() || other.isEmpty() )
   {
@@ -3107,6 +3189,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &o
     return nullptr;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   GEOSContextHandle_t context = QgsGeosContext::get();
   double nx = 0.0;
   double ny = 0.0;
@@ -3138,17 +3221,17 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &o
   return std::make_unique< QgsPoint >( nx, ny );
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos || other.isEmpty() )
   {
     return nullptr;
   }
 
-  return shortestLine( other.constGet(), errorMsg );
+  return shortestLine( other.constGet(), errorMsg, feedback );
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !other || other->isEmpty() )
     return nullptr;
@@ -3159,6 +3242,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
     return nullptr;
   }
 
+  QgsScopedGeosContextRegisterFeedback interrupt( feedback );
   GEOSContextHandle_t context = QgsGeosContext::get();
   double nx1 = 0.0;
   double ny1 = 0.0;
@@ -3196,7 +3280,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
   return line;
 }
 
-double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) const
+double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -3212,6 +3296,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   double distance = -1;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     distance = GEOSProject_r( QgsGeosContext::get(), mGeos.get(), otherGeom.get() );
   }
   catch ( QgsGeosException &e )
@@ -3227,7 +3312,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   return distance;
 }
 
-double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg ) const
+double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -3241,6 +3326,7 @@ double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg ) const
   double distance = -1;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     distance = GEOSProject_r( QgsGeosContext::get(), mGeos.get(), point.get() );
   }
   catch ( QgsGeosException &e )
@@ -3256,7 +3342,7 @@ double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg ) const
   return distance;
 }
 
-QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg )
+QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg, QgsFeedback *feedback )
 {
   GEOSGeometry **const lineGeosGeometries = new GEOSGeometry *[geometries.size()];
   int validLines = 0;
@@ -3273,6 +3359,7 @@ QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geo
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos::unique_ptr result( GEOSPolygonize_r( context, lineGeosGeometries, validLines ) );
     for ( int i = 0; i < validLines; ++i )
     {
@@ -3296,7 +3383,7 @@ QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geo
   }
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double tolerance, bool edgesOnly, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double tolerance, bool edgesOnly, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -3317,6 +3404,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::voronoiDiagram( const QgsAbstractG
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSVoronoiDiagram_r( context, mGeos.get(), extentGeosGeom.get(), tolerance, edgesOnly ) );
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
@@ -3329,7 +3417,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::voronoiDiagram( const QgsAbstractG
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg, QgsFeedback *feedback ) const
 {
   if ( !mGeos )
   {
@@ -3340,6 +3428,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tole
   geos::unique_ptr geos;
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSDelaunayTriangulation_r( context, mGeos.get(), tolerance, edgesOnly ) );
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
@@ -3352,7 +3441,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tole
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
   ( void ) errorMsg;
@@ -3367,6 +3456,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( 
   GEOSContextHandle_t context = QgsGeosContext::get();
   try
   {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
     geos.reset( GEOSConstrainedDelaunayTriangulation_r( context, mGeos.get() ) );
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
@@ -3911,3 +4001,34 @@ int QgsGeos::geomDigits( const GEOSGeometry *geom )
 
   return maxDigits;
 }
+
+QgsScopedGeosContextRegisterFeedback::QgsScopedGeosContextRegisterFeedback( QgsFeedback *feedback )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+  : mFeedback( feedback )
+{
+  GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), &callback, reinterpret_cast< void * >( mFeedback ) );
+}
+#else
+{
+  ( void ) feedback;
+}
+#endif
+
+
+QgsScopedGeosContextRegisterFeedback::~QgsScopedGeosContextRegisterFeedback()
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+  GEOSContext_setInterruptCallback_r( QgsGeosContext::get(), nullptr, nullptr );
+#endif
+}
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 14 )
+int QgsScopedGeosContextRegisterFeedback::callback( void *userData )
+{
+  if ( !userData )
+    return 0;
+
+  QgsFeedback *feedback = reinterpret_cast< QgsFeedback * >( userData );
+  return feedback && feedback->isCanceled() ? 1 : 0;
+}
+#endif

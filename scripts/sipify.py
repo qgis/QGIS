@@ -3252,7 +3252,7 @@ def process_inline_declarations():
 
 
 def process_method_decl():
-    pattern = r"^\s*((?:const |virtual |static |inline ))*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})(\(.*)$"
+    pattern = r"^\s*((?:const |virtual |static |inline ))*(?!explicit)((?:(?:unsigned |signed |long |short )*\w+(?:::\w+)*(?:<.*?>)?))\s+(?:\*|&)?(\w+|operator.{1,2})(\(.*)$"
     match = re.match(pattern, CONTEXT.current_line)
     if match:
         CONTEXT.current_method_name = match.group(3)

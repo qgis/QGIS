@@ -28,7 +28,7 @@
 //
 
 #include "qgs3drendercontext.h"
-#include "qgschunkedentity.h"
+#include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgsrulebased3drenderer.h"
 
@@ -121,23 +121,17 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
  *
  * \since QGIS 3.12
  */
-class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
+class QgsRuleBasedChunkedEntity : public QgsAbstractFeatureBasedChunkedEntity
 {
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule );
 
-    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
-
     ~QgsRuleBasedChunkedEntity() override;
-  private slots:
-    void onTerrainElevationOffsetChanged();
 
   private:
-    Qt3DCore::QTransform *mTransform = nullptr;
-
-    bool applyTerrainOffset() const;
+    bool applyTerrainOffset() const override;
 };
 
 /// @endcond
