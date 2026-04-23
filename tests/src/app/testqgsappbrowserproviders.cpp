@@ -66,10 +66,6 @@ void TestQgsAppBrowserProviders::initTestCase()
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = dataDir + '/';
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   // save current scanItemsSetting value
   const QgsSettings settings;
   mScanItemsSetting = settings.value( u"/qgis/scanItemsInBrowser2"_s, QVariant( "" ) ).toString();

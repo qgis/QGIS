@@ -112,9 +112,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
 }
 
 QgsFieldValidator::~QgsFieldValidator()
-{
-  delete mValidator;
-}
+{}
 
 QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
 {

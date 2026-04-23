@@ -16,7 +16,7 @@ import tempfile
 import unittest
 
 from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication, QObject
+from qgis.PyQt.QtCore import QObject
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -26,10 +26,6 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

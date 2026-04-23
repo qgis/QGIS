@@ -12,8 +12,8 @@
   }, {
     "arg": "backend",
     "optional": true,
-    "default": "GEOS",
-    "description": "Geometry backend implementation: GEOS"
+    "default": "'GEOS'",
+    "description": "Geometry backend implementation: 'GEOS'"
   }],
   "examples": [{
     "expression": "topologically_equals( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ) )",

@@ -334,10 +334,19 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   // copy request so we can modify it
   QNetworkRequest modifiedRequest( req );
 
+  constexpr QNetworkRequest::Attribute attrSuffix = static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeUserAgentSuffix );
+  const QVariant userAgentCustomSuffix = modifiedRequest.attribute( attrSuffix );
+
   QString userAgent = settingsUserAgent->value();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
   userAgent += u"QGIS/%1/%2"_s.arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
+
+  if ( !userAgentCustomSuffix.toString().isEmpty() )
+  {
+    userAgent.append( ' ' + userAgentCustomSuffix.toString() );
+  }
+
   modifiedRequest.setRawHeader( "User-Agent", userAgent.toLatin1() );
 
 #ifndef QT_NO_SSL

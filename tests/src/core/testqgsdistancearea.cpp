@@ -51,6 +51,7 @@ class TestQgsDistanceArea : public QObject
     void regression14675();
     void regression16820();
     void regression61299();
+    void setCrsEllipsoidLogic();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -468,6 +469,71 @@ PROJCRS["Hanseong PCS",
   QVERIFY( !std::isnan( result ) );
 }
 
+void TestQgsDistanceArea::setCrsEllipsoidLogic()
+{
+  bool missingGridHandlerCalled = false;
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler(
+    [&missingGridHandlerCalled]( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & ) { missingGridHandlerCalled = true; }
+  );
+
+  // set everything to WGS84 first
+  QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
+
+  QgsCoordinateTransformContext transformContext;
+
+  // by default the transform is dirty
+  QgsDistanceArea calc;
+  QVERIFY( calc.mCoordTransformDirty );
+
+  // if transform is obtained then the transformed is not dirty anymore
+  QgsCoordinateTransform transform = calc.sourceToEllipsoid();
+  QVERIFY( !calc.mCoordTransformDirty );
+
+  // if source CRS is set the transform is dirty again
+  calc.setSourceCrs( wgs84, transformContext );
+  QVERIFY( missingGridHandlerCalled == false );
+  QVERIFY( calc.mCoordTransformDirty );
+  QCOMPARE( calc.sourceCrs(), wgs84 );
+
+  // obtaining transform and checking values
+  transform = calc.sourceToEllipsoid();
+  QCOMPARE( transform.sourceCrs(), wgs84 );
+  QVERIFY( transform.destinationCrs().ellipsoidAcronym().isEmpty() );
+
+  // set elipsoid, should mark transform dirty again
+  QVERIFY( calc.setEllipsoid( wgs84.ellipsoidAcronym() ) );
+  QVERIFY( missingGridHandlerCalled == false );
+  QVERIFY( calc.mCoordTransformDirty );
+  QCOMPARE( calc.ellipsoid(), wgs84.ellipsoidAcronym() );
+
+  // get the complete transform, should be valid and not dirty anymore
+  transform = calc.sourceToEllipsoid();
+  QVERIFY( !calc.mCoordTransformDirty );
+  QVERIFY( transform.isValid() );
+
+  // now change the project to a different CRS with a different ellipsoid
+  QgsCoordinateReferenceSystem moonCrs( "IAU_2015:30100" );
+
+  // set CRS, should be dirty and with proper CRS, but the ellipsoid is still old
+  calc.setSourceCrs( moonCrs, transformContext );
+  QVERIFY( missingGridHandlerCalled == false );
+  QVERIFY( calc.mCoordTransformDirty );
+  QCOMPARE( calc.sourceCrs(), moonCrs );
+  QCOMPARE( calc.ellipsoid(), wgs84.ellipsoidAcronym() );
+
+  // add ellipsoid, should be dirty and with proper ellipsoid
+  calc.setEllipsoid( moonCrs.ellipsoidAcronym() );
+  QVERIFY( missingGridHandlerCalled == false );
+  QVERIFY( calc.mCoordTransformDirty );
+  QCOMPARE( calc.ellipsoid(), moonCrs.ellipsoidAcronym() );
+
+  // get the complete transform, should be valid and not dirty anymore
+  transform = calc.sourceToEllipsoid();
+  QCOMPARE( transform.sourceCrs(), moonCrs );
+  QCOMPARE( transform.destinationCrs().ellipsoidAcronym(), u"PARAMETER:1737400:1737400"_s );
+  QVERIFY( !calc.mCoordTransformDirty );
+  QVERIFY( transform.isValid() );
+}
 
 QGSTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"

@@ -17,7 +17,7 @@
 
 #include <memory>
 
-#include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dutils.h"
@@ -39,11 +39,11 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
-  : Qgs3DMapTool( canvas )
+Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvasWidget *canvasWidget )
+  : Qgs3DMapTool( canvasWidget->mapCanvas3D() )
 {
   // Dialog
-  mDialog = std::make_unique<Qgs3DMeasureDialog>( this );
+  mDialog.reset( new Qgs3DMeasureDialog( this, canvasWidget ) );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 }

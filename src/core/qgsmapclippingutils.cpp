@@ -56,7 +56,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -102,7 +102,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -169,7 +169,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 
@@ -206,7 +206,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     }
     else
     {
-      result = result.intersection( region.geometry() );
+      result = result.intersection( region.geometry(), QgsGeometryParameters(), context.feedback() );
     }
   }
 

@@ -28,7 +28,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import QgisTestCase
 from utilities import start_app, unitTestDataPath
 
@@ -41,10 +41,6 @@ class TestTranslateGeometry(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsTranslateGeometry.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsTranslateGeometry")
-        QgsSettings().clear()
         Processing.initialize()
 
     def tearDown(self):

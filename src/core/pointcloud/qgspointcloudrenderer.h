@@ -727,6 +727,22 @@ class CORE_EXPORT QgsPointCloudRenderer
       */
     double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
 
+    /**
+     * Returns the shading renderer used to render shading on the layer.
+     *
+     * \see setElevationShadingRenderer()
+     * \since QGIS 4.2
+     */
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
+
+    /**
+     * Sets the shading \a renderer used to render shading on the layer.
+     *
+     * \see elevationShadingRenderer()
+     * \since QGIS 4.2
+     */
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer ) { mElevationShadingRenderer = renderer; }
+
   protected:
     /**
      * Retrieves the x and y coordinate for the point at index \a i.
@@ -863,6 +879,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
     double mOverviewSwitchingScale = 1.0;
+
+    QgsElevationShadingRenderer mElevationShadingRenderer;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

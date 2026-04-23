@@ -89,6 +89,7 @@ class QgsSensorThingsProviderMetadata final : public QgsProviderMetadata
 
   public:
     QgsSensorThingsProviderMetadata();
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QIcon icon() const final;
     QList<QgsDataItemProvider *> dataItemProviders() const final;
     QVariantMap decodeUri( const QString &uri ) const final;

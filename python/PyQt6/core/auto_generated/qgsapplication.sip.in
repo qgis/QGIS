@@ -11,6 +11,7 @@
 
 
 
+
 class QgsApplication : QApplication
 {
 %Docstring(signature="appended")
@@ -1024,6 +1025,18 @@ Returns registry of available 3D symbols.
 .. versionadded:: 3.16
 %End
 
+  static QgsMaterialRegistry *materialRegistry() /KeepReference/;
+%Docstring
+Returns registry of available 3D materials.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS
+   releases. It is exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+%End
+
   static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available scalebar renderers.
@@ -1219,6 +1232,7 @@ file
 
 .. versionadded:: 3.4
 %End
+
 
 
 %If (ANDROID)

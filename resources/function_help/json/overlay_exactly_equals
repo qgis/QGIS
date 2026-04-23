@@ -26,8 +26,8 @@
   }, {
     "arg": "backend",
     "optional": true,
-    "default": "QGIS",
-    "description": "Geometry backend implementation: QGIS or GEOS"
+    "default": "'QGIS'",
+    "description": "Geometry backend implementation: 'QGIS' or 'GEOS'"
   }],
   "examples": [{
     "expression": "overlay_exactly_equals('regions')",

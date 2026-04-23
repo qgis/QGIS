@@ -19,6 +19,7 @@ typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
 typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
 
+
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 
@@ -100,6 +101,7 @@ Constructor for QgsStyle, with the specified ``parent`` object.
       LabelSettingsEntity,
       LegendPatchShapeEntity,
       Symbol3DEntity,
+      MaterialSettingsEntity,
     };
 
     QString name() const;
@@ -264,7 +266,7 @@ Adds a 3d ``symbol`` with the specified ``name`` to the style. Ownership
 of ``symbol`` is transferred.
 
 If ``update`` is set to ``True``, the style database will be
-automatically updated with the new legend patch shape.
+automatically updated with the new 3d symbol.
 
 Returns ``True`` if the operation was successful.
 
@@ -273,6 +275,25 @@ Returns ``True`` if the operation was successful.
    Adding 3d symbols with the name of existing ones replaces them.
 
 .. versionadded:: 3.16
+%End
+
+    bool addMaterialSettings( const QString &name, QgsAbstractMaterialSettings *settings /Transfer/, bool update = false );
+%Docstring
+Adds a 3D material ``settings`` with the specified ``name`` to the
+style.
+
+Ownership of ``settings`` is transferred.
+
+If ``update`` is set to ``True``, the style database will be
+automatically updated with the new material settings.
+
+Returns ``True`` if the operation was successful.
+
+.. note::
+
+   Adding material settings with the name of existing ones replaces them.
+
+.. versionadded:: 4.2
 %End
 
     int addTag( const QString &tagName );
@@ -851,6 +872,51 @@ Returns a list of names of 3d symbols in the style.
 .. versionadded:: 3.16
 %End
 
+    bool saveMaterialSettings( const QString &name, QgsAbstractMaterialSettings *settings /Transfer/, bool favorite, const QStringList &tags );
+%Docstring
+Adds 3D material ``settings`` to the database.
+
+:param name: is the name of the material settings
+:param settings: 3D material settings to save. Ownership is transferred.
+:param favorite: is a boolean value to specify whether the material
+                 settings should be added to favorites
+:param tags: is a list of tags that are associated with the material
+             settings
+
+:return: returns the success state of the save operation
+
+.. versionadded:: 4.2
+%End
+
+    bool renameMaterialSettings( const QString &oldName, const QString &newName );
+%Docstring
+Changes a 3D material settings's name.
+
+.. versionadded:: 4.2
+%End
+
+    QStringList materialSettingsNames() const;
+%Docstring
+Returns a list of names of 3D material settings in the style.
+
+.. versionadded:: 4.2
+%End
+
+    int materialSettingsCount() const;
+%Docstring
+Returns count of 3D material settings in the style.
+
+.. versionadded:: 4.2
+%End
+
+    std::unique_ptr< QgsAbstractMaterialSettings > materialSettings( const QString &name ) const;
+%Docstring
+Returns a new copy of the 3D material settings with the specified
+``name``.
+
+.. versionadded:: 4.2
+%End
+
     bool createDatabase( const QString &filename );
 %Docstring
 Creates an on-disk database
@@ -1344,6 +1410,18 @@ database.
         sipType = sipType_QgsStyleLabelSettingsEntity;
         break;
 
+      case QgsStyle::LegendPatchShapeEntity:
+        sipType = sipType_QgsStyleLegendPatchShapeEntity;
+        break;
+
+      case QgsStyle::Symbol3DEntity:
+        sipType = sipType_QgsStyleSymbol3DEntity;
+        break;
+
+      case QgsStyle::MaterialSettingsEntity:
+        sipType = sipType_QgsStyleMaterialSettingsEntity;
+        break;
+
       case QgsStyle::SmartgroupEntity:
       case QgsStyle::TagEntity:
         sipType = 0;
@@ -1530,6 +1608,37 @@ Ownership of ``symbol`` is NOT transferred.
     const QgsAbstract3DSymbol *symbol() const;
 %Docstring
 Returns the entity's symbol.
+%End
+
+};
+
+
+class QgsStyleMaterialSettingsEntity : QgsStyleEntityInterface
+{
+%Docstring(signature="appended")
+A 3D material settings entity for :py:class:`QgsStyle` databases.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsstyle.h"
+%End
+  public:
+    QgsStyleMaterialSettingsEntity( const QgsAbstractMaterialSettings *settings );
+%Docstring
+Constructor for QgsStyleMaterialSettingsEntity, with the specified
+``settings``.
+
+Ownership of ``settings`` is NOT transferred.
+%End
+
+    virtual QgsStyle::StyleEntity type() const;
+
+
+    const QgsAbstractMaterialSettings *settings() const;
+%Docstring
+Returns the entity's settings.
 %End
 
 };

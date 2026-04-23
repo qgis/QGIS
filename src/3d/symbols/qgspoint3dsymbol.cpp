@@ -105,9 +105,9 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
   const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
-  mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( materialType );
   if ( !mMaterialSettings )
-    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s ) );
+    mMaterialSettings = Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s );
   mMaterialSettings->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( u"shape"_s ) );
@@ -289,6 +289,19 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
     }
 
     case Qgis::Point3DShape::Model:
+    {
+      // defaults are "z" up, "y" forward -- this ensures default rendering matches 3.x appearance
+      if ( property == "upAxis"_L1 )
+      {
+        return mShapeProperties.value( u"upAxis"_s, u"z"_s ).toString();
+      }
+      if ( property == "forwardAxis"_L1 )
+      {
+        return mShapeProperties.value( u"forwardAxis"_s, u"y"_s ).toString();
+      }
+      break;
+    }
+
     case Qgis::Point3DShape::Billboard:
       break;
   }

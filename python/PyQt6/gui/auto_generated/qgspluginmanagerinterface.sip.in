@@ -51,9 +51,12 @@ clear the repository listWidget
 add repository to the repository listWidget
 %End
 
-    virtual void showPluginManager( int tabIndex = -1 ) = 0;
+    virtual void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) = 0;
 %Docstring
-show the Plugin Manager window and optionally open tab tabIndex
+Shows the Plugin Manager window and optionally open tab tabIndex and
+pre-fill search term.
+
+The ``searchTerm`` argument was added in QGIS 4.2
 %End
 
     virtual void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 ) = 0;

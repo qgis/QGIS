@@ -61,6 +61,34 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
+#ifndef SIP_RUN
+    /**
+     * Encapsulates a layer mime URI, with additional details.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    struct LayerUriWithDetails
+    {
+        //! Layer URI
+        QgsMimeDataUtils::Uri uri;
+        //! A user-friendly, translated description of the layer type
+        QString userFriendlyDescription;
+    };
+
+    /**
+     * Returns a list of layer mime URIs, with additional details.
+     *
+     * An alternative to mimeUris(), allowing for returning richer layer detail.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.2
+     */
+    virtual QList< LayerUriWithDetails > layerUrisWithDetails() const;
+#endif
+
     /**
      * Returns the associated map layer type.
      */

@@ -29,6 +29,7 @@ SIP_NO_FILE
 
 class QgsMeshLayer;
 class QgsMapCanvas;
+class QgsSettingsEntryInteger;
 
 /**
  * \ingroup gui
@@ -42,6 +43,8 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryInteger *settingsTab;
+
     /**
      * A widget to hold the renderer properties for a mesh layer.
      * \param layer The mesh layer to style

@@ -23,6 +23,9 @@ email                : nyall dot dawson at gmail dot com
 
 #define SIP_NO_FILE
 
+class QgsSettingsEntryBool;
+
+
 #define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>
 
@@ -109,6 +112,8 @@ class CORE_EXPORT QgsOgrProviderUtils
     );
 
   public:
+    static const QgsSettingsEntryBool *settingsWalForSqlite3;
+
     static QString fileVectorFilters();
     static QString databaseDrivers();
     static QString protocolDrivers();

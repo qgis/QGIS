@@ -166,7 +166,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
         distance = bufferProperty.valueAsDouble( expressionContext, bufferDistance );
       }
 
-      QgsGeometry outputGeometry = f.geometry().buffer( distance, segments, endCapStyle, joinStyle, miterLimit );
+      QgsGeometry outputGeometry = f.geometry().buffer( distance, segments, endCapStyle, joinStyle, miterLimit, feedback );
       if ( outputGeometry.isNull() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::MessageLevel::Warning );
@@ -212,7 +212,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   if ( dissolve && !bufferedGeometriesForDissolve.isEmpty() )
   {
-    QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
+    QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve, QgsGeometryParameters(), feedback );
     finalGeometry.convertToMultiType();
     QgsFeature f;
     f.setAttributes( dissolveAttrs );

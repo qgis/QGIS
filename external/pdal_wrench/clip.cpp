@@ -60,7 +60,7 @@ bool Clip::checkArgs()
         }
     }
 
-    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
     {
         isStreaming = false;
     }
@@ -181,7 +181,7 @@ void Clip::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
     if (!loadPolygons(polygonFile, crop_opts, bbox))
         return;
 
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();

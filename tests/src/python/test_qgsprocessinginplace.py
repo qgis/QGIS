@@ -41,7 +41,7 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -87,10 +87,6 @@ class TestQgsProcessingInPlace(QgisTestCase):
         super().setUpClass()
 
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingInPlace.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingInPlace")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()

@@ -98,11 +98,14 @@ bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 {
   // Retrieve and clone layers
   const QString mapTheme = parameterAsString( parameters, u"MAP_THEME"_s, context );
-  if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+  if ( QgsProject *project = context.project() )
   {
-    mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
+    if ( !mapTheme.isEmpty() && project->mapThemeCollection()->hasMapTheme( mapTheme ) )
+    {
+      mMapThemeStyleOverrides = project->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
+    }
+    mScaleMethod = project->scaleMethod();
   }
-  mScaleMethod = context.project()->scaleMethod();
   return true;
 }
 

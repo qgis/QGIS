@@ -9,7 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 import unittest
 
 from qgis.core import Qgis, QgsMeasureUtils, QgsProject, QgsSettingsTree
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -18,9 +17,6 @@ class TestQgsMeasureUtils(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsMeasureUtils.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsMeasureUtils")
         start_app()
         cls.setting = QgsSettingsTree.node("measure").childSetting("keep-base-unit")
         cls.setting.remove()
