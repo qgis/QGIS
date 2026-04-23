@@ -59,15 +59,19 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     createChunkedEntityForSubIndex( i );
   }
 
-  if ( provider()->overview() )
+  const QVector<QgsPointCloudIndex> overviews( provider()->overviews() );
+  for ( int i = 0; i < overviews.size(); ++i )
   {
-    // use -2 as a special identifier for overview files in chunked entity
-    mOverviewEntity
-      = new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, -2, mCoordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, false, mZValueScale, mZValueOffset, mPointBudget );
-    mOverviewEntity->setParent( this );
-    connect( mOverviewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
-    connect( mOverviewEntity, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
-    emit newEntityCreated( mOverviewEntity );
+    // Overview indexes start at -2 and decrease, see QgsPointCloudLayerChunkedEntity::resolveIndex()
+    const int ovId = -i - 2;
+    QgsPointCloudLayerChunkedEntity *ovEnt(
+      new QgsPointCloudLayerChunkedEntity( mapSettings(), mLayer, ovId, mCoordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), mMaximumScreenSpaceError, false, mZValueScale, mZValueOffset, mPointBudget )
+    );
+    ovEnt->setParent( this );
+    connect( ovEnt, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+    connect( ovEnt, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
+    mOverviewEntities.append( ovEnt );
+    emit newEntityCreated( ovEnt );
   }
 
   // this is a rather arbitrary point, it could be somewhere else, ideally near the actual data
@@ -84,8 +88,8 @@ QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
   qDeleteAll( mChunkedEntitiesMap );
   mChunkedEntitiesMap.clear();
 
-  delete mOverviewEntity;
-  mOverviewEntity = nullptr;
+  qDeleteAll( mOverviewEntities );
+  mOverviewEntities.clear();
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -164,16 +168,17 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   }
   updateBboxEntity();
 
-  if ( provider()->overview()
+  if ( !provider()->overviews().isEmpty()
        && rendererBehavior
        && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
-    // no need to render the overview if all sub indexes are shown
-    if ( !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size() )
-      mOverviewEntity->setEnabled( false );
-    else
-      mOverviewEntity->setEnabled( true );
-    mOverviewEntity->handleSceneUpdate( sceneContext );
+    const bool allSubIndexesVisible = !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size();
+    for ( const auto &ovEnt : std::as_const( mOverviewEntities ) )
+    {
+      // no need to render the overview if all sub indexes are shown
+      ovEnt->setEnabled( !allSubIndexesVisible );
+      ovEnt->handleSceneUpdate( sceneContext );
+    }
   }
 }
 

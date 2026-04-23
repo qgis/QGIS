@@ -341,8 +341,11 @@ QgsPointCloudIndex QgsPointCloudLayerChunkedEntity::resolveIndex( const QgsPoint
     return pcl->subIndexes().at( indexPosition ).index();
   else if ( indexPosition == -1 && !pcl->isVpc() )
     return pcl->index();
-  else if ( indexPosition == -2 && pcl->isVpc() )
-    return pcl->overview();
+  else if ( indexPosition < -1 && pcl->isVpc() )
+  {
+    const int ovId = -indexPosition - 2;
+    return pcl->overviews().at( ovId );
+  }
   else
     return QgsPointCloudIndex();
 }
