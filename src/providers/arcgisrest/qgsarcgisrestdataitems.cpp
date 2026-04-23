@@ -178,7 +178,7 @@ void addLayerItems(
   QMap<QString, QgsMimeDataUtils::Uri> mapServerUrisForAllLayersRender;
 
   QgsArcGisRestQueryUtils::addLayerItems(
-    [parent, &layerItems, &parents, &mapServerUrisForAllLayersRender, authcfg, headers, urlPrefix, serviceType, supportedFormats, forceRefresh]( const QgsArcGisRestQueryUtils::LayerItemDetails &details ) {
+    [parent, &layerItems, &parents, &mapServerUrisForAllLayersRender, authcfg, headers, urlPrefix, supportedFormats, forceRefresh]( const QgsArcGisRestQueryUtils::LayerItemDetails &details ) {
       Q_UNUSED( forceRefresh )
 
       if ( !details.parentLayerId.isEmpty() )
