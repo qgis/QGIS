@@ -21,6 +21,7 @@ from functools import partial
 
 from qgis.core import (
     QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QUrl
 from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkReply, QNetworkRequest
@@ -81,6 +82,14 @@ class MockServerRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Vary", vary_by)
             self.end_headers()
             self.wfile.write(content)
+        elif self.path == "/echo-useragent":
+            ua = self.headers.get("User-Agent", "")
+            body = ua.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
         else:
             # Fallback to standard behavior for other files like index.html
             super().do_GET()
@@ -716,6 +725,58 @@ class TestQgsNetworkAccessManager(QgisTestCase):
         self.assertFalse(
             reply.attribute(QNetworkRequest.Attribute.SourceIsFromCacheAttribute)
         )
+
+    def _fetch_user_agent(self, request):
+        """Simple helper: send a GET request and return echoed User-Agent string."""
+        reply = QgsNetworkAccessManager.instance().get(request)
+        spy = QSignalSpy(reply.finished)
+        spy.wait(5000)
+        self.assertEqual(reply.error(), QNetworkReply.NetworkError.NoError)
+        return bytes(reply.readAll()).decode("utf-8")
+
+    def _echo_useragent_url(self):
+        return f"http://localhost:{TestQgsNetworkAccessManager.port}/echo-useragent"
+
+    def test_default_user_agent(self):
+        """Test that the default User-Agent is correctly constructed."""
+        request = QNetworkRequest(QUrl(self._echo_useragent_url()))
+        ua = self._fetch_user_agent(request)
+        # Default should contain Mozilla prefix and QGIS version
+        self.assertIn("Mozilla", ua)
+        self.assertIn("QGIS/", ua)
+
+    def test_user_agent_suffix(self):
+        """Test that AttributeUserAgentSuffix appends to the default User-Agent."""
+        request = QNetworkRequest(QUrl(self._echo_useragent_url()))
+        attr = QNetworkRequest.Attribute(
+            QgsNetworkRequestParameters.RequestAttributes.AttributeUserAgentSuffix
+        )
+        request.setAttribute(attr, "MyPlugin/2.0")
+        ua = self._fetch_user_agent(request)
+        # Should contain default components + the suffix
+        self.assertIn("Mozilla", ua)
+        self.assertIn("QGIS/", ua)
+        self.assertTrue(ua.endswith("MyPlugin/2.0"))
+
+    def test_preprocessor_can_modify_user_agent(self):
+        """Test that a request preprocessor can override User-Agent settings."""
+        custom_ua = "PreprocessorAgent/1.0"
+
+        def _preprocessor(request):
+            request.setRawHeader(b"User-Agent", custom_ua.encode("utf-8"))
+
+        pid = QgsNetworkAccessManager.setRequestPreprocessor(_preprocessor)
+        try:
+            # Preprocessor overrides suffix attribute
+            request = QNetworkRequest(QUrl(self._echo_useragent_url()))
+            suffix_attr = QNetworkRequest.Attribute(
+                QgsNetworkRequestParameters.RequestAttributes.AttributeUserAgentSuffix
+            )
+            request.setAttribute(suffix_attr, "ShouldBeIgnored/1.0")
+            ua = self._fetch_user_agent(request)
+            self.assertEqual(ua, custom_ua)
+        finally:
+            QgsNetworkAccessManager.removeRequestPreprocessor(pid)
 
 
 if __name__ == "__main__":

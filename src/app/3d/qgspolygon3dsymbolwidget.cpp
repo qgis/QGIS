@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgs3dtypes.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgspolygon3dsymbol.h"
 
 #include <QString>
@@ -64,7 +65,8 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::updateGuiState );
 
-  widgetMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined );
+  widgetMaterial->setTechnique( renderingTechnique() );
+  widgetMaterial->setFilterByTechnique( true );
 }
 
 Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )
@@ -109,7 +111,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setExtrusionFaces( qgsFlagKeysToValue( cboRenderedFacade->currentData().toString(), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
-  sym->setMaterialSettings( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings().release() );
 
   QgsPropertyCollection ddp;
   ddp.setProperty( QgsAbstract3DSymbol::Property::Height, btnHeightDD->toProperty() );
@@ -126,6 +128,11 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 QString QgsPolygon3DSymbolWidget::symbolType() const
 {
   return u"polygon"_s;
+}
+
+Qgis::MaterialRenderingTechnique QgsPolygon3DSymbolWidget::renderingTechnique() const
+{
+  return Qgis::MaterialRenderingTechnique::TrianglesDataDefined;
 }
 
 void QgsPolygon3DSymbolWidget::updateGuiState()

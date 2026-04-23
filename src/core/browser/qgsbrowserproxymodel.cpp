@@ -134,20 +134,25 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 
 bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() && mShownDataItemsKeys.empty() ) || !mModel )
+  if ( !mModel )
     return true;
 
   const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
+  QgsDataItem *item = mModel->dataItem( sourceIndex );
   if ( !mShowLayers )
   {
-    QgsDataItem *item = mModel->dataItem( sourceIndex );
     if ( qobject_cast< QgsLayerItem * >( item ) )
     {
       return false;
     }
+  }
+  else if ( item && !mFilterByLayerType )
+  {
+    if ( item->filterFlags().testFlag( Qgis::BrowserItemFilterFlag::HideWhenNotFilteringByLayerType ) )
+      return false;
   }
 
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
@@ -218,9 +223,11 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   if ( !mModel )
     return true;
 
+  QgsDataItem *item = mModel->dataItem( sourceIndex );
   if ( mFilterByLayerType )
   {
-    QgsDataItem *item = mModel->dataItem( sourceIndex );
+    if ( !item )
+      return false;
     if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
     {
       if ( layerItem->mapLayerType() != mLayerType )
@@ -228,6 +235,10 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
     }
     else if ( !qobject_cast< QgsDataCollectionItem * >( item ) )
       return false;
+  }
+  else if ( item && item->filterFlags().testFlag( Qgis::BrowserItemFilterFlag::HideWhenNotFilteringByLayerType ) )
+  {
+    return false;
   }
 
   if ( !mFilter.isEmpty() )

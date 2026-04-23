@@ -37,6 +37,8 @@
 #include <QIcon>
 #include <QQuaternion>
 #include <QString>
+#include <QUrl>
+#include <QUrlQuery>
 
 #include "moc_qgsesrii3sdataprovider.cpp"
 
@@ -732,7 +734,12 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri, const QgsDat
 
 bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &layerJson, QString &i3sVersion )
 {
-  QNetworkRequest networkRequest = QNetworkRequest( QUrl( uri ) );
+  QUrl queryUrl( uri );
+  QUrlQuery query( queryUrl );
+  query.addQueryItem( u"f"_s, u"json"_s );
+  queryUrl.setQuery( query );
+
+  QNetworkRequest networkRequest = QNetworkRequest( queryUrl );
   QgsSetRequestInitiatorClass( networkRequest, u"QgsEsriI3SDataProvider"_s );
   networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );

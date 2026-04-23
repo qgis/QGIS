@@ -15,6 +15,8 @@
 
 #include "qgsphongtexturedmaterial.h"
 
+#include "qgs3dutils.h"
+
 #include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
@@ -32,6 +34,7 @@ QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
   , mDiffuseTextureParameter( new Qt3DRender::QParameter( u"diffuseTexture"_s, QVariant() ) )
   , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f ) )
+  , mDiffuseTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f ) )
   , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) ) )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 150.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
@@ -55,12 +58,17 @@ void QgsPhongTexturedMaterial::init()
   effect->addParameter( mAmbientParameter );
   effect->addParameter( mDiffuseTextureParameter );
   effect->addParameter( mDiffuseTextureScaleParameter );
+  effect->addParameter( mDiffuseTextureRotationParameter );
   effect->addParameter( mSpecularParameter );
   effect->addParameter( mShininessParameter );
   effect->addParameter( mOpacityParameter );
 
   Qt3DRender::QShaderProgram *gL3Shader = new Qt3DRender::QShaderProgram();
-  gL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+
+  const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
+  const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ROTATION" } ) );
+  gL3Shader->setVertexShaderCode( finalVertexShaderCode );
+
   gL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/diffuseSpecular.frag"_s ) ) );
 
   Qt3DRender::QTechnique *gL3Technique = new Qt3DRender::QTechnique();
@@ -96,6 +104,11 @@ void QgsPhongTexturedMaterial::setDiffuseTexture( Qt3DRender::QAbstractTexture *
 void QgsPhongTexturedMaterial::setDiffuseTextureScale( float diffuseTextureScale )
 {
   mDiffuseTextureScaleParameter->setValue( diffuseTextureScale );
+}
+
+void QgsPhongTexturedMaterial::setDiffuseTextureRotation( float textureRotation )
+{
+  mDiffuseTextureRotationParameter->setValue( textureRotation );
 }
 
 void QgsPhongTexturedMaterial::setSpecular( const QColor &specular )

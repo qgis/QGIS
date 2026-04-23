@@ -18,6 +18,7 @@
 #include "qgsalgorithmpointstopaths.h"
 
 #include "qgsdistancearea.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsmultipoint.h"
 #include "qgsvectorlayer.h"
 
@@ -155,11 +156,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
         << QPair<QString, QString>( "%G", "yyyy" )
         << QPair<QString, QString>( "%u", "" )  // day of the week 1-7
         << QPair<QString, QString>( "%V", "" ); // week number
-      for ( const auto &pair : codeMap )
+      for ( const auto &pair : std::as_const( codeMap ) )
       {
         dateFormat.replace( pair.first, pair.second );
       }
-      orderExpressionString = QString( "to_datetime(%1, '%2')" ).arg( orderExpressionString ).arg( dateFormat );
+      orderExpressionString = QString( "to_datetime(%1, '%2')" ).arg( orderExpressionString, dateFormat );
     }
   }
   else if ( orderExpressionString.isEmpty() )
@@ -178,10 +179,14 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QMetaType::Type orderFieldType = QMetaType::Type::QString;
   if ( orderExpression.isField() )
   {
-    const int orderFieldIndex = source->fields().indexFromName( orderExpression.referencedColumns().values().first() );
+    const QString orderField = qgis::down_cast<const QgsExpressionNodeColumnRef *>( orderExpression.rootNode() )->name();
+    const int orderFieldIndex = source->fields().lookupField( orderField );
+    if ( orderFieldIndex < 0 )
+    {
+      throw QgsProcessingException( QObject::tr( "Order by field %1 does not exist in input layer." ).arg( orderField ) );
+    }
     orderFieldType = source->fields().field( orderFieldIndex ).type();
   }
-
 
   QString groupExpressionString = parameterAsString( parameters, u"GROUP_EXPRESSION"_s, context );
   // handle backwards compatibility parameter GROUP_FIELD
@@ -197,8 +202,20 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !groupExpressionString.isEmpty() )
   {
     requiredFields.append( groupExpression.referencedColumns().values() );
-    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : u"group"_s;
-    outputFields.append( field );
+    if ( groupExpression.isField() )
+    {
+      const QString groupField = qgis::down_cast<const QgsExpressionNodeColumnRef *>( groupExpression.rootNode() )->name();
+      const int groupFieldIndex = source->fields().lookupField( groupField );
+      if ( groupFieldIndex < 0 )
+      {
+        throw QgsProcessingException( QObject::tr( "Group field %1 does not exist in input layer." ).arg( groupField ) );
+      }
+      outputFields.append( source->fields().field( groupFieldIndex ) );
+    }
+    else
+    {
+      outputFields.append( QgsField( u"group"_s, QMetaType::QString ) );
+    }
   }
   outputFields.append( QgsField( "begin", orderFieldType ) );
   outputFields.append( QgsField( "end", orderFieldType ) );
@@ -291,15 +308,13 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
     if ( naturalSort )
     {
-      std::stable_sort( pairs.begin(), pairs.end(), [&collator]( const QPair<const QVariant, QgsPoint> &pair1, const QPair<const QVariant, QgsPoint> &pair2 ) {
+      std::stable_sort( pairs.begin(), pairs.end(), [&collator]( const QPair<QVariant, QgsPoint> &pair1, const QPair<QVariant, QgsPoint> &pair2 ) {
         return collator.compare( pair1.first.toString(), pair2.first.toString() ) < 0;
       } );
     }
     else
     {
-      std::stable_sort( pairs.begin(), pairs.end(), []( const QPair<const QVariant, QgsPoint> &pair1, const QPair<const QVariant, QgsPoint> &pair2 ) {
-        return qgsVariantLessThan( pair1.first, pair2.first );
-      } );
+      std::stable_sort( pairs.begin(), pairs.end(), []( const QPair<QVariant, QgsPoint> &pair1, const QPair<QVariant, QgsPoint> &pair2 ) { return qgsVariantLessThan( pair1.first, pair2.first ); } );
     }
 
 

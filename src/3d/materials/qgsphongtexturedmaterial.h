@@ -72,6 +72,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     void setDiffuseTexture( Qt3DRender::QAbstractTexture *texture );
 
     void setDiffuseTextureScale( float textureScale );
+    void setDiffuseTextureRotation( float textureRotation );
     void setSpecular( const QColor &specular );
     void setShininess( float shininess );
     void setOpacity( float opacity );
@@ -97,6 +98,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureScaleParameter = nullptr;
+    Qt3DRender::QParameter *mDiffuseTextureRotationParameter = nullptr;
     Qt3DRender::QParameter *mSpecularParameter = nullptr;
     Qt3DRender::QParameter *mShininessParameter = nullptr;
     Qt3DRender::QParameter *mOpacityParameter = nullptr;

@@ -35,6 +35,7 @@ class QgsMeshLayer;
 class QgsHighlight;
 class QgsIdentifyMenu;
 class QgsPointCloudLayer;
+template<class T> class QgsSettingsEntryEnumFlag;
 class QgsPointCloudLayerElevationProperties;
 class QgsFeatureRenderer;
 class QgsExpressionContext;
@@ -64,6 +65,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       LayerSelection
     };
     Q_ENUM( IdentifyMode )
+
+    static const QgsSettingsEntryEnumFlag<IdentifyMode> *settingIdentifyMode SIP_SKIP;
 
     enum Type SIP_ENUM_BASETYPE( IntFlag )
     {

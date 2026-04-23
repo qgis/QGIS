@@ -114,9 +114,17 @@ Specifically this method:
 
     static bool isOpenStreetMapLayer( QgsMapLayer *layer );
 %Docstring
-Returns ``True`` if the layer is served by OpenStreetMap server.
+Returns ``True`` if the ``layer`` is served by OpenStreetMap server.
 
 .. versionadded:: 3.40
+%End
+
+    static bool isOpenStreetMapUri( const QString &uri, const QString &providerType );
+%Docstring
+Returns ``True`` if the ``uri`` for a given ``provider`` is served by
+OpenStreetMap server.
+
+.. versionadded:: 4.2
 %End
 
     static QString layerTypeToString( Qgis::LayerType type );
@@ -124,6 +132,13 @@ Returns ``True`` if the layer is served by OpenStreetMap server.
 Returns the translated name of the type for a given layer type.
 
 .. versionadded:: 4.0
+%End
+
+    static QString layerToolTip( const QgsMapLayer *layer );
+%Docstring
+Returns the consistent tooltip for the given layer.
+
+.. versionadded:: 4.2
 %End
 };
 

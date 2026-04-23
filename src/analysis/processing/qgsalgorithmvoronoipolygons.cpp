@@ -188,7 +188,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       QgsFeature f;
       f.setFields( fields );
 
-      QgsGeometry voronoiClippedToExtent = QgsGeometry( extentEngine->intersection( collectionPart.constGet() ) );
+      QgsGeometry voronoiClippedToExtent = QgsGeometry( extentEngine->intersection( collectionPart.constGet(), nullptr, QgsGeometryParameters(), feedback ) );
       voronoiClippedToExtent.convertGeometryCollectionToSubclass( Qgis::GeometryType::Polygon );
       if ( !voronoiClippedToExtent.isEmpty() )
       {
@@ -285,7 +285,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
       }
       QgsFeature f;
       f.setFields( fields );
-      f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet() ) ) );
+      f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet(), nullptr, QgsGeometryParameters(), feedback ) ) );
       f.setAttributes( QgsAttributes() << i );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );

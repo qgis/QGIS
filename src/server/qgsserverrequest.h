@@ -50,7 +50,8 @@ class SERVER_EXPORT QgsServerRequest
       GetMethod,
       PostMethod,
       DeleteMethod,
-      PatchMethod
+      PatchMethod,
+      OptionsMethod,
     };
     Q_ENUM( Method )
 

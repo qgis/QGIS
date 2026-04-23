@@ -147,6 +147,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      * ### Models (Qgis.Point3DShape.Model)
      *
      * - \a model (path to model file)
+     * - \a upAxis (up axis for model, either "x", "y", "z" or "-x", "-y", "-z")
+     * - \a forwardAxis (forward axis for model, either "x", "y", "z" or "-x", "-y", "-z")
      *
      * \see shapeProperty()
      */

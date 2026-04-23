@@ -66,11 +66,6 @@ TestQgisAppDockWidgets::TestQgisAppDockWidgets() = default;
 //runs before all tests
 void TestQgisAppDockWidgets::initTestCase()
 {
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   qDebug() << "TestQgisAppDockWidgets::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();

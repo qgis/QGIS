@@ -93,11 +93,6 @@ void TestQgsAttributeTable::initTestCase()
   QgsApplication::initQgis();
   QgsGui::editorWidgetRegistry()->initEditors();
   mQgisApp = new QgisApp();
-
-  // setup the test QSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 //runs after all tests

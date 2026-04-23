@@ -15,6 +15,7 @@
 
 #include "qgsfilecontentsourcelineedit.h"
 
+#include "qgsfilewidget.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmessagebar.h"
 #include "qgspropertyoverridebutton.h"
@@ -44,8 +45,9 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  mFileLineEdit = new QgsFilterLineEdit( this );
+  mFileLineEdit = new QgsFileDropEdit( this );
   mFileLineEdit->setShowClearButton( true );
+  mFileLineEdit->setStorageMode( QgsFileWidget::StorageMode::GetFile );
   mFileToolButton = new QToolButton( this );
   mFileToolButton->setText( QString( QChar( 0x2026 ) ) );
   mPropertyOverrideButton = new QgsPropertyOverrideButton( this );
@@ -84,6 +86,16 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
     mFileLineEdit->setPlaceholderText( QString() );
     mBase64.clear();
     emit sourceChanged( QString() );
+  } );
+
+  connect( mFileLineEdit, &QgsFileDropEdit::fileDropped, this, [this]( const QString &file ) {
+    mMode = ModeFile;
+    mBase64.clear();
+    mFileLineEdit->setText( file );
+    mFileLineEdit->setPlaceholderText( QString() );
+    const QFileInfo fi( file );
+    QgsSettings().setValue( settingsKey(), fi.absolutePath() );
+    emit sourceChanged( mFileLineEdit->text() );
   } );
 
   mPropertyOverrideButton->setVisible( mPropertyOverrideButtonVisible );
@@ -142,7 +154,7 @@ void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 void QgsAbstractFileContentSourceLineEdit::selectFile()
 {
   QgsSettings s;
-  const QString file = QFileDialog::getOpenFileName( nullptr, selectFileTitle(), defaultPath(), fileFilter() );
+  const QString file = QFileDialog::getOpenFileName( nullptr, selectFileTitle(), defaultPath(), fileFilter( true ) );
   const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() || file == source() )
   {
@@ -173,7 +185,7 @@ void QgsAbstractFileContentSourceLineEdit::selectUrl()
 void QgsAbstractFileContentSourceLineEdit::embedFile()
 {
   QgsSettings s;
-  const QString file = QFileDialog::getOpenFileName( nullptr, embedFileTitle(), defaultPath(), fileFilter() );
+  const QString file = QFileDialog::getOpenFileName( nullptr, embedFileTitle(), defaultPath(), fileFilter( true ) );
   const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
@@ -209,7 +221,7 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
 void QgsAbstractFileContentSourceLineEdit::extractFile()
 {
   QgsSettings s;
-  const QString file = QFileDialog::getSaveFileName( nullptr, extractFileTitle(), defaultPath(), fileFilter() );
+  const QString file = QFileDialog::getSaveFileName( nullptr, extractFileTitle(), defaultPath(), fileFilter( true ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -290,7 +302,14 @@ QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
 ///@cond PRIVATE
 
 
-QString QgsPictureSourceLineEditBase::fileFilter() const
+QgsPictureSourceLineEditBase::QgsPictureSourceLineEditBase( Format format, QWidget *parent )
+  : QgsAbstractFileContentSourceLineEdit( parent )
+  , mFormat( format )
+{
+  mFileLineEdit->setFilters( fileFilter( false ) );
+}
+
+QString QgsPictureSourceLineEditBase::fileFilter( bool includeAllFiles ) const
 {
   switch ( mFormat )
   {
@@ -304,7 +323,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
+      return QString( "%1 (%2) " ).arg( tr( "Images" ), formatsFilter.join( ' '_L1 ) ) + ( includeAllFiles ? QString( ";;%1 (*.*)" ).arg( tr( "All files" ) ) : QString() );
     }
 
     case AnimatedImage:
@@ -315,7 +334,8 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
+      return QString( "%1 (%2)" ).arg( tr( "Animated Images" ), formatsFilter.join( ' '_L1 ) ) + ( includeAllFiles ? QString( ";;%1 (*.*)" ).arg( tr( "All files" ) ) : QString() );
+      ;
     }
   }
   BUILTIN_UNREACHABLE
