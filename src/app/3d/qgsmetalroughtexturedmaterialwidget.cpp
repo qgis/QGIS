@@ -39,6 +39,7 @@ QgsMetalRoughTexturedMaterialWidget::QgsMetalRoughTexturedMaterialWidget( QWidge
   connect( mBaseColorTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( mMetalnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( mRoughnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mNormalTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
   connect( mAmbientOcclusionTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
 
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
@@ -61,6 +62,7 @@ void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterial
   mBaseColorTextureWidget->setSource( metalRoughMaterial->baseColorTexturePath() );
   mMetalnessTextureWidget->setSource( metalRoughMaterial->metalnessTexturePath() );
   mRoughnessTextureWidget->setSource( metalRoughMaterial->roughnessTexturePath() );
+  mNormalTextureWidget->setSource( metalRoughMaterial->normalTexturePath() );
   mAmbientOcclusionTextureWidget->setSource( metalRoughMaterial->ambientOcclusionTexturePath() );
 
   textureScaleSpinBox->setValue( 100.0 / metalRoughMaterial->textureScale() );
@@ -77,6 +79,7 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughTexturedMaterialWidget
   m->setBaseColorTexturePath( mBaseColorTextureWidget->source() );
   m->setMetalnessTexturePath( mMetalnessTextureWidget->source() );
   m->setRoughnessTexturePath( mRoughnessTextureWidget->source() );
+  m->setNormalTexturePath( mNormalTextureWidget->source() );
   m->setAmbientOcclusionTexturePath( mAmbientOcclusionTextureWidget->source() );
   m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );

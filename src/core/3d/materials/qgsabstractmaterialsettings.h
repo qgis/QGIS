@@ -113,6 +113,14 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      */
     virtual bool requiresTextureCoordinates() const;
 
+    /**
+     * Returns TRUE if the material requires tangents generated
+     * during triangulation.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool requiresTangents() const;
+
     // *INDENT-OFF*
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, Property ) : int

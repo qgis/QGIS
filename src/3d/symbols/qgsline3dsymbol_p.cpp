@@ -92,12 +92,14 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   mChunkOrigin.setZ( 0. ); // set the chunk origin to the bottom of the box, as the tessellator currently always considers origin z to be zero
   mChunkExtent = chunkExtent;
 
-  const bool requiresTextureCoordinates = mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false;
+  const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
+  const bool requiresTangents = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents();
 
   auto lineDataNormalTessellator = std::make_unique<QgsTessellator>();
   lineDataNormalTessellator->setOrigin( mChunkOrigin );
   lineDataNormalTessellator->setAddNormals( true );
   lineDataNormalTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataNormalTessellator->setAddTangents( requiresTangents );
   lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataNormalTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
@@ -107,6 +109,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
   lineDataSelectedTessellator->setOrigin( mChunkOrigin );
   lineDataSelectedTessellator->setAddNormals( true );
   lineDataSelectedTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataSelectedTessellator->setAddTangents( requiresTangents );
   lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
   lineDataSelectedTessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
@@ -221,7 +224,9 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   const int vertexCount = vertexBuffer.count() / lineData.tessellator->stride();
   const size_t indexCount = lineData.tessellator->dataVerticesCount();
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, mSymbol->materialSettings() ? mSymbol->materialSettings()->requiresTextureCoordinates() : false );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry(
+    true, false, false, mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates(), mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents()
+  );
   geometry->setVertexBufferData( vertexBuffer, vertexCount, lineData.triangleIndexFids, lineData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );
 

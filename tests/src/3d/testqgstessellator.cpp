@@ -22,12 +22,17 @@
 
 #include <QString>
 #include <QVector3D>
+#include <QVector4D>
 
 using namespace Qt::StringLiterals;
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {
   return qgsDoubleNear( v1.x(), v2.x(), eps ) && qgsDoubleNear( v1.y(), v2.y(), eps ) && qgsDoubleNear( v1.z(), v2.z(), eps );
+}
+static bool qgsVectorNear( const QVector4D &v1, const QVector4D &v2, double eps )
+{
+  return qgsDoubleNear( v1.x(), v2.x(), eps ) && qgsDoubleNear( v1.y(), v2.y(), eps ) && qgsDoubleNear( v1.z(), v2.z(), eps ) && qgsDoubleNear( v1.w(), v2.w(), eps );
 }
 
 /**
@@ -37,7 +42,17 @@ static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps 
 struct TriangleCoords
 {
     //! Constructs from expected triangle coordinates
-    TriangleCoords( const QVector3D &a, const QVector3D &b, const QVector3D &c, const QVector3D &na = QVector3D(), const QVector3D &nb = QVector3D(), const QVector3D &nc = QVector3D() )
+    TriangleCoords(
+      const QVector3D &a,
+      const QVector3D &b,
+      const QVector3D &c,
+      const QVector3D &na = QVector3D(),
+      const QVector3D &nb = QVector3D(),
+      const QVector3D &nc = QVector3D(),
+      const QVector4D &ta = QVector4D(),
+      const QVector4D &tb = QVector4D(),
+      const QVector4D &tc = QVector4D()
+    )
     {
       pts[0] = a;
       pts[1] = b;
@@ -45,6 +60,9 @@ struct TriangleCoords
       normals[0] = na;
       normals[1] = nb;
       normals[2] = nc;
+      tangents[0] = ta;
+      tangents[1] = tb;
+      tangents[2] = tc;
     }
 
 
@@ -58,7 +76,10 @@ struct TriangleCoords
              && qgsVectorNear( pts[2], other.pts[2], eps )
              && qgsVectorNear( normals[0], other.normals[0], eps )
              && qgsVectorNear( normals[1], other.normals[1], eps )
-             && qgsVectorNear( normals[2], other.normals[2], eps );
+             && qgsVectorNear( normals[2], other.normals[2], eps )
+             && qgsVectorNear( tangents[0], other.tangents[0], eps )
+             && qgsVectorNear( tangents[1], other.tangents[1], eps )
+             && qgsVectorNear( tangents[2], other.tangents[2], eps );
     }
 
     bool operator!=( const TriangleCoords &other ) const { return !operator==( other ); }
@@ -93,16 +114,31 @@ struct TriangleCoords
         }
       }
 
+      for ( int i = 0; i < 3; ++i )
+      {
+        if ( !qgsVectorNear( tangents[i], other.tangents[i], eps ) )
+        {
+          if ( !qgsDoubleNear( tangents[i].x(), other.tangents[i].x(), eps ) )
+            return tangents[i].x() < other.tangents[i].x();
+          if ( !qgsDoubleNear( tangents[i].y(), other.tangents[i].y(), eps ) )
+            return tangents[i].y() < other.tangents[i].y();
+          if ( !qgsDoubleNear( tangents[i].z(), other.tangents[i].z(), eps ) )
+            return tangents[i].z() < other.tangents[i].z();
+          if ( !qgsDoubleNear( tangents[i].w(), other.tangents[i].w(), eps ) )
+            return tangents[i].w() < other.tangents[i].w();
+        }
+      }
       return false;
     }
 
-    void dump() const { qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2]; }
+    void dump() const { qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2] << tangents[0] << tangents[1] << tangents[2]; }
 
     QVector3D pts[3];
     QVector3D normals[3];
+    QVector4D tangents[3];
 };
 
-QList<TriangleCoords> extractTriangles( QgsTessellator &tessellator, bool withNormals )
+QList<TriangleCoords> extractTriangles( QgsTessellator &tessellator, bool withNormals, bool withTangents = false )
 {
   QList<TriangleCoords> triangles;
 
@@ -138,7 +174,19 @@ QList<TriangleCoords> extractTriangles( QgsTessellator &tessellator, bool withNo
     QVector3D p1( vertex1[0], vertex1[1], vertex1[2] );
     QVector3D p2( vertex2[0], vertex2[1], vertex2[2] );
 
-    if ( withNormals )
+    if ( withNormals && withTangents )
+    {
+      QVector3D n0( vertex0[3], vertex0[4], vertex0[5] );
+      QVector3D n1( vertex1[3], vertex1[4], vertex1[5] );
+      QVector3D n2( vertex2[3], vertex2[4], vertex2[5] );
+
+      QVector4D t0( vertex0[6], vertex0[7], vertex0[8], vertex0[9] );
+      QVector4D t1( vertex1[6], vertex1[7], vertex1[8], vertex1[9] );
+      QVector4D t2( vertex2[6], vertex2[7], vertex2[8], vertex2[9] );
+
+      triangles.append( TriangleCoords( p0, p1, p2, n0, n1, n2, t0, t1, t2 ) );
+    }
+    else if ( withNormals )
     {
       QVector3D n0( vertex0[3], vertex0[4], vertex0[5] );
       QVector3D n1( vertex1[3], vertex1[4], vertex1[5] );
@@ -159,6 +207,7 @@ bool checkTriangleOutput( const QList<TriangleCoords> &output, const QList<Trian
 {
   if ( output.size() != expected.size() )
   {
+    qDebug() << "Expected size " << expected.size() << " got " << output.size();
     return false;
   }
 
@@ -205,6 +254,7 @@ class TestQgsTessellator : public QgsTest
     void testBasic();
     void testBasicClockwise();
     void testWalls();
+    void testWallsTangents();
     void testBackEdges();
     void test2DTriangle();
     void test3DTriangle();
@@ -267,6 +317,15 @@ void TestQgsTessellator::testBasic()
   trianglesNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
   trianglesNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
 
+  QList<TriangleCoords> trianglesNormalsTangentsCD;
+  const QVector4D alongX( 1, 0, 0, 1 );
+  trianglesNormalsTangentsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up, alongX, alongX, alongX );
+  trianglesNormalsTangentsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up, alongX, alongX, alongX );
+
+  QList<TriangleCoords> trianglesNormalsTangentsZCD;
+  trianglesNormalsTangentsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up, alongX, alongX, alongX );
+  trianglesNormalsTangentsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up, alongX, alongX, alongX );
+
   QList<TriangleCoords> trianglesNormalsEarcut;
   trianglesNormalsEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), up, up, up );
   trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
@@ -324,6 +383,23 @@ void TestQgsTessellator::testBasic()
 
   QCOMPARE( tesNormalsZCD.zMinimum(), 3 );
   QCOMPARE( tesNormalsZCD.zMaximum(), 3 );
+
+  // with tangents
+  QgsTessellator tesNormalsTangentsCD;
+  tesNormalsTangentsCD.setAddNormals( true );
+  tesNormalsTangentsCD.setAddTangents( true );
+  tesNormalsTangentsCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsTangentsCD, true, true ), trianglesNormalsTangentsCD ) );
+  QCOMPARE( tesNormalsTangentsCD.zMinimum(), 0 );
+  QCOMPARE( tesNormalsTangentsCD.zMaximum(), 0 );
+
+  QgsTessellator tesNormalsTangentsZCD;
+  tesNormalsTangentsZCD.setAddNormals( true );
+  tesNormalsTangentsZCD.setAddTangents( true );
+  tesNormalsTangentsZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNormalsTangentsZCD, true, true ), trianglesNormalsTangentsZCD ) );
+  QCOMPARE( tesNormalsTangentsZCD.zMinimum(), 3 );
+  QCOMPARE( tesNormalsTangentsZCD.zMaximum(), 3 );
 
   QgsTessellator tesNormalsEarcut;
   tesNormalsEarcut.setAddNormals( true );
@@ -435,6 +511,15 @@ void TestQgsTessellator::testBasicClockwise()
   trianglesNormalsZCD << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
   trianglesNormalsZCD << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
 
+  const QVector4D alongX( 1, 0, 0, 1 );
+  QList<TriangleCoords> trianglesNormalsTangentsCD;
+  trianglesNormalsTangentsCD << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down, alongX, alongX, alongX );
+  trianglesNormalsTangentsCD << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down, alongX, alongX, alongX );
+
+  QList<TriangleCoords> trianglesNormalsTangentsZCD;
+  trianglesNormalsTangentsZCD << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down, alongX, alongX, alongX );
+  trianglesNormalsTangentsZCD << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down, alongX, alongX, alongX );
+
   QList<TriangleCoords> trianglesNormalsEarcut;
   trianglesNormalsEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), down, down, down );
   trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 3, 2, 0 ), down, down, down );
@@ -475,6 +560,24 @@ void TestQgsTessellator::testBasicClockwise()
 
   QCOMPARE( tesNZ.zMinimum(), 3 );
   QCOMPARE( tesNZ.zMaximum(), 3 );
+
+  // with tangents
+
+  QgsTessellator tesNT;
+  tesNT.setAddNormals( true );
+  tesNT.setAddTangents( true );
+  tesNT.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNT, true, true ), trianglesNormalsTangentsCD ) );
+  QCOMPARE( tesNT.zMinimum(), 0 );
+  QCOMPARE( tesNT.zMaximum(), 0 );
+
+  QgsTessellator tesNZT;
+  tesNZT.setAddNormals( true );
+  tesNZT.setAddTangents( true );
+  tesNZT.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tesNZT, true, true ), trianglesNormalsTangentsZCD ) );
+  QCOMPARE( tesNZT.zMinimum(), 3 );
+  QCOMPARE( tesNZT.zMaximum(), 3 );
 
   QgsTessellator tesEarcut;
   tesEarcut.setAddNormals( true );
@@ -618,6 +721,51 @@ void TestQgsTessellator::testWalls()
 
   QCOMPARE( tZ.zMinimum(), 1 );
   QCOMPARE( tZ.zMaximum(), 14 );
+}
+
+void TestQgsTessellator::testWallsTangents()
+{
+  QgsPolygon rect;
+  rect.fromWkt( "POLYGON((0 0, 3 0, 3 2, 0 2, 0 0))" );
+
+  const QVector3D zPos( 0, 0, 1 );
+  const QVector3D xPos( 1, 0, 0 );
+  const QVector3D yPos( 0, 1, 0 );
+  const QVector3D xNeg( -1, 0, 0 );
+  const QVector3D yNeg( 0, -1, 0 );
+
+  QList<TriangleCoords> tcRect;
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), zPos, zPos, zPos, QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 1 ), zPos, zPos, zPos, QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 0 ), xNeg, xNeg, xNeg, QVector4D( 0, -1, 0, 1 ), QVector4D( 0, -1, 0, 1 ), QVector4D( 0, -1, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 0, 0, 0 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 2, 0 ), xNeg, xNeg, xNeg, QVector4D( 0, -1, 0, 1 ), QVector4D( 0, -1, 0, 1 ), QVector4D( 0, -1, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 2, 1 ), QVector3D( 0, 2, 0 ), yPos, yPos, yPos, QVector4D( -1, 0, 0, 1 ), QVector4D( -1, 0, 0, 1 ), QVector4D( -1, 0, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 2, 0 ), yPos, yPos, yPos, QVector4D( -1, 0, 0, 1 ), QVector4D( -1, 0, 0, 1 ), QVector4D( -1, 0, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 0 ), xPos, xPos, xPos, QVector4D( 0, 1, 0, 1 ), QVector4D( 0, 1, 0, 1 ), QVector4D( 0, 1, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 0, 0 ), xPos, xPos, xPos, QVector4D( 0, 1, 0, 1 ), QVector4D( 0, 1, 0, 1 ), QVector4D( 0, 1, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 3, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 0 ), yNeg, yNeg, yNeg, QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ) );
+  tcRect << TriangleCoords( QVector3D( 3, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 0 ), yNeg, yNeg, yNeg, QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ), QVector4D( 1, 0, 0, 1 ) );
+
+  QgsTessellator tRect;
+  tRect.setAddNormals( true );
+  tRect.setAddTangents( true );
+  tRect.addPolygon( rect, 1 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tRect, true, true ), tcRect ) );
+  QCOMPARE( tRect.zMinimum(), 0 );
+  QCOMPARE( tRect.zMaximum(), 1 );
+
+  // try to extrude a polygon with reverse (clock-wise) order of vertices and check it is still fine
+
+  QgsPolygon rectRev;
+  rectRev.fromWkt( "POLYGON((0 0, 0 2, 3 2, 3 0, 0 0))" );
+
+  QgsTessellator tRectRev;
+  tRectRev.setAddNormals( true );
+  tRectRev.setAddTangents( true );
+  tRectRev.addPolygon( rectRev, 1 );
+  QVERIFY( checkTriangleOutput( extractTriangles( tRectRev, true, true ), tcRect ) );
+  QCOMPARE( tRectRev.zMinimum(), 0 );
+  QCOMPARE( tRectRev.zMaximum(), 1 );
 }
 
 void TestQgsTessellator::testBackEdges()

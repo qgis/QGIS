@@ -14,15 +14,22 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="QLabel" name="lblTextureScale_2">
-     <property name="text">
-      <string>Base color texture</string>
+   <item row="5" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mAmbientOcclusionTextureWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mMetalnessTextureWidget" native="true">
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblTextureScale_6">
+     <property name="text">
+      <string>Ambient occlusion texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mBaseColorTextureWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
@@ -42,41 +49,45 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mAmbientOcclusionTextureWidget" native="true">
+   <item row="0" column="0" rowspan="9">
+    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="lblTextureRotation">
+     <property name="text">
+      <string>Texture rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mMetalnessTextureWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="lblTextureScale">
+   <item row="1" column="1">
+    <widget class="QLabel" name="lblTextureScale_2">
      <property name="text">
-      <string>Texture scale</string>
+      <string>Base color texture</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="lblTextureScale_6">
+   <item row="2" column="1">
+    <widget class="QLabel" name="lblTextureScale_3">
      <property name="text">
-      <string>Ambient occlusion texture</string>
+      <string>Metalness texture</string>
      </property>
     </widget>
    </item>
    <item row="7" column="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="6" column="2">
     <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
      <property name="suffix">
       <string> °</string>
@@ -92,31 +103,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="8">
-    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QLabel" name="lblTextureRotation">
-     <property name="text">
-      <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="lblTextureScale_3">
-     <property name="text">
-      <string>Metalness texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
+   <item row="6" column="2">
     <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
      <property name="suffix">
       <string> %</string>
@@ -135,8 +122,35 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mBaseColorTextureWidget" native="true">
+   <item row="6" column="1">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lblTextureScale_5">
+     <property name="text">
+      <string>Normal texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mNormalTextureWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
@@ -165,8 +179,9 @@
  </customwidgets>
  <tabstops>
   <tabstop>mBaseColorTextureWidget</tabstop>
-  <tabstop>mMetalnessTextureWidget</tabstop>
   <tabstop>mRoughnessTextureWidget</tabstop>
+  <tabstop>mMetalnessTextureWidget</tabstop>
+  <tabstop>mNormalTextureWidget</tabstop>
   <tabstop>mAmbientOcclusionTextureWidget</tabstop>
   <tabstop>textureScaleSpinBox</tabstop>
   <tabstop>textureRotationSpinBox</tabstop>

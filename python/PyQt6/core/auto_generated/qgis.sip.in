@@ -2587,6 +2587,8 @@ The development version
       Update,
       Delete,
       Create,
+      Image,
+      TilesOnly,
     };
 
     typedef QFlags<Qgis::ArcGisRestServiceCapability> ArcGisRestServiceCapabilities;

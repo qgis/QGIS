@@ -354,6 +354,10 @@ class QgisTestCase(unittest.TestCase):
             query = query[len("/query") :]
             endpoint = endpoint + "_query"
 
+        if query.startswith("/exportImage"):
+            query = query[len("/exportImage") :]
+            endpoint = endpoint + "_exportImage"
+
         if len(endpoint + query) > 150:
             ret = endpoint + hashlib.md5(query.encode()).hexdigest()
             # print('Before: ' + endpoint + query)

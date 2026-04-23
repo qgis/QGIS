@@ -233,6 +233,37 @@ Parses a capabilities string to known values.
 .. versionadded:: 4.2
 %End
 
+    static Qgis::DataType dataTypeFromString( const QString &pixelType );
+%Docstring
+Returns the raster data type corresponding to an ESRI pixelType string.
+
+.. versionadded:: 4.2
+%End
+
+    static Qgis::RasterColorInterpretation colorInterpretationFromBandName( const QString &bandName );
+%Docstring
+Attempts to match arbitrary band name strings to a QGIS raster color
+interpretation.
+
+Since band names are free-form strings, this is a best-effort
+translation only.
+
+.. versionadded:: 4.2
+%End
+
+    static double defaultNoDataForDataType( Qgis::DataType type, bool &ok /Out/ );
+%Docstring
+Returns a sensible no-data value to use for the specified data ``type``.
+
+:param type: data type
+
+:return: - suggested nodata value, if one exists
+         - ok: ``True`` if there IS a sensible nodata value for the
+           specified type
+
+.. versionadded:: 4.2
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);
