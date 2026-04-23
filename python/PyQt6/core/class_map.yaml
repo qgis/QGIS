@@ -18206,6 +18206,9 @@ QgsStyleSymbolEntity: src/core/symbology/qgsstyle.h#L1461
 QgsStyleTextFormatEntity.format: src/core/symbology/qgsstyle.h#L1534
 QgsStyleTextFormatEntity.type: src/core/symbology/qgsstyle.h#L1529
 QgsStyleTextFormatEntity: src/core/symbology/qgsstyle.h#L1519
+QgsSunPositionCalculator.calculate: src/core/qgssunpositioncalculator.h#L105
+QgsSunPositionCalculator: src/core/qgssunpositioncalculator.h#L84
+QgsSunPositionResult: src/core/qgssunpositioncalculator.h#L32
 QgsSurface.boundingBox3D: src/core/geometry/qgssurface.h#L43
 QgsSurface.clearCache: src/core/geometry/qgssurface.h#L97
 QgsSurface.isValid: src/core/geometry/qgssurface.h#L45
