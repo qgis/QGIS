@@ -35,6 +35,7 @@
 #include "qgssettings.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsstackedwidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 
@@ -196,6 +197,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   comboBox->addItem( tr( "Gradient" ) );
   comboBox->addItem( tr( "Skybox" ) );
   connect( comboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stackedWidget, &QStackedWidget::setCurrentIndex );
+  stackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
   mBtnGradientTopColor->setColor( mMap->gradientBackgroundTopColor() );
   mBtnGradientBottomColor->setColor( mMap->gradientBackgroundBottomColor() );
