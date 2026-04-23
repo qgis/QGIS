@@ -25,22 +25,11 @@
 
 using namespace Qt::StringLiterals;
 
-// we can't change this, it's part of the library
-// NOLINTBEGIN(bugprone-reserved-identifier)
-#ifdef __cplusplus
-#define _Static_assert static_assert
-#endif
-
 #define FS_TIME_T int64_t
 extern "C"
 {
 #include <freespa.h>
 }
-
-#ifdef __cplusplus
-#undef _Static_assert
-#endif
-// NOLINTEND(bugprone-reserved-identifier)
 
 QgsSunPositionResult QgsSunPositionCalculator::calculate(
   const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, const QDateTime &dateTime, double elevationMeters, double pressure, double temperature

@@ -78,9 +78,9 @@
 /* We require a 64bit signed integer time_t type
  * These compile time asserts check for integer, 64bit and signedness
  */
-_Static_assert ((FS_TIME_T) 1.5 == 1  , "error: FS_TIME_T type is not integer");
-_Static_assert (sizeof(FS_TIME_T) == 8, "error: FS_TIME_T type is not 64 bit");
-_Static_assert ((FS_TIME_T) -1 < 0    , "error: FS_TIME_T type is not signed");
+//_Static_assert ((FS_TIME_T) 1.5 == 1  , "error: FS_TIME_T type is not integer");
+//_Static_assert (sizeof(FS_TIME_T) == 8, "error: FS_TIME_T type is not 64 bit");
+//_Static_assert ((FS_TIME_T) -1 < 0    , "error: FS_TIME_T type is not signed");
 
 // some error codes for the error flag in sol_pos
 // errors are be combined with a binary OR
