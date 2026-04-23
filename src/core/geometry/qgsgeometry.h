@@ -469,8 +469,8 @@ class CORE_EXPORT QgsGeometry
      *
      * Implementations:
      *
-     * - GEOS
-     * - QGIS
+     * - GEOS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
+     * - QGIS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
      *
      * The QGIS internal implementation is chosen by default.
      *

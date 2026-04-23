@@ -3744,6 +3744,9 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 
 bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
 {
+  // === WARNING ===
+  // if tolerance/epsilon value is changed in `geos.isFuzzyEqual` or in implementation of `QgsAbstractGeometry::operator==`, documentation must be updaded accordingly and also changed in expression helper files (resources/function_help/json)
+
   if ( !d->geometry || g.isNull() )
   {
     return false;
