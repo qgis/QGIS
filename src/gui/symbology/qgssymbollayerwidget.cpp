@@ -1,4 +1,4 @@
-l /***************************************************************************
+/***************************************************************************
  qgssymbollayerwidget.cpp - symbol layer widgets
 
  ---------------------
@@ -73,7 +73,7 @@ l /***************************************************************************
 
 #include "moc_qgssymbollayerwidget.cpp"
 
-  using namespace Qt::StringLiterals;
+using namespace Qt::StringLiterals;
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {

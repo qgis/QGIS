@@ -28,6 +28,8 @@
 
 #include <qgraphicssceneevent.h>
 
+#include "moc_qgsmaptoolextraitem.cpp"
+
 /**
  * \ingroup gui
  * \brief Rubber band for one extra item.

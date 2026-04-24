@@ -125,7 +125,7 @@ class GUI_EXPORT QgsMapToolAddExtraItem : public QgsMapToolExtraItemBase
  * \ingroup gui
  * \brief Map tool to select and modify extra items for a giving vector layer and symbol layer.
  *
- * It allows to multi select extra items, and move, rotate, delete, copy/cut, paste them.
+ * It allows selecting several extra items, and move, rotate, delete, copy/cut, paste them.
  * It relies on QgsGraphicsViewMouseHandles to deal with those actions.
  *
  * \note not available in Python bindings
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsMapToolModifyExtraItems : public QgsMapToolExtraItemBase
     void deactivate() override;
 
     /**
-     * Returns currenly selected items
+     * Returns currently selected items
      */
     QList<QGraphicsItem *> selectedItems() const;
 

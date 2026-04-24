@@ -5819,6 +5819,8 @@ void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
   changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }
 
+///@cond PRIVATE
+
 QList<QList<QgsSymbolLayerUtils::BlankSegments>> QgsSymbolLayerUtils::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error )
 {
   QString currentNumber;
@@ -6073,3 +6075,5 @@ QgsSymbolLayerUtils::ExtraItems QgsSymbolLayerUtils::parseExtraItems( const QStr
 
   return extraItems;
 }
+
+///@endcond
