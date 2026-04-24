@@ -45,12 +45,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QString>
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif
 
 #include <QSettings>
-#include <QString>
 #include <QThread>
 
 using namespace Qt::StringLiterals;
