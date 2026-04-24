@@ -1331,6 +1331,26 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
+QgsArrowSchema QgsVectorLayer::inferArrowSchema( const QgsArrowInferSchemaOptions &options ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  if ( !isValid() || !mDataProvider )
+    return QgsFeatureSource::inferArrowSchema( options );
+
+  return mDataProvider->inferArrowSchema( options );
+}
+
+QgsArrowArrayStream QgsVectorLayer::getFeaturesArrow( int batchSize, const QgsArrowSchema &schema, const QgsFeatureRequest &request ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  if ( !isValid() || !mDataProvider )
+    return QgsFeatureSource::getFeaturesArrow( batchSize, schema, request );
+
+  return mDataProvider->getFeaturesArrow( batchSize, schema, request );
+}
+
 QgsGeometry QgsVectorLayer::getGeometry( QgsFeatureId fid ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

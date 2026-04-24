@@ -51,6 +51,42 @@ Returns the fields associated with features in the source.
 Returns the geometry type for features returned by this source.
 %End
 
+    virtual QgsArrowSchema inferArrowSchema( const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) const;
+%Docstring
+Infer the Arrow schema for this feature source. The schema returned by
+this method should match the schema returned by
+:py:func:`~QgsFeatureSource.getFeaturesArrow` without an explicit
+schema.
+
+:raises QgsException: if one or more attribute fields is of an
+                      unsupported type.
+
+.. versionadded:: 4.2
+%End
+
+    virtual QgsArrowArrayStream getFeaturesArrow( int batchSize = -1, const QgsArrowSchema &schema = QgsArrowSchema(), const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+%Docstring
+Query the provider for features specified in request as a stream of
+Arrow record batches. The default implementation builds Arrow output
+from the output of :py:func:`~QgsFeatureSource.getFeatures`; however,
+sources may override this to provide a more efficient implementation if
+data sources implement Arrow export directly.
+
+:param schema: The Arrow schema to use. If a released schema is provided
+               (invalid), the resulting stream should have a schema that
+               matches the output of
+               :py:func:`~QgsFeatureSource.inferArrowSchema`.
+:param batchSize: The maximum number of features to include in each
+                  batch, or -1 to let the source determine the optimal
+                  batch size.
+:param request: feature request describing parameters of features to
+                return
+
+:return: stream for matching features from provider
+
+.. versionadded:: 4.2
+%End
+
 
     Py_ssize_t __len__() const;
 %Docstring

@@ -734,21 +734,6 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
   return out;
 }
 
-QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options )
-{
-  bool layerHasGeometry = layer.isSpatial();
-  if ( layerHasGeometry && options.geometryColumnName().isEmpty() )
-  {
-    QgsArrowInferSchemaOptions optionsClone( options );
-    optionsClone.setGeometryColumnName( layer.dataProvider()->geometryColumnName() );
-    return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), optionsClone );
-  }
-  else
-  {
-    return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), options );
-  }
-}
-
 
 QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasGeometry, const QgsCoordinateReferenceSystem &crs, const QgsArrowInferSchemaOptions &options )
 {

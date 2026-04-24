@@ -106,7 +106,7 @@ class TestQgsArrowIterator(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
 
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
         self.assertTrue(schema.isValid())
 
         pa_schema = pa.schema(schema)
@@ -122,7 +122,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
     def test_infer_schema_no_crs(self):
         layer = self.create_test_layer_with_geometry(QgsCoordinateReferenceSystem())
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
         pa_schema = pa.schema(schema)
         geometry_field_metadata = pa_schema.field("geometry").metadata
         geoarrow_metadata = json.loads(
@@ -133,7 +133,7 @@ class TestQgsArrowIterator(QgisTestCase):
     def test_iterate(self):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
 
         iterator = QgsArrowIterator(layer.getFeatures())
         iterator.setSchema(schema)
@@ -198,7 +198,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.Int, [1, 2, None, 4, 5]
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         pa_inferred = pa.schema(inferred)
         assert pa_inferred == pa.schema({"f": pa.int32()})
 
@@ -220,7 +220,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.Double, [1.0, 2.0, None, 4.0, 5.0]
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.float64()})
 
         for pa_type in [pa.float32(), pa.float64()]:
@@ -234,7 +234,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QString, ["a", "b", None, "d", "e"]
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.string()})
 
         for pa_type in [pa.string(), pa.large_string(), pa.string_view()]:
@@ -255,7 +255,7 @@ class TestQgsArrowIterator(QgisTestCase):
                 QByteArray(b"e"),
             ],
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.binary()})
 
         for pa_type in [pa.binary(), pa.large_binary(), pa.binary_view(), pa.binary(1)]:
@@ -269,7 +269,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.Bool, [True, False, None, True, False]
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.bool_()})
 
         for pa_type in [pa.bool_()]:
@@ -287,7 +287,7 @@ class TestQgsArrowIterator(QgisTestCase):
         q_dates[2] = None
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QDate, q_dates)
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.date32()})
 
         for pa_type in [pa.date32(), pa.date64()]:
@@ -303,7 +303,7 @@ class TestQgsArrowIterator(QgisTestCase):
         q_times[2] = None
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QTime, q_times)
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.time32("ms")})
 
         for pa_type in [
@@ -329,7 +329,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QDateTime, q_datetimes
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.timestamp("ms", tz="UTC")})
 
         for pa_type in [
@@ -347,7 +347,7 @@ class TestQgsArrowIterator(QgisTestCase):
         items = [["a", "b"], ["c", "d"], None, ["e", "f"], ["g", "h"]]
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QStringList, items)
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.string())})
 
         for pa_type in [pa.list_(pa.string())]:
@@ -361,7 +361,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Double
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.float64())})
 
         for pa_type in [
@@ -380,7 +380,7 @@ class TestQgsArrowIterator(QgisTestCase):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Int
         )
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         assert pa.schema(inferred) == pa.schema({"f": pa.list_(pa.int32())})
 
         for pa_type in [
@@ -411,7 +411,7 @@ class TestQgsArrowIterator(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
 
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
 
         # Test that __arrow_c_schema__ is implemented
         self.assertTrue(hasattr(schema, "__arrow_c_schema__"))
@@ -428,7 +428,7 @@ class TestQgsArrowIterator(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
 
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
 
         # Test importing via raw address
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
@@ -481,7 +481,7 @@ class TestQgsArrowIterator(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
 
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
         iterator = QgsArrowIterator(layer.getFeatures())
         iterator.setSchema(schema)
 
@@ -499,7 +499,7 @@ class TestQgsArrowIterator(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer = self.create_test_layer_with_geometry(crs)
 
-        schema = QgsArrowIterator.inferSchema(layer)
+        schema = layer.inferArrowSchema()
         iterator = QgsArrowIterator(layer.getFeatures())
         iterator.setSchema(schema)
 
@@ -564,7 +564,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
         # Check that we don't have to request a schema (uses inferred default)
         iterator = QgsArrowIterator(layer.getFeatures())
-        inferred = QgsArrowIterator.inferSchema(layer)
+        inferred = layer.inferArrowSchema()
         iterator.setSchema(inferred)
         table = pa.table(iterator)
         self.assertEqual(

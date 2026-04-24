@@ -91,6 +91,8 @@ class QgsOgrProvider final : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsArrowSchema inferArrowSchema( const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) const override;
+    QgsArrowArrayStream getFeaturesArrow( int batchSize = -1, const QgsArrowSchema &schema = QgsArrowSchema(), const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QString subsetString() const override;
     bool supportsSubsetString() const override;
     QString subsetStringDialect() const override;
