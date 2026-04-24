@@ -33,7 +33,6 @@
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrproviderutils.h"
-#include "qgsopenclutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
@@ -46,8 +45,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
-#include <QSettings>
 #include <QString>
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
+#include <QSettings>
 #include <QThread>
 
 using namespace Qt::StringLiterals;
@@ -289,8 +293,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsImageCache::settingsMaxImageCacheSize->copyValueFromKey( u"qgis/maxImageCacheSize"_s, true );
   QgsSymbolLegendNode::settingsLegendSymbolMinimumSize->copyValueFromKey( u"qgis/legendsymbolMinimumSize"_s, true );
   QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->copyValueFromKey( u"qgis/legendsymbolMaximumSize"_s, true );
+#ifdef HAVE_OPENCL
   QgsOpenClUtils::settingsOpenClEnabled->copyValueFromKey( u"core/OpenClEnabled"_s, true );
   QgsOpenClUtils::settingsOpenClDefaultDevice->copyValueFromKey( u"core/OpenClDefaultDevice"_s, true );
+#endif
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
 
   QgsLayoutGridSettings::settingsGridStyle->copyValueFromKey( u"gui/LayoutDesigner/gridStyle"_s, true );
