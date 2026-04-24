@@ -161,6 +161,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module ) override;
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
+    void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) override;
+    void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) override;
     void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
     void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
