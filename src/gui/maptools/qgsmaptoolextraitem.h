@@ -19,6 +19,7 @@
 #include "qgsgraphicsviewmousehandles.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgsrubberband.h"
 #include "qobjectuniqueptr.h"
 
@@ -48,9 +49,9 @@ class GUI_EXPORT QgsMapToolExtraItemBase : public QgsMapTool
      * \param canvas map canvas
      * \param layer vector layer
      * \param symbolLayer symbol layer (either a marker line or hashed line symbol layer)
-     * \param extraItemsFieldIndex index of the field containing the digitized extra items
+     * \param propertyButton data defined property button associated with this map tool
      */
-    QgsMapToolExtraItemBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex );
+    QgsMapToolExtraItemBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton );
 
     /**
      * Map tool state
@@ -60,7 +61,6 @@ class GUI_EXPORT QgsMapToolExtraItemBase : public QgsMapTool
       SelectFeature,  //!< User needs to select a feature
       FeatureSelected //!< User has selected a feature
     };
-
 
   protected:
     /**
@@ -84,6 +84,7 @@ class GUI_EXPORT QgsMapToolExtraItemBase : public QgsMapTool
     QgsFeatureId mFeatureId = FID_NULL;
     State mState = SelectFeature;
     std::vector<QObjectUniquePtr<QgsExtraItemRubberBand>> mExtraItems;
+    QgsPropertyOverrideButton *mPropertyButton = nullptr;
 
     friend class TestQgsMapToolExtraItem;
 };
@@ -109,9 +110,9 @@ class GUI_EXPORT QgsMapToolAddExtraItem : public QgsMapToolExtraItemBase
      * \param canvas map canvas
      * \param layer vector layer
      * \param symbolLayer symbol layer (either a marker line or hashed line symbol layer)
-     * \param extraItemsFieldIndex index of the field containing the digitized extra items
+     * \param propertyButton data defined property button associated with this map tool
      */
-    QgsMapToolAddExtraItem( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex );
+    QgsMapToolAddExtraItem( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton );
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void keyPressEvent( QKeyEvent *event ) override;
@@ -141,9 +142,9 @@ class GUI_EXPORT QgsMapToolModifyExtraItems : public QgsMapToolExtraItemBase
      * \param canvas map canvas
      * \param layer vector layer
      * \param symbolLayer symbol layer (either a marker line or hashed line symbol layer)
-     * \param extraItemsFieldIndex index of the field containing the digitized extra items
+     * \param propertyButton data defined property button associated with this map tool
      */
-    QgsMapToolModifyExtraItems( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex );
+    QgsMapToolModifyExtraItems( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton );
 
     void activate() override;
     void deactivate() override;

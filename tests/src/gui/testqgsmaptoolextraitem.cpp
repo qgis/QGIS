@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsauxiliarystorage.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolextraitem.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
@@ -44,6 +46,7 @@ class TestQgsMapToolExtraItem : public QgsTest
 
     void testSelectFeature();
     void testAddModifyExtraItems();
+    void testAuxiliaryStorageAutoCreation();
 
   private:
     void compareExtraItems( const QString &strExtraItems, const QgsSymbolLayerUtils::ExtraItems &expected );
@@ -53,6 +56,7 @@ class TestQgsMapToolExtraItem : public QgsTest
     QObjectUniquePtr<QgsMapToolAddExtraItem> mMapToolAddExtraItems;
     std::unique_ptr<QgsMapCanvas> mCanvas;
     std::unique_ptr<QgsVectorLayer> mLayer;
+    std::unique_ptr<QgsPropertyOverrideButton> mPropertyButton;
     QgsMarkerLineSymbolLayer *mSymbolLayer = new QgsMarkerLineSymbolLayer();
 };
 
@@ -66,7 +70,7 @@ void TestQgsMapToolExtraItem::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  mLayer = std::make_unique<QgsVectorLayer>( u"MultiPolygon?field=pk:int&field=bas:string&crs=EPSG:3946"_s, u"polys"_s, u"memory"_s );
+  mLayer = std::make_unique<QgsVectorLayer>( u"MultiPolygon?field=pk:int&field=the_extra_items:string&crs=EPSG:3946"_s, u"polys"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
   QCOMPARE( mLayer->fields().count(), 2 );
 
@@ -93,6 +97,16 @@ void TestQgsMapToolExtraItem::initTestCase()
   mSymbolLayer->setPlacements( Qgis::MarkerLinePlacement::Interval );
 
   renderer->symbol()->changeSymbolLayer( 0, mSymbolLayer );
+
+  // initialize data defined property
+  const int propertyKey = static_cast<int>( QgsSymbolLayer::Property::ExtraItems );
+  QgsPropertyCollection c = mSymbolLayer->dataDefinedProperties();
+  QgsProperty property = QgsProperty::fromField( "the_extra_items", true );
+  c.setProperty( propertyKey, property );
+  mSymbolLayer->setDataDefinedProperties( c );
+
+  mPropertyButton = std::make_unique<QgsPropertyOverrideButton>( nullptr, mLayer.get() );
+  mPropertyButton->init( propertyKey, mSymbolLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mLayer.get(), true );
 }
 
 void TestQgsMapToolExtraItem::cleanupTestCase()
@@ -100,10 +114,10 @@ void TestQgsMapToolExtraItem::cleanupTestCase()
 
 void TestQgsMapToolExtraItem::init()
 {
-  mMapToolAddExtraItems.reset( new QgsMapToolAddExtraItem( mCanvas.get(), mLayer.get(), mSymbolLayer, 1 ) );
+  mMapToolAddExtraItems.reset( new QgsMapToolAddExtraItem( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() ) );
   mCanvas->setMapTool( mMapToolAddExtraItems );
 
-  mMapToolModifyExtraItems.reset( new QgsMapToolModifyExtraItems( mCanvas.get(), mLayer.get(), mSymbolLayer, 1 ) );
+  mMapToolModifyExtraItems.reset( new QgsMapToolModifyExtraItems( mCanvas.get(), mLayer.get(), mSymbolLayer, mPropertyButton.get() ) );
   mCanvas->setMapTool( mMapToolModifyExtraItems );
 }
 
@@ -180,9 +194,11 @@ void TestQgsMapToolExtraItem::testSelectFeature()
   QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
 
   // select first feature
+  QVERIFY( !mLayer->editBuffer() ); // not currently edited
   utils.mouseClick( 0, 1, Qt::LeftButton );
   QCOMPARE( mMapToolAddExtraItems->mFeatureId, 1 );
   QCOMPARE( nbRubberBandVisible(), 0 );
+  QVERIFY( mLayer->editBuffer() ); // map tool start editing on first feature selection
 
   // escape
   utils.keyClick( Qt::Key_Escape );
@@ -197,12 +213,13 @@ void TestQgsMapToolExtraItem::testSelectFeature()
   utils.keyClick( Qt::Key_Escape );
   QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
   QCOMPARE( nbRubberBandVisible(), 0 );
+
+  mLayer->rollBack();
 }
 
 void TestQgsMapToolExtraItem::testAddModifyExtraItems()
 {
   TestQgsMapToolUtils utilsAdd( mMapToolAddExtraItems.get() );
-  mLayer->startEditing();
 
   QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
 
@@ -232,7 +249,6 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
   QCOMPARE( nbRubberBandVisible(), 0 );
 
   TestQgsMapToolUtils utilsModify( mMapToolModifyExtraItems.get() );
-  mLayer->startEditing();
 
   QVERIFY( FID_IS_NULL( mMapToolModifyExtraItems->mFeatureId ) );
 
@@ -288,6 +304,96 @@ void TestQgsMapToolExtraItem::testAddModifyExtraItems()
 
   mLayer->rollBack();
 }
+
+void TestQgsMapToolExtraItem::testAuxiliaryStorageAutoCreation()
+{
+  // reset currently set data defined property
+  QgsPropertyCollection c;
+  mSymbolLayer->setDataDefinedProperties( c );
+  const int propertyKey = static_cast<int>( QgsSymbolLayer::Property::ExtraItems );
+  mPropertyButton->init( propertyKey, mSymbolLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mLayer.get(), true );
+
+  QgsAuxiliaryStorage storage;
+  QgsAuxiliaryLayer *layer = storage.createAuxiliaryLayer( mLayer->fields().field( "pk" ), mLayer.get() );
+  layer->startEditing();
+  mLayer->setAuxiliaryLayer( layer );
+
+  TestQgsMapToolUtils utilsAdd( mMapToolAddExtraItems.get() );
+
+  QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
+
+  // select first feature
+  utilsAdd.mouseClick( 0, 1, Qt::LeftButton );
+  QCOMPARE( mMapToolAddExtraItems->mFeatureId, 1 );
+  QCOMPARE( nbRubberBandVisible(), 0 );
+
+  int fieldIndex = mLayer->fields().lookupField( "auxiliary_storage_symbol_extraitems" );
+  QCOMPARE( fieldIndex, 2 );
+  QCOMPARE( mMapToolAddExtraItems->mExtraItemsFieldIndex, 2 );
+
+  QCOMPARE( layer->featureCount(), 0 );
+
+  // create 3 extra items
+  utilsAdd.mouseClick( 2, 3, Qt::LeftButton );
+  QCOMPARE( nbRubberBandVisible(), 1 );
+
+  utilsAdd.mouseClick( 4, 5, Qt::LeftButton );
+  QCOMPARE( nbRubberBandVisible(), 2 );
+
+  utilsAdd.mouseClick( 6, 7, Qt::LeftButton );
+  QCOMPARE( nbRubberBandVisible(), 3 );
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  QgsFeature feat = mLayer->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+
+  compareExtraItems( feat.attribute( fieldIndex ).toString(), { { { 2., 3. }, 0. }, { { 4, 5 }, 0 }, { { 6, 7 }, 0 } } );
+
+  // now test when property contains already an expression
+
+  c = mSymbolLayer->dataDefinedProperties();
+  const QgsProperty expressionProperty = QgsProperty::fromExpression( u"'5 5'"_s, true );
+  c.setProperty( propertyKey, expressionProperty );
+  mSymbolLayer->setDataDefinedProperties( c );
+  mPropertyButton->setToProperty( expressionProperty );
+
+  QCOMPARE( mMapToolAddExtraItems->mExtraItemsFieldIndex, -1 );
+  QCOMPARE( nbRubberBandVisible(), 0 );
+  QVERIFY( FID_IS_NULL( mMapToolAddExtraItems->mFeatureId ) );
+  QCOMPARE( mMapToolAddExtraItems->mState, QgsMapToolExtraItemBase::State::SelectFeature );
+
+  // select first feature
+  utilsAdd.mouseClick( 0, 1, Qt::LeftButton );
+  QCOMPARE( mMapToolAddExtraItems->mFeatureId, 1 );
+  QCOMPARE( nbRubberBandVisible(), 0 );
+
+  fieldIndex = mLayer->fields().lookupField( "auxiliary_storage_symbol_extraitems_2" );
+  QCOMPARE( fieldIndex, 3 );
+  QCOMPARE( mMapToolAddExtraItems->mExtraItemsFieldIndex, 3 );
+
+  c = mSymbolLayer->dataDefinedProperties();
+  QgsProperty newProperty = c.property( propertyKey );
+  QVERIFY( newProperty.isActive() );
+  QCOMPARE( newProperty.propertyType(), Qgis::PropertyType::Expression );
+  QCOMPARE( newProperty.expressionString(), "coalesce(\"auxiliary_storage_symbol_extraitems_2\",'5 5')" );
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  // create 1 extra item
+  utilsAdd.mouseClick( 4, 2, Qt::LeftButton );
+  QCOMPARE( nbRubberBandVisible(), 1 );
+
+  QCOMPARE( layer->featureCount(), 1 );
+
+  feat = mLayer->getFeature( 1 );
+  QVERIFY( feat.isValid() );
+
+  compareExtraItems( feat.attribute( fieldIndex ).toString(), { { { 4., 2. }, 0. } } );
+
+  mLayer->rollBack();
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolExtraItem )
 #include "testqgsmaptoolextraitem.moc"

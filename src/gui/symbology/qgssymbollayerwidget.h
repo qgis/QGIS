@@ -528,11 +528,6 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void updatePerFeatureCustomizationWidget();
 
   private:
-    // Returns blank segments field index, -1 if no dd property field has been set
-    int blankSegmentsFieldIndex() const;
-    // Returns extra items field index, -1 if no dd property field has been set
-    int extraItemsFieldIndex() const;
-
     QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
     TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
     QObjectUniquePtr<QgsMapToolEditBlankSegmentsBase> mMapToolEditBlankSegments;

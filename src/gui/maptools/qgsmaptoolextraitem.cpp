@@ -15,13 +15,16 @@
 
 #include "qgsmaptoolextraitem.h"
 
+#include "qgsauxiliarystorage.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayerutils.h"
 
 #include <qgraphicssceneevent.h>
 
@@ -83,12 +86,20 @@ class QgsExtraItemRubberBand : public QgsRubberBand
 
 ///////////
 
-QgsMapToolExtraItemBase::QgsMapToolExtraItemBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex )
+QgsMapToolExtraItemBase::QgsMapToolExtraItemBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton )
   : QgsMapTool( canvas )
   , mLayer( layer )
   , mSymbolLayer( symbolLayer )
-  , mExtraItemsFieldIndex( extraItemsFieldIndex )
-{}
+  , mPropertyButton( propertyButton )
+{
+  connect( mPropertyButton, &QgsPropertyOverrideButton::changed, this, [this] {
+    mExtraItemsFieldIndex = dataDefinedColumnIndex( static_cast<int>( QgsSymbolLayer::Property::ExtraItems ), mSymbolLayer->dataDefinedProperties(), mLayer );
+
+    mFeatureId = FID_NULL;
+    mExtraItems.clear();
+    mState = SelectFeature;
+  } );
+}
 
 void QgsMapToolExtraItemBase::loadFeatureExtraItems()
 {
@@ -146,6 +157,9 @@ void QgsMapToolExtraItemBase::updateAttribute()
 
 void QgsMapToolExtraItemBase::selectFeature( QgsMapMouseEvent *event )
 {
+  if ( !mLayer || !mSymbolLayer || !mPropertyButton || mPropertyButton->propertyKey() != static_cast<int>( QgsSymbolLayer::Property::ExtraItems ) )
+    return;
+
   // find the closest feature to the pressed position
   const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( event->pos(), QgsPointLocator::Edge );
   if ( !m.isValid() )
@@ -153,6 +167,53 @@ void QgsMapToolExtraItemBase::selectFeature( QgsMapMouseEvent *event )
     emit
       messageEmitted( tr( "No feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::MessageLevel::Critical );
     return;
+  }
+
+  // initialize field index if not already done
+  if ( mExtraItemsFieldIndex < 0 )
+  {
+    mExtraItemsFieldIndex = dataDefinedColumnIndex( static_cast<int>( QgsSymbolLayer::Property::ExtraItems ), mSymbolLayer->dataDefinedProperties(), mLayer );
+  }
+
+  // No data defined property, create one
+  if ( mExtraItemsFieldIndex < 0 )
+  {
+    if ( !mLayer->auxiliaryLayer() )
+    {
+      QgsNewAuxiliaryLayerDialog dlg( mLayer );
+      dlg.exec();
+    }
+
+    if ( !mLayer->auxiliaryLayer() )
+      return;
+
+    mExtraItemsFieldIndex = QgsAuxiliaryLayer::createProperty( QgsSymbolLayer::Property::ExtraItems, mLayer, mSymbolLayer, false );
+    if ( mExtraItemsFieldIndex < 0 )
+    {
+      emit messageEmitted( tr( "Failed to create extra item auxiliary field for layer '%1'" ).arg( mLayer->name() ) );
+      return;
+    }
+
+    // update property override button from new property
+    QgsPropertyCollection c = mSymbolLayer->dataDefinedProperties();
+    QgsProperty property = c.property( static_cast<int>( QgsSymbolLayer::Property::ExtraItems ) );
+    mPropertyButton->setToProperty( property );
+  }
+
+  // start editing
+
+  const bool usesAuxFields = mLayer->fields().fieldOrigin( mExtraItemsFieldIndex ) == Qgis::FieldOrigin::Join;
+  if ( !usesAuxFields && !mLayer->isEditable() )
+  {
+    if ( mLayer->startEditing() )
+    {
+      emit messageEmitted( tr( "Layer “%1” was made editable" ).arg( mLayer->name() ) );
+    }
+    else
+    {
+      emit messageEmitted( tr( "Cannot modify extra items — the layer “%1” could not be made editable" ).arg( mLayer->name() ) );
+      return;
+    }
   }
 
   mFeatureId = m.featureId();
@@ -163,8 +224,8 @@ void QgsMapToolExtraItemBase::selectFeature( QgsMapMouseEvent *event )
 
 ///////////
 
-QgsMapToolAddExtraItem::QgsMapToolAddExtraItem( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex )
-  : QgsMapToolExtraItemBase( canvas, layer, symbolLayer, extraItemsFieldIndex )
+QgsMapToolAddExtraItem::QgsMapToolAddExtraItem( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton )
+  : QgsMapToolExtraItemBase( canvas, layer, symbolLayer, propertyButton )
 {
   mToolName = tr( "Extra item add tool" );
 }
@@ -371,8 +432,8 @@ void QgsExtraItemRubberBand::update()
 
 ///////////
 
-QgsMapToolModifyExtraItems::QgsMapToolModifyExtraItems( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, int extraItemsFieldIndex )
-  : QgsMapToolExtraItemBase( canvas, layer, symbolLayer, extraItemsFieldIndex )
+QgsMapToolModifyExtraItems::QgsMapToolModifyExtraItems( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton )
+  : QgsMapToolExtraItemBase( canvas, layer, symbolLayer, propertyButton )
 {
   mToolName = tr( "Extra item modify tool" );
 }

@@ -1,4 +1,4 @@
-/***************************************************************************
+l /***************************************************************************
  qgssymbollayerwidget.cpp - symbol layer widgets
 
  ---------------------
@@ -73,7 +73,7 @@
 
 #include "moc_qgssymbollayerwidget.cpp"
 
-using namespace Qt::StringLiterals;
+  using namespace Qt::StringLiterals;
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
@@ -2441,11 +2441,11 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
   switch ( mSymbolType )
   {
     case TemplatedSymbolType::Hash:
-      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsHashedLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, blankSegmentsFieldIndex() ) );
+      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsHashedLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton ) );
       break;
 
     case TemplatedSymbolType::Marker:
-      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, blankSegmentsFieldIndex() ) );
+      mMapToolEditBlankSegments.reset( new QgsMapToolEditBlankSegments<QgsMarkerLineSymbolLayer>( context().mapCanvas(), vectorLayer(), mLayer, mBlankSegmentsDDButton ) );
       break;
   }
 
@@ -2458,7 +2458,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolAddExtraItem( bool toggled 
   if ( !toggled || ( mMapToolAddExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolAddExtraItem.get() ) )
     return;
 
-  mMapToolAddExtraItem.reset( new QgsMapToolAddExtraItem( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
+  mMapToolAddExtraItem.reset( new QgsMapToolAddExtraItem( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn ) );
   mMapToolAddExtraItem->setAction( mAddExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolAddExtraItem );
 }
@@ -2468,7 +2468,7 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolModifyExtraItem( bool toggl
   if ( !toggled || ( mMapToolModifyExtraItem.get() && context().mapCanvas()->mapTool() == mMapToolModifyExtraItem.get() ) )
     return;
 
-  mMapToolModifyExtraItem.reset( new QgsMapToolModifyExtraItems( context().mapCanvas(), vectorLayer(), mLayer, extraItemsFieldIndex() ) );
+  mMapToolModifyExtraItem.reset( new QgsMapToolModifyExtraItems( context().mapCanvas(), vectorLayer(), mLayer, mExtraItemsDDBtn ) );
   mMapToolModifyExtraItem->setAction( mModifyExtraItemAction );
   context().mapCanvas()->setMapTool( mMapToolModifyExtraItem );
 }
@@ -2498,9 +2498,7 @@ void QgsTemplatedLineSymbolLayerWidget::updatePerFeatureCustomizationWidget()
   tooltipAddExtraItem += info;
   tooltipModifyExtraItem += info;
 
-  mEditBlankSegmentsAction->setEnabled( false );
-  mAddExtraItemAction->setEnabled( false );
-  mModifyExtraItemAction->setEnabled( false );
+  bool enabled = true;
   if ( QgsPanelWidget *panelWidget = QgsPanelWidget::findParentPanel( this ); !panelWidget || !panelWidget->dockMode() )
   {
     // It's not possible to edit blank segments from Layer properties dialog
@@ -2508,62 +2506,18 @@ void QgsTemplatedLineSymbolLayerWidget::updatePerFeatureCustomizationWidget()
     tooltipEditBlankSegment += u"<br/><br/>"_s + accessFromDialog;
     tooltipAddExtraItem += u"<br/><br/>"_s + accessFromDialog;
     tooltipModifyExtraItem += u"<br/><br/>"_s + accessFromDialog;
-  }
-  else
-  {
-    const QString noValidField = tr( "This tool is disabled because no valid field property has been set" );
-    const QString fieldReadOnly = tr( "This tool is disabled because field property is not editable" );
-    if ( blankSegmentsFieldIndex() < 0 )
-    {
-      tooltipEditBlankSegment += u"<br/><br/>"_s + noValidField;
-    }
-    else if ( !vectorLayer() || QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), blankSegmentsFieldIndex() ) )
-    {
-      tooltipEditBlankSegment += u"<br/><br/>"_s + fieldReadOnly;
-    }
-    else
-    {
-      mEditBlankSegmentsAction->setEnabled( true );
-    }
 
-    if ( extraItemsFieldIndex() < 0 )
-    {
-      tooltipAddExtraItem += u"<br/><br/>"_s + noValidField;
-      tooltipModifyExtraItem += u"<br/><br/>"_s + noValidField;
-    }
-    else if ( !vectorLayer() || QgsVectorLayerUtils::fieldIsReadOnly( vectorLayer(), extraItemsFieldIndex() ) )
-    {
-      tooltipAddExtraItem += u"<br/><br/>"_s + fieldReadOnly;
-      tooltipModifyExtraItem += u"<br/><br/>"_s + fieldReadOnly;
-    }
-    else
-    {
-      mAddExtraItemAction->setEnabled( true );
-      mModifyExtraItemAction->setEnabled( true );
-    }
+    enabled = false;
   }
+
+  mEditBlankSegmentsAction->setEnabled( enabled );
+  mAddExtraItemAction->setEnabled( enabled );
+  mModifyExtraItemAction->setEnabled( enabled );
 
   mEditBlankSegmentsAction->setToolTip( tooltipEditBlankSegment );
   mAddExtraItemAction->setToolTip( tooltipAddExtraItem );
   mModifyExtraItemAction->setToolTip( tooltipModifyExtraItem );
 }
-
-int QgsTemplatedLineSymbolLayerWidget::blankSegmentsFieldIndex() const
-{
-  const QgsProperty blankSegmentsProperty = mLayer ? mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::BlankSegments ) : QgsProperty();
-  return blankSegmentsProperty && blankSegmentsProperty.isActive() && blankSegmentsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
-           ? vectorLayer()->fields().indexFromName( blankSegmentsProperty.field() )
-           : -1;
-}
-
-int QgsTemplatedLineSymbolLayerWidget::extraItemsFieldIndex() const
-{
-  const QgsProperty &extraItemsProperty = mLayer ? mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::ExtraItems ) : QgsProperty();
-  return extraItemsProperty && extraItemsProperty.isActive() && extraItemsProperty.propertyType() == Qgis::PropertyType::Field && vectorLayer()
-           ? vectorLayer()->fields().indexFromName( extraItemsProperty.field() )
-           : -1;
-}
-
 
 ///////////
 

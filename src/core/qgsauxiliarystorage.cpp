@@ -366,6 +366,43 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
   return index;
 }
 
+int QgsAuxiliaryLayer::createProperty( QgsSymbolLayer::Property propertyKey, QgsVectorLayer *layer, QgsSymbolLayer *symbolLayer, bool overwriteExisting )
+{
+  if ( !layer || !symbolLayer || !layer->auxiliaryLayer() )
+    return -1;
+
+  // compute a unique name for the new property
+  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[static_cast<int>( propertyKey )];
+  const QString baseName = def.name();
+  int iDef = 2; // first name doesn't have number suffix so the next one is 2
+  while ( layer->auxiliaryLayer()->exists( def ) )
+  {
+    def.setName( u"%1_%2"_s.arg( baseName ).arg( iDef++ ) );
+  }
+
+  const QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def, true );
+  if ( !layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    return -1;
+
+  // is there an existing property?
+  QgsPropertyCollection c = symbolLayer->dataDefinedProperties();
+  QgsProperty property = c.property( propertyKey );
+  if ( property.propertyType() == Qgis::PropertyType::Invalid || overwriteExisting )
+  {
+    property = QgsProperty::fromField( fieldName );
+  }
+  else
+  {
+    // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
+    property = QgsProperty::fromExpression( u"coalesce(%1,%2)"_s.arg( QgsExpression::quotedColumnRef( fieldName ), property.asExpression() ) );
+  }
+
+  c.setProperty( propertyKey, property );
+  symbolLayer->setDataDefinedProperties( c );
+
+  return layer->fields().lookupField( fieldName );
+}
+
 bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 {
   bool hidden = false;
