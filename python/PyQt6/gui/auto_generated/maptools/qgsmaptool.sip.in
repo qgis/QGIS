@@ -288,6 +288,30 @@ The default implementation does nothing and returns false.
 Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
+    enum class PropertyStatus
+    {
+      Valid,
+      DoesNotExist,
+      CurrentExpressionInvalid
+    };
+
+    QString dataDefinedColumnName( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *layer, PropertyStatus &status ) const;
+%Docstring
+Returns data defined property column name for the ``propertyKey`` from
+``properties`` associated to the ``layer``
+
+:param status: is updated with current property status
+%End
+
+    int dataDefinedColumnIndex( int propertyKey, const QgsPropertyCollection &properties, const QgsVectorLayer *vlayer ) const;
+%Docstring
+Returns data defined property column index for the ``propertyKey`` from
+``properties`` associated to the ``layer``
+
+:param status: is updated with current property status
+%End
+
+
   signals:
 
     void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
