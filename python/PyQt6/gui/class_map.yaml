@@ -793,7 +793,7 @@ QgsAttributeEditorContext.setVectorLayerTools: src/gui/qgsattributeeditorcontext
 QgsAttributeEditorContext.vectorLayerTools: src/gui/qgsattributeeditorcontext.h#L168
 QgsAttributeEditorContext: src/gui/qgsattributeeditorcontext.h#L41
 QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L410
-QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L494
+QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L495
 QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L71
 QgsAttributeForm.addInterface: src/gui/qgsattributeform.h#L125
 QgsAttributeForm.aggregateFilter: src/gui/qgsattributeform.h#L190
