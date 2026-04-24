@@ -597,8 +597,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
   else if ( action == mActionClearExpr )
   {
     setActivePrivate( false );
-    mProperty.setStaticValue( QVariant() );
-    mProperty.setTransformer( nullptr );
+    mProperty = QgsProperty();
     mExpressionString.clear();
     mFieldName.clear();
     updateSiblingWidgets( isActive() );
