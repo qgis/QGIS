@@ -73,7 +73,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
-  connectToLayersRepaintRequest();
+  onLayersChanged();
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
@@ -197,22 +197,51 @@ void QgsTerrainEntity::invalidateMapImages()
 
 void QgsTerrainEntity::onLayersChanged()
 {
-  connectToLayersRepaintRequest();
-  invalidateMapImages();
-}
-
-void QgsTerrainEntity::connectToLayersRepaintRequest()
-{
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  // disconnect all watched layers
+  const QList<QgsMapLayer *> keys = mLayers.keys();
+  for ( QgsMapLayer *layer : keys )
   {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
+    disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
+    disconnect( layer, &QgsMapLayer::styleChanged, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
   }
 
-  mLayers = mMapSettings->layers();
+  mLayers.clear();
 
-  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  // connect on all layer renderer3DChanged and styleChanged signals
+  // then keep if they have or not a 3D renderer
+  const QList<QgsMapLayer *> layers = mMapSettings->layers();
+  for ( QgsMapLayer *layer : layers )
   {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
+    mLayers[layer] = static_cast< bool >( layer->renderer3D() );
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
+    connect( layer, &QgsMapLayer::styleChanged, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
+  }
+}
+
+void QgsTerrainEntity::onLayerStyleOrFeatureChanged()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    // if layer has no 3D renderer and its 2D style changed, we must invalidate the map images.
+    if ( mLayers.contains( layer ) && !static_cast< bool >( layer->renderer3D() ) )
+    {
+      invalidateMapImages();
+    }
+  }
+}
+
+void QgsTerrainEntity::onLayer3DRendererChanged()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    // if layer has gone from having a 3d renderer to not having one, or vice versa, we must invalidate the map images.
+    if ( mLayers.contains( layer ) && mLayers[layer] != static_cast< bool >( layer->renderer3D() ) )
+    {
+      mLayers[layer] = static_cast< bool >( layer->renderer3D() );
+      invalidateMapImages();
+    }
   }
 }
 

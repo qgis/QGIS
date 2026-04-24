@@ -75,18 +75,18 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
     void onLayersChanged();
+    void onLayer3DRendererChanged();
+    void onLayerStyleOrFeatureChanged();
     void onTerrainElevationOffsetChanged();
 
   private:
-    void connectToLayersRepaintRequest();
-
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
 
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
-    QList<QgsMapLayer *> mLayers;
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
+    QHash<QgsMapLayer *, bool> mLayers;
 };
 
 
