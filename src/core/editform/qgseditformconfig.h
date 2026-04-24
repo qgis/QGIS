@@ -81,6 +81,7 @@ class CORE_EXPORT QgsEditFormConfig
       AllProperties = 1, //!< All properties for item
       Alias = 2,         //!< Alias
       Editable = 3,      //!< Editable state \since QGIS 3.30
+      CustomComment = 4, //!< Custom comment \since QGIS 4.2
     };
     // *INDENT-ON*
 

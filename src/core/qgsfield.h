@@ -68,6 +68,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
     Q_PROPERTY( Qgis::FieldConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
     Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
+    Q_PROPERTY( QString customComment READ customComment WRITE setCustomComment )
 
   public:
     // clang-format off
@@ -370,6 +371,21 @@ class CORE_EXPORT QgsField
      * \see alias()
      */
     void setAlias( const QString &alias ) SIP_HOLDGIL;
+
+    /**
+     * Returns the custom comment for the field.
+     * an empty string when custom comment require to be empty and NULL if no custom comment has been defined and the provider one should be used.
+     * \see setCustomComment()
+     */
+    QString customComment() const SIP_HOLDGIL;
+
+    /**
+     * Sets the custom comment for the field.
+     * \param customComment custom comment (can be empty as well) or NULL to remove the custom comment.
+     * \see customComment()
+     * \since QGIS 4.2
+     */
+    void setCustomComment( const QString &customComment ) SIP_HOLDGIL;
 
     /**
      * Returns the Flags for the field (searchable, …).

@@ -102,6 +102,20 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     QString alias() const;
 
     /**
+     * Sets the displayed comment.
+     * Sets the comment to be displayed. Defaults to the provider comment if \a customComment is NULL.
+     * \since QGIS 4.2
+     */
+    void setDisplayedComment( const QString &customComment );
+
+    /**
+     * Returns the custom comment.
+     * Returns NULL if the displayed comment matches the provider comment.
+     * \since QGIS 4.2
+     */
+    QString customComment() const;
+
+    /**
      * Sets the data defined properties to \a properties.
      * \since QGIS 3.14
      */
@@ -322,6 +336,9 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     QgsFeature mPreviewFeature;
 
     QgsPropertyCollection mDataDefinedProperties;
+
+    QAction *mClearAction = nullptr;
+    QString mComment;
 };
 
 #endif
