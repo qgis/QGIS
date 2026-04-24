@@ -54,10 +54,6 @@ class TestQgsNewDatabaseTableNameWidget : public QObject
 
 void TestQgsNewDatabaseTableNameWidget::initTestCase()
 {
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST-NEW-DBTABLE-WIDGET"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
 

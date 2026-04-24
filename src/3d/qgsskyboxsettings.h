@@ -27,6 +27,8 @@
 class QgsReadWriteContext;
 class QDomElement;
 
+// this is broken for z-up coordinate system
+#define ENABLE_PANORAMIC_SKYBOX 0
 
 /**
  * \brief Contains the configuration of a skybox entity.
@@ -47,14 +49,16 @@ class _3D_EXPORT QgsSkyboxSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns the type of the skybox
-    QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
+    Qgis::SkyboxType skyboxType() const { return mSkyboxType; }
     //! Sets the type of the skybox
-    void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
+    void setSkyboxType( Qgis::SkyboxType type ) { mSkyboxType = type; }
 
+#if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
     QString panoramicTexturePath() const { return mPanoramicTexturePath; }
     //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
     void setPanoramicTexturePath( const QString &texturePath ) { mPanoramicTexturePath = texturePath; }
+#endif
 
     /**
      * Returns a map containing the path of each texture specified by the user.
@@ -68,11 +72,30 @@ class _3D_EXPORT QgsSkyboxSettings
      */
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
+    /**
+     * Returns the cube face mapping scheme.
+     *
+     * \see setCubeMapping()
+     * \since QGIS 4.2
+     */
+    Qgis::SkyboxCubeMapping cubeMapping() const;
+
+    /**
+     * Sets the cube face \a mapping scheme.
+     *
+     * \see cubeMapping()
+     * \since QGIS 4.2
+     */
+    void setCubeMapping( Qgis::SkyboxCubeMapping mapping );
+
   private:
-    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
-    //
+    Qgis::SkyboxType mSkyboxType = Qgis::SkyboxType::DistinctTextures;
+
+#if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;
-    //
+#endif
+
+    Qgis::SkyboxCubeMapping mCubeMapping = Qgis::SkyboxCubeMapping::NativeZUp;
     QMap<QString, QString> mCubeMapFacesPaths;
 };
 

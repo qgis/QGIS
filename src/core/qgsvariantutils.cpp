@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsstringutils.h"
 #include "qgsunsetattributevalue.h"
 
 #include <QBitArray>
@@ -588,7 +589,9 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::UInt;
 
     case QMetaType::Float:
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     case QMetaType::Float16:
+#endif
       return QVariant::Type::Double;
 
     // no mapping possible:
@@ -730,4 +733,44 @@ QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
   {
     return _displayString( variant, precision );
   }
+}
+
+QString QgsVariantUtils::variantToHtml( const QVariantMap &variantMap, const QString &title = QString() )
+{
+  QString result;
+  if ( !title.isEmpty() )
+  {
+    result += u"<tr><td class=\"highlight\">%1</td><td></td></tr>"_s.arg( title );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    if ( ( it.value().type() == QVariant::List || it.value().type() == QVariant::StringList ) )
+    {
+      const QVariantList childList = it.value().toList();
+      result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
+      for ( const QVariant &v : childList )
+      {
+        if ( v.type() == QVariant::Map )
+        {
+          const QVariantMap grandChildMap = v.toMap();
+          result += u"<li><table>%1</table></li>"_s.arg( variantToHtml( grandChildMap ) );
+        }
+        else
+        {
+          result += u"<li>%1</li>"_s.arg( QgsStringUtils::insertLinks( v.toString() ) );
+        }
+      }
+      result += "</ul></td></tr>"_L1;
+    }
+    else if ( it.value().type() == QVariant::Map )
+    {
+      const QVariantMap childMap = it.value().toMap();
+      result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), variantToHtml( childMap ) );
+    }
+    else
+    {
+      result += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>"_s.arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
+    }
+  }
+  return result;
 }

@@ -14,7 +14,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import QgsGui
-from qgis.PyQt.QtCore import QCoreApplication, QLocale
+from qgis.PyQt.QtCore import QLocale
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
@@ -28,10 +28,6 @@ class TestQgsStoredQueryManager(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsStoredQueryManager.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsStoredQueryManager")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -41,7 +37,6 @@ class TestQgsStoredQueryManager(QgisTestCase):
         """
         p = QgsProject.instance()
         manager = QgsGui.storedQueryManager()
-        QgsSettings().clear()
         QgsProject.instance().clear()
 
         self.assertFalse(manager.allQueryNames(Qgis.QueryStorageBackend.CurrentProject))

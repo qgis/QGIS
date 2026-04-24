@@ -43,7 +43,6 @@ class TestQgsEditFormConfig(QgisTestCase):
     def setUpClass(cls):
         super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
-        QgsSettings().clear()
 
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + "")

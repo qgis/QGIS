@@ -29,6 +29,8 @@
 
 #define SIP_NO_FILE
 
+class QgsSettingsEntryString;
+
 class QgsProviderSublayerDetails;
 
 
@@ -217,6 +219,8 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
     static QgsDataItem *createLayerItemForPath( const QString &path, QgsDataItem *parentItem, const QStringList &providers, const QVariantMap &extraUriParts, Qgis::SublayerQueryFlags queryFlags );
 
     bool handlesDirectoryPath( const QString &path ) override;
+
+    static const QgsSettingsEntryString *settingsScanItemsInBrowser;
 
   private:
     static QgsDataItem *createDataItemForPathPrivate(

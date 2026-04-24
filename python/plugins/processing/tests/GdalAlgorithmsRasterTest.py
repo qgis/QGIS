@@ -6656,11 +6656,10 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             )
 
     def testGdalTranslateRun(self):
-
+        # TODO: actually check that the layer is well added to the project
         res = processing.run(
             "gdal:translate",
             {
-                "DISTANCE": 1,
                 "INPUT": os.path.join(testDataPath, "dem.tif"),
                 "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
             },

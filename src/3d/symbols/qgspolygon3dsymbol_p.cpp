@@ -98,18 +98,17 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
+  const bool requiresTextureCoordinates = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates();
+  const bool requiresTangents = mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents();
 
   auto tessellator = std::make_unique<QgsTessellator>();
   tessellator->setOrigin( mChunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
-  tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
-  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
-  tessellator->setOutputZUp( true );
+  tessellator->setAddTextureUVs( requiresTextureCoordinates );
+  tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outNormal.tessellator = std::move( tessellator );
@@ -119,11 +118,9 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
-  tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
-  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
-  tessellator->setOutputZUp( true );
+  tessellator->setAddTextureUVs( requiresTextureCoordinates );
+  tessellator->setAddTangents( requiresTangents );
   tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outSelected.tessellator = std::move( tessellator );
@@ -371,10 +368,13 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   const int vertexCount = polyData.tessellator->uniqueVertexCount();
   const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
-
-  QgsTessellatedPolygonGeometry *geometry
-    = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry(
+    true,
+    mSymbol->invertNormals(),
+    mSymbol->addBackFaces(),
+    mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTextureCoordinates(),
+    mSymbol->materialSettings() && mSymbol->materialSettings()->requiresTangents()
+  );
 
   geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
   geometry->setIndexBufferData( indexBuffer, indexCount );

@@ -1332,6 +1332,7 @@ namespace QgsWms
 
     // compute scale denominator
     QgsScaleCalculator scaleCalc( ( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
+    scaleCalc.setEllipsoid( mapSettings.ellipsoid() );
     const double scaleDenominator = scaleCalc.calculate( mWmsParameters.bboxAsRectangle(), outputImage->width() );
 
     // configure layers

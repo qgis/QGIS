@@ -21,6 +21,8 @@ Represents a CPT City color scheme.
 #include "qgscptcityarchive.h"
 %End
   public:
+
+
     QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 

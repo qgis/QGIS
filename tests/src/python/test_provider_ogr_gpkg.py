@@ -331,10 +331,6 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsOGRProviderGpkg.com")
-        QCoreApplication.setApplicationName("TestPyQgsOGRProviderGpkg")
-        QgsSettings().clear()
         start_app()
 
         # Create test layer

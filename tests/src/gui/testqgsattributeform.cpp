@@ -22,6 +22,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsgui.h"
 #include "qgsmultiedittoolbutton.h"
@@ -70,6 +71,7 @@ class TestQgsAttributeForm : public QObject
     void testFieldConstraintDuplicateField();
     void testCaseInsensitiveFieldConstraint();
     void testCompositeForeignKeyHidesNonFirstFields();
+    void testCustomComments();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1350,6 +1352,114 @@ void TestQgsAttributeForm::testCompositeForeignKeyHidesNonFirstFields()
   QVERIFY( form.mFormEditorWidgets.contains( 1 ) ); // name
 
   QgsProject::instance()->clear();
+}
+
+void TestQgsAttributeForm::testCustomComments()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point"_s, u"test"_s, u"memory"_s );
+
+  //create fields with server comments
+  QgsField f1( u"f1"_s, QMetaType::Type::QString );
+  QgsField f2( u"f2"_s, QMetaType::Type::QString );
+  QgsField f3( u"f3"_s, QMetaType::Type::QString );
+  QgsField f4( u"f4"_s, QMetaType::Type::QString );
+
+  //set server comments (none for fourth field)
+  f1.setComment( u"Server comment of first field"_s );
+  f2.setComment( u"Server comment of second field"_s );
+  f3.setComment( u"Server comment of third field"_s );
+
+  layer->dataProvider()->addAttributes( { f1, f2, f3, f4 } );
+  layer->updateFields();
+
+  //set aliases (none for third field)
+  layer->setFieldAlias( 0, "First field" );
+  layer->setFieldAlias( 1, "Second field" );
+  layer->setFieldAlias( 3, "Fourth field" );
+
+  //set custom comments (none for the first field and empty for the third field)
+  layer->setFieldCustomComment( 1, u"Custom comment of second field"_s );
+  layer->setFieldCustomComment( 2, u""_s );
+  layer->setFieldCustomComment( 3, u"Custom comment of fourth field"_s );
+
+  //we set a feature
+  QgsFeature f( layer->fields() );
+  f.setAttribute( u"f1"_s, u"Herr Lehmann"_s );
+
+  //additionally we set a data defined custom comment on the fourth field, what we do via editFormConfig
+  QgsEditFormConfig config = layer->editFormConfig();
+  QgsPropertyCollection properties( u"collection"_s );
+  QgsProperty property = QgsProperty::fromExpression( u"'Comment with '||COALESCE(f1,'nothing')"_s, true );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::layerScope( layer.get() );
+  context.setFeature( f );
+  context.setFields( layer->fields() );
+  property.prepare( context );
+  QCOMPARE( property.valueAsString( context ), "Comment with Herr Lehmann" );
+  properties.setProperty( QgsEditFormConfig::DataDefinedProperty::CustomComment, property );
+  config.setDataDefinedFieldProperties( u"f4"_s, properties );
+  layer->setEditFormConfig( config );
+
+  //create the form
+  QgsAttributeForm form( layer.get() );
+  form.setMode( QgsAttributeEditorContext::SingleEditMode );
+  form.setFeature( f );
+
+  //get the labels
+  QHash<QWidget *, QLabel *> buddyLabels;
+  for ( QLabel *label : form.findChildren<QLabel *>() )
+  {
+    if ( label->buddy() )
+    {
+      buddyLabels.insert( label->buddy(), label );
+    }
+  }
+
+  QgsEditorWidgetWrapper *ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  QVERIFY( ww1 );
+  QCOMPARE( ww1->field().name(), u"f1"_s );
+  QCOMPARE( ww1->field().alias(), u"First field"_s );
+  QCOMPARE( ww1->field().comment(), u"Server comment of first field"_s );
+  QVERIFY( ww1->field().customComment().isNull() );                         //no custom comment
+  QCOMPARE( buddyLabels.value( ww1->widget() )->text(), u"First field"_s ); //it's the alias
+  QCOMPARE( buddyLabels.value( ww1->widget() )->toolTip(), u"<b>First field</b> (f1)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Server comment of first field</em>"_s ); //it's the alias and the server comment
+
+  QgsEditorWidgetWrapper *ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QVERIFY( ww2 );
+  QCOMPARE( ww2->field().name(), u"f2"_s );
+  QCOMPARE( ww2->field().alias(), u"Second field"_s );
+  QCOMPARE( ww2->field().comment(), u"Server comment of second field"_s );
+  QCOMPARE( ww2->field().customComment(), u"Custom comment of second field"_s );
+  QCOMPARE( buddyLabels.value( ww2->widget() )->text(), u"Second field"_s ); //it's the alias
+  QCOMPARE( buddyLabels.value( ww2->widget() )->toolTip(), u"<b>Second field</b> (f2)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Custom comment of second field</em>"_s ); //it's the alias and the custom comment
+
+  QgsEditorWidgetWrapper *ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  QVERIFY( ww3 );
+  QCOMPARE( ww3->field().name(), u"f3"_s );
+  QVERIFY( ww3->field().alias().isEmpty() ); //no alias
+  QCOMPARE( ww3->field().comment(), u"Server comment of third field"_s );
+  QVERIFY( ww3->field().customComment().isEmpty() && !ww3->field().customComment().isNull() );                                                               //empty custom comment but not null
+  QCOMPARE( buddyLabels.value( ww3->widget() )->text(), u"f3"_s );                                                                                           //it's the field name due to no alias
+  QCOMPARE( buddyLabels.value( ww3->widget() )->toolTip(), u"<b>f3</b><br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font>"_s ); //it's the fieldname and without a comment
+
+  QgsEditorWidgetWrapper *ww4 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
+  QVERIFY( ww4 );
+  QCOMPARE( ww4->field().name(), u"f4"_s );
+  QCOMPARE( ww4->field().alias(), u"Fourth field"_s );
+  QVERIFY( ww4->field().comment().isEmpty() ); //no server comment
+  QCOMPARE( ww4->field().customComment(), u"Custom comment of fourth field"_s );
+  QCOMPARE( buddyLabels.value( ww4->widget() )->text(), u"Fourth field"_s ); //it's the alias
+  QCOMPARE( buddyLabels.value( ww4->widget() )->toolTip(), u"<b>Fourth field</b> (f4)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Comment with Herr Lehmann</em>"_s ); //it's the alias and the data defined comment
+
+  //check data defined comment
+  ww1->setValues( u"Steve Zissou"_s, QVariantList() );
+  form.updateLabels();
+  QCOMPARE( buddyLabels.value( ww4->widget() )->toolTip(), u"<b>Fourth field</b> (f4)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Comment with Steve Zissou</em>"_s ); //it's the alias and the data defined comment
+
+  //check data defined comment again
+  ww1->setValues( u"Ned"_s, QVariantList() );
+  form.updateLabels();
+  QCOMPARE( buddyLabels.value( ww4->widget() )->toolTip(), u"<b>Fourth field</b> (f4)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font><br><em>Comment with Ned</em>"_s ); //it's the alias and the data defined comment
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

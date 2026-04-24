@@ -20,7 +20,6 @@ from qgis.gui import (
     QgsSourceSelectProvider,
     QgsSourceSelectProviderRegistry,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
@@ -79,9 +78,6 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
     def setUp(self):

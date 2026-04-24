@@ -19,9 +19,11 @@
 #include <memory>
 
 #include "qgs3dmaptool.h"
+#include "qgs3dmeasuredialog.h"
 #include "qgspoint.h"
+#include "qobjectuniqueptr.h"
 
-class Qgs3DMeasureDialog;
+class Qgs3DMapCanvasWidget;
 class QgsRubberBand3D;
 
 
@@ -30,7 +32,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas );
+    Qgs3DMapToolMeasureLine( Qgs3DMapCanvasWidget *canvas );
     ~Qgs3DMapToolMeasureLine() override;
 
     //! When we have added our last point, and not following
@@ -71,7 +73,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     bool mDone = true;
 
     //! Dialog
-    std::unique_ptr<Qgs3DMeasureDialog> mDialog;
+    QObjectUniquePtr<Qgs3DMeasureDialog> mDialog = nullptr;
 
     std::unique_ptr<QgsRubberBand3D> mRubberBand;
 

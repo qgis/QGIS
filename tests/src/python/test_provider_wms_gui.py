@@ -19,7 +19,7 @@ from urllib.parse import quote
 
 from qgis.core import Qgis, QgsDataItemProviderRegistry, QgsOwsConnection, QgsSettings
 from qgis.gui import QgsGui
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt, QUrl
+from qgis.PyQt.QtCore import QEventLoop, Qt, QUrl
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -40,10 +40,6 @@ class TestPyQgsWMSProviderGUI(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWMSProviderGUI.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsWMSProviderGUI")
-        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")

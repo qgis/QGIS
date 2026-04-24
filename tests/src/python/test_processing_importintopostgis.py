@@ -22,7 +22,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -42,10 +41,6 @@ class TestExportToPostGis(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsExportToPostgis.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsExportToPostgis")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()

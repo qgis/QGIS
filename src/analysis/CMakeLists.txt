@@ -64,6 +64,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometrymultipart.cpp
   processing/qgsalgorithmfixgeometryoverlap.cpp
@@ -171,6 +172,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
+  processing/qgsalgorithmhypsometriccurves.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp

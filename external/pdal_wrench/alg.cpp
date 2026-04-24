@@ -39,7 +39,7 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
 
     if (alg.hasSingleInput)
     {
-        if (ends_with(alg.inputFile, ".vpc"))
+        if (isVpcFilename(alg.inputFile))
         {
             VirtualPointCloud vpc;
             if (!vpc.read(alg.inputFile))

@@ -48,6 +48,7 @@ const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedEntryImageUrl = new
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedEntryContent = new QgsSettingsEntryString( u"content"_s, sTreeNewsFeedEntries, QString(), u"Entry content"_s );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedEntryLink = new QgsSettingsEntryString( u"link"_s, sTreeNewsFeedEntries, QString(), u"Entry link"_s );
 const QgsSettingsEntryBool *QgsNewsFeedParser::settingsFeedEntrySticky = new QgsSettingsEntryBool( u"sticky"_s, sTreeNewsFeedEntries, false );
+const QgsSettingsEntryVariant *QgsNewsFeedParser::settingsFeedEntryPublished = new QgsSettingsEntryVariant( u"published"_s, sTreeNewsFeedEntries, QVariant(), u"Publication date"_s );
 const QgsSettingsEntryVariant *QgsNewsFeedParser::settingsFeedEntryExpiry = new QgsSettingsEntryVariant( u"expiry"_s, sTreeNewsFeedEntries, QVariant(), u"Expiry date"_s );
 
 
@@ -242,11 +243,12 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     Entry incomingEntry;
     const QVariantMap entryMap = e.toMap();
     incomingEntry.key = entryMap.value( u"pk"_s ).toInt();
-    incomingEntry.title = entryMap.value( u"title"_s ).toString();
+    incomingEntry.title = entryMap.value( u"title"_s ).toString().trimmed();
     incomingEntry.imageUrl = entryMap.value( u"image"_s ).toString();
-    incomingEntry.content = entryMap.value( u"content"_s ).toString();
+    incomingEntry.content = entryMap.value( u"content"_s ).toString().trimmed();
     incomingEntry.link = entryMap.value( u"url"_s ).toString();
     incomingEntry.sticky = entryMap.value( u"sticky"_s ).toBool();
+    incomingEntry.published.setSecsSinceEpoch( entryMap.value( u"publish_from"_s ).toLongLong() );
     bool hasExpiry = false;
     const qlonglong expiry = entryMap.value( u"publish_to"_s ).toLongLong( &hasExpiry );
     if ( hasExpiry )
@@ -338,6 +340,7 @@ QgsNewsFeedParser::Entry QgsNewsFeedParser::readEntryFromSettings( const int key
   entry.content = settingsFeedEntryContent->value( { mFeedKey, QString::number( key ) } );
   entry.link = settingsFeedEntryLink->value( { mFeedKey, QString::number( key ) } );
   entry.sticky = settingsFeedEntrySticky->value( { mFeedKey, QString::number( key ) } );
+  entry.published = settingsFeedEntryPublished->value( { mFeedKey, QString::number( key ) } ).toDateTime();
   entry.expiry = settingsFeedEntryExpiry->value( { mFeedKey, QString::number( key ) } ).toDateTime();
   if ( !entry.imageUrl.isEmpty() )
   {
@@ -363,6 +366,7 @@ void QgsNewsFeedParser::storeEntryInSettings( const QgsNewsFeedParser::Entry &en
   settingsFeedEntryContent->setValue( entry.content, { mFeedKey, QString::number( entry.key ) } );
   settingsFeedEntryLink->setValue( entry.link.toString(), { mFeedKey, QString::number( entry.key ) } );
   settingsFeedEntrySticky->setValue( entry.sticky, { mFeedKey, QString::number( entry.key ) } );
+  settingsFeedEntryPublished->setValue( entry.published, { mFeedKey, QString::number( entry.key ) } );
   if ( entry.expiry.isValid() )
     settingsFeedEntryExpiry->setValue( entry.expiry, { mFeedKey, QString::number( entry.key ) } );
 }

@@ -10,6 +10,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRasterDataProvider.__attribute_docs__ = {'statusChanged': 'Emit a message to be displayed on status bar, usually used by network\nproviders (WMS,WCS)\n'}
+    QgsRasterDataProvider.colorName = staticmethod(QgsRasterDataProvider.colorName)
     QgsRasterDataProvider.create = staticmethod(QgsRasterDataProvider.create)
     QgsRasterDataProvider.pyramidResamplingMethods = staticmethod(QgsRasterDataProvider.pyramidResamplingMethods)
     QgsRasterDataProvider.decodeVirtualRasterProviderUri = staticmethod(QgsRasterDataProvider.decodeVirtualRasterProviderUri)

@@ -17,23 +17,36 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
+#include "qgscolorscheme.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgsgpsdetector.h"
+#include "qgsimagecache.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslayoutgridsettings.h"
+#include "qgslayoutsnapper.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrproviderutils.h"
+#include "qgsopenclutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QSettings>
 #include <QString>
 #include <QThread>
 
@@ -200,14 +213,6 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
-  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
-  // as it involves writing new values to the underlying ini files.
-  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
-  // so that only a single QgsSettings object is created and destroyed at the end of this method.
-  QgsSettings::holdFlush();
-
-  auto settings = QgsSettings::get();
-
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
@@ -244,6 +249,8 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"/qgis/scanItemsInBrowser2"_s, {}, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
@@ -279,11 +286,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
   QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
+  QgsImageCache::settingsMaxImageCacheSize->copyValueFromKey( u"qgis/maxImageCacheSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMinimumSize->copyValueFromKey( u"qgis/legendsymbolMinimumSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->copyValueFromKey( u"qgis/legendsymbolMaximumSize"_s, true );
+  QgsOpenClUtils::settingsOpenClEnabled->copyValueFromKey( u"core/OpenClEnabled"_s, true );
+  QgsOpenClUtils::settingsOpenClDefaultDevice->copyValueFromKey( u"core/OpenClDefaultDevice"_s, true );
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
+
+  QgsLayoutGridSettings::settingsGridStyle->copyValueFromKey( u"gui/LayoutDesigner/gridStyle"_s, true );
+  QgsLayoutGridSettings::settingsGridColor->copyValueFromKeys( u"gui/LayoutDesigner/gridRed"_s, u"gui/LayoutDesigner/gridGreen"_s, u"gui/LayoutDesigner/gridBlue"_s, u"gui/LayoutDesigner/gridAlpha"_s, true );
+  QgsLayoutGridSettings::settingsGridResolution->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridResolution"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetX->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetX"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetY->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetY"_s, true );
+  QgsLayoutSnapper::settingsSnapTolerance->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapTolerancePixels"_s, true );
+
+  QgsRasterRendererRegistry::settingsDefaultRedBand->copyValueFromKey( u"Raster/defaultRedBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultGreenBand->copyValueFromKey( u"Raster/defaultGreenBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultBlueBand->copyValueFromKey( u"Raster/defaultBlueBand"_s, true );
+  QgsRasterRendererRegistry::settingsUseStandardDeviation->copyValueFromKey( u"Raster/useStandardDeviation"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultStandardDeviation->copyValueFromKey( u"Raster/defaultStandardDeviation"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( u"core/rendering/label_candidates_limit_polygons"_s, true );
+
+  QgsCustomColorScheme::settingsPaletteColors->copyValueFromKey( u"colors/palettecolors"_s, {}, true );
+  QgsCustomColorScheme::settingsPaletteLabels->copyValueFromKey( u"colors/palettelabels"_s, {}, true );
+  QgsUserColorScheme::settingsShowInMenuList->copyValueFromKey( u"colors/showInMenuList"_s, {}, true );
 
   // digitizing settings - added in 3.30
   {
@@ -310,9 +339,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // locator filters - added in 3.30
   {
-    settings->beginGroup( u"gui/locator_filters"_s );
-    const QStringList childKeys = settings->childKeys();
-    settings->endGroup();
+    QSettings &locatorSettings = QgsSettingsEntryBase::userSettings();
+    locatorSettings.beginGroup( u"gui/locator_filters"_s );
+    const QStringList childKeys = locatorSettings.childKeys();
+    locatorSettings.endGroup();
     for ( const QString &childKey : childKeys )
     {
       if ( childKey.startsWith( "enabled"_L1 ) )
@@ -457,7 +487,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
     {
-      const QStringList deviceNames = settings->value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
+      const QStringList deviceNames = QgsSettingsEntryBase::userSettings().value( u"/Plugin-GPS/devices/deviceList"_s ).toStringList();
 
       for ( const QString &device : deviceNames )
       {
@@ -471,7 +501,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     }
   }
 
-  QgsSettings::releaseFlush();
+  // recent CRS
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"crs/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"crs/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"crs/recentProjectionsProj4"_s, {}, true );
+
+  // auth settings
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
+  QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
+  QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
+
+  // raster cumulative cut
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"raster/cumulativeCutUpper"_s, {}, true );
+
+  // CptCity
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"core/cptcity-base-dir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"core/cptcity-archive-name"_s, {}, true );
+
+  // encoding
+  QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()

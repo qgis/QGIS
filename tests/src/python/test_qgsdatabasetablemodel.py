@@ -22,7 +22,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt, QVariant
+from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -37,9 +37,6 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
         cls.postgres_conn = "service='qgis_test'"
         if "QGIS_PGTEST_DB" in os.environ:

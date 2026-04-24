@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import unittest
 
 from qgis.core import QgsDataSourceUri, QgsOwsConnection, QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -22,10 +21,6 @@ class TestQgsOwsConnection(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         start_app()
 
         # setup some fake connections

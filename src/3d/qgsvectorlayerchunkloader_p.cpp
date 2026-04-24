@@ -194,12 +194,22 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
     return;
   }
 
-  QgsBox3D rootBox3D( context.extent(), zMin, zMax );
-  // add small padding to avoid clipping of point features located at the edge of the bounding box
-  rootBox3D.grow( 1.0 );
+  // choose the smaller root extent between context and mLayer ones:
+  QgsRectangle extent = context.extent();
+  const QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
+  if ( layerExtentInMapCrs.isValid() )
+  {
+    extent = context.extent().intersect( layerExtentInMapCrs );
+  }
+  if ( extent.isValid() )
+  {
+    QgsBox3D rootBox3D( extent, zMin, zMax );
+    // add small padding to avoid clipping of point features located at the edge of the bounding box
+    rootBox3D.grow( 1.0 );
 
-  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
-  setupQuadtree( rootBox3D, rootError );
+    const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
+    setupQuadtree( rootBox3D, rootError );
+  }
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const

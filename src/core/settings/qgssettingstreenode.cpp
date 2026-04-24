@@ -16,9 +16,8 @@
 #include "qgssettingstreenode.h"
 
 #include "qgsexception.h"
-#include "qgssettings.h"
+#include "qgssettingsentry.h"
 #include "qgssettingsentryimpl.h"
-#include "qgssettingsproxy.h"
 
 #include <QDir>
 #include <QString>
@@ -176,18 +175,20 @@ QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamed
 
 QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {
+  Q_UNUSED( origin )
+
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException(
       QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." )
         .arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) )
     );
 
-
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentsNamedItems );
-  auto settings = QgsSettings::get();
-  settings->beginGroup( completeKeyParam );
-  const QStringList res = settings->childGroups( origin );
-  settings->endGroup();
+
+  QSettings &settings = QgsSettingsEntryBase::userSettings();
+  settings.beginGroup( completeKeyParam );
+  const QStringList res = settings.childGroups();
+  settings.endGroup();
   return res;
 }
 
@@ -227,7 +228,7 @@ void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStrin
   QStringList args = parentsNamedItems;
   args << item;
   QString key = completeKeyWithNamedItems( mCompleteKey, args );
-  QgsSettings::get()->remove( key );
+  QgsSettingsEntryBase::userSettings().remove( key );
 }
 
 void QgsSettingsTreeNamedListNode::deleteAllItems( const QStringList &parentsNamedItems )
@@ -238,13 +239,13 @@ void QgsSettingsTreeNamedListNode::deleteAllItems( const QStringList &parentsNam
     );
 
   const QStringList children = items( parentsNamedItems );
-  auto settings = QgsSettings::get();
+  QSettings &settings = QgsSettingsEntryBase::userSettings();
   for ( const QString &child : children )
   {
     QStringList args = parentsNamedItems;
     args << child;
     QString key = completeKeyWithNamedItems( mCompleteKey, args );
-    settings->remove( key );
+    settings.remove( key );
   }
 }
 

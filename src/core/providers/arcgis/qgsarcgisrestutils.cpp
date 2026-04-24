@@ -1717,6 +1717,166 @@ Qgis::ArcGisRestServiceCapabilities QgsArcGisRestUtils::serviceCapabilitiesFromS
   res.setFlag( Qgis::ArcGisRestServiceCapability::Update, parts.contains( "update"_L1, Qt::CaseInsensitive ) );
   res.setFlag( Qgis::ArcGisRestServiceCapability::Delete, parts.contains( "delete"_L1, Qt::CaseInsensitive ) );
   res.setFlag( Qgis::ArcGisRestServiceCapability::Create, parts.contains( "create"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::Image, parts.contains( "image"_L1, Qt::CaseInsensitive ) );
+  res.setFlag( Qgis::ArcGisRestServiceCapability::TilesOnly, parts.contains( "tilesonly"_L1, Qt::CaseInsensitive ) );
 
   return res;
+}
+
+Qgis::DataType QgsArcGisRestUtils::dataTypeFromString( const QString &pixelType )
+{
+  if ( pixelType.compare( "U8"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U4"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U2"_L1, Qt::CaseInsensitive ) == 0
+       || pixelType.compare( "U1"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Byte;
+  }
+  else if ( pixelType.compare( "S8"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int8;
+  }
+  else if ( pixelType.compare( "U16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::UInt16;
+  }
+  else if ( pixelType.compare( "S16"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int16;
+  }
+  else if ( pixelType.compare( "U32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::UInt32;
+  }
+  else if ( pixelType.compare( "S32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Int32;
+  }
+  else if ( pixelType.compare( "F32"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Float32;
+  }
+  else if ( pixelType.compare( "F64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    return Qgis::DataType::Float64;
+  }
+  else if ( pixelType.compare( "C64"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C64 = 32-bit real + 32-bit imaginary
+    return Qgis::DataType::CFloat32;
+  }
+  else if ( pixelType.compare( "C128"_L1, Qt::CaseInsensitive ) == 0 )
+  {
+    // C128 = 64-bit real + 64-bit imaginary
+    return Qgis::DataType::CFloat64;
+  }
+  else
+  {
+    QgsDebugError( u"Unknown pixelType: %1"_s.arg( pixelType ) );
+  }
+
+  return Qgis::DataType::UnknownDataType;
+}
+
+Qgis::RasterColorInterpretation QgsArcGisRestUtils::colorInterpretationFromBandName( const QString &bandName )
+{
+  if ( bandName.isEmpty() )
+  {
+    return Qgis::RasterColorInterpretation::Undefined;
+  }
+
+  if ( bandName.compare( "Red"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::RedBand;
+  else if ( bandName.compare( "Green"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::GreenBand;
+  else if ( bandName.compare( "Blue"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::BlueBand;
+  else if ( bandName.compare( "Alpha"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::AlphaBand;
+  else if ( bandName.compare( "NIR"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NearInfrared"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NearIR"_L1, Qt::CaseInsensitive ) == 0
+            || bandName.compare( "NarrowNIR"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::NIRBand;
+  else if ( bandName.startsWith( "SWIR"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::SWIRBand;
+  else if ( bandName.startsWith( "VRE"_L1, Qt::CaseInsensitive ) || bandName.compare( "RedEdge"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::RedEdgeBand;
+  else if ( bandName.startsWith( "Coastal"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::CoastalBand;
+  else if ( bandName.startsWith( "Pan"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::PanBand;
+  else if ( bandName.startsWith( "Thermal"_L1, Qt::CaseInsensitive ) || bandName.startsWith( "TIR"_L1, Qt::CaseInsensitive ) )
+    return Qgis::RasterColorInterpretation::TIRBand;
+  else if ( bandName.compare( "Gray"_L1, Qt::CaseInsensitive ) == 0 || bandName.compare( "Grey"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::GrayIndex;
+  else if ( bandName.compare( "Cyan"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::CyanBand;
+  else if ( bandName.compare( "Magenta"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::MagentaBand;
+  else if ( bandName.compare( "Yellow"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::YellowBand;
+  else if ( bandName.compare( "Black"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::BlackBand;
+  else if ( bandName.compare( "Hue"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::HueBand;
+  else if ( bandName.compare( "Saturation"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::SaturationBand;
+  else if ( bandName.compare( "Lightness"_L1, Qt::CaseInsensitive ) == 0 )
+    return Qgis::RasterColorInterpretation::LightnessBand;
+
+  // we don't log failures here -- a lot of bands will have non-interpretable names,
+  // eg "Band 1"
+  return Qgis::RasterColorInterpretation::Undefined;
+}
+
+double QgsArcGisRestUtils::defaultNoDataForDataType( Qgis::DataType type, bool &ok )
+{
+  ok = false;
+  switch ( type )
+  {
+    case Qgis::DataType::UnknownDataType:
+      return 0;
+
+    case Qgis::DataType::Byte:
+      ok = true;
+      return std::numeric_limits<quint8>::max();
+
+    case Qgis::DataType::Int8:
+      ok = true;
+      return std::numeric_limits<qint8>::lowest();
+
+    case Qgis::DataType::UInt16:
+      ok = true;
+      return std::numeric_limits<quint16>::max();
+
+    case Qgis::DataType::Int16:
+      ok = true;
+      return std::numeric_limits<qint16>::lowest();
+
+    case Qgis::DataType::UInt32:
+      ok = true;
+      return std::numeric_limits<quint32>::max();
+
+    case Qgis::DataType::Int32:
+      ok = true;
+      return std::numeric_limits<qint32>::lowest();
+
+    case Qgis::DataType::Float32:
+      ok = true;
+      return std::numeric_limits<float>::quiet_NaN();
+
+    case Qgis::DataType::Float64:
+      ok = true;
+      return std::numeric_limits<double>::quiet_NaN();
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      return 0;
+  }
+  BUILTIN_UNREACHABLE
 }

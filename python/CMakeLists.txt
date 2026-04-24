@@ -121,9 +121,68 @@ if(NOT WITH_SFCGAL)
 endif()
 
 # sip 6.11 has support for the Movable Mapped Type Annotation
+# Including the annotation with older sip versions will throw a parser error,
+# so we need to generate a file without it for older versions
 if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOVABLE_MAPPED_TYPE)
+else()
+  set(SIP_MOVABLE_STR "Movable,")
 endif()
+if(Qt6Core_VERSION_MINOR LESS 5)
+# https://github.com/qgis/QGIS/issues/57760
+# https://www.riverbankcomputing.com/pipermail/pyqt/2024-June/045923.html
+set(SIP_QLIST_QINT64 [[
+%MappedType QList<qint64>
+    /TypeHintIn="Iterable[int]",
+    TypeHintOut="List[int]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <QList>
+    %End
+
+    %ConvertFromTypeCode
+        // Create the list.
+        PyObject *l;
+
+if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+// Set the list elements.
+QList<qint64>::iterator it = sipCpp->begin();
+for (int i = 0; it != sipCpp->end(); ++it, ++i)
+{
+    PyObject *tobj;
+
+    if ((tobj = PyLong_FromLongLong(*it)) == NULL)
+    {
+      Py_DECREF(l);
+      return NULL;
+    }
+    PyList_SET_ITEM(l, i, tobj);
+}
+
+return l;
+%End
+
+    %ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    return PyList_Check(sipPy);
+
+QList<qint64> *qlist = new QList<qint64>;
+
+for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+{
+    *qlist << PyLong_AsLongLong(PyList_GET_ITEM(sipPy, i));
+}
+
+*sipCppPtr = qlist;
+return sipGetState(sipTransferObj);
+%End
+};
+]])
+endif()
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/PyQt6/core/conversions.sip.in ${CMAKE_CURRENT_BINARY_DIR}/PyQt6/core/conversions.sip @ONLY)
 
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)

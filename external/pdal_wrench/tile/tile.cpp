@@ -173,7 +173,7 @@ static PointCount createFileInfo(const StringList& input, StringList dimNames,
             std::vector<std::string> dirfiles = directoryList(filename);
             filenames.insert(filenames.end(), dirfiles.begin(), dirfiles.end());
         }
-        else if (ends_with(filename, ".vpc"))
+        else if (isVpcFilename(filename))
         {
             VirtualPointCloud vpc;
             if (!vpc.read(filename))
@@ -474,7 +474,7 @@ bool handleOptions(pdal::StringList& arglist, BaseInfo::Options& options)
         throw FatalError(err.what());
     }
 
-    if (ends_with(options.outputDir, ".vpc"))
+    if (isVpcFilename(options.outputDir))
     {
         options.outputDir = options.outputDir.substr(0, options.outputDir.size()-4);
         options.buildVpc = true;

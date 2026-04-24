@@ -380,14 +380,16 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! Helper struct for tile requests
     struct TileRequest
     {
-        TileRequest( const QUrl &u, const QRectF &r, int i )
+        TileRequest( const QUrl &u, const QRectF &r, int i, Qgis::RendererUsage theRendererUsage )
           : url( u )
           , rect( r )
           , index( i )
+          , rendererUsage( theRendererUsage )
         {}
         QUrl url;
         QRectF rect;
         int index;
+        Qgis::RendererUsage rendererUsage;
     };
     typedef QList<TileRequest> TileRequests;
 
@@ -482,9 +484,9 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
   private:
     QUrl createRequestUrlWMS( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
-    void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
-    void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
-    void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, QgsRasterBlockFeedback *feedback = nullptr );
+    void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage );
+    void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage );
+    void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests, Qgis::RendererUsage rendererUsage );
 
     /**
       * Add WMS-T parameters to the \a query, if provider has temporal properties

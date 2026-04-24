@@ -65,6 +65,16 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
 
     QgsFeature runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters = QVariantMap() );
 
+    /**
+     * Helper struct and method to check outputs from Hypsometric Curves algorithm
+     */
+    struct HypsometryData
+    {
+        double area;
+        double elevation;
+    };
+    static QList<HypsometryData> loadHypsometryResults( const QString &filePath );
+
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -124,6 +134,8 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void defineProjection();
     void checkValidity();
 
+    void hypsometricCurves();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -162,15 +174,43 @@ QgsFeature TestQgsProcessingAlgsPt2::runForFeature( const std::unique_ptr<QgsPro
   return result;
 }
 
+QList<TestQgsProcessingAlgsPt2::HypsometryData> TestQgsProcessingAlgsPt2::loadHypsometryResults( const QString &filePath )
+{
+  QList<HypsometryData> data;
+  QFile file( filePath );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    return data;
+
+  QTextStream stream( &file );
+  bool firstLine = true;
+  while ( !stream.atEnd() )
+  {
+    const QString line = stream.readLine().trimmed();
+    if ( line.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( firstLine )
+    {
+      firstLine = false;
+      continue;
+    }
+
+    const QStringList parts = line.split( ',' );
+    if ( parts.size() != 2 )
+    {
+      return data;
+    }
+    data.append( { parts[0].toDouble(), parts[1].toDouble() } );
+  }
+  return data;
+}
+
 void TestQgsProcessingAlgsPt2::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
@@ -2442,6 +2482,134 @@ void TestQgsProcessingAlgsPt2::checkValidity()
   it = invalidLayer->getFeatures();
   it.nextFeature( f );
   QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"Self-intersection"_s );
+}
+
+void TestQgsProcessingAlgsPt2::hypsometricCurves()
+{
+  auto boundaryLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:4326"_s, u"boundaries"_s, u"memory"_s );
+  QVERIFY( boundaryLayer->isValid() );
+
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.688 45.789, 18.698 45.789, 18.698 45.799, 18.688 45.799, 18.688 45.789))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.698 45.798, 18.702 45.798, 18.702 45.802, 18.698 45.802, 18.698 45.798))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  // polygon covering pixel centroids
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.6883279442 45.7984314376, 18.6885679442 45.7984314376, 18.6885679442 45.7986714376, 18.6883279442 45.7986714376, 18.6883279442 45.7984314376))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  // polygon does not cover pixel centroids
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((18.6913579442 45.7954614376, 18.6916379442 45.7954614376, 18.6916379442 45.7956414376, 18.6913579442 45.7956414376, 18.6913579442 45.7954614376))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  //polygon outside of the DEM extent
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((0.0 0.0, 1.0 0.0, 1.0 1.0, 0.0 1.0, 0.0 0.0))"_s ) );
+  QVERIFY( f.isValid() );
+  boundaryLayer->dataProvider()->addFeature( f );
+
+  QCOMPARE( boundaryLayer->featureCount(), 5 );
+
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  const QString demPath( dataDir + u"/raster/dem.tif"_s );
+  auto demLayer = std::make_unique<QgsRasterLayer>( demPath, "dem", "gdal" );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:hypsometriccurves"_s ) );
+  QVERIFY( alg != nullptr );
+
+  QTemporaryDir tmpDir;
+  QVERIFY( tmpDir.isValid() );
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT_DEM"_s, demPath );
+  parameters.insert( u"BOUNDARY_LAYER"_s, QVariant::fromValue( boundaryLayer.get() ) );
+  parameters.insert( u"STEP"_s, 10.0 );
+  parameters.insert( u"USE_PERCENTAGE"_s, false );
+  parameters.insert( u"OUTPUT_DIRECTORY"_s, tmpDir.path() );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  const QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"OUTPUT_DIRECTORY"_s ).toString(), tmpDir.path() );
+
+  const QDir outDir( tmpDir.path() );
+  const QStringList csvFiles = outDir.entryList( { u"*.csv"_s }, QDir::Files );
+  // polygon outside of the DEM extent should be ignored
+  QCOMPARE( csvFiles.size(), 4 );
+
+  QList<HypsometryData> data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_1.csv"_s );
+  QCOMPARE( data.size(), 13 );
+
+  QList<HypsometryData> expected = {
+    { 4.1999999999994034e-07, 130.0 },
+    { 3.139999999999554e-06, 140.0 },
+    { 9.989999999998581e-06, 150.0 },
+    { 1.9179999999997275e-05, 160.0 },
+    { 2.9799999999995764e-05, 170.0 },
+    { 3.995999999999432e-05, 180.0 },
+    { 5.394999999999233e-05, 190.0 },
+    { 6.68199999999905e-05, 200.0 },
+    { 7.45499999999894e-05, 210.0 },
+    { 8.015999999998861e-05, 220.0 },
+    { 8.622999999998774e-05, 230.0 },
+    { 9.971999999998582e-05, 240.0 },
+    { 9.999999999998579e-05, 250.0 },
+  };
+  for ( int i = 0; i < expected.size(); ++i )
+  {
+    QGSCOMPARENEAR( data[i].elevation, expected[i].elevation, 1e-3 );
+    QGSCOMPARENEAR( data[i].area, expected[i].area, 1e-3 );
+  }
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_2.csv"_s );
+  QCOMPARE( data.size(), 9 );
+
+  expected = {
+    { 1.5399999999997811e-06, 145.0 },
+    { 4.4199999999993715e-06, 155.0 },
+    { 7.089999999998992e-06, 165.0 },
+    { 9.689999999998621e-06, 175.0 },
+    { 1.1409999999998378e-05, 185.0 },
+    { 1.2819999999998178e-05, 195.0 },
+    { 1.4119999999997993e-05, 205.0 },
+    { 1.5519999999997795e-05, 215.0 },
+    { 1.5989999999997728e-05, 225.0 },
+  };
+  for ( int i = 0; i < expected.size(); ++i )
+  {
+    QGSCOMPARENEAR( data[i].elevation, expected[i].elevation, 1e-3 );
+    QGSCOMPARENEAR( data[i].area, expected[i].area, 1e-3 );
+  }
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_3.csv"_s );
+  QCOMPARE( data.size(), 1 );
+  QGSCOMPARENEAR( data[0].elevation, 185.877, 1e-3 );
+  QGSCOMPARENEAR( data[0].area, 3.9999999999994316e-08, 1e-3 );
+
+  data = loadHypsometryResults( tmpDir.path() + u"/histogram_boundaries_4.csv"_s );
+  QCOMPARE( data.size(), 1 );
+  QGSCOMPARENEAR( data[0].elevation, 179.39601, 1e-3 );
+  QGSCOMPARENEAR( data[0].area, 1.9999999999997158e-08, 1e-3 );
+
+  QgsVectorLayer *hypsometryLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 3 ).name(), u"polygon_id"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 2 ).name(), u"area"_s );
+  QCOMPARE( hypsometryLayer->fields().at( hypsometryLayer->fields().size() - 1 ).name(), u"elevation"_s );
+  QCOMPARE( hypsometryLayer->featureCount(), 24 );
+  QgsFeatureIterator it = hypsometryLayer->getFeatures( QgsFeatureIds() << 24 );
+  it.nextFeature( f );
+  QCOMPARE( f.attribute( u"polygon_id"_s ), 4 );
+  QGSCOMPARENEAR( f.attribute( u"area"_s ).toDouble(), 1.9999999999997158e-08, 1e-3 );
+  QGSCOMPARENEAR( f.attribute( u"elevation"_s ).toDouble(), 179.39601, 1e-3 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

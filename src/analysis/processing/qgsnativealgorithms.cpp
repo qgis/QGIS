@@ -121,6 +121,7 @@
 #include "qgsalgorithmextractspecificvertices.h"
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
+#include "qgsalgorithmextrude.h"
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfileuploader.h"
@@ -162,6 +163,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmgrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmhubdistance.h"
+#include "qgsalgorithmhypsometriccurves.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinbylocation.h"
 #include "qgsalgorithmjoinbylocationsummary.h"
@@ -446,6 +448,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsDxfExportAlgorithm() );
+  addAlgorithm( new QgsExtrudeAlgorithm() );
   addAlgorithm( new QgsExecuteAndLoadPostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecuteRegisteredSpatialiteQueryAlgorithm() );
@@ -512,6 +515,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsHubDistanceAlgorithm() );
+  addAlgorithm( new QgsHypsometricCurvesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );

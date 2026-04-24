@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QApplication>
 #include <QDir>
@@ -773,8 +773,7 @@ void QgsBrowserModel::removeFavorite( QgsFavoriteItem *favorite )
 
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
-  QgsSettings settings;
-  QStringList hiddenItems = settings.value( u"browser/hiddenPaths"_s, QStringList() ).toStringList();
+  QStringList hiddenItems = QgsDirectoryItem::settingsHiddenPaths->value();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
   {
@@ -784,7 +783,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( u"browser/hiddenPaths"_s, hiddenItems );
+  QgsDirectoryItem::settingsHiddenPaths->setValue( hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

@@ -19,7 +19,8 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgsuserprofile.h"
 
 #include <QDir>
@@ -32,6 +33,11 @@
 #include "moc_qgsuserprofilemanager.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *QgsUserProfileManager::settingsOverrideLocalProfile
+  = new QgsSettingsEntryBool( u"override-local"_s, QgsSettingsTree::sTreeProfile, false, u"If true, QGIS always starts with the profile defined by \"default\", overriding any user-specific selection."_s );
+const QgsSettingsEntryString *QgsUserProfileManager::settingsDefaultProfile
+  = new QgsSettingsEntryString( u"default"_s, QgsSettingsTree::sTreeProfile, u"default"_s, u"Name of the user profile loaded by default on QGIS startup."_s );
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
@@ -102,10 +108,9 @@ QString QgsUserProfileManager::defaultProfileName() const
   // global settings as it might be set by the admin.
   // If the overrideProfile flag is set then no matter what the profiles.ini says we always take the
   // global profile.
-  const QgsSettings globalSettings;
-  if ( !mSettings->contains( u"/core/defaultProfile"_s ) || globalSettings.value( u"overrideLocalProfile"_s, false, QgsSettings::Core ).toBool() )
+  if ( !mSettings->contains( u"/core/defaultProfile"_s ) || settingsOverrideLocalProfile->value() )
   {
-    return globalSettings.value( u"defaultProfile"_s, defaultName, QgsSettings::Core ).toString();
+    return settingsDefaultProfile->value();
   }
   return mSettings->value( u"/core/defaultProfile"_s, defaultName ).toString();
 }

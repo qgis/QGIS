@@ -30,6 +30,9 @@ created, but rather accessed through
 #include "qgscoordinatereferencesystemregistry.h"
 %End
   public:
+
+
+
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsCoordinateReferenceSystemRegistry, with the specified

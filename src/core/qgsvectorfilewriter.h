@@ -39,6 +39,7 @@ using namespace Qt::StringLiterals;
 class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
+class QgsSettingsEntryString;
 
 /**
  * \ingroup core
@@ -296,6 +297,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     };
 
 #ifndef SIP_RUN
+
+    static const QgsSettingsEntryString *settingsDefaultEncoding SIP_SKIP;
 
     /**
      * Write contents of vector layer to an (OGR supported) vector format

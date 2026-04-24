@@ -66,6 +66,10 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = sipType_QgsMetalRoughMaterialSettings;
     }
+    else if ( sipCpp->type() == "metalroughtextured" )
+    {
+      sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
+    }
     else
     {
       sipType = 0;
@@ -100,6 +104,22 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * \since QGIS 3.42
      */
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+
+    /**
+     * Returns TRUE if the material requires texture coordinates to be generated
+     * during triangulation.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool requiresTextureCoordinates() const;
+
+    /**
+     * Returns TRUE if the material requires tangents generated
+     * during triangulation.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool requiresTangents() const;
 
     // *INDENT-OFF*
     //! Data definable properties.

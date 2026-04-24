@@ -42,7 +42,7 @@ class Qgs3DModelSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
   private:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QString fileFilter() const override;
+    QString fileFilter( bool includeAllFiles ) const override;
     QString selectFileTitle() const override;
     QString fileFromUrlTitle() const override;
     QString fileFromUrlText() const override;

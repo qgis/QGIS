@@ -23,11 +23,13 @@ if(NOT EXISTS "${PROJ_DATA_PATH}/proj.db")
     message(FATAL_ERROR "proj.db not found at ${PROJ_DATA_PATH}/proj.db")
 endif()
 
-install(DIRECTORY "${PROJ_DATA_PATH}/" DESTINATION "${QGIS_DATA_SUBDIR}/proj")
-install(DIRECTORY "${VCPKG_BASE_DIR}/share/gdal/" DESTINATION "${QGIS_DATA_SUBDIR}/gdal")
 if(MSVC)
+  install(DIRECTORY "${PROJ_DATA_PATH}/" DESTINATION "${QGIS_DATA_SUBDIR}/share/proj")
+  install(DIRECTORY "${VCPKG_BASE_DIR}/share/gdal/" DESTINATION "${QGIS_DATA_SUBDIR}/share/gdal")
   install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/crypto/" DESTINATION "${QGIS_BIN_SUBDIR}/Qt6/plugins/crypto") # QCA plugins
 else()
+  install(DIRECTORY "${PROJ_DATA_PATH}/" DESTINATION "${QGIS_DATA_SUBDIR}/proj")
+  install(DIRECTORY "${VCPKG_BASE_DIR}/share/gdal/" DESTINATION "${QGIS_DATA_SUBDIR}/gdal")
   install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/crypto/" DESTINATION "${APP_PLUGINS_DIR}/crypto") # QCA plugins
 endif()
 
@@ -76,7 +78,7 @@ function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
   set(${OUTPUT_VARIABLE} ${OUTPUT_FILE} PARENT_SCOPE)
 endfunction()
 
-if(NOT MSVC AND NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN)
   set(BUNDLED_PROGRAMS
     "tools/gdal/gdal_contour"
     "tools/gdal/gdal_create"
@@ -109,48 +111,48 @@ if(NOT MSVC AND NOT EMSCRIPTEN)
   )
   set(PYTHON_SCRIPTS
     "bin/gdal2tiles"
-    "bin/gdal2tiles.py"
     "bin/gdal2xyz"
-    "bin/gdal2xyz.py"
     "bin/gdal_calc"
-    "bin/gdal_calc.py"
     "bin/gdal_edit"
-    "bin/gdal_edit.py"
     "bin/gdal_fillnodata"
-    "bin/gdal_fillnodata.py"
     "bin/gdal_merge"
-    "bin/gdal_merge.py"
     "bin/gdal_pansharpen"
-    "bin/gdal_pansharpen.py"
     "bin/gdal_polygonize"
-    "bin/gdal_polygonize.py"
     "bin/gdal_proximity"
-    "bin/gdal_proximity.py"
     "bin/gdal_retile"
-    "bin/gdal_retile.py"
     "bin/gdal_sieve"
-    "bin/gdal_sieve.py"
     "bin/gdalattachpct"
-    "bin/gdalattachpct.py"
     "bin/gdalcompare"
-    "bin/gdalcompare.py"
     "bin/gdalmove"
-    "bin/gdalmove.py"
     "bin/ogr_layer_algebra"
-    "bin/ogr_layer_algebra.py"
     "bin/ogrmerge"
-    "bin/ogrmerge.py"
     "bin/pct2rgb"
-    "bin/pct2rgb.py"
     "bin/rgb2pct"
-    "bin/rgb2pct.py"
   )
   list(TRANSFORM BUNDLED_PROGRAMS PREPEND "${VCPKG_BASE_DIR}/")
   list(TRANSFORM PYTHON_SCRIPTS PREPEND "${VCPKG_BASE_DIR}/")
-  foreach(FILE ${PYTHON_SCRIPTS})
-    fixup_shebang("${FILE}" OUTPUT_FILE)
-    list(APPEND BUNDLED_PROGRAMS "${OUTPUT_FILE}")
-  endforeach()
+  if(MSVC)
+    list(TRANSFORM BUNDLED_PROGRAMS APPEND ".exe")
+    foreach(FILE ${PYTHON_SCRIPTS})      
+      get_filename_component(py_name ${FILE} NAME_WE)
+      set(bat_file "${CMAKE_BINARY_DIR}/bundled_program/${py_name}.bat")
+      file(WRITE "${bat_file}"
+"@echo off
+\"%~dp0python.exe\" -u \"%~dp0Scripts\\${py_name}.py\" %*
+"
+    )
+    
+    list(APPEND BUNDLED_PROGRAMS "${bat_file}")
+    endforeach()
+  else()
+    foreach(FILE ${PYTHON_SCRIPTS})
+      fixup_shebang("${FILE}" OUTPUT_FILE)
+      fixup_shebang("${FILE}.py" PY_OUTPUT_FILE)
+
+      list(APPEND BUNDLED_PROGRAMS "${OUTPUT_FILE}")
+      list(APPEND BUNDLED_PROGRAMS "${PY_OUTPUT_FILE}")
+    endforeach()
+  endif()
   install(PROGRAMS ${BUNDLED_PROGRAMS}
     DESTINATION "${QGIS_BIN_SUBDIR}")
 endif()

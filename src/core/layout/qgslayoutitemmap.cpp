@@ -186,6 +186,7 @@ double QgsLayoutItemMap::scale() const
   calculator.setDpi( 25.4 ); //Using mm
   if ( QgsProject *project = mLayout->project() )
   {
+    calculator.setEllipsoid( project->ellipsoid() );
     calculator.setMethod( project->scaleMethod() );
   }
   double widthInMm = mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length();
@@ -212,9 +213,13 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 ); //QGraphicsView units are mm
-    if ( mLayout && mLayout->project() )
+    if ( mLayout )
     {
-      calculator.setMethod( mLayout->project()->scaleMethod() );
+      if ( QgsProject *project = mLayout->project() )
+      {
+        calculator.setEllipsoid( project->ellipsoid() );
+        calculator.setMethod( project->scaleMethod() );
+      }
     }
 
     const double newScale = calculator.calculate( mExtent, rect().width() );
@@ -505,9 +510,13 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 ); //QGraphicsView units are mm
-    if ( mLayout && mLayout->project() )
+    if ( mLayout )
     {
-      calculator.setMethod( mLayout->project()->scaleMethod() );
+      if ( QgsProject *project = mLayout->project() )
+      {
+        calculator.setMethod( project->scaleMethod() );
+        calculator.setEllipsoid( project->ellipsoid() );
+      }
     }
     const double newScale = calculator.calculate( mExtent, rect().width() );
     if ( !qgsDoubleNear( newScale, 0 ) )
@@ -3035,6 +3044,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
     calc.setDpi( 25.4 );
     if ( QgsProject *project = mLayout->project() )
     {
+      calc.setEllipsoid( project->ellipsoid() );
       calc.setMethod( project->scaleMethod() );
     }
     double originalScale = calc.calculate( originalExtent, rect().width() );

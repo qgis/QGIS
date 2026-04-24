@@ -1810,6 +1810,35 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     Q_INVOKABLE void removeFieldAlias( int index );
 
     /**
+       * Sets the custom comment for the field.
+       * \param index attribute index
+       * \param customCommentString custom comment (can be empty as well)
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE void setFieldCustomComment( int index, const QString &customCommentString );
+
+    /**
+       * Removes the custom comment for the field.
+       * \param index attribute index
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE void removeFieldCustomComment( int index );
+
+    /**
+       * Returns the custom comment for the field.
+       * \param index attribute index
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE QString attributeCustomComment( int index ) const;
+
+    /**
+       * Returns a map of all the custom comments.
+       * Key is the attribute name and value the custom comment for that attribute
+       * \since QGIS 4.2
+       */
+    QgsStringMap attributeCustomComments() const;
+
+    /**
      * Renames an attribute field  (but does not commit it).
      * \param index attribute index
      * \param newName new name of field
@@ -2832,6 +2861,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     void onRelationsLoaded();
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
+    void onDependencyAfterCommitChanges();
     void emitDataChanged();
 
   private:
@@ -2929,6 +2959,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     //! Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute
     QgsStringMap mAttributeAliasMap;
+
+    //! Map that stores the custom comments for attributes. Key is the attribute name and value the custom comment for that attribute
+    QgsStringMap mAttributeCustomCommentMap;
 
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;

@@ -20,7 +20,6 @@ from qgis.core import (
     QgsBabelSimpleImportFormat,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -30,10 +29,6 @@ class TestQgsBabelGpsFormat(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsBabelGpsFormat.com")
-        QCoreApplication.setApplicationName("TestPyQgsBabelGpsFormat")
-        QgsSettings().clear()
         start_app()
 
     def test_simple_format(self):

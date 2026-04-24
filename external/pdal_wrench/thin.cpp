@@ -87,7 +87,7 @@ bool Thin::checkArgs()
         }
     }
 
-    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    if ( isVpcFilename(outputFile) && outputFormatVpc == "copc" )
     {
         isStreaming = false;
     }
@@ -149,7 +149,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
 
 void Thin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();
@@ -197,7 +197,7 @@ void Thin::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     for (std::string f : tileOutputFiles)
         args.push_back(f);
     
-    if (ends_with(outputFile, ".vpc"))
+    if (isVpcFilename(outputFile))
     {
         // now build a new output VPC
         buildVpc(args);

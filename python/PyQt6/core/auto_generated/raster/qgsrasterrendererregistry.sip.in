@@ -62,6 +62,7 @@ Creates a default renderer for a raster drawing style (considering user
 options such as default contrast enhancement). Caller takes ownership.
 %End
 
+  public:
 };
 
 /************************************************************************

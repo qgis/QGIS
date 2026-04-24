@@ -26,6 +26,9 @@
 #include <QPair>
 #include <QString>
 
+class QgsSettingsEntryStringList;
+class QgsSettingsEntryVariant;
+
 /**
  * \ingroup core
  * \brief List of colors paired with a friendly display name identifying the color
@@ -191,6 +194,10 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
      */
     void setShowSchemeInMenu( bool show );
 
+#ifndef SIP_RUN
+    static const QgsSettingsEntryStringList *settingsShowInMenuList SIP_SKIP;
+#endif
+
   protected:
     QString mName;
 
@@ -231,6 +238,10 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
      * \see addRecentColor()
      */
     static QColor lastUsedColor();
+
+#ifndef SIP_RUN
+    static const QgsSettingsEntryVariant *settingsRecentColors SIP_SKIP;
+#endif
 };
 
 /**
@@ -254,6 +265,11 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
     bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
     QgsCustomColorScheme *clone() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+    static const QgsSettingsEntryVariant *settingsPaletteColors SIP_SKIP;
+    static const QgsSettingsEntryVariant *settingsPaletteLabels SIP_SKIP;
+#endif
 };
 
 /**

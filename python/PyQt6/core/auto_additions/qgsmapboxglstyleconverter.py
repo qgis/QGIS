@@ -27,6 +27,25 @@ QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpol
 """
 # --
 QgsMapBoxGlStyleConverter.PropertyType.baseClass = QgsMapBoxGlStyleConverter
+# monkey patching scoped based enum
+QgsMapBoxGlStyleConverter.InterpolationType.Linear.__doc__ = "Linear interpolation"
+QgsMapBoxGlStyleConverter.InterpolationType.Exponential.__doc__ = "Exponential interpolation"
+QgsMapBoxGlStyleConverter.InterpolationType.CubicBezier.__doc__ = "Cubic-bezier interpolation"
+QgsMapBoxGlStyleConverter.InterpolationType.__doc__ = """Interpolation types, for interpolated value conversion
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 4.2
+
+* ``Linear``: Linear interpolation
+* ``Exponential``: Exponential interpolation
+* ``CubicBezier``: Cubic-bezier interpolation
+
+"""
+# --
+QgsMapBoxGlStyleConverter.InterpolationType.baseClass = QgsMapBoxGlStyleConverter
 try:
     QgsMapBoxGlStyleConverter.parseFillLayer = staticmethod(QgsMapBoxGlStyleConverter.parseFillLayer)
     QgsMapBoxGlStyleConverter.parseLineLayer = staticmethod(QgsMapBoxGlStyleConverter.parseLineLayer)

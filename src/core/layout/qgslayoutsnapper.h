@@ -28,6 +28,7 @@
 using namespace Qt::StringLiterals;
 
 class QgsLayout;
+class QgsSettingsEntryInteger;
 class QgsReadWriteContext;
 
 /**
@@ -276,6 +277,11 @@ class CORE_EXPORT QgsLayoutSnapper : public QgsLayoutSerializableObject
     bool mSnapToItems = true;
 
     friend class QgsLayoutSnapperUndoCommand;
+
+  public:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryInteger *settingsSnapTolerance SIP_SKIP;
+#endif
 };
 
 #endif //QGSLAYOUTSNAPPER_H

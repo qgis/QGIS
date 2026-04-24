@@ -16,6 +16,7 @@
 #ifndef QGSSKYBOXENTITY_H
 #define QGSSKYBOXENTITY_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 
 #include <QMap>
@@ -45,6 +46,8 @@ namespace Qt3DRender
 
 class QgsImageTexture;
 
+// this is broken for z-up coordinate system
+#define ENABLE_PANORAMIC_SKYBOX 0
 
 /**
  * \brief Base class for all skybox types.
@@ -56,20 +59,13 @@ class QgsImageTexture;
 class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
-  public:
-    //! Skybox type enumeration
-    enum SkyboxType
-    {
-      PanoramicSkybox,
-      DistinctTexturesSkybox
-    };
 
   public:
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
 
-    //! Returns the type of the current skybox
-    virtual SkyboxType type() const = 0;
+    //! Returns the type of the skybox
+    virtual Qgis::SkyboxType type() const = 0;
 
   protected:
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -81,6 +77,9 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mGammaStrengthParameter = nullptr;
     Qt3DRender::QParameter *mTextureParameter = nullptr;
 };
+
+
+#if ENABLE_PANORAMIC_SKYBOX
 
 /**
  * \brief A skybox constructed from a panoramic image.
@@ -99,7 +98,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
     //! Returns the path of the current texture in use
     QString texturePath() const { return mTexturePath; }
     //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::PanoramicSkybox; }
+    Qgis::SkyboxType type() const override { return Qgis::SkyboxType::Panoramic; }
 
   private:
     void reloadTexture();
@@ -109,6 +108,8 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
     Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
 };
+#endif
+
 
 /**
  * \brief A skybox constructed from 6 cube faces.
@@ -122,19 +123,35 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
 
   public:
     //! Constructs a skybox from 6 different images
-    QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
-
-    //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::DistinctTexturesSkybox; }
+    QgsCubeFacesSkyboxEntity(
+      Qgis::SkyboxCubeMapping mapping, const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr
+    );
+    Qgis::SkyboxType type() const override;
 
   private:
     void init();
     void reloadTexture();
 
   private:
-    QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
+    struct FaceTransformation
+    {
+        QString path;
+        bool mirrorHorizontal = false;
+        bool mirrorVertical = false;
+    };
+
+    QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, FaceTransformation> generateFaceTransformation() const;
+
+    Qgis::SkyboxCubeMapping mMappingType = Qgis::SkyboxCubeMapping::NativeZUp;
+    QString mSourcePosX;
+    QString mSourcePosY;
+    QString mSourcePosZ;
+    QString mSourceNegX;
+    QString mSourceNegY;
+    QString mSourceNegZ;
+
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
-    QVector<Qt3DRender::QTextureImage *> mFacesTextureImages;
+    QVector<Qt3DRender::QAbstractTextureImage *> mFacesTextureImages;
     Qt3DRender::QTextureCubeMap *mCubeMap = nullptr;
 };
 

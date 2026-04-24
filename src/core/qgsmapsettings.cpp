@@ -352,6 +352,9 @@ void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overr
 
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( crs == mDestCRS )
+    return;
+
   mDestCRS = crs;
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
@@ -365,6 +368,9 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
+  if ( ellipsoid == mEllipsoid )
+    return true;
+
   const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
   if ( !params.valid )
   {
@@ -373,6 +379,9 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
   else
   {
     mEllipsoid = ellipsoid;
+    mScaleCalculator.setEllipsoid( ellipsoid );
+    // Since mScaleCalculator ellipsoid have changed, force a recalculation of the scale.
+    updateDerived();
     return true;
   }
 }

@@ -90,13 +90,6 @@ void TestQgsProject::cleanup()
 
 void TestQgsProject::initTestCase()
 {
-  // Runs once before any tests are run
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsSettings().clear();
@@ -335,6 +328,23 @@ void TestQgsProject::testPathResolverSvg()
   QCOMPARE( svg1x, ourSvgPath );
   QCOMPARE( svg2x, invalidSvgPath );
   QCOMPARE( svg3x, librarySvgPath );
+
+  // Test that relative paths are correctly handled if the QgsPathResolver is constructed with symlink path
+
+  QTemporaryDir tempdir;
+  QDir tmpdir( tempdir.path() );
+  tmpdir.mkdir( u"projectpath"_s );
+  tmpdir.mkdir( u"projectpath/symbols"_s );
+  QFile file = QFile( tempdir.filePath( u"projectpath/symbols/foo.svg"_s ) );
+  if ( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( "<svg></svg>" );
+    file.close();
+  }
+  QFile::link( tmpdir.filePath( u"projectpath"_s ), tmpdir.filePath( u"symlinkpath"_s ) );
+  tmpdir.mkdir( u"symlinkpath"_s );
+  QgsPathResolver symlinkresolver( tmpdir.filePath( u"symlinkpath/project.qgs"_s ) );
+  QCOMPARE( QgsSymbolLayerUtils::svgSymbolPathToName( tmpdir.filePath( u"symlinkpath/symbols/foo.svg"_s ), symlinkresolver ), u"./symbols/foo.svg"_s );
 }
 
 

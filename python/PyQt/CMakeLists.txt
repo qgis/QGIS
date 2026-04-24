@@ -8,6 +8,7 @@ set(PYQT_COMPAT_FILES
   QtGui.py
   QtSerialPort.py
   QtPrintSupport.py
+  QtWebChannel.py
   QtWebKit.py
   QtWebKitWidgets.py
   QtWebEngineCore.py
@@ -16,6 +17,7 @@ set(PYQT_COMPAT_FILES
   QtMultimedia.py
   QtNetwork.py
   QtXml.py
+  QtQuick.py
   QtQuickWidgets.py
   QtSql.py
   QtTest.py

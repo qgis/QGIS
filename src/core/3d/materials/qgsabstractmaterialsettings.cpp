@@ -36,6 +36,16 @@ void QgsAbstractMaterialSettings::writeXml( QDomElement &element, const QgsReadW
   element.setAttribute( u"type"_s, type() );
 }
 
+bool QgsAbstractMaterialSettings::requiresTextureCoordinates() const
+{
+  return false;
+}
+
+bool QgsAbstractMaterialSettings::requiresTangents() const
+{
+  return false;
+}
+
 void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCollection &collection )
 {
   mDataDefinedProperties = collection;

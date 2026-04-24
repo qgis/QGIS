@@ -24,7 +24,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
 from utilities import unitTestDataPath
@@ -66,10 +65,6 @@ class TestExportToSpatialite(QgisTestCase):
         cur.execute("COMMIT")
         con.close()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsExportToSpatialite.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsExportToSpatialite")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()
