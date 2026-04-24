@@ -1175,6 +1175,21 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
        )
     << QString()
     << QString();
+
+  QTest::newRow( "binary_concat" )
+    << u"NAME || ' - ' || STATUS"_s  // exprText
+    << QString()                     // srsName
+    << QString(
+         "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+         "<fes:Function name=\"Concatenate\">"
+         "<fes:ValueReference>NAME</fes:ValueReference>"
+         "<fes:Literal> - </fes:Literal>"
+         "<fes:ValueReference>STATUS</fes:ValueReference>"
+         "</fes:Function>"
+         "</fes:Filter>"
+       )                             // xmlText
+    << QString()                     // namespacePrefix
+    << QString();                    // namespaceURI
 }
 
 Q_DECLARE_METATYPE( QgsOgcUtils::GMLVersion )

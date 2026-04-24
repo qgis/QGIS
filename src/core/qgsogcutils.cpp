@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsogcutils.h"
 
+#include <functional>
 #include <memory>
 #include <ogr_api.h>
 
@@ -2239,11 +2240,57 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
 
 QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
+  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
+
+  // 1) Special handling for concatenation operator (||)
+  if ( op == QgsExpressionNodeBinaryOperator::boConcat )
+  {
+    QDomElement funcElem = mDoc.createElement( mFilterPrefix + u":Function"_s );
+    funcElem.setAttribute( u"name"_s, u"Concatenate"_s );
+
+    bool ok = true;
+    std::function<void( const QgsExpressionNode * )> appendParts = [&]( const QgsExpressionNode * n )
+    {
+      if ( !ok )
+        return;
+
+      if ( n->nodeType() == QgsExpressionNode::ntBinaryOperator )
+      {
+        const QgsExpressionNodeBinaryOperator *binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( n );
+        if ( binNode->op() == QgsExpressionNodeBinaryOperator::boConcat )
+        {
+          appendParts( binNode->opLeft() );
+          appendParts( binNode->opRight() );
+          return;
+        }
+      }
+
+      // Try to convert the expression node to an OGC filter element
+      QDomElement subElem = expressionNodeToOgcFilter( n, expression, context );
+      
+      if ( !subElem.isNull() )
+      {
+        funcElem.appendChild( subElem );
+      }
+      else
+      {
+        // If any part of the concatenation cannot be converted,
+        // we should mark the entire operation as unsuccessful.
+        ok = false;
+      }
+    };
+
+    appendParts( node );
+
+    if ( !ok )
+      return QDomElement(); // Return empty element if any part of the concatenation could not be converted
+
+    return funcElem;
+  }
+  // 2) Handle other binary operators
   const QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
-
-  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
 
   // before right operator is parsed: to allow NULL handling
   if ( op == QgsExpressionNodeBinaryOperator::boIs || op == QgsExpressionNodeBinaryOperator::boIsNot )
