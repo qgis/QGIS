@@ -83,6 +83,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mMsaaEnabled( other.mMsaaEnabled )
   , mViewSyncMode( other.mViewSyncMode )
   , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
   , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
@@ -1100,6 +1101,24 @@ int Qgs3DMapSettings::eyeDomeLightingDistance() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mEyeDomeLightingDistance;
+}
+
+void Qgs3DMapSettings::setMsaaEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMsaaEnabled == enabled )
+    return;
+
+  mMsaaEnabled = enabled;
+  emit msaaEnabledChanged();
+}
+
+bool Qgs3DMapSettings::isMsaaEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMsaaEnabled;
 }
 
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
