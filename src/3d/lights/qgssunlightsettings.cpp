@@ -45,7 +45,7 @@ Qt3DCore::QEntity *QgsSunLightSettings::createEntity( const Qgs3DMapSettings &ma
 
   Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
   light->setColor( color() );
-  light->setIntensity( intensity() );
+  light->setIntensity( static_cast< float >( intensity() ) );
 
   QgsSunPositionResult sunResult;
   try
