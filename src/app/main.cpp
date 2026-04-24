@@ -1439,25 +1439,6 @@ int main( int argc, char *argv[] )
     }
   }
 
-  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
-  if ( !getenv( "GDAL_DATA" ) )
-  {
-    QStringList gdalShares;
-    gdalShares
-      << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
-      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
-    const auto constGdalShares = gdalShares;
-    for ( const QString &gdalShare : constGdalShares )
-    {
-      if ( QFile::exists( gdalShare ) )
-      {
-        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
-        break;
-      }
-    }
-  }
-
   // Point PYTHONHOME to embedded interpreter if present in the bundle
   if ( !getenv( "PYTHONHOME" ) )
   {
