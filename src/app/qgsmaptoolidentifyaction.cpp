@@ -155,9 +155,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       qDebug() << "Total results:" << results.size();
       resultsDialog()->QDialog::show();
-    
     int maxResults = resultsDialog()->getMaxResults();
-    int resultsIdx = 1;
     QList<IdentifyResult>::const_iterator result = results.constBegin();
 
     while (result != results.constEnd() && resultsIdx <= maxResults) {
@@ -181,20 +179,16 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     QObject::disconnect( mMoreFeaturesConnection );
   };
 
-  mMoreFeaturesConnection = connect( resultsDialog(), &QgsIdentifyResultsDialog::moreFeaturesRequested, this, [this, results, resultsIdx ]() {
-    this->handleShowMoreFeatures( results, resultsIdx, resultsIdx+4);
+  mMoreFeaturesConnection = connect( resultsDialog(), &QgsIdentifyResultsDialog::moreFeaturesRequested, this, [this, results ]() {
+    this->handleShowMoreFeatures( results, resultsIdx );
   } );
 
 }
 
-void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx, int endIdx) {  
-  // MITODO
-  // Create a collection of already displayed features
-  // Create a collection of remaining features e.g. results minus displayed features
-  // If button is clicked, add 20 more features
-  // If remaining != 0, display message
+void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx) {  
   qDebug() << "CLICKED";
-  resultsDialog()->addFeature( l.at(startIdx) );
+  QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx + 1;
+  resultsDialog()->addFeature( *nextFeature );
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )

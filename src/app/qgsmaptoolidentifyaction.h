@@ -84,7 +84,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
-    void handleShowMoreFeatures( const QList<QgsMapToolIdentify::IdentifyResult> &l, int startIdx, int endIdx );
+    void handleShowMoreFeatures( const QList<QgsMapToolIdentify::IdentifyResult> &l, int startIdx );
 
   signals:
 
@@ -110,6 +110,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     friend class TestQgsIdentify;
 
     QMetaObject::Connection mMoreFeaturesConnection;
+
+    int resultsIdx = 1;
 };
 
 #endif

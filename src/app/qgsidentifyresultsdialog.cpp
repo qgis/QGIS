@@ -1869,8 +1869,6 @@ void QgsIdentifyResultsDialog::clear()
 }
 
 void QgsIdentifyResultsDialog::showMoreFeatures() {
-  QgisApp::instance()->messageBar()->pushMessage( tr( "AAA" ), tr( "BBB." ), Qgis::MessageLevel::Warning );
-  // MITODO Resume here April 22 morning 
   emit ( moreFeaturesRequested() );
 }
 
