@@ -33,7 +33,6 @@
 #include "qgsquantizedmeshterrainsettings.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
-#include "qgssettingsentryimpl.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsterraingenerator.h"
