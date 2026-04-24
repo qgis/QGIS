@@ -34,32 +34,6 @@
 #include <QtDebug>
 #include <QtMath>
 
-// specialization of hash used by ringToEarcutPoints
-namespace std
-{
-  //! generate hash from std::array data type
-  template<typename T, std::size_t N> struct std_array_hash
-  {
-      std::size_t operator()( const std::array<T, N> &a ) const noexcept
-      {
-        std::size_t h = 1469598103934665603u; // FNV offset basis (64-bit)
-        for ( const T &e : a )
-        {
-          std::size_t v = std::hash<T> {}( e );
-          h ^= v;
-          h *= 1099511628211u; // FNV prime
-        }
-        return h;
-      }
-  };
-
-  //! declare hash specialization for std::array data type
-  template<typename T, size_t N> struct hash<array<T, N>>
-  {
-      size_t operator()( array<T, N> const &a ) const noexcept { return std_array_hash<T, N> {}( a ); }
-  };
-} //namespace std
-
 void QgsTessellator::addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height, float u1, float u2 )
 {
   const float dx = pt2.x() - pt1.x();
@@ -580,7 +554,7 @@ QVector3D QgsTessellator::applyTransformWithExtrusion( const QVector3D point, fl
   return QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
 }
 
-void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>, float> &zHash ) const
+void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, std::vector<float> &zHash ) const
 {
   const int pCount = ring->numPoints();
 
@@ -601,7 +575,7 @@ void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<
 
     if ( !mInputZValueIgnored && srcZData )
     {
-      zHash.insert( pt, *srcZData++ );
+      zHash.push_back( *srcZData++ );
     }
   }
 }
@@ -651,7 +625,7 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
 std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon *polygonNew )
 {
-  QHash<std::array<double, 2>, float> z;
+  std::vector<float> z;
   std::vector<std::vector<std::array<double, 2>>> rings;
   std::vector<std::array<double, 2>> polyline;
 
@@ -683,7 +657,7 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
     double x = vertex[0];
     double y = vertex[1];
 
-    float zValue = z.value( vertex, 0.0f );
+    float zValue = ( mInputZValueIgnored ? 0.0f : z[vertexIndex] );
 
     trianglePoints.emplace_back( x / mScale, y / mScale, zValue );
   }
