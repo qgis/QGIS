@@ -33,9 +33,6 @@
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogrproviderutils.h"
-#ifdef HAVE_OPENCL
-#include "qgsopenclutils.h"
-#endif
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsrasterlayer.h"
@@ -47,6 +44,10 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
 
 #include <QSettings>
 #include <QString>
