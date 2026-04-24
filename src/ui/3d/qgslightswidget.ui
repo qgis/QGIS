@@ -547,8 +547,11 @@
          <property name="suffix">
           <string>°</string>
          </property>
+         <property name="minimum">
+          <double>-273.149999999999977</double>
+         </property>
          <property name="maximum">
-          <double>360.000000000000000</double>
+          <double>1000.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -585,7 +588,7 @@
           <string/>
          </property>
          <property name="maximum">
-          <double>360.000000000000000</double>
+          <double>5000.000000000000000</double>
          </property>
         </widget>
        </item>
