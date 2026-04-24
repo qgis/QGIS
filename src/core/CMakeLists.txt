@@ -2863,6 +2863,10 @@ if (WITH_DRACO)
   target_link_libraries(qgis_core ${DRACO_LIBRARY})
 endif()
 
+if (WITH_TRACY)
+  target_link_libraries(qgis_core Tracy::TracyClient)
+endif()
+
 if (WITH_SPATIALITE)
   target_link_libraries(qgis_core spatialite::spatialite)
 endif()
