@@ -540,7 +540,7 @@ void QgsApplication::init( QString profileFolder )
     }
   }
 
-#endif // Q_OS_MACOS
+#endif // defined( Q_OS_MACOS ) || defined( Q_OS_WIN )
   char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
   {
