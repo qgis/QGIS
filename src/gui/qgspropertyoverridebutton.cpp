@@ -309,10 +309,15 @@ void QgsPropertyOverrideButton::setToProperty( const QgsProperty &property )
     mFieldName.clear();
     mExpressionString.clear();
   }
+  const bool wasActive = mProperty.isActive();
   mProperty = property;
-  setActive( mProperty && mProperty.isActive() );
   updateSiblingWidgets( isActive() );
   updateGui();
+
+  if ( mProperty.isActive() != wasActive )
+    emit activated( mProperty.isActive() );
+
+  emit changed();
 }
 
 ///@cond PRIVATE
