@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "delaunator.hpp"
+#include "qgs3dutils.h"
 #include "qgsfeedback.h"
 #include "qgsgeotransform.h"
 #include "qgsmaterial.h"
@@ -902,9 +903,10 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex &pc, QgsPo
       ib = blueContrastEnhancement->enhanceContrast( ib );
     }
 
-    color.setX( ir / 255.0f );
-    color.setY( ig / 255.0f );
-    color.setZ( ib / 255.0f );
+    const QColor linear = Qgs3DUtils::srgbToLinear( QColor( ir, ig, ib ) );
+    color.setX( linear.redF() );
+    color.setY( linear.greenF() );
+    color.setZ( linear.blueF() );
 
     output->positions.push_back( point.toVector3D() );
     output->colors.push_back( color );
