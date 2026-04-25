@@ -59,6 +59,7 @@ class _3D_EXPORT QgsLineMaterial : public QgsMaterial
   public:
     QgsLineMaterial();
 
+    //! Must be an SRGB color
     void setLineColor( const QColor &color );
     void setUseVertexColors( bool enabled );
     void setLineWidth( float width );

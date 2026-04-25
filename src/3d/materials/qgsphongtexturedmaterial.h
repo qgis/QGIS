@@ -50,16 +50,20 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     ~QgsPhongTexturedMaterial() override;
 
   public slots:
+    //! Sets ambient color, must be a SRGB color
     void setAmbient( const QColor &ambient );
 
     /**
      * Sets the diffuse component of the material.
      * Ownership is transferred to the material.
+     *
+     * Must be explicitly set to SRGB format.
      */
     void setDiffuseTexture( Qt3DRender::QAbstractTexture *texture );
 
     void setDiffuseTextureScale( float textureScale );
     void setDiffuseTextureRotation( float textureRotation );
+    //! Sets specular color, must be a SRGB color
     void setSpecular( const QColor &specular );
     void setShininess( float shininess );
     void setOpacity( float opacity );

@@ -56,7 +56,9 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     ~QgsMetalRoughMaterial() override;
 
   public slots:
+    //! Must be an SRGB color
     void setBaseColor( const QColor &baseColor );
+    //! Must be an SRGB format texture. Takes ownership.
     void setBaseColorTexture( Qt3DRender::QAbstractTexture *baseColor );
 
     //! Set constant metalness value (between 0 - 1.0)
