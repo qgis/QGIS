@@ -68,7 +68,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@63069e3931dedbf3b63792097479563182fe70d1 #v1.2
         with:
           max-size: 1G
-          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.arch }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
           save: ${{ github.event_name == 'push' }}
 
       - name: 🛍️ Tune ccache configuration
