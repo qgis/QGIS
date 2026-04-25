@@ -416,7 +416,7 @@ void QgsLayoutItemChart::prepareGatherer()
         for ( const QgsRendererCategory &category : categories )
         {
           rendererCategories << category.label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), category.label() );
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( category.label() ) );
         }
       }
       else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
@@ -426,7 +426,7 @@ void QgsLayoutItemChart::prepareGatherer()
         for ( const QgsRendererRange &range : ranges )
         {
           rendererCategories << range.label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), range.label() );
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( range.label() ) );
         }
       }
       else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
@@ -454,14 +454,14 @@ void QgsLayoutItemChart::prepareGatherer()
           }
 
           rendererCategories << rule->label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( rule->filterExpression(), rule->label() );
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( rule->filterExpression(), QgsExpression::quotedString( rule->label() ) );
         }
 
         if ( proceed )
         {
           if ( hasElse )
           {
-            expressionCases << u"ELSE '%1'"_s.arg( elseLabel );
+            expressionCases << u"ELSE '%1'"_s.arg( QgsExpression::quotedString( elseLabel ) );
           }
         }
         else
