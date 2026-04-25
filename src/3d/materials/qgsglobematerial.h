@@ -61,6 +61,8 @@ class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
     /**
      * Sets the diffuse component of the material.
      * Ownership is transferred to the material.
+     *
+     * \note Must be SRGB format.
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
