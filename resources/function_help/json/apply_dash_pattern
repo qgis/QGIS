@@ -12,17 +12,17 @@
   }, {
     "arg": "start_rule",
     "optional": true,
-    "default": "no_rule",
+    "default": "'no_rule'",
     "description": "optional rule for constraining the start of the pattern. Valid values are 'no_rule', 'full_dash', 'half_dash', 'full_gap', 'half_gap'."
   }, {
     "arg": "end_rule",
     "optional": true,
-    "default": "no_rule",
+    "default": "'no_rule'",
     "description": "optional rule for constraining the end of the pattern. Valid values are 'no_rule', 'full_dash', 'half_dash', 'full_gap', 'half_gap'."
   }, {
     "arg": "adjustment",
     "optional": true,
-    "default": "both",
+    "default": "'both'",
     "description": "optional rule for specifying which part of patterns are adjusted to fit the desired pattern rules. Valid values are 'both', 'dash', 'gap'."
   }, {
     "arg": "pattern_offset",

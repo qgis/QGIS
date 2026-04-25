@@ -10,7 +10,7 @@
   {
     "arg": "method",
     "description": "repair algorithm. May be either 'structure' or 'linework'. The 'linework' option combines all rings into a set of noded lines and then extracts valid polygons from that linework. The 'structure' method first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized.",
-    "default": "structure",
+    "default": "'structure'",
     "optional": true
   },
   {
