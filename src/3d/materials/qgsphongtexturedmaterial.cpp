@@ -31,14 +31,16 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
+  , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QVariant() ) )
   , mDiffuseTextureParameter( new Qt3DRender::QParameter( u"diffuseTexture"_s, QVariant() ) )
   , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f ) )
   , mDiffuseTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f ) )
-  , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) ) )
+  , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QVariant() ) )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 150.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
 {
+  setAmbient( QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
+  setSpecular( QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   init();
 }
 

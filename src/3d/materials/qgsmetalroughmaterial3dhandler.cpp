@@ -72,17 +72,12 @@ bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
 {
   const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
 
-  QgsMaterial *material = sceneRoot->findChild<QgsMaterial *>();
+  QgsMetalRoughMaterial *material = sceneRoot->findChild<QgsMetalRoughMaterial *>();
   if ( material->objectName() != "metalRoughMaterial"_L1 )
     return false;
 
-  Qt3DRender::QEffect *effect = material->effect();
-
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"baseColor"_s ) )
-    p->setValue( metalRoughSettings->baseColor() );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"metalness"_s ) )
-    p->setValue( metalRoughSettings->metalness() );
-  if ( Qt3DRender::QParameter *p = findParameter( effect, u"roughness"_s ) )
-    p->setValue( metalRoughSettings->roughness() );
+  material->setBaseColor( metalRoughSettings->baseColor() );
+  material->setMetalness( metalRoughSettings->metalness() );
+  material->setRoughness( metalRoughSettings->roughness() );
   return true;
 }
