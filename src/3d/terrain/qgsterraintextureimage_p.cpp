@@ -46,6 +46,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     {
       Qt3DRender::QTextureImageDataPtr dataPtr = Qt3DRender::QTextureImageDataPtr::create();
       dataPtr->setImage( mImage.isNull() ? placeholderImage() : mImage ); // will copy image data to the internal byte array
+      dataPtr->setFormat( QOpenGLTexture::TextureFormat::SRGB8_Alpha8 );
       return dataPtr;
     }
 
