@@ -184,18 +184,19 @@ void QgsMetalRoughMaterial::setNormalTexture( Qt3DRender::QAbstractTexture *norm
     updateFragmentShader();
 }
 
-void QgsMetalRoughMaterial::setEmission( const QVariant &emission )
+void QgsMetalRoughMaterial::setEmissionTexture( Qt3DRender::QAbstractTexture *emission )
 {
-  mEmissionMapParameter->setValue( emission );
   bool oldUsingEmissionMap = mUsingEmissionMap;
 
-  if ( emission.value<Qt3DRender::QAbstractTexture *>() )
+  if ( emission )
   {
+    mEmissionMapParameter->setValue( QVariant::fromValue( emission ) );
     mUsingEmissionMap = true;
     mMetalRoughEffect->addParameter( mEmissionMapParameter );
   }
   else
   {
+    mEmissionMapParameter->setValue( QVariant() );
     mUsingEmissionMap = false;
     if ( mMetalRoughEffect->parameters().contains( mEmissionMapParameter ) )
       mMetalRoughEffect->removeParameter( mEmissionMapParameter );
