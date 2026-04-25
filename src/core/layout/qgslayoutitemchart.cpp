@@ -480,6 +480,13 @@ void QgsLayoutItemChart::prepareGatherer()
           XySeriesDetails( series.name(), mGenerateCategoriesFromRenderer ? rendererXExpression : series.xExpression(), series.yExpression(), series.filterExpression() );
     }
 
+    if ( mGenerateCategoriesFromRenderer && xYSeriesList.isEmpty() )
+    {
+      // When geenrating categories from the layer feature renderer against an empty set
+      // of series, be helpful and add one that will offer a feature count
+      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( tr( "Feature Count" ), rendererXExpression, "1"_L1 );
+    }
+
     QgsFeatureRequest request;
     QStringList filterExpressions;
     for ( QgsLayoutItemChart::SeriesDetails &series : mSeriesList )
