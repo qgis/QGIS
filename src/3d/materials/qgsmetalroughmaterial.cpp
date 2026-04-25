@@ -33,7 +33,7 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, QColor( "grey" ), this ) )
+  , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, Qgs3DUtils::srgbToLinear( QColor( "grey" ) ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
   , mRoughnessParameter( new Qt3DRender::QParameter( u"roughness"_s, 0.0f, this ) )
   , mBaseColorMapParameter( new Qt3DRender::QParameter( u"baseColorMap"_s, QVariant(), this ) )
@@ -58,7 +58,7 @@ QgsMetalRoughMaterial::~QgsMetalRoughMaterial() = default;
 
 void QgsMetalRoughMaterial::setBaseColor( const QColor &baseColor )
 {
-  mBaseColorParameter->setValue( baseColor );
+  mBaseColorParameter->setValue( Qgs3DUtils::srgbToLinear( baseColor ) );
   bool oldUsingBaseColorMap = mUsingBaseColorMap;
 
   mUsingBaseColorMap = false;
