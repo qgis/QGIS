@@ -431,7 +431,44 @@ void QgsLayoutItemChart::prepareGatherer()
       }
       else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
       {
-        // nothing for now.
+        bool proceed = true;
+        bool hasElse = false;
+        QString elseLabel;
+
+        const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
+        for ( const QgsRuleBasedRenderer::Rule *rule : rules )
+        {
+          if ( rule->hasActiveChildren() )
+          {
+            // We do not support multi-level rules configuration
+            proceed = false;
+            break;
+          }
+
+          if ( rule->isElse() )
+          {
+            hasElse = true;
+            elseLabel = rule->label();
+            rendererCategories << rule->label();
+            continue;
+          }
+
+          rendererCategories << rule->label();
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( rule->filterExpression(), rule->label() );
+        }
+
+        if ( proceed )
+        {
+          if ( hasElse )
+          {
+            expressionCases << u"ELSE '%1'"_s.arg( elseLabel );
+          }
+        }
+        else
+        {
+          rendererCategories.clear();
+          expressionCases.clear();
+        }
       }
       rendererXExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
     }
