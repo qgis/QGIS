@@ -88,7 +88,7 @@ void QgsPhongTexturedMaterial::init()
 
 void QgsPhongTexturedMaterial::setAmbient( const QColor &ambient )
 {
-  mAmbientParameter->setValue( ambient );
+  mAmbientParameter->setValue( Qgs3DUtils::srgbToLinear( ambient ) );
 }
 
 void QgsPhongTexturedMaterial::setDiffuseTexture( Qt3DRender::QAbstractTexture *diffuseTexture )
@@ -108,7 +108,7 @@ void QgsPhongTexturedMaterial::setDiffuseTextureRotation( float textureRotation 
 
 void QgsPhongTexturedMaterial::setSpecular( const QColor &specular )
 {
-  mSpecularParameter->setValue( specular );
+  mSpecularParameter->setValue( Qgs3DUtils::srgbToLinear( specular ) );
 }
 
 void QgsPhongTexturedMaterial::setShininess( float shininess )
