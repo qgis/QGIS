@@ -56,13 +56,33 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     ~QgsMetalRoughMaterial() override;
 
   public slots:
-    void setBaseColor( const QVariant &baseColor );
-    void setMetalness( const QVariant &metalness );
-    void setRoughness( const QVariant &roughness );
-    void setAmbientOcclusion( const QVariant &ambientOcclusion );
-    void setNormal( const QVariant &normal );
-    void setEmission( const QVariant &emission );
+    void setBaseColor( const QColor &baseColor );
+    void setBaseColorTexture( Qt3DRender::QAbstractTexture *baseColor );
+
+    //! Set constant metalness value (between 0 - 1.0)
+    void setMetalness( float metalness );
+
+    //! Sets the metalness texture. Takes ownership
+    void setMetalnessTexture( Qt3DRender::QAbstractTexture *metalness );
+
+    //! Set constant roughness value (between 0 - 1.0)
+    void setRoughness( float roughness );
+
+    //! Sets the roughness texture. Takes ownership
+    void setRoughnessTexture( Qt3DRender::QAbstractTexture *roughness );
+
+    //! Sets the ambient occlusion texture. Takes ownership. Set to NULLPTR to remove.
+    void setAmbientOcclusionTexture( Qt3DRender::QAbstractTexture *ambientOcclusion );
+
+    //! Sets the normal texture map. Takes ownership. Set to NULLPTR to remove.
+    void setNormalTexture( Qt3DRender::QAbstractTexture *normal );
+
+    //! Sets the emission texture map. Must be in SRGB format. Takes ownership. Set to NULLPTR to remove.
+    void setEmissionTexture( Qt3DRender::QAbstractTexture *emission );
+
+    //! Sets the emission strength factor
     void setEmissionFactor( double factor );
+
     void setTextureScale( float textureScale );
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );

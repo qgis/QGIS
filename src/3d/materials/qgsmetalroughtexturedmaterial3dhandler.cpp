@@ -114,7 +114,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath() ) )
   {
     // takes ownership of texture
-    material->setBaseColor( QVariant::fromValue( baseTex ) );
+    material->setBaseColorTexture( baseTex );
   }
   else
   {
@@ -126,7 +126,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   if ( Qt3DRender::QTexture2D *metalTex = loadTexture( texturedSettings->metalnessTexturePath() ) )
   {
     // takes ownership of texture
-    material->setMetalness( QVariant::fromValue( metalTex ) );
+    material->setMetalnessTexture( metalTex );
   }
   else
   {
@@ -138,7 +138,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   if ( Qt3DRender::QTexture2D *roughTex = loadTexture( texturedSettings->roughnessTexturePath() ) )
   {
     // takes ownership of texture
-    material->setRoughness( QVariant::fromValue( roughTex ) );
+    material->setRoughnessTexture( roughTex );
   }
   else
   {
@@ -149,24 +149,24 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath() ) )
   {
     // takes ownership of texture
-    material->setNormal( QVariant::fromValue( normalTex ) );
+    material->setNormalTexture( normalTex );
   }
   else
   {
     // default to none
-    material->setNormal( QVariant() );
+    material->setNormalTexture( nullptr );
   }
 
   // ambient occlusion
   if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath() ) )
   {
     // takes ownership of texture
-    material->setAmbientOcclusion( QVariant::fromValue( aoTex ) );
+    material->setAmbientOcclusionTexture( aoTex );
   }
   else
   {
     // default to none
-    material->setAmbientOcclusion( QVariant() );
+    material->setAmbientOcclusionTexture( nullptr );
   }
 
   if ( Qt3DRender::QTexture2D *emissionTex = loadTexture( texturedSettings->emissionTexturePath() ) )
