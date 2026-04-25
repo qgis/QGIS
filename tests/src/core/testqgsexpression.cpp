@@ -1264,6 +1264,9 @@ class TestQgsExpression : public QObject
       QTest::newRow( "geom_to_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb('a')))" << true << QVariant();
       QTest::newRow( "geom_from_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(make_point(4,5)))" << true << QVariant();
       QTest::newRow( "geom_from_wkb null" ) << "geom_to_wkt(geom_from_wkb(NULL))" << false << QVariant();
+      QTest::newRow( "geom_from_geojson" ) << "geom_to_wkt(geom_from_geojson('{\"type\":\"Point\",\"coordinates\":[4,5]}'))" << false << QVariant( "Point (4 5)" );
+      QTest::newRow( "geom_from_geojson not geom" ) << "geom_from_geojson('blop')" << true << QVariant();
+      QTest::newRow( "geom_from_geojson null" ) << "geom_to_wkt(geom_from_geojson(NULL))" << false << QVariant();
       QTest::newRow( "geometry_type not geom" ) << "geometry_type('g')" << true << QVariant();
       QTest::newRow( "geometry_type null" ) << "geometry_type(NULL)" << false << QVariant();
       QTest::newRow( "geometry_type point" ) << "geometry_type(geom_from_wkt('POINT(1 2)'))" << false << QVariant( u"Point"_s );
