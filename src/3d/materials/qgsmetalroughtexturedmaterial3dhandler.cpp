@@ -15,6 +15,7 @@
 
 #include "qgsmetalroughtexturedmaterial3dhandler.h"
 
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
@@ -81,7 +82,7 @@ bool QgsMetalRoughTexturedMaterial3DHandler::updatePreviewScene( Qt3DCore::QEnti
   return true;
 }
 
-Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( const QString &path )
+Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( const QString &path, bool isSrgb )
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -95,6 +96,15 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
   // texture takes ownership of textureImage
   texture->addTextureImage( textureImage );
+
+  if ( isSrgb )
+  {
+    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+  }
+  else
+  {
+    texture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  }
 
   texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
   texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
@@ -111,7 +121,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   material->setTextureRotation( static_cast<float>( texturedSettings->textureRotation() ) );
 
   // base color
-  if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *baseTex = loadTexture( texturedSettings->baseColorTexturePath(), true ) )
   {
     // takes ownership of texture
     material->setBaseColorTexture( baseTex );
@@ -123,7 +133,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   // metalness
-  if ( Qt3DRender::QTexture2D *metalTex = loadTexture( texturedSettings->metalnessTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *metalTex = loadTexture( texturedSettings->metalnessTexturePath(), false ) )
   {
     // takes ownership of texture
     material->setMetalnessTexture( metalTex );
@@ -135,7 +145,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   // roughness
-  if ( Qt3DRender::QTexture2D *roughTex = loadTexture( texturedSettings->roughnessTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *roughTex = loadTexture( texturedSettings->roughnessTexturePath(), false ) )
   {
     // takes ownership of texture
     material->setRoughnessTexture( roughTex );
@@ -146,7 +156,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
     material->setRoughness( 0.5 );
   }
 
-  if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *normalTex = loadTexture( texturedSettings->normalTexturePath(), false ) )
   {
     // takes ownership of texture
     material->setNormalTexture( normalTex );
@@ -158,7 +168,7 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   // ambient occlusion
-  if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath() ) )
+  if ( Qt3DRender::QTexture2D *aoTex = loadTexture( texturedSettings->ambientOcclusionTexturePath(), false ) )
   {
     // takes ownership of texture
     material->setAmbientOcclusionTexture( aoTex );
