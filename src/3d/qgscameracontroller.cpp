@@ -907,7 +907,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       const double scaling = ( 1.0 / 120.0 ) * ( ( wheel->modifiers() & Qt3DInput::QWheelEvent::Modifiers::ControlModifier ) != 0 ? 0.1 : 1.0 );
 
       // Apparently angleDelta needs to be accumulated
-      // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
+      // see: https://doc.qt.io/qt-6/qwheelevent.html#angleDelta
       mCumulatedWheelY += scaling * wheel->angleDelta().y();
 
       if ( mCurrentOperation != MouseOperation::ZoomWheel )
