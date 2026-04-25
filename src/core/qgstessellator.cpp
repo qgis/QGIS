@@ -554,8 +554,7 @@ QVector3D QgsTessellator::applyTransformWithExtrusion( const QVector3D point, fl
   return QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
 }
 
-
-void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash )
+void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, std::vector<float> &zHash ) const
 {
   const int pCount = ring->numPoints();
 
@@ -574,9 +573,9 @@ void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<
     std::array<double, 2> pt = { x, y };
     polyline.push_back( pt );
 
-    if ( zHash && srcZData )
+    if ( !mInputZValueIgnored && srcZData )
     {
-      ( *zHash )[&pt] = *srcZData++;
+      zHash.push_back( *srcZData++ );
     }
   }
 }
@@ -626,17 +625,17 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
 std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon *polygonNew )
 {
-  QHash<std::array<double, 2> *, float> z;
+  std::vector<float> z;
   std::vector<std::vector<std::array<double, 2>>> rings;
   std::vector<std::array<double, 2>> polyline;
 
-  ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mInputZValueIgnored ? nullptr : &z );
+  ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, z );
   rings.push_back( polyline );
 
   for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
   {
     std::vector<std::array<double, 2>> holePolyline;
-    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, mInputZValueIgnored ? nullptr : &z );
+    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, z );
     rings.push_back( holePolyline );
   }
 
@@ -658,7 +657,7 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
     double x = vertex[0];
     double y = vertex[1];
 
-    float zValue = z.value( &vertex, 0.0f );
+    float zValue = ( mInputZValueIgnored ? 0.0f : z[vertexIndex] );
 
     trianglePoints.emplace_back( x / mScale, y / mScale, zValue );
   }
