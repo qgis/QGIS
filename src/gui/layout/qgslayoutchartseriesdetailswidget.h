@@ -45,7 +45,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, publ
      * \param seriesDetails the series details
      * \param parent the parent widget
      */
-    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent = nullptr );
+    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, bool yAxisOnly = false, QWidget *parent = nullptr );
 
     //! Returns the series index
     int index() const;
@@ -73,6 +73,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, publ
   private:
     QPointer<QgsVectorLayer> mVectorLayer;
     int mIndex = 0;
+    bool mYAxisOnly = false;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };

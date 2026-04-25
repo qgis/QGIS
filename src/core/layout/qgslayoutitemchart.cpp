@@ -18,12 +18,17 @@
 #include "qgslayoutitemchart.h"
 
 #include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
 #include "qgsplotregistry.h"
+#include "qgspointdistancerenderer.h"
+#include "qgsrenderer.h"
+#include "qgsrulebasedrenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -206,6 +211,19 @@ void QgsLayoutItemChart::setFilterToAtlasFeature( const bool filterToAtlas )
   emit changed();
 }
 
+void QgsLayoutItemChart::setGenerateCategoriesFromRenderer( bool generateCategoriesFromRenderer )
+{
+  if ( mGenerateCategoriesFromRenderer == generateCategoriesFromRenderer )
+  {
+    return;
+  }
+
+  mGenerateCategoriesFromRenderer = generateCategoriesFromRenderer;
+  refresh();
+
+  emit changed();
+}
+
 void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList )
 {
   if ( mSeriesList == seriesList )
@@ -235,7 +253,9 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
   }
 
   if ( !mPlot )
+  {
     return;
+  }
 
   QPaintDevice *paintDevice = painter->device();
   if ( !paintDevice )
@@ -378,10 +398,49 @@ void QgsLayoutItemChart::prepareGatherer()
 
   if ( QgsVectorLayerXyPlotDataGatherer *xyGatherer = dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( mGatherer.data() ) )
   {
+    QString rendererXExpression;
+    QStringList rendererCategories;
+    if ( mGenerateCategoriesFromRenderer && mVectorLayer->renderer() )
+    {
+      const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
+      if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
+      {
+        renderer = pointDistanceRenderer->embeddedRenderer();
+      }
+
+      QStringList expressionCases;
+      if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
+      {
+        const QgsCategoryList categories = categorizedRenderer->categories();
+        bool ok;
+        for ( const QgsRendererCategory &category : categories )
+        {
+          rendererCategories << category.label();
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), category.label() );
+        }
+      }
+      else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
+      {
+        const QgsRangeList ranges = graduatedRenderer->ranges();
+        bool ok;
+        for ( const QgsRendererRange &range : ranges )
+        {
+          rendererCategories << range.label();
+          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), range.label() );
+        }
+      }
+      else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
+      {
+        // nothing for now.
+      }
+      rendererXExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
+    }
+
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
     for ( const SeriesDetails &series : mSeriesList )
     {
-      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.name(), series.xExpression(), series.yExpression(), series.filterExpression() );
+      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::
+          XySeriesDetails( series.name(), mGenerateCategoriesFromRenderer ? rendererXExpression : series.xExpression(), series.yExpression(), series.filterExpression() );
     }
 
     QgsFeatureRequest request;
@@ -434,6 +493,10 @@ void QgsLayoutItemChart::prepareGatherer()
     xyGatherer->setFeatureIterator( featureIterator );
     xyGatherer->setExpressionContext( createExpressionContext() );
     xyGatherer->setSeriesDetails( xYSeriesList );
+    if ( mGenerateCategoriesFromRenderer )
+    {
+      xyGatherer->setPredefinedCategories( rendererCategories );
+    }
   }
 
   connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
@@ -481,7 +544,7 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
   element.setAttribute( u"sortAscending"_s, mSortAscending ? u"1"_s : u"0"_s );
   element.setAttribute( u"sortExpression"_s, mSortExpression );
 
-  element.setAttribute( u"sortExpression"_s, mSortExpression );
+  element.setAttribute( u"generateCategoriesFromRenderer"_s, mGenerateCategoriesFromRenderer );
 
   element.setAttribute( u"filterOnlyVisibleFeatures"_s, mFilterOnlyVisibleFeatures );
   element.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
@@ -528,6 +591,8 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   mSortFeatures = element.attribute( u"sortFeatures"_s, u"0"_s ).toInt();
   mSortAscending = element.attribute( u"sortAscending"_s, u"1"_s ).toInt();
   mSortExpression = element.attribute( u"sortExpression"_s );
+
+  mGenerateCategoriesFromRenderer = element.attribute( u"generateCategoriesFromRenderer"_s, u"0"_s ).toInt();
 
   mFilterOnlyVisibleFeatures = element.attribute( u"filterOnlyVisibleFeatures"_s, u"1"_s ).toInt();
   mFilterToAtlasIntersection = element.attribute( u"filterToAtlasIntersection"_s, u"0"_s ).toInt();

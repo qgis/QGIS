@@ -289,6 +289,22 @@ intersect the current atlas feature.
 .. seealso:: :py:func:`setFilterToAtlasFeature`
 %End
 
+    void setGenerateCategoriesFromRenderer( bool generateCategoriesFromRenderer );
+%Docstring
+Sets whether series' X axis will adopt categories generated from the
+source layer's symbol renderer.
+
+.. versionadded:: 4.2
+%End
+
+    bool generateCategoriesFromRenderer() const;
+%Docstring
+Returns ``True`` if series' X axis will adopt categories generated from
+the source layer's symbol renderer.
+
+.. versionadded:: 4.2
+%End
+
     static QgsLayoutItemChart *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new chart item for the specified ``layout``.
