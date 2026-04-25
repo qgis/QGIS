@@ -241,13 +241,6 @@ void QgsMetalRoughMaterial::setTextureRotation( float textureRotation )
 
 void QgsMetalRoughMaterial::init()
 {
-  QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::baseColorChanged );
-  QObject::connect( mMetalnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::metalnessChanged );
-  QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::roughnessChanged );
-  QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
-  QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::normalChanged );
-  connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
-
   const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) );
   const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ROTATION" } ) );
   mMetalRoughGL3Shader->setVertexShaderCode( finalVertexShaderCode );
@@ -309,16 +302,6 @@ void QgsMetalRoughMaterial::updateFragmentShader()
 
   QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
   mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
-}
-
-void QgsMetalRoughMaterial::handleTextureScaleChanged( const QVariant &var )
-{
-  emit textureScaleChanged( var.toFloat() );
-}
-
-bool QgsMetalRoughMaterial::flatShadingEnabled() const
-{
-  return mFlatShading;
 }
 
 void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )

@@ -60,13 +60,8 @@ class _3D_EXPORT QgsLineMaterial : public QgsMaterial
     QgsLineMaterial();
 
     void setLineColor( const QColor &color );
-    QColor lineColor() const;
-
     void setUseVertexColors( bool enabled );
-    bool useVertexColors() const;
-
     void setLineWidth( float width );
-    float lineWidth() const;
 
     Q_INVOKABLE void setViewportSize( const QSizeF &viewportSize );
 

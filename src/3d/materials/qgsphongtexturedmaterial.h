@@ -41,12 +41,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 {
     Q_OBJECT
-    Q_PROPERTY( QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged )
-    Q_PROPERTY( Qt3DRender::QAbstractTexture *diffuseTexture READ diffuseTexture WRITE setDiffuseTexture NOTIFY diffuseTextureChanged )
-    Q_PROPERTY( float diffuseTextureScale READ diffuseTextureScale WRITE setDiffuseTextureScale NOTIFY diffuseTextureScaleChanged )
-    Q_PROPERTY( QColor specular READ specular WRITE setSpecular NOTIFY specularChanged )
-    Q_PROPERTY( float shininess READ shininess WRITE setShininess NOTIFY shininessChanged )
-    Q_PROPERTY( float opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
     /**
@@ -54,13 +48,6 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
      */
     explicit QgsPhongTexturedMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongTexturedMaterial() override;
-
-    QColor ambient() const;
-    Qt3DRender::QAbstractTexture *diffuseTexture() const;
-    float diffuseTextureScale() const;
-    QColor specular() const;
-    float shininess() const;
-    float opacity() const;
 
   public slots:
     void setAmbient( const QColor &ambient );
@@ -77,23 +64,8 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     void setShininess( float shininess );
     void setOpacity( float opacity );
 
-  signals:
-    void ambientChanged( const QColor &ambient );
-    void diffuseTextureChanged( Qt3DRender::QAbstractTexture *diffuseTexture );
-    void diffuseTextureScaleChanged( float diffuseTextureScale );
-    void specularChanged( const QColor &specular );
-    void shininessChanged( float shininess );
-    void opacityChanged( float opacity );
-
   private:
     void init();
-
-    void handleAmbientChanged( const QVariant &var );
-    void handleDiffuseTextureChanged( const QVariant &var );
-    void handleDiffuseTextureScaleChanged( const QVariant &var );
-    void handleSpecularChanged( const QVariant &var );
-    void handleShininessChanged( const QVariant &var );
-    void handleOpacityChanged( const QVariant &var );
 
     Qt3DRender::QParameter *mAmbientParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureParameter = nullptr;

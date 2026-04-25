@@ -18,12 +18,14 @@
 #include "qgstest.h"
 #include "qgstexturematerial.h"
 
+#include <QColor>
 #include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QParameter>
 
 using namespace Qt::StringLiterals;
 
@@ -128,7 +130,7 @@ void TestQgsGltf3DUtils::testBox()
   QVector<QgsMetalRoughMaterial *> pbrMaterials = child->componentsOfType<QgsMetalRoughMaterial>();
   QCOMPARE( pbrMaterials.count(), 1 );
   QgsMetalRoughMaterial *pbrMaterial = pbrMaterials[0];
-  QCOMPARE( pbrMaterial->baseColor(), QColor::fromRgbF( 0.8, 0.0, 0.0, 1.0 ) );
+  QCOMPARE( pbrMaterial->mBaseColorParameter->value().value< QColor >(), QColor::fromRgbF( 0.8, 0.0, 0.0, 1.0 ) );
 
   delete entity;
 }

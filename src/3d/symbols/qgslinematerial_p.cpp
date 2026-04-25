@@ -84,29 +84,14 @@ void QgsLineMaterial::setLineColor( const QColor &color )
   mParameterLineColor->setValue( color );
 }
 
-QColor QgsLineMaterial::lineColor() const
-{
-  return mParameterLineColor->value().value<QColor>();
-}
-
 void QgsLineMaterial::setUseVertexColors( bool enabled )
 {
   mParameterUseVertexColors->setValue( enabled );
 }
 
-bool QgsLineMaterial::useVertexColors() const
-{
-  return mParameterUseVertexColors->value().toBool();
-}
-
 void QgsLineMaterial::setLineWidth( float width )
 {
   mParameterThickness->setValue( width );
-}
-
-float QgsLineMaterial::lineWidth() const
-{
-  return mParameterThickness->value().toFloat();
 }
 
 void QgsLineMaterial::setViewportSize( const QSizeF &viewportSize )

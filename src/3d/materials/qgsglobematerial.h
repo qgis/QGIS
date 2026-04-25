@@ -46,7 +46,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
 {
     Q_OBJECT
-    Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )
 
   public:
     /**
@@ -65,13 +64,8 @@ class _3D_EXPORT QgsGlobeMaterial : public QgsMaterial
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
-  signals:
-    void textureChanged( Qt3DRender::QAbstractTexture *texture );
-
   private:
     void init();
-
-    void handleTextureChanged( const QVariant &var );
 
     Qt3DRender::QParameter *mTextureParameter = nullptr;
     Qt3DRender::QParameter *mDiffuseTextureScaleParameter = nullptr;
