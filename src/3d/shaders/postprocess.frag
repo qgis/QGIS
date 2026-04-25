@@ -119,23 +119,30 @@ void main()
   vec3 worldPosition = WorldPosFromDepth( depth );
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
-  vec3 color = texture(colorTexture, texCoord).rgb;
+  vec3 linearColor = texture(colorTexture, texCoord).rgb;
+
+  vec3 finalColor = linearColor;
+
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if (renderShadows == 0 || depth >= 1 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.y > shadowMaxY || worldPosition.y < shadowMinY)
   {
-    fragColor = vec4(color, 1.0f);
+    // nothing to do
   } else
   {
     float visibilityFactor = CalcShadowFactor(positionInLightSpace);
-    fragColor = vec4(visibilityFactor * color, 1.0f);
+    finalColor = visibilityFactor * finalColor;
   }
   if (edlEnabled != 0)
   {
     float shade = exp(-edlFactor(texCoord) * edlStrength);
-    fragColor = vec4(fragColor.rgb * shade, fragColor.a);
+    finalColor = finalColor * shade;
   }
   if ( ssaoEnabled != 0 )
   {
-    fragColor = vec4( fragColor.rgb * texture( ssaoTexture, texCoord ).r, fragColor.a );
+    finalColor = finalColor.rgb * texture( ssaoTexture, texCoord ).r;
   }
+
+  vec3 sRgbColor = pow(finalColor, vec3(1.0 / 2.2));
+
+  fragColor = vec4(sRgbColor, 1.0f);
 }
