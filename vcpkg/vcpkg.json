@@ -14,6 +14,7 @@
           "arrow",
           "python3",
           "py-*",
+          "pybind11",
           "gdal",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
