@@ -434,9 +434,13 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( child.position(), QPointF( 1, 2 ) );
   child.setSize( QSizeF( 3, 4 ) );
   QCOMPARE( child.size(), QSizeF( 3, 4 ) );
+  QVERIFY( !child.linksCollapsed( Qt::TopEdge ) );
+  child.setLinksCollapsed( Qt::TopEdge, true );
   QVERIFY( child.linksCollapsed( Qt::TopEdge ) );
   child.setLinksCollapsed( Qt::TopEdge, false );
   QVERIFY( !child.linksCollapsed( Qt::TopEdge ) );
+  QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );
+  child.setLinksCollapsed( Qt::BottomEdge, true );
   QVERIFY( child.linksCollapsed( Qt::BottomEdge ) );
   child.setLinksCollapsed( Qt::BottomEdge, false );
   QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );

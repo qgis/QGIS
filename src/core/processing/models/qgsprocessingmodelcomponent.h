@@ -195,8 +195,8 @@ class CORE_EXPORT QgsProcessingModelComponent
     QSizeF mSize = QSizeF( DEFAULT_COMPONENT_WIDTH, DEFAULT_COMPONENT_HEIGHT );
     QColor mColor;
 
-    bool mTopEdgeLinksCollapsed = true;
-    bool mBottomEdgeLinksCollapsed = true;
+    bool mTopEdgeLinksCollapsed = false;
+    bool mBottomEdgeLinksCollapsed = false;
 };
 
 ///@endcond

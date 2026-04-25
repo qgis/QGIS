@@ -11673,10 +11673,12 @@ void TestProcessingGui::testModelGraphicsView()
   //check model bounds
   scene2.updateBounds();
   QRectF modelRect = scene2.sceneRect();
-  QGSCOMPARENEAR( modelRect.height(), 1523, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QFontMetricsF fm( scene2.font() );
+  qDebug() << "fm.height():" << fm.height();
+  QGSCOMPARENEAR( modelRect.height() / fm.height(), 89.1, 2 ); // various font size can change the height of the bounding so we normarlise by font height
   QGSCOMPARENEAR( modelRect.width(), 1555.00, 0.01 );
   QGSCOMPARENEAR( modelRect.left(), -702.0, 0.01 );
-  QGSCOMPARENEAR( modelRect.top(), -682.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.top(), -713.0, 0.01 );
 
 
   // test model large modelRect
@@ -11701,7 +11703,7 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene3.updateBounds();
   QRectF modelRect2 = scene3.sceneRect();
-  QGSCOMPARENEAR( modelRect2.height(), 5404, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.height() / fm.height(), 306, 2 ); // various font size can change the height of the bounding so we normarlise by font height
   QGSCOMPARENEAR( modelRect2.width(), 5503.0, 0.01 );
   QGSCOMPARENEAR( modelRect2.left(), -651.0, 0.01 );
   QGSCOMPARENEAR( modelRect2.top(), -600.0, 0.01 );
