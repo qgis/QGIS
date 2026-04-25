@@ -47,6 +47,9 @@ QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
 
   mPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::instance()->plotRegistry()->createPlot( "line" ) ) );
 
+  SeriesDetails series( tr( "Series 1" ) );
+  mSeriesList << series;
+
   mGathererTimer.setInterval( 10 );
   mGathererTimer.setSingleShot( true );
   connect( &mGathererTimer, &QTimer::timeout, this, &QgsLayoutItemChart::gatherData );
@@ -322,7 +325,7 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     mPlot->render( renderContext, plotRenderContext, mPlotData );
   }
 
-  if ( mSeriesList.isEmpty() )
+  if ( mSeriesList.isEmpty() || ( mSeriesList.size() == 1 && !mGenerateCategoriesFromRenderer && ( mSeriesList[0].xExpression().isEmpty() || mSeriesList[0].yExpression().isEmpty() ) ) )
   {
     QFont messageFont;
     messageFont.setPointSize( 8 );
@@ -416,7 +419,7 @@ void QgsLayoutItemChart::prepareGatherer()
         for ( const QgsRendererCategory &category : categories )
         {
           rendererCategories << category.label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( category.label() ) );
+          expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( category.label() ) );
         }
       }
       else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
@@ -426,7 +429,7 @@ void QgsLayoutItemChart::prepareGatherer()
         for ( const QgsRendererRange &range : ranges )
         {
           rendererCategories << range.label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( range.label() ) );
+          expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( range.label() ) );
         }
       }
       else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
@@ -454,14 +457,14 @@ void QgsLayoutItemChart::prepareGatherer()
           }
 
           rendererCategories << rule->label();
-          expressionCases << u"WHEN %1 THEN '%2'"_s.arg( rule->filterExpression(), QgsExpression::quotedString( rule->label() ) );
+          expressionCases << u"WHEN %1 THEN %2"_s.arg( rule->filterExpression(), QgsExpression::quotedString( rule->label() ) );
         }
 
         if ( proceed )
         {
           if ( hasElse )
           {
-            expressionCases << u"ELSE '%1'"_s.arg( QgsExpression::quotedString( elseLabel ) );
+            expressionCases << u"ELSE %1"_s.arg( QgsExpression::quotedString( elseLabel ) );
           }
         }
         else
@@ -476,15 +479,12 @@ void QgsLayoutItemChart::prepareGatherer()
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
     for ( const SeriesDetails &series : mSeriesList )
     {
-      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::
-          XySeriesDetails( series.name(), mGenerateCategoriesFromRenderer ? rendererXExpression : series.xExpression(), series.yExpression(), series.filterExpression() );
-    }
-
-    if ( mGenerateCategoriesFromRenderer && xYSeriesList.isEmpty() )
-    {
-      // When geenrating categories from the layer feature renderer against an empty set
-      // of series, be helpful and add one that will offer a feature count
-      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( tr( "Feature Count" ), rendererXExpression, "1"_L1 );
+      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails(
+        series.name(),
+        mGenerateCategoriesFromRenderer ? rendererXExpression : series.xExpression(),
+        mGenerateCategoriesFromRenderer && series.yExpression().isEmpty() ? "1"_L1 : series.yExpression(),
+        series.filterExpression()
+      );
     }
 
     QgsFeatureRequest request;
