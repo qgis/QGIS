@@ -159,6 +159,19 @@ class _3D_EXPORT Qgs3DUtils
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
+    /**
+     * Converts a SRGB color to a linear color.
+     *
+     * Color alpha is retained without change.
+     *
+     * \warning This method is designed for conversion of single colors only, for passing
+     * static colors to shaders. It is not appropriate for use for bulk conversion operations, e.g.
+     * converting an image from sRGB to linear colors.
+     *
+     * \since QGIS 4.2
+     */
+    static QColor srgbToLinear( const QColor &color );
+
     //! Calculates (x,y,z) positions of (multi)point from the given feature
     static void extractPointPositions(
       const QgsFeature &f,
