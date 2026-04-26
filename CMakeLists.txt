@@ -200,6 +200,8 @@ set (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 mark_as_advanced(WITH_CORE)
 
 if(WITH_CORE)
+  option(ENABLE_AI_ASSISTANT "Build the integrated multi-agent AI assistant for QGIS desktop" ON)
+
   # Try to configure and build GRASS plugin by default
   foreach (GRASS_SEARCH_VERSION 7 8)
     # Legacy note:
@@ -314,7 +316,7 @@ if(WITH_CORE)
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
     add_custom_target(qgis_desktop
-      DEPENDS qgis provider_postgres staged-plugins resources svg doc icons
+      DEPENDS qgis qgis_auth_plugins provider_wms provider_postgres staged-plugins resources svg doc icons
     )
     if ( WITH_PYTHON )
       add_dependencies(qgis_desktop qgispython pycore pygui pyanalysis staged-plugins pyplugin-installer )
@@ -684,12 +686,16 @@ if(WITH_CORE)
   if(WITH_AUTH)
     set(HAVE_AUTH TRUE)
     find_package(QCA REQUIRED)
+    set(QCA_PLUGIN_DIR "")
   endif()
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)
     include(QCAMacros)
     FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+    if (WITH_AUTH)
+      FIND_QCA_PLUGIN_DIR(0)
+    endif()
   endif()
 
   if (APPLE)

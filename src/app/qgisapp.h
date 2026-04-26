@@ -167,6 +167,13 @@ class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 class QgsCustomization;
 class QgsCustomizationDialog;
+#ifdef HAVE_AI_ASSISTANT
+class QgsAiAgentSessionManager;
+class QgsAiChatDockWidget;
+class QgsAiFileContextProvider;
+class QgsAiModelRouter;
+class QgsAiReviewPatchEngine;
+#endif
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -688,6 +695,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionPluginListSeparator() { return mActionPluginSeparator1; }
     QAction *actionPluginPythonSeparator() { return mActionPluginSeparator2; }
     QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
+#ifdef HAVE_AI_ASSISTANT
+    QAction *actionAiAssistant() { return mActionAiAssistant; }
+#endif
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
     QAction *actionTogglePanelsVisibility() { return mActionTogglePanelsVisibility; }
@@ -2764,6 +2774,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
     QgsDockWidget *mDevToolsDock = nullptr;
     QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
+#ifdef HAVE_AI_ASSISTANT
+    QAction *mActionAiAssistant = nullptr;
+    QgsAiChatDockWidget *mAiChatDock = nullptr;
+    std::unique_ptr<QgsAiModelRouter> mAiModelRouter;
+    std::unique_ptr<QgsAiFileContextProvider> mAiFileContextProvider;
+    std::unique_ptr<QgsAiReviewPatchEngine> mAiReviewPatchEngine;
+    std::unique_ptr<QgsAiAgentSessionManager> mAiSessionManager;
+#endif
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;

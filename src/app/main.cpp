@@ -1376,6 +1376,7 @@ int main( int argc, char *argv[] )
   // Note: bundleclicked(...) is inadequate to determine which *type* of bundle was opened, e.g. release or build dir.
   // An app bundled with QGIS_MACAPP_BUNDLE > 0 is considered a release bundle.
   QString relLibPath( QDir::cleanPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) ) );
+  const QString bundledQcaPluginPath = QDir::cleanPath( relLibPath + u"/crypto"_s );
   // Note: relLibPath becomes the defacto QT_PLUGINS_DIR of a release app bundle
   if ( QFile::exists( relLibPath + u"/imageformats"_s ) )
   {
@@ -1390,10 +1391,8 @@ int main( int argc, char *argv[] )
     QgsDebugMsgLevel( u"Prepending <bundle>/Plugins to libraryPaths"_s, 4 );
     libPaths.prepend( relLibPath );
 
-    // TODO: see if this or another method can be used to avoid QCA's install prefix plugins
-    //       from being parsed and loaded (causes multi-Qt-loaded errors when bundled Qt should
-    //       be the only one loaded). QCA core (> v2.1.3) needs an update first.
-    //setenv( "QCA_PLUGIN_PATH", relLibPath.toUtf8().constData(), 1 );
+    if ( qEnvironmentVariableIsEmpty( "QCA_PLUGIN_PATH" ) && QFile::exists( bundledQcaPluginPath ) )
+      qputenv( "QCA_PLUGIN_PATH", relLibPath.toUtf8() );
   }
   else
   {
@@ -1407,6 +1406,9 @@ int main( int argc, char *argv[] )
       QgsDebugMsgLevel( u"Prepending QT_PLUGINS_DIR to libraryPaths"_s, 4 );
       libPaths.prepend( QT_PLUGINS_DIR );
     }
+
+    if ( qEnvironmentVariableIsEmpty( "QCA_PLUGIN_PATH" ) && !QStringLiteral( QCA_PLUGIN_DIR ).isEmpty() )
+      qputenv( "QCA_PLUGIN_PATH", QByteArray( QCA_PLUGIN_DIR ) );
   }
 
   QgsDebugMsgLevel( u"Prepending QgsApplication::pluginPath to libraryPaths"_s, 4 );

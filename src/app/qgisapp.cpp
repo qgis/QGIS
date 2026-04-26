@@ -91,6 +91,13 @@ using namespace Qt::StringLiterals;
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsdevtoolspanelwidget.h"
+#ifdef HAVE_AI_ASSISTANT
+#include "ai/qgsaiagentsessionmanager.h"
+#include "ai/qgsaichatdockwidget.h"
+#include "ai/qgsaifilecontextprovider.h"
+#include "ai/qgsaimodelrouter.h"
+#include "ai/qgsaireviewpatchengine.h"
+#endif
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 #include "qgsbrowserguimodel.h"
@@ -1361,6 +1368,31 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   addDockWidget( Qt::RightDockWidgetArea, mDevToolsDock );
   mDevToolsDock->hide();
   endProfile();
+
+#ifdef HAVE_AI_ASSISTANT
+  startProfile( tr( "AI assistant dock" ) );
+  mAiModelRouter = std::make_unique<QgsAiModelRouter>( this );
+  QString aiWorkspaceRoot = QgsProject::instance()->homePath();
+  if ( aiWorkspaceRoot.isEmpty() )
+    aiWorkspaceRoot = QDir::currentPath();
+  mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
+  mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
+  mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
+
+  mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
+  mAiChatDock->setWindowTitle( tr( "AI Assistant" ) );
+  mAiChatDock->setObjectName( u"AiAssistant"_s );
+  addDockWidget( Qt::RightDockWidgetArea, mAiChatDock );
+  mAiChatDock->hide();
+
+  mActionAiAssistant = new QAction( tr( "AI Assistant" ), this );
+  mActionAiAssistant->setCheckable( true );
+  mActionAiAssistant->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+  connect( mActionAiAssistant, &QAction::toggled, mAiChatDock, &QgsDockWidget::setUserVisible );
+  connect( mAiChatDock, &QgsDockWidget::visibilityChanged, mActionAiAssistant, &QAction::setChecked );
+  mPluginMenu->addAction( mActionAiAssistant );
+  endProfile();
+#endif
 
   startProfile( tr( "Snapping dialog" ) );
   mSnappingDialog = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, this );
@@ -4266,6 +4298,10 @@ void QgisApp::setTheme( const QString &themeName )
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( u"/mActionShowPluginManager.svg"_s ) );
   if ( mActionShowPythonDialog ) // may be null if python is disabled
     mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+#ifdef HAVE_AI_ASSISTANT
+  if ( mActionAiAssistant )
+    mActionAiAssistant->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+#endif
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( u"/mIconSuccess.svg"_s ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( u"/mActionKeyboardShortcuts.svg"_s ) );

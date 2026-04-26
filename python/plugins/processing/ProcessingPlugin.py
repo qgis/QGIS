@@ -56,7 +56,6 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.gui import TestTools
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmLocatorFilter import (
@@ -629,4 +628,6 @@ class ProcessingPlugin(QObject):
         """
         Starts the test creation process given a processing algorithm run command
         """
+        from processing.gui import TestTools
+
         TestTools.createTest(command)

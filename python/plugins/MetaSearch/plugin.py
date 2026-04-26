@@ -27,9 +27,7 @@ import logging
 from qgis.core import Qgis, QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
-
-from MetaSearch.dialogs.maindialog import MetaSearchDialog
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from MetaSearch.util import StaticContext, get_help_url, log_message, open_url
 
 
@@ -44,6 +42,7 @@ class MetaSearchPlugin:
         self.action_run = None
         self.action_help = None
         self.dialog = None
+        self.import_error = None
         self.web_menu = "&MetaSearch"
 
     def initGui(self):
@@ -81,9 +80,6 @@ class MetaSearchPlugin:
 
         self.iface.addPluginToWebMenu(self.web_menu, self.action_help)
 
-        # prefab the dialog but not open it yet
-        self.dialog = MetaSearchDialog(self.iface)
-
     def unload(self):
         """teardown"""
 
@@ -99,9 +95,52 @@ class MetaSearchPlugin:
 
         log_message("Running plugin", Qgis.MessageLevel.Info)
 
+        if not self.ensure_dialog():
+            self.show_import_error()
+            return
+
         self.dialog.exec()
 
     def help(self):
         """open help in user's default web browser"""
 
         open_url(get_help_url())
+
+    def ensure_dialog(self):
+        """create dialog on demand so missing optional dependencies do not
+        prevent plugin loading at application startup"""
+
+        if self.dialog is not None:
+            return True
+
+        try:
+            from MetaSearch.dialogs.maindialog import MetaSearchDialog
+        except (ImportError, ModuleNotFoundError) as err:
+            self.import_error = err
+            log_message(f"MetaSearch import failed: {err}", Qgis.MessageLevel.Warning)
+            return False
+
+        self.dialog = MetaSearchDialog(self.iface)
+        self.import_error = None
+        return True
+
+    def show_import_error(self):
+        """show a user-facing message for missing runtime dependencies"""
+
+        missing_module = getattr(self.import_error, "name", None)
+        if missing_module:
+            details = QCoreApplication.translate(
+                "MetaSearch",
+                "Missing Python package: {0}. Install it in the Python environment used by QGIS and retry.",
+            ).format(missing_module)
+        else:
+            details = str(self.import_error)
+
+        message = QCoreApplication.translate(
+            "MetaSearch", "MetaSearch could not be initialized. {0}"
+        ).format(details)
+
+        self.iface.messageBar().pushMessage(
+            "MetaSearch", message, level=Qgis.MessageLevel.Warning, duration=10
+        )
+        QMessageBox.warning(self.iface.mainWindow(), "MetaSearch", message)

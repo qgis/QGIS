@@ -25,3 +25,29 @@ if (WITH_OAUTH2_PLUGIN)
   add_subdirectory(oauth2)
   add_subdirectory(planetary_computer)
 endif()
+
+add_custom_target(qgis_auth_plugins)
+
+set(_qgis_auth_plugin_targets
+  authmethod_basic
+  authmethod_esritoken
+  authmethod_identcert
+  authmethod_pkipaths
+  authmethod_pkcs12
+  authmethod_apiheader
+  authmethod_maptilerhmacsha256
+  authmethod_awss3
+)
+
+if (WITH_OAUTH2_PLUGIN)
+  list(APPEND _qgis_auth_plugin_targets
+    authmethod_oauth2
+    authmethod_planetary_computer
+  )
+endif()
+
+foreach(_qgis_auth_plugin_target IN LISTS _qgis_auth_plugin_targets)
+  if (TARGET ${_qgis_auth_plugin_target})
+    add_dependencies(qgis_auth_plugins ${_qgis_auth_plugin_target})
+  endif()
+endforeach()

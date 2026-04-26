@@ -306,6 +306,19 @@ set(QGIS_APP_SRCS
   vector/qgsvectorelevationpropertieswidget.cpp
 )
 
+if (ENABLE_AI_ASSISTANT)
+  set(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    ai/qgsaiagentsessionmanager.cpp
+    ai/qgsaichatdockwidget.cpp
+    ai/qgsaifilecontextprovider.cpp
+    ai/qgsaimodelrouter.cpp
+    ai/qgsaimodels.cpp
+    ai/qgsaireviewpatchengine.cpp
+    ai/tools/qgsaitoolregistry.cpp
+  )
+endif()
+
 set(APP_DWG_COMPILE_OPTIONS)
 if(HAVE_WFLAG_SUGGEST_OVERRIDE)
   list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-override")
@@ -481,7 +494,10 @@ else()
     qt_disable_unicode_defines(qgis)
   endif()
 
-  target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+  target_compile_definitions(qgis PRIVATE
+    "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\""
+    "QCA_PLUGIN_DIR=\"${QCA_PLUGIN_DIR}\""
+  )
 endif()
 
 set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
@@ -528,6 +544,9 @@ qt_add_qml_module(qgis_app
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
+if (ENABLE_AI_ASSISTANT)
+  target_compile_definitions(qgis_app PRIVATE HAVE_AI_ASSISTANT)
+endif()
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
 endif()
@@ -536,6 +555,8 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
 
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/ai
+  ${CMAKE_SOURCE_DIR}/src/app/ai/tools
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
@@ -647,6 +668,14 @@ endif()
 
 if(NOT WIN32)
   target_link_libraries(qgis qgis_app)
+endif()
+
+if(TARGET provider_wms)
+  add_dependencies(qgis provider_wms)
+endif()
+
+if(TARGET qgis_auth_plugins)
+  add_dependencies(qgis qgis_auth_plugins)
 endif()
 
 if (ANDROID)

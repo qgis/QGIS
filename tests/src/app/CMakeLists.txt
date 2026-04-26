@@ -66,6 +66,14 @@ set(TESTS
   testqgsmergeattributesdialog.cpp
 )
 
+if (ENABLE_AI_ASSISTANT)
+  set(TESTS ${TESTS} testqgsaireviewpatchengine.cpp)
+  set(TESTS ${TESTS} testqgsaimodelrouter.cpp)
+  set(TESTS ${TESTS} testqgsaiagentsessionmanager.cpp)
+  set(TESTS ${TESTS} testqgsaichatdockwidget.cpp)
+  set(TESTS ${TESTS} testqgsaitoolregistry.cpp)
+endif()
+
 if (HAVE_GEOREFERENCER)
   set(TESTS ${TESTS} testqgsgeoreferencer.cpp)
 endif()

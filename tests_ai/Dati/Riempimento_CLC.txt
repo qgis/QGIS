@@ -1,0 +1,45 @@
+L1_CODE;L1_LABEL_IT;L2_CODE;L2_LABEL_IT;L3_CODE;L3_LABEL_IT;R;G;B;RGB;HEX
+1;Superfici artificiali;11;Zone urbanizzate;111;Tessuto urbano continuo;230;0;77;230-000-077;#E6004D
+1;Superfici artificiali;11;Zone urbanizzate;112;Tessuto urbano discontinuo;255;0;0;255-000-000;#FF0000
+1;Superfici artificiali;12;Zone industriali, commerciali e reti di comunicazione;121;Aree industriali o commerciali;204;77;242;204-077-242;#CC4DF2
+1;Superfici artificiali;12;Zone industriali, commerciali e reti di comunicazione;122;Reti stradali e ferroviarie e spazi accessori;204;0;0;204-000-000;#CC0000
+1;Superfici artificiali;12;Zone industriali, commerciali e reti di comunicazione;123;Aree portuali;230;204;204;230-204-204;#E6CCCC
+1;Superfici artificiali;12;Zone industriali, commerciali e reti di comunicazione;124;Aeroporti;230;204;230;230-204-230;#E6CCE6
+1;Superfici artificiali;13;Zone estrattive, discariche e cantieri;131;Aree estrattive;166;0;204;166-000-204;#A600CC
+1;Superfici artificiali;13;Zone estrattive, discariche e cantieri;132;Discariche;166;77;0;166-077-000;#A64D00
+1;Superfici artificiali;13;Zone estrattive, discariche e cantieri;133;Cantieri;255;77;255;255-077-255;#FF4DFF
+1;Superfici artificiali;14;Zone verdi artificiali non agricole;141;Aree verdi urbane;255;166;255;255-166-255;#FFA6FF
+1;Superfici artificiali;14;Zone verdi artificiali non agricole;142;Aree sportive e ricreative;255;230;255;255-230-255;#FFE6FF
+2;Superfici agricole utilizzate;21;Seminativi;211;Seminativi in aree non irrigue;255;255;168;255-255-168;#FFFFA8
+2;Superfici agricole utilizzate;21;Seminativi;212;Seminativi irrigui;255;255;0;255-255-000;#FFFF00
+2;Superfici agricole utilizzate;21;Seminativi;213;Risaie;230;230;0;230-230-000;#E6E600
+2;Superfici agricole utilizzate;22;Colture permanenti;221;Vigneti;230;128;0;230-128-000;#E68000
+2;Superfici agricole utilizzate;22;Colture permanenti;222;Frutteti e frutti minori;242;166;77;242-166-077;#F2A64D
+2;Superfici agricole utilizzate;22;Colture permanenti;223;Oliveti;230;166;0;230-166-000;#E6A600
+2;Superfici agricole utilizzate;23;Prati stabili;231;Prati stabili;230;230;77;230-230-077;#E6E64D
+2;Superfici agricole utilizzate;24;Zone agricole eterogenee;241;Colture annuali associate a colture permanenti;255;230;166;255-230-166;#FFE6A6
+2;Superfici agricole utilizzate;24;Zone agricole eterogenee;242;Sistemi colturali e particellari complessi;255;230;77;255-230-077;#FFE64D
+2;Superfici agricole utilizzate;24;Zone agricole eterogenee;243;Aree prevalentemente occupate da colture agrarie con presenza di spazi naturali importanti;230;204;77;230-204-077;#E6CC4D
+2;Superfici agricole utilizzate;24;Zone agricole eterogenee;244;Aree agroforestali;242;204;166;242-204-166;#F2CCA6
+3;Territori boscati e ambienti seminaturali;31;Foreste;311;Boschi di latifoglie;128;255;0;128-255-000;#80FF00
+3;Territori boscati e ambienti seminaturali;31;Foreste;312;Boschi di conifere;0;166;0;000-166-000;#00A600
+3;Territori boscati e ambienti seminaturali;31;Foreste;313;Boschi misti;77;255;0;077-255-000;#4DFF00
+3;Territori boscati e ambienti seminaturali;32;Ambienti con vegetazione arbustiva e/o erbacea;321;Aree a pascolo naturale e praterie d'alta quota;204;242;77;204-242-077;#CCF24D
+3;Territori boscati e ambienti seminaturali;32;Ambienti con vegetazione arbustiva e/o erbacea;322;Brughiere e cespuglieti;166;255;128;166-255-128;#A6FF80
+3;Territori boscati e ambienti seminaturali;32;Ambienti con vegetazione arbustiva e/o erbacea;323;Aree a vegetazione sclerofilla;166;230;77;166-230-077;#A6E64D
+3;Territori boscati e ambienti seminaturali;32;Ambienti con vegetazione arbustiva e/o erbacea;324;Aree a vegetazione boschiva e arbustiva in evoluzione;166;242;0;166-242-000;#A6F200
+3;Territori boscati e ambienti seminaturali;33;Zone aperte con vegetazione rada o assente;331;Spiagge, dune e sabbie;230;230;230;230-230-230;#E6E6E6
+3;Territori boscati e ambienti seminaturali;33;Zone aperte con vegetazione rada o assente;332;Rocce nude;204;204;204;204-204-204;#CCCCCC
+3;Territori boscati e ambienti seminaturali;33;Zone aperte con vegetazione rada o assente;333;Aree con vegetazione rada;204;255;204;204-255-204;#CCFFCC
+3;Territori boscati e ambienti seminaturali;34;Zone incendiate;334;Aree percorse da incendi;0;0;0;000-000-000;#000000
+3;Territori boscati e ambienti seminaturali;35;Ghiacciai e nevi perenni;335;Ghiacciai e nevi perenni;166;230;204;166-230-204;#A6E6CC
+4;Zone umide;41;Zone umide interne;411;Paludi interne;166;166;255;166-166-255;#A6A6FF
+4;Zone umide;41;Zone umide interne;412;Torbiere;77;77;255;077-077-255;#4D4DFF
+4;Zone umide;42;Zone umide marittime;421;Paludi salmastre;204;204;255;204-204-255;#CCCCFF
+4;Zone umide;42;Zone umide marittime;422;Saline;230;230;255;230-230-255;#E6E6FF
+4;Zone umide;42;Zone umide marittime;423;Zone intertidali;166;166;230;166-166-230;#A6A6E6
+5;Corpi idrici;51;Acque continentali;511;Corsi d'acqua, canali e idrovie;0;204;242;000-204-242;#00CCF2
+5;Corpi idrici;51;Acque continentali;512;Bacini d'acqua;128;242;230;128-242-230;#80F2E6
+5;Corpi idrici;52;Acque marittime;521;Lagune, laghi e stagni costieri;0;255;166;000-255-166;#00FFA6
+5;Corpi idrici;52;Acque marittime;522;Estuari;166;255;230;166-255-230;#A6FFE6
+5;Corpi idrici;52;Acque marittime;523;Mari e oceani;230;242;255;230-242-255;#E6F2FF
