@@ -130,7 +130,8 @@ void TestQgsGltf3DUtils::testBox()
   QVector<QgsMetalRoughMaterial *> pbrMaterials = child->componentsOfType<QgsMetalRoughMaterial>();
   QCOMPARE( pbrMaterials.count(), 1 );
   QgsMetalRoughMaterial *pbrMaterial = pbrMaterials[0];
-  QCOMPARE( pbrMaterial->mBaseColorParameter->value().value< QColor >(), QColor::fromRgbF( 0.8, 0.0, 0.0, 1.0 ) );
+  // this color must have been converted from srgb -> linear
+  QCOMPARE( pbrMaterial->mBaseColorParameter->value().value< QColor >().name(), u"#9a0000"_s );
 
   delete entity;
 }
