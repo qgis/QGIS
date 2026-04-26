@@ -1,0 +1,90 @@
+{
+  "name": "overlay_equals_fuzzy",
+  "type": "function",
+  "groups": [
+    "GeometryGroup"
+  ],
+  "description": "Returns whether the current feature's geometry is point-by-point equal in respect of a tolerance to at least one feature's geometry from a target layer, or returns an array of expression-based results for the features in the target layer whose geometry is fuzzy equal to the current feature's geometry. Note that the order of vertices matters.",
+  "arguments": [
+    {
+      "arg": "layer",
+      "description": "the layer whose overlay is checked"
+    },
+    {
+      "arg": "expression",
+      "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
+      "optional": true
+    },
+    {
+      "arg": "filter",
+      "description": "an optional expression to filter the target features to check. If not set, all the features will be checked.",
+      "optional": true
+    },
+    {
+      "arg": "limit",
+      "description": "an optional integer to limit the number of matching features. If not set, all the matching features will be returned.",
+      "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": "false"
+    },
+    {
+      "arg": "backend",
+      "optional": true,
+      "default": "'QGIS'",
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'.<ul><li>'QGIS' works on 2D, 3D and 4D geometries and applies component per component comparison</li><li>'GEOS' works only on 2D components (Z or M components are ignored) and compares coordinates by using 2D Euclidean distance.</li></ul>"
+    },
+    {
+      "arg": "epsilon",
+      "optional": true,
+      "default": "1e-8",
+      "description": "maximum difference for coordinates between the vertices."
+    }
+  ],
+  "examples": [
+    {
+      "expression": "overlay_equals_fuzzy('regions')",
+      "returns": "TRUE if the current feature's geometry is fuzzy the same as the geometry of a region"
+    },
+    {
+      "expression": "overlay_equals_fuzzy('regions', filter:= population > 10000)",
+      "returns": "TRUE if the current feature's geometry is fuzzy the same as the geometry of a region whose population is greater than 10000"
+    },
+    {
+      "expression": "overlay_equals_fuzzy('regions', name)",
+      "returns": "an array of names, for the regions fuzzy equal to the current feature"
+    },
+    {
+      "expression": "overlay_equals_fuzzy('regions', name, backend:='QGIS')",
+      "returns": "an array of names, for the regions fuzzy equal to the current feature"
+    },
+    {
+      "expression": "array_to_string(overlay_equals_fuzzy('regions', name, epsilon:=0.5))",
+      "returns": "a string as a comma separated list of names, for the regions fuzzy equal to the current feature"
+    },
+    {
+      "expression": "array_sort(overlay_equals_fuzzy(layer:='regions', expression:=\"name\", filter:= population > 10000))",
+      "returns": "an ordered array of names, for the regions fuzzy equal to the current feature and with a population greater than 10000"
+    },
+    {
+      "expression": "overlay_equals_fuzzy(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
+      "returns": "an array of geometries (in WKT), for up to two regions fuzzy equal to the current feature"
+    }
+  ],
+  "notes": "This function uses fuzzy equality of geometries, see also 'equals_fuzzy' function examples.",
+  "tags": [
+    "predicate",
+    "current",
+    "equals",
+    "equal",
+    "target",
+    "array",
+    "fuzzy",
+    "described",
+    "underlying",
+    "features"
+  ]
+}

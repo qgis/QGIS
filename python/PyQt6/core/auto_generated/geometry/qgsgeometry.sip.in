@@ -433,8 +433,8 @@ have exactly the same type, component vertices and vertex order.
 
 Implementations:
 
-- GEOS
-- QGIS
+- GEOS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
+- QGIS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
 
 The QGIS internal implementation is chosen by default.
 
@@ -478,7 +478,7 @@ The GEOS implementation is chosen by default.
 .. versionadded:: 4.2
 %End
 
-    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon = 1e-4, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
 %Docstring
 Compares the geometry with another geometry within the tolerance
 ``epsilon`` using the specified ``backend``.

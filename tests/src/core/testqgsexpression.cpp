@@ -4858,22 +4858,22 @@ class TestQgsExpression : public QObject
       QTest::newRow( "No Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 10 10, 0 0 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 0 );
       QTest::newRow( "Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 1 );
       QTest::newRow( "Topological equals line bad backend" )
-        << "topologically_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )'), backend:='QGIS' )"
+        << "equals_topological( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )'), backend:='QGIS' )"
         << QgsGeometry::fromPolylineXY( line )
         << true
-        << QVariant( 0 );
+        << QVariant();
       QTest::newRow( "Topological equals line" )
-        << "topologically_equals( $geometry, geomFromWKT('MULTILINESTRING(( 0 0, 10 10 ))'), backend:='GEOS' )"
+        << "equals_topological( $geometry, geomFromWKT('MULTILINESTRING(( 0 0, 10 10 ))'), backend:='GEOS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );
       QTest::newRow( "Fuzzy equals line QGIS backend" )
-        << "fuzzy_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='QGIS' )"
+        << "equals_fuzzy( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='QGIS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );
       QTest::newRow( "Fuzzy equals line GEOS backend" )
-        << "fuzzy_equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='GEOS' )"
+        << "equals_fuzzy( $geometry, geomFromWKT('LINESTRING( 0 0, 10.5 10.5 )'), epsilon:=1, backend:='GEOS' )"
         << QgsGeometry::fromPolylineXY( line )
         << false
         << QVariant( 1 );

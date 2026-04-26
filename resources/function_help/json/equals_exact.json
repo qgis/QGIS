@@ -1,0 +1,65 @@
+{
+  "name": "equals_exact",
+  "type": "function",
+  "groups": [
+    "GeometryGroup"
+  ],
+  "description": "Tests whether two geometries are point-by-point exactly equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
+  "arguments": [
+    {
+      "arg": "geometry1",
+      "description": "a geometry"
+    },
+    {
+      "arg": "geometry2",
+      "description": "a geometry"
+    },
+    {
+      "arg": "backend",
+      "optional": true,
+      "default": "'QGIS'",
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. Both internal implementation uses fuzzy comparison with very low (1e-8) tolerance. <ul><li>'QGIS' works on 2D, 3D and 4D</li><li>'GEOS' works only on 2D components (Z or M components are ignored)</li></ul>."
+    }
+  ],
+  "examples": [
+    {
+      "expression": "equals_exact( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ), 'GEOS' )",
+      "returns": "TRUE",
+      "note": "Example with 'GEOS' backend, same behavior than 'QGIS' backend."
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ) )",
+      "returns": "FALSE",
+      "note": "Uses 'QGIS' as default backend, same behavior than 'GEOS' backend, not the same type, so it fails."
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ) )",
+      "returns": "TRUE"
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 1 1, 0 0 )' ) )",
+      "returns": "FALSE"
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'POLYGON(( 0 0, 0 1, 1 1, 0 0 ))' ), geom_from_wkt( 'POLYGON(( 0 0, 1 1, 0 1, 0 0 ))' ) )",
+      "returns": "FALSE"
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 1 )' ), geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 555)' ), 'GEOS' )",
+      "returns": "TRUE",
+      "note": "Using 'GEOS' backend, Z coordinates are ignored, so it passes"
+    },
+    {
+      "expression": "equals_exact( geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 1 )' ), geom_from_wkt( 'LINESTRINGZ( 0 0 0, 1 1 555)' ), 'QGIS' )",
+      "returns": "FALSE",
+      "note": "Using 'QGIS' backend, Z coordinates differ, so it fails"
+    }
+  ],
+  "tags": [
+    "tests",
+    "equal",
+    "equals",
+    "exactly",
+    "equals_exact"
+  ]
+}
