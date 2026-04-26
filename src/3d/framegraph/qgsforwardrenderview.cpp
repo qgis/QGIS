@@ -175,14 +175,7 @@ void QgsForwardRenderView::buildRenderPasses()
   mClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
   mClearBuffers->setClearDepthValue( 1.0f );
 
-  mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
-  mDebugOverlay->setEnabled( false );
-
-  // second branch: background (gradient/skybox)
-  Qt3DRender::QLayerFilter *backgroundLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
-  backgroundLayerFilter->addLayer( mBackgroundLayer );
-
-  // third branch: transparent layer filter - color
+  // second branch: transparent layer filter - color
   Qt3DRender::QLayerFilter *transparentObjectsLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
   transparentObjectsLayerFilter->addLayer( mTransparentObjectsLayer );
   transparentObjectsLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::AcceptAnyMatchingLayers );
@@ -215,7 +208,7 @@ void QgsForwardRenderView::buildRenderPasses()
     transparentObjectsRenderStateSetColor->addRenderState( blendEquationArgs );
   }
 
-  // fourth branch: transparent layer filter - depth
+  // third branch: transparent layer filter - depth
   Qt3DRender::QRenderStateSet *transparentObjectsRenderStateSetDepth = new Qt3DRender::QRenderStateSet( sortPolicy );
   {
     Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
@@ -233,6 +226,12 @@ void QgsForwardRenderView::buildRenderPasses()
     cullFace->setMode( Qt3DRender::QCullFace::CullingMode::NoCulling );
     transparentObjectsRenderStateSetDepth->addRenderState( cullFace );
   }
+
+  mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
+  mDebugOverlay->setEnabled( false );
+
+  Qt3DRender::QLayerFilter *backgroundLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
+  backgroundLayerFilter->addLayer( mBackgroundLayer );
 }
 
 void QgsForwardRenderView::updateWindowResize( int width, int height )
