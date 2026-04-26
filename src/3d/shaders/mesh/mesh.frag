@@ -249,6 +249,10 @@ void main()
       case 1:
       case 2:
       color=colorRamp();
+      // the colors interpolated from the ramp are always SRGB colors, otherwise
+      // we get non-visually linear ramp scaling. So now we need to convert
+      // to linear for output color and light handling
+      color = vec4(pow(color.rgb, vec3(2.2)), color.a);
       break;
     };
 
