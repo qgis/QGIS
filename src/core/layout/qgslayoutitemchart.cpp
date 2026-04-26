@@ -235,6 +235,7 @@ void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDe
   }
 
   mSeriesList = seriesList;
+  mPlotData = QgsPlotData();
   refresh();
 
   emit changed();
