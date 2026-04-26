@@ -23,11 +23,15 @@
 
 #define SIP_NO_FILE
 
+namespace Qt3DExtras
+{
+  class QCuboidMesh;
+}
+
 namespace Qt3DRender
 {
   class QEffect;
   class QFilterKey;
-  class QGeometryRenderer;
   class QMaterial;
   class QParameter;
   class QRenderPass;
@@ -61,7 +65,7 @@ class _3D_EXPORT QgsGradientBackgroundEntity : public Qt3DCore::QEntity
     Qt3DRender::QTechnique *mGl3Technique = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
     Qt3DRender::QRenderPass *mGl3RenderPass = nullptr;
-    Qt3DRender::QGeometryRenderer *mMesh = nullptr;
+    Qt3DExtras::QCuboidMesh *mMesh = nullptr;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;
     Qt3DRender::QParameter *mTopColorParameter = nullptr;
     Qt3DRender::QParameter *mBottomColorParameter = nullptr;
