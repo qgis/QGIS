@@ -92,8 +92,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 }
 
 /*
- * We define four forward passes: one for solid objects, one for background (gradient/skybox),
- * followed by two for transparent objects (one to write colors but no depths, one to write depths) :
+ * We define three forward passes: one for solid objects, followed by two for transparent objects (one to write colors but no depths, one to write depths) :
  *
  *                                  |
  *                         +-----------------+
@@ -101,7 +100,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
  *                         +-----------------+
  *                                  |
  *                         +-----------------+
- *                         |  QLayerFilter   |  (using mRenderLayer)
+ *                         |  QLayerFilter   |  (using mForwardRenderLayer)
  *                         +-----------------+
  *                                  |
  *                         +-----------------+
@@ -109,26 +108,26 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
  *                         +-----------------+
  *                                  |
  *                      +-----------------------+
- *                      | QRenderTargetSelector | (write mColorTexture + mDepthTexture)
+ *                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
  *                      +-----------------------+
  *                                  |
- *         +------------------------+----------+---------------------+
- *         |                                   |                     |
- *  +-----------------+    discard    +-----------------+    +-----------------+    accept
- *  |  QLayerFilter   |  transparent  |  QLayerFilter   |    |  QLayerFilter   |  transparent
- *  +-----------------+               +-----------------+    +-----------------+    objects
- *         |                              (background)               |
- *  +-----------------+  use depth test                      +-----------------+   sort entities
- *  | QRenderStateSet |  cull back faces                     |  QSortPolicy    |  back to front
- *  +-----------------+                                      +-----------------+
- *         |                                                         |
- *  +-----------------+                        +---------------------+---------------------+
- *  | QFrustumCulling |                        |                                           |
- *  +-----------------+             +-----------------+  use depth tests      +-----------------+  use depth tests
- *         |                        | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
- *         |                        +-----------------+  write colors         +-----------------+  don't write colors
- *  +-----------------+                                 use alpha blending                        don't use alpha blending
- *  |  QClearBuffers  |  color and depth                no culling                                no culling
+ *         +------------------------+---------------------+
+ *         |                                              |
+ *  +-----------------+    discard               +-----------------+    accept
+ *  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
+ *  +-----------------+    objects               +-----------------+    objects
+ *         |                                              |
+ *  +-----------------+  use depth test          +-----------------+   sort entities
+ *  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
+ *  +-----------------+                          +-----------------+
+ *         |                                              |
+ *  +-----------------+              +--------------------+--------------------+
+ *  | QFrustumCulling |              |                                         |
+ *  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
+ *         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
+ *         |                +-----------------+  write colors         +-----------------+  don't write colors
+ *  +-----------------+                          use alpha blending                        don't use alpha blending
+ *  |  QClearBuffers  |  color and depth         no culling                                no culling
  *  +-----------------+
  *         |
  *  +-----------------+
