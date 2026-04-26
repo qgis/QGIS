@@ -520,7 +520,27 @@ void QgsApplication::init( QString profileFolder )
     currentProjSearchPaths.append( projData );
   }
 #endif // Q_OS_MACOS
+#if defined( Q_OS_MACOS ) || defined( Q_OS_WIN )
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    gdalShares
+      << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+      << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
+    const auto constGdalShares = gdalShares;
+    for ( const QString &gdalShare : constGdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        qputenv( "GDAL_DATA", gdalShare.toUtf8().constData() );
+        break;
+      }
+    }
+  }
 
+#endif // defined( Q_OS_MACOS ) || defined( Q_OS_WIN )
   char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
   {
