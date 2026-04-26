@@ -264,7 +264,9 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
     colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
-    colorRampTexture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+    // note -- this texture is an exception, we do NOT set it to srgb format as we do NOT want
+    // it linearised before sampling. That is because we need to do the interpolation on the ramp
+    // in SRGB color space. The shader converts the result after sampling the ramp to linear.
   }
 
   // Parameters
@@ -583,7 +585,9 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
     colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
-    colorRampTexture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+    // note -- this texture is an exception, we do NOT set it to srgb format as we do NOT want
+    // it linearised before sampling. That is because we need to do the interpolation on the ramp
+    // in SRGB color space. The shader converts the result after sampling the ramp to linear.
   }
 
   // Parameters

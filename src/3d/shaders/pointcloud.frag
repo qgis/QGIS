@@ -142,6 +142,11 @@ void main(void)
     break;
   }
 
+  // the colors interpolated from the ramp are always SRGB colors, otherwise
+  // we get non-visually linear ramp scaling. So now we need to convert
+  // to linear for output color and light handling
+  color = vec4(pow(color.rgb, vec3(2.2)), color.a);
+
   //Apply light
   if (triangulate)
   {
