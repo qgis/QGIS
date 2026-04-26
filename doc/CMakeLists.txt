@@ -2,7 +2,7 @@
 set (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
 # include Qt documentation
-set (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
+set (QT_DOC_URL "https://doc.qt.io/qt-6/" CACHE STRING "URL for Qt docs")
 
 set(QGIS_DOC_FILES
   ../INSTALL.md
