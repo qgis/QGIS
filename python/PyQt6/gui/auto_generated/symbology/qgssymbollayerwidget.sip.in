@@ -391,6 +391,8 @@ Constructor for QgsTemplatedLineSymbolLayerWidget.
     virtual bool event( QEvent *e );
 
 
+    ~QgsTemplatedLineSymbolLayerWidget();
+
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 
     virtual QgsSymbolLayer *symbolLayer();

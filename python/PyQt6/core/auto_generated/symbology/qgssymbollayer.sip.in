@@ -177,6 +177,7 @@ Abstract base class for symbol layers.
       SkipMultiples,
       ShowMarker,
       BlankSegments,
+      ExtraItems,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

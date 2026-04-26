@@ -26,17 +26,17 @@ using namespace Qt::StringLiterals;
 //qgis includes...
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmultibandcolorrenderer.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
@@ -68,6 +68,8 @@ class TestQgsMarkerLineSymbol : public QgsTest
     void parseBlankSegments_data();
     void parseBlankSegments();
     void parseBlankSegmentsMapUnits();
+    void parseExtraItems_data();
+    void parseExtraItems();
 
   private:
     bool render( const QString &fileName );
@@ -659,40 +661,40 @@ void TestQgsMarkerLineSymbol::collectPoints()
 void TestQgsMarkerLineSymbol::parseBlankSegments_data()
 {
   QTest::addColumn<QString>( "strBlankSegments" );
-  QTest::addColumn<QList<QList<QgsBlankSegmentUtils::BlankSegments>>>( "expectedBlankSegments" );
+  QTest::addColumn<QList<QList<QgsSymbolLayerUtils::BlankSegments>>>( "expectedBlankSegments" );
   QTest::addColumn<bool>( "ok" );
 
-  QTest::newRow( "simple" ) << u"(((1 2, 3 4)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
+  QTest::newRow( "simple" ) << u"(((1 2, 3 4)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
   QTest::newRow( "multipart and ring" )
     << u"(((1.1 2.2, 3.3 4.4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))"_s
-    << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1.1, 2.2 }, { 3.3, 4.4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 9, 10 }, { 11, 12 } }, { { 13, 14 }, { 15, 16 } } } }
+    << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1.1, 2.2 }, { 3.3, 4.4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 9, 10 }, { 11, 12 } }, { { 13, 14 }, { 15, 16 } } } }
     << true;
-  QTest::newRow( "Empty ring" ) << u"(((1 2),(),(3 4)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } } } << true;
+  QTest::newRow( "Empty ring" ) << u"(((1 2),(),(3 4)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } } } << true;
 
-  QTest::newRow( "Empty part" ) << u"(((1 2),(),(3 4)),(),((5 6)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } } << true;
+  QTest::newRow( "Empty part" ) << u"(((1 2),(),(3 4)),(),((5 6)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } } << true;
 
-  QTest::newRow( "Empty part with extra ()" ) << u"(((1 2),( ),(3 4)),(()),((5 6)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } } << true;
+  QTest::newRow( "Empty part with extra ()" ) << u"(((1 2),( ),(3 4)),(()),((5 6)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } } << true;
 
-  QTest::newRow( "simple with tab" ) << u"(((1		2, 3 4)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
-  QTest::newRow( "Error: text instead of number" ) << u"(((test)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: Distances not ordered" ) << u"(((3 4,1 2)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: start > end" ) << u"(((2 1,3 4)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: bad formatted number" ) << u"(((1.a56 2)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: too many number" ) << u"(((1.56 2 3)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: missing number" ) << u"(((1.56,2)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: Missing ')' parenthesis" ) << u"(((1.56 2))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
-  QTest::newRow( "Error: Missing '(' parenthesis" ) << u"(((1.56 2)),(1 5)))"_s << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "simple with tab" ) << u"(((1		2, 3 4)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
+  QTest::newRow( "Error: text instead of number" ) << u"(((test)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Distances not ordered" ) << u"(((3 4,1 2)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: start > end" ) << u"(((2 1,3 4)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: bad formatted number" ) << u"(((1.a56 2)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: too many number" ) << u"(((1.56 2 3)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: missing number" ) << u"(((1.56,2)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Missing ')' parenthesis" ) << u"(((1.56 2))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Missing '(' parenthesis" ) << u"(((1.56 2)),(1 5)))"_s << QList<QList<QgsSymbolLayerUtils::BlankSegments>> {} << false;
 }
 
 void TestQgsMarkerLineSymbol::parseBlankSegments()
 {
   QFETCH( QString, strBlankSegments );
-  QFETCH( QList<QList<QgsBlankSegmentUtils::BlankSegments>>, expectedBlankSegments );
+  QFETCH( QList<QList<QgsSymbolLayerUtils::BlankSegments>>, expectedBlankSegments );
   QFETCH( bool, ok );
 
   QgsRenderContext rc;
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blanksegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, rc, Qgis::RenderUnit::Pixels, error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blanksegments = QgsSymbolLayerUtils::parseBlankSegments( strBlankSegments, rc, Qgis::RenderUnit::Pixels, error );
 
   QCOMPARE( ok, error.isEmpty() );
   QCOMPARE( blanksegments, expectedBlankSegments );
@@ -705,11 +707,45 @@ void TestQgsMarkerLineSymbol::parseBlankSegmentsMapUnits()
   rc.setMapToPixel( m2p );
 
   QString error;
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blanksegments = QgsBlankSegmentUtils::parseBlankSegments( u"(((1 2, 3 4)))"_s, rc, Qgis::RenderUnit::MapUnits, error );
-  QList<QList<QgsBlankSegmentUtils::BlankSegments>> expectedBlankSegments { { { { 0.5, 1 }, { 1.5, 2 } } } };
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> blanksegments = QgsSymbolLayerUtils::parseBlankSegments( u"(((1 2, 3 4)))"_s, rc, Qgis::RenderUnit::MapUnits, error );
+  QList<QList<QgsSymbolLayerUtils::BlankSegments>> expectedBlankSegments { { { { 0.5, 1 }, { 1.5, 2 } } } };
   QVERIFY( error.isEmpty() );
   QCOMPARE( blanksegments, expectedBlankSegments );
 }
+
+void TestQgsMarkerLineSymbol::parseExtraItems_data()
+{
+  QTest::addColumn<QString>( "strExtraItems" );
+  QTest::addColumn<QgsSymbolLayerUtils::ExtraItems>( "expectedExtraItems" );
+  QTest::addColumn<bool>( "ok" );
+
+  QTest::newRow( "simple" ) << u"1 2 3, 3 4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
+  QTest::newRow( "simple with tab" ) << u"1		2 3, 3 4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { 1, 2 }, 3 }, { { 3, 4 }, 5 } } << true;
+  QTest::newRow( "Error: text instead of number" ) << u"test"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: Negative coordinates" ) << u"-1	2 3, 3 -4 5"_s << QgsSymbolLayerUtils::ExtraItems { { { -1, 2 }, 3 }, { { 3, -4 }, 5 } } << true;
+  QTest::newRow( "Error: angle negative" ) << u"1 2 -20"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: angle > 360" ) << u"1 2 400"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: bad formatted number" ) << u"1.a56 2 3"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: too many number" ) << u"1.56 2 3 4"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "Error: missing number" ) << u"1.56 2"_s << QgsSymbolLayerUtils::ExtraItems {} << false;
+  QTest::newRow( "empty" ) << u""_s << QgsSymbolLayerUtils::ExtraItems {} << true;
+  QTest::newRow( "empty with spaces" ) << u"  "_s << QgsSymbolLayerUtils::ExtraItems {} << true;
+}
+
+void TestQgsMarkerLineSymbol::parseExtraItems()
+{
+  QFETCH( QString, strExtraItems );
+  QFETCH( QgsSymbolLayerUtils::ExtraItems, expectedExtraItems );
+  QFETCH( bool, ok );
+
+  QgsRenderContext rc;
+  QString error;
+  QgsSymbolLayerUtils::ExtraItems extraItems = QgsSymbolLayerUtils::parseExtraItems( strExtraItems, error );
+
+  QCOMPARE( ok, error.isEmpty() );
+  QCOMPARE( extraItems, expectedExtraItems );
+}
+
 
 bool TestQgsMarkerLineSymbol::render( const QString &testType )
 {
