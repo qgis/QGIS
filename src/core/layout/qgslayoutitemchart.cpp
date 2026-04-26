@@ -18,17 +18,23 @@
 #include "qgslayoutitemchart.h"
 
 #include "qgsapplication.h"
+#include "qgsbarchartplot.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsfillsymbol.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
+#include "qgslinechartplot.h"
+#include "qgsmarkersymbol.h"
+#include "qgspiechartplot.h"
 #include "qgsplotregistry.h"
 #include "qgspointdistancerenderer.h"
 #include "qgsrenderer.h"
 #include "qgsrulebasedrenderer.h"
+#include "qgssymbollayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -227,6 +233,23 @@ void QgsLayoutItemChart::setGenerateCategoriesFromRenderer( bool generateCategor
   emit changed();
 }
 
+void QgsLayoutItemChart::setApplyRendererStyle( bool applyRendererStyle )
+{
+  if ( mApplyRendererStyle == applyRendererStyle )
+  {
+    return;
+  }
+
+  mApplyRendererStyle = applyRendererStyle;
+
+  if ( mGenerateCategoriesFromRenderer )
+  {
+    refresh();
+  }
+
+  emit changed();
+}
+
 void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList )
 {
   if ( mSeriesList == seriesList )
@@ -312,8 +335,128 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
   if ( size.width() == 0 || size.height() == 0 )
     return;
 
-  mPlot->setSize( size );
+  Qgs2DPlot *plot = mPlot.get();
+  bool deletePlotAfterUse = false;
+  if ( mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
+  {
+    const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
+    if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
+    {
+      renderer = pointDistanceRenderer->embeddedRenderer();
+    }
 
+    QStringList expressionCases;
+    if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
+    {
+      const QgsCategoryList categories = categorizedRenderer->categories();
+      for ( const QgsRendererCategory &category : categories )
+      {
+        const QColor color = category.symbol() ? category.symbol()->color() : QColor( 90, 90, 90 );
+        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( category.label() ) )
+                             .arg( color.redF() )
+                             .arg( color.greenF() )
+                             .arg( color.blueF() )
+                             .arg( color.alphaF() );
+      }
+    }
+    else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
+    {
+      const QgsRangeList ranges = graduatedRenderer->ranges();
+      for ( const QgsRendererRange &range : ranges )
+      {
+        const QColor color = range.symbol() ? range.symbol()->color() : QColor( 90, 90, 90 );
+        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( range.label() ) )
+                             .arg( color.redF() )
+                             .arg( color.greenF() )
+                             .arg( color.blueF() )
+                             .arg( color.alphaF() );
+      }
+    }
+    else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
+    {
+      bool proceed = true;
+      bool hasElse = false;
+      QColor elseColor;
+
+      const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
+      for ( QgsRuleBasedRenderer::Rule *rule : rules )
+      {
+        if ( rule->hasActiveChildren() )
+        {
+          // We do not support multi-level rules configuration
+          proceed = false;
+          break;
+        }
+
+        if ( rule->isElse() )
+        {
+          hasElse = true;
+          elseColor = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
+          continue;
+        }
+
+        const QColor color = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
+        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( rule->label() ) )
+                             .arg( color.redF() )
+                             .arg( color.greenF() )
+                             .arg( color.blueF() )
+                             .arg( color.alphaF() );
+      }
+
+      if ( proceed )
+      {
+        if ( hasElse )
+        {
+          expressionCases << u"ELSE color_rgbf(%1, %2, %3, %4)"_s.arg( elseColor.redF() ).arg( elseColor.greenF() ).arg( elseColor.blueF() ).arg( elseColor.alphaF() );
+        }
+      }
+      else
+      {
+        expressionCases.clear();
+      }
+    }
+    const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
+
+    plot = dynamic_cast<Qgs2DPlot *>( QgsApplication::plotRegistry()->createPlot( mPlot->type() ) );
+    plot->initFromPlot( mPlot.get() );
+    deletePlotAfterUse = true;
+
+    if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
+      {
+        QgsFillSymbol *fillSymbol = barChartPlot->fillSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
+    }
+    else if ( QgsLineChartPlot *lineChartPlot = dynamic_cast<QgsLineChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
+      {
+        QgsMarkerSymbol *markerSymbol = lineChartPlot->markerSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : markerSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
+    }
+    else if ( QgsPieChartPlot *pieChartPlot = dynamic_cast<QgsPieChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
+      {
+        QgsFillSymbol *fillSymbol = pieChartPlot->fillSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
+    }
+  }
+
+  plot->setSize( size );
   {
     QgsScopedQPainterState painterState( painter );
     painter->scale( 1 / scaleFactor, 1 / scaleFactor );
@@ -323,7 +466,12 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     renderContext.setExpressionContext( createExpressionContext() );
 
     QgsPlotRenderContext plotRenderContext;
-    mPlot->render( renderContext, plotRenderContext, mPlotData );
+    plot->render( renderContext, plotRenderContext, mPlotData );
+  }
+
+  if ( deletePlotAfterUse )
+  {
+    delete plot;
   }
 
   if ( mSeriesList.isEmpty() || ( mSeriesList.size() == 1 && !mGenerateCategoriesFromRenderer && ( mSeriesList[0].xExpression().isEmpty() || mSeriesList[0].yExpression().isEmpty() ) ) )
@@ -590,6 +738,7 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
   element.setAttribute( u"sortExpression"_s, mSortExpression );
 
   element.setAttribute( u"generateCategoriesFromRenderer"_s, mGenerateCategoriesFromRenderer );
+  element.setAttribute( u"applyRendererStyle"_s, mApplyRendererStyle );
 
   element.setAttribute( u"filterOnlyVisibleFeatures"_s, mFilterOnlyVisibleFeatures );
   element.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
@@ -638,6 +787,7 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   mSortExpression = element.attribute( u"sortExpression"_s );
 
   mGenerateCategoriesFromRenderer = element.attribute( u"generateCategoriesFromRenderer"_s, u"0"_s ).toInt();
+  mApplyRendererStyle = element.attribute( u"applyRendererStyle"_s, u"1"_s ).toInt();
 
   mFilterOnlyVisibleFeatures = element.attribute( u"filterOnlyVisibleFeatures"_s, u"1"_s ).toInt();
   mFilterToAtlasIntersection = element.attribute( u"filterToAtlasIntersection"_s, u"0"_s ).toInt();

@@ -60,6 +60,7 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mSortDirectionButton_clicked();
 
     void mGenerateCategoriesFromRendererCheckBox_stateChanged( int state );
+    void mApplyRendererStyleCheckBox_stateChanged( int state );
 
     void mSeriesListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mSeriesListWidget_itemChanged( QListWidgetItem *item );

@@ -281,7 +281,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Sets whether series' X axis will adopt categories generated from
-     * the source layer's symbol renderer.
+     * the source layer's symbology renderer.
      *
      * \since QGIS 4.2
      */
@@ -289,11 +289,27 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Returns TRUE if series' X axis will adopt categories generated from
-     * the source layer's symbol renderer.
+     * the source layer's symbology renderer.
      *
      * \since QGIS 4.2
      */
     bool generateCategoriesFromRenderer() const { return mGenerateCategoriesFromRenderer; }
+
+    /**
+     * Sets whether chart symbols will adopt the source layer's symbology
+     * renderer (e.g. colors).
+     *
+     * \since QGIS 4.2
+     */
+    void setApplyRendererStyle( bool applyRendererStyle );
+
+    /**
+     * Returns TRUE if chart symbols will adopt the source layer's symbology
+     * renderer (e.g. colors).
+     *
+     * \since QGIS 4.2
+     */
+    bool applyRendererStyle() const { return mApplyRendererStyle; }
 
     /**
      * Returns a new chart item for the specified \a layout.
@@ -335,6 +351,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     QList<QgsLayoutItemChart::SeriesDetails> mSeriesList;
     bool mGenerateCategoriesFromRenderer = false;
+    bool mApplyRendererStyle = true;
 
     QPointer< QgsLayoutItemMap > mMap = nullptr;
     QString mMapUuid;

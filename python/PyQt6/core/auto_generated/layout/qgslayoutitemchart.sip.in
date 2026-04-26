@@ -292,7 +292,7 @@ intersect the current atlas feature.
     void setGenerateCategoriesFromRenderer( bool generateCategoriesFromRenderer );
 %Docstring
 Sets whether series' X axis will adopt categories generated from the
-source layer's symbol renderer.
+source layer's symbology renderer.
 
 .. versionadded:: 4.2
 %End
@@ -300,7 +300,23 @@ source layer's symbol renderer.
     bool generateCategoriesFromRenderer() const;
 %Docstring
 Returns ``True`` if series' X axis will adopt categories generated from
-the source layer's symbol renderer.
+the source layer's symbology renderer.
+
+.. versionadded:: 4.2
+%End
+
+    void setApplyRendererStyle( bool applyRendererStyle );
+%Docstring
+Sets whether chart symbols will adopt the source layer's symbology
+renderer (e.g. colors).
+
+.. versionadded:: 4.2
+%End
+
+    bool applyRendererStyle() const;
+%Docstring
+Returns ``True`` if chart symbols will adopt the source layer's
+symbology renderer (e.g. colors).
 
 .. versionadded:: 4.2
 %End
