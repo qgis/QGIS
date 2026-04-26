@@ -1,20 +1,23 @@
 #ifndef QGSAICHATDOCKWIDGET_H
 #define QGSAICHATDOCKWIDGET_H
 
+#include "qgsaiagentsessionmanager.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 
+#include <QList>
 #include <QPointer>
 
 class QAction;
 class QEvent;
+class QFrame;
+class QHBoxLayout;
 class QLabel;
 class QListWidget;
 class QPushButton;
 class QTextEdit;
 class QToolButton;
 
-class QgsAiAgentSessionManager;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
 
@@ -54,7 +57,20 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void initModeMenu();
     void initModelMenu();
     void updateFileContextChip();
+    void updateMentionPopup();
+    void hideMentionPopup();
+    void insertSelectedMention();
+    void insertMentionFile( const QString &relativePath );
+    void rebuildAttachmentChips();
+    QList<QgsAiChatContextFile> contextFilesForCurrentMessage( const QString &text ) const;
+    bool addAttachedFile( const QString &path );
     void setRequestRunning( bool running );
+
+    struct AttachedFile
+    {
+      QString filePath;
+      bool allowExternal = true;
+    };
 
     QPointer<QgsAiAgentSessionManager> mSessionManager;
     QPointer<QgsAiModelRouter> mModelRouter;
@@ -71,9 +87,12 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPushButton *mCancelButton = nullptr;
 
     QWidget *mFileContextChipRow = nullptr;
-    QLabel *mFileContextChip = nullptr;
-    QToolButton *mFileContextClearBtn = nullptr;
-    QString mFileContextPath;
+    QHBoxLayout *mFileContextChipLayout = nullptr;
+    QList<AttachedFile> mAttachedFiles;
+
+    QFrame *mMentionPopup = nullptr;
+    QListWidget *mMentionList = nullptr;
+    int mMentionStartPosition = -1;
 
     QWidget *mReviewContainer = nullptr;
     QListWidget *mProposalList = nullptr;

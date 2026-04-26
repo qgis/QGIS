@@ -4,6 +4,7 @@
 #include "qgsaireviewpatchengine.h"
 
 #include <QDateTime>
+#include <QDir>
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -88,6 +89,21 @@ void QgsAiAgentSessionManager::cancelActiveRequest()
   emit requestRunningChanged( false );
 }
 
+QStringList QgsAiAgentSessionManager::projectFileCandidates( const QString &query, int maxResults ) const
+{
+  return mContextProvider ? mContextProvider->workspaceFileCandidates( query, maxResults ) : QStringList();
+}
+
+QString QgsAiAgentSessionManager::resolveProjectFile( const QString &filePath ) const
+{
+  return mContextProvider ? mContextProvider->resolveWorkspaceFile( filePath ) : QString();
+}
+
+QString QgsAiAgentSessionManager::workspaceRoot() const
+{
+  return mContextProvider ? mContextProvider->workspaceRoot() : QString();
+}
+
 QList<QgsAiModelRouter::Provider> QgsAiAgentSessionManager::providerFallbackOrder() const
 {
   QList<QgsAiModelRouter::Provider> order;
@@ -136,28 +152,56 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildAssistantMessage( const QString 
   return reply;
 }
 
-QString QgsAiAgentSessionManager::buildContextSummary( const QString &filePath, const QString &selectedText, bool &contextBlocked ) const
+QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const
 {
   contextBlocked = false;
   if ( !mContextProvider )
     return QString();
 
-  if ( filePath.isEmpty() )
+  if ( contextFiles.isEmpty() )
     return QStringLiteral( "No file context attached." );
 
-  const QgsAiFileContext context = mContextProvider->buildContext( filePath, selectedText );
-  if ( !context.isValid() )
+  QStringList summaries;
+  int index = 1;
+  for ( const QgsAiChatContextFile &contextFile : contextFiles )
   {
-    contextBlocked = true;
-    return QStringLiteral( "File context blocked: path is outside allowed workspace or unreadable." );
+    const QgsAiFileContext context = mContextProvider->buildContext( contextFile.filePath, contextFile.selectedText, 16384, contextFile.allowExternal );
+    if ( !context.isValid() )
+    {
+      contextBlocked = true;
+      return QStringLiteral( "File context blocked: path is outside allowed workspace or unreadable." );
+    }
+
+    const QString root = mContextProvider->workspaceRoot();
+    const QString relativePath = QDir( root ).relativeFilePath( context.filePath );
+    const bool inWorkspace = !root.isEmpty()
+                             && ( relativePath == QLatin1String( "." )
+                                  || ( !relativePath.startsWith( QStringLiteral( "../" ) )
+                                       && relativePath != QLatin1String( ".." )
+                                       && !QDir::isAbsolutePath( relativePath ) ) );
+    const QString displayPath = inWorkspace ? relativePath : context.filePath;
+
+    QString summary;
+    summary += QStringLiteral( "Context file %1: %2\n" ).arg( index++ ).arg( displayPath );
+    summary += QStringLiteral( "Size: %1 bytes%2\n" ).arg( context.fileSize ).arg( context.truncated ? QStringLiteral( " (snippet truncated)" ) : QString() );
+    if ( !context.selectedText.isEmpty() )
+      summary += QStringLiteral( "Selected text:\n%1\n" ).arg( context.selectedText.left( 8192 ) );
+    if ( context.binary )
+    {
+      summary += QStringLiteral( "Content omitted because the file appears to be binary." );
+    }
+    else if ( !context.fileSnippet.isEmpty() )
+    {
+      summary += QStringLiteral( "File content snippet:\n%1" ).arg( context.fileSnippet );
+    }
+    else
+    {
+      summary += QStringLiteral( "No text content could be read from this file." );
+    }
+    summaries << summary.trimmed();
   }
 
-  QString summary;
-  summary += QStringLiteral( "File: %1\n" ).arg( context.filePath );
-  if ( !context.selectedText.isEmpty() )
-    summary += QStringLiteral( "Selection size: %1 chars\n" ).arg( context.selectedText.size() );
-  summary += QStringLiteral( "Snippet loaded: %1 chars%2" ).arg( context.fileSnippet.size() ).arg( context.truncated ? QStringLiteral( " (truncated)" ) : QString() );
-  return summary.trimmed();
+  return summaries.join( QStringLiteral( "\n\n" ) );
 }
 
 QString QgsAiAgentSessionManager::actionableError( const QString &providerName, const QString &errorMessage, int httpStatus ) const
@@ -212,6 +256,19 @@ bool QgsAiAgentSessionManager::tryBuildPatchProposal( const QString &text, QgsAi
 
 void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QString &filePath, const QString &selectedText )
 {
+  QList<QgsAiChatContextFile> contextFiles;
+  if ( !filePath.isEmpty() || !selectedText.isEmpty() )
+  {
+    QgsAiChatContextFile contextFile;
+    contextFile.filePath = filePath;
+    contextFile.selectedText = selectedText;
+    contextFiles << contextFile;
+  }
+  sendUserMessage( text, contextFiles );
+}
+
+void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList<QgsAiChatContextFile> &contextFiles )
+{
   if ( hasActiveRequest() )
   {
     const QgsAiChatMessage assistant = buildAssistantMessage( QStringLiteral( "A request is already running. Please wait or cancel it first." ) );
@@ -240,7 +297,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QStri
   }
 
   bool contextBlocked = false;
-  const QString contextSummary = buildContextSummary( filePath, selectedText, contextBlocked );
+  const QString contextSummary = buildContextSummary( contextFiles, contextBlocked );
   if ( contextBlocked )
   {
     const QgsAiChatMessage assistant = buildAssistantMessage( contextSummary );
@@ -251,8 +308,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QStri
   }
 
   mCurrentPrompt = text + QStringLiteral( "\n\nContext:\n" ) + contextSummary;
-  mCurrentFilePath = filePath;
-  mCurrentSelectedText = selectedText;
+  mCurrentContextFiles = contextFiles;
 
   mPendingProviders = providerFallbackOrder();
   if ( mPendingProviders.isEmpty() || !mRouter )

@@ -5,24 +5,32 @@
 #include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
 
+#include <algorithm>
+#include <utility>
 #include <QAction>
 #include <QActionGroup>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFormLayout>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QLayoutItem>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QListWidgetItem>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPalette>
 #include <QPushButton>
+#include <QRegularExpression>
+#include <QSet>
 #include <QTextCursor>
 #include <QTextEdit>
 #include <QToolButton>
@@ -94,28 +102,32 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->addWidget( mTranscript, 1 );
 
   mFileContextChipRow = new QWidget( container );
-  QHBoxLayout *chipLayout = new QHBoxLayout( mFileContextChipRow );
-  chipLayout->setContentsMargins( 0, 0, 0, 0 );
-  chipLayout->setSpacing( 4 );
-  mFileContextChip = new QLabel( mFileContextChipRow );
-  mFileContextChip->setTextInteractionFlags( Qt::TextSelectableByMouse );
-  mFileContextClearBtn = new QToolButton( mFileContextChipRow );
-  mFileContextClearBtn->setText( QStringLiteral( "×" ) );
-  mFileContextClearBtn->setAutoRaise( true );
-  mFileContextClearBtn->setFixedSize( 18, 18 );
-  mFileContextClearBtn->setToolTip( tr( "Remove file context" ) );
-  chipLayout->addWidget( mFileContextChip, 1 );
-  chipLayout->addWidget( mFileContextClearBtn );
+  mFileContextChipRow->setObjectName( QStringLiteral( "aiAttachmentChipRow" ) );
+  mFileContextChipLayout = new QHBoxLayout( mFileContextChipRow );
+  mFileContextChipLayout->setContentsMargins( 0, 0, 0, 0 );
+  mFileContextChipLayout->setSpacing( 4 );
+  mFileContextChipLayout->addStretch( 1 );
   mFileContextChipRow->setVisible( false );
   layout->addWidget( mFileContextChipRow );
 
   mInputTextEdit = new QTextEdit( container );
-  mInputTextEdit->setPlaceholderText( tr( "Ask a question, or send /patch…  (Shift+Enter for newline)" ) );
+  mInputTextEdit->setPlaceholderText( tr( "Ask a question, tag project files with @, or send /patch…  (Shift+Enter for newline)" ) );
   mInputTextEdit->setAcceptRichText( false );
   mInputTextEdit->setTabChangesFocus( true );
   mInputTextEdit->setFixedHeight( 72 );
   mInputTextEdit->installEventFilter( this );
   layout->addWidget( mInputTextEdit );
+
+  mMentionPopup = new QFrame( this, Qt::Popup );
+  mMentionPopup->setObjectName( QStringLiteral( "aiMentionPopup" ) );
+  QVBoxLayout *mentionLayout = new QVBoxLayout( mMentionPopup );
+  mentionLayout->setContentsMargins( 0, 0, 0, 0 );
+  mMentionList = new QListWidget( mMentionPopup );
+  mMentionList->setObjectName( QStringLiteral( "aiMentionList" ) );
+  mMentionList->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  mMentionList->setUniformItemSizes( true );
+  mentionLayout->addWidget( mMentionList );
+  mMentionPopup->hide();
 
   QHBoxLayout *bottomBar = new QHBoxLayout();
   bottomBar->setContentsMargins( 0, 0, 0, 0 );
@@ -136,10 +148,11 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   bottomBar->addStretch( 1 );
 
   mAttachButton = new QToolButton( container );
-  mAttachButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionAdd.svg" ) ) );
+  mAttachButton->setObjectName( QStringLiteral( "aiAttachFileButton" ) );
+  mAttachButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mEditorWidgetAttachment.svg" ) ) );
   mAttachButton->setAutoRaise( true );
   mAttachButton->setFixedSize( 28, 28 );
-  mAttachButton->setToolTip( tr( "Attach file context" ) );
+  mAttachButton->setToolTip( tr( "Attach external files" ) );
   bottomBar->addWidget( mAttachButton );
 
   mSettingsButton = new QToolButton( container );
@@ -235,7 +248,11 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   }
 
   connect( mAttachButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::attachFile );
-  connect( mFileContextClearBtn, &QToolButton::clicked, this, &QgsAiChatDockWidget::clearFileContext );
+  connect( mInputTextEdit, &QTextEdit::textChanged, this, &QgsAiChatDockWidget::updateMentionPopup );
+  connect( mMentionList, &QListWidget::itemActivated, this, [this]( QListWidgetItem *item ) {
+    if ( item )
+      insertMentionFile( item->data( Qt::UserRole ).toString() );
+  } );
   connect( mSendButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::onSendOrStopClicked );
   connect( mCancelButton, &QPushButton::clicked, this, &QgsAiChatDockWidget::cancelRunningRequest );
   connect( mSettingsButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::openProviderSettings );
@@ -253,6 +270,29 @@ bool QgsAiChatDockWidget::eventFilter( QObject *watched, QEvent *event )
   if ( watched == mInputTextEdit && event->type() == QEvent::KeyPress )
   {
     QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( mMentionPopup && mMentionPopup->isVisible() )
+    {
+      if ( keyEvent->key() == Qt::Key_Down || keyEvent->key() == Qt::Key_Up )
+      {
+        const int row = mMentionList->currentRow();
+        const int nextRow = keyEvent->key() == Qt::Key_Down
+                            ? std::min( row + 1, mMentionList->count() - 1 )
+                            : std::max( row - 1, 0 );
+        mMentionList->setCurrentRow( nextRow );
+        return true;
+      }
+      if ( keyEvent->key() == Qt::Key_Escape )
+      {
+        hideMentionPopup();
+        return true;
+      }
+      if ( keyEvent->key() == Qt::Key_Tab || keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
+      {
+        insertSelectedMention();
+        return true;
+      }
+    }
+
     if ( ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
          && !( keyEvent->modifiers() & Qt::ShiftModifier ) )
     {
@@ -485,11 +525,15 @@ void QgsAiChatDockWidget::sendMessage()
   if ( !mSessionManager )
     return;
   const QString input = mInputTextEdit->toPlainText().trimmed();
-  if ( input.isEmpty() )
+  const QList<QgsAiChatContextFile> contextFiles = contextFilesForCurrentMessage( input );
+  if ( input.isEmpty() && contextFiles.isEmpty() )
     return;
 
   mInputTextEdit->clear();
-  mSessionManager->sendUserMessage( input, mFileContextPath );
+  hideMentionPopup();
+  mAttachedFiles.clear();
+  rebuildAttachmentChips();
+  mSessionManager->sendUserMessage( input.isEmpty() ? tr( "Analyze the attached files." ) : input, contextFiles );
 }
 
 void QgsAiChatDockWidget::cancelRunningRequest()
@@ -500,30 +544,224 @@ void QgsAiChatDockWidget::cancelRunningRequest()
 
 void QgsAiChatDockWidget::attachFile()
 {
-  const QString path = QFileDialog::getOpenFileName( this, tr( "Attach file context" ) );
-  if ( path.isEmpty() )
+  const QStringList paths = QFileDialog::getOpenFileNames( this, tr( "Attach files to chat" ) );
+  if ( paths.isEmpty() )
     return;
-  mFileContextPath = path;
-  updateFileContextChip();
+
+  bool added = false;
+  for ( const QString &path : paths )
+    added = addAttachedFile( path ) || added;
+
+  if ( added )
+    rebuildAttachmentChips();
 }
 
 void QgsAiChatDockWidget::clearFileContext()
 {
-  mFileContextPath.clear();
-  updateFileContextChip();
+  mAttachedFiles.clear();
+  rebuildAttachmentChips();
 }
 
 void QgsAiChatDockWidget::updateFileContextChip()
 {
-  const bool hasContext = !mFileContextPath.isEmpty();
-  if ( mFileContextChipRow )
-    mFileContextChipRow->setVisible( hasContext );
-  if ( hasContext && mFileContextChip )
+  rebuildAttachmentChips();
+}
+
+bool QgsAiChatDockWidget::addAttachedFile( const QString &path )
+{
+  const QFileInfo info( path );
+  if ( !info.exists() || !info.isFile() )
+    return false;
+
+  const QString absolutePath = QDir::cleanPath( info.absoluteFilePath() );
+  for ( const AttachedFile &file : std::as_const( mAttachedFiles ) )
   {
-    const QString name = QFileInfo( mFileContextPath ).fileName();
-    mFileContextChip->setText( QStringLiteral( "📎 %1" ).arg( name ) );
-    mFileContextChip->setToolTip( mFileContextPath );
+    if ( file.filePath == absolutePath )
+      return false;
   }
+
+  AttachedFile file;
+  file.filePath = absolutePath;
+  file.allowExternal = true;
+  mAttachedFiles << file;
+  return true;
+}
+
+void QgsAiChatDockWidget::rebuildAttachmentChips()
+{
+  if ( !mFileContextChipLayout )
+    return;
+
+  while ( QLayoutItem *item = mFileContextChipLayout->takeAt( 0 ) )
+  {
+    if ( QWidget *widget = item->widget() )
+      widget->deleteLater();
+    delete item;
+  }
+
+  for ( const AttachedFile &file : std::as_const( mAttachedFiles ) )
+  {
+    QWidget *chip = new QWidget( mFileContextChipRow );
+    chip->setObjectName( QStringLiteral( "aiAttachmentChip" ) );
+    chip->setStyleSheet( QStringLiteral( "QWidget#aiAttachmentChip { border: 1px solid palette(mid); border-radius: 10px; padding: 1px 4px; }" ) );
+    QHBoxLayout *chipLayout = new QHBoxLayout( chip );
+    chipLayout->setContentsMargins( 6, 1, 2, 1 );
+    chipLayout->setSpacing( 3 );
+
+    QLabel *label = new QLabel( QStringLiteral( "📎 %1" ).arg( QFileInfo( file.filePath ).fileName() ), chip );
+    label->setTextInteractionFlags( Qt::TextSelectableByMouse );
+    label->setToolTip( file.filePath );
+    chipLayout->addWidget( label );
+
+    QToolButton *removeButton = new QToolButton( chip );
+    removeButton->setText( QStringLiteral( "×" ) );
+    removeButton->setAutoRaise( true );
+    removeButton->setFixedSize( 18, 18 );
+    removeButton->setToolTip( tr( "Remove attachment" ) );
+    chipLayout->addWidget( removeButton );
+
+    const QString path = file.filePath;
+    connect( removeButton, &QToolButton::clicked, this, [this, path]() {
+      for ( int i = 0; i < mAttachedFiles.size(); ++i )
+      {
+        if ( mAttachedFiles.at( i ).filePath == path )
+        {
+          mAttachedFiles.removeAt( i );
+          break;
+        }
+      }
+      rebuildAttachmentChips();
+    } );
+
+    mFileContextChipLayout->addWidget( chip );
+  }
+
+  mFileContextChipLayout->addStretch( 1 );
+  if ( mFileContextChipRow )
+    mFileContextChipRow->setVisible( !mAttachedFiles.isEmpty() );
+}
+
+void QgsAiChatDockWidget::hideMentionPopup()
+{
+  mMentionStartPosition = -1;
+  if ( mMentionPopup )
+    mMentionPopup->hide();
+}
+
+void QgsAiChatDockWidget::updateMentionPopup()
+{
+  if ( !mInputTextEdit || !mMentionPopup || !mMentionList || !mSessionManager )
+    return;
+
+  const QTextCursor cursor = mInputTextEdit->textCursor();
+  const QString textBeforeCursor = mInputTextEdit->toPlainText().left( cursor.position() );
+  const int atPosition = textBeforeCursor.lastIndexOf( QLatin1Char( '@' ) );
+  if ( atPosition < 0 )
+  {
+    hideMentionPopup();
+    return;
+  }
+
+  if ( atPosition > 0 && !textBeforeCursor.at( atPosition - 1 ).isSpace() )
+  {
+    hideMentionPopup();
+    return;
+  }
+
+  QString query = textBeforeCursor.mid( atPosition + 1 );
+  if ( query.contains( QRegularExpression( QStringLiteral( "\\s" ) ) ) || query.contains( QLatin1Char( '"' ) ) )
+  {
+    hideMentionPopup();
+    return;
+  }
+
+  const QStringList candidates = mSessionManager->projectFileCandidates( query, 25 );
+  if ( candidates.isEmpty() )
+  {
+    hideMentionPopup();
+    return;
+  }
+
+  mMentionStartPosition = atPosition;
+  mMentionList->clear();
+  for ( const QString &candidate : candidates )
+  {
+    QListWidgetItem *item = new QListWidgetItem( candidate, mMentionList );
+    item->setData( Qt::UserRole, candidate );
+    item->setToolTip( candidate );
+  }
+  mMentionList->setCurrentRow( 0 );
+
+  const QRect cursorRect = mInputTextEdit->cursorRect( cursor );
+  const QPoint popupPosition = mInputTextEdit->viewport()->mapToGlobal( cursorRect.bottomLeft() );
+  const int popupHeight = std::min( 260, std::max( 48, mMentionList->sizeHintForRow( 0 ) * static_cast<int>( candidates.size() ) + 8 ) );
+  mMentionPopup->setFixedSize( 420, popupHeight );
+  mMentionPopup->move( popupPosition );
+  mMentionPopup->show();
+}
+
+void QgsAiChatDockWidget::insertSelectedMention()
+{
+  if ( !mMentionList || !mMentionList->currentItem() )
+    return;
+
+  insertMentionFile( mMentionList->currentItem()->data( Qt::UserRole ).toString() );
+}
+
+void QgsAiChatDockWidget::insertMentionFile( const QString &relativePath )
+{
+  if ( relativePath.isEmpty() || !mInputTextEdit || mMentionStartPosition < 0 )
+    return;
+
+  QTextCursor cursor = mInputTextEdit->textCursor();
+  const int endPosition = cursor.position();
+  cursor.setPosition( mMentionStartPosition );
+  cursor.setPosition( endPosition, QTextCursor::KeepAnchor );
+
+  const bool needsQuotes = relativePath.contains( QRegularExpression( QStringLiteral( "\\s" ) ) );
+  const QString mention = needsQuotes
+                          ? QStringLiteral( "@\"%1\"" ).arg( relativePath )
+                          : QStringLiteral( "@%1" ).arg( relativePath );
+  cursor.insertText( mention + QLatin1Char( ' ' ) );
+  mInputTextEdit->setTextCursor( cursor );
+  hideMentionPopup();
+}
+
+QList<QgsAiChatContextFile> QgsAiChatDockWidget::contextFilesForCurrentMessage( const QString &text ) const
+{
+  QList<QgsAiChatContextFile> contextFiles;
+  QSet<QString> seenPaths;
+
+  for ( const AttachedFile &attachedFile : mAttachedFiles )
+  {
+    QgsAiChatContextFile contextFile;
+    contextFile.filePath = attachedFile.filePath;
+    contextFile.allowExternal = attachedFile.allowExternal;
+    contextFiles << contextFile;
+    seenPaths.insert( attachedFile.filePath );
+  }
+
+  if ( !mSessionManager )
+    return contextFiles;
+
+  static const QRegularExpression mentionRe( QStringLiteral( "@\"([^\"]+)\"|@([^\\s]+)" ) );
+  QRegularExpressionMatchIterator it = mentionRe.globalMatch( text );
+  while ( it.hasNext() )
+  {
+    const QRegularExpressionMatch match = it.next();
+    const QString referencedPath = !match.captured( 1 ).isEmpty() ? match.captured( 1 ) : match.captured( 2 );
+    const QString resolvedPath = mSessionManager->resolveProjectFile( referencedPath );
+    if ( resolvedPath.isEmpty() || seenPaths.contains( resolvedPath ) )
+      continue;
+
+    QgsAiChatContextFile contextFile;
+    contextFile.filePath = resolvedPath;
+    contextFile.allowExternal = false;
+    contextFiles << contextFile;
+    seenPaths.insert( resolvedPath );
+  }
+
+  return contextFiles;
 }
 
 QString QgsAiChatDockWidget::selectedProposalId() const
