@@ -212,7 +212,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   pageSkybox->layout()->addWidget( mSkyboxSettingsWidget );
 
   const Qgs3DMapSettings::BackgroundType bgType = mMap->backgroundType();
-  groupBoxBackground->setChecked( bgType != Qgs3DMapSettings::BackgroundType::NoBackground );
+  groupBoxBackground->setChecked( bgType != Qgs3DMapSettings::BackgroundType::None );
   comboBox->setCurrentIndex( bgType == Qgs3DMapSettings::BackgroundType::Skybox ? 1 : 0 );
 
   // ==================
@@ -382,7 +382,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setLightSources( widgetLights->lightSources() );
 
   if ( !groupBoxBackground->isChecked() )
-    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::NoBackground );
+    mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::None );
   else if ( comboBox->currentIndex() == 1 )
     mMap->setBackgroundType( Qgs3DMapSettings::BackgroundType::Skybox );
   else
