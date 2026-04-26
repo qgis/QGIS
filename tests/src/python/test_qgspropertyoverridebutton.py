@@ -20,6 +20,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsColorButton, QgsPropertyOverrideButton
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -157,6 +158,32 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
         button.setActive(True)
         self.assertTrue(cb.isEnabled())
         self.assertEqual(cb.linkedProjectColorName(), "col1")
+
+    def testSetToProperty(self):
+        """
+        Test that setToProperty fires modification signals
+        """
+
+        definition = QgsPropertyDefinition(
+            "test",
+            "test",
+            QgsPropertyDefinition.StandardPropertyTemplate.String,
+        )
+        button = QgsPropertyOverrideButton()
+        button.init(0, QgsProperty(), definition)
+
+        spyChanged = QSignalSpy(button.changed)
+        spyActivated = QSignalSpy(button.activated)
+
+        button.setToProperty(QgsProperty.fromValue("hello"))
+
+        self.assertEqual(len(spyChanged), 1)
+        self.assertEqual(len(spyActivated), 1)
+
+        button.setToProperty(QgsProperty.fromValue("Bye"))
+
+        self.assertEqual(len(spyChanged), 2)
+        self.assertEqual(len(spyActivated), 1)
 
 
 if __name__ == "__main__":
