@@ -50,8 +50,6 @@ in vec2 texCoord;
 
 // Exposure correction
 uniform float exposure = 0.0;
-// Gamma correction
-uniform float gamma = 2.2;
 
 const float PI = 3.14159265359;
 
@@ -323,11 +321,6 @@ vec3 toneMap(const in vec3 c)
     return c / (c + vec3(1.0));
 }
 
-vec3 gammaCorrect(const in vec3 color)
-{
-    return pow(color, vec3(1.0 / gamma));
-}
-
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
@@ -373,10 +366,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]
     vec3 cToneMapped = toneMap(cLinear);
 
-    // Apply gamma correction prior to display
-    vec3 cGamma = gammaCorrect(cToneMapped);
-
-    return vec4(cGamma, 1.0);
+    return vec4(cToneMapped, 1.0);
 }
 
 

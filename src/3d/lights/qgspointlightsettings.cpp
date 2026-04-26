@@ -16,6 +16,7 @@
 #include "qgspointlightsettings.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgscolorutils.h"
 #include "qgsgeotransform.h"
 #include "qgssymbollayerutils.h"
@@ -47,7 +48,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
   lightTransform->setGeoTranslation( position().toVector3D() );
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-  light->setColor( color() );
+  light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
   light->setIntensity( intensity() );
 
   light->setConstantAttenuation( constantAttenuation() );

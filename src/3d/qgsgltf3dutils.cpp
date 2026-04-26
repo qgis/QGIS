@@ -359,6 +359,8 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
     texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
     texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
 
+    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+
     if ( tex.sampler >= 0 )
     {
       tinygltf::Sampler &sampler = model.samplers[tex.sampler];

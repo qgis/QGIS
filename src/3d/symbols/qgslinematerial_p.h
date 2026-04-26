@@ -59,14 +59,10 @@ class _3D_EXPORT QgsLineMaterial : public QgsMaterial
   public:
     QgsLineMaterial();
 
+    //! Must be an SRGB color
     void setLineColor( const QColor &color );
-    QColor lineColor() const;
-
     void setUseVertexColors( bool enabled );
-    bool useVertexColors() const;
-
     void setLineWidth( float width );
-    float lineWidth() const;
 
     Q_INVOKABLE void setViewportSize( const QSizeF &viewportSize );
 

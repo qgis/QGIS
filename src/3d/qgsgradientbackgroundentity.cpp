@@ -15,6 +15,8 @@
 
 #include "qgsgradientbackgroundentity.h"
 
+#include "qgs3dutils.h"
+
 #include <QString>
 #include <QUrl>
 #include <QVector>
@@ -47,9 +49,14 @@ QgsGradientBackgroundEntity::QgsGradientBackgroundEntity( const QColor &topColor
   , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMesh( new Qt3DRender::QGeometryRenderer( this ) )
   , mGlShader( new Qt3DRender::QShaderProgram( this ) )
-  , mTopColorParameter( new Qt3DRender::QParameter( u"topColor"_s, QVector3D( topColor.redF(), topColor.greenF(), topColor.blueF() ) ) )
-  , mBottomColorParameter( new Qt3DRender::QParameter( u"bottomColor"_s, QVector3D( bottomColor.redF(), bottomColor.greenF(), bottomColor.blueF() ) ) )
+  , mTopColorParameter( new Qt3DRender::QParameter( u"topColor"_s, QVariant() ) )
+  , mBottomColorParameter( new Qt3DRender::QParameter( u"bottomColor"_s, QVariant() ) )
 {
+  const QColor linearTopColor = Qgs3DUtils::srgbToLinear( topColor );
+  const QColor linearBottomColor = Qgs3DUtils::srgbToLinear( bottomColor );
+  mTopColorParameter->setValue( QVector3D( linearTopColor.redF(), linearTopColor.greenF(), linearTopColor.blueF() ) );
+  mBottomColorParameter->setValue( QVector3D( linearBottomColor.redF(), linearBottomColor.greenF(), linearBottomColor.blueF() ) );
+
   mGl3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mGl3Technique->graphicsApiFilter()->setMajorVersion( 3 );
   mGl3Technique->graphicsApiFilter()->setMinorVersion( 3 );

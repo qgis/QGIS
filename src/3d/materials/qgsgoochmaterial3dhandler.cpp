@@ -72,10 +72,10 @@ QByteArray QgsGoochMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAb
   const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
   Q_ASSERT( goochSettings );
   const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
-  const QColor diffuse = dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Diffuse, expressionContext, goochSettings->diffuse() );
-  const QColor warm = dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Warm, expressionContext, goochSettings->warm() );
-  const QColor cool = dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Cool, expressionContext, goochSettings->cool() );
-  const QColor specular = dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Specular, expressionContext, goochSettings->specular() );
+  const QColor diffuse = Qgs3DUtils::srgbToLinear( dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Diffuse, expressionContext, goochSettings->diffuse() ) );
+  const QColor warm = Qgs3DUtils::srgbToLinear( dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Warm, expressionContext, goochSettings->warm() ) );
+  const QColor cool = Qgs3DUtils::srgbToLinear( dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Cool, expressionContext, goochSettings->cool() ) );
+  const QColor specular = Qgs3DUtils::srgbToLinear( dataDefinedProperties.valueAsColor( QgsAbstractMaterialSettings::Property::Specular, expressionContext, goochSettings->specular() ) );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 12 );
@@ -167,13 +167,13 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   Qt3DRender::QEffect *effect = material->effect();
 
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"kd"_s ) )
-    p->setValue( goochSettings->diffuse() );
+    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->diffuse() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"ks"_s ) )
-    p->setValue( goochSettings->specular() );
+    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->specular() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"kblue"_s ) )
-    p->setValue( goochSettings->cool() );
+    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->cool() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"kyellow"_s ) )
-    p->setValue( goochSettings->warm() );
+    p->setValue( Qgs3DUtils::srgbToLinear( goochSettings->warm() ) );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"shininess"_s ) )
     p->setValue( goochSettings->shininess() );
   if ( Qt3DRender::QParameter *p = findParameter( effect, u"alpha"_s ) )
@@ -227,10 +227,10 @@ QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterial
     shaderProgram->setFragmentShaderCode( fragmentShaderCode );
 
     const QColor diffuseColor = context.isSelected() ? context.selectionColor() : goochSettings->diffuse();
-    effect->addParameter( new Qt3DRender::QParameter( u"kd"_s, diffuseColor ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"ks"_s, goochSettings->specular() ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kblue"_s, goochSettings->cool() ) );
-    effect->addParameter( new Qt3DRender::QParameter( u"kyellow"_s, goochSettings->warm() ) );
+    effect->addParameter( new Qt3DRender::QParameter( u"kd"_s, Qgs3DUtils::srgbToLinear( diffuseColor ) ) );
+    effect->addParameter( new Qt3DRender::QParameter( u"ks"_s, Qgs3DUtils::srgbToLinear( goochSettings->specular() ) ) );
+    effect->addParameter( new Qt3DRender::QParameter( u"kblue"_s, Qgs3DUtils::srgbToLinear( goochSettings->cool() ) ) );
+    effect->addParameter( new Qt3DRender::QParameter( u"kyellow"_s, Qgs3DUtils::srgbToLinear( goochSettings->warm() ) ) );
   }
 
   renderPass->setShaderProgram( shaderProgram );

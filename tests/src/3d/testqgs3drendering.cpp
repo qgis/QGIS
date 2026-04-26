@@ -1495,7 +1495,8 @@ void TestQgs3DRendering::testBufferedLineRendering()
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1504,7 +1505,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -1542,7 +1543,8 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1551,7 +1553,7 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -1618,7 +1620,8 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   lineSymbol->setExtrusionHeight( 30 );
   lineSymbol->setOffset( 10 );
   QgsPhongMaterialSettings matSettings;
-  matSettings.setAmbient( Qt::red );
+  matSettings.setDiffuse( QColor( 255, 0, 0 ) );
+  matSettings.setAmbient( QColor( 100, 0, 0 ) );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
@@ -1627,7 +1630,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
+  defaultLight.setIntensity( 1.0 );
   defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 

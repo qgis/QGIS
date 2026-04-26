@@ -15,6 +15,7 @@
 
 #include "qgsdirectionallightsettings.h"
 
+#include "qgs3dutils.h"
 #include "qgscolorutils.h"
 #include "qgssymbollayerutils.h"
 
@@ -40,7 +41,7 @@ Qt3DCore::QEntity *QgsDirectionalLightSettings::createEntity( const Qgs3DMapSett
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity( parent );
 
   Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
-  light->setColor( color() );
+  light->setColor( Qgs3DUtils::srgbToLinear( color() ) );
   light->setIntensity( intensity() );
   QgsVector3D direction = QgsDirectionalLightSettings::direction();
   light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
