@@ -35,6 +35,11 @@ void QgsVectorLayerXyPlotDataGatherer::setPredefinedCategories( const QStringLis
   mPredefinedCategories = predefinedCategories;
 }
 
+void QgsVectorLayerXyPlotDataGatherer::setXAxisType( Qgis::PlotAxisType xAxisType )
+{
+  mXAxisType = xAxisType;
+}
+
 bool QgsVectorLayerXyPlotDataGatherer::run()
 {
   QStringList gatheredCategories;

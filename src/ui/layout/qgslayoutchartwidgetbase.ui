@@ -108,6 +108,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mApplyRendererStyleCheckBox">
+            <property name="text">
+             <string>Apply layer symbology colors</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -176,6 +183,13 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="mGenerateCategoriesFromRendererCheckBox">
+            <property name="text">
+             <string>Generate categories from the layer symbology</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
            <layout class="QHBoxLayout" name="seriesControlsLayout">
             <item>
              <widget class="QPushButton" name="mAddSeriesPushButton">
@@ -207,7 +221,7 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0" colspan="3">
+          <item row="4" column="0" colspan="3">
            <widget class="QListWidget" name="mSeriesListWidget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -223,21 +237,21 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="3">
+          <item row="5" column="0" colspan="3">
            <widget class="QPushButton" name="mSeriesPropertiesButton">
             <property name="text">
              <string>Modify Series…</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="3">
+          <item row="6" column="0" colspan="3">
            <widget class="QCheckBox" name="mFilterOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Use only features visible within a map</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="3">
+          <item row="7" column="0" colspan="3">
            <layout class="QHBoxLayout" name="linkedMapLayout">
             <item>
              <widget class="QLabel" name="mLinkedMapLabel">
@@ -254,7 +268,7 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="0" colspan="3">
+          <item row="8" column="0" colspan="3">
            <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
             <property name="text">
              <string>Use only features intersecting atlas feature</string>

@@ -458,4 +458,12 @@ void QgsPieChartPlot::initFromPlot( const QgsPlot *plot )
   {
     Qgs2DPlot::copyCommonProperties( plot2D );
   }
+
+  if ( const QgsPieChartPlot *pieChartPlot = dynamic_cast<const QgsPieChartPlot *>( plot ) )
+  {
+    for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
+    {
+      setFillSymbolAt( idx, pieChartPlot->fillSymbolAt( idx )->clone() );
+    }
+  }
 }

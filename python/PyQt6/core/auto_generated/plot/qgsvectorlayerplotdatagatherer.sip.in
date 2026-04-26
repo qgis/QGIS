@@ -108,6 +108,15 @@ the categories used when gathering the data.
    This is only used when the gatherer's X-axis type is set to categorical.
 %End
 
+    void setXAxisType( Qgis::PlotAxisType xAxisType );
+%Docstring
+Sets the X-axis type that will defined what type of X values to gather.
+
+:param xAxisType: The X-axis type
+
+.. versionadded:: 4.2
+%End
+
     virtual bool run();
 
 

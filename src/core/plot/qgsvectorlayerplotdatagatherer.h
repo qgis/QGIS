@@ -123,6 +123,13 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
      */
     void setPredefinedCategories( const QStringList &categories );
 
+    /**
+     * Sets the X-axis type that will defined what type of X values to gather.
+     * \param xAxisType The X-axis type
+     * \since QGIS 4.2
+     */
+    void setXAxisType( Qgis::PlotAxisType xAxisType );
+
     bool run() override;
 
     QgsPlotData data() const override;
