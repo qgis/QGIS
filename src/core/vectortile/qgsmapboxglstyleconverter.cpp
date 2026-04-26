@@ -2085,7 +2085,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     // main checkbox in labeling GUI
     QgsLabelThinningSettings thinningSettings = labelSettings.thinningSettings();
     thinningSettings.setAllowDuplicateRemoval( true );
-    thinningSettings.setMinimumDistanceToDuplicateUnit( Qgis::RenderUnit::Pixels );
+    thinningSettings.setMinimumDistanceToDuplicateUnit( context.targetUnit() );
     labelSettings.setThinningSettings( thinningSettings );
 
     QgsProperty spacingProp;
