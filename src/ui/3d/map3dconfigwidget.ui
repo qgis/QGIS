@@ -884,9 +884,9 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupBoxBackground">
+                <widget class="QGroupBox" name="groupSkyboxSettings">
                  <property name="title">
-                  <string>Background</string>
+                  <string>Show Skybox</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -894,68 +894,16 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_7">
-                  <item row="0" column="0">
-                   <widget class="QComboBox" name="comboBox"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QgsStackedWidget" name="stackedWidget">
-                    <property name="currentIndex">
-                     <number>0</number>
-                    </property>
-                    <widget class="QWidget" name="pageGradient">
-                     <layout class="QGridLayout" name="gridLayout_9" columnstretch="0,1">
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="labelTopColor">
-                        <property name="text">
-                         <string>Top color</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QgsColorButton" name="mBtnGradientTopColor">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QLabel" name="labelBottomColor">
-                        <property name="text">
-                         <string>Bottom color</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="1">
-                       <widget class="QgsColorButton" name="mBtnGradientBottomColor">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                    <widget class="QWidget" name="pageSkybox">
-                     <layout class="QGridLayout" name="gridLayout_10"/>
-                    </widget>
-                   </widget>
-                  </item>
-                 </layout>
+                 <layout class="QGridLayout" name="gridLayout_3"/>
                 </widget>
                </item>
                <item>
                 <widget class="QCheckBox" name="mShowMapOverlayCheckBox">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight: bold</string>
-                 </property>
                  <property name="text">
                   <string>Show 2D map overlay</string>
+                 </property>
+                 <property name="styleSheet">
+                   <string notr="true">font-weight: bold</string>
                  </property>
                 </widget>
                </item>
@@ -1206,16 +1154,6 @@
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsStackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header>qgsstackedwidget.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>m3DOptionsListWidget</tabstop>
@@ -1235,7 +1173,7 @@
   <tabstop>spinCameraFieldOfView</tabstop>
   <tabstop>mCameraNavigationModeCombo</tabstop>
   <tabstop>mCameraMovementSpeed</tabstop>
-  <tabstop>groupBoxBackground</tabstop>
+  <tabstop>groupSkyboxSettings</tabstop>
   <tabstop>scrollAreaAdvanced</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>

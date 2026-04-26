@@ -38,7 +38,6 @@
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
-#include "qgsgradientbackgroundentity.h"
 #include "qgshighlightsrenderview.h"
 #include "qgslightsource.h"
 #include "qgslinematerial_p.h"
@@ -149,7 +148,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::gradientBackgroundChanged, this, &Qgs3DMapScene::onGradientBackgroundChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -210,7 +208,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
   onSkyboxSettingsChanged();
-  onGradientBackgroundChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
@@ -1155,26 +1152,9 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
         break;
 #endif
     }
+
     QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mSkybox->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
     mSkybox->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  }
-}
-
-void Qgs3DMapScene::onGradientBackgroundChanged()
-{
-  if ( mGradientBackground )
-  {
-    mGradientBackground->deleteLater();
-    mGradientBackground = nullptr;
-  }
-
-  if ( mMap.gradientBackgroundEnabled() )
-  {
-    mGradientBackground = new QgsGradientBackgroundEntity( mMap.gradientBackgroundTopColor(), mMap.gradientBackgroundBottomColor(), this );
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().renderLayer() );
   }
 }
 

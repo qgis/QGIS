@@ -51,10 +51,6 @@ QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender:
   mTransparentObjectsLayer->setRecursive( true );
   mTransparentObjectsLayer->setObjectName( mViewName + "::TransparentLayer" );
 
-  mBackgroundLayer = new Qt3DRender::QLayer;
-  mBackgroundLayer->setRecursive( true );
-  mBackgroundLayer->setObjectName( mViewName + "::BackgroundLayer" );
-
   // forward rendering pass
   buildRenderPasses();
 }
@@ -155,7 +151,6 @@ void QgsForwardRenderView::buildRenderPasses()
   // first branch: opaque layer filter
   Qt3DRender::QLayerFilter *opaqueObjectsFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
   opaqueObjectsFilter->addLayer( mTransparentObjectsLayer );
-  opaqueObjectsFilter->addLayer( mBackgroundLayer );
   opaqueObjectsFilter->setFilterMode( Qt3DRender::QLayerFilter::DiscardAnyMatchingLayers );
 
   Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( opaqueObjectsFilter );
@@ -229,9 +224,6 @@ void QgsForwardRenderView::buildRenderPasses()
 
   mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
   mDebugOverlay->setEnabled( false );
-
-  Qt3DRender::QLayerFilter *backgroundLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
-  backgroundLayerFilter->addLayer( mBackgroundLayer );
 }
 
 void QgsForwardRenderView::updateWindowResize( int width, int height )
