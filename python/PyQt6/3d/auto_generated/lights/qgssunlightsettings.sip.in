@@ -1,0 +1,138 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgssunlightsettings.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSunLightSettings : QgsLightSource
+{
+%Docstring(signature="appended")
+Definition of a sun light in a 3D map scene.
+
+A light source based on the real-world sun position.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssunlightsettings.h"
+%End
+  public:
+    QgsSunLightSettings();
+
+    virtual Qgis::LightSourceType type() const;
+
+    virtual QgsSunLightSettings *clone() const /Factory/;
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+
+
+    QDateTime sunTime() const;
+%Docstring
+Returns the configured date and time for the sun position calculation.
+
+.. seealso:: :py:func:`setSunTime`
+%End
+
+    void setSunTime( const QDateTime &time );
+%Docstring
+Sets the date and ``time`` for the sun position calculation.
+
+.. seealso:: :py:func:`sunTime`
+%End
+
+    QColor color() const;
+%Docstring
+Returns the base color of the sunlight.
+
+.. seealso:: :py:func:`setColor`
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the base ``color`` of the sunlight.
+
+.. seealso:: :py:func:`color`
+%End
+
+    double intensity() const;
+%Docstring
+Returns the base intensity of the sunlight.
+
+.. seealso:: :py:func:`setIntensity`
+%End
+
+    void setIntensity( double intensity );
+%Docstring
+Sets the base ``intensity`` of the sunlight.
+
+.. seealso:: :py:func:`intensity`
+%End
+
+    double atmosphericPressure() const;
+%Docstring
+Returns the atmospheric pressure (in millibars/hPa) used for the solar
+refraction calculation.
+
+.. seealso:: :py:func:`setAtmosphericPressure`
+%End
+
+    void setAtmosphericPressure( double pressure );
+%Docstring
+Sets the atmospheric ``pressure`` (in millibars/hPa) for the solar
+refraction calculation.
+
+.. seealso:: :py:func:`atmosphericPressure`
+%End
+
+    double temperature() const;
+%Docstring
+Returns the ambient temperature (in Celsius) used for the solar
+refraction calculation.
+
+.. seealso:: :py:func:`setTemperature`
+%End
+
+    void setTemperature( double temperature );
+%Docstring
+Sets the ambient ``temperature`` (in Celsius) for the solar refraction
+calculation.
+
+.. seealso:: :py:func:`temperature`
+%End
+
+    double referenceElevation() const;
+%Docstring
+Returns the reference elevation (in meters above sea level) used for the
+solar position calculation.
+
+.. seealso:: :py:func:`setReferenceElevation`
+%End
+
+    void setReferenceElevation( double elevation );
+%Docstring
+Sets the reference ``elevation`` (in meters above sea level) for the
+solar position calculation.
+
+.. seealso:: :py:func:`referenceElevation`
+%End
+
+    bool operator==( const QgsSunLightSettings &other ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgssunlightsettings.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

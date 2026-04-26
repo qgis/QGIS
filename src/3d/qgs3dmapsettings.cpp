@@ -29,6 +29,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrasterlayer.h"
+#include "qgssunlightsettings.h"
 #include "qgsterrainprovider.h"
 #include "qgsthreadingutils.h"
 
@@ -1217,6 +1218,10 @@ void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
             break;
           case Qgis::LightSourceType::Directional:
             if ( *static_cast<QgsDirectionalLightSettings *>( mLightSources[i] ) == *static_cast<QgsDirectionalLightSettings *>( lights[i] ) )
+              continue;
+            break;
+          case Qgis::LightSourceType::Sun:
+            if ( *static_cast<QgsSunLightSettings *>( mLightSources[i] ) == *static_cast<QgsSunLightSettings *>( lights[i] ) )
               continue;
             break;
         }

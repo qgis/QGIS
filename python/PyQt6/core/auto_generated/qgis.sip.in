@@ -2435,6 +2435,7 @@ The development version
     {
       Point,
       Directional,
+      Sun,
     };
 
     enum class SkyboxType /BaseType=IntEnum/

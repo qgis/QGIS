@@ -24,6 +24,7 @@
 %Include auto_generated/lights/qgsdirectionallightsettings.sip
 %Include auto_generated/lights/qgslightsource.sip
 %Include auto_generated/lights/qgspointlightsettings.sip
+%Include auto_generated/lights/qgssunlightsettings.sip
 %Include auto_generated/symbols/qgsline3dsymbol.sip
 %Include auto_generated/symbols/qgsmesh3dsymbol.sip
 %Include auto_generated/symbols/qgspoint3dsymbol.sip

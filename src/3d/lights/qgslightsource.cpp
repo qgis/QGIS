@@ -20,6 +20,7 @@
 
 #include "qgsdirectionallightsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgssunlightsettings.h"
 
 #include <QString>
 
@@ -40,6 +41,10 @@ QgsLightSource *QgsLightSource::createFromXml( const QDomElement &element, const
   else if ( element.nodeName() == "directional-light"_L1 )
   {
     res = std::make_unique<QgsDirectionalLightSettings>();
+  }
+  else if ( element.nodeName() == "sun-light"_L1 )
+  {
+    res = std::make_unique<QgsSunLightSettings>();
   }
 
   if ( res )

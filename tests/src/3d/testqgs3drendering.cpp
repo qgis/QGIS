@@ -61,6 +61,7 @@
 #include "qgssimplelinematerialsettings.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgssunlightsettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgstest.h"
@@ -136,6 +137,8 @@ class TestQgs3DRendering : public QgsTest
     void testExtrudedPolygonsHighlighting();
     void testInstancedRenderingHighlighting();
     void testModelPointRenderingHighlighting();
+    void testSunLightDawn();
+    void testSunLightDusk();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -3159,6 +3162,70 @@ void TestQgs3DRendering::testModelPointRenderingHighlighting()
   Qgs3DUtils::captureSceneImage( engine, scene );
   imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testSunLightDawn()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsSunLightSettings sun;
+  sun.setIntensity( 1.0 );
+  sun.setSunTime( QDateTime( QDate( 2020, 6, 1 ), QTime( 5, 0, 0 ), QTimeZone( 3600 ) ) );
+  map->setLightSources( { sun.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 200, 45, 180 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "sun_light", "sun_light", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testSunLightDusk()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsSunLightSettings sun;
+  sun.setIntensity( 1.0 );
+  sun.setSunTime( QDateTime( QDate( 2020, 6, 1 ), QTime( 17, 0, 0 ), QTimeZone( 3600 ) ) );
+  map->setLightSources( { sun.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 200, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "sun_light_dusk", "sun_light_dusk", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
