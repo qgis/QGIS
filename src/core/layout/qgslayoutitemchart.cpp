@@ -336,7 +336,18 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     return;
 
   Qgs2DPlot *plot = mPlot.get();
+
   bool deletePlotAfterUse = false;
+  if ( mGenerateCategoriesFromRenderer && mVectorLayer )
+  {
+    plot = dynamic_cast<Qgs2DPlot *>( QgsApplication::plotRegistry()->createPlot( mPlot->type() ) );
+    plot->initFromPlot( mPlot.get() );
+    if ( Qgs2DXyPlot *plotXy = dynamic_cast<Qgs2DXyPlot *>( plot ) )
+    {
+      plotXy->xAxis().setType( Qgis::PlotAxisType::Categorical );
+    }
+  }
+
   if ( mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
   {
     const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
@@ -416,10 +427,6 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
       }
     }
     const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
-
-    plot = dynamic_cast<Qgs2DPlot *>( QgsApplication::plotRegistry()->createPlot( mPlot->type() ) );
-    plot->initFromPlot( mPlot.get() );
-    deletePlotAfterUse = true;
 
     if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
     {
@@ -554,6 +561,8 @@ void QgsLayoutItemChart::prepareGatherer()
     QStringList rendererCategories;
     if ( mGenerateCategoriesFromRenderer && mVectorLayer->renderer() )
     {
+      xyGatherer->setXAxisType( Qgis::PlotAxisType::Categorical );
+
       const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
       if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
       {
