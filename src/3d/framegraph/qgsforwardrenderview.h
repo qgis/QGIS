@@ -57,9 +57,6 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Returns a layer object used to indicate that the object is transparent
     Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsLayer; }
 
-    //! Returns a layer object used for skybox and background gradient entities
-    Qt3DRender::QLayer *backgroundLayer() { return mBackgroundLayer; }
-
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
 
@@ -111,7 +108,6 @@ class QgsForwardRenderView : public QgsAbstractRenderView
 
     Qt3DRender::QLayer *mRenderLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsLayer = nullptr;
-    Qt3DRender::QLayer *mBackgroundLayer = nullptr;
     Qt3DRender::QClearBuffers *mClearBuffers = nullptr;
     bool mFrustumCullingEnabled = true;
     Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;

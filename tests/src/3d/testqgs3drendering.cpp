@@ -89,7 +89,6 @@ class TestQgs3DRendering : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testLights();
     void testFlatTerrain();
-    void testGradientBackground();
     void testDemTerrain();
     void testTerrainShading();
     void testEpsg4978LineRendering();
@@ -346,34 +345,6 @@ void TestQgs3DRendering::testFlatTerrain()
   delete map;
 
   QGSVERIFYIMAGECHECK( "flat_terrain_4", "flat_terrain_4", img4, QString(), 40, QSize( 0, 0 ), 2 );
-}
-
-void TestQgs3DRendering::testGradientBackground()
-{
-  const QgsRectangle fullExtent = mLayerDtm->extent();
-
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
-  map->setExtent( fullExtent );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
-
-  map->setBackgroundType( Qgs3DMapSettings::BackgroundType::Gradient );
-  map->setGradientBackgroundTopColor( QColor( 30, 120, 220 ) );
-  map->setGradientBackgroundBottomColor( QColor( 0, 0, 0 ) );
-
-  QgsOffscreen3DEngine engine;
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
-  engine.setRootEntity( scene );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
-
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-
-  delete scene;
-  delete map;
-
-  QGSVERIFYIMAGECHECK( "gradient_background", "gradient_background", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testDemTerrain()
