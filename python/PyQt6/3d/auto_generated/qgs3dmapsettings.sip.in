@@ -28,13 +28,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-    enum class BackgroundType
-    {
-      None,
-      Gradient,
-      Skybox,
-    };
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
@@ -213,20 +206,16 @@ Sets background color of the 3D map view
 Returns background color of the 3D map view
 %End
 
-    BackgroundType backgroundType() const;
+    bool gradientBackgroundEnabled() const;
 %Docstring
-Returns the background type for the 3D map view.
-
-.. seealso:: :py:func:`setBackgroundType`
+Returns whether the gradient background is enabled for the 3D map view
 
 .. versionadded:: 4.2
 %End
 
-    void setBackgroundType( BackgroundType type );
+    void setGradientBackgroundEnabled( bool enabled );
 %Docstring
-Sets the background ``type`` for the 3D map view.
-
-.. seealso:: :py:func:`backgroundType`
+Sets whether the gradient background is enabled for the 3D map view
 
 .. versionadded:: 4.2
 %End
@@ -750,31 +739,24 @@ pixels Default value is 96
 
 
 
- bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundType() instead."/;
+    bool isSkyboxEnabled() const;
 %Docstring
 Returns whether the skybox is enabled.
 
 .. seealso:: :py:func:`setIsSkyboxEnabled`
 
 .. versionadded:: 3.16
-
-.. deprecated:: 4.2
-
-   Use :py:func:`~Qgs3DMapSettings.backgroundType` instead.
 %End
 
- void setIsSkyboxEnabled( bool enabled ) /Deprecated="Since 4.2. Use setBackgroundType() instead."/;
+    void setIsSkyboxEnabled( bool enabled );
 %Docstring
 Sets whether the skybox is enabled.
 
 .. seealso:: :py:func:`isSkyboxEnabled`
 
 .. versionadded:: 3.16
-
-.. deprecated:: 4.2
-
-   Use :py:func:`~Qgs3DMapSettings.setBackgroundType` instead.
 %End
+
     bool isFpsCounterEnabled() const;
 %Docstring
 Returns whether FPS counter label is enabled
@@ -1266,12 +1248,7 @@ Emitted when the 2D map overlay is enabled or disabled
 .. versionadded:: 4.0
 %End
 
-    void backgroundTypeChanged();
-%Docstring
-Emitted when the background type or gradient colors change.
-
-.. versionadded:: 4.2
-%End
+    void gradientBackgroundChanged();
 
   private:
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );

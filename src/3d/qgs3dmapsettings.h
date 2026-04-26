@@ -56,15 +56,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
-    //! Background rendering type for the 3D map view
-    enum class BackgroundType
-    {
-      None,
-      Gradient,
-      Skybox,
-    };
-    Q_ENUM( BackgroundType )
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -208,18 +199,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QColor backgroundColor() const;
 
     /**
-     * Returns the background type for the 3D map view.
-     * \see setBackgroundType()
+     * Returns whether the gradient background is enabled for the 3D map view
      * \since QGIS 4.2
      */
-    BackgroundType backgroundType() const;
+    bool gradientBackgroundEnabled() const;
 
     /**
-     * Sets the background \a type for the 3D map view.
-     * \see backgroundType()
+     * Sets whether the gradient background is enabled for the 3D map view
      * \since QGIS 4.2
      */
-    void setBackgroundType( BackgroundType type );
+    void setGradientBackgroundEnabled( bool enabled );
 
     /**
      * Sets the top color of the gradient background of the 3D map view
@@ -698,17 +687,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns whether the skybox is enabled.
      * \see setIsSkyboxEnabled()
      * \since QGIS 3.16
-     * \deprecated QGIS 4.2. Use backgroundType() instead.
      */
-    Q_DECL_DEPRECATED bool isSkyboxEnabled() const SIP_DEPRECATED;
+    bool isSkyboxEnabled() const;
 
     /**
      * Sets whether the skybox is enabled.
      * \see isSkyboxEnabled()
      * \since QGIS 3.16
-     * \deprecated QGIS 4.2. Use setBackgroundType() instead.
      */
-    Q_DECL_DEPRECATED void setIsSkyboxEnabled( bool enabled ) SIP_DEPRECATED;
+    void setIsSkyboxEnabled( bool enabled );
+
     /**
      * Returns whether FPS counter label is enabled
      * \see setIsFpsCounterEnabled()
@@ -1117,11 +1105,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void show2DMapOverlayChanged();
 
-    /**
-     * Emitted when the background type or gradient colors change.
-     * \since QGIS 4.2
-     */
-    void backgroundTypeChanged();
+    void gradientBackgroundChanged();
 
   private:
 #ifdef SIP_RUN
@@ -1135,9 +1119,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
-    QgsCoordinateReferenceSystem mCrs;                      //!< Destination coordinate system of the world
-    QColor mBackgroundColor = Qt::black;                    //!< Background color of the scene
-    QColor mSelectionColor;                                 //!< Color to be used for selected map features
+    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
+    QColor mBackgroundColor = Qt::black; //!< Background color of the scene
+    QColor mSelectionColor;              //!< Color to be used for selected map features
+    bool mGradientBackgroundEnabled = false;
+    QColor mGradientBackgroundTopColor = QColor( 0, 128, 255 );
+    QColor mGradientBackgroundBottomColor = Qt::black;
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
     std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
     bool mTerrainShadingEnabled = false;              //!< Whether terrain should be shaded taking lights into account
@@ -1164,10 +1151,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    BackgroundType mBackgroundType = BackgroundType::None;
-    QColor mGradientBackgroundTopColor = QColor( 0, 128, 255 );
-    QColor mGradientBackgroundBottomColor = Qt::black;
-
+    bool mIsSkyboxEnabled = false;                         //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings;                     //!< Skybox related configuration
     QgsShadowSettings mShadowSettings;                     //!< Shadow rendering related settings
     QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
