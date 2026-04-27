@@ -260,6 +260,15 @@ Sets the ``opacity`` of the surface.
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
 
+    QColor averageColor() const;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function returns an approximation of the material's appearance
+based on the average color of the base color texture and the emission
+texture. Other texture maps are not taken into account.
+%End
+
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const;
 
 };

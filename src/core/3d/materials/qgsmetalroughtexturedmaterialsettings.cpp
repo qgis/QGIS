@@ -74,6 +74,66 @@ bool QgsMetalRoughTexturedMaterialSettings::requiresTangents() const
   return !mNormalTexturePath.isEmpty() || !mHeightTexturePath.isEmpty();
 }
 
+QColor QgsMetalRoughTexturedMaterialSettings::textureAverageColor( const QString &texturePath ) const
+{
+  QImage texture( texturePath );
+  if ( texture.isNull() )
+  {
+    return QColor( 127, 127, 127 );
+  }
+
+  if ( texture.format() != QImage::Format_ARGB32 )
+  {
+    texture = texture.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+  unsigned long long red = 0;
+  unsigned long long green = 0;
+  unsigned long long blue = 0;
+  unsigned long long pixelCount = 0;
+
+  // downsampling to ensure a fast computation
+  const int sampleStep = std::min( texture.width() / 5, texture.height() / 5 );
+  const int width = texture.width();
+  const int height = texture.height();
+  for ( int y = 0; y < height; y += sampleStep )
+  {
+    const QRgb *line = reinterpret_cast< const QRgb * >( texture.constScanLine( y ) );
+    for ( int x = 0; x < width; x += sampleStep )
+    {
+      const QRgb pixel = line[x];
+      red += qRed( pixel );
+      green += qGreen( pixel );
+      blue += qBlue( pixel );
+      pixelCount++;
+    }
+  }
+
+  return QColor( static_cast<int>( red / pixelCount ), static_cast<int>( green / pixelCount ), static_cast<int>( blue / pixelCount ) );
+}
+
+QColor QgsMetalRoughTexturedMaterialSettings::averageColor() const
+{
+  if ( mAverageColor.has_value() )
+  {
+    return *mAverageColor;
+  }
+
+  mAverageColor = textureAverageColor( mBaseColorTexturePath );
+  if ( !mEmissionTexturePath.isEmpty() )
+  {
+    const QColor emission = textureAverageColor( mEmissionTexturePath );
+
+    const double red = std::clamp( mAverageColor->redF() + emission.redF() * mEmissionFactor, 0.0, 1.0 );
+    const double green = std::clamp( mAverageColor->greenF() + emission.greenF() * mEmissionFactor, 0.0, 1.0 );
+    const double blue = std::clamp( mAverageColor->blueF() + emission.blueF() * mEmissionFactor, 0.0, 1.0 );
+
+    mAverageColor = QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ) );
+  }
+
+  return *mAverageColor;
+}
+
 void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mBaseColorTexturePath = elem.attribute( u"base_color_texture_path"_s, QString() );
