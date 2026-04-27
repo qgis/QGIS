@@ -118,15 +118,16 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
   private slots:
     void invalidateMapImages();
     void onLayersChanged();
+    void onLayer3DRendererChanged();
+    void onLayerStyleOrFeatureChanged();
+    void onTerrainElevationOffsetChanged();
 
-  private:
-    void connectToLayersRepaintRequest();
 
   private:
     std::unique_ptr<QgsGlobeMapUpdateJobFactory> mUpdateJobFactory;
 
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
-    QList<QgsMapLayer *> mLayers;
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
+    QHash<QgsMapLayer *, bool> mLayers;
 };
 
 
