@@ -114,7 +114,8 @@
           "name": "qca",
           "default-features": false,
           "features": [
-            "ossl"
+            "ossl",
+            "tools"
           ]
         }
       ]
