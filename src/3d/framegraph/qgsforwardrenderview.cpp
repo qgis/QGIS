@@ -62,7 +62,7 @@ QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender:
 Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 {
   mColorTexture = new Qt3DRender::QTexture2D;
-  mColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
+  mColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA16F );
   mColorTexture->setGenerateMipMaps( false );
   mColorTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mColorTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
