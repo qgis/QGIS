@@ -179,7 +179,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg );
     if ( reply.error() != QNetworkReply::NoError )
     {
-      appendError( QgsErrorMessage( u"Could not download file: %1"_s.arg( reply.errorString() ) ) );
+      appendError( QgsErrorMessage( tr( "Could not download file: %1" ).arg( reply.errorString() ) ) );
       return;
     }
 
@@ -187,7 +187,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     QFile file( tmpDir.filePath( url.fileName() ) );
     if ( !file.open( QFile::WriteOnly ) )
     {
-      appendError( QgsErrorMessage( u"Could not create temporary file: %1"_s.arg( file.fileName() ) ) );
+      appendError( QgsErrorMessage( tr( "Could not create temporary file: %1" ).arg( file.fileName() ) ) );
       return;
     }
 
@@ -206,7 +206,7 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   if ( jsonData.isEmpty() )
   {
-    appendError( QgsErrorMessage( u"Could not read file: %1"_s.arg( path ) ) );
+    appendError( QgsErrorMessage( tr( "Could not read file %1" ).arg( path ) ) );
     return;
   }
 
@@ -216,13 +216,13 @@ void QgsVirtualPointCloudProvider::parseFile()
   }
   catch ( const json::parse_error &e )
   {
-    appendError( QgsErrorMessage( u"JSON parsing error: %1"_s.arg( QString::fromStdString( e.what() ) ), QString() ) );
+    appendError( QgsErrorMessage( tr( "JSON parsing error: %1" ).arg( QString::fromStdString( e.what() ) ), QString() ) );
     return;
   }
 
   if ( data["type"] != "FeatureCollection" || !data.contains( "features" ) )
   {
-    appendError( QgsErrorMessage( u"Invalid VPC file"_s ) );
+    appendError( QgsErrorMessage( tr( "Invalid VPC file" ) ) );
     return;
   }
 
@@ -485,13 +485,13 @@ QByteArray QgsVirtualPointCloudProvider::readFileContents( const QString &path )
     tmpDir = std::make_unique<QTemporaryDir>();
     if ( !tmpDir->isValid() )
     {
-      appendError( QgsErrorMessage( u"Could not create temporary folder"_s ) );
+      appendError( QgsErrorMessage( tr( "Could not create temporary folder" ) ) );
       return {};
     }
     QStringList fileList;
     if ( !QgsZipUtils::unzip( path, tmpDir->path(), fileList ) )
     {
-      appendError( QgsErrorMessage( u"Could not open VPZ file"_s ) );
+      appendError( QgsErrorMessage( tr( "Could not open VPZ file" ) ) );
       return {};
     }
 
@@ -499,12 +499,12 @@ QByteArray QgsVirtualPointCloudProvider::readFileContents( const QString &path )
     const QStringList vpcFiles = dir.entryList( QStringList( u"*.vpc"_s ), QDir::Files );
     if ( vpcFiles.isEmpty() )
     {
-      appendError( QgsErrorMessage( u"VPZ file does not contain any VPCs"_s ) );
+      appendError( QgsErrorMessage( tr( "VPZ file does not contain any VPCs" ) ) );
       return {};
     }
     else if ( vpcFiles.size() > 1 )
     {
-      appendError( QgsErrorMessage( u"VPZ file contains multiple VPCs"_s ) );
+      appendError( QgsErrorMessage( tr( "VPZ file contains multiple VPCs" ) ) );
       return {};
     }
 
@@ -518,7 +518,7 @@ QByteArray QgsVirtualPointCloudProvider::readFileContents( const QString &path )
   QFile file( readFromFilename );
   if ( !file.open( QFile::ReadOnly ) )
   {
-    appendError( QgsErrorMessage( u"Could not open VPC file"_s ) );
+    appendError( QgsErrorMessage( tr( "Could not open VPC file" ) ) );
     return {};
   }
   return file.readAll();
