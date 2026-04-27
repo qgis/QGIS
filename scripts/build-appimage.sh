@@ -57,6 +57,7 @@ sudo apt-get install -y --no-install-recommends \
   qml6-module-qtquick-controls \
   qml6-module-qtquick-layouts \
   libqscintilla2-qt6-dev \
+  qtkeychain-qt6-dev \
   libgdal-dev \
   libproj-dev \
   libgeos-dev \
