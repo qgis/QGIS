@@ -351,121 +351,7 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
 
   if ( mGenerateCategoriesFromRenderer && mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
   {
-    const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
-    if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
-    {
-      renderer = embeddedRenderer;
-    }
-
-    QStringList expressionCases;
-    if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
-    {
-      const QgsCategoryList categories = categorizedRenderer->categories();
-      for ( const QgsRendererCategory &category : categories )
-      {
-        const QColor color = category.symbol() ? category.symbol()->color() : QColor( 90, 90, 90 );
-        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( category.label() ) )
-                             .arg( color.redF() )
-                             .arg( color.greenF() )
-                             .arg( color.blueF() )
-                             .arg( color.alphaF() );
-      }
-    }
-    else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
-    {
-      const QgsRangeList ranges = graduatedRenderer->ranges();
-      for ( const QgsRendererRange &range : ranges )
-      {
-        const QColor color = range.symbol() ? range.symbol()->color() : QColor( 90, 90, 90 );
-        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( range.label() ) )
-                             .arg( color.redF() )
-                             .arg( color.greenF() )
-                             .arg( color.blueF() )
-                             .arg( color.alphaF() );
-      }
-    }
-    else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
-    {
-      bool proceed = true;
-      bool hasElse = false;
-      QColor elseColor;
-
-      const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
-      for ( QgsRuleBasedRenderer::Rule *rule : rules )
-      {
-        if ( rule->hasActiveChildren() )
-        {
-          // We do not support multi-level rules configuration
-          proceed = false;
-          break;
-        }
-
-        if ( rule->isElse() )
-        {
-          hasElse = true;
-          elseColor = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
-          continue;
-        }
-
-        const QColor color = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
-        expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( rule->label() ) )
-                             .arg( color.redF() )
-                             .arg( color.greenF() )
-                             .arg( color.blueF() )
-                             .arg( color.alphaF() );
-      }
-
-      if ( proceed )
-      {
-        if ( hasElse )
-        {
-          expressionCases << u"ELSE color_rgbf(%1, %2, %3, %4)"_s.arg( elseColor.redF() ).arg( elseColor.greenF() ).arg( elseColor.blueF() ).arg( elseColor.alphaF() );
-        }
-      }
-      else
-      {
-        expressionCases.clear();
-      }
-    }
-
-    if ( !expressionCases.isEmpty() )
-    {
-      const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
-
-      if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
-      {
-        for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
-        {
-          QgsFillSymbol *fillSymbol = barChartPlot->fillSymbolAt( idx );
-          for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
-          {
-            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
-          }
-        }
-      }
-      else if ( QgsLineChartPlot *lineChartPlot = dynamic_cast<QgsLineChartPlot *>( plot ) )
-      {
-        for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
-        {
-          QgsMarkerSymbol *markerSymbol = lineChartPlot->markerSymbolAt( idx );
-          for ( QgsSymbolLayer *symbolLayer : markerSymbol->symbolLayers() )
-          {
-            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
-          }
-        }
-      }
-      else if ( QgsPieChartPlot *pieChartPlot = dynamic_cast<QgsPieChartPlot *>( plot ) )
-      {
-        for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
-        {
-          QgsFillSymbol *fillSymbol = pieChartPlot->fillSymbolAt( idx );
-          for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
-          {
-            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
-          }
-        }
-      }
-    }
+    applyRendererStyleToPlot( plot );
   }
 
   plot->setSize( size );
@@ -557,93 +443,28 @@ void QgsLayoutItemChart::prepareGatherer()
 
   if ( QgsVectorLayerXyPlotDataGatherer *xyGatherer = dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( mGatherer.data() ) )
   {
-    QString rendererXExpression;
-    QStringList rendererCategories;
+    QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
     if ( mGenerateCategoriesFromRenderer && mVectorLayer->renderer() )
     {
+      QString rendererXExpression;
+      QStringList rendererCategories;
+      createRendererSeriesDetails( rendererXExpression, rendererCategories );
+
       xyGatherer->setXAxisType( Qgis::PlotAxisType::Categorical );
-
-      const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
-      if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
+      xyGatherer->setPredefinedCategories( rendererCategories );
+      for ( const SeriesDetails &series : mSeriesList )
       {
-        renderer = embeddedRenderer;
+        xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.name(), rendererXExpression, !series.yExpression().isEmpty() ? series.yExpression() : "1"_L1, series.filterExpression() );
       }
-
-      QStringList expressionCases;
-      if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
-      {
-        const QgsCategoryList categories = categorizedRenderer->categories();
-        bool ok;
-        for ( const QgsRendererCategory &category : categories )
-        {
-          rendererCategories << category.label();
-          expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( category.label() ) );
-        }
-      }
-      else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
-      {
-        const QgsRangeList ranges = graduatedRenderer->ranges();
-        bool ok;
-        for ( const QgsRendererRange &range : ranges )
-        {
-          rendererCategories << range.label();
-          expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( range.label() ) );
-        }
-      }
-      else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
-      {
-        bool proceed = true;
-        bool hasElse = false;
-        QString elseLabel;
-
-        const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
-        for ( const QgsRuleBasedRenderer::Rule *rule : rules )
-        {
-          if ( rule->hasActiveChildren() )
-          {
-            // We do not support multi-level rules configuration
-            proceed = false;
-            break;
-          }
-
-          if ( rule->isElse() )
-          {
-            hasElse = true;
-            elseLabel = rule->label();
-            rendererCategories << rule->label();
-            continue;
-          }
-
-          rendererCategories << rule->label();
-          expressionCases << u"WHEN %1 THEN %2"_s.arg( rule->filterExpression(), QgsExpression::quotedString( rule->label() ) );
-        }
-
-        if ( proceed )
-        {
-          if ( hasElse )
-          {
-            expressionCases << u"ELSE %1"_s.arg( QgsExpression::quotedString( elseLabel ) );
-          }
-        }
-        else
-        {
-          rendererCategories.clear();
-          expressionCases.clear();
-        }
-      }
-      rendererXExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
     }
-
-    QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
-    for ( const SeriesDetails &series : mSeriesList )
+    else
     {
-      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails(
-        series.name(),
-        mGenerateCategoriesFromRenderer ? rendererXExpression : series.xExpression(),
-        mGenerateCategoriesFromRenderer && series.yExpression().isEmpty() ? "1"_L1 : series.yExpression(),
-        series.filterExpression()
-      );
+      for ( const SeriesDetails &series : mSeriesList )
+      {
+        xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.name(), series.xExpression(), series.yExpression(), series.filterExpression() );
+      }
     }
+    xyGatherer->setSeriesDetails( xYSeriesList );
 
     QgsFeatureRequest request;
     QStringList filterExpressions;
@@ -694,11 +515,6 @@ void QgsLayoutItemChart::prepareGatherer()
 
     xyGatherer->setFeatureIterator( featureIterator );
     xyGatherer->setExpressionContext( createExpressionContext() );
-    xyGatherer->setSeriesDetails( xYSeriesList );
-    if ( mGenerateCategoriesFromRenderer )
-    {
-      xyGatherer->setPredefinedCategories( rendererCategories );
-    }
   }
 
   connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
@@ -829,6 +645,198 @@ void QgsLayoutItemChart::finalizeRestoreFromXml()
     {
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemChart::refresh );
       connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemChart::refresh );
+    }
+  }
+}
+
+void QgsLayoutItemChart::createRendererSeriesDetails( QString &rendererXExpression, QStringList &rendererCategories )
+{
+  const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
+  if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
+  {
+    renderer = embeddedRenderer;
+  }
+
+  QStringList expressionCases;
+  if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
+  {
+    const QgsCategoryList categories = categorizedRenderer->categories();
+    bool ok;
+    for ( const QgsRendererCategory &category : categories )
+    {
+      rendererCategories << category.label();
+      expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( category.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( category.label() ) );
+    }
+  }
+  else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
+  {
+    const QgsRangeList ranges = graduatedRenderer->ranges();
+    bool ok;
+    for ( const QgsRendererRange &range : ranges )
+    {
+      rendererCategories << range.label();
+      expressionCases << u"WHEN %1 THEN %2"_s.arg( renderer->legendKeyToExpression( range.uuid(), mVectorLayer.get(), ok ), QgsExpression::quotedString( range.label() ) );
+    }
+  }
+  else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
+  {
+    bool proceed = true;
+    bool hasElse = false;
+    QString elseLabel;
+
+    const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
+    for ( const QgsRuleBasedRenderer::Rule *rule : rules )
+    {
+      if ( rule->hasActiveChildren() )
+      {
+        // We do not support multi-level rules configuration
+        proceed = false;
+        break;
+      }
+
+      if ( rule->isElse() )
+      {
+        hasElse = true;
+        elseLabel = rule->label();
+        rendererCategories << rule->label();
+        continue;
+      }
+
+      rendererCategories << rule->label();
+      expressionCases << u"WHEN %1 THEN %2"_s.arg( rule->filterExpression(), QgsExpression::quotedString( rule->label() ) );
+    }
+
+    if ( proceed )
+    {
+      if ( hasElse )
+      {
+        expressionCases << u"ELSE %1"_s.arg( QgsExpression::quotedString( elseLabel ) );
+      }
+    }
+    else
+    {
+      rendererCategories.clear();
+      expressionCases.clear();
+    }
+  }
+
+  rendererXExpression = !expressionCases.isEmpty() ? u"CASE %1 END"_s.arg( expressionCases.join( " " ) ) : QString();
+}
+
+void QgsLayoutItemChart::applyRendererStyleToPlot( Qgs2DPlot *plot ) const
+{
+  const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
+  if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
+  {
+    renderer = embeddedRenderer;
+  }
+
+  QStringList expressionCases;
+  if ( const QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<const QgsCategorizedSymbolRenderer *>( renderer ) )
+  {
+    const QgsCategoryList categories = categorizedRenderer->categories();
+    for ( const QgsRendererCategory &category : categories )
+    {
+      const QColor color = category.symbol() ? category.symbol()->color() : QColor( 90, 90, 90 );
+      expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( category.label() ) )
+                           .arg( color.redF() )
+                           .arg( color.greenF() )
+                           .arg( color.blueF() )
+                           .arg( color.alphaF() );
+    }
+  }
+  else if ( const QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer ) )
+  {
+    const QgsRangeList ranges = graduatedRenderer->ranges();
+    for ( const QgsRendererRange &range : ranges )
+    {
+      const QColor color = range.symbol() ? range.symbol()->color() : QColor( 90, 90, 90 );
+      expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( range.label() ) )
+                           .arg( color.redF() )
+                           .arg( color.greenF() )
+                           .arg( color.blueF() )
+                           .arg( color.alphaF() );
+    }
+  }
+  else if ( const QgsRuleBasedRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer ) )
+  {
+    bool proceed = true;
+    bool hasElse = false;
+    QColor elseColor;
+
+    const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedRenderer )->rootRule()->children();
+    for ( QgsRuleBasedRenderer::Rule *rule : rules )
+    {
+      if ( rule->hasActiveChildren() )
+      {
+        // We do not support multi-level rules configuration
+        proceed = false;
+        break;
+      }
+
+      if ( rule->isElse() )
+      {
+        hasElse = true;
+        elseColor = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
+        continue;
+      }
+
+      const QColor color = rule->symbol() ? rule->symbol()->color() : QColor( 90, 90, 90 );
+      expressionCases << u"WHEN @chart_category = %1 THEN color_rgbf(%2, %3, %4, %5)"_s.arg( QgsExpression::quotedString( rule->label() ) )
+                           .arg( color.redF() )
+                           .arg( color.greenF() )
+                           .arg( color.blueF() )
+                           .arg( color.alphaF() );
+    }
+
+    if ( proceed )
+    {
+      if ( hasElse )
+      {
+        expressionCases << u"ELSE color_rgbf(%1, %2, %3, %4)"_s.arg( elseColor.redF() ).arg( elseColor.greenF() ).arg( elseColor.blueF() ).arg( elseColor.alphaF() );
+      }
+    }
+    else
+    {
+      expressionCases.clear();
+    }
+  }
+
+  if ( !expressionCases.isEmpty() )
+  {
+    const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
+    if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
+      {
+        QgsFillSymbol *fillSymbol = barChartPlot->fillSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
+    }
+    else if ( QgsLineChartPlot *lineChartPlot = dynamic_cast<QgsLineChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
+      {
+        QgsMarkerSymbol *markerSymbol = lineChartPlot->markerSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : markerSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
+    }
+    else if ( QgsPieChartPlot *pieChartPlot = dynamic_cast<QgsPieChartPlot *>( plot ) )
+    {
+      for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
+      {
+        QgsFillSymbol *fillSymbol = pieChartPlot->fillSymbolAt( idx );
+        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        {
+          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+        }
+      }
     }
   }
 }

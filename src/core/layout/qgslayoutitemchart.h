@@ -337,6 +337,9 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     void prepareGatherer();
 
+    void createRendererSeriesDetails( QString &rendererXExpression, QStringList &rendererCategories );
+    void applyRendererStyleToPlot( Qgs2DPlot *plot ) const;
+
     QgsLayoutItemChart() = delete;
     QgsLayoutItemChart( const QgsLayoutItemChart & ) = delete;
     QgsLayoutItemChart &operator=( const QgsLayoutItemChart & ) = delete;
