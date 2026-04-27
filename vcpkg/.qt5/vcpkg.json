@@ -21,7 +21,7 @@
       },
       {
         "kind": "git",
-        "baseline": "e8def4927f367407b2538907a27f556d0c10fdd7",
+        "baseline": "e0e909ed79d711bf7fb3fd188683c66ac056c46b",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -167,6 +167,7 @@
           "platform": "!windows"
         },
         "py-lxml",
+        "py-matplotlib",
         "py-markupsafe",
         "py-networkx",
         "py-numpy",
