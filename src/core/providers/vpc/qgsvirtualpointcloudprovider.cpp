@@ -42,6 +42,7 @@
 
 #include <QIcon>
 #include <QString>
+#include <QTimer>
 
 #include "moc_qgsvirtualpointcloudprovider.cpp"
 
@@ -54,15 +55,16 @@ using namespace Qt::StringLiterals;
 
 QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
+  , mSubIndexLoadedRefreshTimer( new QTimer( this ) )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );
 
   mPolygonBounds = std::make_unique<QgsGeometry>( new QgsMultiPolygon() );
-  mSubIndexLoadedRefreshTimer = std::make_unique<QTimer>();
+
   mSubIndexLoadedRefreshTimer->setSingleShot( true );
-  connect( mSubIndexLoadedRefreshTimer.get(), &QTimer::timeout, this, &QgsDataProvider::dataChanged );
+  connect( mSubIndexLoadedRefreshTimer, &QTimer::timeout, this, &QgsDataProvider::dataChanged );
 
   parseFile();
 }

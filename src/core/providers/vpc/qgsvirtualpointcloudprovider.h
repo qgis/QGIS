@@ -23,15 +23,14 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
-#include <QSet>
-#include <QTimer>
-
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
 
 class QgsCopcPointCloudIndex;
 class QgsRemoteCopcPointCloudIndex;
+
+class QTimer;
 
 class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvider
 {
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
-    std::unique_ptr<QTimer> mSubIndexLoadedRefreshTimer;
+    QTimer *mSubIndexLoadedRefreshTimer = nullptr; // owned and parented to this
     QSet<int> mSubLayersBeingLoaded;
 
     double mRedMax = std::numeric_limits<double>::lowest();
