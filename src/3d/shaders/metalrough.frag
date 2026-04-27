@@ -360,6 +360,9 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     cLinear += emission;
 #endif
 
+    // TODO: Exposure correction, tone mapping should be deferred to postprocess shader. We WANT
+    // to output HDR data for this material!
+
     // Apply exposure correction
     cLinear *= pow(2.0, exposure);
 
