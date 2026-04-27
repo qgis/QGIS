@@ -1982,7 +1982,7 @@ void TestQgs3DRendering::testInstancedRenderingTransform_data()
   ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationY, QgsProperty::fromExpression( u"case when \"field2\" = 2 then -20 end"_s ) );
   ddProps.setProperty( QgsAbstract3DSymbol::Property::RotationZ, QgsProperty::fromExpression( u"case when \"field3\" = 3 then 45 end"_s ) );
 
-  QTest::newRow( "translate with data defined props" ) << rotateTransform << ddProps << u"cylinder_rotate_dd_rendering"_s;
+  QTest::newRow( "rotation with data defined props" ) << rotateTransform << ddProps << u"cylinder_rotate_dd_rendering"_s;
 
   QMatrix4x4 trsTransform2;
   trsTransform2.translate( 550, 150, 300 );
