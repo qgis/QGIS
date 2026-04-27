@@ -337,10 +337,11 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
 
   Qgs2DPlot *plot = mPlot.get();
 
-  bool deletePlotAfterUse = false;
+  std::unique_ptr< Qgs2DPlot > newPlot;
   if ( mGenerateCategoriesFromRenderer && mVectorLayer )
   {
-    plot = dynamic_cast<Qgs2DPlot *>( QgsApplication::plotRegistry()->createPlot( mPlot->type() ) );
+    newPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::plotRegistry()->createPlot( mPlot->type() ) ) );
+    plot = newPlot.get();
     plot->initFromPlot( mPlot.get() );
     if ( Qgs2DXyPlot *plotXy = dynamic_cast<Qgs2DXyPlot *>( plot ) )
     {
@@ -348,12 +349,12 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     }
   }
 
-  if ( mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
+  if ( mGenerateCategoriesFromRenderer && mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
   {
     const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
-    if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
+    if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
     {
-      renderer = pointDistanceRenderer->embeddedRenderer();
+      renderer = embeddedRenderer;
     }
 
     QStringList expressionCases;
@@ -426,38 +427,42 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
         expressionCases.clear();
       }
     }
-    const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
 
-    if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
+    if ( !expressionCases.isEmpty() )
     {
-      for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
+      const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
+
+      if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
       {
-        QgsFillSymbol *fillSymbol = barChartPlot->fillSymbolAt( idx );
-        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
         {
-          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          QgsFillSymbol *fillSymbol = barChartPlot->fillSymbolAt( idx );
+          for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+          {
+            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          }
         }
       }
-    }
-    else if ( QgsLineChartPlot *lineChartPlot = dynamic_cast<QgsLineChartPlot *>( plot ) )
-    {
-      for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
+      else if ( QgsLineChartPlot *lineChartPlot = dynamic_cast<QgsLineChartPlot *>( plot ) )
       {
-        QgsMarkerSymbol *markerSymbol = lineChartPlot->markerSymbolAt( idx );
-        for ( QgsSymbolLayer *symbolLayer : markerSymbol->symbolLayers() )
+        for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
         {
-          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          QgsMarkerSymbol *markerSymbol = lineChartPlot->markerSymbolAt( idx );
+          for ( QgsSymbolLayer *symbolLayer : markerSymbol->symbolLayers() )
+          {
+            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          }
         }
       }
-    }
-    else if ( QgsPieChartPlot *pieChartPlot = dynamic_cast<QgsPieChartPlot *>( plot ) )
-    {
-      for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
+      else if ( QgsPieChartPlot *pieChartPlot = dynamic_cast<QgsPieChartPlot *>( plot ) )
       {
-        QgsFillSymbol *fillSymbol = pieChartPlot->fillSymbolAt( idx );
-        for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+        for ( int idx = 0; idx < pieChartPlot->fillSymbolCount(); idx++ )
         {
-          symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          QgsFillSymbol *fillSymbol = pieChartPlot->fillSymbolAt( idx );
+          for ( QgsSymbolLayer *symbolLayer : fillSymbol->symbolLayers() )
+          {
+            symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( rendererColorExpression, true ) );
+          }
         }
       }
     }
@@ -474,11 +479,6 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
 
     QgsPlotRenderContext plotRenderContext;
     plot->render( renderContext, plotRenderContext, mPlotData );
-  }
-
-  if ( deletePlotAfterUse )
-  {
-    delete plot;
   }
 
   if ( mSeriesList.isEmpty() || ( mSeriesList.size() == 1 && !mGenerateCategoriesFromRenderer && ( mSeriesList[0].xExpression().isEmpty() || mSeriesList[0].yExpression().isEmpty() ) ) )
@@ -564,9 +564,9 @@ void QgsLayoutItemChart::prepareGatherer()
       xyGatherer->setXAxisType( Qgis::PlotAxisType::Categorical );
 
       const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
-      if ( const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer ) )
+      if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
       {
-        renderer = pointDistanceRenderer->embeddedRenderer();
+        renderer = embeddedRenderer;
       }
 
       QStringList expressionCases;
@@ -746,8 +746,14 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
   element.setAttribute( u"sortAscending"_s, mSortAscending ? u"1"_s : u"0"_s );
   element.setAttribute( u"sortExpression"_s, mSortExpression );
 
-  element.setAttribute( u"generateCategoriesFromRenderer"_s, mGenerateCategoriesFromRenderer );
-  element.setAttribute( u"applyRendererStyle"_s, mApplyRendererStyle );
+  if ( mGenerateCategoriesFromRenderer )
+  {
+    element.setAttribute( u"generateCategoriesFromRenderer"_s, mGenerateCategoriesFromRenderer );
+  }
+  if ( mApplyRendererStyle )
+  {
+    element.setAttribute( u"applyRendererStyle"_s, mApplyRendererStyle );
+  }
 
   element.setAttribute( u"filterOnlyVisibleFeatures"_s, mFilterOnlyVisibleFeatures );
   element.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
