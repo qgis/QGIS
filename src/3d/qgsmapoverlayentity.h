@@ -69,15 +69,15 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     void update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum = false );
 
   private slots:
-
+    void invalidateMapImages();
     void onLayersChanged();
+    void onLayer3DRendererChanged();
+    void onLayerStyleOrFeatureChanged();
+    void onTerrainElevationOffsetChanged();
     void onTextureReady( const QImage &image );
     void onSizeChanged();
 
   private:
-    void invalidateMapImage();
-    void connectToLayersRepaintRequest();
-
     static int SIZE()
     {
       static int size = []() {
@@ -96,8 +96,8 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
 
     Qt3DRender::QTextureImageDataPtr mImageDataPtr;
 
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
-    QList<QgsMapLayer *> mLayers;
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
+    QHash<QgsMapLayer *, bool> mLayers;
 
     QgsRectangle mExtent;
     QVector<QgsPointXY> mFrustumExtent;
