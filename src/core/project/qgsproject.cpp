@@ -71,6 +71,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssensormanager.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingstree.h"
