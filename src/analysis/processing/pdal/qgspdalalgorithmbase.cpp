@@ -18,11 +18,11 @@
 #include "qgspdalalgorithmbase.h"
 
 #include "qgsapplication.h"
-#include "qgscopcprovider.h"
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrunprocess.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QRegularExpression>
 #include <QString>
@@ -124,11 +124,11 @@ void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments, QgsPro
 
 QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, const QString &outputFileName, QgsProcessingContext &context )
 {
-  const QFileInfo ifi( inputFileName );
-  const bool inputIsVpc = ifi.suffix().compare( "vpc", Qt::CaseInsensitive ) == 0 || ifi.suffix().compare( "vpz", Qt::CaseInsensitive ) == 0;
+  const bool inputIsVpc = isVpcFileName( inputFileName );
   const bool isTempOutput = outputFileName.startsWith( QgsProcessingUtils::tempFolder(), Qt::CaseInsensitive );
   if ( inputIsVpc && isTempOutput )
   {
+    const QFileInfo ifi( inputFileName );
     const QFileInfo ofi( outputFileName );
     const QString newFileName = u"%1/%2.%3"_s.arg( ofi.path(), ofi.completeBaseName(), ifi.suffix().toLower() );
 
@@ -146,8 +146,8 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
 
 void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, const QString &outputFileName )
 {
-  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || inputFileName.endsWith( u".vpz"_s, Qt::CaseInsensitive );
-  bool outputIsVpc = outputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || outputFileName.endsWith( u".vpz"_s, Qt::CaseInsensitive );
+  const bool inputIsVpc = isVpcFileName( inputFileName );
+  const bool outputIsVpc = isVpcFileName( outputFileName );
   if ( !inputIsVpc && outputIsVpc )
     throw QgsProcessingException(
       QObject::tr(
@@ -359,7 +359,7 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
 
 void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) || outputFilename.endsWith( u".vpz"_s, Qt::CaseInsensitive ) )
+  if ( isVpcFileName( outputFilename ) )
   {
     QString vpcOutputFormat = parameterAsEnumString( parameters, u"VPC_OUTPUT_FORMAT"_s, context );
 
@@ -372,6 +372,11 @@ void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputF
 
     arguments << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() );
   }
+}
+
+bool QgsPdalAlgorithmBase::isVpcFileName( const QString &name )
+{
+  return QgsVirtualPointCloudProviderMetadata::isVpcFileName( name );
 }
 
 ///@endcond

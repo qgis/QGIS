@@ -138,19 +138,19 @@ bool QgsPdalCompareAlgorithm::checkParameterValues( const QVariantMap &parameter
 
   const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
-  if ( inputLayer->source().endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || inputLayer->source().endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
+  if ( isVpcFileName( inputLayer->source() ) )
   {
     *message = QObject::tr( "This algorithm does not support VPC files as the Input layer." );
     return false;
   }
 
-  if ( inputCompareLayer->source().endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || inputCompareLayer->source().endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
+  if ( isVpcFileName( inputCompareLayer->source() ) )
   {
     *message = QObject::tr( "This algorithm does not support VPC files as the Compare layer." );
     return false;
   }
 
-  if ( outputName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || outputName.endsWith( ".vpz"_L1, Qt::CaseInsensitive ) )
+  if ( isVpcFileName( outputName ) )
   {
     *message = QObject::tr( "This algorithm does not support VPC files as the Output layer." );
     return false;
