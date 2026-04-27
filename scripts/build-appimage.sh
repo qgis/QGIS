@@ -11,19 +11,12 @@ VERSION="${QGISAI_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
-echo "==> Adding QGIS apt repository (for libqwt-qt6-dev not in noble core)"
-sudo install -d -m 0755 /etc/apt/keyrings
-wget -qO- https://download.qgis.org/downloads/qgis-archive-keyring.gpg \
-  | sudo tee /etc/apt/keyrings/qgis-archive-keyring.gpg > /dev/null
-sudo chmod 644 /etc/apt/keyrings/qgis-archive-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/qgis-archive-keyring.gpg] https://qgis.org/ubuntu noble main" \
-  | sudo tee /etc/apt/sources.list.d/qgis.sources.list
-
 echo "==> Installing build dependencies (apt) — Ubuntu 24.04 noble"
 sudo apt-get update
 # Build deps for QGIS Qt6 + extras needed for AppImage packaging.
 # Package names verified for Ubuntu 24.04 (noble).
-# libqwt-qt6-dev comes from the QGIS apt repository added above.
+# Qwt is intentionally omitted — noble has no libqwt-qt6-dev and QGIS
+# falls back to the bundled copy at external/qwt-6.3.0.
 # PDAL (point cloud) is intentionally omitted — cmake auto-disables the
 # feature when libpdal-dev is missing.
 sudo apt-get install -y --no-install-recommends \
@@ -64,7 +57,6 @@ sudo apt-get install -y --no-install-recommends \
   qml6-module-qtquick-controls \
   qml6-module-qtquick-layouts \
   libqscintilla2-qt6-dev \
-  libqwt-qt6-dev \
   libgdal-dev \
   libproj-dev \
   libgeos-dev \
