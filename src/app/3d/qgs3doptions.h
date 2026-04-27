@@ -19,6 +19,8 @@
 
 #include "qgsoptionswidgetfactory.h"
 
+class QgsSettingsEntryBool;
+
 /**
  * \ingroup app
  * \class Qgs3DOptionsWidget
@@ -31,6 +33,8 @@ class Qgs3DOptionsWidget : public QgsOptionsPageWidget, private Ui::Qgs3DOptions
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryBool *settingMsaaEnabled;
+
     /**
      * Constructor for Qgs3DOptionsWidget with the specified \a parent widget.
      */

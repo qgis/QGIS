@@ -285,6 +285,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", u"1000.0"_s ).toDouble();
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", u"1"_s ).toInt();
 
+  QDomElement elemMsaa = elem.firstChildElement( u"msaa"_s );
+  mMsaaEnabled = elemMsaa.attribute( u"enabled"_s, u"0"_s ).toInt();
+
   QDomElement elemNavigationSync = elem.firstChildElement( u"navigation-sync"_s );
   mViewSyncMode = static_cast<Qgis::ViewSyncModeFlags>( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
   mVisualizeViewFrustum = elemNavigationSync.attribute( u"view-frustum-visualization-enabled"_s, u"0"_s ).toInt();
@@ -456,6 +459,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemEyeDomeLighting.setAttribute( u"eye-dome-lighting-strength"_s, mEyeDomeLightingStrength );
   elemEyeDomeLighting.setAttribute( u"eye-dome-lighting-distance"_s, mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
+
+  QDomElement elemMsaa = doc.createElement( u"msaa"_s );
+  elemMsaa.setAttribute( u"enabled"_s, mMsaaEnabled ? 1 : 0 );
+  elem.appendChild( elemMsaa );
 
   QDomElement elemNavigationSync = doc.createElement( u"navigation-sync"_s );
   elemNavigationSync.setAttribute( u"view-sync-mode"_s, ( int ) mViewSyncMode );

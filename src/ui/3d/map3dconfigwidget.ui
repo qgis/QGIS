@@ -752,13 +752,6 @@
                 <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                </item>
                <item>
-                <widget class="QCheckBox" name="mMsaaCheckBox">
-                 <property name="text">
-                  <string>Enable anti-aliasing (MSAA)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <spacer name="verticalSpacerShadow">
                  <property name="orientation">
                   <enum>Qt::Orientation::Vertical</enum>
