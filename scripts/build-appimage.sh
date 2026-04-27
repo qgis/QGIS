@@ -11,9 +11,10 @@ VERSION="${QGISAI_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
-echo "==> Installing build dependencies (apt)"
+echo "==> Installing build dependencies (apt) — Ubuntu 24.04 noble"
 sudo apt-get update
-# Pull QGIS' build dependencies plus a few extras AppImage deployment needs.
+# Build deps for QGIS Qt6 + extras needed for AppImage packaging.
+# Package names verified for Ubuntu 24.04 (noble).
 sudo apt-get install -y --no-install-recommends \
   build-essential \
   bison \
@@ -27,7 +28,8 @@ sudo apt-get install -y --no-install-recommends \
   python3-pyqt6 \
   python3-pyqt6.qsci \
   python3-pyqt6.qtwebengine \
-  python3-pyqt6.qtsvg \
+  python3-pyqt6.qtmultimedia \
+  python3-pyqt6.qtpositioning \
   python3-sip-dev \
   pyqt6-dev-tools \
   sip-tools \
@@ -40,20 +42,17 @@ sudo apt-get install -y --no-install-recommends \
   qt6-multimedia-dev \
   qt6-positioning-dev \
   qt6-3d-dev \
-  qt6-svg-dev \
   qt6-webengine-dev \
-  qt6-serialport-dev \
+  libqt6svg6-dev \
+  libqt6serialport6-dev \
   libqt6sql6-sqlite \
-  libqt6printsupport6 \
   libqt6opengl6-dev \
   libqt6qml6 \
   libqt6quick6 \
-  libqt6quickcontrols2-6 \
   qml6-module-qtcharts \
   qml6-module-qtquick-controls \
   qml6-module-qtquick-effects \
   qml6-module-qtquick-layouts \
-  libqca-qt6-2-dev \
   libqscintilla2-qt6-dev \
   libqwt-qt6-dev \
   libgdal-dev \
@@ -72,10 +71,9 @@ sudo apt-get install -y --no-install-recommends \
   libpdal-dev \
   libfcgi-dev \
   libdraco-dev \
-  libopencl-clang-dev \
   ocl-icd-opencl-dev \
   fuse \
-  libfuse2 \
+  libfuse2t64 \
   wget \
   file \
   desktop-file-utils \

@@ -22,6 +22,10 @@ jobs:
   build:
     name: build (windows)
     runs-on: windows-2022
+    env:
+      # See macOS workflow comment — disable vcpkg NuGet binary cache for
+      # tag/release builds to avoid 409 conflicts on previously-pushed deps.
+      VCPKG_BINARY_SOURCES: ${{ (github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v')) && 'clear' || '' }}
 
     steps:
       - name: 🐣 Checkout

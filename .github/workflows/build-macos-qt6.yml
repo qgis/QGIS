@@ -34,6 +34,11 @@ jobs:
     env:
       FC: gfortran
       GCC_VERSION: 15
+      # For tag/release builds we disable vcpkg's NuGet binary cache to avoid
+      # 409 conflicts when a previously-pushed dependency package already
+      # exists on the user's GitHub Packages feed. Builds are slower but
+      # reproducible on every release.
+      VCPKG_BINARY_SOURCES: ${{ (github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v')) && 'clear' || '' }}
 
     steps:
       - name: 🐣 Checkout
