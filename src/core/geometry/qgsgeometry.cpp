@@ -1341,7 +1341,10 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
-    removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
+    if ( !addedTopologicalPoints.isEmpty() )
+    {
+      removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
+    }
     reset( std::move( geom ) );
     return Qgis::GeometryOperationResult::Success;
   }
