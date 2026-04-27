@@ -190,8 +190,8 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureDisplayUni
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureAreaUnits
   = new QgsSettingsEntryString( u"area-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Area display units (encoded unit string)"_s );
 
-const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *QgsSettingsRegistryCore::settingsUnknownCrsBehavior
-  = new QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior>( u"unknown-crs-behavior"_s, QgsSettingsTree::sTreeCrs, Qgis::UnknownLayerCrsBehavior::NoAction, u"Behavior when encountering a layer with an unknown CRS"_s );
+const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *QgsSettingsRegistryCore::settingsUnknownCrsBehavior = new QgsSettingsEntryEnumFlag<
+  Qgis::UnknownLayerCrsBehavior>( u"unknown-crs-behavior"_s, QgsSettingsTree::sTreeCrs, Qgis::UnknownLayerCrsBehavior::NoAction, u"Behavior when encountering a layer with an unknown CRS"_s );
 
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsLayerDefaultCrs
   = new QgsSettingsEntryString( u"layer-default-crs"_s, QgsSettingsTree::sTreeCrs, u"EPSG:4326"_s, u"Default CRS used for layers with unknown CRS when the unknown CRS behavior is set to UseDefaultCrs"_s );
