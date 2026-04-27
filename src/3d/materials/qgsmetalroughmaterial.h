@@ -58,7 +58,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
   public slots:
     //! Must be an SRGB color
     void setBaseColor( const QColor &baseColor );
-    //! Must be an SRGB format texture. Takes ownership.
+
+    /**
+     * Sets the base color texture. Takes ownership.
+     *
+     * \warning Make sure the texture format is correctly set, eg by setting to SRGB format wherever appropriate.
+     */
     void setBaseColorTexture( Qt3DRender::QAbstractTexture *baseColor );
 
     //! Set constant metalness value (between 0 - 1.0)
@@ -79,7 +84,11 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     //! Sets the normal texture map. Takes ownership. Set to NULLPTR to remove.
     void setNormalTexture( Qt3DRender::QAbstractTexture *normal );
 
-    //! Sets the emission texture map. Must be in SRGB format. Takes ownership. Set to NULLPTR to remove.
+    /**
+     * Sets the emission texture map. Takes ownership. Set to NULLPTR to remove.
+     *
+     * \warning Make sure the texture format is correctly set, eg by setting to SRGB format wherever appropriate.
+     */
     void setEmissionTexture( Qt3DRender::QAbstractTexture *emission );
 
     //! Sets the emission strength factor
