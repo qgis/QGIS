@@ -77,7 +77,7 @@ bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
     return false;
 
   material->setBaseColor( metalRoughSettings->baseColor() );
-  material->setMetalness( metalRoughSettings->metalness() );
-  material->setRoughness( metalRoughSettings->roughness() );
+  material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
+  material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
   return true;
 }
