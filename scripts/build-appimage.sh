@@ -81,6 +81,12 @@ sudo apt-get install -y --no-install-recommends \
   gdal-data \
   proj-data
 
+echo "==> Relaxing Qt6 minimum version 6.6.0 -> 6.4.0 (noble ships 6.4.2)"
+# Noble's qt6-base-dev is 6.4.2; QGIS upstream requires >= 6.6.0. We patch
+# the minimum here only for the AppImage CI build — kept out of the
+# committed CMakeLists.txt so upstream merges stay clean.
+sed -i 's|set(QT_MIN_VERSION 6\.6\.0)|set(QT_MIN_VERSION 6.4.0)|' CMakeLists.txt
+
 echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
