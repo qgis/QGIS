@@ -116,6 +116,12 @@ jobs:
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
 
+          # vcpkg's qca port does not ship the qcatool binary; QGIS' QCAMacros
+          # otherwise insists on it (FATAL_ERROR) which aborts the build.
+          # Soften the requirement: skip the FATAL by passing 0 to FIND_QCATOOL.
+          # Patch is applied on the runner only — repo file stays untouched.
+          sed -i '' 's|FIND_QCATOOL(1)|FIND_QCATOOL(0)|g' cmake/QCAMacros.cmake
+
           # Install first only with binarycaching, then deduplicate binaries and replace copies with symlinks.
           # Nuget doesn't understand the symlink concept
           cmake -S . \
