@@ -29,7 +29,7 @@ class QgsPointCloudSubIndexLoader : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged = false );
+    explicit QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged, QObject *parent = nullptr );
     ~QgsPointCloudSubIndexLoader() override;
     void start();
     QgsPointCloudIndex index() const { return mIndex; }

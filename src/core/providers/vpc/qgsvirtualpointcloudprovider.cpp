@@ -491,7 +491,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i, bool emitDataChanged )
     return;
 
   // loader is deleted when it finishes
-  QgsPointCloudSubIndexLoader *loader = new QgsPointCloudSubIndexLoader( sl.uri(), i, emitDataChanged );
+  QgsPointCloudSubIndexLoader *loader = new QgsPointCloudSubIndexLoader( sl.uri(), i, emitDataChanged, this );
   connect( loader, &QgsPointCloudSubIndexLoader::finished, this, &QgsVirtualPointCloudProvider::onFinishedLoadingSubIndex );
   mSubLayersBeingLoaded.insert( i );
   loader->start();

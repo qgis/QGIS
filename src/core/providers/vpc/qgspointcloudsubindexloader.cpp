@@ -25,8 +25,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPointCloudSubIndexLoader::QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged )
-  : mUri( uri )
+QgsPointCloudSubIndexLoader::QgsPointCloudSubIndexLoader( const QString &uri, int id, bool emitDataChanged, QObject *parent )
+  : QObject( parent )
+  , mUri( uri )
   , mId( id )
   , mEmitDataChanged( emitDataChanged )
 {
@@ -42,6 +43,7 @@ QgsPointCloudSubIndexLoader::~QgsPointCloudSubIndexLoader()
     mFutureWatcher->waitForFinished();
   }
 }
+
 void QgsPointCloudSubIndexLoader::start()
 {
   const QFuture<QgsPointCloudIndex> future = QtConcurrent::run( loadSubIndex, mUri );
