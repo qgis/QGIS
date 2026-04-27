@@ -28,6 +28,7 @@
 #include <Qt3DRender/QFrustumCulling>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QMultiSampleAntiAliasing>
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPolygonOffset>
@@ -77,18 +78,39 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
   mDepthTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mDepthTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
-  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
+  mRegularRenderTarget = new Qt3DRender::QRenderTarget;
   Qt3DRender::QRenderTargetOutput *renderTargetDepthOutput = new Qt3DRender::QRenderTargetOutput;
   renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
   renderTargetDepthOutput->setTexture( mDepthTexture );
-  renderTarget->addOutput( renderTargetDepthOutput );
+  mRegularRenderTarget->addOutput( renderTargetDepthOutput );
 
   Qt3DRender::QRenderTargetOutput *renderTargetColorOutput = new Qt3DRender::QRenderTargetOutput;
   renderTargetColorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
   renderTargetColorOutput->setTexture( mColorTexture );
-  renderTarget->addOutput( renderTargetColorOutput );
+  mRegularRenderTarget->addOutput( renderTargetColorOutput );
 
-  return renderTarget;
+  mColorTextureMS = new Qt3DRender::QTexture2DMultisample;
+  mColorTextureMS->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
+  mColorTextureMS->setSamples( 4 );
+  mColorTextureMS->setGenerateMipMaps( false );
+
+  mDepthTextureMS = new Qt3DRender::QTexture2DMultisample;
+  mDepthTextureMS->setFormat( Qt3DRender::QAbstractTexture::D24S8 );
+  mDepthTextureMS->setSamples( 4 );
+  mDepthTextureMS->setGenerateMipMaps( false );
+
+  mMsaaRenderTarget = new Qt3DRender::QRenderTarget;
+  Qt3DRender::QRenderTargetOutput *msaaDepthOutput = new Qt3DRender::QRenderTargetOutput;
+  msaaDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
+  msaaDepthOutput->setTexture( mDepthTextureMS );
+  mMsaaRenderTarget->addOutput( msaaDepthOutput );
+
+  Qt3DRender::QRenderTargetOutput *msaaColorOutput = new Qt3DRender::QRenderTargetOutput;
+  msaaColorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+  msaaColorOutput->setTexture( mColorTextureMS );
+  mMsaaRenderTarget->addOutput( msaaColorOutput );
+
+  return mRegularRenderTarget;
 }
 
 /*
@@ -147,6 +169,10 @@ void QgsForwardRenderView::buildRenderPasses()
 
   mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mLayerFilter );
   mClipRenderStateSet->setObjectName( mViewName + "::Clip Plane RenderStateSet" );
+
+  mMsaaRenderState = new Qt3DRender::QMultiSampleAntiAliasing;
+  mMsaaRenderState->setEnabled( false );
+  mClipRenderStateSet->addRenderState( mMsaaRenderState );
 
   Qt3DRender::QRenderTarget *renderTarget = buildTextures();
 
@@ -240,6 +266,10 @@ void QgsForwardRenderView::updateWindowResize( int width, int height )
 {
   mColorTexture->setSize( width, height );
   mDepthTexture->setSize( width, height );
+  mColorTextureMS->setWidth( width );
+  mColorTextureMS->setHeight( height );
+  mDepthTextureMS->setWidth( width );
+  mDepthTextureMS->setHeight( height );
 }
 
 
@@ -261,6 +291,12 @@ void QgsForwardRenderView::setFrustumCullingEnabled( bool enabled )
 void QgsForwardRenderView::setDebugOverlayEnabled( bool enabled )
 {
   mDebugOverlay->setEnabled( enabled );
+}
+
+void QgsForwardRenderView::setMsaaEnabled( bool enabled )
+{
+  mMsaaRenderState->setEnabled( enabled );
+  mRenderTargetSelector->setTarget( enabled ? mMsaaRenderTarget : mRegularRenderTarget );
 }
 
 Qt3DRender::QTexture2D *QgsForwardRenderView::depthTexture() const

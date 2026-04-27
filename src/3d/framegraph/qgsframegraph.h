@@ -22,6 +22,7 @@
 #include "qgsabstractrenderview.h"
 
 #include <QWindow>
+#include <Qt3DRender/QBlitFramebuffer>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
@@ -116,6 +117,12 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.26
      */
     void setDebugOverlayEnabled( bool enabled );
+
+    /**
+     * Sets whether multisample anti-aliasing (MSAA) is enabled
+     * \since QGIS 4.2
+     */
+    void setMsaaEnabled( bool enabled );
 
     //! Dumps frame graph as string
     QString dumpFrameGraph() const;
@@ -297,6 +304,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
 
     bool mRenderCaptureEnabled = false;
+    Qt3DRender::QBlitFramebuffer *mMsaaBlitNode = nullptr;
 
     // holds renderviews according to their name
     std::map<QString, std::unique_ptr<QgsAbstractRenderView>> mRenderViewMap;

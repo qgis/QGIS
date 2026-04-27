@@ -932,6 +932,23 @@ Sets whether 2D map overlay is enabled
 .. versionadded:: 4.0
 %End
 
+    void setMsaaEnabled( bool enabled );
+%Docstring
+Sets whether multisample anti-aliasing (MSAA) is enabled
+
+.. seealso:: :py:func:`isMsaaEnabled`
+
+.. versionadded:: 4.2
+%End
+
+    bool isMsaaEnabled() const;
+%Docstring
+Returns whether multisample anti-aliasing (MSAA) is enabled
+
+.. seealso:: :py:func:`setMsaaEnabled`
+
+.. versionadded:: 4.2
+%End
 
   signals:
 
@@ -1104,6 +1121,13 @@ Emitted when the eye dome lighting strength has changed
 Emitted when the eye dome lighting distance has changed
 
 .. versionadded:: 3.18
+%End
+
+    void msaaEnabledChanged();
+%Docstring
+Emitted when the MSAA enabled flag has changed
+
+.. versionadded:: 4.2
 %End
 
     void debugShadowMapSettingsChanged();

@@ -85,6 +85,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mMsaaEnabled( other.mMsaaEnabled )
   , mViewSyncMode( other.mViewSyncMode )
   , mVisualizeViewFrustum( other.mVisualizeViewFrustum )
   , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
@@ -284,6 +285,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", u"1000.0"_s ).toDouble();
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", u"1"_s ).toInt();
 
+  mMsaaEnabled = elem.attribute( u"msaaEnabled"_s, u"0"_s ).toInt();
+
   QDomElement elemNavigationSync = elem.firstChildElement( u"navigation-sync"_s );
   mViewSyncMode = static_cast<Qgis::ViewSyncModeFlags>( elemNavigationSync.attribute( u"view-sync-mode"_s, u"0"_s ).toInt() );
   mVisualizeViewFrustum = elemNavigationSync.attribute( u"view-frustum-visualization-enabled"_s, u"0"_s ).toInt();
@@ -455,6 +458,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemEyeDomeLighting.setAttribute( u"eye-dome-lighting-strength"_s, mEyeDomeLightingStrength );
   elemEyeDomeLighting.setAttribute( u"eye-dome-lighting-distance"_s, mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
+
+  elem.setAttribute( u"msaaEnabled"_s, mMsaaEnabled ? 1 : 0 );
 
   QDomElement elemNavigationSync = doc.createElement( u"navigation-sync"_s );
   elemNavigationSync.setAttribute( u"view-sync-mode"_s, ( int ) mViewSyncMode );
@@ -1190,6 +1195,24 @@ int Qgs3DMapSettings::eyeDomeLightingDistance() const
   return mEyeDomeLightingDistance;
 }
 
+void Qgs3DMapSettings::setMsaaEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mMsaaEnabled == enabled )
+    return;
+
+  mMsaaEnabled = enabled;
+  emit msaaEnabledChanged();
+}
+
+bool Qgs3DMapSettings::isMsaaEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mMsaaEnabled;
+}
+
 QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1588,6 +1611,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::msaaEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapSettings::settingsChanged );
