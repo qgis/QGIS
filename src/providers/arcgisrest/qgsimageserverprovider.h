@@ -18,6 +18,8 @@
 #ifndef QGSIMAGESERVERPROVIDER_H
 #define QGSIMAGESERVERPROVIDER_H
 
+#include <gdal.h>
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgshttpheaders.h"
 #include "qgsprovidermetadata.h"
@@ -79,10 +81,13 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     bool readNativeAttributeTable( QString *errorMessage = nullptr ) override;
 
   private:
+    bool readTiledBlock( const QgsRectangle &viewExtent, int width, int height, void *data, GDALDataType gdalType, int elementSize, QgsRasterBlockFeedback *feedback );
+
     bool mValid = false;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;
     Qgis::ArcGisRestServiceCapabilities mCapabilities;
+    Qgis::RasterInterfaceCapabilities mRasterCapabilities;
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     double mPixelSizeX = 1;
@@ -100,8 +105,9 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
     QgsHttpHeaders mRequestHeaders;
-    int mTileReqNo = 0;
     bool mTiled = false;
+    int mMinLOD = -1;
+    int mMaxLOD = -1;
     int mMaxImageWidth = 4096;
     int mMaxImageHeight = 4096;
     QgsLayerMetadata mLayerMetadata;
@@ -115,6 +121,19 @@ class QgsImageServerProvider : public QgsRasterDataProvider
      * Resets cached image
     */
     void reloadProviderData() override;
+
+    struct TileRequest
+    {
+        TileRequest( const QUrl &u, int i, const QgsRectangle &mapExtent )
+          : url( u )
+          , index( i )
+          , mapExtent( mapExtent )
+        {}
+        QUrl url;
+        int index;
+        QgsRectangle mapExtent;
+    };
+    typedef QList<TileRequest> TileRequests;
 };
 
 class QgsImageServerProviderMetadata : public QgsProviderMetadata

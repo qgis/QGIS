@@ -18,11 +18,11 @@
 #include "qgsimageserverprovider.h"
 
 #include <cpl_vsi.h>
-#include <gdal.h>
 
 #include "qgsapplication.h"
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdalutils.h"
@@ -32,7 +32,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsstringutils.h"
-#include "qgstilecache.h"
+#include "qgstiledownloadmanager.h"
 
 #include <QDir>
 #include <QFontMetrics>
@@ -76,13 +76,10 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     return;
   }
 
-  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
+  mRasterCapabilities = Qgis::RasterInterfaceCapability::Size;
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
   {
-    // not an image service
-    appendError( QgsErrorMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ) ) );
-    QgsMessageLog::logMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ), tr( "ImageServer" ) );
-    mValid = false;
-    return;
+    mRasterCapabilities |= Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue;
   }
 
   mHasRat = mServiceInfo.value( u"hasRasterAttributeTable"_s ).toBool();
@@ -241,8 +238,8 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   mLayerMetadata.setExtent( metadataExtent );
   mLayerMetadata.setCrs( mCrs );
 
-  mTiled = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool();
-  if ( dataSource.param( u"tiled"_s ).toLower() == "false" || dataSource.param( u"tiled"_s ) == "0" )
+  mTiled = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool() || mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly );
+  if ( ( dataSource.param( u"tiled"_s ).toLower() == "false" || dataSource.param( u"tiled"_s ) == "0" ) && !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
   {
     mTiled = false;
   }
@@ -278,6 +275,11 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
     std::sort( mResolutions.begin(), mResolutions.end() );
   }
+
+  if ( mServiceInfo.contains( u"minLOD"_s ) )
+    mMinLOD = mServiceInfo.value( u"minLOD"_s ).toInt();
+  if ( mServiceInfo.contains( u"maxLOD"_s ) )
+    mMaxLOD = mServiceInfo.value( u"maxLOD"_s ).toInt();
 }
 
 QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
@@ -286,6 +288,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mServiceInfo( other.mServiceInfo )
   , mLayerInfo( other.mLayerInfo )
   , mCapabilities( other.mCapabilities )
+  , mRasterCapabilities( other.mRasterCapabilities )
   , mCrs( other.mCrs )
   , mExtent( other.mExtent )
   , mPixelSizeX( other.mPixelSizeX )
@@ -300,6 +303,8 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mStdevValues( other.mStdevValues )
   , mRequestHeaders( other.mRequestHeaders )
   , mTiled( other.mTiled )
+  , mMinLOD( other.mMinLOD )
+  , mMaxLOD( other.mMaxLOD )
   , mMaxImageWidth( other.mMaxImageWidth )
   , mMaxImageHeight( other.mMaxImageHeight )
   , mLayerMetadata( other.mLayerMetadata )
@@ -359,7 +364,7 @@ Qgis::RasterColorInterpretation QgsImageServerProvider::colorInterpretation( int
 
 Qgis::RasterInterfaceCapabilities QgsImageServerProvider::capabilities() const
 {
-  return Qgis::RasterInterfaceCapability::Size | Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue;
+  return mRasterCapabilities;
 }
 
 int QgsImageServerProvider::xSize() const
@@ -599,7 +604,7 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   if ( !mValid || width <= 0 || height <= 0 )
     return false;
 
-  QgsDataSourceUri dataSource( dataSourceUri() );
+  const QgsDataSourceUri dataSource( dataSourceUri() );
   QString url = dataSource.param( u"url"_s );
   if ( !dataSource.param( u"layer"_s ).isEmpty() )
   {
@@ -615,6 +620,63 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   {
     QgsDebugMsgLevel( u"draw request outside view extent."_s, 2 );
     return false;
+  }
+
+  const GDALDataType gdalType = QgsGdalUtils::gdalDataTypeFromQgisDataType( mDataType );
+  const int elementSize = GDALGetDataTypeSizeBytes( gdalType );
+  const std::size_t pixelCount = static_cast< std::size_t >( width ) * static_cast< std::size_t >( height );
+
+  // pre-fill the entire buffer with NoData (ie pad the exterior of the subrect containing the actual data from the service)
+  const bool hasNoData = mSrcHasNoDataValue.size() >= bandNo && mSrcHasNoDataValue.at( bandNo - 1 );
+  const double noDataVal = hasNoData ? mSrcNoDataValue.at( bandNo - 1 ) : 0.0;
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Byte:
+      std::fill_n( static_cast<quint8 *>( data ), pixelCount, static_cast<quint8>( noDataVal ) );
+      break;
+    case Qgis::DataType::Int8:
+      std::fill_n( static_cast<qint8 *>( data ), pixelCount, static_cast<qint8>( noDataVal ) );
+      break;
+    case Qgis::DataType::UInt16:
+      std::fill_n( static_cast<quint16 *>( data ), pixelCount, static_cast<quint16>( noDataVal ) );
+      break;
+    case Qgis::DataType::Int16:
+      std::fill_n( static_cast<qint16 *>( data ), pixelCount, static_cast<qint16>( noDataVal ) );
+      break;
+    case Qgis::DataType::UInt32:
+      std::fill_n( static_cast<quint32 *>( data ), pixelCount, static_cast<quint32>( noDataVal ) );
+      break;
+    case Qgis::DataType::Int32:
+      std::fill_n( static_cast<qint32 *>( data ), pixelCount, static_cast<qint32>( noDataVal ) );
+      break;
+
+    case Qgis::DataType::Float32:
+    {
+      float fillVal = hasNoData ? static_cast<float>( noDataVal ) : std::numeric_limits<float>::quiet_NaN();
+      std::fill_n( static_cast<float *>( data ), pixelCount, fillVal );
+      break;
+    }
+    case Qgis::DataType::Float64:
+    {
+      double fillVal = hasNoData ? noDataVal : std::numeric_limits<double>::quiet_NaN();
+      std::fill_n( static_cast<double *>( data ), pixelCount, fillVal );
+      break;
+    }
+
+    case Qgis::DataType::UnknownDataType:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      memset( data, 0, static_cast<size_t>( pixelCount ) * elementSize );
+      break;
+  }
+
+  if ( mTiled )
+  {
+    return readTiledBlock( viewExtent, width, height, data, gdalType, elementSize, feedback );
   }
 
   QRect blockSubRectPixels( 0, 0, width, height ); // Hoisted and defaults to full size
@@ -708,57 +770,6 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
     return false;
   }
 
-  const GDALDataType gdalType = QgsGdalUtils::gdalDataTypeFromQgisDataType( mDataType );
-  const int elementSize = GDALGetDataTypeSizeBytes( gdalType );
-  const std::size_t pixelCount = static_cast< std::size_t >( width ) * static_cast< std::size_t >( height );
-
-  // pre-fill the entire buffer with NoData (ie pad the exterior of the subrect containing the actual data from the service)
-  const bool hasNoData = mSrcHasNoDataValue.size() >= bandNo && mSrcHasNoDataValue.at( bandNo - 1 );
-  const double noDataVal = hasNoData ? mSrcNoDataValue.at( bandNo - 1 ) : 0.0;
-  switch ( mDataType )
-  {
-    case Qgis::DataType::Byte:
-      std::fill_n( static_cast<quint8 *>( data ), pixelCount, static_cast<quint8>( noDataVal ) );
-      break;
-    case Qgis::DataType::Int8:
-      std::fill_n( static_cast<qint8 *>( data ), pixelCount, static_cast<qint8>( noDataVal ) );
-      break;
-    case Qgis::DataType::UInt16:
-      std::fill_n( static_cast<quint16 *>( data ), pixelCount, static_cast<quint16>( noDataVal ) );
-      break;
-    case Qgis::DataType::Int16:
-      std::fill_n( static_cast<qint16 *>( data ), pixelCount, static_cast<qint16>( noDataVal ) );
-      break;
-    case Qgis::DataType::UInt32:
-      std::fill_n( static_cast<quint32 *>( data ), pixelCount, static_cast<quint32>( noDataVal ) );
-      break;
-    case Qgis::DataType::Int32:
-      std::fill_n( static_cast<qint32 *>( data ), pixelCount, static_cast<qint32>( noDataVal ) );
-      break;
-
-    case Qgis::DataType::Float32:
-    {
-      float fillVal = hasNoData ? static_cast<float>( noDataVal ) : std::numeric_limits<float>::quiet_NaN();
-      std::fill_n( static_cast<float *>( data ), pixelCount, fillVal );
-      break;
-    }
-    case Qgis::DataType::Float64:
-    {
-      double fillVal = hasNoData ? noDataVal : std::numeric_limits<double>::quiet_NaN();
-      std::fill_n( static_cast<double *>( data ), pixelCount, fillVal );
-      break;
-    }
-
-    case Qgis::DataType::UnknownDataType:
-    case Qgis::DataType::CInt16:
-    case Qgis::DataType::CInt32:
-    case Qgis::DataType::CFloat32:
-    case Qgis::DataType::CFloat64:
-    case Qgis::DataType::ARGB32:
-    case Qgis::DataType::ARGB32_Premultiplied:
-      memset( data, 0, static_cast<size_t>( pixelCount ) * elementSize );
-      break;
-  }
 
   if ( feedback && feedback->isCanceled() )
   {
@@ -793,6 +804,231 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   }
 
   return err == CE_None;
+}
+
+bool QgsImageServerProvider::readTiledBlock( const QgsRectangle &viewExtent, int width, int height, void *data, GDALDataType gdalType, int elementSize, QgsRasterBlockFeedback *feedback )
+{
+  const QgsDataSourceUri dataSource( dataSourceUri() );
+  const QString baseUrl = dataSource.param( u"url"_s );
+  const QString authcfg = dataSource.authConfigId();
+
+  const double targetResolution = viewExtent.width() / width;
+
+  // tile details
+  const QVariantMap tileInfo = mServiceInfo.value( u"tileInfo"_s ).toMap();
+  const int tileWidth = tileInfo[u"cols"_s].toInt();
+  const int tileHeight = tileInfo[u"rows"_s].toInt();
+  const QVariantMap origin = tileInfo[u"origin"_s].toMap();
+  const double originX = origin[u"x"_s].toDouble();
+  const double originY = origin[u"y"_s].toDouble();
+
+  // sort level of detail array by decreasing resolution, i.e. less detailed tiles first
+  QList<QVariant> lodEntries = tileInfo[u"lods"_s].toList();
+  if ( lodEntries.isEmpty() )
+    return false;
+
+  // sometimes the lods array contains NOT available levels, i.e. outside of the minLOD/maxLOD range!
+  // strip them out here
+  lodEntries.erase(
+    std::remove_if(
+      lodEntries.begin(),
+      lodEntries.end(),
+      [this]( const QVariant &lodEntry ) {
+        const int currentLevel = lodEntry.toMap()[u"level"_s].toInt();
+        return ( mMaxLOD >= 0 && currentLevel > mMaxLOD ) || ( mMinLOD >= 0 && currentLevel < mMinLOD );
+      }
+    ),
+    lodEntries.end()
+  );
+
+  if ( lodEntries.isEmpty() )
+    return false;
+  std::sort( lodEntries.begin(), lodEntries.end(), []( const QVariant &a, const QVariant &b ) { return a.toMap().value( u"resolution"_s ).toDouble() > b.toMap().value( u"resolution"_s ).toDouble(); } );
+
+  // pick appropriate tile level to match target resolution
+  // iterate through the lod array to find the first level (ie, the most course level)
+  // that satisfies the required resolution
+  int level = lodEntries.constLast().toMap().value( u"level"_s ).toInt();
+  double resolution = lodEntries.constLast().toMap().value( u"resolution"_s ).toDouble();
+  for ( const QVariant &lodEntry : std::as_const( lodEntries ) )
+  {
+    if ( lodEntry.toMap()[u"resolution"_s].toDouble() <= targetResolution )
+    {
+      level = lodEntry.toMap()[u"level"_s].toInt();
+      resolution = lodEntry.toMap()[u"resolution"_s].toDouble();
+      break;
+    }
+  }
+
+  // calculate required tile ranges
+  const int tileXStart = static_cast<int>( std::floor( ( viewExtent.xMinimum() - originX ) / ( tileWidth * resolution ) ) );
+  const int tileYStart = static_cast<int>( std::floor( ( originY - viewExtent.yMaximum() ) / ( tileHeight * resolution ) ) );
+  const int tileXEnd = static_cast<int>( std::ceil( ( viewExtent.xMaximum() - originX ) / ( tileWidth * resolution ) ) );
+  const int tileYEnd = static_cast<int>( std::ceil( ( originY - viewExtent.yMinimum() ) / ( tileHeight * resolution ) ) );
+
+  // build list of requested tiles
+  TileRequests requests;
+  int index = 0;
+  for ( int tileY = tileYStart; tileY <= tileYEnd; ++tileY )
+  {
+    for ( int tileX = tileXStart; tileX <= tileXEnd; ++tileX )
+    {
+      const QUrl url = QgsArcGisRestQueryUtils::parseUrl( QUrl( baseUrl + u"/tile/%1/%2/%3"_s.arg( level ).arg( tileY ).arg( tileX ) ) );
+      // calculate map extent for tile
+      const double tileXMin = originX + tileX * ( resolution * tileWidth );
+      const double tileXMax = tileXMin + ( resolution * tileWidth );
+      const double tileYMax = originY - tileY * ( resolution * tileHeight );
+      const double tileYMin = tileYMax - ( resolution * tileHeight );
+      const QgsRectangle mapExtent( tileXMin, tileYMin, tileXMax, tileYMax );
+      if ( viewExtent.intersects( mapExtent ) )
+      {
+        requests.push_back( TileRequest( url, index++, mapExtent ) );
+      }
+    }
+  }
+
+  QHash<int, QByteArray> tileData;
+  tileData.reserve( requests.size() );
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    // running on main thread, use a blocking get to handle authcfg and SSL errors ok.
+    for ( const TileRequest &r : std::as_const( requests ) )
+    {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      QNetworkRequest request( r.url );
+      QgsSetRequestInitiatorClass( request, u"QgsImageServerProvider"_s );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      mRequestHeaders.updateNetworkRequest( request );
+      const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg, false, feedback );
+      if ( reply.error() == QNetworkReply::NoError )
+      {
+        tileData.insert( r.index, reply.content() );
+      }
+    }
+  }
+  else
+  {
+    // running on background thread, use tile download manager for efficient network handling
+    std::vector<std::unique_ptr<QgsTileDownloadManagerReply>> replies;
+    replies.reserve( requests.size() );
+    std::vector<TileRequest> activeRequests;
+    activeRequests.reserve( requests.size() );
+
+    // use a local event loop to loop until all required tiles are fetched. This is safe to do, we are in a background thread
+    QEventLoop loop;
+    if ( feedback )
+    {
+      QObject::connect( feedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+    }
+
+    int pendingReplies = 0;
+    auto onReplyFinished = [&pendingReplies, &loop] {
+      pendingReplies--;
+      if ( pendingReplies == 0 )
+        loop.quit();
+    };
+
+    for ( const TileRequest &r : std::as_const( requests ) )
+    {
+      QNetworkRequest request( r.url );
+      QgsSetRequestInitiatorClass( request, u"QgsImageServerProvider"_s );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      mRequestHeaders.updateNetworkRequest( request );
+
+      if ( !authcfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
+        continue;
+
+      std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( request ) );
+      QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, onReplyFinished );
+      replies.emplace_back( std::move( reply ) );
+
+      activeRequests.push_back( r );
+      pendingReplies++;
+    }
+
+    if ( pendingReplies != 0 )
+    {
+      // loop till all replies are finished
+      loop.exec();
+
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        for ( size_t i = 0; i < replies.size(); ++i )
+        {
+          if ( replies[i]->hasFinished() && replies[i]->error() == QNetworkReply::NoError )
+          {
+            tileData.insert( activeRequests[i].index, replies[i]->data() );
+          }
+        }
+      }
+    }
+  }
+
+  if ( tileData.isEmpty() || ( feedback && feedback->isCanceled() ) )
+    return false;
+
+  // got all tile data. Now we need to stitch the tiles together into a single raster block.
+  // we use GDAL to read tile data, as it may been compressed in eg LERC format
+
+  bool success = true;
+  for ( const TileRequest &req : std::as_const( requests ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    auto tileDataIt = tileData.constFind( req.index );
+    if ( tileDataIt == tileData.constEnd() )
+    {
+      continue;
+    }
+    QByteArray rawTileData = tileDataIt.value();
+    if ( rawTileData.isEmpty() )
+    {
+      continue;
+    }
+
+    // use GDAL to read raw raster data, and handle eg lerc decompression
+    // first create in-memory dataset
+    const QString vsimemFilename = u"/vsimem/ims_tile_%1_%2"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ) ).arg( req.index );
+    VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), reinterpret_cast<GByte *>( rawTileData.data() ), rawTileData.size(), false ) );
+
+    // open the in-memory dataset
+    GDALDatasetH hDS = GDALOpen( vsimemFilename.toUtf8().constData(), GA_ReadOnly );
+    if ( hDS )
+    {
+      GDALRasterBandH hBand = GDALGetRasterBand( hDS, 1 );
+      if ( hBand )
+      {
+        // pixels from requested block covered by this tile
+        // (i.e. the "destination" rect)
+        const QRect blockPixelRect = QgsRasterBlock::subRect( viewExtent, width, height, req.mapExtent );
+        // pixels from tile that we need (tile may be partially outside of requested block extent)
+        // (i.e. the "source" rect)
+        const QRect tilePixelRect = QgsRasterBlock::subRect( req.mapExtent, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), req.mapExtent.intersect( viewExtent ) );
+
+        // copy tile data into block data
+        void *targetData = static_cast<GByte *>( data ) + ( static_cast<GSpacing>( blockPixelRect.y() ) * width + blockPixelRect.x() ) * elementSize;
+        GSpacing lineSpace = static_cast<GSpacing>( width ) * elementSize;
+        if ( GDALRasterIOEx( hBand, GF_Read, tilePixelRect.x(), tilePixelRect.y(), tilePixelRect.width(), tilePixelRect.height(), targetData, blockPixelRect.width(), blockPixelRect.height(), gdalType, elementSize, lineSpace, nullptr )
+             != CPLErr::CE_None )
+        {
+          success = false;
+        }
+      }
+      GDALClose( hDS );
+    }
+    else
+    {
+      success = false;
+    }
+    VSIUnlink( vsimemFilename.toUtf8().constData() );
+  }
+
+  return success;
 }
 
 bool QgsImageServerProvider::readNativeAttributeTable( QString *errorMessage )
