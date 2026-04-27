@@ -1067,7 +1067,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   // try to open the file as a new layer and check saved values
   auto layerNew = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
   QgsVirtualPointCloudProvider *vpcProviderNew = qobject_cast<QgsVirtualPointCloudProvider *>( layerNew->dataProvider() );
-  QVERIFY( vpcProvider );
+  QVERIFY( vpcProviderNew );
   QSignalSpy spyLoadingNew( vpcProviderNew, &QgsVirtualPointCloudProvider::subIndexLoaded );
 
   QSignalSpy spy2( layerNew.get(), &QgsMapLayer::layerModified );
@@ -1190,7 +1190,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   // try to open the file as a new layer and check saved values
   auto layerNew2 = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
   QgsVirtualPointCloudProvider *vpcProviderNew2 = qobject_cast<QgsVirtualPointCloudProvider *>( layerNew2->dataProvider() );
-  QVERIFY( vpcProvider );
+  QVERIFY( vpcProviderNew2 );
   QSignalSpy spyLoadingNew2( vpcProviderNew2, &QgsVirtualPointCloudProvider::subIndexLoaded );
 
   // check values in the new layer

@@ -1357,7 +1357,7 @@ void TestQgsIdentify::identifyVirtualPointCloud()
   for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
     pointCloud->dataProvider()->loadSubIndex( i );
 
-  spy.wait( 100 );
+  QVERIFY( spy.wait() );
 
   // set project CRS and ellipsoid
   // Note that using a different CRS here (a world-wide WGS84-based one) caused
