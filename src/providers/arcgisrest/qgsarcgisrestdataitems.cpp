@@ -785,10 +785,9 @@ QVector<QgsDataItem *> QgsArcGisImageServiceItem::createChildren()
     return items;
   }
 
-  const QString supportedFormats = u"JPGPNG,PNG,PNG8,PNG24,JPG,BMP,GIF,TIFF,PNG32,BIP,BSQ,LERC"_s;
-  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, supportedFormats, mForceRefresh );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, supportedFormats, mForceRefresh );
-  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, mUrlPrefix, this, Qgis::ArcGisRestServiceType::ImageServer, supportedFormats, mForceRefresh );
+  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, {}, mForceRefresh );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, {}, mForceRefresh );
+  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, mUrlPrefix, this, Qgis::ArcGisRestServiceType::ImageServer, {}, mForceRefresh );
   return items;
 }
 
