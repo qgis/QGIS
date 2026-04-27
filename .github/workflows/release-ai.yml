@@ -1,0 +1,65 @@
+name: 🚀 Release QGIS_AI
+
+on:
+  push:
+    tags:
+      - 'qgisai-v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name (e.g. qgisai-v0.1.0-test)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+      version: ${{ steps.set-tag.outputs.version }}
+    steps:
+      - name: Set tag and version
+        id: set-tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          VERSION="${TAG#qgisai-v}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create published release
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        with:
+          tag_name: ${{ steps.set-tag.outputs.tag }}
+          name: QGIS_AI ${{ steps.set-tag.outputs.version }}
+          draft: false
+          prerelease: ${{ contains(steps.set-tag.outputs.tag, '-test') || contains(steps.set-tag.outputs.tag, '-rc') || contains(steps.set-tag.outputs.tag, '-beta') }}
+          generate_release_notes: true
+          body: |
+            # QGIS_AI ${{ steps.set-tag.outputs.version }}
+
+            Fork di QGIS con assistente AI nativo integrato.
+
+            ## Download
+
+            | Sistema | File | Note |
+            |---|---|---|
+            | **macOS** (Intel + Apple Silicon) | `*.dmg` | Universal binary. Vedi istruzioni per Gatekeeper sotto. |
+            | **Windows** (x64) | `*-win64.zip` | ZIP portable. Estrai e lancia `bin/qgis-bin.exe`. |
+            | **Linux** (x86_64) | `*.AppImage` | `chmod +x` poi doppio click. |
+
+            > ⚠️ Questi pacchetti **non sono firmati**. Al primo avvio gli OS mostrano un warning.
+            > Istruzioni dettagliate per bypassarlo nel [README](https://github.com/${{ github.repository }}#download).
+
+            ## Configurazione AI
+
+            Al primo avvio: **View → Panels → AI Assistant**, click sull'icona ⚙ in alto a destra,
+            incolla la tua API key OpenAI o Anthropic. Le chiavi sono salvate nelle impostazioni
+            QGIS locali e non vengono mai inviate a server diversi dal provider scelto.

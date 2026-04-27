@@ -1,0 +1,70 @@
+name: 🐧 Build AppImage (Linux)
+
+on:
+  release:
+    types: ['published']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version label baked into the AppImage filename (e.g. 0.1.0-test)'
+        required: false
+        default: 'dev'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build (linux x86_64)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            VERSION="${TAG#qgisai-v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: 🛍️ Setup ccache
+        uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce # v1.2.22
+        with:
+          max-size: 1G
+          key: build-ccache-appimage-${{ github.ref_name }}
+          save: ${{ github.event_name == 'push' || github.event_name == 'release' }}
+
+      - name: Build AppImage
+        env:
+          QGISAI_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          chmod +x scripts/build-appimage.sh
+          scripts/build-appimage.sh
+
+      - name: 📤 Upload AppImage as workflow artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: qgis-ai-appimage-x86_64
+          path: |
+            QGIS_AI-*.AppImage
+
+      - name: Upload release assets
+        if: ${{ github.event_name == 'release' }}
+        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
+        with:
+          files: 'QGIS_AI-*.AppImage'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

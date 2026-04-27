@@ -1,5 +1,60 @@
 <img src="images/README-md/main_logo.png" width="300">
 
+# QGIS_AI — Download
+
+QGIS_AI è un fork di QGIS con un assistente AI integrato nativamente. Tutti i pacchetti partono dalla pagina **[Releases](../../releases/latest)**.
+
+| Sistema | Cosa scaricare | Cosa fare dopo |
+|---|---|---|
+| 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina QGIS_AI in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, doppio click su `bin/qgis-bin.exe`. Vedi *Aggirare SmartScreen*. |
+| 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x QGIS_AI-*.AppImage` poi doppio click. Niente installazione. |
+
+> ⚠️ I pacchetti **non sono firmati**. È normale. Al primo avvio gli OS mostrano un warning: segui le istruzioni qui sotto, è una procedura una tantum.
+
+### 🍎 Aggirare il warning macOS (Gatekeeper)
+
+Dopo aver trascinato `QGIS_AI.app` in Applicazioni, apri il Terminale e incolla:
+
+```
+xattr -d com.apple.quarantine /Applications/QGIS_AI.app
+```
+
+Poi apri normalmente l'app.
+
+### 🪟 Aggirare SmartScreen su Windows
+
+Quando avvii `qgis-bin.exe` la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
+
+### 🐧 AppImage su Linux
+
+```
+chmod +x QGIS_AI-*.AppImage
+./QGIS_AI-*.AppImage
+```
+
+Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `glibc >= 2.35` e FUSE installato.
+
+---
+
+## Configurare l'AI al primo avvio
+
+1. Apri QGIS_AI.
+2. Menu **Visualizza → Pannelli → AI Assistant**.
+3. Click sull'icona **⚙ impostazioni** in alto a destra del pannello.
+4. Incolla la tua **API key** OpenAI o Anthropic (o entrambe).
+5. Chiudi il dialog e prova a scrivere un messaggio nella chat.
+
+Da dove ottenere le chiavi:
+- **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- **Anthropic**: [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+
+Le chiavi sono salvate **solo localmente** nelle impostazioni QGIS della tua macchina. Non vengono inviate a nessun server diverso dal provider che hai scelto.
+
+---
+
+## QGIS upstream — documentazione originale
+
 [![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
