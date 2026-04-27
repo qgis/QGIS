@@ -554,7 +554,7 @@ QVector3D QgsTessellator::applyTransformWithExtrusion( const QVector3D point, fl
   return QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
 }
 
-void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, std::vector<float> &zHash ) const
+void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, std::vector<double> &zValues ) const
 {
   const int pCount = ring->numPoints();
 
@@ -567,16 +567,16 @@ void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<
   // earcut handles duplicates, we do not need to remove them here
   for ( int i = 0; i < pCount - 1; ++i )
   {
-    const float x = static_cast<float>( *srcXData++ );
-    const float y = static_cast<float>( *srcYData++ );
+    const double x = *srcXData++;
+    const double y = *srcYData++;
 
     std::array<double, 2> pt = { x, y };
     polyline.push_back( pt );
+  }
 
-    if ( !mInputZValueIgnored && srcZData )
-    {
-      zHash.push_back( *srcZData++ );
-    }
+  if ( !mInputZValueIgnored && ring->is3D() && srcZData )
+  {
+    zValues.insert( zValues.end(), srcZData, srcZData + pCount - 1 );
   }
 }
 
@@ -625,18 +625,24 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
 std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon *polygonNew )
 {
-  std::vector<float> z;
-  std::vector<std::vector<std::array<double, 2>>> rings;
-  std::vector<std::array<double, 2>> polyline;
+  std::vector<double> zValues;
+  if ( !mInputZValueIgnored && polygonNew->is3D() )
+    zValues.reserve( polygonNew->nCoordinates() );
 
-  ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, z );
-  rings.push_back( polyline );
+  std::vector<std::vector<std::array<double, 2>>> rings;
+  rings.reserve( polygonNew->numInteriorRings() );
+
+  {
+    std::vector<std::array<double, 2>> polyline;
+    ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, zValues );
+    rings.push_back( std::move( polyline ) );
+  }
 
   for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
   {
     std::vector<std::array<double, 2>> holePolyline;
-    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, z );
-    rings.push_back( holePolyline );
+    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, zValues );
+    rings.push_back( std::move( holePolyline ) );
   }
 
   std::vector<std::array<double, 2>> points;
@@ -647,19 +653,17 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
 
   std::vector<uint32_t> indices = mapbox::earcut<uint32_t>( rings );
   std::vector<QVector3D> trianglePoints;
-  trianglePoints.reserve( points.size() );
+  trianglePoints.reserve( indices.size() );
 
   for ( size_t i = 0; i < indices.size(); i++ )
   {
     uint32_t vertexIndex = indices[i];
-    std::array<double, 2> vertex = points[vertexIndex];
 
-    double x = vertex[0];
-    double y = vertex[1];
+    float x = static_cast<float>( points[vertexIndex][0] );
+    float y = static_cast<float>( points[vertexIndex][1] );
+    float z = static_cast<float>( mInputZValueIgnored ? 0.0 : zValues[vertexIndex] );
 
-    float zValue = ( mInputZValueIgnored ? 0.0f : z[vertexIndex] );
-
-    trianglePoints.emplace_back( x / mScale, y / mScale, zValue );
+    trianglePoints.emplace_back( x / mScale, y / mScale, z );
   }
 
   return trianglePoints;
