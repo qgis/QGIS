@@ -554,6 +554,7 @@ Item {
               description: Content
               imageSource: ImageUrl
               showCloseButton: true
+              showLink: Link != ""
 
               onReadMoreClicked: {
                 Qt.openUrlExternally(Link);
