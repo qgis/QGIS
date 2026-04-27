@@ -1,6 +1,9 @@
 name: 🐧 Build AppImage (Linux)
 
 on:
+  push:
+    tags:
+      - 'qgisai-v*'
   release:
     types: ['published']
   workflow_dispatch:
@@ -36,6 +39,9 @@ jobs:
           if [ "${{ github.event_name }}" = "release" ]; then
             TAG="${{ github.event.release.tag_name }}"
             VERSION="${TAG#qgisai-v}"
+          elif [ "${{ github.event_name }}" = "push" ] && [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            VERSION="${TAG#qgisai-v}"
           else
             VERSION="${{ inputs.version }}"
           fi
@@ -63,7 +69,7 @@ jobs:
             QGIS_AI-*.AppImage
 
       - name: Upload release assets
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v') }}
         uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
         with:
           files: 'QGIS_AI-*.AppImage'

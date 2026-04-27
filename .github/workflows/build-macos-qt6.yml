@@ -5,6 +5,8 @@ on:
     branches:
       - master
       - release-*
+    tags:
+      - 'qgisai-v*'
   pull_request:
   release:
     types: ['published']
@@ -240,7 +242,7 @@ jobs:
 
       - name: Upload release assets
         uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v') }}
         with:
           files: '*.dmg'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
