@@ -1504,6 +1504,14 @@ The development version
       PreferredGdal,
     };
 
+    enum class UnknownLayerCrsBehavior /BaseType=IntEnum/
+    {
+      NoAction,
+      PromptUserForCrs,
+      UseProjectCrs,
+      UseDefaultCrs,
+    };
+
     enum class Axis /BaseType=IntEnum/
     {
       X,
