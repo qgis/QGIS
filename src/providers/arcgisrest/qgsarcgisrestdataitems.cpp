@@ -654,7 +654,7 @@ QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem(
 {
   mIconName = u"mIconAfs.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
-  setToolTip( path );
+  setToolTip( u"<p><b>FeatureServer</b></p><p>%1</p>"_s.arg( path ) );
 }
 
 void QgsArcGisFeatureServiceItem::setSupportedFormats( const QString &formats )
@@ -710,7 +710,7 @@ QgsArcGisMapServiceItem::QgsArcGisMapServiceItem(
 {
   mIconName = u"mIconAms.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
-  setToolTip( path );
+  setToolTip( u"<p><b>MapServer</b></p><p>%1</p>"_s.arg( path ) );
 }
 
 QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
@@ -763,7 +763,7 @@ QgsArcGisImageServiceItem::QgsArcGisImageServiceItem(
 {
   mIconName = u"mIconAms.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
-  setToolTip( path );
+  setToolTip( u"<p><b>ImageServer</b></p><p>%1</p>"_s.arg( path ) );
 }
 
 QVector<QgsDataItem *> QgsArcGisImageServiceItem::createChildren()
