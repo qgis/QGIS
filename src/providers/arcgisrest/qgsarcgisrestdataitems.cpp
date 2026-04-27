@@ -236,7 +236,7 @@ void addLayerItems(
 
             case Qgis::ArcGisRestServiceType::ImageServer:
             {
-              layerItem = std::make_unique< QgsArcGisImageServiceLayerItem>( parent, details.url, details.layerId, details.name, details.crs, details.format, authcfg, headers, urlPrefix );
+              layerItem = std::make_unique< QgsArcGisImageServiceLayerItem>( parent, details.url, details.name, details.crs, authcfg, headers, urlPrefix );
               break;
             }
           }
@@ -989,20 +989,11 @@ Qgis::BrowserItemFilterFlags QgsArcGisMapServiceLayerItem::filterFlags() const
 //
 
 QgsArcGisImageServiceLayerItem::QgsArcGisImageServiceLayerItem(
-  QgsDataItem *parent,
-  const QString &url,
-  const QString &id,
-  const QString &title,
-  const QgsCoordinateReferenceSystem &crs,
-  const QString &format,
-  const QString &authcfg,
-  const QgsHttpHeaders &headers,
-  const QString &urlPrefix
+  QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix
 )
   : QgsArcGisRestLayerItem( parent, url, title, crs, Qgis::BrowserLayerType::Raster, u"arcgisimageserver"_s )
 {
-  const QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
-  mUri = u"format='%1' layer='%2' url='%3'"_s.arg( format, id, trimmedUrl );
+  mUri = u"url='%1'"_s.arg( url );
   if ( !authcfg.isEmpty() )
     mUri += u" authcfg='%1'"_s.arg( authcfg );
 

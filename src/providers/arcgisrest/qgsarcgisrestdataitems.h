@@ -407,15 +407,7 @@ class QgsArcGisImageServiceLayerItem : public QgsArcGisRestLayerItem
 
   public:
     QgsArcGisImageServiceLayerItem(
-      QgsDataItem *parent,
-      const QString &url,
-      const QString &id,
-      const QString &title,
-      const QgsCoordinateReferenceSystem &crs,
-      const QString &format,
-      const QString &authcfg,
-      const QgsHttpHeaders &headers,
-      const QString &urlPrefix
+      QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix
     );
 
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
