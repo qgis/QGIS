@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=QGIS Desktop
+Name=QGIS_AI Desktop
 GenericName=Geographic Information System
 Icon=qgis
 TryExec=qgis

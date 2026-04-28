@@ -5,9 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleName</key>
-	<string>QGIS</string>
+	<string>QGIS_AI</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.qgis.qgis3</string>
+	<string>com.francemazzi.qgisai</string>
 	<key>CFBundleExecutable</key>
 	<string>@QGIS_APP_NAME@</string>
 	<key>CFBundlePackageType</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © QGIS contributors</string>
+	<string>QGIS_AI fork by Francesco Mazzi. Based on QGIS, Copyright © QGIS contributors. GPLv2+.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleVersion</key>

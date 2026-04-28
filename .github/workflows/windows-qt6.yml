@@ -71,6 +71,11 @@ jobs:
           # To make ccache work properly with precompiled headers
           ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
+      - name: 🪟 Install NSIS
+        if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
+        run: choco install nsis -y --no-progress
+        shell: bash
+
       - name: 🌱 Install dependencies and generate project files
         shell: bash
         env:
@@ -79,12 +84,23 @@ jobs:
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
 
+          IS_AI_TAG="${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}"
+          if [[ "$IS_AI_TAG" == "true" ]]; then
+            APP_NAME_OPT='-D QGIS_APP_NAME=QGIS_AI'
+            NSIS_OPT='-D CREATE_NSIS=TRUE'
+          else
+            APP_NAME_OPT=''
+            NSIS_OPT=''
+          fi
+
           cmake -S "${SOURCE_DIR}" \
                 -B "${BUILD_DIR}" \
                 -G Ninja \
                 -D CMAKE_BUILD_TYPE=Release \
                 -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
+                ${NSIS_OPT} \
+                ${APP_NAME_OPT} \
                 -D VCPKG_TARGET_TRIPLET=x64-windows-release \
                 -D VCPKG_HOST_TRIPLET=x64-windows-release \
                 -D WITH_DESKTOP=ON \
@@ -150,10 +166,13 @@ jobs:
 
       - name: Upload release assets
         if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v') }}
-        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
-          files: 'build/*-win64.zip'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref_name }}
+          files: |
+            build/*-win64.zip
+            build/*-Setup.exe
+            build/*.exe
 
       - name: Schedule download comment
         uses: ./.github/actions/post_sticky_comment

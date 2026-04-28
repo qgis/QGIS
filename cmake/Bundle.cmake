@@ -28,14 +28,14 @@ set(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 
 if(CREATE_NSIS)
-  # There is a bug in NSI that does not handle full unix paths properly. Make
-  # sure there is at least one set of four (4) backslashes.
-  set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/win_build\\\\sidebar.bmp")
+  # The win_build/sidebar.bmp referenced by upstream QGIS does not exist in
+  # this fork — leave CPACK_PACKAGE_ICON unset so NSIS uses its default header.
   set(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\qgis.exe")
-  set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
-  set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
-  set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-  set(CPACK_NSIS_CONTACT "info@qgis.org")
+  set(CPACK_NSIS_DISPLAY_NAME "QGIS_AI ${CPACK_PACKAGE_VERSION}")
+  set(CPACK_NSIS_PACKAGE_NAME "QGIS_AI")
+  set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\github.com\\\\francemazzi\\\\QGIS_AI")
+  set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\github.com\\\\francemazzi\\\\QGIS_AI")
+  set(CPACK_NSIS_CONTACT "francemazzi@gmail.com")
   set(CPACK_NSIS_MODIFY_PATH ON)
 endif()
 
