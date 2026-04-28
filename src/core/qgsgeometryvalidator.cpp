@@ -530,7 +530,13 @@ bool QgsGeometryValidator::ringInRing( const QgsCurve *inside, const QgsCurve *o
 Qgis::GeometryValidationEngine QgsGeometryValidator::defaultValidationEngine()
 {
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
+  {
     return Qgis::GeometryValidationEngine::Geos;
+  }
+  else if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 3 )
+  {
+    return Qgis::GeometryValidationEngine::Sfcgal;
+  }
 
   return Qgis::GeometryValidationEngine::QgisInternal;
 }
