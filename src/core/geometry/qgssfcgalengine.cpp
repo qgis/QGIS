@@ -592,7 +592,7 @@ bool QgsSfcgalEngine::isEmpty( const sfcgal::geometry *geom, QString *errorMsg )
   return static_cast<bool>( res );
 }
 
-bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, QgsGeometry *errorLoc )
+bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, QString *reasonMsg, QgsGeometry *errorLoc )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, false );
@@ -606,7 +606,10 @@ bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, 
 
   if ( reason && strlen( reason ) )
   {
-    sfcgal::errorHandler()->addText( QString( reason ) );
+    if ( reasonMsg )
+    {
+      *reasonMsg = QString( reason );
+    }
     free( reason );
   }
 

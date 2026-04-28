@@ -75,6 +75,7 @@ class TestQgsSfcgal : public QgsTest
 
     void fromWkt();
     void isEqual();
+    void isValid();
     void boundary();
     void centroid();
     void dropZ();
@@ -491,6 +492,34 @@ void TestQgsSfcgal::isEqual()
   QVERIFY2( *cubeSmallTranslate.get() != *cube.get(), "cubes should not be equals" );
   QVERIFY2( cubeSmallTranslate->fuzzyEqual( *( cube.get() ), 0.01 ), "Cubes Should be fuzzy equals" );
 #endif
+}
+
+void TestQgsSfcgal::isValid()
+{
+  bool isValid = false;
+  QString errorMsg;
+  QString reasonMsg;
+
+  // valid polygon
+  auto sfcgalPolygon3D = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
+  isValid = sfcgalPolygon3D->isValid();
+  QVERIFY( isValid );
+
+  isValid = QgsSfcgalEngine::isValid( sfcgalPolygon3D->sfcgalGeometry().get(), &errorMsg, &reasonMsg );
+  QVERIFY( isValid );
+  QVERIFY( errorMsg.isEmpty() );
+  QVERIFY( reasonMsg.isEmpty() );
+
+  // invalid polygon
+  QString invalid_polygon_wkt = u"POLYGON((0 0, 4 0, 4 4, 0 4, 0 0),(4 2, 5 2, 5 3, 4 3, 4 2))"_s;
+  QgsSfcgalGeometry sfcgalInvalidPolygon( invalid_polygon_wkt );
+  isValid = sfcgalInvalidPolygon.isValid();
+  QVERIFY( !isValid );
+
+  isValid = QgsSfcgalEngine::isValid( sfcgalInvalidPolygon.sfcgalGeometry().get(), &errorMsg, &reasonMsg );
+  QVERIFY( !isValid );
+  QVERIFY( errorMsg.isEmpty() );
+  QCOMPARE( reasonMsg, u"exterior ring and interior ring 0 have the same orientation"_s );
 }
 
 void TestQgsSfcgal::boundary()
