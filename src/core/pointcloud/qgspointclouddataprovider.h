@@ -173,6 +173,7 @@ class CORE_EXPORT QgsPointCloudDataProvider : public QgsDataProvider
      *
      * \param n the number of the sub index to load.
      * \param emitDataChanged whether the dataChanged() signal should be emitted when the sub index is loaded. (since QGIS 4.2)
+     * \note The dataChanged() signal will only be emitted once when multiple sub indexes finish loading within a 1 second time window.
      * \since QGIS 4.0
      */
     virtual void loadSubIndex( int n, bool emitDataChanged = false )

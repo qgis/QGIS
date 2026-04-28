@@ -153,6 +153,10 @@ Only applies to providers that support multiple indexes
                         signal should be emitted when the sub index is
                         loaded. (since QGIS 4.2)
 
+.. note::
+
+   The :py:func:`~QgsPointCloudDataProvider.dataChanged` signal will only be emitted once when multiple sub indexes finish loading within a 1 second time window.
+
 .. versionadded:: 4.0
 %End
 

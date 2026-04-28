@@ -1355,7 +1355,7 @@ void TestQgsIdentify::identifyVirtualPointCloud()
   QSignalSpy spy( pointCloud.get(), &QgsMapLayer::dataChanged );
 
   for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
-    pointCloud->dataProvider()->loadSubIndex( i );
+    pointCloud->dataProvider()->loadSubIndex( i, true ); // emit dataChanged signal when done loading
 
   QVERIFY( spy.wait() );
 
