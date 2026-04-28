@@ -4047,6 +4047,9 @@ QgsGeometry.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
 QgsGeometry.ValidationMethod.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
 QgsGeometry.ValidatorGeos.is_monkey_patched = True
 QgsGeometry.ValidatorGeos.__doc__ = "Use GEOS validation methods"
+QgsGeometry.Sfcgal = Qgis.GeometryValidationEngine.Sfcgal
+QgsGeometry.Sfcgal.is_monkey_patched = True
+QgsGeometry.Sfcgal.__doc__ = "Use SFCGAL validation methods. Only available for QGIS builds with SFCGAL support enabled. \n.. versionadded:: 4.4"
 Qgis.GeometryValidationEngine.__doc__ = """Available engines for validating geometries.
 
 .. versionadded:: 3.22
@@ -4058,6 +4061,10 @@ Qgis.GeometryValidationEngine.__doc__ = """Available engines for validating geom
 * ``Geos``: Use GEOS validation methods
 
   Available as ``QgsGeometry.ValidatorGeos`` in older QGIS releases.
+
+* ``Sfcgal``: Use SFCGAL validation methods. Only available for QGIS builds with SFCGAL support enabled.
+
+  .. versionadded:: 4.4
 
 
 """
