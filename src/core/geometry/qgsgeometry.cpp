@@ -47,6 +47,12 @@ email                : morb at ozemail dot com dot au
 #include "qgstriangulatedsurface.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+#ifdef WITH_SFCGAL
+#include "qgssfcgalgeometry.h"
+#endif
+
 #include <QCache>
 #include <QString>
 
@@ -3845,6 +3851,30 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
         }
         return;
       }
+      break;
+    }
+    case Qgis::GeometryValidationEngine::Sfcgal:
+    {
+#ifdef WITH_SFCGAL
+      QString errorMsg;
+      QgsGeometry errorLoc;
+      const QgsSfcgalGeometry sfcgalGeom( d->geometry.get() );
+      if ( !QgsSfcgalEngine::isValid( sfcgalGeom.sfcgalGeometry().get(), nullptr, &errorMsg, &errorLoc ) )
+      {
+        if ( errorLoc.isNull() )
+        {
+          errors.append( QgsGeometry::Error( errorMsg ) );
+        }
+        else
+        {
+          const QgsPointXY point = errorLoc.asPoint();
+          errors.append( QgsGeometry::Error( errorMsg, point ) );
+        }
+        return;
+      }
+#else
+      throw QgsNotSupportedException( u"This operation requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL."_s );
+#endif
     }
   }
 }

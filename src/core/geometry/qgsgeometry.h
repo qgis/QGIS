@@ -3122,6 +3122,8 @@ class CORE_EXPORT QgsGeometry
      *
      * The \a flags parameter indicates optional flags which control the type of validity checking performed.
      *
+     * \throws QgsNotSupportedException when method is not supported
+     *
      */
     void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
