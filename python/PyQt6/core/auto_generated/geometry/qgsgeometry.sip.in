@@ -3252,6 +3252,8 @@ Validates geometry and produces a list of geometry errors. The
 
 The ``flags`` parameter indicates optional flags which control the type
 of validity checking performed.
+
+:raises QgsNotSupportedException: when method is not supported
 %End
 
     void normalize();
