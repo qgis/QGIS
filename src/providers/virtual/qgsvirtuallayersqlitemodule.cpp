@@ -239,11 +239,8 @@ struct VTable
       QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
       if ( pkAttributeIndexes.size() == 1 )
       {
-        // Only use columns for primary key for integer types (idxNum=1)
-        // For others (e.g. PostgreSQL uuid columns becomes a QString)),
-        // sqlite3_value_int() of the text value returns 0.
-        // Leaving mPkColumn at -1 makes such constraints fall through to the generic
-        // expression-filter path (idxNum=3), which handles text correctly.
+        // Only use integer columns as primary key cloumn
+        // since sqlite3_value_int() is used
         const int pkIdx = pkAttributeIndexes.at( 0 );
         switch ( mFields.at( pkIdx ).type() )
         {
@@ -251,7 +248,6 @@ struct VTable
           case QMetaType::Type::UInt:
           case QMetaType::Type::LongLong:
           case QMetaType::Type::ULongLong:
-          case QMetaType::Type::Bool:
             mPkColumn = pkIdx;
             break;
           default:
