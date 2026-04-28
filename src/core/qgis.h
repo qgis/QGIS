@@ -2219,6 +2219,7 @@ int QgisEvent = QEvent::User + 1;
       {
       QgisInternal SIP_MONKEYPATCH_COMPAT_NAME( ValidatorQgisInternal ), //!< Use internal QgsGeometryValidator method
       Geos SIP_MONKEYPATCH_COMPAT_NAME( ValidatorGeos ), //!< Use GEOS validation methods
+      Sfcgal, //!< Use SFCGAL validation methods. Only available for QGIS builds with SFCGAL support enabled. \since QGIS 4.4
     };
     Q_ENUM( GeometryValidationEngine )
 
