@@ -3,7 +3,6 @@
      --------------------------------------
     Date                 : April 2026
     Copyright            : (C) 2026 by Nyall Dawson
-
     Email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
