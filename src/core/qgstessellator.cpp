@@ -634,7 +634,7 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
     zValues.reserve( allVerticesCount );
 
   std::vector<std::vector<std::array<double, 2>>> rings;
-  rings.reserve( polygonNew->numInteriorRings() );
+  rings.reserve( polygonNew->numInteriorRings() + 1 );
 
   {
     std::vector<std::array<double, 2>> polyline;
