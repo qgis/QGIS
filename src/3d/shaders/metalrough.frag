@@ -244,7 +244,7 @@ vec3 pbrModel(const in int lightIndex,
         specularFactor *= normalDistribution(n, h, alpha);
     }
     vec3 specularColor = lights[lightIndex].color;
-    vec3 specular = specularColor * specularFactor;
+    vec3 specular = specularColor * specularFactor * max(sDotN, 0.0);
 
     // Blend between diffuse and specular to conserver energy
     vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
