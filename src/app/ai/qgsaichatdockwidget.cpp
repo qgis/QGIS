@@ -1,16 +1,17 @@
 #include "qgsaichatdockwidget.h"
 
+#include <algorithm>
+#include <utility>
+
+#include "qgisapp.h"
 #include "qgsaiagentsessionmanager.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
-#include "qgisapp.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgssettings.h"
 
-#include <algorithm>
-#include <utility>
 #include <QAction>
 #include <QActionGroup>
 #include <QDialog>
@@ -35,55 +36,58 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
 #include <QTextCursor>
 #include <QTextEdit>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 namespace
 {
   struct ModelEntry
   {
-    QString displayName;
-    QString model;
-    QgsAiModelRouter::Provider provider;
+      QString displayName;
+      QString model;
+      QgsAiModelRouter::Provider provider;
   };
 
   QVector<ModelEntry> predefinedModels()
   {
     return {
-      { QStringLiteral( "GPT-4o" ), QStringLiteral( "gpt-4o" ), QgsAiModelRouter::Provider::OpenAi },
-      { QStringLiteral( "GPT-4.1 mini" ), QStringLiteral( "gpt-4.1-mini" ), QgsAiModelRouter::Provider::OpenAi },
-      { QStringLiteral( "Claude Sonnet 4" ), QStringLiteral( "claude-sonnet-4-20250514" ), QgsAiModelRouter::Provider::Claude },
-      { QStringLiteral( "Claude Sonnet 3.7" ), QStringLiteral( "claude-3-7-sonnet-20250219" ), QgsAiModelRouter::Provider::Claude },
-      { QStringLiteral( "Claude Opus 4.1" ), QStringLiteral( "claude-opus-4-1-20250805" ), QgsAiModelRouter::Provider::Claude },
-      { QStringLiteral( "Plan backend" ), QStringLiteral( "managed-plan" ), QgsAiModelRouter::Provider::Plan },
+      { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
+      { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
+      { u"Claude Sonnet 4"_s, u"claude-sonnet-4-20250514"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Claude Sonnet 3.7"_s, u"claude-3-7-sonnet-20250219"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
   }
 
   QString modeLabelToAgent( const QString &label )
   {
-    if ( label == QLatin1String( "Plan" ) )
-      return QStringLiteral( "planner" );
-    if ( label == QLatin1String( "Agent" ) )
-      return QStringLiteral( "editor" );
-    if ( label == QLatin1String( "Ask" ) )
-      return QStringLiteral( "reviewer" );
-    return QStringLiteral( "planner" );
+    if ( label == "Plan"_L1 )
+      return u"planner"_s;
+    if ( label == "Agent"_L1 )
+      return u"editor"_s;
+    if ( label == "Ask"_L1 )
+      return u"reviewer"_s;
+    return u"planner"_s;
   }
 
   QString agentToModeLabel( const QString &agent )
   {
-    if ( agent == QLatin1String( "planner" ) )
-      return QStringLiteral( "Plan" );
-    if ( agent == QLatin1String( "editor" ) )
-      return QStringLiteral( "Agent" );
-    if ( agent == QLatin1String( "reviewer" ) )
-      return QStringLiteral( "Ask" );
-    return QStringLiteral( "Plan" );
+    if ( agent == "planner"_L1 )
+      return u"Plan"_s;
+    if ( agent == "editor"_L1 )
+      return u"Agent"_s;
+    if ( agent == "reviewer"_L1 )
+      return u"Ask"_s;
+    return u"Plan"_s;
   }
-}
+} //namespace
 
 Q_DECLARE_METATYPE( ModelEntry )
 
@@ -93,7 +97,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   , mModelRouter( modelRouter )
   , mReviewEngine( reviewEngine )
 {
-  setObjectName( QStringLiteral( "AiAssistant" ) );
+  setObjectName( u"AiAssistant"_s );
 
   QWidget *container = new QWidget( this );
   QVBoxLayout *layout = new QVBoxLayout( container );
@@ -106,7 +110,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->addWidget( mTranscript, 1 );
 
   mFileContextChipRow = new QWidget( container );
-  mFileContextChipRow->setObjectName( QStringLiteral( "aiAttachmentChipRow" ) );
+  mFileContextChipRow->setObjectName( u"aiAttachmentChipRow"_s );
   mFileContextChipLayout = new QHBoxLayout( mFileContextChipRow );
   mFileContextChipLayout->setContentsMargins( 0, 0, 0, 0 );
   mFileContextChipLayout->setSpacing( 4 );
@@ -123,11 +127,11 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->addWidget( mInputTextEdit );
 
   mMentionPopup = new QFrame( this, Qt::Popup );
-  mMentionPopup->setObjectName( QStringLiteral( "aiMentionPopup" ) );
+  mMentionPopup->setObjectName( u"aiMentionPopup"_s );
   QVBoxLayout *mentionLayout = new QVBoxLayout( mMentionPopup );
   mentionLayout->setContentsMargins( 0, 0, 0, 0 );
   mMentionList = new QListWidget( mMentionPopup );
-  mMentionList->setObjectName( QStringLiteral( "aiMentionList" ) );
+  mMentionList->setObjectName( u"aiMentionList"_s );
   mMentionList->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mMentionList->setUniformItemSizes( true );
   mentionLayout->addWidget( mMentionList );
@@ -152,22 +156,22 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   bottomBar->addStretch( 1 );
 
   mAttachButton = new QToolButton( container );
-  mAttachButton->setObjectName( QStringLiteral( "aiAttachFileButton" ) );
-  mAttachButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mEditorWidgetAttachment.svg" ) ) );
+  mAttachButton->setObjectName( u"aiAttachFileButton"_s );
+  mAttachButton->setIcon( QgsApplication::getThemeIcon( u"mEditorWidgetAttachment.svg"_s ) );
   mAttachButton->setAutoRaise( true );
   mAttachButton->setFixedSize( 28, 28 );
   mAttachButton->setToolTip( tr( "Attach external files" ) );
   bottomBar->addWidget( mAttachButton );
 
   mSettingsButton = new QToolButton( container );
-  mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+  mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
   mSettingsButton->setAutoRaise( true );
   mSettingsButton->setFixedSize( 28, 28 );
   mSettingsButton->setToolTip( tr( "Provider settings" ) );
   bottomBar->addWidget( mSettingsButton );
 
   mSendButton = new QToolButton( container );
-  mSendButton->setText( QStringLiteral( "↑" ) );
+  mSendButton->setText( u"↑"_s );
   mSendButton->setToolTip( tr( "Send (Enter)" ) );
   mSendButton->setFixedSize( 28, 28 );
   bottomBar->addWidget( mSendButton );
@@ -175,7 +179,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->addLayout( bottomBar );
 
   mRuntimeStatusLabel = new QLabel( container );
-  mRuntimeStatusLabel->setObjectName( QStringLiteral( "aiRuntimeStatusLabel" ) );
+  mRuntimeStatusLabel->setObjectName( u"aiRuntimeStatusLabel"_s );
   mRuntimeStatusLabel->setText( tr( "Provider state: idle - Ready." ) );
 
   QHBoxLayout *statusRow = new QHBoxLayout();
@@ -184,7 +188,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   statusRow->addWidget( mRuntimeStatusLabel, 1 );
 
   mCancelButton = new QPushButton( tr( "Cancel" ), container );
-  mCancelButton->setObjectName( QStringLiteral( "aiCancelRequestButton" ) );
+  mCancelButton->setObjectName( u"aiCancelRequestButton"_s );
   mCancelButton->setEnabled( false );
   statusRow->addWidget( mCancelButton );
   layout->addLayout( statusRow );
@@ -221,7 +225,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   if ( mSessionManager )
   {
     const QString initialLabel = agentToModeLabel( mSessionManager->activeAgent() );
-    mModePill->setText( initialLabel + QStringLiteral( " ▾" ) );
+    mModePill->setText( initialLabel + u" ▾"_s );
     const QList<QAction *> modeActions = mModePill->menu()->actions();
     for ( QAction *a : modeActions )
     {
@@ -236,7 +240,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
         return;
       }
       closeStreamingAssistantMessage();
-      appendTranscriptLine( QStringLiteral( "[%1] %2" ).arg( qgsAiChatRoleToString( message.role ), message.content ) );
+      appendTranscriptLine( u"[%1] %2"_s.arg( qgsAiChatRoleToString( message.role ), message.content ) );
     } );
     connect( mSessionManager, &QgsAiAgentSessionManager::proposalCreated, this, [this]( const QString & ) { refreshProposalList(); } );
     connect( mSessionManager, &QgsAiAgentSessionManager::responseChunkReceived, this, &QgsAiChatDockWidget::appendStreamChunk );
@@ -279,9 +283,7 @@ bool QgsAiChatDockWidget::eventFilter( QObject *watched, QEvent *event )
       if ( keyEvent->key() == Qt::Key_Down || keyEvent->key() == Qt::Key_Up )
       {
         const int row = mMentionList->currentRow();
-        const int nextRow = keyEvent->key() == Qt::Key_Down
-                            ? std::min( row + 1, mMentionList->count() - 1 )
-                            : std::max( row - 1, 0 );
+        const int nextRow = keyEvent->key() == Qt::Key_Down ? std::min( row + 1, mMentionList->count() - 1 ) : std::max( row - 1, 0 );
         mMentionList->setCurrentRow( nextRow );
         return true;
       }
@@ -297,8 +299,7 @@ bool QgsAiChatDockWidget::eventFilter( QObject *watched, QEvent *event )
       }
     }
 
-    if ( ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
-         && !( keyEvent->modifiers() & Qt::ShiftModifier ) )
+    if ( ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter ) && !( keyEvent->modifiers() & Qt::ShiftModifier ) )
     {
       sendMessage();
       return true;
@@ -312,7 +313,7 @@ void QgsAiChatDockWidget::initModeMenu()
   QMenu *menu = new QMenu( mModePill );
   QActionGroup *group = new QActionGroup( menu );
   group->setExclusive( true );
-  const QStringList labels = { QStringLiteral( "Plan" ), QStringLiteral( "Agent" ), QStringLiteral( "Ask" ) };
+  const QStringList labels = { u"Plan"_s, u"Agent"_s, u"Ask"_s };
   for ( const QString &label : labels )
   {
     QAction *action = menu->addAction( label );
@@ -320,7 +321,7 @@ void QgsAiChatDockWidget::initModeMenu()
     group->addAction( action );
   }
   mModePill->setMenu( menu );
-  mModePill->setText( QStringLiteral( "Plan ▾" ) );
+  mModePill->setText( u"Plan ▾"_s );
   connect( group, &QActionGroup::triggered, this, &QgsAiChatDockWidget::onModeSelected );
 }
 
@@ -380,7 +381,7 @@ void QgsAiChatDockWidget::initModelMenu()
       }
     }
   }
-  mModelPill->setText( initialDisplay + QStringLiteral( " ▾" ) );
+  mModelPill->setText( initialDisplay + u" ▾"_s );
 
   connect( group, &QActionGroup::triggered, this, &QgsAiChatDockWidget::onModelSelected );
 }
@@ -417,7 +418,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
 
   if ( !mStreamingInProgress )
   {
-    mTranscript->append( QStringLiteral( "[assistant] " ) );
+    mTranscript->append( u"[assistant] "_s );
     QTextCursor cursor = mTranscript->textCursor();
     cursor.movePosition( QTextCursor::End );
     mStreamingContentStartPosition = cursor.position();
@@ -465,7 +466,7 @@ void QgsAiChatDockWidget::setRequestRunning( bool running )
   mRequestRunning = running;
   if ( mSendButton )
   {
-    mSendButton->setText( running ? QStringLiteral( "◼" ) : QStringLiteral( "↑" ) );
+    mSendButton->setText( running ? u"◼"_s : u"↑"_s );
     mSendButton->setToolTip( running ? tr( "Stop" ) : tr( "Send (Enter)" ) );
   }
   if ( mInputTextEdit )
@@ -489,7 +490,7 @@ void QgsAiChatDockWidget::onModeSelected( QAction *action )
   if ( !action )
     return;
   const QString label = action->text();
-  mModePill->setText( label + QStringLiteral( " ▾" ) );
+  mModePill->setText( label + u" ▾"_s );
   if ( mSessionManager )
     mSessionManager->setActiveAgent( modeLabelToAgent( label ) );
 }
@@ -502,11 +503,7 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
   if ( entry.displayName.isEmpty() )
     return;
 
-  const QList<QgsAiModelRouter::Provider> providers = {
-    QgsAiModelRouter::Provider::OpenAi,
-    QgsAiModelRouter::Provider::Claude,
-    QgsAiModelRouter::Provider::Plan
-  };
+  const QList<QgsAiModelRouter::Provider> providers = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
   for ( QgsAiModelRouter::Provider provider : providers )
   {
     QgsAiModelRouter::ProviderSettings settings = mModelRouter->providerSettings( provider );
@@ -521,7 +518,7 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
     }
     mModelRouter->setProviderSettings( provider, settings );
   }
-  mModelPill->setText( entry.displayName + QStringLiteral( " ▾" ) );
+  mModelPill->setText( entry.displayName + u" ▾"_s );
 }
 
 void QgsAiChatDockWidget::sendMessage()
@@ -606,19 +603,19 @@ void QgsAiChatDockWidget::rebuildAttachmentChips()
   for ( const AttachedFile &file : std::as_const( mAttachedFiles ) )
   {
     QWidget *chip = new QWidget( mFileContextChipRow );
-    chip->setObjectName( QStringLiteral( "aiAttachmentChip" ) );
-    chip->setStyleSheet( QStringLiteral( "QWidget#aiAttachmentChip { border: 1px solid palette(mid); border-radius: 10px; padding: 1px 4px; }" ) );
+    chip->setObjectName( u"aiAttachmentChip"_s );
+    chip->setStyleSheet( u"QWidget#aiAttachmentChip { border: 1px solid palette(mid); border-radius: 10px; padding: 1px 4px; }"_s );
     QHBoxLayout *chipLayout = new QHBoxLayout( chip );
     chipLayout->setContentsMargins( 6, 1, 2, 1 );
     chipLayout->setSpacing( 3 );
 
-    QLabel *label = new QLabel( QStringLiteral( "📎 %1" ).arg( QFileInfo( file.filePath ).fileName() ), chip );
+    QLabel *label = new QLabel( u"📎 %1"_s.arg( QFileInfo( file.filePath ).fileName() ), chip );
     label->setTextInteractionFlags( Qt::TextSelectableByMouse );
     label->setToolTip( file.filePath );
     chipLayout->addWidget( label );
 
     QToolButton *removeButton = new QToolButton( chip );
-    removeButton->setText( QStringLiteral( "×" ) );
+    removeButton->setText( u"×"_s );
     removeButton->setAutoRaise( true );
     removeButton->setFixedSize( 18, 18 );
     removeButton->setToolTip( tr( "Remove attachment" ) );
@@ -659,7 +656,7 @@ void QgsAiChatDockWidget::updateMentionPopup()
 
   const QTextCursor cursor = mInputTextEdit->textCursor();
   const QString textBeforeCursor = mInputTextEdit->toPlainText().left( cursor.position() );
-  const int atPosition = textBeforeCursor.lastIndexOf( QLatin1Char( '@' ) );
+  const int atPosition = textBeforeCursor.lastIndexOf( '@'_L1 );
   if ( atPosition < 0 )
   {
     hideMentionPopup();
@@ -673,7 +670,7 @@ void QgsAiChatDockWidget::updateMentionPopup()
   }
 
   QString query = textBeforeCursor.mid( atPosition + 1 );
-  if ( query.contains( QRegularExpression( QStringLiteral( "\\s" ) ) ) || query.contains( QLatin1Char( '"' ) ) )
+  if ( query.contains( QRegularExpression( u"\\s"_s ) ) || query.contains( '"'_L1 ) )
   {
     hideMentionPopup();
     return;
@@ -722,11 +719,9 @@ void QgsAiChatDockWidget::insertMentionFile( const QString &relativePath )
   cursor.setPosition( mMentionStartPosition );
   cursor.setPosition( endPosition, QTextCursor::KeepAnchor );
 
-  const bool needsQuotes = relativePath.contains( QRegularExpression( QStringLiteral( "\\s" ) ) );
-  const QString mention = needsQuotes
-                          ? QStringLiteral( "@\"%1\"" ).arg( relativePath )
-                          : QStringLiteral( "@%1" ).arg( relativePath );
-  cursor.insertText( mention + QLatin1Char( ' ' ) );
+  const bool needsQuotes = relativePath.contains( QRegularExpression( u"\\s"_s ) );
+  const QString mention = needsQuotes ? u"@\"%1\""_s.arg( relativePath ) : u"@%1"_s.arg( relativePath );
+  cursor.insertText( mention + ' '_L1 );
   mInputTextEdit->setTextCursor( cursor );
   hideMentionPopup();
 }
@@ -748,7 +743,7 @@ QList<QgsAiChatContextFile> QgsAiChatDockWidget::contextFilesForCurrentMessage( 
   if ( !mSessionManager )
     return contextFiles;
 
-  static const QRegularExpression mentionRe( QStringLiteral( "@\"([^\"]+)\"|@([^\\s]+)" ) );
+  static const QRegularExpression mentionRe( u"@\"([^\"]+)\"|@([^\\s]+)"_s );
   QRegularExpressionMatchIterator it = mentionRe.globalMatch( text );
   while ( it.hasNext() )
   {
@@ -832,7 +827,7 @@ void QgsAiChatDockWidget::acceptPartialProposal()
     return;
 
   bool ok = false;
-  const QString input = QInputDialog::getText( this, tr( "Accept partial proposal" ), tr( "Hunk indices (comma separated, zero based):" ), QLineEdit::Normal, QStringLiteral( "0" ), &ok );
+  const QString input = QInputDialog::getText( this, tr( "Accept partial proposal" ), tr( "Hunk indices (comma separated, zero based):" ), QLineEdit::Normal, u"0"_s, &ok );
   if ( !ok || input.trimmed().isEmpty() )
     return;
 
@@ -872,17 +867,13 @@ void QgsAiChatDockWidget::openProviderSettings()
   QLineEdit *openAiModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::OpenAi ).model, &dialog );
   QLineEdit *openAiKey = new QLineEdit( &dialog );
   openAiKey->setEchoMode( QLineEdit::Password );
-  openAiKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi )
-                                   ? tr( "Saved locally — enter a new key only to replace it" )
-                                   : tr( "sk-..." ) );
+  openAiKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-..." ) );
 
   QLineEdit *claudeEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).endpoint, &dialog );
   QLineEdit *claudeModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).model, &dialog );
   QLineEdit *claudeKey = new QLineEdit( &dialog );
   claudeKey->setEchoMode( QLineEdit::Password );
-  claudeKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
-                                   ? tr( "Saved locally — enter a new key only to replace it" )
-                                   : tr( "anthropic key..." ) );
+  claudeKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "anthropic key..." ) );
 
   QLineEdit *planEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).endpoint, &dialog );
   QLineEdit *planAuthCfg = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).authConfigId, &dialog );
@@ -901,7 +892,8 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan session token" ), planToken );
   layout->addLayout( form );
 
-  QLabel *helpLabel = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings and do not require the QGIS master authentication password. Leave API key fields empty to keep the current saved value." ), &dialog );
+  QLabel *helpLabel
+    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings and do not require the QGIS master authentication password. Leave API key fields empty to keep the current saved value." ), &dialog );
   helpLabel->setWordWrap( true );
   layout->addWidget( helpLabel );
 
@@ -951,7 +943,7 @@ void QgsAiChatDockWidget::showEvent( QShowEvent *event )
 void QgsAiChatDockWidget::maybeShowWelcomeBanner()
 {
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis_ai/welcome_seen" ), false ).toBool() )
+  if ( settings.value( u"qgis_ai/welcome_seen"_s, false ).toBool() )
     return;
 
   if ( !mModelRouter )
@@ -963,7 +955,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
   {
-    settings.setValue( QStringLiteral( "qgis_ai/welcome_seen" ), true );
+    settings.setValue( u"qgis_ai/welcome_seen"_s, true );
     return;
   }
 
@@ -972,14 +964,8 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
     return;
 
   QPushButton *settingsButton = new QPushButton( tr( "Open AI settings" ) );
-  QgsMessageBarItem *item = new QgsMessageBarItem(
-    tr( "AI Assistant" ),
-    tr( "Configure an OpenAI or Anthropic API key to start using the AI assistant." ),
-    settingsButton,
-    Qgis::MessageLevel::Info,
-    0,
-    messageBar
-  );
+  QgsMessageBarItem *item
+    = new QgsMessageBarItem( tr( "AI Assistant" ), tr( "Configure an OpenAI or Anthropic API key to start using the AI assistant." ), settingsButton, Qgis::MessageLevel::Info, 0, messageBar );
 
   connect( settingsButton, &QPushButton::clicked, this, [this, messageBar, item]() {
     openProviderSettings();
@@ -987,5 +973,5 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   } );
 
   messageBar->pushItem( item );
-  settings.setValue( QStringLiteral( "qgis_ai/welcome_seen" ), true );
+  settings.setValue( u"qgis_ai/welcome_seen"_s, true );
 }

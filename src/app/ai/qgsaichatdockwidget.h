@@ -1,9 +1,9 @@
 #ifndef QGSAICHATDOCKWIDGET_H
 #define QGSAICHATDOCKWIDGET_H
 
+#include "qgis_app.h"
 #include "qgsaiagentsessionmanager.h"
 #include "qgsdockwidget.h"
-#include "qgis_app.h"
 
 #include <QList>
 #include <QPointer>
@@ -71,8 +71,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
     struct AttachedFile
     {
-      QString filePath;
-      bool allowExternal = true;
+        QString filePath;
+        bool allowExternal = true;
     };
 
     QPointer<QgsAiAgentSessionManager> mSessionManager;
