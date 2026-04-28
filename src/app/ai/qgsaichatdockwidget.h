@@ -15,6 +15,7 @@ class QHBoxLayout;
 class QLabel;
 class QListWidget;
 class QPushButton;
+class QShowEvent;
 class QTextEdit;
 class QToolButton;
 
@@ -30,6 +31,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
     void sendMessage();
@@ -65,6 +67,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QList<QgsAiChatContextFile> contextFilesForCurrentMessage( const QString &text ) const;
     bool addAttachedFile( const QString &path );
     void setRequestRunning( bool running );
+    void maybeShowWelcomeBanner();
 
     struct AttachedFile
     {

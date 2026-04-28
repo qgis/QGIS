@@ -4,6 +4,10 @@
 #include "qgsaimodelrouter.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgssettings.h"
 
 #include <algorithm>
 #include <utility>
@@ -936,4 +940,52 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   if ( !errorMessages.isEmpty() )
     QMessageBox::warning( this, tr( "Provider configuration warnings" ), errorMessages.trimmed() );
+}
+
+void QgsAiChatDockWidget::showEvent( QShowEvent *event )
+{
+  QgsDockWidget::showEvent( event );
+  maybeShowWelcomeBanner();
+}
+
+void QgsAiChatDockWidget::maybeShowWelcomeBanner()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis_ai/welcome_seen" ), false ).toBool() )
+    return;
+
+  if ( !mModelRouter )
+    return;
+
+  // If the user already has a key for any of the standard providers, don't
+  // bother them — just remember we've seen it and move on.
+  if ( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi )
+       || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
+       || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
+  {
+    settings.setValue( QStringLiteral( "qgis_ai/welcome_seen" ), true );
+    return;
+  }
+
+  QgsMessageBar *messageBar = QgisApp::instance() ? QgisApp::instance()->messageBar() : nullptr;
+  if ( !messageBar )
+    return;
+
+  QPushButton *settingsButton = new QPushButton( tr( "Open AI settings" ) );
+  QgsMessageBarItem *item = new QgsMessageBarItem(
+    tr( "AI Assistant" ),
+    tr( "Configure an OpenAI or Anthropic API key to start using the AI assistant." ),
+    settingsButton,
+    Qgis::MessageLevel::Info,
+    0,
+    messageBar
+  );
+
+  connect( settingsButton, &QPushButton::clicked, this, [this, messageBar, item]() {
+    openProviderSettings();
+    messageBar->popWidget( item );
+  } );
+
+  messageBar->pushItem( item );
+  settings.setValue( QStringLiteral( "qgis_ai/welcome_seen" ), true );
 }
