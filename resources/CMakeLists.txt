@@ -6,6 +6,7 @@ file(GLOB_RECURSE THEMES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} themes/*)
 file(GLOB_RECURSE DATA_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} data/*)
 file(GLOB_RECURSE METADATA_ISO_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} metadata-ISO/*)
 file(GLOB_RECURSE PALETTES_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} palettes/*)
+file(GLOB FILES_3D LIST_DIRECTORIES FALSE RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 3d/*)
 
 # Individual files to install (for srs.db, see below)
 set(RESOURCES_FILES
@@ -20,6 +21,7 @@ set(RESOURCES_FILES
   ${DATA_FILES}
   ${METADATA_ISO_FILES}
   ${PALETTES_FILES}
+  ${FILES_3D}
 )
 
 # OpenCL, also install opencl_programs
@@ -78,6 +80,18 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     ${LANDINGPAGE_OUTPUT_PATH}/
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/yarn_commands.cmake
+  )
+
+  # see outputDir in: resources/server/src/landingpage/vue.config.js
+  cmake_path(
+    APPEND LANDINGPAGE_OUTPUT_PATH
+    "../../api/ogc/static/landingpage"
+    OUTPUT_VARIABLE LANDINGPAGE_YARN_OUTPUTDIR
+  )
+
+  install(
+    DIRECTORY ${LANDINGPAGE_YARN_OUTPUTDIR}
+    DESTINATION ${QGIS_DATA_DIR}/resources/server/api/ogc/static
   )
 endif()
 

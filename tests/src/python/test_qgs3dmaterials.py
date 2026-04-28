@@ -11,6 +11,7 @@ import unittest
 from qgis.core import (
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
+    QgsMetalRoughTexturedMaterialSettings,
     QgsNullMaterialSettings,
     QgsPhongMaterialSettings,
     QgsPhongTexturedMaterialSettings,
@@ -434,6 +435,170 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings.writeXml(element, QgsReadWriteContext())
 
         settings2 = QgsMetalRoughMaterialSettings()
+        settings2.readXml(element, QgsReadWriteContext())
+
+        self.assertEqual(settings, settings2)
+
+
+class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
+    def test_getters_setters(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
+
+        # Test default values
+        self.assertFalse(settings.baseColorTexturePath())
+        self.assertFalse(settings.metalnessTexturePath())
+        self.assertFalse(settings.roughnessTexturePath())
+        self.assertFalse(settings.ambientOcclusionTexturePath())
+        self.assertFalse(settings.normalTexturePath())
+        self.assertFalse(settings.emissionTexturePath())
+        self.assertEqual(settings.emissionFactor(), 1)
+        self.assertEqual(settings.textureScale(), 1)
+        self.assertEqual(settings.textureRotation(), 0)
+
+        # Test setters/getters
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertEqual(settings.baseColorTexturePath(), "/path/to/base_texture.png")
+
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertEqual(
+            settings.metalnessTexturePath(), "/path/to/metalness_texture.png"
+        )
+
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertEqual(
+            settings.roughnessTexturePath(), "/path/to/roughness_texture.png"
+        )
+
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertEqual(
+            settings.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
+        )
+
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertEqual(settings.normalTexturePath(), "/path/to/normal_texture.png")
+
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(
+            settings.emissionTexturePath(), "/path/to/emission_texture.png"
+        )
+
+        settings.setEmissionFactor(2.2)
+        self.assertEqual(settings.emissionFactor(), 2.2)
+        settings.setTextureScale(12.1)
+        self.assertEqual(settings.textureScale(), 12.1)
+        settings.setTextureRotation(45)
+        self.assertEqual(settings.textureRotation(), 45)
+
+    def test_clone(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+
+        settings.setTextureScale(12.1)
+        settings.setTextureRotation(45)
+        settings.setEmissionFactor(2.2)
+
+        cloned = settings.clone()
+        self.assertEqual(cloned.baseColorTexturePath(), "/path/to/base_texture.png")
+        self.assertEqual(
+            cloned.metalnessTexturePath(), "/path/to/metalness_texture.png"
+        )
+        self.assertEqual(
+            cloned.roughnessTexturePath(), "/path/to/roughness_texture.png"
+        )
+        self.assertEqual(
+            cloned.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
+        )
+        self.assertEqual(cloned.normalTexturePath(), "/path/to/normal_texture.png")
+        self.assertEqual(cloned.emissionTexturePath(), "/path/to/emission_texture.png")
+        self.assertEqual(cloned.emissionFactor(), 2.2)
+        self.assertEqual(cloned.textureScale(), 12.1)
+        self.assertEqual(cloned.textureRotation(), 45)
+
+    def test_equality(self):
+        settings1 = QgsMetalRoughTexturedMaterialSettings()
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
+
+        self.assertEqual(settings1, settings2)
+
+        settings2.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setNormalTexturePath("/path/to/normal_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionFactor(2.2)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionFactor(2.2)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setTextureScale(9)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureScale(9)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setTextureRotation(19)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setTextureRotation(19)
+        self.assertEqual(settings1, settings2)
+
+    def test_equals_method(self):
+        settings1 = QgsMetalRoughTexturedMaterialSettings()
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
+
+        self.assertTrue(settings1.equals(settings2))
+
+        settings2.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertFalse(settings1.equals(settings2))
+
+        settings1.setBaseColorTexturePath("/path/to/base_texture.png")
+        self.assertTrue(settings1.equals(settings2))
+
+    def test_xml_roundtrip(self):
+        settings = QgsMetalRoughTexturedMaterialSettings()
+        settings.setBaseColorTexturePath("/path/to/base_texture.png")
+        settings.setMetalnessTexturePath("/path/to/metalness_texture.png")
+        settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
+        settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
+        settings.setNormalTexturePath("/path/to/normal_texture.png")
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        settings.setEmissionFactor(2.2)
+        settings.setTextureScale(12.1)
+        settings.setTextureRotation(45)
+
+        doc = QDomDocument("settings")
+        element = doc.createElement("settings")
+        settings.writeXml(element, QgsReadWriteContext())
+
+        settings2 = QgsMetalRoughTexturedMaterialSettings()
         settings2.readXml(element, QgsReadWriteContext())
 
         self.assertEqual(settings, settings2)

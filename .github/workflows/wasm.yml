@@ -13,7 +13,8 @@ on:
   pull_request:
 
 permissions:
-  content: read
+  contents: read
+  packages: write
 
 jobs:
   build:

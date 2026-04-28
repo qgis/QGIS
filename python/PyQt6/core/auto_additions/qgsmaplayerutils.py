@@ -8,6 +8,7 @@ try:
     QgsMapLayerUtils.sortLayersByType = staticmethod(QgsMapLayerUtils.sortLayersByType)
     QgsMapLayerUtils.launderLayerName = staticmethod(QgsMapLayerUtils.launderLayerName)
     QgsMapLayerUtils.isOpenStreetMapLayer = staticmethod(QgsMapLayerUtils.isOpenStreetMapLayer)
+    QgsMapLayerUtils.isOpenStreetMapUri = staticmethod(QgsMapLayerUtils.isOpenStreetMapUri)
     QgsMapLayerUtils.layerTypeToString = staticmethod(QgsMapLayerUtils.layerTypeToString)
     QgsMapLayerUtils.layerToolTip = staticmethod(QgsMapLayerUtils.layerToolTip)
 except (NameError, AttributeError):

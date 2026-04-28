@@ -395,4 +395,16 @@ void QgsLineChartPlot::initFromPlot( const QgsPlot *plot )
   {
     Qgs2DPlot::copyCommonProperties( plotPie );
   }
+
+  if ( const QgsLineChartPlot *lineChartPlot = dynamic_cast<const QgsLineChartPlot *>( plot ) )
+  {
+    for ( int idx = 0; idx < lineChartPlot->lineSymbolCount(); idx++ )
+    {
+      setLineSymbolAt( idx, lineChartPlot->lineSymbolAt( idx )->clone() );
+    }
+    for ( int idx = 0; idx < lineChartPlot->markerSymbolCount(); idx++ )
+    {
+      setMarkerSymbolAt( idx, lineChartPlot->markerSymbolAt( idx )->clone() );
+    }
+  }
 }

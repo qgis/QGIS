@@ -101,6 +101,7 @@ Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewMesh( const QStrin
     mesh->setRadius( 1.0f );
     mesh->setRings( 32 );
     mesh->setSlices( 32 );
+    mesh->setGenerateTangents( true );
     entity->addComponent( mesh );
   }
   else if ( type == "cube"_L1 )

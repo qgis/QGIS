@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
+      "baseline": "0b88aacde46a853151730fbe7d0b7ee45f4b6864",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "a3f181f299a54a0d67e6e60cac746ea265adfb29",
+        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -39,7 +39,8 @@
       "name": "gdal",
       "default-features": false,
       "features": [
-        "freexl"
+        "freexl",
+        "zstd"
       ]
     },
     "geos",
@@ -90,8 +91,16 @@
       "default-features": false,
       "host": true
     },
+    {
+      "name": "qtmultimedia",
+      "default-features": false,
+      "platform": "emscripten"
+    },
+    {
+      "name": "qtmultimedia",
+      "platform": "!emscripten"
+    },
     "qtsvg",
-    "qtmultimedia",
     "qt5compat",
     "qtkeychain-qt6",
     "zlib",
@@ -168,6 +177,7 @@
         },
         "py-lxml",
         "py-markupsafe",
+        "py-matplotlib",
         "py-networkx",
         "py-numpy",
         "py-owslib",
@@ -258,7 +268,6 @@
       "description": "Determines whether QGIS gui should be built",
       "dependencies": [
         "qscintilla",
-        "qtmultimedia",
         "qwt"
       ]
     },

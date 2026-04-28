@@ -102,15 +102,14 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     QString alias() const;
 
     /**
-     * Sets the displayed comment.
-     * Sets the comment to be displayed. Defaults to the provider comment if \a customComment is NULL.
+     * Sets the custom comment and triggers an update of the displayed text, which defaults to the provider comment if \a customComment is NULL.
      * \since QGIS 4.2
      */
-    void setDisplayedComment( const QString &customComment );
+    void setCustomComment( const QString &customComment );
 
     /**
      * Returns the custom comment.
-     * Returns NULL if the displayed comment matches the provider comment.
+     * The custom comment is NULL when the displayed text matches the provider comment.
      * \since QGIS 4.2
      */
     QString customComment() const;
@@ -128,8 +127,8 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     QgsPropertyCollection dataDefinedProperties() const;
 
     /**
-     * Setter for label comment
-     */
+    * Sets the comment and triggers an update of the displayed text, which sets the custom comment as is but defaults to the comment when the custom comment is NULL.
+    */
     void setComment( const QString &comment );
 
     /**
@@ -322,7 +321,11 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
 
     void updateMergePolicyLabel();
 
+    void displayedCommentChanged();
+
   private:
+    void updateDisplayedComment();
+
     QgsVectorLayer *mLayer = nullptr;
     int mFieldIdx;
 
@@ -339,6 +342,7 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
 
     QAction *mClearAction = nullptr;
     QString mComment;
+    QString mCustomComment;
 };
 
 #endif

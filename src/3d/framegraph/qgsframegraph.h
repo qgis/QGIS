@@ -18,6 +18,9 @@
 
 #include <map>
 
+#include "qgis_3d.h"
+#include "qgsabstractrenderview.h"
+
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
@@ -41,7 +44,6 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsAbstractRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 class QgsCameraController;
@@ -68,7 +70,7 @@ class QgsShadowSettings;
  *
  * \since QGIS 3.16
  */
-class QgsFrameGraph : public Qt3DCore::QEntity
+class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 {
     Q_OBJECT
 

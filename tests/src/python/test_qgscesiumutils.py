@@ -13,6 +13,7 @@ __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
+import os
 import unittest
 
 from qgis.core import QgsCesiumUtils
@@ -76,6 +77,38 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertEqual(sphere.centerY(), 2)
         self.assertEqual(sphere.centerZ(), 3)
         self.assertEqual(sphere.radius(), 10)
+
+    def test_extract_tile_content(self):
+        """Test extractTileContent()"""
+
+        # invalid data
+        result = QgsCesiumUtils.extractTileContent(b"unknown data")
+        self.assertEqual(len(result), 0)
+
+        # composite tile ("cmpt")
+        with open(
+            os.path.join(TEST_DATA_DIR, "3dtiles", "cmpt", "dragon.cmpt"), "rb"
+        ) as f:
+            cmpt_data = f.read()
+        result = QgsCesiumUtils.extractTileContent(cmpt_data)
+        self.assertEqual(len(result), 2)
+        self.assertFalse(result[0].gltf.isEmpty())
+        self.assertFalse(result[1].gltf.isEmpty())
+
+        # batch 3d model ("b3dm")
+        with open(
+            os.path.join(
+                TEST_DATA_DIR,
+                "tiled_scene",
+                "LOD-0",
+                "Mesh-XL-YL-XL-YL.b3dm",
+            ),
+            "rb",
+        ) as f:
+            b3dm_data = f.read()
+        result = QgsCesiumUtils.extractTileContent(b3dm_data)
+        self.assertEqual(len(result), 1)
+        self.assertFalse(result[0].gltf.isEmpty())
 
 
 if __name__ == "__main__":

@@ -166,8 +166,11 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle const &bo
 
     if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
     {
-      QgsDebugError( u"Error occurred while reading block"_s );
-      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugError( u"Error occurred while reading block"_s );
+        block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      }
       block->setValid( false );
       block->setIsNoData();
       return block.release();
@@ -222,9 +225,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle const &bo
   {
     if ( !readBlock( bandNo, boundingBox, width, height, block->bits(), feedback ) )
     {
-      QgsDebugError( u"Error occurred while reading block"_s );
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugError( u"Error occurred while reading block"_s );
+        block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+      }
       block->setIsNoData();
-      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
       block->setValid( false );
       return block.release();
     }
@@ -800,7 +806,7 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
+QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation )
 {
   // Modified copy from GDAL
   switch ( colorInterpretation )

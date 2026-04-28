@@ -55,6 +55,9 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   connect( mSortExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutChartWidget::changeSortExpression );
   connect( mSortDirectionButton, &QToolButton::clicked, this, &QgsLayoutChartWidget::mSortDirectionButton_clicked );
 
+  connect( mGenerateCategoriesFromRendererCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mGenerateCategoriesFromRendererCheckBox_stateChanged );
+  connect( mApplyRendererStyleCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mApplyRendererStyleCheckBox_stateChanged );
+
   connect( mSeriesListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_currentItemChanged );
   connect( mSeriesListWidget, &QListWidget::itemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_itemChanged );
   connect( mAddSeriesPushButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mAddSeriesPushButton_clicked );
@@ -122,11 +125,12 @@ void QgsLayoutChartWidget::setGuiElementValues()
       whileBlocking( mFlipAxesCheckBox )->setChecked( false );
     }
 
-    whileBlocking( mSortCheckBox )->setCheckState( mChartItem->sortFeatures() ? Qt::Checked : Qt::Unchecked );
+    whileBlocking( mGenerateCategoriesFromRendererCheckBox )->setCheckState( mChartItem->generateCategoriesFromRenderer() ? Qt::Checked : Qt::Unchecked );
+    whileBlocking( mApplyRendererStyleCheckBox )->setCheckState( mChartItem->applyRendererStyle() ? Qt::Checked : Qt::Unchecked );
 
+    whileBlocking( mSortCheckBox )->setCheckState( mChartItem->sortFeatures() ? Qt::Checked : Qt::Unchecked );
     whileBlocking( mSortDirectionButton )->setEnabled( mChartItem->sortFeatures() );
     whileBlocking( mSortDirectionButton )->setArrowType( mChartItem->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
-
     whileBlocking( mSortExpressionWidget )->setEnabled( mChartItem->sortFeatures() );
     whileBlocking( mSortExpressionWidget )->setLayer( mChartItem->sourceLayer() );
     whileBlocking( mSortExpressionWidget )->setField( mChartItem->sortExpression() );
@@ -422,7 +426,7 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
     return;
   }
 
-  QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->sourceLayer(), idx, seriesList[idx], this );
+  QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->sourceLayer(), idx, seriesList[idx], mGenerateCategoriesFromRendererCheckBox->isChecked(), this );
   widget->registerExpressionContextGenerator( mChartItem );
   widget->setPanelTitle( tr( "Series Details" ) );
   connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
@@ -459,6 +463,36 @@ void QgsLayoutChartWidget::mLinkedMapComboBox_itemChanged( QgsLayoutItem *item )
 
   mChartItem->beginCommand( tr( "Change Chart Map Item" ) );
   mChartItem->setMap( qobject_cast<QgsLayoutItemMap *>( item ) );
+  mChartItem->endCommand();
+  mChartItem->update();
+}
+
+void QgsLayoutChartWidget::mGenerateCategoriesFromRendererCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Toggle Generate Categories from Layer Renderer" ) );
+  const bool generateCategoriesFromRenderer = ( state == Qt::Checked );
+  mChartItem->setGenerateCategoriesFromRenderer( generateCategoriesFromRenderer );
+  mChartItem->endCommand();
+  mChartItem->update();
+
+  mApplyRendererStyleCheckBox->setEnabled( mGenerateCategoriesFromRendererCheckBox->isChecked() );
+}
+
+void QgsLayoutChartWidget::mApplyRendererStyleCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Toggle Apply Layer Renderer Style" ) );
+  const bool applyRendererStyle = ( state == Qt::Checked );
+  mChartItem->setApplyRendererStyle( applyRendererStyle );
   mChartItem->endCommand();
   mChartItem->update();
 }
@@ -503,6 +537,8 @@ void QgsLayoutChartWidget::updateButtonsState()
   }
 
   const bool enable = qobject_cast<QgsVectorLayer *>( mLayerComboBox->currentLayer() ) != nullptr;
+  mGenerateCategoriesFromRendererCheckBox->setEnabled( enable );
+  mApplyRendererStyleCheckBox->setEnabled( enable && mGenerateCategoriesFromRendererCheckBox->isChecked() );
   mSortCheckBox->setEnabled( enable );
   mAddSeriesPushButton->setEnabled( enable );
   mRemoveSeriesPushButton->setEnabled( mSeriesListWidget->count() > 0 );

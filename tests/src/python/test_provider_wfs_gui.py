@@ -18,7 +18,7 @@ import unittest
 
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt
+from qgis.PyQt.QtCore import QEventLoop, Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import (
     QApplication,
@@ -59,10 +59,6 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
-        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")

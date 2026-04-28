@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="2,1,2">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="2">
     <widget class="QgsImageSourceLineEdit" name="textureFile" native="true"/>
    </item>
@@ -179,20 +179,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -202,9 +191,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

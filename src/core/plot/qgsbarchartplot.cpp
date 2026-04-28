@@ -266,4 +266,12 @@ void QgsBarChartPlot::initFromPlot( const QgsPlot *plot )
   {
     Qgs2DPlot::copyCommonProperties( plotPie );
   }
+
+  if ( const QgsBarChartPlot *barChartPlot = dynamic_cast<const QgsBarChartPlot *>( plot ) )
+  {
+    for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
+    {
+      setFillSymbolAt( idx, barChartPlot->fillSymbolAt( idx )->clone() );
+    }
+  }
 }

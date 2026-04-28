@@ -69,7 +69,6 @@
 #include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsruntimeprofiler.h"
-#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -219,7 +218,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath, const QString &b
   connect( this, &QgsVectorLayer::readOnlyChanged, this, &QgsVectorLayer::supportsEditingChanged );
 
   // Default simplify drawing settings
-  QgsSettings settings;
   mSimplifyMethod.setSimplifyHints( QgsVectorLayer::settingsSimplifyDrawingHints->valueWithDefaultOverride( mSimplifyMethod.simplifyHints() ) );
   mSimplifyMethod.setSimplifyAlgorithm( QgsVectorLayer::settingsSimplifyAlgorithm->valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) );
   mSimplifyMethod.setThreshold( QgsVectorLayer::settingsSimplifyDrawingTol->valueWithDefaultOverride( mSimplifyMethod.threshold() ) );
@@ -2641,21 +2639,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       {
         customCommentEntryElem = customCommentNodeList.at( i ).toElement();
 
-        QString field;
-        if ( customCommentEntryElem.hasAttribute( u"field"_s ) )
-        {
-          field = customCommentEntryElem.attribute( u"field"_s );
-        }
-        else
-        {
-          int index = customCommentEntryElem.attribute( u"index"_s ).toInt();
-
-          if ( index >= 0 && index < fields().count() )
-            field = fields().at( index ).name();
-        }
+        const QString field = customCommentEntryElem.attribute( u"field"_s );
 
         //empty values are important as well (to override provider comments with nothing)
-        QString customComment = customCommentEntryElem.attribute( u"value"_s );
+        const QString customComment = customCommentEntryElem.attribute( u"value"_s );
 
         if ( fields().lookupField( field ) < 0 )
         {
@@ -3246,7 +3233,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
       QDomElement customCommentEntryElem = doc.createElement( u"customComment"_s );
       customCommentEntryElem.setAttribute( u"field"_s, field.name() );
-      customCommentEntryElem.setAttribute( u"index"_s, mFields.indexFromName( field.name() ) );
       customCommentEntryElem.setAttribute( u"value"_s, customComment );
       customCommentElem.appendChild( customCommentEntryElem );
     }
@@ -6407,6 +6393,16 @@ void QgsVectorLayer::emitDataChanged()
   mDataChangedFired = false;
 }
 
+void QgsVectorLayer::onDependencyAfterCommitChanges()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mDataProvider && mDataProvider->capabilities().testFlag( Qgis::VectorProviderCapability::CacheData ) )
+    mDataProvider->reloadData();
+  else
+    emitDataChanged();
+}
+
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -6434,7 +6430,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
+      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 
@@ -6458,7 +6454,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
+      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 

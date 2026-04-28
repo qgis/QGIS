@@ -302,7 +302,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( cons
   mAttributeTypeDialog->setAlias( config.mAlias );
   mAttributeTypeDialog->setDataDefinedProperties( config.mDataDefinedProperties );
   mAttributeTypeDialog->setComment( config.mComment );
-  mAttributeTypeDialog->setDisplayedComment( config.mCustomComment );
+  mAttributeTypeDialog->setCustomComment( config.mCustomComment );
   mAttributeTypeDialog->setFieldEditable( config.mEditable );
   mAttributeTypeDialog->setLabelOnTop( config.mLabelOnTop );
   mAttributeTypeDialog->setReuseLastValuePolicy( config.mReuseLastValuePolicy );

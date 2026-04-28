@@ -366,6 +366,7 @@ QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorM
   char *wkbHex;
   size_t len = 0;
   sfcgal_geometry_as_wkb( geom, &wkbHex, &len );
+  CHECK_SUCCESS( errorMsg, QByteArray() );
   QByteArray wkbArray( wkbHex, static_cast<int>( len ) );
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
@@ -374,7 +375,6 @@ QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorM
   free( wkbHex );
 #endif
 
-  CHECK_SUCCESS( errorMsg, QByteArray() );
   return wkbArray;
 }
 
@@ -951,12 +951,25 @@ sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, dou
 #endif
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  sfcgal::geometry *result = nullptr;
+  if ( extendToEdges )
+  {
+    result = sfcgal_geometry_projected_medial_axis( geom );
+  }
+  else
+  {
+    result = sfcgal_geometry_approximate_medial_axis( geom );
+  }
+#else
+  Q_UNUSED( extendToEdges )
   sfcgal::geometry *result = sfcgal_geometry_approximate_medial_axis( geom );
+#endif
   CHECK_SUCCESS( errorMsg, nullptr );
 
   return sfcgal::make_shared_geom( result );

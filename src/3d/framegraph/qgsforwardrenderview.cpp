@@ -51,6 +51,10 @@ QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender:
   mTransparentObjectsLayer->setRecursive( true );
   mTransparentObjectsLayer->setObjectName( mViewName + "::TransparentLayer" );
 
+  mBackgroundLayer = new Qt3DRender::QLayer;
+  mBackgroundLayer->setRecursive( true );
+  mBackgroundLayer->setObjectName( mViewName + "::BackgroundLayer" );
+
   // forward rendering pass
   buildRenderPasses();
 }
@@ -88,7 +92,8 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 }
 
 /*
- * We define three forward passes: one for solid objects, followed by two for transparent objects (one to write colors but no depths, one to write depths) :
+ * We define four forward passes: one for solid objects, one for background (gradient/skybox),
+ * followed by two for transparent objects (one to write colors but no depths, one to write depths) :
  *
  *                                  |
  *                         +-----------------+
@@ -96,7 +101,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
  *                         +-----------------+
  *                                  |
  *                         +-----------------+
- *                         |  QLayerFilter   |  (using mForwardRenderLayer)
+ *                         |  QLayerFilter   |  (using mRenderLayer)
  *                         +-----------------+
  *                                  |
  *                         +-----------------+
@@ -104,26 +109,26 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
  *                         +-----------------+
  *                                  |
  *                      +-----------------------+
- *                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
+ *                      | QRenderTargetSelector | (write mColorTexture + mDepthTexture)
  *                      +-----------------------+
  *                                  |
- *         +------------------------+---------------------+
- *         |                                              |
- *  +-----------------+    discard               +-----------------+    accept
- *  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
- *  +-----------------+    objects               +-----------------+    objects
- *         |                                              |
- *  +-----------------+  use depth test          +-----------------+   sort entities
- *  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
- *  +-----------------+                          +-----------------+
- *         |                                              |
- *  +-----------------+              +--------------------+--------------------+
- *  | QFrustumCulling |              |                                         |
- *  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
- *         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
- *         |                +-----------------+  write colors         +-----------------+  don't write colors
- *  +-----------------+                          use alpha blending                        don't use alpha blending
- *  |  QClearBuffers  |  color and depth         no culling                                no culling
+ *         +------------------------+----------+---------------------+
+ *         |                                   |                     |
+ *  +-----------------+    discard    +-----------------+    +-----------------+    accept
+ *  |  QLayerFilter   |  transparent  |  QLayerFilter   |    |  QLayerFilter   |  transparent
+ *  +-----------------+               +-----------------+    +-----------------+    objects
+ *         |                              (background)               |
+ *  +-----------------+  use depth test                      +-----------------+   sort entities
+ *  | QRenderStateSet |  cull back faces                     |  QSortPolicy    |  back to front
+ *  +-----------------+                                      +-----------------+
+ *         |                                                         |
+ *  +-----------------+                        +---------------------+---------------------+
+ *  | QFrustumCulling |                        |                                           |
+ *  +-----------------+             +-----------------+  use depth tests      +-----------------+  use depth tests
+ *         |                        | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
+ *         |                        +-----------------+  write colors         +-----------------+  don't write colors
+ *  +-----------------+                                 use alpha blending                        don't use alpha blending
+ *  |  QClearBuffers  |  color and depth                no culling                                no culling
  *  +-----------------+
  *         |
  *  +-----------------+
@@ -151,6 +156,7 @@ void QgsForwardRenderView::buildRenderPasses()
   // first branch: opaque layer filter
   Qt3DRender::QLayerFilter *opaqueObjectsFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
   opaqueObjectsFilter->addLayer( mTransparentObjectsLayer );
+  opaqueObjectsFilter->addLayer( mBackgroundLayer );
   opaqueObjectsFilter->setFilterMode( Qt3DRender::QLayerFilter::DiscardAnyMatchingLayers );
 
   Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( opaqueObjectsFilter );
@@ -170,7 +176,14 @@ void QgsForwardRenderView::buildRenderPasses()
   mClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
   mClearBuffers->setClearDepthValue( 1.0f );
 
-  // second branch: transparent layer filter - color
+  mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
+  mDebugOverlay->setEnabled( false );
+
+  // second branch: background (gradient/skybox)
+  Qt3DRender::QLayerFilter *backgroundLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
+  backgroundLayerFilter->addLayer( mBackgroundLayer );
+
+  // third branch: transparent layer filter - color
   Qt3DRender::QLayerFilter *transparentObjectsLayerFilter = new Qt3DRender::QLayerFilter( mRenderTargetSelector );
   transparentObjectsLayerFilter->addLayer( mTransparentObjectsLayer );
   transparentObjectsLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::AcceptAnyMatchingLayers );
@@ -203,7 +216,7 @@ void QgsForwardRenderView::buildRenderPasses()
     transparentObjectsRenderStateSetColor->addRenderState( blendEquationArgs );
   }
 
-  // third branch: transparent layer filter - depth
+  // fourth branch: transparent layer filter - depth
   Qt3DRender::QRenderStateSet *transparentObjectsRenderStateSetDepth = new Qt3DRender::QRenderStateSet( sortPolicy );
   {
     Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
@@ -221,9 +234,6 @@ void QgsForwardRenderView::buildRenderPasses()
     cullFace->setMode( Qt3DRender::QCullFace::CullingMode::NoCulling );
     transparentObjectsRenderStateSetDepth->addRenderState( cullFace );
   }
-
-  mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
-  mDebugOverlay->setEnabled( false );
 }
 
 void QgsForwardRenderView::updateWindowResize( int width, int height )

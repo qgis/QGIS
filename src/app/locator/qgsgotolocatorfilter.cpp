@@ -307,6 +307,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
         extent.setXMaximum( dataPoint.x() + width / 2.0 );
 
         QgsScaleCalculator calculator;
+        calculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
         calculator.setMapUnits( currentCrs.mapUnits() );
         calculator.setMethod( QgsProject::instance()->scaleMethod() );
         calculator.setDpi( QgisApp::instance()->mapCanvas()->mapSettings().outputDpi() );

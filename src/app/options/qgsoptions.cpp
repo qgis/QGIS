@@ -37,6 +37,7 @@
 #include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgsgdalutils.h"
 #include "qgsgui.h"
 #include "qgslayertreemodellegendnode.h"
@@ -414,7 +415,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //paths hidden from browser
-  const QStringList hiddenPathList = mSettings->value( u"/browser/hiddenPaths"_s ).toStringList();
+  const QStringList hiddenPathList = QgsDirectoryItem::settingsHiddenPaths->value();
   for ( const QString &path : hiddenPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
@@ -538,7 +539,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanItemsInBrowser->clear();
   cmbScanItemsInBrowser->addItem( tr( "Check File Contents" ), "contents" ); // 0
   cmbScanItemsInBrowser->addItem( tr( "Check Extension" ), "extension" );    // 1
-  int index = cmbScanItemsInBrowser->findData( mSettings->value( u"/qgis/scanItemsInBrowser2"_s, QString() ) );
+  int index = cmbScanItemsInBrowser->findData( QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->value() );
   if ( index == -1 )
     index = 1;
   cmbScanItemsInBrowser->setCurrentIndex( index );
@@ -1565,7 +1566,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListHiddenBrowserPaths->item( i )->text();
   }
-  mSettings->setValue( u"/browser/hiddenPaths"_s, pathsList );
+  QgsDirectoryItem::settingsHiddenPaths->setValue( pathsList );
 
   //QGIS help locations
   QStringList helpPaths;
@@ -1643,7 +1644,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/attributeTableRowCache"_s, spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
-  mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
 

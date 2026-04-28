@@ -28,6 +28,7 @@
 #include "qgsmaterialregistry.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmetalroughmaterial3dhandler.h"
+#include "qgsmetalroughtexturedmaterial3dhandler.h"
 #include "qgsnullmaterial3dhandler.h"
 #include "qgsphongmaterial3dhandler.h"
 #include "qgsphongtexturedmaterial3dhandler.h"
@@ -89,6 +90,9 @@ void Qgs3D::initialize()
 
   instance()->mMetalRoughMaterialHandler = std::make_unique< QgsMetalRoughMaterial3DHandler >();
   qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalrough"_s ) )->setHandler( instance()->mMetalRoughMaterialHandler.get() );
+
+  instance()->mMetalRoughTexturedMaterialHandler = std::make_unique< QgsMetalRoughTexturedMaterial3DHandler >();
+  qgis::down_cast< QgsMaterialSettingsMetadata * >( materialRegistry->materialSettingsMetadata( u"metalroughtextured"_s ) )->setHandler( instance()->mMetalRoughTexturedMaterialHandler.get() );
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );

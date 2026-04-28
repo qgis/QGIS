@@ -8,7 +8,7 @@ on:
       - release-*
 
 permissions:
-  content: write
+  contents: write
 
 jobs:
   sipify:

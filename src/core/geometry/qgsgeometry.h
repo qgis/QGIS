@@ -469,8 +469,8 @@ class CORE_EXPORT QgsGeometry
      *
      * Implementations:
      *
-     * - GEOS
-     * - QGIS
+     * - GEOS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
+     * - QGIS: internal implementation uses fuzzy comparison with very low (1e-8) tolerance
      *
      * The QGIS internal implementation is chosen by default.
      *
@@ -518,7 +518,7 @@ class CORE_EXPORT QgsGeometry
      * \throws QgsNotSupportedException when backend is not supported
      * \since QGIS 4.2
      */
-    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
+    bool isFuzzyEqual( const QgsGeometry &geometry, double epsilon = 1e-4, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks validity of the geometry using GEOS.

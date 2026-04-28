@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaplayerproxymodel.h"
-#include "qgssettings.h"
+#include "qgssettingsentry.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 
 #include <QObject>
+#include <QSettings>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -45,7 +46,7 @@ class TestQgsSettingsEntry : public QObject
 
 void TestQgsSettingsEntry::settingsKey()
 {
-  QgsSettings settings;
+  QSettings &settings = QgsSettingsEntryBase::userSettings();
 
   {
     const QString key( u"/settingsKey"_s );
@@ -53,7 +54,7 @@ void TestQgsSettingsEntry::settingsKey()
     // Be sure that settings does not exist already
     settings.remove( key );
 
-    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    // Check that keys are handled same way for QSettings and QgsSettingsEntry
     settings.setValue( key, 42 );
 
     const QgsSettingsEntryInteger settingsEntryInteger( key, 0 );
@@ -66,7 +67,7 @@ void TestQgsSettingsEntry::settingsKey()
     // Be sure that settings does not exist already
     settings.remove( key );
 
-    // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
+    // Check that keys are handled same way for QSettings and QgsSettingsEntry
     settings.setValue( key, 43 );
 
     const QgsSettingsEntryInteger settingsEntryInteger( key, 0 );
@@ -79,7 +80,7 @@ void TestQgsSettingsEntry::enumValue()
   const QString settingsKey( u"my_enum_value_for_units"_s );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettingsEntryBase::userSettings().remove( settingsKey );
 
   const QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, mSettingsSection, Qgis::LayoutUnit::Meters, u"Layout unit"_s );
 
@@ -90,12 +91,12 @@ void TestQgsSettingsEntry::enumValue()
   {
     const bool success = settingsEntryEnum.setValue( Qgis::LayoutUnit::Feet );
     QCOMPARE( success, true );
-    const Qgis::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Meters );
-    QCOMPARE( qgsSettingsValue, Qgis::LayoutUnit::Feet );
+    const Qgis::LayoutUnit value = settingsEntryEnum.value();
+    QCOMPARE( value, Qgis::LayoutUnit::Feet );
   }
 
   // Check get value
-  QgsSettings().setEnumValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Picas );
+  QgsSettingsEntryBase::userSettings().setValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), u"Picas"_s );
   QCOMPARE( settingsEntryEnum.value(), Qgis::LayoutUnit::Picas );
 
   // Check settings type
@@ -107,12 +108,11 @@ void TestQgsSettingsEntry::enumValue()
     QCOMPARE( success, false );
 
     // Current value should not have changed
-    const Qgis::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), Qgis::LayoutUnit::Meters );
-    QCOMPARE( qgsSettingsValue, Qgis::LayoutUnit::Picas );
+    QCOMPARE( settingsEntryEnum.value(), Qgis::LayoutUnit::Picas );
   }
 
   // check that value is stored as string
-  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), QMetaEnum::fromType<Qgis::LayoutUnit>().key( static_cast<int>( Qgis::LayoutUnit::Picas ) ) );
+  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), u"Picas"_s );
 
   // auto conversion of old settings (int to str)
   QSettings().setValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Centimeters ) );
@@ -127,7 +127,7 @@ void TestQgsSettingsEntry::enumValue()
     QCOMPARE( qgsSettingsValue, static_cast<int>( Qgis::LayoutUnit::Meters ) );
     const bool success = settingsEntryEnumAsInteger.setValue( Qgis::LayoutUnit::Feet );
     QCOMPARE( success, true );
-    qgsSettingsValue = QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Meters ) ).toInt();
+    qgsSettingsValue = QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Meters ) ).toInt();
     QCOMPARE( qgsSettingsValue, static_cast<int>( Qgis::LayoutUnit::Feet ) );
   }
 }
@@ -140,7 +140,7 @@ void TestQgsSettingsEntry::flagValue()
   const Qgis::LayerFilters hasGeometry = Qgis::LayerFilters( Qgis::LayerFilter::HasGeometry );
 
   // Make sure the setting is not existing
-  QgsSettings().remove( settingsKey );
+  QgsSettingsEntryBase::userSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
 
   const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, Qgis::LayerFilters(), u"Filters"_s );
 
@@ -157,19 +157,18 @@ void TestQgsSettingsEntry::flagValue()
   {
     const bool success = settingsEntryFlag.setValue( hasGeometry );
     QCOMPARE( success, true );
-    const Qgis::LayerFilters qgsSettingsValue = QgsSettings().flagValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), pointAndLine );
-    QCOMPARE( qgsSettingsValue, hasGeometry );
+    QCOMPARE( settingsEntryFlag.value(), hasGeometry );
   }
 
   // Check get value
-  QgsSettings().setFlagValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), pointAndLine );
+  QgsSettingsEntryBase::userSettings().setValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), u"PointLayer|LineLayer"_s );
   QCOMPARE( settingsEntryFlag.value(), pointAndLine );
 
   // Check settings type
   QCOMPARE( settingsEntryFlag.settingsType(), Qgis::SettingsType::EnumFlag );
 
   // check that value is stored as string
-  QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<Qgis::LayerFilters>().valueToKeys( pointAndLine ) );
+  QCOMPARE( settingsEntryFlag.valueAsVariant().toString(), u"PointLayer|LineLayer"_s );
 
   // auto conversion of old settings (int to str)
   QSettings().setValue( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), static_cast<int>( pointAndPolygon ) );
@@ -182,30 +181,30 @@ void TestQgsSettingsEntry::testFormerValue()
   const QString settingsKey( u"settingsEntryInteger/integer-former-value"_s );
   const QString settingsKeyFormer = settingsKey + ( u"_formervalue"_s );
 
-  QgsSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
-  QgsSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ) );
+  QgsSettingsEntryBase::userSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
+  QgsSettingsEntryBase::userSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ) );
   int defaultValue = 111;
   int defaultFormerValue = 222;
 
   QgsSettingsEntryInteger settingsEntryInteger = QgsSettingsEntryInteger( settingsKey, mSettingsSection, defaultValue, QString(), Qgis::SettingsOption::SaveFormerValue );
 
   QCOMPARE( settingsEntryInteger.formerValue(), defaultValue );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), defaultValue );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), defaultValue );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
 
   settingsEntryInteger.setValue( 2 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 2 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 2 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
   QCOMPARE( settingsEntryInteger.formerValue(), 2 );
 
   settingsEntryInteger.setValue( 2 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 2 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 2 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ), defaultFormerValue );
   QCOMPARE( settingsEntryInteger.formerValue(), 2 );
 
   settingsEntryInteger.setValue( 3 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 3 );
-  QCOMPARE( QgsSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ).toLongLong(), 2 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKey ), defaultValue ), 3 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"%1/%2"_s.arg( mSettingsSection, settingsKeyFormer ), defaultFormerValue ).toLongLong(), 2 );
   QCOMPARE( settingsEntryInteger.formerValue(), 2 );
 
   settingsEntryInteger.setValue( 2 );
@@ -215,21 +214,21 @@ void TestQgsSettingsEntry::testFormerValue()
 void TestQgsSettingsEntry::testChanged()
 {
   const QString settingsKey( u"settingsEntryInteger/integer-value"_s );
-  QgsSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
+  QgsSettingsEntryBase::userSettings().remove( u"%1/%2"_s.arg( mSettingsSection, settingsKey ) );
   int defaultValue = 111;
 
-  QgsSettings().setValue( u"testSetting"_s, 1 );
+  QgsSettingsEntryBase::userSettings().setValue( u"testSetting"_s, 1 );
 
   QgsSettingsEntryInteger settingsEntryInteger = QgsSettingsEntryInteger( settingsKey, mSettingsSection, defaultValue );
   QVERIFY( !settingsEntryInteger.hasChanged() );
   settingsEntryInteger.copyValueToKeyIfChanged( u"testSetting"_s );
-  QCOMPARE( QgsSettings().value( u"testSetting"_s ).toInt(), 1 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"testSetting"_s ).toInt(), 1 );
 
   settingsEntryInteger.setValue( 11111 );
   QVERIFY( settingsEntryInteger.hasChanged() );
 
   settingsEntryInteger.copyValueToKeyIfChanged( u"testSetting"_s );
-  QCOMPARE( QgsSettings().value( u"testSetting"_s ).toInt(), 11111 );
+  QCOMPARE( QgsSettingsEntryBase::userSettings().value( u"testSetting"_s ).toInt(), 11111 );
 }
 
 

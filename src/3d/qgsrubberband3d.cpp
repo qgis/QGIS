@@ -462,7 +462,6 @@ void QgsRubberBand3D::updateGeometry()
       QgsTessellator tessellator;
       tessellator.setOrigin( mMapSettings->origin() );
       tessellator.setAddNormals( true );
-      tessellator.setOutputZUp( true );
       tessellator.addPolygon( *polygon, 0 );
       if ( !tessellator.error().isEmpty() )
       {

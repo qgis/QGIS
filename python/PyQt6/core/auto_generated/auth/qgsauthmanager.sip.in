@@ -29,6 +29,9 @@ rather accessed through :py:func:`QgsApplication.authManager()`.
 %End
   public:
 
+
+
+
     enum MessageLevel /BaseType=IntEnum/
     {
       INFO,

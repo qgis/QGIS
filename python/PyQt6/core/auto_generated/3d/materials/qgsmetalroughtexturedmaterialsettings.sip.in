@@ -1,0 +1,222 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMetalRoughTexturedMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring(signature="appended")
+A PBR metal rough shading material used for rendering with support for
+image texture maps.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsmetalroughtexturedmaterialsettings.h"
+%End
+  public:
+    QgsMetalRoughTexturedMaterialSettings();
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the
+metal rough material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsMetalRoughTexturedMaterialSettings.
+%End
+
+    virtual QgsMetalRoughTexturedMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+
+    QString baseColorTexturePath() const;
+%Docstring
+Returns the path to the base color texture map.
+
+.. seealso:: :py:func:`setBaseColorTexturePath`
+%End
+
+    QString metalnessTexturePath() const;
+%Docstring
+Returns the path to the metalness texture map.
+
+.. seealso:: :py:func:`setMetalnessTexturePath`
+%End
+
+    QString roughnessTexturePath() const;
+%Docstring
+Returns the path to the roughness texture map.
+
+.. seealso:: :py:func:`setRoughnessTexturePath`
+%End
+
+    QString normalTexturePath() const;
+%Docstring
+Returns the path to the normal texture map.
+
+.. seealso:: :py:func:`setNormalTexturePath`
+%End
+
+    QString emissionTexturePath() const;
+%Docstring
+Returns the path to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
+%End
+
+    double emissionFactor() const;
+%Docstring
+Returns the emission factor, which dictates the strength of the emission
+effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
+    QString ambientOcclusionTexturePath() const;
+%Docstring
+Returns the path to the ambient occlusion texture map.
+
+.. seealso:: :py:func:`setAmbientOcclusionTexturePath`
+%End
+
+    double textureScale() const;
+%Docstring
+Returns the texture scale.
+
+The texture scale changes the size of the displayed texture in the 3D
+scene. If the texture scale is less than 1, the texture will be
+stretched.
+
+.. seealso:: :py:func:`setTextureScale`
+%End
+
+    double textureRotation() const;
+%Docstring
+Returns the texture rotation, in degrees.
+
+.. seealso:: :py:func:`setTextureRotation`
+%End
+
+    void setBaseColorTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the base color texture map.
+
+.. seealso:: :py:func:`baseColorTexturePath`
+%End
+
+    void setMetalnessTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the metalness texture map.
+
+.. seealso:: :py:func:`metalnessTexturePath`
+%End
+
+    void setRoughnessTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the roughness texture map.
+
+.. seealso:: :py:func:`roughnessTexturePath`
+%End
+
+    void setNormalTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the normal texture map.
+
+.. seealso:: :py:func:`normalTexturePath`
+%End
+
+    void setAmbientOcclusionTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the ambient occlusion texture map.
+
+.. seealso:: :py:func:`ambientOcclusionTexturePath`
+%End
+
+    void setEmissionTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
+    void setEmissionFactor( double factor );
+%Docstring
+Sets the emission ``factor``, which dictates the strength of the
+emission effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
+%End
+
+    void setTextureScale( double scale );
+%Docstring
+Sets the texture ``scale``.
+
+The texture scale changes the size of the displayed texture in the 3D
+scene. If the texture scale is less than 1, the texture will be
+stretched.
+
+.. seealso:: :py:func:`textureScale`
+%End
+
+    void setTextureRotation( double rotation );
+%Docstring
+Sets the texture ``rotation``, in degrees.
+
+.. seealso:: :py:func:`textureRotation`
+%End
+
+    virtual bool requiresTextureCoordinates() const;
+
+    virtual bool requiresTangents() const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

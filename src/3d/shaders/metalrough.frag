@@ -39,7 +39,12 @@ uniform sampler2D normalMap;
 in vec4 worldTangent;
 #endif
 
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)
+#ifdef EMISSION_MAP
+uniform sampler2D emissionMap;
+uniform float emissiveFactor = 1;
+#endif
+
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
 #endif
 
@@ -48,11 +53,12 @@ uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
 
+const float PI = 3.14159265359;
+
 #pragma include light.inc.frag
 
-
 #ifdef NORMAL_MAP
-mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
+mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
     // This allows building the tangentMatrix below by simply transposing the
@@ -65,11 +71,23 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
     // which is +1 for a right hand system, and -1 for a left hand system.
     vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
 
-    // Construct matrix to transform from world space to tangent space
-    // This is the transpose of the tangentToWorld transformation matrix
+    // Construct matrix to transform from tangent space to world space
     mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
-    mat3 worldToTangentMatrix = transpose(tangentToWorldMatrix);
-    return worldToTangentMatrix;
+    return tangentToWorldMatrix;
+}
+
+mat3 calcTangentSpace(const in vec3 wNormal, const in vec3 wPosition, const in vec2 uv)
+{
+    vec3 Q1 = dFdx(wPosition);
+    vec3 Q2 = dFdy(wPosition);
+    vec2 st1 = dFdx(uv);
+    vec2 st2 = dFdy(uv);
+
+    vec3 N = normalize(wNormal);
+    vec3 T = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B = -normalize(cross(N, T));
+
+    return mat3(T, B, N);
 }
 #endif
 
@@ -119,7 +137,7 @@ float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
     // Blinn-Phong approximation - see
     // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
     float specPower = 2.0 / (alpha * alpha) - 2.0;
-    return (specPower + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), specPower);
+    return (specPower + 2.0) / (2.0 * PI) * pow(max(dot(n, h), 0.0), specPower);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
@@ -217,7 +235,7 @@ vec3 pbrModel(const in int lightIndex,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
-    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / 3.14159;
+    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / PI;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
@@ -316,7 +334,8 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float ambientOcclusion,
                         const in vec3 worldPosition,
                         const in vec3 worldView,
-                        const in vec3 worldNormal)
+                        const in vec3 worldNormal,
+                        const in vec2 activeTexCoord)
 {
     vec3 cLinear = vec3(0.0);
 
@@ -343,6 +362,11 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             ambientOcclusion);
     }
 
+#ifdef EMISSION_MAP
+    vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
+    cLinear += emission;
+#endif
+
     // Apply exposure correction
     cLinear *= pow(2.0, exposure);
 
@@ -360,32 +384,53 @@ out vec4 fragColor;
 
 void main()
 {
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+    vec2 activeTexCoord = texCoord;
+#else
+    // unused
+    vec2 activeTexCoord = vec2(0.0f, 0.0f);
+#endif
+
+    vec3 worldView = normalize(eyePosition - worldPosition);
+
 #ifdef BASE_COLOR_MAP
-    vec4 c = texture(baseColorMap, texCoord);
+    vec4 c = texture(baseColorMap, activeTexCoord);
 #else
     vec4 c = baseColor;
 #endif
 
 #ifdef METALNESS_MAP
-    float m = texture(metalnessMap, texCoord).r;
+    float m = texture(metalnessMap, activeTexCoord).r;
 #else
     float m = metalness;
 #endif
 
 #ifdef ROUGHNESS_MAP
-    float r = texture(roughnessMap, texCoord).r;
+    float r = texture(roughnessMap, activeTexCoord).r;
 #else
     float r = roughness;
 #endif
 
 #ifdef AMBIENT_OCCLUSION_MAP
-    float ao = texture(ambientOcclusionMap, texCoord).r;
+    float ao = texture(ambientOcclusionMap, activeTexCoord).r;
 #else
     float ao = 1.0;
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n = normalize(((transpose(((calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent)))) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
+    vec3 n;
+    vec3 mapN = texture(normalMap, activeTexCoord).rgb * 2.0 - 1.0;
+    if (length(worldTangent.xyz) > 0.001)
+    {
+        // use model tangents if they exist
+        n = normalize(calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * mapN);
+    }
+    else
+    {
+        // fall back to derivative tangents if we don't have model tangents (worse quality)
+        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
+        n = normalize(transposedTBN * mapN);
+    }
 #else
 
 #ifdef FLAT_SHADING
@@ -399,6 +444,6 @@ void main()
 
     fragColor = metalRoughFunction(c, m, r, ao,
                                    worldPosition,
-                                   normalize(eyePosition - worldPosition),
-                                   n);
+                                   worldView,
+                                   n, activeTexCoord);
 }

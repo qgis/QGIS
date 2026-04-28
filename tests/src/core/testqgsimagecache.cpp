@@ -17,7 +17,7 @@
 #include "qgsimagecache.h"
 #include "qgsmessagelog.h"
 #include "qgsrenderchecker.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgstest.h"
 
 #include <QApplication>
@@ -335,10 +335,10 @@ void TestQgsImageCache::dpi()
 
 void TestQgsImageCache::cachesize()
 {
-  uint cacheSize = 100000000;
-  QgsSettings().setValue( u"/qgis/maxImageCacheSize"_s, cacheSize );
+  const int cacheSize = 100000000;
+  QgsImageCache::settingsMaxImageCacheSize->setValue( cacheSize );
   QgsImageCache cache;
-  QCOMPARE( cache.mMaxCacheSize, cacheSize );
+  QCOMPARE( cache.mMaxCacheSize, static_cast<long>( cacheSize ) );
 }
 
 void TestQgsImageCache::frameCount()
