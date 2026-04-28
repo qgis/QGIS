@@ -347,11 +347,11 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     {
       plotXy->xAxis().setType( Qgis::PlotAxisType::Categorical );
     }
-  }
 
-  if ( mGenerateCategoriesFromRenderer && mApplyRendererStyle && mVectorLayer && mVectorLayer->renderer() )
-  {
-    applyRendererStyleToPlot( plot );
+    if ( mApplyRendererStyle && mVectorLayer->renderer() )
+    {
+      applyRendererStyleToPlot( plot );
+    }
   }
 
   plot->setSize( size );
@@ -720,11 +720,13 @@ void QgsLayoutItemChart::createRendererSeriesDetails( QString &rendererXExpressi
     }
   }
 
-  rendererXExpression = !expressionCases.isEmpty() ? u"CASE %1 END"_s.arg( expressionCases.join( " " ) ) : QString();
+  rendererXExpression = !expressionCases.isEmpty() ? u"CASE %1 END"_s.arg( expressionCases.join( ' ' ) ) : QString();
 }
 
 void QgsLayoutItemChart::applyRendererStyleToPlot( Qgs2DPlot *plot ) const
 {
+  Q_ASSERT( plot != mPlot.get() );
+
   const QgsFeatureRenderer *renderer = mVectorLayer->renderer();
   if ( const QgsFeatureRenderer *embeddedRenderer = renderer->embeddedRenderer() )
   {
@@ -804,7 +806,7 @@ void QgsLayoutItemChart::applyRendererStyleToPlot( Qgs2DPlot *plot ) const
 
   if ( !expressionCases.isEmpty() )
   {
-    const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( " " ) );
+    const QString rendererColorExpression = u"CASE %1 END"_s.arg( expressionCases.join( ' ' ) );
     if ( QgsBarChartPlot *barChartPlot = dynamic_cast<QgsBarChartPlot *>( plot ) )
     {
       for ( int idx = 0; idx < barChartPlot->fillSymbolCount(); idx++ )
