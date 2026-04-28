@@ -376,7 +376,7 @@ void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputF
 
 bool QgsPdalAlgorithmBase::isVpcFileName( const QString &name )
 {
-  return QgsVirtualPointCloudProviderMetadata::isVpcFileName( name );
+  return name.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) || name.endsWith( ".vpz"_L1, Qt::CaseInsensitive );
 }
 
 ///@endcond
