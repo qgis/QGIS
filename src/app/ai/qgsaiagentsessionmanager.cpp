@@ -4,7 +4,9 @@
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
+#include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -353,11 +355,45 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   else
     prompt += QStringLiteral( "Root: (not set)\n" );
 
+  // Inject a snapshot of the active QgsProject so the model knows which layers exist
+  // without having to call list_project_layers every turn.
+  QgsProject *project = QgsProject::instance();
+  if ( project )
+  {
+    const QString projectFile = project->fileName();
+    prompt += QStringLiteral( "Active project: %1\n" ).arg( projectFile.isEmpty() ? QStringLiteral( "(unsaved)" ) : projectFile );
+
+    const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
+    prompt += QStringLiteral( "Loaded layers: %1\n" ).arg( layers.size() );
+    int shown = 0;
+    for ( auto it = layers.constBegin(); it != layers.constEnd() && shown < 10; ++it, ++shown )
+    {
+      QgsMapLayer *layer = it.value();
+      if ( !layer )
+        continue;
+      prompt += QStringLiteral( "  - %1 (id=%2, crs=%3)\n" ).arg( layer->name(), layer->id(), layer->crs().authid() );
+    }
+    if ( layers.size() > 10 )
+      prompt += QStringLiteral( "  …%1 more (use list_project_layers for the full list).\n" ).arg( layers.size() - 10 );
+  }
+
+  // Tool list is injected so the model has discoverable names alongside the JSON schema.
+  if ( mToolRegistry )
+  {
+    const QStringList toolNames = mToolRegistry->toolNames();
+    if ( !toolNames.isEmpty() )
+    {
+      prompt += QStringLiteral( "\n== Available tools ==\n" );
+      prompt += toolNames.join( QStringLiteral( ", " ) );
+      prompt += '\n';
+    }
+  }
+
   prompt += QStringLiteral( "\n== How to act ==\n" );
   prompt += QStringLiteral( "- Use tools instead of writing code in chat for the user to copy.\n" );
-  prompt += QStringLiteral( "- To inspect files: read_file, search_files, list_files (when available).\n" );
-  prompt += QStringLiteral( "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file. The user will review and accept your diff.\n" );
-  prompt += QStringLiteral( "- Never call propose_edit blind: read the file first.\n" );
+  prompt += QStringLiteral( "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n" );
+  prompt += QStringLiteral( "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n" );
+  prompt += QStringLiteral( "- Never call propose_edit blind: read the file first to capture the exact original text.\n" );
   prompt += QStringLiteral( "- Keep proposals small and reviewable. One concept per proposal.\n" );
   prompt += QStringLiteral( "- Do not invent file paths; resolve them via search_files or list_files.\n" );
   return prompt;

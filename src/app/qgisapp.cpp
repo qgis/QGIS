@@ -98,6 +98,8 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
 #include "ai/tools/qgsaiechotool.h"
+#include "ai/tools/qgsaiedittools.h"
+#include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsaitoolregistry.h"
 #endif
 #include "qgstaskmanager.h"
@@ -1379,8 +1381,18 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     aiWorkspaceRoot = QDir::currentPath();
   mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
+  mAiReviewPatchEngine->setContextProvider( mAiFileContextProvider.get() );
   mAiToolRegistry = std::make_unique<QgsAiToolRegistry>( this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiEchoTool>() );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiReadFileTool>( mAiFileContextProvider.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiSearchFilesTool>( mAiFileContextProvider.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiListFilesTool>( mAiFileContextProvider.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiListProjectLayersTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiGetCanvasExtentTool>( mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeEditTool>( mAiReviewPatchEngine.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeCreateFileTool>( mAiReviewPatchEngine.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeDeleteFileTool>( mAiReviewPatchEngine.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeMultiEditTool>( mAiReviewPatchEngine.get(), this ) );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
 

@@ -52,6 +52,19 @@ struct APP_EXPORT QgsAiPatchHunk
   QString replacementText;
   int priority = 0;
 
+  /**
+   * If true, the hunk represents a new file creation. \a originalText must be empty,
+   * \a replacementText is the full content of the new file. The file at filePath must
+   * not exist when the hunk is applied.
+   */
+  bool isCreate = false;
+
+  /**
+   * If true, the hunk represents a file deletion. Both \a originalText and
+   * \a replacementText are ignored; the file at filePath is removed (with backup).
+   */
+  bool isDelete = false;
+
   QJsonObject toJson() const;
   static QgsAiPatchHunk fromJson( const QJsonObject &json );
 };

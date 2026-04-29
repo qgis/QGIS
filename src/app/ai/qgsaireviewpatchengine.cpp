@@ -1,7 +1,11 @@
 #include "qgsaireviewpatchengine.h"
 
+#include "qgsaifilecontextprovider.h"
+
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QSet>
 #include <QTextStream>
 #include <QUuid>
 
@@ -53,40 +57,130 @@ QString QgsAiReviewPatchEngine::previewProposalDiff( const QString &proposalId )
   return proposalDiff( mPendingProposals.value( proposalId ) );
 }
 
+bool QgsAiReviewPatchEngine::validateHunkPath( const QgsAiPatchHunk &hunk, QString *errorMessage ) const
+{
+  if ( hunk.filePath.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Encountered a patch hunk with an empty file path." );
+    return false;
+  }
+
+  if ( !mContextProvider )
+    return true;  // No sandbox configured (legacy callers); accept.
+
+  // Reject path-traversal: the path must resolve inside the workspace.
+  const QString resolved = mContextProvider->resolveWorkspaceFile( hunk.filePath );
+  if ( resolved.isEmpty() )
+  {
+    // For create-file we accept paths that don't exist yet but lie inside the workspace.
+    if ( hunk.isCreate )
+    {
+      const QString root = mContextProvider->workspaceRoot();
+      const QFileInfo info( hunk.filePath );
+      const QString absolute = info.isAbsolute() ? info.absoluteFilePath() : QDir( root ).absoluteFilePath( hunk.filePath );
+      const QString relative = QDir( root ).relativeFilePath( absolute );
+      const bool inside = !root.isEmpty()
+                          && !relative.startsWith( QStringLiteral( "../" ) )
+                          && relative != QLatin1String( ".." )
+                          && !QDir::isAbsolutePath( relative );
+      if ( inside )
+        return true;
+    }
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Path is outside workspace or unreadable: %1" ).arg( hunk.filePath );
+    return false;
+  }
+  return true;
+}
+
 bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &proposal, const QList<int> *hunkIndexes, AppliedPatch &appliedPatch, QString *errorMessage ) const
 {
-  QMap<QString, QString> fileContents;
+  // Two passes:
+  //   1. validate every hunk and compute the final content of each touched file in memory
+  //   2. snapshot existing files for backup, then write/delete to disk
+  // Splitting this way means a failure mid-way still leaves disk untouched.
 
-  auto applyHunk = [&fileContents, errorMessage]( const QgsAiPatchHunk &hunk ) -> bool
-  {
-    if ( hunk.filePath.isEmpty() )
-    {
-      if ( errorMessage )
-        *errorMessage = QStringLiteral( "Encountered a patch hunk with an empty file path." );
+  QMap<QString, QString> fileContents;       // for edit + create-file, the post-state to write
+  QMap<QString, QString> originalContents;   // for backup
+  QSet<QString> filesToDelete;               // paths to remove
+  QSet<QString> filesBeingCreated;           // didn't exist before (used by undo)
+
+  auto resolvedPath = [this]( const QgsAiPatchHunk &hunk ) -> QString {
+    if ( !mContextProvider )
+      return hunk.filePath;  // legacy callers
+    const QString existing = mContextProvider->resolveWorkspaceFile( hunk.filePath );
+    if ( !existing.isEmpty() )
+      return existing;
+    // Not found on disk: compute the absolute path under the workspace root.
+    const QString root = mContextProvider->workspaceRoot();
+    const QFileInfo info( hunk.filePath );
+    return info.isAbsolute() ? info.absoluteFilePath() : QDir( root ).absoluteFilePath( hunk.filePath );
+  };
+
+  auto applyHunk = [&]( const QgsAiPatchHunk &hunk ) -> bool {
+    if ( !validateHunkPath( hunk, errorMessage ) )
       return false;
+
+    const QString path = resolvedPath( hunk );
+
+    if ( hunk.isDelete )
+    {
+      if ( !QFileInfo::exists( path ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QStringLiteral( "Cannot delete: file does not exist: %1" ).arg( path );
+        return false;
+      }
+      // Snapshot for undo.
+      QFile sourceFile( path );
+      if ( !sourceFile.open( QIODevice::ReadOnly ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QStringLiteral( "Cannot read file before delete (for backup): %1" ).arg( path );
+        return false;
+      }
+      originalContents.insert( path, QString::fromUtf8( sourceFile.readAll() ) );
+      filesToDelete.insert( path );
+      return true;
     }
 
-    if ( !fileContents.contains( hunk.filePath ) )
+    if ( hunk.isCreate )
     {
-      QFile sourceFile( hunk.filePath );
+      if ( QFileInfo::exists( path ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QStringLiteral( "Cannot create: file already exists: %1" ).arg( path );
+        return false;
+      }
+      filesBeingCreated.insert( path );
+      fileContents.insert( path, hunk.replacementText );
+      return true;
+    }
+
+    // Default: in-place edit.
+    if ( !fileContents.contains( path ) )
+    {
+      QFile sourceFile( path );
       if ( !sourceFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot open file for patching: %1" ).arg( hunk.filePath );
+          *errorMessage = QStringLiteral( "Cannot open file for patching: %1" ).arg( path );
         return false;
       }
-
-      fileContents.insert( hunk.filePath, QString::fromUtf8( sourceFile.readAll() ) );
+      const QString current = QString::fromUtf8( sourceFile.readAll() );
+      fileContents.insert( path, current );
+      originalContents.insert( path, current );
     }
 
-    QString currentContent = fileContents.value( hunk.filePath );
+    QString currentContent = fileContents.value( path );
     if ( !hunk.originalText.isEmpty() )
     {
       const int replaceIndex = currentContent.indexOf( hunk.originalText );
       if ( replaceIndex < 0 )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Original text for file '%1' could not be found. Proposal is stale." ).arg( hunk.filePath );
+          *errorMessage = QStringLiteral( "Original text for file '%1' could not be found. Proposal is stale." ).arg( path );
         return false;
       }
 
@@ -97,7 +191,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       currentContent.append( hunk.replacementText );
     }
 
-    fileContents[hunk.filePath] = currentContent;
+    fileContents[path] = currentContent;
     return true;
   };
 
@@ -125,35 +219,55 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
     }
   }
 
-  for ( auto it = fileContents.constBegin(); it != fileContents.constEnd(); ++it )
+  // Build backups: existing edits + deleted files + created files (originalContent empty, wasMissing=true).
+  for ( auto it = originalContents.constBegin(); it != originalContents.constEnd(); ++it )
   {
-    const QString path = it.key();
-    QFile sourceFile( path );
-    if ( !sourceFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot reopen file while preparing backup: %1" ).arg( path );
-      return false;
-    }
-
+    FileBackup backup;
+    backup.filePath = it.key();
+    backup.originalContent = it.value();
+    backup.wasMissing = false;
+    appliedPatch.backups.push_back( backup );
+  }
+  for ( const QString &path : filesBeingCreated )
+  {
     FileBackup backup;
     backup.filePath = path;
-    backup.originalContent = QString::fromUtf8( sourceFile.readAll() );
+    backup.wasMissing = true;
     appliedPatch.backups.push_back( backup );
   }
 
+  // Write phase: edits/creates first, then deletes.
   for ( auto it = fileContents.constBegin(); it != fileContents.constEnd(); ++it )
   {
-    QFile targetFile( it.key() );
+    const QString &path = it.key();
+    QFileInfo info( path );
+    QDir parent = info.dir();
+    if ( !parent.exists() && !parent.mkpath( QStringLiteral( "." ) ) )
+    {
+      if ( errorMessage )
+        *errorMessage = QStringLiteral( "Cannot create parent directory for: %1" ).arg( path );
+      return false;
+    }
+    QFile targetFile( path );
     if ( !targetFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot write patched file: %1" ).arg( it.key() );
+        *errorMessage = QStringLiteral( "Cannot write patched file: %1" ).arg( path );
       return false;
     }
 
     QTextStream output( &targetFile );
     output << it.value();
+  }
+
+  for ( const QString &path : filesToDelete )
+  {
+    if ( !QFile::remove( path ) )
+    {
+      if ( errorMessage )
+        *errorMessage = QStringLiteral( "Cannot delete file: %1" ).arg( path );
+      return false;
+    }
   }
 
   return true;
@@ -226,6 +340,18 @@ bool QgsAiReviewPatchEngine::undoLastApply( QString *errorMessage )
   const AppliedPatch appliedPatch = mAppliedPatches.takeLast();
   for ( const FileBackup &backup : appliedPatch.backups )
   {
+    if ( backup.wasMissing )
+    {
+      // The file was created by this patch; undo by removing it.
+      if ( QFile::exists( backup.filePath ) && !QFile::remove( backup.filePath ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QStringLiteral( "Cannot remove file created by patch during undo: %1" ).arg( backup.filePath );
+        return false;
+      }
+      continue;
+    }
+
     QFile file( backup.filePath );
     if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {

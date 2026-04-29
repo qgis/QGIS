@@ -76,6 +76,8 @@ QJsonObject QgsAiPatchHunk::toJson() const
   json.insert( QStringLiteral( "originalText" ), originalText );
   json.insert( QStringLiteral( "replacementText" ), replacementText );
   json.insert( QStringLiteral( "priority" ), priority );
+  json.insert( QStringLiteral( "isCreate" ), isCreate );
+  json.insert( QStringLiteral( "isDelete" ), isDelete );
   return json;
 }
 
@@ -86,6 +88,8 @@ QgsAiPatchHunk QgsAiPatchHunk::fromJson( const QJsonObject &json )
   hunk.originalText = json.value( QStringLiteral( "originalText" ) ).toString();
   hunk.replacementText = json.value( QStringLiteral( "replacementText" ) ).toString();
   hunk.priority = json.value( QStringLiteral( "priority" ) ).toInt();
+  hunk.isCreate = json.value( QStringLiteral( "isCreate" ) ).toBool();
+  hunk.isDelete = json.value( QStringLiteral( "isDelete" ) ).toBool();
   return hunk;
 }
 

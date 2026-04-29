@@ -4,10 +4,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 #include <QDir>
 #include <QFileInfo>
