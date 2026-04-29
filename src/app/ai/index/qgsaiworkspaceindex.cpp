@@ -1,0 +1,451 @@
+#include "qgsaiworkspaceindex.h"
+
+#include "qgsaiembeddingclient.h"
+#include "qgsaifilecontextprovider.h"
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+
+#include <QByteArray>
+#include <QCryptographicHash>
+#include <QDateTime>
+#include <QDir>
+#include <QFileInfo>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QStringList>
+#include <QUuid>
+#include <QVariant>
+#include <cmath>
+
+namespace
+{
+  const QStringList TEXT_EXTENSIONS = {
+    QStringLiteral( "h" ), QStringLiteral( "hpp" ), QStringLiteral( "cpp" ), QStringLiteral( "cc" ), QStringLiteral( "c" ),
+    QStringLiteral( "py" ), QStringLiteral( "md" ), QStringLiteral( "txt" ),
+    QStringLiteral( "json" ), QStringLiteral( "geojson" ), QStringLiteral( "csv" ), QStringLiteral( "tsv" ),
+    QStringLiteral( "qgs" ), QStringLiteral( "qml" ), QStringLiteral( "xml" ),
+    QStringLiteral( "ts" ), QStringLiteral( "js" ), QStringLiteral( "html" ), QStringLiteral( "css" ),
+    QStringLiteral( "yaml" ), QStringLiteral( "yml" ), QStringLiteral( "ini" ), QStringLiteral( "toml" ), QStringLiteral( "cfg" ),
+    QStringLiteral( "sh" ), QStringLiteral( "bat" ), QStringLiteral( "ps1" ),
+    QStringLiteral( "cmake" ), QStringLiteral( "make" ), QStringLiteral( "mk" ),
+    QStringLiteral( "sql" ), QStringLiteral( "rst" ),
+  };
+
+  QByteArray vectorToBytes( const QVector<float> &v )
+  {
+    QByteArray bytes;
+    bytes.resize( static_cast<int>( v.size() * sizeof( float ) ) );
+    if ( !v.isEmpty() )
+      std::memcpy( bytes.data(), v.constData(), bytes.size() );
+    return bytes;
+  }
+
+  QVector<float> bytesToVector( const QByteArray &bytes )
+  {
+    QVector<float> v;
+    if ( bytes.size() % static_cast<int>( sizeof( float ) ) != 0 )
+      return v;
+    const int count = bytes.size() / static_cast<int>( sizeof( float ) );
+    v.resize( count );
+    if ( count > 0 )
+      std::memcpy( v.data(), bytes.constData(), bytes.size() );
+    return v;
+  }
+}
+
+QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent )
+  : QObject( parent )
+  , mContextProvider( contextProvider )
+  , mEmbeddingClient( embeddingClient )
+{}
+
+QgsAiWorkspaceIndex::~QgsAiWorkspaceIndex()
+{
+  // Make sure we close any database connection we opened.
+  const QString name = connectionName();
+  if ( QSqlDatabase::contains( name ) )
+    QSqlDatabase::removeDatabase( name );
+}
+
+QString QgsAiWorkspaceIndex::connectionName() const
+{
+  // One named SQL connection per index instance — avoid clashing with other
+  // QGIS components that already use unnamed default connections.
+  return QStringLiteral( "qgsai_index_%1" ).arg( reinterpret_cast<quintptr>( this ) );
+}
+
+QString QgsAiWorkspaceIndex::dbPath() const
+{
+  if ( !mContextProvider )
+    return QString();
+
+  const QString root = mContextProvider->workspaceRoot();
+  const QByteArray hash = QCryptographicHash::hash( root.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
+  const QString dir = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "ai_index" );
+  QDir().mkpath( dir );
+  return QDir( dir ).filePath( QStringLiteral( "ws_%1.sqlite" ).arg( QString::fromLatin1( hash ) ) );
+}
+
+bool QgsAiWorkspaceIndex::isTextFile( const QString &relativePath )
+{
+  const QString ext = QFileInfo( relativePath ).suffix().toLower();
+  if ( ext.isEmpty() )
+    return false;
+  return TEXT_EXTENSIONS.contains( ext );
+}
+
+QStringList QgsAiWorkspaceIndex::chunkText( const QString &content )
+{
+  QStringList chunks;
+  if ( content.isEmpty() )
+    return chunks;
+
+  // Greedy chunker: walk forward CHUNK_TARGET_CHARS at a time, snap the
+  // boundary back to the previous newline if there is one within the last 30%
+  // of the chunk so we don't split mid-line.
+  int pos = 0;
+  while ( pos < content.size() )
+  {
+    int end = std::min( pos + CHUNK_TARGET_CHARS, content.size() );
+    if ( end < content.size() )
+    {
+      const int searchFrom = end - CHUNK_TARGET_CHARS / 3;
+      const int newline = content.lastIndexOf( '\n', end );
+      if ( newline > pos && newline >= searchFrom )
+        end = newline + 1;
+    }
+    QString slice = content.mid( pos, end - pos ).trimmed();
+    if ( !slice.isEmpty() )
+      chunks.append( slice );
+    pos = end;
+  }
+  return chunks;
+}
+
+float QgsAiWorkspaceIndex::cosineSimilarity( const QVector<float> &a, const QVector<float> &b )
+{
+  if ( a.size() != b.size() || a.isEmpty() )
+    return 0.0f;
+
+  double dot = 0.0;
+  double na = 0.0;
+  double nb = 0.0;
+  for ( int i = 0; i < a.size(); ++i )
+  {
+    dot += static_cast<double>( a[i] ) * b[i];
+    na += static_cast<double>( a[i] ) * a[i];
+    nb += static_cast<double>( b[i] ) * b[i];
+  }
+  if ( na == 0.0 || nb == 0.0 )
+    return 0.0f;
+  return static_cast<float>( dot / ( std::sqrt( na ) * std::sqrt( nb ) ) );
+}
+
+bool QgsAiWorkspaceIndex::ensureLoaded()
+{
+  if ( mLoaded )
+    return true;
+  QString err;
+  if ( !loadAll( &err ) )
+  {
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Workspace index load failed: %1" ).arg( err ),
+      QStringLiteral( "AI/Index" ), Qgis::MessageLevel::Warning, false );
+    // Treat missing/corrupt DB as empty rather than fatal.
+    mCache.clear();
+    mLastSync = QDateTime();
+  }
+  mLoaded = true;
+  return true;
+}
+
+QgsAiWorkspaceIndex::Status QgsAiWorkspaceIndex::status() const
+{
+  Status s;
+  s.workspaceRoot = mContextProvider ? mContextProvider->workspaceRoot() : QString();
+  s.chunkCount = mCache.size();
+  QStringList uniqueFiles;
+  for ( const CachedChunk &c : mCache )
+  {
+    if ( !uniqueFiles.contains( c.chunk.relativePath ) )
+      uniqueFiles.append( c.chunk.relativePath );
+  }
+  s.fileCount = uniqueFiles.size();
+  s.lastSync = mLastSync;
+  s.indexed = !mCache.isEmpty();
+  return s;
+}
+
+bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
+{
+  mCache.clear();
+  const QString path = dbPath();
+  if ( path.isEmpty() || !QFileInfo::exists( path ) )
+    return true;  // Nothing to load yet — that's not an error.
+
+  QSqlDatabase db = QSqlDatabase::contains( connectionName() )
+                      ? QSqlDatabase::database( connectionName() )
+                      : QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName() );
+  db.setDatabaseName( path );
+  if ( !db.open() )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q( db );
+  if ( !q.exec( QStringLiteral( "SELECT relative_path, chunk_index, text, embedding, last_sync FROM chunks ORDER BY id" ) ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+  qint64 maxSync = 0;
+  while ( q.next() )
+  {
+    CachedChunk c;
+    c.chunk.relativePath = q.value( 0 ).toString();
+    c.chunk.chunkIndex = q.value( 1 ).toInt();
+    c.chunk.text = q.value( 2 ).toString();
+    c.embedding = bytesToVector( q.value( 3 ).toByteArray() );
+    const qint64 syncMs = q.value( 4 ).toLongLong();
+    if ( syncMs > maxSync )
+      maxSync = syncMs;
+    if ( !c.embedding.isEmpty() )
+      mCache.append( c );
+  }
+  if ( maxSync > 0 )
+    mLastSync = QDateTime::fromMSecsSinceEpoch( maxSync );
+
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString *errorMessage )
+{
+  const QString path = dbPath();
+  if ( path.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Workspace root is unset; cannot persist index." );
+    return false;
+  }
+
+  QSqlDatabase db = QSqlDatabase::contains( connectionName() )
+                      ? QSqlDatabase::database( connectionName() )
+                      : QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName() );
+  db.setDatabaseName( path );
+  if ( !db.open() )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q( db );
+  q.exec( QStringLiteral( "CREATE TABLE IF NOT EXISTS chunks ("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "relative_path TEXT NOT NULL, "
+                          "chunk_index INTEGER NOT NULL, "
+                          "text TEXT NOT NULL, "
+                          "embedding BLOB NOT NULL, "
+                          "last_sync INTEGER NOT NULL"
+                          ")" ) );
+  q.exec( QStringLiteral( "DELETE FROM chunks" ) );
+
+  if ( !db.transaction() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Cannot start SQLite transaction: %1" ).arg( db.lastError().text() );
+    return false;
+  }
+
+  const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
+  q.prepare( QStringLiteral( "INSERT INTO chunks (relative_path, chunk_index, text, embedding, last_sync) VALUES (?, ?, ?, ?, ?)" ) );
+  for ( const CachedChunk &c : chunks )
+  {
+    q.addBindValue( c.chunk.relativePath );
+    q.addBindValue( c.chunk.chunkIndex );
+    q.addBindValue( c.chunk.text );
+    q.addBindValue( vectorToBytes( c.embedding ) );
+    q.addBindValue( nowMs );
+    if ( !q.exec() )
+    {
+      if ( errorMessage )
+        *errorMessage = q.lastError().text();
+      db.rollback();
+      return false;
+    }
+  }
+  if ( !db.commit() )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
+{
+  if ( !mContextProvider )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Workspace context provider is unavailable." );
+    return false;
+  }
+  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "OpenAI API key is required for embeddings; configure it in AI Provider Settings." );
+    return false;
+  }
+
+  const int cap = maxFiles > 0 ? maxFiles : DEFAULT_MAX_FILES;
+  const QStringList all = mContextProvider->workspaceFileCandidates( QString(), 50000 );
+
+  // Restrict to text-ish files inside the size cap.
+  QStringList eligible;
+  for ( const QString &rel : all )
+  {
+    if ( !isTextFile( rel ) )
+      continue;
+    const QString abs = mContextProvider->resolveWorkspaceFile( rel );
+    if ( abs.isEmpty() )
+      continue;
+    if ( QFileInfo( abs ).size() > MAX_FILE_BYTES )
+      continue;
+    eligible.append( rel );
+    if ( eligible.size() >= cap )
+      break;
+  }
+
+  if ( eligible.isEmpty() )
+  {
+    mCache.clear();
+    mLastSync = QDateTime::currentDateTimeUtc();
+    QString err;
+    persistAll( {}, &err );
+    return true;
+  }
+
+  // Build chunks for every file. We keep a parallel list of texts to embed so
+  // we can call the OpenAI endpoint in larger batches than per-file.
+  QList<CachedChunk> built;
+  QStringList textsToEmbed;
+  QList<int> backRefIndex;  // for each text in textsToEmbed, the position in `built`
+  for ( int fileIdx = 0; fileIdx < eligible.size(); ++fileIdx )
+  {
+    const QString rel = eligible.at( fileIdx );
+    emit progress( fileIdx + 1, eligible.size(), rel );
+
+    const QgsAiFileContext fileContext = mContextProvider->buildContext( rel, QString(), MAX_FILE_BYTES );
+    if ( fileContext.fileSnippet.isEmpty() || fileContext.binary )
+      continue;
+
+    const QStringList chunks = chunkText( fileContext.fileSnippet );
+    for ( int ci = 0; ci < chunks.size(); ++ci )
+    {
+      CachedChunk c;
+      c.chunk.relativePath = rel;
+      c.chunk.chunkIndex = ci;
+      c.chunk.text = chunks.at( ci );
+      built.append( c );
+      backRefIndex.append( built.size() - 1 );
+      textsToEmbed.append( c.chunk.text );
+    }
+  }
+
+  if ( textsToEmbed.isEmpty() )
+  {
+    mCache.clear();
+    mLastSync = QDateTime::currentDateTimeUtc();
+    QString err;
+    persistAll( {}, &err );
+    return true;
+  }
+
+  QList<QVector<float>> vectors;
+  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+    return false;
+  if ( vectors.size() != textsToEmbed.size() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Embedding count mismatch: expected %1 got %2" ).arg( textsToEmbed.size() ).arg( vectors.size() );
+    return false;
+  }
+
+  for ( int i = 0; i < vectors.size(); ++i )
+    built[backRefIndex.at( i )].embedding = vectors.at( i );
+
+  if ( !persistAll( built, errorMessage ) )
+    return false;
+
+  mCache = built;
+  mLastSync = QDateTime::currentDateTimeUtc();
+  mLoaded = true;
+  QgsMessageLog::logMessage(
+    QStringLiteral( "Workspace index built: files=%1 chunks=%2" ).arg( eligible.size() ).arg( built.size() ),
+    QStringLiteral( "AI/Index" ), Qgis::MessageLevel::Info, false );
+  return true;
+}
+
+QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &query, int k, QString *errorMessage )
+{
+  ensureLoaded();
+  QList<Chunk> results;
+  if ( query.trimmed().isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Empty query." );
+    return results;
+  }
+  if ( mCache.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Workspace index is empty. Run reindex_workspace first." );
+    return results;
+  }
+  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "OpenAI API key is required for query embedding." );
+    return results;
+  }
+
+  QStringList qList { query };
+  QList<QVector<float>> qEmb;
+  if ( !mEmbeddingClient->embed( qList, qEmb, errorMessage, 1 ) || qEmb.isEmpty() )
+    return results;
+
+  const QVector<float> &qVec = qEmb.first();
+
+  // Linear cosine scan; small enough for the MVP.
+  QList<QPair<float, int>> scored;
+  scored.reserve( mCache.size() );
+  for ( int i = 0; i < mCache.size(); ++i )
+    scored.append( { cosineSimilarity( qVec, mCache.at( i ).embedding ), i } );
+
+  std::sort( scored.begin(), scored.end(), []( const auto &a, const auto &b ) {
+    return a.first > b.first;
+  } );
+
+  const int topK = std::clamp( k, 1, std::min( 20, mCache.size() ) );
+  for ( int i = 0; i < topK; ++i )
+  {
+    Chunk c = mCache.at( scored.at( i ).second ).chunk;
+    c.score = scored.at( i ).first;
+    results.append( c );
+  }
+  return results;
+}
+
+void QgsAiWorkspaceIndex::clear()
+{
+  mCache.clear();
+  mLastSync = QDateTime();
+  const QString path = dbPath();
+  if ( !path.isEmpty() && QFileInfo::exists( path ) )
+    QFile::remove( path );
+}

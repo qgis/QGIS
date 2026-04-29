@@ -309,6 +309,8 @@ set(QGIS_APP_SRCS
 if (ENABLE_AI_ASSISTANT)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
+    ai/index/qgsaiembeddingclient.cpp
+    ai/index/qgsaiworkspaceindex.cpp
     ai/qgsaiagentsessionmanager.cpp
     ai/qgsaichatdockwidget.cpp
     ai/qgsaifilecontextprovider.cpp
@@ -319,6 +321,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaireviewpatchengine.cpp
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaiedittools.cpp
+    ai/tools/qgsaiindextools.cpp
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp

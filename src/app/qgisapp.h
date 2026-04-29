@@ -170,10 +170,12 @@ class QgsCustomizationDialog;
 #ifdef HAVE_AI_ASSISTANT
 class QgsAiAgentSessionManager;
 class QgsAiChatDockWidget;
+class QgsAiEmbeddingClient;
 class QgsAiFileContextProvider;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
 class QgsAiToolRegistry;
+class QgsAiWorkspaceIndex;
 #endif
 
 #include "qgsconfig.h"
@@ -2781,6 +2783,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsAiModelRouter> mAiModelRouter;
     std::unique_ptr<QgsAiFileContextProvider> mAiFileContextProvider;
     std::unique_ptr<QgsAiReviewPatchEngine> mAiReviewPatchEngine;
+    std::unique_ptr<QgsAiEmbeddingClient> mAiEmbeddingClient;
+    std::unique_ptr<QgsAiWorkspaceIndex> mAiWorkspaceIndex;
     std::unique_ptr<QgsAiToolRegistry> mAiToolRegistry;
     std::unique_ptr<QgsAiAgentSessionManager> mAiSessionManager;
 #endif
