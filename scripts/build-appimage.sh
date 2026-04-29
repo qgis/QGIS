@@ -35,6 +35,7 @@ sudo apt-get install -y --no-install-recommends \
   python3-pyqt6.qtmultimedia \
   python3-pyqt6.qtpositioning \
   python3-sip-dev \
+  python3-pyqtbuild \
   pyqt6-dev-tools \
   sip-tools \
   libqt6core5compat6-dev \
