@@ -2045,7 +2045,7 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
-        QLabel *label = new QLabel( widgetInfo.labelText );
+        QLabel *label = new QLabel( widgetInfo.labelText, labelWidget );
 
         if ( widgetInfo.labelStyle.overrideColor )
         {
@@ -2274,7 +2274,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
-      QLabel *label = new QLabel( labelText );
+      QLabel *label = new QLabel( labelText, labelWidget );
       label->setObjectName( fieldName );
 
       labelWidget->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
@@ -2903,7 +2903,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QWidget *labelWidget = new QWidget(); //to group label and comment icon in one widget
-          QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+          QLabel *mypLabel = new QLabel( widgetInfo.labelText, labelWidget );
 
           if ( widgetInfo.labelStyle.overrideColor )
           {

@@ -558,6 +558,7 @@ void QgsAttributeTypeDialog::displayedCommentChanged()
   }
 }
 
+
 void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
 {
   mDataDefinedProperties = properties;
@@ -578,7 +579,7 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
   mComment = comment;
-  
+
   updateDisplayedComment();
 }
 
