@@ -39,6 +39,9 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
+// Exposure correction
+uniform float exposure = 0.0;
+
 vec3 WorldPosFromDepth(float depth) {
     float z = depth * 2.0 - 1.0;
 
@@ -113,6 +116,17 @@ float edlFactor(vec2 coords)
   return factor / 4.0f;
 }
 
+vec3 aces_approx(vec3 v)
+{
+  v *= 0.6f;
+  float a = 2.51f;
+  float b = 0.03f;
+  float c = 2.43f;
+  float d = 0.59f;
+  float e = 0.14f;
+  return clamp((v*(a*v+b))/(v*(c*v+d)+e), 0.0f, 1.0f);
+}
+
 void main()
 {
   float depth = texture(depthTexture, texCoord).r;
@@ -141,6 +155,16 @@ void main()
   {
     finalColor = finalColor.rgb * texture( ssaoTexture, texCoord ).r;
   }
+
+  // Apply exposure correction -- currently a no-op, because exposure is hardcoded to 0
+  // finalColor *= exp2(exposure);
+
+  // Apply tonemap transform to get into LDR range [0, 1]
+  // (aces looks great with exposure ~0.5, but maybe not wanted for GIS applications? could be an option...)
+  // finalColor = aces_approx(finalColor)
+  // let's just hard clamp instead. we lose detail in bright areas, but retain exact match for colors in the 0-1 range,
+  // which is more appropriate for mapping anyway.
+  finalColor = min(finalColor, 1);
 
   vec3 sRgbColor = pow(finalColor, vec3(1.0 / 2.2));
 

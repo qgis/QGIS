@@ -48,9 +48,6 @@ uniform float emissiveFactor = 1;
 in vec2 texCoord;
 #endif
 
-// Exposure correction
-uniform float exposure = 0.0;
-
 const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
@@ -359,11 +356,6 @@ vec3 pbrIblModel(const in vec3 wNormal,
     return color;
 }
 
-vec3 toneMap(const in vec3 c)
-{
-    return c / (c + vec3(1.0));
-}
-
 vec4 metalRoughFunction(const in vec4 baseColor,
                         const in float metalness,
                         const in float roughness,
@@ -404,17 +396,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
 #endif
-
-    // TODO: Exposure correction, tone mapping should be deferred to postprocess shader. We WANT
-    // to output HDR data for this material!
-
-    // Apply exposure correction
-    cLinear *= pow(2.0, exposure);
-
-    // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]
-    vec3 cToneMapped = toneMap(cLinear);
-
-    return vec4(cToneMapped, 1.0);
+    return vec4(cLinear, 1.0);
 }
 
 
