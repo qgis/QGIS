@@ -258,6 +258,15 @@ the specified child algorithm.
 .. versionadded:: 3.38
 %End
 
+
+    void childAlgorithmDeleted( const QString &childId );
+%Docstring
+Emitted when the user delete a child algorithm.
+
+.. versionadded:: 4.2
+%End
+
+
     void showChildAlgorithmOutputs( const QString &childId );
 %Docstring
 Emitted when the user opts to view previous results from the child
@@ -273,6 +282,15 @@ algorithm with matching ID.
 
 .. versionadded:: 3.38
 %End
+
+    void showDataViewerDock( const QString &childId, const QString &paramName );
+%Docstring
+Emitted when the user opts to view the previous log from the child
+algorithm with matching ID.
+
+.. versionadded:: 4.2
+%End
+
 
   protected:
     virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
