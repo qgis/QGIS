@@ -1,7 +1,7 @@
 #include "qgsairunpythontool.h"
 
-#include "qgsaitoolschemautil.h"
 #include "qgsaipythonapprovaldialog.h"
+#include "qgsaitoolschemautil.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
 

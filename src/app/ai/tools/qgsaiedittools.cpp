@@ -1,8 +1,8 @@
 #include "qgsaiedittools.h"
 
-#include "qgsaitoolschemautil.h"
 #include "qgsaireviewdialog.h"
 #include "qgsaireviewpatchengine.h"
+#include "qgsaitoolschemautil.h"
 
 #include <QDateTime>
 #include <QJsonArray>

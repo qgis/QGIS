@@ -1,7 +1,7 @@
 #include "qgsailayertools.h"
 
-#include "qgsaitoolschemautil.h"
 #include "qgsaifilecontextprovider.h"
+#include "qgsaitoolschemautil.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"

@@ -1,7 +1,9 @@
 #include "qgsaireadtools.h"
 
-#include "qgsaitoolschemautil.h"
+#include <algorithm>
+
 #include "qgsaifilecontextprovider.h"
+#include "qgsaitoolschemautil.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -11,8 +13,6 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
-
-#include <algorithm>
 
 #include <QDir>
 #include <QFileInfo>
