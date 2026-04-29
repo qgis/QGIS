@@ -1,10 +1,13 @@
 #include "qgsaimodelrouter.h"
 
+#include "qgsaitoolregistry.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 
+#include <QByteArray>
 #include <QDateTime>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -13,7 +16,11 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRegularExpression>
+#include <QStringList>
+#include <QUrl>
 #include <QUuid>
+
+#include <algorithm>
 
 namespace
 {
@@ -132,6 +139,113 @@ QString QgsAiModelRouter::providerDisplayName( Provider provider ) const
   return QStringLiteral( "Unknown" );
 }
 
+QJsonArray QgsAiModelRouter::buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const
+{
+  QJsonArray content;
+  if ( !message.content.isEmpty() )
+  {
+    QJsonObject textBlock;
+    textBlock.insert( QStringLiteral( "type" ), QStringLiteral( "text" ) );
+    textBlock.insert( QStringLiteral( "text" ), message.content );
+    content.push_back( textBlock );
+  }
+
+  const QVariantList toolCalls = message.metadata.value( QStringLiteral( "tool_calls" ) ).toList();
+  for ( const QVariant &call : toolCalls )
+  {
+    const QVariantMap callMap = call.toMap();
+    QJsonObject toolUse;
+    toolUse.insert( QStringLiteral( "type" ), QStringLiteral( "tool_use" ) );
+    toolUse.insert( QStringLiteral( "id" ), callMap.value( QStringLiteral( "id" ) ).toString() );
+    toolUse.insert( QStringLiteral( "name" ), callMap.value( QStringLiteral( "name" ) ).toString() );
+    toolUse.insert( QStringLiteral( "input" ), QJsonObject::fromVariantMap( callMap.value( QStringLiteral( "args" ) ).toMap() ) );
+    content.push_back( toolUse );
+  }
+  return content;
+}
+
+QJsonArray QgsAiModelRouter::buildAnthropicUserContent( const QgsAiChatMessage &message ) const
+{
+  QJsonArray content;
+  if ( message.role == QgsAiChatRole::Tool )
+  {
+    QJsonObject toolResult;
+    toolResult.insert( QStringLiteral( "type" ), QStringLiteral( "tool_result" ) );
+    toolResult.insert( QStringLiteral( "tool_use_id" ), message.metadata.value( QStringLiteral( "tool_call_id" ) ).toString() );
+    toolResult.insert( QStringLiteral( "content" ), message.content );
+    if ( message.metadata.value( QStringLiteral( "is_error" ) ).toBool() )
+      toolResult.insert( QStringLiteral( "is_error" ), true );
+    content.push_back( toolResult );
+    return content;
+  }
+
+  QJsonObject textBlock;
+  textBlock.insert( QStringLiteral( "type" ), QStringLiteral( "text" ) );
+  textBlock.insert( QStringLiteral( "text" ), message.content );
+  content.push_back( textBlock );
+  return content;
+}
+
+void QgsAiModelRouter::appendOpenAiInputItems( const QgsAiChatMessage &message, QJsonArray &input ) const
+{
+  // Tool results are emitted as standalone function_call_output items, not as messages.
+  if ( message.role == QgsAiChatRole::Tool )
+  {
+    QJsonObject item;
+    item.insert( QStringLiteral( "type" ), QStringLiteral( "function_call_output" ) );
+    item.insert( QStringLiteral( "call_id" ), message.metadata.value( QStringLiteral( "tool_call_id" ) ).toString() );
+    item.insert( QStringLiteral( "output" ), message.content );
+    input.push_back( item );
+    return;
+  }
+
+  // For an assistant turn that contains tool calls, emit a message item (only if there is text)
+  // followed by one function_call item per tool call. Order is preserved so the model sees
+  // the same flow on the next turn.
+  if ( message.role == QgsAiChatRole::Assistant )
+  {
+    if ( !message.content.isEmpty() )
+    {
+      QJsonObject item;
+      item.insert( QStringLiteral( "type" ), QStringLiteral( "message" ) );
+      item.insert( QStringLiteral( "role" ), QStringLiteral( "assistant" ) );
+      QJsonArray content;
+      QJsonObject textBlock;
+      textBlock.insert( QStringLiteral( "type" ), QStringLiteral( "output_text" ) );
+      textBlock.insert( QStringLiteral( "text" ), message.content );
+      content.push_back( textBlock );
+      item.insert( QStringLiteral( "content" ), content );
+      input.push_back( item );
+    }
+
+    const QVariantList toolCalls = message.metadata.value( QStringLiteral( "tool_calls" ) ).toList();
+    for ( const QVariant &call : toolCalls )
+    {
+      const QVariantMap callMap = call.toMap();
+      QJsonObject item;
+      item.insert( QStringLiteral( "type" ), QStringLiteral( "function_call" ) );
+      item.insert( QStringLiteral( "call_id" ), callMap.value( QStringLiteral( "id" ) ).toString() );
+      item.insert( QStringLiteral( "name" ), callMap.value( QStringLiteral( "name" ) ).toString() );
+      const QJsonObject argsObj = QJsonObject::fromVariantMap( callMap.value( QStringLiteral( "args" ) ).toMap() );
+      item.insert( QStringLiteral( "arguments" ), QString::fromUtf8( QJsonDocument( argsObj ).toJson( QJsonDocument::Compact ) ) );
+      input.push_back( item );
+    }
+    return;
+  }
+
+  // user / system: standard message item.
+  QJsonObject item;
+  item.insert( QStringLiteral( "type" ), QStringLiteral( "message" ) );
+  item.insert( QStringLiteral( "role" ), roleForProvider( Provider::OpenAi, message.role ) );
+  QJsonArray content;
+  QJsonObject textBlock;
+  textBlock.insert( QStringLiteral( "type" ), QStringLiteral( "input_text" ) );
+  textBlock.insert( QStringLiteral( "text" ), message.content );
+  content.push_back( textBlock );
+  item.insert( QStringLiteral( "content" ), content );
+  input.push_back( item );
+}
+
 QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList<QgsAiChatMessage> &messages, bool stream ) const
 {
   QJsonObject payload;
@@ -143,20 +257,18 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
   {
     QJsonArray input;
     for ( const QgsAiChatMessage &message : messages )
-    {
-      QJsonObject messageObject;
-      messageObject.insert( QStringLiteral( "role" ), roleForProvider( provider, message.role ) );
-
-      QJsonArray content;
-      QJsonObject textObject;
-      textObject.insert( QStringLiteral( "type" ), QStringLiteral( "input_text" ) );
-      textObject.insert( QStringLiteral( "text" ), message.content );
-      content.push_back( textObject );
-
-      messageObject.insert( QStringLiteral( "content" ), content );
-      input.push_back( messageObject );
-    }
+      appendOpenAiInputItems( message, input );
     payload.insert( QStringLiteral( "input" ), input );
+
+    if ( mToolRegistry && mToolRegistry->count() > 0 )
+    {
+      const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
+      if ( !toolSchemas.isEmpty() )
+      {
+        payload.insert( QStringLiteral( "tools" ), toolSchemas );
+        payload.insert( QStringLiteral( "tool_choice" ), QStringLiteral( "auto" ) );
+      }
+    }
   }
   else if ( provider == Provider::Claude )
   {
@@ -174,13 +286,14 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       }
 
       QJsonObject messageObject;
-      messageObject.insert( QStringLiteral( "role" ), roleForProvider( provider, message.role ) );
+      const QString role = ( message.role == QgsAiChatRole::Assistant )
+                             ? QStringLiteral( "assistant" )
+                             : QStringLiteral( "user" );  // Tool results carry user role with tool_result blocks
+      messageObject.insert( QStringLiteral( "role" ), role );
 
-      QJsonArray content;
-      QJsonObject textObject;
-      textObject.insert( QStringLiteral( "type" ), QStringLiteral( "text" ) );
-      textObject.insert( QStringLiteral( "text" ), message.content );
-      content.push_back( textObject );
+      QJsonArray content = ( message.role == QgsAiChatRole::Assistant )
+                             ? buildAnthropicAssistantContent( message )
+                             : buildAnthropicUserContent( message );
       messageObject.insert( QStringLiteral( "content" ), content );
       claudeMessages.push_back( messageObject );
     }
@@ -188,7 +301,14 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
     if ( !systemPrompt.isEmpty() )
       payload.insert( QStringLiteral( "system" ), systemPrompt );
     payload.insert( QStringLiteral( "messages" ), claudeMessages );
-    payload.insert( QStringLiteral( "max_tokens" ), 2048 );
+    payload.insert( QStringLiteral( "max_tokens" ), 4096 );
+
+    if ( mToolRegistry && mToolRegistry->count() > 0 )
+    {
+      const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::AnthropicTools );
+      if ( !toolSchemas.isEmpty() )
+        payload.insert( QStringLiteral( "tools" ), toolSchemas );
+    }
   }
   else
   {
@@ -533,6 +653,9 @@ bool QgsAiModelRouter::applyAuthentication( Provider provider, QNetworkRequest &
   const QString apiKey = storedApiKey( provider );
   if ( apiKey.isEmpty() )
   {
+    QgsMessageLog::logMessage(
+      QStringLiteral( "No API key configured for %1; request will fail before dispatch." ).arg( providerDisplayName( provider ) ),
+      QStringLiteral( "AI" ), Qgis::MessageLevel::Warning, false );
     if ( errorMessage )
       *errorMessage = QStringLiteral( "No API key configured for %1." ).arg( providerDisplayName( provider ) );
     return false;
@@ -559,9 +682,19 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   if ( settings.endpoint.trimmed().isEmpty() )
     return false;
 
+  if ( context.provider == Provider::Plan && !isUsablePlanEndpoint( settings.endpoint ) )
+  {
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Plan provider endpoint is a placeholder (%1); refusing to dispatch." ).arg( settings.endpoint ),
+      QStringLiteral( "AI" ), Qgis::MessageLevel::Warning, false );
+    return false;
+  }
+
   QNetworkRequest request( QUrl( settings.endpoint ) );
   request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
-  request.setTransferTimeout( 30000 );
+  QgsSettings appSettings;
+  const int configuredTimeoutSeconds = std::max( 10, appSettings.value( QStringLiteral( "ai/network/timeoutSeconds" ), 120 ).toInt() );
+  request.setTransferTimeout( configuredTimeoutSeconds * 1000 );
 
   if ( context.provider == Provider::Claude )
     request.setRawHeader( "anthropic-version", "2023-06-01" );
@@ -577,7 +710,13 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   context.startedAtMs = QDateTime::currentMSecsSinceEpoch();
   context.attempt++;
   context.streamingBuffer.clear();
-  context.reply = networkManager->post( request, buildRequestPayload( context.provider, context.messages, context.stream ) );
+  const QByteArray payload = buildRequestPayload( context.provider, context.messages, context.stream );
+  QgsMessageLog::logMessage(
+    QStringLiteral( "Dispatching request id=%1 provider=%2 endpoint=%3 model=%4 attempt=%5 payloadBytes=%6 stream=%7" )
+      .arg( context.requestId, providerDisplayName( context.provider ), settings.endpoint, settings.model )
+      .arg( context.attempt ).arg( payload.size() ).arg( context.stream ),
+    QStringLiteral( "AI" ), Qgis::MessageLevel::Info, false );
+  context.reply = networkManager->post( request, payload );
   if ( !context.reply )
     return false;
 
@@ -627,10 +766,21 @@ QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const Q
   {
     const QString eventType = object.value( QStringLiteral( "type" ) ).toString();
     if ( eventType == QLatin1String( "content_block_delta" ) )
-      return object.value( QStringLiteral( "delta" ) ).toObject().value( QStringLiteral( "text" ) ).toString();
+    {
+      const QJsonObject delta = object.value( QStringLiteral( "delta" ) ).toObject();
+      // text_delta carries assistant text; input_json_delta carries tool args (handled elsewhere).
+      if ( delta.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "text_delta" ) )
+        return delta.value( QStringLiteral( "text" ) ).toString();
+    }
     return QString();
   }
 
+  // OpenAI Responses API streaming: text deltas come as response.output_text.delta
+  const QString eventType = object.value( QStringLiteral( "type" ) ).toString();
+  if ( eventType == QLatin1String( "response.output_text.delta" ) )
+    return object.value( QStringLiteral( "delta" ) ).toString();
+
+  // Fallback to old behaviour for legacy Chat Completions style chunks
   const QString directDelta = object.value( QStringLiteral( "delta" ) ).toString();
   if ( !directDelta.isEmpty() )
     return directDelta;
@@ -640,6 +790,166 @@ QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const Q
     return extractTextRecursive( deltaObject );
 
   return QString();
+}
+
+void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const
+{
+  if ( provider == Provider::Claude )
+  {
+    context.stopReason = object.value( QStringLiteral( "stop_reason" ) ).toString();
+    const QJsonArray content = object.value( QStringLiteral( "content" ) ).toArray();
+    for ( const QJsonValue &item : content )
+    {
+      const QJsonObject block = item.toObject();
+      if ( block.value( QStringLiteral( "type" ) ).toString() != QLatin1String( "tool_use" ) )
+        continue;
+
+      PendingToolCall call;
+      call.id = block.value( QStringLiteral( "id" ) ).toString();
+      call.name = block.value( QStringLiteral( "name" ) ).toString();
+      call.argumentsObject = block.value( QStringLiteral( "input" ) ).toObject();
+      call.argumentsArePreParsed = true;
+      context.toolCalls.append( call );
+    }
+    return;
+  }
+
+  if ( provider == Provider::OpenAi )
+  {
+    // Top-level "status" or per-output items don't carry stop_reason explicitly here;
+    // we infer tool_use by the presence of function_call items.
+    const QJsonArray output = object.value( QStringLiteral( "output" ) ).toArray();
+    for ( const QJsonValue &item : output )
+    {
+      const QJsonObject obj = item.toObject();
+      if ( obj.value( QStringLiteral( "type" ) ).toString() != QLatin1String( "function_call" ) )
+        continue;
+
+      PendingToolCall call;
+      call.id = obj.value( QStringLiteral( "call_id" ) ).toString();
+      call.name = obj.value( QStringLiteral( "name" ) ).toString();
+      call.argumentsRaw = obj.value( QStringLiteral( "arguments" ) ).toString();
+      const QJsonDocument doc = QJsonDocument::fromJson( call.argumentsRaw.toUtf8() );
+      if ( doc.isObject() )
+      {
+        call.argumentsObject = doc.object();
+        call.argumentsArePreParsed = true;
+      }
+      context.toolCalls.append( call );
+    }
+
+    if ( !context.toolCalls.isEmpty() )
+      context.stopReason = QStringLiteral( "tool_use" );
+  }
+}
+
+void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context )
+{
+  if ( provider == Provider::Claude )
+  {
+    const QString eventType = object.value( QStringLiteral( "type" ) ).toString();
+
+    if ( eventType == QLatin1String( "content_block_start" ) )
+    {
+      const int blockIndex = object.value( QStringLiteral( "index" ) ).toInt();
+      const QJsonObject block = object.value( QStringLiteral( "content_block" ) ).toObject();
+      if ( block.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "tool_use" ) )
+      {
+        PendingToolCall call;
+        call.id = block.value( QStringLiteral( "id" ) ).toString();
+        call.name = block.value( QStringLiteral( "name" ) ).toString();
+        context.toolCalls.append( call );
+        context.streamItemIndexToToolCall.insert( blockIndex, context.toolCalls.size() - 1 );
+      }
+    }
+    else if ( eventType == QLatin1String( "content_block_delta" ) )
+    {
+      const QJsonObject delta = object.value( QStringLiteral( "delta" ) ).toObject();
+      if ( delta.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "input_json_delta" ) )
+      {
+        const int blockIndex = object.value( QStringLiteral( "index" ) ).toInt();
+        const int toolIndex = context.streamItemIndexToToolCall.value( blockIndex, -1 );
+        if ( toolIndex >= 0 && toolIndex < context.toolCalls.size() )
+          context.toolCalls[toolIndex].argumentsRaw += delta.value( QStringLiteral( "partial_json" ) ).toString();
+      }
+    }
+    else if ( eventType == QLatin1String( "content_block_stop" ) )
+    {
+      const int blockIndex = object.value( QStringLiteral( "index" ) ).toInt();
+      const int toolIndex = context.streamItemIndexToToolCall.value( blockIndex, -1 );
+      if ( toolIndex >= 0 && toolIndex < context.toolCalls.size() )
+      {
+        PendingToolCall &call = context.toolCalls[toolIndex];
+        const QJsonDocument doc = QJsonDocument::fromJson( call.argumentsRaw.toUtf8() );
+        if ( doc.isObject() )
+        {
+          call.argumentsObject = doc.object();
+          call.argumentsArePreParsed = true;
+        }
+      }
+    }
+    else if ( eventType == QLatin1String( "message_delta" ) )
+    {
+      const QJsonObject delta = object.value( QStringLiteral( "delta" ) ).toObject();
+      const QString reason = delta.value( QStringLiteral( "stop_reason" ) ).toString();
+      if ( !reason.isEmpty() )
+        context.stopReason = reason;
+    }
+    return;
+  }
+
+  if ( provider == Provider::OpenAi )
+  {
+    const QString eventType = object.value( QStringLiteral( "type" ) ).toString();
+
+    if ( eventType == QLatin1String( "response.output_item.added" ) )
+    {
+      const int outputIndex = object.value( QStringLiteral( "output_index" ) ).toInt();
+      const QJsonObject item = object.value( QStringLiteral( "item" ) ).toObject();
+      if ( item.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "function_call" ) )
+      {
+        PendingToolCall call;
+        call.id = item.value( QStringLiteral( "call_id" ) ).toString();
+        call.name = item.value( QStringLiteral( "name" ) ).toString();
+        call.argumentsRaw = item.value( QStringLiteral( "arguments" ) ).toString();
+        context.toolCalls.append( call );
+        context.streamItemIndexToToolCall.insert( outputIndex, context.toolCalls.size() - 1 );
+      }
+    }
+    else if ( eventType == QLatin1String( "response.function_call_arguments.delta" ) )
+    {
+      const int outputIndex = object.value( QStringLiteral( "output_index" ) ).toInt();
+      const int toolIndex = context.streamItemIndexToToolCall.value( outputIndex, -1 );
+      if ( toolIndex >= 0 && toolIndex < context.toolCalls.size() )
+        context.toolCalls[toolIndex].argumentsRaw += object.value( QStringLiteral( "delta" ) ).toString();
+    }
+    else if ( eventType == QLatin1String( "response.function_call_arguments.done" ) )
+    {
+      const int outputIndex = object.value( QStringLiteral( "output_index" ) ).toInt();
+      const int toolIndex = context.streamItemIndexToToolCall.value( outputIndex, -1 );
+      if ( toolIndex >= 0 && toolIndex < context.toolCalls.size() )
+      {
+        PendingToolCall &call = context.toolCalls[toolIndex];
+        const QString finalArgs = object.value( QStringLiteral( "arguments" ) ).toString();
+        if ( !finalArgs.isEmpty() )
+          call.argumentsRaw = finalArgs;
+        const QJsonDocument doc = QJsonDocument::fromJson( call.argumentsRaw.toUtf8() );
+        if ( doc.isObject() )
+        {
+          call.argumentsObject = doc.object();
+          call.argumentsArePreParsed = true;
+        }
+      }
+    }
+    else if ( eventType == QLatin1String( "response.completed" ) )
+    {
+      // If we collected function_calls, stop_reason is conceptually "tool_use".
+      if ( !context.toolCalls.isEmpty() )
+        context.stopReason = QStringLiteral( "tool_use" );
+      else
+        context.stopReason = QStringLiteral( "stop" );
+    }
+  }
 }
 
 void QgsAiModelRouter::onReplyReadyRead()
@@ -671,13 +981,71 @@ void QgsAiModelRouter::onReplyReadyRead()
     if ( !doc.isObject() )
       continue;
 
-    const QString chunk = extractTextFromStreamEvent( context->provider, doc.object() );
+    const QJsonObject event = doc.object();
+
+    // Update tool-call state regardless of whether the event also carries text.
+    absorbStreamEvent( context->provider, event, *context );
+
+    const QString chunk = extractTextFromStreamEvent( context->provider, event );
     if ( chunk.isEmpty() )
       continue;
 
     context->aggregatedText += chunk;
     emit requestProgress( context->requestId, chunk );
   }
+}
+
+QString QgsAiModelRouter::extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const
+{
+  if ( body.isEmpty() )
+    return QString();
+
+  const QJsonDocument doc = QJsonDocument::fromJson( body );
+  if ( !doc.isObject() )
+    return QString();
+
+  const QJsonObject root = doc.object();
+  const QJsonValue errorValue = root.value( QStringLiteral( "error" ) );
+
+  // OpenAI: { "error": { "message": "...", "type": "...", "code": "..." } }
+  if ( errorValue.isObject() )
+  {
+    const QJsonObject errorObj = errorValue.toObject();
+    const QString message = errorObj.value( QStringLiteral( "message" ) ).toString();
+    const QString type = errorObj.value( QStringLiteral( "type" ) ).toString();
+    const QString code = errorObj.value( QStringLiteral( "code" ) ).toString();
+    if ( !message.isEmpty() )
+    {
+      QStringList parts;
+      parts << message;
+      if ( !type.isEmpty() )
+        parts << QStringLiteral( "type=%1" ).arg( type );
+      if ( !code.isEmpty() )
+        parts << QStringLiteral( "code=%1" ).arg( code );
+      return parts.join( QStringLiteral( " · " ) );
+    }
+  }
+  else if ( errorValue.isString() )
+  {
+    return errorValue.toString();
+  }
+
+  // Anthropic: { "type": "error", "error": { "type": "invalid_request_error", "message": "..." } }
+  if ( provider == Provider::Claude && root.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "error" ) )
+  {
+    const QJsonObject errorObj = root.value( QStringLiteral( "error" ) ).toObject();
+    const QString message = errorObj.value( QStringLiteral( "message" ) ).toString();
+    const QString type = errorObj.value( QStringLiteral( "type" ) ).toString();
+    if ( !message.isEmpty() )
+      return type.isEmpty() ? message : QStringLiteral( "%1 · type=%2" ).arg( message, type );
+  }
+
+  // Plain string fallback
+  const QString topLevelMessage = root.value( QStringLiteral( "message" ) ).toString();
+  if ( !topLevelMessage.isEmpty() )
+    return topLevelMessage;
+
+  return QString();
 }
 
 void QgsAiModelRouter::onReplyFinished()
@@ -693,18 +1061,50 @@ void QgsAiModelRouter::onReplyFinished()
   const QNetworkReply::NetworkError networkError = reply->error();
   const qint64 latencyMs = std::max<qint64>( 0, QDateTime::currentMSecsSinceEpoch() - context->startedAtMs );
 
+  // Read body once: may contain success text or structured error.
+  const QByteArray responseBody = reply->readAll();
   QString responseText = context->aggregatedText;
-  if ( responseText.isEmpty() )
+  if ( responseText.isEmpty() && !responseBody.isEmpty() )
   {
-    const QByteArray responseBody = reply->readAll();
     const QJsonDocument doc = QJsonDocument::fromJson( responseBody );
     if ( doc.isObject() )
+    {
       responseText = extractTextFromResponse( context->provider, doc.object() );
+      // Non-streaming: also harvest tool calls from the body.
+      if ( context->toolCalls.isEmpty() )
+        extractToolCallsFromResponse( context->provider, doc.object(), *context );
+    }
     else
       responseText = QString::fromUtf8( responseBody );
   }
 
   const bool success = networkError == QNetworkReply::NoError && ( httpStatus == 0 || ( httpStatus >= 200 && httpStatus < 300 ) );
+  const bool wantsToolUse = success && !context->toolCalls.isEmpty();
+  QgsMessageLog::logMessage(
+    QStringLiteral( "Reply id=%1 provider=%2 httpStatus=%3 networkError=%4 latencyMs=%5 textLen=%6 bodyBytes=%7 success=%8 toolCalls=%9 stopReason=%10" )
+      .arg( requestId, providerName ).arg( httpStatus ).arg( static_cast<int>( networkError ) ).arg( latencyMs ).arg( responseText.size() ).arg( responseBody.size() ).arg( success ).arg( context->toolCalls.size() ).arg( context->stopReason ),
+    QStringLiteral( "AI" ),
+    success ? Qgis::MessageLevel::Info : Qgis::MessageLevel::Warning,
+    false );
+
+  if ( wantsToolUse )
+  {
+    QList<QgsAiToolCall> publicCalls;
+    publicCalls.reserve( context->toolCalls.size() );
+    for ( const PendingToolCall &pending : context->toolCalls )
+    {
+      QgsAiToolCall call;
+      call.id = pending.id;
+      call.name = pending.name;
+      call.args = pending.argumentsObject;
+      publicCalls.append( call );
+    }
+    emit toolCallsRequested( requestId, providerName, responseText.trimmed(), publicCalls );
+    reply->deleteLater();
+    mRequests.remove( requestId );
+    return;
+  }
+
   if ( success )
   {
     emit requestFinished( requestId, true, providerName, responseText.trimmed(), QString(), httpStatus, context->attempt - 1, false, latencyMs );
@@ -726,7 +1126,9 @@ void QgsAiModelRouter::onReplyFinished()
     return;
   }
 
-  QString errorMessage = reply->errorString();
+  QString errorMessage = extractErrorMessageFromBody( context->provider, responseBody );
+  if ( errorMessage.isEmpty() )
+    errorMessage = reply->errorString();
   if ( errorMessage.isEmpty() )
     errorMessage = responseText;
   errorMessage = sanitizeErrorText( errorMessage );
@@ -736,10 +1138,18 @@ void QgsAiModelRouter::onReplyFinished()
   mRequests.remove( requestId );
 }
 
+bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )
+{
+  const QString trimmed = endpoint.trimmed();
+  if ( trimmed.isEmpty() )
+    return false;
+  return !trimmed.contains( QLatin1String( "example.invalid" ), Qt::CaseInsensitive );
+}
+
 QgsAiModelRouter::Provider QgsAiModelRouter::resolveProvider() const
 {
   const ProviderSettings plan = mProviderSettings.value( Provider::Plan );
-  if ( plan.enabled && hasConfiguredCredential( Provider::Plan ) )
+  if ( plan.enabled && isUsablePlanEndpoint( plan.endpoint ) && hasConfiguredCredential( Provider::Plan ) )
     return Provider::Plan;
 
   const ProviderSettings openAi = mProviderSettings.value( Provider::OpenAi );

@@ -10,6 +10,7 @@
 
 class QgsAiFileContextProvider;
 class QgsAiReviewPatchEngine;
+class QgsAiToolRegistry;
 
 struct APP_EXPORT QgsAiChatContextFile
 {
@@ -40,6 +41,14 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString resolveProjectFile( const QString &filePath ) const;
     QString workspaceRoot() const;
 
+    void setToolRegistry( QgsAiToolRegistry *registry );
+    QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
+
+    //! Maximum tool-use rounds the agent will run before bailing out for a single user turn.
+    static constexpr int MAX_TOOL_ITERATIONS_PER_TURN = 8;
+    //! Rough token budget for the conversation history sent to the provider (excludes system prompt).
+    static constexpr int HISTORY_TOKEN_BUDGET = 32768;
+
   signals:
     void messageAdded( const QgsAiChatMessage &message );
     void proposalCreated( const QString &proposalId );
@@ -52,19 +61,28 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QList<QgsAiModelRouter::Provider> providerFallbackOrder() const;
     QString actionableError( const QString &providerName, const QString &errorMessage, int httpStatus ) const;
     QgsAiChatMessage buildAssistantMessage( const QString &text ) const;
+    QgsAiChatMessage buildAssistantToolUseMessage( const QString &text, const QList<QgsAiToolCall> &calls ) const;
+    QgsAiChatMessage buildToolResultMessage( const QgsAiToolCall &call, const QgsAiToolResult &result ) const;
     QString buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const;
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
+    QString buildSystemPrompt() const;
+    QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;
+    QList<QgsAiChatMessage> buildOutgoingMessages() const;
+    void onToolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );
 
     QgsAiModelRouter *mRouter = nullptr;
     QgsAiFileContextProvider *mContextProvider = nullptr;
     QgsAiReviewPatchEngine *mReviewEngine = nullptr;
+    QgsAiToolRegistry *mToolRegistry = nullptr;
     QString mActiveAgent = QStringLiteral( "planner" );
     QList<QgsAiChatMessage> mHistory;
     QList<QgsAiModelRouter::Provider> mPendingProviders;
     QString mActiveRequestId;
+    QgsAiModelRouter::Provider mActiveProvider = QgsAiModelRouter::Provider::OpenAi;
     QString mCurrentPrompt;
     QList<QgsAiChatContextFile> mCurrentContextFiles;
     QString mStreamedText;
+    int mToolIterations = 0;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H

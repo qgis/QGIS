@@ -7,7 +7,7 @@ QGIS_AI è un fork di QGIS con un assistente AI integrato nativamente. Tutti i p
 | Sistema | Cosa scaricare | Cosa fare dopo |
 |---|---|---|
 | 🍎 **macOS** (Intel + Apple Silicon) | `*.dmg` | Doppio click → trascina QGIS_AI in Applicazioni. Vedi *Aggirare il warning macOS* sotto. |
-| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, doppio click su `bin/qgis-bin.exe`. Vedi *Aggirare SmartScreen*. |
+| 🪟 **Windows 10/11** (x64) | `*-win64.zip` | Estrai la cartella ovunque, apri `bin/` e doppio click su `qgis.exe`. Vedi *Aggirare SmartScreen*. |
 | 🐧 **Linux** (x86_64) | `*.AppImage` | `chmod +x QGIS_AI-*.AppImage` poi doppio click. Niente installazione. |
 
 > ⚠️ I pacchetti **non sono firmati**. È normale. Al primo avvio gli OS mostrano un warning: segui le istruzioni qui sotto, è una procedura una tantum.
@@ -24,7 +24,7 @@ Poi apri normalmente l'app.
 
 ### 🪟 Aggirare SmartScreen su Windows
 
-Quando avvii `qgis-bin.exe` la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
+Quando avvii `qgis.exe` la prima volta, Windows può mostrare *"Windows ha protetto il PC"*. Click su **Maggiori informazioni** → **Esegui comunque**.
 
 ### 🐧 AppImage su Linux
 

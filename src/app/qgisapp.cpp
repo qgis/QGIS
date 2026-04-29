@@ -97,6 +97,8 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/tools/qgsaiechotool.h"
+#include "ai/tools/qgsaitoolregistry.h"
 #endif
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
@@ -1377,7 +1379,10 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     aiWorkspaceRoot = QDir::currentPath();
   mAiFileContextProvider = std::make_unique<QgsAiFileContextProvider>( aiWorkspaceRoot, this );
   mAiReviewPatchEngine = std::make_unique<QgsAiReviewPatchEngine>( this );
+  mAiToolRegistry = std::make_unique<QgsAiToolRegistry>( this );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiEchoTool>() );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
+  mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
 
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
   mAiChatDock->setWindowTitle( tr( "AI Assistant" ) );

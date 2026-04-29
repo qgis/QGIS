@@ -51,6 +51,24 @@ QgsAiChatMessage QgsAiChatMessage::fromJson( const QJsonObject &json )
   return message;
 }
 
+QJsonObject QgsAiToolCall::toJson() const
+{
+  QJsonObject json;
+  json.insert( QStringLiteral( "id" ), id );
+  json.insert( QStringLiteral( "name" ), name );
+  json.insert( QStringLiteral( "args" ), args );
+  return json;
+}
+
+QgsAiToolCall QgsAiToolCall::fromJson( const QJsonObject &json )
+{
+  QgsAiToolCall call;
+  call.id = json.value( QStringLiteral( "id" ) ).toString();
+  call.name = json.value( QStringLiteral( "name" ) ).toString();
+  call.args = json.value( QStringLiteral( "args" ) ).toObject();
+  return call;
+}
+
 QJsonObject QgsAiPatchHunk::toJson() const
 {
   QJsonObject json;

@@ -37,6 +37,24 @@ class APP_EXPORT QgsAiToolRegistry : public QObject
      */
     QJsonArray schemasJson( const QStringList &allowedTools = QStringList() ) const;
 
+    enum class WireFormat
+    {
+      AnthropicTools,    //!< `[{name, description, input_schema}]` for Anthropic Messages API
+      OpenAiResponses    //!< `[{type:"function", name, description, parameters}]` for OpenAI Responses API
+    };
+
+    /**
+     * Returns the registered tool schemas in the wire format expected by \a format.
+     * Use this when building the request payload for a specific provider.
+     */
+    QJsonArray schemasJsonForFormat( WireFormat format, const QStringList &allowedTools = QStringList() ) const;
+
+    /**
+     * Looks up the tool by \a name and runs it with \a args. If the tool is missing
+     * the result is `success=false` with an actionable error message.
+     */
+    QgsAiToolResult execute( const QString &name, const QJsonObject &args ) const;
+
     //! Removes all registered tools.
     void clear();
 

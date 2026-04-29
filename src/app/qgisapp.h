@@ -173,6 +173,7 @@ class QgsAiChatDockWidget;
 class QgsAiFileContextProvider;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
+class QgsAiToolRegistry;
 #endif
 
 #include "qgsconfig.h"
@@ -2780,6 +2781,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsAiModelRouter> mAiModelRouter;
     std::unique_ptr<QgsAiFileContextProvider> mAiFileContextProvider;
     std::unique_ptr<QgsAiReviewPatchEngine> mAiReviewPatchEngine;
+    std::unique_ptr<QgsAiToolRegistry> mAiToolRegistry;
     std::unique_ptr<QgsAiAgentSessionManager> mAiSessionManager;
 #endif
 

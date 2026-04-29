@@ -41,6 +41,11 @@ QStringList QgsAiToolRegistry::toolNames() const
 
 QJsonArray QgsAiToolRegistry::schemasJson( const QStringList &allowedTools ) const
 {
+  return schemasJsonForFormat( WireFormat::AnthropicTools, allowedTools );
+}
+
+QJsonArray QgsAiToolRegistry::schemasJsonForFormat( WireFormat format, const QStringList &allowedTools ) const
+{
   const QSet<QString> filter( allowedTools.begin(), allowedTools.end() );
   QJsonArray array;
   for ( auto it = mTools.cbegin(); it != mTools.cend(); ++it )
@@ -50,12 +55,32 @@ QJsonArray QgsAiToolRegistry::schemasJson( const QStringList &allowedTools ) con
 
     const QgsAiTool *tool = it->second.get();
     QJsonObject entry;
-    entry.insert( QStringLiteral( "name" ), tool->name() );
-    entry.insert( QStringLiteral( "description" ), tool->description() );
-    entry.insert( QStringLiteral( "input_schema" ), tool->schema() );
+    switch ( format )
+    {
+      case WireFormat::AnthropicTools:
+        entry.insert( QStringLiteral( "name" ), tool->name() );
+        entry.insert( QStringLiteral( "description" ), tool->description() );
+        entry.insert( QStringLiteral( "input_schema" ), tool->schema() );
+        break;
+
+      case WireFormat::OpenAiResponses:
+        entry.insert( QStringLiteral( "type" ), QStringLiteral( "function" ) );
+        entry.insert( QStringLiteral( "name" ), tool->name() );
+        entry.insert( QStringLiteral( "description" ), tool->description() );
+        entry.insert( QStringLiteral( "parameters" ), tool->schema() );
+        break;
+    }
     array.append( entry );
   }
   return array;
+}
+
+QgsAiToolResult QgsAiToolRegistry::execute( const QString &name, const QJsonObject &args ) const
+{
+  QgsAiTool *tool = find( name );
+  if ( !tool )
+    return QgsAiToolResult::error( QStringLiteral( "Unknown tool: %1" ).arg( name ) );
+  return tool->execute( args );
 }
 
 void QgsAiToolRegistry::clear()

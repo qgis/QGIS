@@ -30,6 +30,21 @@ struct APP_EXPORT QgsAiChatMessage
   static QgsAiChatMessage fromJson( const QJsonObject &json );
 };
 
+/**
+ * Represents a single tool invocation requested by the LLM (Anthropic `tool_use` block
+ * or OpenAI Responses `function_call` event). Same struct works for both providers,
+ * the router normalizes their formats.
+ */
+struct APP_EXPORT QgsAiToolCall
+{
+  QString id;          // tool_use_id (Anthropic) / call_id (OpenAI)
+  QString name;        // tool name
+  QJsonObject args;    // parsed input arguments
+
+  QJsonObject toJson() const;
+  static QgsAiToolCall fromJson( const QJsonObject &json );
+};
+
 struct APP_EXPORT QgsAiPatchHunk
 {
   QString filePath;

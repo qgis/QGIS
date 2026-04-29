@@ -7,10 +7,12 @@
 #include <QMap>
 #include <QObject>
 #include <QQueue>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QUrl>
 
+class QgsAiToolRegistry;
 class QNetworkRequest;
 
 class APP_EXPORT QgsAiModelRouter : public QObject
@@ -49,21 +51,45 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
     bool applyAuthentication( Provider provider, QNetworkRequest &request, QString *errorMessage = nullptr ) const;
     Provider resolveProvider() const;
+    static bool isUsablePlanEndpoint( const QString &endpoint );
 
     QString providerDisplayName( Provider provider ) const;
     QByteArray buildRequestPayload( Provider provider, const QList<QgsAiChatMessage> &messages, bool stream ) const;
     QString sanitizeErrorText( const QString &errorText ) const;
     bool hasStoredApiKey( Provider provider ) const;
 
+    /**
+     * Sets the tool registry used to advertise tools to the LLM. Pointer is borrowed,
+     * caller retains ownership. Pass nullptr to disable tool advertising.
+     */
+    void setToolRegistry( QgsAiToolRegistry *registry ) { mToolRegistry = registry; }
+
   signals:
     void requestProgress( const QString &requestId, const QString &chunk );
     void requestFinished( const QString &requestId, bool success, const QString &providerName, const QString &responseText, const QString &errorMessage, int httpStatus, int retryCount, bool retriable, qint64 latencyMs );
+
+    /**
+     * Emitted when the model finishes a turn requesting one or more tool calls
+     * (Anthropic stop_reason="tool_use" or OpenAI Responses function_call output items).
+     * The session manager is expected to execute the tools and then call
+     * \a continueWithToolResults to continue the conversation.
+     */
+    void toolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );
 
   private slots:
     void onReplyReadyRead();
     void onReplyFinished();
 
   private:
+    struct PendingToolCall
+    {
+      QString id;            // tool_use_id (Anthropic) / call_id (OpenAI)
+      QString name;
+      QString argumentsRaw;  // accumulated JSON string (OpenAI streams it as deltas)
+      QJsonObject argumentsObject; // Anthropic gives us this directly in the final response
+      bool argumentsArePreParsed = false;
+    };
+
     struct RequestContext
     {
       QString requestId;
@@ -75,6 +101,9 @@ class APP_EXPORT QgsAiModelRouter : public QObject
       qint64 startedAtMs = 0;
       QString streamingBuffer;
       QString aggregatedText;
+      QString stopReason;                       // "end_turn", "tool_use", "stop", etc.
+      QList<PendingToolCall> toolCalls;         // collected during streaming/parse
+      QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
       QNetworkReply *reply = nullptr;
     };
 
@@ -82,7 +111,13 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool shouldRetry( int httpStatus, QNetworkReply::NetworkError networkError, int attempt, int maxRetries ) const;
     QString extractTextFromResponse( Provider provider, const QJsonObject &object ) const;
     QString extractTextFromStreamEvent( Provider provider, const QJsonObject &object ) const;
+    void extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const;
+    void absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context );
+    QString extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const;
     QString roleForProvider( Provider provider, QgsAiChatRole role ) const;
+    QJsonArray buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const;
+    QJsonArray buildAnthropicUserContent( const QgsAiChatMessage &message ) const;
+    void appendOpenAiInputItems( const QgsAiChatMessage &message, QJsonArray &input ) const;
 
     static QString generateRequestId();
     QString authHeaderName( Provider provider ) const;
@@ -103,6 +138,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
     QMap<Provider, ProviderSettings> mProviderSettings;
     QMap<QString, RequestContext> mRequests;
+    QgsAiToolRegistry *mToolRegistry = nullptr;
 };
 
 #endif // QGSAIMODELROUTER_H

@@ -315,6 +315,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
     ai/qgsaireviewpatchengine.cpp
+    ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaitoolregistry.cpp
   )
 endif()
