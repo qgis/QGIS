@@ -284,8 +284,10 @@ vec3 pbrModel(const in int lightIndex,
     vec3 specularColor = lights[lightIndex].color;
     vec3 specular = specularColor * specularFactor * max(sDotN, 0.0);
 
-    // Blend between diffuse and specular to conserver energy
-    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
+    // Blend between diffuse and specular to conserve energy
+    // see https://learnopengl.com/PBR/Theory, "Energy conservation"
+    vec3 kS = fresnelFactor(F0, sDotH);
+    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -347,7 +349,9 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
-    vec3 color = specular + diffuse * (vec3(1.0) - specularFactor);
+    // see https://learnopengl.com/PBR/Theory, "Energy conservation"
+    vec3 kS = fresnelFactor(F0, lDotH);
+    vec3 color = specular + diffuse * (vec3(1.0) - kS);
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
