@@ -92,6 +92,9 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
 # providers can install QGIS_AI from source.
+# WITH_AUTH=OFF: QCA Qt6 (libqca-qt6-2-dev) is not in noble core repo and
+# would require adding the QGIS apt repository. Auth disabled for AppImage
+# only — desktop installs from source still get full auth support.
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
@@ -101,6 +104,7 @@ cmake -S . -B build -G Ninja \
   -DWITH_3D=ON \
   -DWITH_QTWEBENGINE=ON \
   -DWITH_PDAL=OFF \
+  -DWITH_AUTH=OFF \
   -DENABLE_TESTS=OFF \
   -DUSE_CCACHE=ON \
   -DENABLE_UNITY_BUILDS=ON \
