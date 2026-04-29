@@ -4,6 +4,7 @@
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
+#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
@@ -396,7 +397,19 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   prompt += QStringLiteral( "- Never call propose_edit blind: read the file first to capture the exact original text.\n" );
   prompt += QStringLiteral( "- Keep proposals small and reviewable. One concept per proposal.\n" );
   prompt += QStringLiteral( "- Do not invent file paths; resolve them via search_files or list_files.\n" );
+  prompt += QStringLiteral(
+              "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do NOT just run it via run_python — also save it as a Processing script. "
+              "The Processing scripts folder for this profile is: %1 . "
+              "Use propose_create_file to write a script there following the standard QgsProcessingAlgorithm template "
+              "(class extending QgsProcessingAlgorithm with name(), displayName(), createInstance(), initAlgorithm(), processAlgorithm()). "
+              "After acceptance the script appears in the Processing Toolbox under 'Scripts' and is callable like any built-in algorithm.\n"
+            ).arg( processingScriptsFolder() );
   return prompt;
+}
+
+QString QgsAiAgentSessionManager::processingScriptsFolder()
+{
+  return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "processing/scripts" );
 }
 
 QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int budgetTokens ) const

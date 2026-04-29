@@ -322,6 +322,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaiedittools.cpp
     ai/tools/qgsaiindextools.cpp
+    ai/tools/qgsailayertools.cpp
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp

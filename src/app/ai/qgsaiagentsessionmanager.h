@@ -66,6 +66,8 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const;
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
     QString buildSystemPrompt() const;
+    //! Per-profile folder where Processing Toolbox picks up user scripts.
+    static QString processingScriptsFolder();
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;
     QList<QgsAiChatMessage> buildOutgoingMessages() const;
     void onToolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );

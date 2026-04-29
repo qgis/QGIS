@@ -102,6 +102,7 @@ using namespace Qt::StringLiterals;
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaiedittools.h"
 #include "ai/tools/qgsaiindextools.h"
+#include "ai/tools/qgsailayertools.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
@@ -1393,6 +1394,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListFilesTool>( mAiFileContextProvider.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListProjectLayersTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiGetCanvasExtentTool>( mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiAddLayerFromFileTool>( mAiFileContextProvider.get(), QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiDescribeLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeEditTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeCreateFileTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeDeleteFileTool>( mAiReviewPatchEngine.get(), this ) );
