@@ -26,6 +26,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodeldataviewerdockwidget.h"
 #include "qgsmodeldesignerconfigdockwidget.h"
 #include "qgsmodeldesignerconfigwidget.h"
 #include "qgsmodelgraphicsscene.h"
@@ -548,9 +549,11 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, const QString &id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [this] { endUndoCommand(); } );
   connect( mScene, &QgsModelGraphicsScene::runFromChild, this, &QgsModelDesignerDialog::runFromChild );
+  connect( mScene, &QgsModelGraphicsScene::childAlgorithmDeleted, this, &QgsModelDesignerDialog::childAlgorithmDeleted );
   connect( mScene, &QgsModelGraphicsScene::runSelected, this, &QgsModelDesignerDialog::runSelectedSteps );
   connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmOutputs, this, &QgsModelDesignerDialog::showChildAlgorithmOutputs );
   connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmLog, this, &QgsModelDesignerDialog::showChildAlgorithmLog );
+  connect( mScene, &QgsModelGraphicsScene::showDataViewerDock, this, &QgsModelDesignerDialog::showDataViewerDock );
 
   if ( oldScene )
     oldScene->deleteLater();
@@ -692,6 +695,41 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
   mLastResult.mergeWith( result );
   if ( mScene )
     mScene->setLastRunResult( mLastResult, mLayerStore );
+
+
+  for ( QgsModelDataViewerDockWidget *dataViewerDockWidget : mDataViewerDocks )
+  {
+    QString childId = dataViewerDockWidget->childId();
+    QString paramName = dataViewerDockWidget->outputName();
+
+    QString layerId;
+
+
+    const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+
+    const QVariantMap childAlgorithmInputs = result.inputs();
+
+    if ( result.outputs().contains( paramName ) )
+    {
+      layerId = result.outputs().value( paramName ).toString();
+    }
+    // Not an output gotta be an input them
+    else if ( result.inputs().contains( paramName ) )
+    {
+      layerId = childAlgorithmInputs.value( paramName ).toString();
+    }
+    else
+    {
+      continue;
+    }
+
+    if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( layerId, mLayerStore ) )
+    {
+      std::unique_ptr<QgsMapLayer> layer( resultLayer->clone() );
+
+      dataViewerDockWidget->setLayer( layer.release() );
+    }
+  }
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -1129,6 +1167,20 @@ void QgsModelDesignerDialog::runFromChild( const QString &id )
   run( children );
 }
 
+
+void QgsModelDesignerDialog::childAlgorithmDeleted( const QString &id )
+{
+  for ( int i = mDataViewerDocks.length() - 1; i >= 0; i-- )
+  {
+    if ( mDataViewerDocks[i] != nullptr && mDataViewerDocks[i]->childId() == id )
+    {
+      mDataViewerDocks[i]->deleteLater();
+      mDataViewerDocks.remove( i );
+    }
+  }
+}
+
+
 void QgsModelDesignerDialog::cancelRunningModel()
 {
   if ( !mAlgorithmWidget )
@@ -1514,6 +1566,42 @@ void QgsModelDesignerDialog::reorderOutputs()
     endUndoCommand();
   }
 }
+
+void QgsModelDesignerDialog::showDataViewerDock( const QString &childId, const QString &paramName )
+{
+  QString layerId;
+  QString paramDescription;
+
+  const QgsProcessingModelChildAlgorithmResult result = mLastResult.childResults().value( childId );
+
+  const QVariantMap childAlgorithmInputs = result.inputs();
+
+  if ( result.outputs().contains( paramName ) )
+  {
+    layerId = result.outputs().value( paramName ).toString();
+    paramDescription = mModel->childAlgorithm( childId ).algorithm()->outputDefinition( paramName )->description();
+  }
+  // Not an output gotta be an input them
+  else if ( result.inputs().contains( paramName ) )
+  {
+    layerId = childAlgorithmInputs.value( paramName ).toString();
+    paramDescription = mModel->childAlgorithm( childId ).algorithm()->parameterDefinition( paramName )->description();
+  }
+
+  mModel->childAlgorithm( childId ).description();
+
+  if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( layerId, mLayerStore ) )
+  {
+    QgsModelDataViewerDockWidget *dataViewerDock = new QgsModelDataViewerDockWidget( this, resultLayer, childId, paramName );
+
+    dataViewerDock->setWindowTitle( tr( "Data Viewer - %1 - %2" ).arg( mModel->childAlgorithm( childId ).description() ).arg( paramDescription ) );
+
+    addDockWidget( Qt::BottomDockWidgetArea, dataViewerDock );
+
+    mDataViewerDocks.append( dataViewerDock );
+  }
+}
+
 
 bool QgsModelDesignerDialog::isDirty() const
 {
