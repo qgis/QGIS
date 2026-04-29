@@ -530,6 +530,11 @@ if(QGISPOSTFIX)
   )
 endif()
 
+set(_qgisai_qml_module_extra_args "")
+if(Qt6_VERSION VERSION_GREATER_EQUAL 6.5)
+    list(APPEND _qgisai_qml_module_extra_args NO_GENERATE_EXTRA_QMLDIRS)
+endif()
+
 qt_add_qml_module(qgis_app
     URI org.qgis.app
     VERSION 1.0
@@ -549,7 +554,7 @@ qt_add_qml_module(qgis_app
         qml/images/close.svg
         qml/images/love.svg
         qml/images/qgis.svg
-    NO_GENERATE_EXTRA_QMLDIRS
+    ${_qgisai_qml_module_extra_args}
 )
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
