@@ -81,8 +81,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
      */
     QgsIdentifyResultsDialog *resultsDialog();
 
-    int mMaxResults;
-
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -113,7 +111,9 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QMetaObject::Connection mMoreFeaturesConnection;
 
-    int resultsIdx = 1;
+    const int mMaxResults = 5;
+    
+    int mResultsIdx = 0;
 };
 
 #endif

@@ -153,15 +153,13 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
-      qDebug() << "Total results:" << results.size();
       resultsDialog()->QDialog::show();
-    mMaxResults = resultsDialog()->getMaxResults();
     QList<IdentifyResult>::const_iterator result = results.constBegin();
 
-    while (result != results.constEnd() && resultsIdx <= mMaxResults) {
+    while (result != results.constEnd() && mResultsIdx < mMaxResults) {
       resultsDialog()->addFeature( *result );
       ++result;
-      ++resultsIdx;
+      ++mResultsIdx;
     };
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
@@ -180,15 +178,15 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   };
 
   mMoreFeaturesConnection = connect( resultsDialog(), &QgsIdentifyResultsDialog::moreFeaturesRequested, this, [this, results ]() {
-    this->handleShowMoreFeatures( results, resultsIdx );
+    this->handleShowMoreFeatures( results, mResultsIdx );
   } );
 
 }
 
 void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx) {  
-  qDebug() << "CLICKED";
-  QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx + 1;
+  QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx; // MITODO Fix this - Will crash if selected feature is 1 only and this is clicked (no feature to add)
   resultsDialog()->addFeature( *nextFeature );
+  ++mResultsIdx;
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )

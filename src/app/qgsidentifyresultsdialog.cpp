@@ -130,8 +130,6 @@ const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidth = ne
 
 const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidthTable = new QgsSettingsEntryInteger( u"identify-column-width-table"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
-const int maxResults = 20;
-
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
 {
@@ -1870,11 +1868,6 @@ void QgsIdentifyResultsDialog::clear()
 
 void QgsIdentifyResultsDialog::showMoreFeatures() {
   emit ( moreFeaturesRequested() );
-}
-
-const int QgsIdentifyResultsDialog::getMaxResults() const
-{
-  return maxResults;
 }
 
 void QgsIdentifyResultsDialog::updateViewModes()
