@@ -598,8 +598,8 @@ bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, 
   CHECK_NOT_NULL( geom, false );
 
   bool result = false;
-  char *reason;
-  sfcgal::geometry *location;
+  char *reason = nullptr;
+  sfcgal::geometry *location = nullptr;
   result = sfcgal_geometry_is_valid_detail( geom, &reason, &location );
 
   CHECK_SUCCESS( errorMsg, false );
