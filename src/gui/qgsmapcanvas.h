@@ -1029,6 +1029,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void zoomToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
+     * Zoom to the combined extent of the \a layers
+     * \param layers A list of layers
+     * \since QGIS 4.2
+     */
+    void zoomToLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
      * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
      * \param resolutions A list of resolutions
      * \since QGIS 3.12

@@ -1098,6 +1098,15 @@ Zoom to the combined extent of the selected features of all provided
 .. versionadded:: 3.18
 %End
 
+    void zoomToLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Zoom to the combined extent of the ``layers``
+
+:param layers: A list of layers
+
+.. versionadded:: 4.2
+%End
+
     void setZoomResolutions( const QList<double> &resolutions );
 %Docstring
 Set a list of resolutions (map units per pixel) to which to "snap to"
