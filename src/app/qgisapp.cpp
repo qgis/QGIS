@@ -100,6 +100,7 @@ using namespace Qt::StringLiterals;
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaiedittools.h"
 #include "ai/tools/qgsaireadtools.h"
+#include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
 #endif
 #include "qgstaskmanager.h"
@@ -1393,6 +1394,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeCreateFileTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeDeleteFileTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeMultiEditTool>( mAiReviewPatchEngine.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
 

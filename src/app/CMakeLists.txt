@@ -314,11 +314,13 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaifilecontextprovider.cpp
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
+    ai/qgsaipythonapprovaldialog.cpp
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaiedittools.cpp
     ai/tools/qgsaireadtools.cpp
+    ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp
   )
 endif()
