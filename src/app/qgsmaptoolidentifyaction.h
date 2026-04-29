@@ -81,6 +81,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
      */
     QgsIdentifyResultsDialog *resultsDialog();
 
+    int mMaxResults;
+
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );

@@ -155,10 +155,10 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     if ( results.size() != 1 || !QgsIdentifyResultsDialog::settingIdentifyAutoFeatureForm->value() )
       qDebug() << "Total results:" << results.size();
       resultsDialog()->QDialog::show();
-    int maxResults = resultsDialog()->getMaxResults();
+    mMaxResults = resultsDialog()->getMaxResults();
     QList<IdentifyResult>::const_iterator result = results.constBegin();
 
-    while (result != results.constEnd() && resultsIdx <= maxResults) {
+    while (result != results.constEnd() && resultsIdx <= mMaxResults) {
       resultsDialog()->addFeature( *result );
       ++result;
       ++resultsIdx;
@@ -166,7 +166,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
-    if (results.size() > maxResults) {
+    if (results.size() > mMaxResults) {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Hidden Features" ), tr( "Some features not displayed in Identify Results, use the Show More Features button." ), Qgis::MessageLevel::Warning );
     }
   }
