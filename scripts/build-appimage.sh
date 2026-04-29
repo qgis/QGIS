@@ -73,6 +73,7 @@ sudo apt-get install -y --no-install-recommends \
   libexiv2-dev \
   libfcgi-dev \
   libdraco-dev \
+  libgsl-dev \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
