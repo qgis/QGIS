@@ -4,12 +4,12 @@
 #include "qgis_app.h"
 #include "qgsaimodels.h"
 
-#include <QMap>
-#include <QObject>
-#include <QQueue>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QMap>
 #include <QNetworkReply>
+#include <QObject>
+#include <QQueue>
 #include <QUrl>
 
 class QgsAiToolRegistry;
@@ -30,10 +30,10 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
     struct ProviderSettings
     {
-      QString endpoint;
-      QString model;
-      QString authConfigId;
-      bool enabled = false;
+        QString endpoint;
+        QString model;
+        QString authConfigId;
+        bool enabled = false;
     };
 
     explicit QgsAiModelRouter( QObject *parent = nullptr );
@@ -66,7 +66,9 @@ class APP_EXPORT QgsAiModelRouter : public QObject
 
   signals:
     void requestProgress( const QString &requestId, const QString &chunk );
-    void requestFinished( const QString &requestId, bool success, const QString &providerName, const QString &responseText, const QString &errorMessage, int httpStatus, int retryCount, bool retriable, qint64 latencyMs );
+    void requestFinished(
+      const QString &requestId, bool success, const QString &providerName, const QString &responseText, const QString &errorMessage, int httpStatus, int retryCount, bool retriable, qint64 latencyMs
+    );
 
     /**
      * Emitted when the model finishes a turn requesting one or more tool calls
@@ -83,28 +85,28 @@ class APP_EXPORT QgsAiModelRouter : public QObject
   private:
     struct PendingToolCall
     {
-      QString id;            // tool_use_id (Anthropic) / call_id (OpenAI)
-      QString name;
-      QString argumentsRaw;  // accumulated JSON string (OpenAI streams it as deltas)
-      QJsonObject argumentsObject; // Anthropic gives us this directly in the final response
-      bool argumentsArePreParsed = false;
+        QString id; // tool_use_id (Anthropic) / call_id (OpenAI)
+        QString name;
+        QString argumentsRaw;        // accumulated JSON string (OpenAI streams it as deltas)
+        QJsonObject argumentsObject; // Anthropic gives us this directly in the final response
+        bool argumentsArePreParsed = false;
     };
 
     struct RequestContext
     {
-      QString requestId;
-      Provider provider = Provider::OpenAi;
-      QList<QgsAiChatMessage> messages;
-      bool stream = true;
-      int attempt = 0;
-      int maxRetries = 1;
-      qint64 startedAtMs = 0;
-      QString streamingBuffer;
-      QString aggregatedText;
-      QString stopReason;                       // "end_turn", "tool_use", "stop", etc.
-      QList<PendingToolCall> toolCalls;         // collected during streaming/parse
-      QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
-      QNetworkReply *reply = nullptr;
+        QString requestId;
+        Provider provider = Provider::OpenAi;
+        QList<QgsAiChatMessage> messages;
+        bool stream = true;
+        int attempt = 0;
+        int maxRetries = 1;
+        qint64 startedAtMs = 0;
+        QString streamingBuffer;
+        QString aggregatedText;
+        QString stopReason;                       // "end_turn", "tool_use", "stop", etc.
+        QList<PendingToolCall> toolCalls;         // collected during streaming/parse
+        QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
+        QNetworkReply *reply = nullptr;
     };
 
     bool dispatchRequest( RequestContext &context );

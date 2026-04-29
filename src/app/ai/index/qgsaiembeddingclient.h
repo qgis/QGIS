@@ -9,6 +9,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 /**
  * Synchronous client for the OpenAI Embeddings API (`/v1/embeddings`).
  * Reuses the same QgsSettings/env-var conventions as QgsAiModelRouter for the
@@ -50,7 +52,7 @@ class APP_EXPORT QgsAiEmbeddingClient : public QObject
     QString openAiApiKey() const;
     bool embedBatch( const QStringList &batch, QList<QVector<float>> &out, QString *errorMessage );
 
-    QString mModel = QStringLiteral( "text-embedding-3-small" );
+    QString mModel = u"text-embedding-3-small"_s;
     int mTimeoutMs = 60000;
 };
 

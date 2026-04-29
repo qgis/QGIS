@@ -1,30 +1,33 @@
 #include "qgsaimodels.h"
 
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QString qgsAiChatRoleToString( QgsAiChatRole role )
 {
   switch ( role )
   {
     case QgsAiChatRole::System:
-      return QStringLiteral( "system" );
+      return u"system"_s;
     case QgsAiChatRole::Assistant:
-      return QStringLiteral( "assistant" );
+      return u"assistant"_s;
     case QgsAiChatRole::Tool:
-      return QStringLiteral( "tool" );
+      return u"tool"_s;
     case QgsAiChatRole::User:
     default:
-      return QStringLiteral( "user" );
+      return u"user"_s;
   }
 }
 
 QgsAiChatRole qgsAiChatRoleFromString( const QString &value )
 {
-  if ( value == QLatin1String( "system" ) )
+  if ( value == "system"_L1 )
     return QgsAiChatRole::System;
-  if ( value == QLatin1String( "assistant" ) )
+  if ( value == "assistant"_L1 )
     return QgsAiChatRole::Assistant;
-  if ( value == QLatin1String( "tool" ) )
+  if ( value == "tool"_L1 )
     return QgsAiChatRole::Tool;
   return QgsAiChatRole::User;
 }
@@ -32,89 +35,89 @@ QgsAiChatRole qgsAiChatRoleFromString( const QString &value )
 QJsonObject QgsAiChatMessage::toJson() const
 {
   QJsonObject json;
-  json.insert( QStringLiteral( "id" ), id );
-  json.insert( QStringLiteral( "role" ), qgsAiChatRoleToString( role ) );
-  json.insert( QStringLiteral( "content" ), content );
-  json.insert( QStringLiteral( "timestamp" ), timestamp.toString( Qt::ISODateWithMs ) );
-  json.insert( QStringLiteral( "metadata" ), QJsonObject::fromVariantMap( metadata ) );
+  json.insert( u"id"_s, id );
+  json.insert( u"role"_s, qgsAiChatRoleToString( role ) );
+  json.insert( u"content"_s, content );
+  json.insert( u"timestamp"_s, timestamp.toString( Qt::ISODateWithMs ) );
+  json.insert( u"metadata"_s, QJsonObject::fromVariantMap( metadata ) );
   return json;
 }
 
 QgsAiChatMessage QgsAiChatMessage::fromJson( const QJsonObject &json )
 {
   QgsAiChatMessage message;
-  message.id = json.value( QStringLiteral( "id" ) ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
-  message.role = qgsAiChatRoleFromString( json.value( QStringLiteral( "role" ) ).toString() );
-  message.content = json.value( QStringLiteral( "content" ) ).toString();
-  message.timestamp = QDateTime::fromString( json.value( QStringLiteral( "timestamp" ) ).toString(), Qt::ISODateWithMs );
-  message.metadata = json.value( QStringLiteral( "metadata" ) ).toObject().toVariantMap();
+  message.id = json.value( u"id"_s ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
+  message.role = qgsAiChatRoleFromString( json.value( u"role"_s ).toString() );
+  message.content = json.value( u"content"_s ).toString();
+  message.timestamp = QDateTime::fromString( json.value( u"timestamp"_s ).toString(), Qt::ISODateWithMs );
+  message.metadata = json.value( u"metadata"_s ).toObject().toVariantMap();
   return message;
 }
 
 QJsonObject QgsAiToolCall::toJson() const
 {
   QJsonObject json;
-  json.insert( QStringLiteral( "id" ), id );
-  json.insert( QStringLiteral( "name" ), name );
-  json.insert( QStringLiteral( "args" ), args );
+  json.insert( u"id"_s, id );
+  json.insert( u"name"_s, name );
+  json.insert( u"args"_s, args );
   return json;
 }
 
 QgsAiToolCall QgsAiToolCall::fromJson( const QJsonObject &json )
 {
   QgsAiToolCall call;
-  call.id = json.value( QStringLiteral( "id" ) ).toString();
-  call.name = json.value( QStringLiteral( "name" ) ).toString();
-  call.args = json.value( QStringLiteral( "args" ) ).toObject();
+  call.id = json.value( u"id"_s ).toString();
+  call.name = json.value( u"name"_s ).toString();
+  call.args = json.value( u"args"_s ).toObject();
   return call;
 }
 
 QJsonObject QgsAiPatchHunk::toJson() const
 {
   QJsonObject json;
-  json.insert( QStringLiteral( "filePath" ), filePath );
-  json.insert( QStringLiteral( "originalText" ), originalText );
-  json.insert( QStringLiteral( "replacementText" ), replacementText );
-  json.insert( QStringLiteral( "priority" ), priority );
-  json.insert( QStringLiteral( "isCreate" ), isCreate );
-  json.insert( QStringLiteral( "isDelete" ), isDelete );
+  json.insert( u"filePath"_s, filePath );
+  json.insert( u"originalText"_s, originalText );
+  json.insert( u"replacementText"_s, replacementText );
+  json.insert( u"priority"_s, priority );
+  json.insert( u"isCreate"_s, isCreate );
+  json.insert( u"isDelete"_s, isDelete );
   return json;
 }
 
 QgsAiPatchHunk QgsAiPatchHunk::fromJson( const QJsonObject &json )
 {
   QgsAiPatchHunk hunk;
-  hunk.filePath = json.value( QStringLiteral( "filePath" ) ).toString();
-  hunk.originalText = json.value( QStringLiteral( "originalText" ) ).toString();
-  hunk.replacementText = json.value( QStringLiteral( "replacementText" ) ).toString();
-  hunk.priority = json.value( QStringLiteral( "priority" ) ).toInt();
-  hunk.isCreate = json.value( QStringLiteral( "isCreate" ) ).toBool();
-  hunk.isDelete = json.value( QStringLiteral( "isDelete" ) ).toBool();
+  hunk.filePath = json.value( u"filePath"_s ).toString();
+  hunk.originalText = json.value( u"originalText"_s ).toString();
+  hunk.replacementText = json.value( u"replacementText"_s ).toString();
+  hunk.priority = json.value( u"priority"_s ).toInt();
+  hunk.isCreate = json.value( u"isCreate"_s ).toBool();
+  hunk.isDelete = json.value( u"isDelete"_s ).toBool();
   return hunk;
 }
 
 QJsonObject QgsAiPatchProposal::toJson() const
 {
   QJsonObject json;
-  json.insert( QStringLiteral( "id" ), id );
-  json.insert( QStringLiteral( "title" ), title );
-  json.insert( QStringLiteral( "createdAt" ), createdAt.toString( Qt::ISODateWithMs ) );
+  json.insert( u"id"_s, id );
+  json.insert( u"title"_s, title );
+  json.insert( u"createdAt"_s, createdAt.toString( Qt::ISODateWithMs ) );
 
   QJsonArray hunkArray;
   for ( const QgsAiPatchHunk &hunk : hunks )
     hunkArray.push_back( hunk.toJson() );
-  json.insert( QStringLiteral( "hunks" ), hunkArray );
+  json.insert( u"hunks"_s, hunkArray );
   return json;
 }
 
 QgsAiPatchProposal QgsAiPatchProposal::fromJson( const QJsonObject &json )
 {
   QgsAiPatchProposal proposal;
-  proposal.id = json.value( QStringLiteral( "id" ) ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
-  proposal.title = json.value( QStringLiteral( "title" ) ).toString();
-  proposal.createdAt = QDateTime::fromString( json.value( QStringLiteral( "createdAt" ) ).toString(), Qt::ISODateWithMs );
+  proposal.id = json.value( u"id"_s ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
+  proposal.title = json.value( u"title"_s ).toString();
+  proposal.createdAt = QDateTime::fromString( json.value( u"createdAt"_s ).toString(), Qt::ISODateWithMs );
 
-  const QJsonArray hunkArray = json.value( QStringLiteral( "hunks" ) ).toArray();
+  const QJsonArray hunkArray = json.value( u"hunks"_s ).toArray();
   proposal.hunks.reserve( hunkArray.size() );
   for ( const QJsonValue &value : hunkArray )
     proposal.hunks.push_back( QgsAiPatchHunk::fromJson( value.toObject() ) );
@@ -124,17 +127,17 @@ QgsAiPatchProposal QgsAiPatchProposal::fromJson( const QJsonObject &json )
 QJsonObject QgsAiReviewSuggestion::toJson() const
 {
   QJsonObject json;
-  json.insert( QStringLiteral( "id" ), id );
-  json.insert( QStringLiteral( "summary" ), summary );
-  json.insert( QStringLiteral( "proposal" ), proposal.toJson() );
+  json.insert( u"id"_s, id );
+  json.insert( u"summary"_s, summary );
+  json.insert( u"proposal"_s, proposal.toJson() );
   return json;
 }
 
 QgsAiReviewSuggestion QgsAiReviewSuggestion::fromJson( const QJsonObject &json )
 {
   QgsAiReviewSuggestion suggestion;
-  suggestion.id = json.value( QStringLiteral( "id" ) ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
-  suggestion.summary = json.value( QStringLiteral( "summary" ) ).toString();
-  suggestion.proposal = QgsAiPatchProposal::fromJson( json.value( QStringLiteral( "proposal" ) ).toObject() );
+  suggestion.id = json.value( u"id"_s ).toString( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
+  suggestion.summary = json.value( u"summary"_s ).toString();
+  suggestion.proposal = QgsAiPatchProposal::fromJson( json.value( u"proposal"_s ).toObject() );
   return suggestion;
 }

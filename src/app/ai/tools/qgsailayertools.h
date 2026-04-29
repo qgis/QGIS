@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAiFileContextProvider;
 class QgsProject;
 
@@ -22,7 +26,7 @@ class APP_EXPORT QgsAiAddLayerFromFileTool : public QgsAiTool
   public:
     QgsAiAddLayerFromFileTool( QgsAiFileContextProvider *contextProvider, QgsProject *project );
 
-    QString name() const override { return QStringLiteral( "add_layer_from_file" ); }
+    QString name() const override { return u"add_layer_from_file"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -43,7 +47,7 @@ class APP_EXPORT QgsAiDescribeLayerTool : public QgsAiTool
   public:
     explicit QgsAiDescribeLayerTool( QgsProject *project );
 
-    QString name() const override { return QStringLiteral( "describe_layer" ); }
+    QString name() const override { return u"describe_layer"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

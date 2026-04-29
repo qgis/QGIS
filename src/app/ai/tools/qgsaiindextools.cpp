@@ -5,27 +5,30 @@
 #include <QDateTime>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
   {
     QJsonObject schema;
-    schema.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
-    schema.insert( QStringLiteral( "properties" ), properties );
+    schema.insert( u"type"_s, u"object"_s );
+    schema.insert( u"properties"_s, properties );
     if ( !required.isEmpty() )
-      schema.insert( QStringLiteral( "required" ), required );
+      schema.insert( u"required"_s, required );
     return schema;
   }
 
   QJsonObject prop( const QString &type, const QString &description )
   {
     QJsonObject p;
-    p.insert( QStringLiteral( "type" ), type );
-    p.insert( QStringLiteral( "description" ), description );
+    p.insert( u"type"_s, type );
+    p.insert( u"description"_s, description );
     return p;
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // index_status
@@ -53,15 +56,15 @@ QgsAiToolResult QgsAiIndexStatusTool::execute( const QJsonObject &args )
 {
   Q_UNUSED( args )
   if ( !mIndex )
-    return QgsAiToolResult::error( QStringLiteral( "Workspace index is not available." ) );
+    return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
   const QgsAiWorkspaceIndex::Status status = mIndex->status();
   QJsonObject output;
-  output.insert( QStringLiteral( "indexed" ), status.indexed );
-  output.insert( QStringLiteral( "file_count" ), status.fileCount );
-  output.insert( QStringLiteral( "chunk_count" ), status.chunkCount );
-  output.insert( QStringLiteral( "workspace_root" ), status.workspaceRoot );
-  output.insert( QStringLiteral( "last_sync" ), status.lastSync.isValid() ? status.lastSync.toString( Qt::ISODate ) : QString() );
+  output.insert( u"indexed"_s, status.indexed );
+  output.insert( u"file_count"_s, status.fileCount );
+  output.insert( u"chunk_count"_s, status.chunkCount );
+  output.insert( u"workspace_root"_s, status.workspaceRoot );
+  output.insert( u"last_sync"_s, status.lastSync.isValid() ? status.lastSync.toString( Qt::ISODate ) : QString() );
   return QgsAiToolResult::ok( output );
 }
 
@@ -87,21 +90,21 @@ QString QgsAiSearchWorkspaceTool::description() const
 QJsonObject QgsAiSearchWorkspaceTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "query" ), prop( QStringLiteral( "string" ), QStringLiteral( "Natural-language query to search for." ) ) );
-  properties.insert( QStringLiteral( "k" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Number of results to return (default 5, max 20)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "query" ) } );
+  properties.insert( u"query"_s, prop( u"string"_s, u"Natural-language query to search for."_s ) );
+  properties.insert( u"k"_s, prop( u"integer"_s, u"Number of results to return (default 5, max 20)."_s ) );
+  return schemaObject( properties, QJsonArray { u"query"_s } );
 }
 
 QgsAiToolResult QgsAiSearchWorkspaceTool::execute( const QJsonObject &args )
 {
   if ( !mIndex )
-    return QgsAiToolResult::error( QStringLiteral( "Workspace index is not available." ) );
+    return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
-  const QString query = args.value( QStringLiteral( "query" ) ).toString();
+  const QString query = args.value( u"query"_s ).toString();
   if ( query.trimmed().isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'query' is required and must be non-empty." ) );
+    return QgsAiToolResult::error( u"Argument 'query' is required and must be non-empty."_s );
 
-  const int k = args.value( QStringLiteral( "k" ) ).toInt( 5 );
+  const int k = args.value( u"k"_s ).toInt( 5 );
   QString errorMessage;
   const QList<QgsAiWorkspaceIndex::Chunk> hits = mIndex->search( query, k, &errorMessage );
   if ( hits.isEmpty() && !errorMessage.isEmpty() )
@@ -111,17 +114,17 @@ QgsAiToolResult QgsAiSearchWorkspaceTool::execute( const QJsonObject &args )
   for ( const QgsAiWorkspaceIndex::Chunk &c : hits )
   {
     QJsonObject entry;
-    entry.insert( QStringLiteral( "path" ), c.relativePath );
-    entry.insert( QStringLiteral( "chunk_index" ), c.chunkIndex );
-    entry.insert( QStringLiteral( "score" ), static_cast<double>( c.score ) );
+    entry.insert( u"path"_s, c.relativePath );
+    entry.insert( u"chunk_index"_s, c.chunkIndex );
+    entry.insert( u"score"_s, static_cast<double>( c.score ) );
     // Cap text length per result so we don't blow the model's context window
     // when returning many hits.
-    entry.insert( QStringLiteral( "text" ), c.text.left( 1500 ) );
+    entry.insert( u"text"_s, c.text.left( 1500 ) );
     array.append( entry );
   }
   QJsonObject output;
-  output.insert( QStringLiteral( "matches" ), array );
-  output.insert( QStringLiteral( "count" ), array.size() );
+  output.insert( u"matches"_s, array );
+  output.insert( u"count"_s, array.size() );
   return QgsAiToolResult::ok( output );
 }
 
@@ -147,20 +150,20 @@ QString QgsAiReindexWorkspaceTool::description() const
 QJsonObject QgsAiReindexWorkspaceTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "confirm" ), prop( QStringLiteral( "boolean" ), QStringLiteral( "Must be true to acknowledge that file chunks will be sent to OpenAI." ) ) );
-  properties.insert( QStringLiteral( "max_files" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Cap on indexed files (default 500, hard cap 5000)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "confirm" ) } );
+  properties.insert( u"confirm"_s, prop( u"boolean"_s, u"Must be true to acknowledge that file chunks will be sent to OpenAI."_s ) );
+  properties.insert( u"max_files"_s, prop( u"integer"_s, u"Cap on indexed files (default 500, hard cap 5000)."_s ) );
+  return schemaObject( properties, QJsonArray { u"confirm"_s } );
 }
 
 QgsAiToolResult QgsAiReindexWorkspaceTool::execute( const QJsonObject &args )
 {
   if ( !mIndex )
-    return QgsAiToolResult::error( QStringLiteral( "Workspace index is not available." ) );
+    return QgsAiToolResult::error( u"Workspace index is not available."_s );
 
-  if ( !args.value( QStringLiteral( "confirm" ) ).toBool( false ) )
-    return QgsAiToolResult::error( QStringLiteral( "Refusing to reindex without explicit 'confirm: true' (chunks would be sent to OpenAI)." ) );
+  if ( !args.value( u"confirm"_s ).toBool( false ) )
+    return QgsAiToolResult::error( u"Refusing to reindex without explicit 'confirm: true' (chunks would be sent to OpenAI)."_s );
 
-  const int requestedMax = args.value( QStringLiteral( "max_files" ) ).toInt( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES );
+  const int requestedMax = args.value( u"max_files"_s ).toInt( QgsAiWorkspaceIndex::DEFAULT_MAX_FILES );
   const int maxFiles = std::clamp( requestedMax, 1, 5000 );
 
   const qint64 startedAt = QDateTime::currentMSecsSinceEpoch();
@@ -169,13 +172,13 @@ QgsAiToolResult QgsAiReindexWorkspaceTool::execute( const QJsonObject &args )
   const qint64 durationMs = QDateTime::currentMSecsSinceEpoch() - startedAt;
 
   if ( !ok )
-    return QgsAiToolResult::error( errorMessage.isEmpty() ? QStringLiteral( "Reindex failed." ) : errorMessage );
+    return QgsAiToolResult::error( errorMessage.isEmpty() ? u"Reindex failed."_s : errorMessage );
 
   const QgsAiWorkspaceIndex::Status status = mIndex->status();
   QJsonObject output;
-  output.insert( QStringLiteral( "status" ), QStringLiteral( "ok" ) );
-  output.insert( QStringLiteral( "file_count" ), status.fileCount );
-  output.insert( QStringLiteral( "chunk_count" ), status.chunkCount );
-  output.insert( QStringLiteral( "duration_ms" ), durationMs );
+  output.insert( u"status"_s, u"ok"_s );
+  output.insert( u"file_count"_s, status.fileCount );
+  output.insert( u"chunk_count"_s, status.chunkCount );
+  output.insert( u"duration_ms"_s, durationMs );
   return QgsAiToolResult::ok( output );
 }

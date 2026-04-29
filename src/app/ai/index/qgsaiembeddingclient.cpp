@@ -10,14 +10,17 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   constexpr const char *OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
   constexpr const char *OPENAI_KEY_SETTING = "ai/provider/openai/apiKey";
-}
+} //namespace
 
 QgsAiEmbeddingClient::QgsAiEmbeddingClient( QObject *parent )
   : QObject( parent )
@@ -55,8 +58,7 @@ bool QgsAiEmbeddingClient::embed( const QStringList &texts, QList<QVector<float>
     if ( batchOut.size() != batch.size() )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Embedding response shape mismatch: expected %1 vectors, got %2." )
-                          .arg( batch.size() ).arg( batchOut.size() );
+        *errorMessage = u"Embedding response shape mismatch: expected %1 vectors, got %2."_s.arg( batch.size() ).arg( batchOut.size() );
       return false;
     }
     out.append( batchOut );
@@ -70,7 +72,7 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   if ( apiKey.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)." );
+      *errorMessage = u"OpenAI API key is not configured (ai/provider/openai/apiKey or OPENAI_API_KEY)."_s;
     return false;
   }
 
@@ -78,27 +80,27 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   if ( !nam )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Network manager is not available." );
+      *errorMessage = u"Network manager is not available."_s;
     return false;
   }
 
   QJsonObject payload;
-  payload.insert( QStringLiteral( "model" ), mModel );
+  payload.insert( u"model"_s, mModel );
   QJsonArray input;
   for ( const QString &t : batch )
     input.append( t );
-  payload.insert( QStringLiteral( "input" ), input );
+  payload.insert( u"input"_s, input );
 
   QNetworkRequest request( QUrl( QString::fromUtf8( OPENAI_EMBEDDINGS_ENDPOINT ) ) );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
-  request.setRawHeader( "Authorization", ( QStringLiteral( "Bearer %1" ).arg( apiKey ) ).toUtf8() );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( apiKey ) ).toUtf8() );
   request.setTransferTimeout( mTimeoutMs );
 
   QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );
   if ( !reply )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Failed to start embeddings request." );
+      *errorMessage = u"Failed to start embeddings request."_s;
     return false;
   }
 
@@ -118,17 +120,13 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
     const QJsonDocument doc = QJsonDocument::fromJson( body );
     if ( doc.isObject() )
     {
-      const QJsonObject err = doc.object().value( QStringLiteral( "error" ) ).toObject();
-      detail = err.value( QStringLiteral( "message" ) ).toString();
+      const QJsonObject err = doc.object().value( u"error"_s ).toObject();
+      detail = err.value( u"message"_s ).toString();
     }
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Embeddings request failed httpStatus=%1 networkError=%2 detail=%3" )
-        .arg( httpStatus ).arg( static_cast<int>( netError ) ).arg( detail.left( 300 ) ),
-      QStringLiteral( "AI/Index" ), Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::
+      logMessage( u"Embeddings request failed httpStatus=%1 networkError=%2 detail=%3"_s.arg( httpStatus ).arg( static_cast<int>( netError ) ).arg( detail.left( 300 ) ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
     if ( errorMessage )
-      *errorMessage = detail.isEmpty()
-                        ? QStringLiteral( "Embeddings request failed (HTTP %1)." ).arg( httpStatus )
-                        : QStringLiteral( "Embeddings request failed: %1" ).arg( detail );
+      *errorMessage = detail.isEmpty() ? u"Embeddings request failed (HTTP %1)."_s.arg( httpStatus ) : u"Embeddings request failed: %1"_s.arg( detail );
     return false;
   }
 
@@ -136,21 +134,21 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
   if ( !doc.isObject() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Embeddings response is not a JSON object." );
+      *errorMessage = u"Embeddings response is not a JSON object."_s;
     return false;
   }
 
   // Response: { "data": [{ "embedding": [...], "index": N }, ...], "model": "...", "usage": {...} }
   // OpenAI guarantees ordering by index; we sort defensively.
-  const QJsonArray data = doc.object().value( QStringLiteral( "data" ) ).toArray();
+  const QJsonArray data = doc.object().value( u"data"_s ).toArray();
   out.resize( batch.size() );
   for ( const QJsonValue &item : data )
   {
     const QJsonObject obj = item.toObject();
-    const int idx = obj.value( QStringLiteral( "index" ) ).toInt( -1 );
+    const int idx = obj.value( u"index"_s ).toInt( -1 );
     if ( idx < 0 || idx >= batch.size() )
       continue;
-    const QJsonArray emb = obj.value( QStringLiteral( "embedding" ) ).toArray();
+    const QJsonArray emb = obj.value( u"embedding"_s ).toArray();
     QVector<float> vec;
     vec.reserve( emb.size() );
     for ( const QJsonValue &v : emb )
@@ -164,7 +162,7 @@ bool QgsAiEmbeddingClient::embedBatch( const QStringList &batch, QList<QVector<f
     if ( out.at( i ).isEmpty() )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Embedding for input %1 was missing in the response." ).arg( i );
+        *errorMessage = u"Embedding for input %1 was missing in the response."_s.arg( i );
       return false;
     }
   }

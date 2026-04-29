@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QWidget;
 
 /**
@@ -16,8 +20,9 @@ class QWidget;
  * to a temporary JSON file, which the tool reads back.
  *
  * Hard caps:
- *  - Maximum 8000 characters of code per call (prevents pathological prompts).
- *  - Stdout/stderr capture is truncated to 32 KB each before being returned to the model.
+ *
+ * - Maximum 8000 characters of code per call (prevents pathological prompts).
+ * - Stdout/stderr capture is truncated to 32 KB each before being returned to the model.
  */
 class APP_EXPORT QgsAiRunPythonTool : public QgsAiTool
 {
@@ -27,7 +32,7 @@ class APP_EXPORT QgsAiRunPythonTool : public QgsAiTool
 
     explicit QgsAiRunPythonTool( QWidget *dialogParent );
 
-    QString name() const override { return QStringLiteral( "run_python" ); }
+    QString name() const override { return u"run_python"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

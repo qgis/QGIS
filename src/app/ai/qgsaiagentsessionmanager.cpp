@@ -14,8 +14,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRegularExpression>
+#include <QString>
 #include <QUuid>
 #include <QVariantList>
+
+using namespace Qt::StringLiterals;
 
 QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, QgsAiFileContextProvider *contextProvider, QgsAiReviewPatchEngine *reviewEngine, QObject *parent )
   : QObject( parent )
@@ -47,7 +50,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
         const QgsAiChatMessage assistant = buildAssistantMessage( finalText );
         mHistory.push_back( assistant );
         emit messageAdded( assistant );
-        emit requestStateChanged( QStringLiteral( "completed" ), QStringLiteral( "%1 (%2 ms)" ).arg( providerName ).arg( latencyMs ) );
+        emit requestStateChanged( u"completed"_s, u"%1 (%2 ms)"_s.arg( providerName ).arg( latencyMs ) );
         mActiveRequestId.clear();
         emit requestRunningChanged( false );
         return;
@@ -56,7 +59,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
       if ( !mPendingProviders.isEmpty() )
       {
         const QgsAiModelRouter::Provider fallbackProvider = mPendingProviders.takeFirst();
-        emit requestStateChanged( QStringLiteral( "retrying" ), QStringLiteral( "%1 failed, retrying with %2…" ).arg( providerName, mRouter->providerDisplayName( fallbackProvider ) ) );
+        emit requestStateChanged( u"retrying"_s, u"%1 failed, retrying with %2…"_s.arg( providerName, mRouter->providerDisplayName( fallbackProvider ) ) );
         startProviderAttempt( fallbackProvider );
         return;
       }
@@ -65,7 +68,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
       const QgsAiChatMessage assistant = buildAssistantMessage( finalError );
       mHistory.push_back( assistant );
       emit messageAdded( assistant );
-      emit requestStateChanged( QStringLiteral( "failed" ), finalError );
+      emit requestStateChanged( u"failed"_s, finalError );
       mActiveRequestId.clear();
       emit requestRunningChanged( false );
     } );
@@ -74,7 +77,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
 
 QStringList QgsAiAgentSessionManager::availableAgents() const
 {
-  return QStringList() << QStringLiteral( "planner" ) << QStringLiteral( "reviewer" ) << QStringLiteral( "editor" );
+  return QStringList() << u"planner"_s << u"reviewer"_s << u"editor"_s;
 }
 
 void QgsAiAgentSessionManager::setActiveAgent( const QString &agentName )
@@ -96,7 +99,7 @@ void QgsAiAgentSessionManager::cancelActiveRequest()
   mRouter->cancelRequest( mActiveRequestId );
   mActiveRequestId.clear();
   mPendingProviders.clear();
-  emit requestStateChanged( QStringLiteral( "cancelled" ), QStringLiteral( "Request cancelled by user." ) );
+  emit requestStateChanged( u"cancelled"_s, u"Request cancelled by user."_s );
   emit requestRunningChanged( false );
 }
 
@@ -139,11 +142,15 @@ void QgsAiAgentSessionManager::startProviderAttempt( QgsAiModelRouter::Provider 
   mStreamedText.clear();
   mActiveRequestId = mRouter->startChatRequest( provider, messages, true );
   QgsMessageLog::logMessage(
-    QStringLiteral( "Provider attempt: agent=%1 provider=%2 requestId=%3 historyMessages=%4 toolIteration=%5 pendingFallbacks=%6" )
-      .arg( mActiveAgent, mRouter->providerDisplayName( provider ), mActiveRequestId )
-      .arg( messages.size() ).arg( mToolIterations ).arg( mPendingProviders.size() ),
-    QStringLiteral( "AI" ), Qgis::MessageLevel::Info, false );
-  emit requestStateChanged( QStringLiteral( "sending" ), QStringLiteral( "Contacting %1…" ).arg( mRouter->providerDisplayName( provider ) ) );
+    u"Provider attempt: agent=%1 provider=%2 requestId=%3 historyMessages=%4 toolIteration=%5 pendingFallbacks=%6"_s.arg( mActiveAgent, mRouter->providerDisplayName( provider ), mActiveRequestId )
+      .arg( messages.size() )
+      .arg( mToolIterations )
+      .arg( mPendingProviders.size() ),
+    u"AI"_s,
+    Qgis::MessageLevel::Info,
+    false
+  );
+  emit requestStateChanged( u"sending"_s, u"Contacting %1…"_s.arg( mRouter->providerDisplayName( provider ) ) );
 }
 
 QgsAiChatMessage QgsAiAgentSessionManager::buildAssistantMessage( const QString &text ) const
@@ -163,7 +170,7 @@ QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatCont
     return QString();
 
   if ( contextFiles.isEmpty() )
-    return QStringLiteral( "No file context attached." );
+    return u"No file context attached."_s;
 
   QStringList summaries;
   int index = 1;
@@ -173,39 +180,35 @@ QString QgsAiAgentSessionManager::buildContextSummary( const QList<QgsAiChatCont
     if ( !context.isValid() )
     {
       contextBlocked = true;
-      return QStringLiteral( "File context blocked: path is outside allowed workspace or unreadable." );
+      return u"File context blocked: path is outside allowed workspace or unreadable."_s;
     }
 
     const QString root = mContextProvider->workspaceRoot();
     const QString relativePath = QDir( root ).relativeFilePath( context.filePath );
-    const bool inWorkspace = !root.isEmpty()
-                             && ( relativePath == QLatin1String( "." )
-                                  || ( !relativePath.startsWith( QStringLiteral( "../" ) )
-                                       && relativePath != QLatin1String( ".." )
-                                       && !QDir::isAbsolutePath( relativePath ) ) );
+    const bool inWorkspace = !root.isEmpty() && ( relativePath == "."_L1 || ( !relativePath.startsWith( "../"_L1 ) && relativePath != ".."_L1 && !QDir::isAbsolutePath( relativePath ) ) );
     const QString displayPath = inWorkspace ? relativePath : context.filePath;
 
     QString summary;
-    summary += QStringLiteral( "Context file %1: %2\n" ).arg( index++ ).arg( displayPath );
-    summary += QStringLiteral( "Size: %1 bytes%2\n" ).arg( context.fileSize ).arg( context.truncated ? QStringLiteral( " (snippet truncated)" ) : QString() );
+    summary += u"Context file %1: %2\n"_s.arg( index++ ).arg( displayPath );
+    summary += u"Size: %1 bytes%2\n"_s.arg( context.fileSize ).arg( context.truncated ? u" (snippet truncated)"_s : QString() );
     if ( !context.selectedText.isEmpty() )
-      summary += QStringLiteral( "Selected text:\n%1\n" ).arg( context.selectedText.left( 8192 ) );
+      summary += u"Selected text:\n%1\n"_s.arg( context.selectedText.left( 8192 ) );
     if ( context.binary )
     {
-      summary += QStringLiteral( "Content omitted because the file appears to be binary." );
+      summary += "Content omitted because the file appears to be binary."_L1;
     }
     else if ( !context.fileSnippet.isEmpty() )
     {
-      summary += QStringLiteral( "File content snippet:\n%1" ).arg( context.fileSnippet );
+      summary += u"File content snippet:\n%1"_s.arg( context.fileSnippet );
     }
     else
     {
-      summary += QStringLiteral( "No text content could be read from this file." );
+      summary += "No text content could be read from this file."_L1;
     }
     summaries << summary.trimmed();
   }
 
-  return summaries.join( QStringLiteral( "\n\n" ) );
+  return summaries.join( "\n\n"_L1 );
 }
 
 QString QgsAiAgentSessionManager::actionableError( const QString &providerName, const QString &errorMessage, int httpStatus ) const
@@ -213,25 +216,25 @@ QString QgsAiAgentSessionManager::actionableError( const QString &providerName, 
   const QString sanitized = mRouter ? mRouter->sanitizeErrorText( errorMessage ) : errorMessage;
   if ( httpStatus == 401 || httpStatus == 403 )
   {
-    if ( providerName == QStringLiteral( "Plan Account" ) )
-      return QStringLiteral( "%1 authentication failed. Check session token or authcfg in Provider Settings." ).arg( providerName );
-    return QStringLiteral( "%1 authentication failed. Check the API key in Provider Settings." ).arg( providerName );
+    if ( providerName == "Plan Account"_L1 )
+      return u"%1 authentication failed. Check session token or authcfg in Provider Settings."_s.arg( providerName );
+    return u"%1 authentication failed. Check the API key in Provider Settings."_s.arg( providerName );
   }
   if ( httpStatus == 404 )
-    return QStringLiteral( "%1 endpoint not found. Verify provider endpoint in settings." ).arg( providerName );
+    return u"%1 endpoint not found. Verify provider endpoint in settings."_s.arg( providerName );
   if ( httpStatus == 429 )
-    return QStringLiteral( "%1 rate-limited the request. Retry later or switch provider." ).arg( providerName );
+    return u"%1 rate-limited the request. Retry later or switch provider."_s.arg( providerName );
   if ( httpStatus >= 500 )
-    return QStringLiteral( "%1 is temporarily unavailable (HTTP %2). Please retry shortly." ).arg( providerName ).arg( httpStatus );
+    return u"%1 is temporarily unavailable (HTTP %2). Please retry shortly."_s.arg( providerName ).arg( httpStatus );
   if ( sanitized.isEmpty() )
-    return QStringLiteral( "%1 request failed. Check provider settings and connectivity." ).arg( providerName );
-  return QStringLiteral( "%1 request failed: %2" ).arg( providerName, sanitized );
+    return u"%1 request failed. Check provider settings and connectivity."_s.arg( providerName );
+  return u"%1 request failed: %2"_s.arg( providerName, sanitized );
 }
 
 bool QgsAiAgentSessionManager::tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const
 {
-  static const QRegularExpression commandRe( QStringLiteral( "^/patch\\s+path=(.+)$" ) );
-  static const QRegularExpression bodyRe( QStringLiteral( "<<<<\\n([\\s\\S]*)\\n====\\n([\\s\\S]*)\\n>>>>$" ) );
+  static const QRegularExpression commandRe( u"^/patch\\s+path=(.+)$"_s );
+  static const QRegularExpression bodyRe( u"<<<<\\n([\\s\\S]*)\\n====\\n([\\s\\S]*)\\n>>>>$"_s );
 
   const QStringList lines = text.split( '\n' );
   if ( lines.isEmpty() )
@@ -252,7 +255,7 @@ bool QgsAiAgentSessionManager::tryBuildPatchProposal( const QString &text, QgsAi
   hunk.replacementText = bodyMatch.captured( 2 );
 
   proposal.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
-  proposal.title = QStringLiteral( "Patch generated by %1 agent" ).arg( mActiveAgent );
+  proposal.title = u"Patch generated by %1 agent"_s.arg( mActiveAgent );
   proposal.hunks = QList<QgsAiPatchHunk>() << hunk;
   proposal.createdAt = QDateTime::currentDateTimeUtc();
   return true;
@@ -275,7 +278,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
 {
   if ( hasActiveRequest() )
   {
-    const QgsAiChatMessage assistant = buildAssistantMessage( QStringLiteral( "A request is already running. Please wait or cancel it first." ) );
+    const QgsAiChatMessage assistant = buildAssistantMessage( u"A request is already running. Please wait or cancel it first."_s );
     mHistory.push_back( assistant );
     emit messageAdded( assistant );
     return;
@@ -294,7 +297,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   {
     const QString proposalId = mReviewEngine->registerProposal( proposal );
     emit proposalCreated( proposalId );
-    const QgsAiChatMessage assistant = buildAssistantMessage( QStringLiteral( "Review proposal created (%1). Use Accept/Reject in the review panel." ).arg( proposalId ) );
+    const QgsAiChatMessage assistant = buildAssistantMessage( u"Review proposal created (%1). Use Accept/Reject in the review panel."_s.arg( proposalId ) );
     mHistory.push_back( assistant );
     emit messageAdded( assistant );
     return;
@@ -307,16 +310,16 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
     const QgsAiChatMessage assistant = buildAssistantMessage( contextSummary );
     mHistory.push_back( assistant );
     emit messageAdded( assistant );
-    emit requestStateChanged( QStringLiteral( "error" ), contextSummary );
+    emit requestStateChanged( u"error"_s, contextSummary );
     return;
   }
 
   // Append the file context (if any) to the user message so it travels through the history
   // and not just into the very first request.
-  if ( !contextSummary.isEmpty() && contextSummary != QLatin1String( "No file context attached." ) )
+  if ( !contextSummary.isEmpty() && contextSummary != "No file context attached."_L1 )
   {
     QgsAiChatMessage &lastUser = mHistory.last();
-    lastUser.content = lastUser.content + QStringLiteral( "\n\nContext:\n" ) + contextSummary;
+    lastUser.content = lastUser.content + u"\n\nContext:\n"_s + contextSummary;
   }
   mCurrentContextFiles = contextFiles;
   mToolIterations = 0;
@@ -324,7 +327,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   mPendingProviders = providerFallbackOrder();
   if ( mPendingProviders.isEmpty() || !mRouter )
   {
-    const QgsAiChatMessage assistant = buildAssistantMessage( QStringLiteral( "No provider is configured." ) );
+    const QgsAiChatMessage assistant = buildAssistantMessage( u"No provider is configured."_s );
     mHistory.push_back( assistant );
     emit messageAdded( assistant );
     return;
@@ -347,14 +350,14 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   // Cursor-like file-acting agent for QGIS. Tells the model it has tools and must use them
   // instead of telling the user to copy code. Workspace-aware fields are filled when known.
   QString prompt;
-  prompt += QStringLiteral( "You are the %1 agent for QGIS_AI, a fork of QGIS with native AI assistance.\n" ).arg( mActiveAgent );
-  prompt += QStringLiteral( "Your job: help the user inspect, modify and run code/data in their workspace.\n\n" );
+  prompt += u"You are the %1 agent for QGIS_AI, a fork of QGIS with native AI assistance.\n"_s.arg( mActiveAgent );
+  prompt += "Your job: help the user inspect, modify and run code/data in their workspace.\n\n"_L1;
 
-  prompt += QStringLiteral( "== Workspace ==\n" );
+  prompt += "== Workspace ==\n"_L1;
   if ( mContextProvider && !mContextProvider->workspaceRoot().isEmpty() )
-    prompt += QStringLiteral( "Root: %1\n" ).arg( mContextProvider->workspaceRoot() );
+    prompt += u"Root: %1\n"_s.arg( mContextProvider->workspaceRoot() );
   else
-    prompt += QStringLiteral( "Root: (not set)\n" );
+    prompt += "Root: (not set)\n"_L1;
 
   // Inject a snapshot of the active QgsProject so the model knows which layers exist
   // without having to call list_project_layers every turn.
@@ -362,20 +365,20 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   if ( project )
   {
     const QString projectFile = project->fileName();
-    prompt += QStringLiteral( "Active project: %1\n" ).arg( projectFile.isEmpty() ? QStringLiteral( "(unsaved)" ) : projectFile );
+    prompt += u"Active project: %1\n"_s.arg( projectFile.isEmpty() ? u"(unsaved)"_s : projectFile );
 
     const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
-    prompt += QStringLiteral( "Loaded layers: %1\n" ).arg( layers.size() );
+    prompt += u"Loaded layers: %1\n"_s.arg( layers.size() );
     int shown = 0;
     for ( auto it = layers.constBegin(); it != layers.constEnd() && shown < 10; ++it, ++shown )
     {
       QgsMapLayer *layer = it.value();
       if ( !layer )
         continue;
-      prompt += QStringLiteral( "  - %1 (id=%2, crs=%3)\n" ).arg( layer->name(), layer->id(), layer->crs().authid() );
+      prompt += u"  - %1 (id=%2, crs=%3)\n"_s.arg( layer->name(), layer->id(), layer->crs().authid() );
     }
     if ( layers.size() > 10 )
-      prompt += QStringLiteral( "  …%1 more (use list_project_layers for the full list).\n" ).arg( layers.size() - 10 );
+      prompt += u"  …%1 more (use list_project_layers for the full list).\n"_s.arg( layers.size() - 10 );
   }
 
   // Tool list is injected so the model has discoverable names alongside the JSON schema.
@@ -384,32 +387,33 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
     const QStringList toolNames = mToolRegistry->toolNames();
     if ( !toolNames.isEmpty() )
     {
-      prompt += QStringLiteral( "\n== Available tools ==\n" );
-      prompt += toolNames.join( QStringLiteral( ", " ) );
+      prompt += "\n== Available tools ==\n"_L1;
+      prompt += toolNames.join( ", "_L1 );
       prompt += '\n';
     }
   }
 
-  prompt += QStringLiteral( "\n== How to act ==\n" );
-  prompt += QStringLiteral( "- Use tools instead of writing code in chat for the user to copy.\n" );
-  prompt += QStringLiteral( "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n" );
-  prompt += QStringLiteral( "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n" );
-  prompt += QStringLiteral( "- Never call propose_edit blind: read the file first to capture the exact original text.\n" );
-  prompt += QStringLiteral( "- Keep proposals small and reviewable. One concept per proposal.\n" );
-  prompt += QStringLiteral( "- Do not invent file paths; resolve them via search_files or list_files.\n" );
+  prompt += "\n== How to act ==\n"_L1;
+  prompt += "- Use tools instead of writing code in chat for the user to copy.\n"_L1;
+  prompt += "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n"_L1;
+  prompt += "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n"_L1;
+  prompt += "- Never call propose_edit blind: read the file first to capture the exact original text.\n"_L1;
+  prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;
+  prompt += "- Do not invent file paths; resolve them via search_files or list_files.\n"_L1;
   prompt += QStringLiteral(
               "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do NOT just run it via run_python — also save it as a Processing script. "
               "The Processing scripts folder for this profile is: %1 . "
               "Use propose_create_file to write a script there following the standard QgsProcessingAlgorithm template "
               "(class extending QgsProcessingAlgorithm with name(), displayName(), createInstance(), initAlgorithm(), processAlgorithm()). "
               "After acceptance the script appears in the Processing Toolbox under 'Scripts' and is callable like any built-in algorithm.\n"
-            ).arg( processingScriptsFolder() );
+  )
+              .arg( processingScriptsFolder() );
   return prompt;
 }
 
 QString QgsAiAgentSessionManager::processingScriptsFolder()
 {
-  return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "processing/scripts" );
+  return QgsApplication::qgisSettingsDirPath() + u"processing/scripts"_s;
 }
 
 QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int budgetTokens ) const
@@ -418,15 +422,18 @@ QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int 
     return mHistory;
 
   // Identify "atomic groups" so we don't split a tool_use round from its tool_results when trimming.
-  struct GroupRange { int start; int end; };
+  struct GroupRange
+  {
+      int start;
+      int end;
+  };
   QList<GroupRange> groups;
   int i = 0;
   while ( i < mHistory.size() )
   {
     int start = i;
     int end = i;
-    const bool isAssistantWithTools = mHistory.at( i ).role == QgsAiChatRole::Assistant
-                                      && mHistory.at( i ).metadata.contains( QStringLiteral( "tool_calls" ) );
+    const bool isAssistantWithTools = mHistory.at( i ).role == QgsAiChatRole::Assistant && mHistory.at( i ).metadata.contains( u"tool_calls"_s );
     if ( isAssistantWithTools )
     {
       while ( end + 1 < mHistory.size() && mHistory.at( end + 1 ).role == QgsAiChatRole::Tool )
@@ -492,12 +499,12 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildAssistantToolUseMessage( const Q
   for ( const QgsAiToolCall &call : calls )
   {
     QVariantMap entry;
-    entry.insert( QStringLiteral( "id" ), call.id );
-    entry.insert( QStringLiteral( "name" ), call.name );
-    entry.insert( QStringLiteral( "args" ), call.args.toVariantMap() );
+    entry.insert( u"id"_s, call.id );
+    entry.insert( u"name"_s, call.name );
+    entry.insert( u"args"_s, call.args.toVariantMap() );
     toolCallsVariant.append( entry );
   }
-  assistant.metadata.insert( QStringLiteral( "tool_calls" ), toolCallsVariant );
+  assistant.metadata.insert( u"tool_calls"_s, toolCallsVariant );
   return assistant;
 }
 
@@ -516,19 +523,19 @@ QgsAiChatMessage QgsAiAgentSessionManager::buildToolResultMessage( const QgsAiTo
     else
       serialized = QString::fromUtf8( QJsonDocument( result.output.toObject() ).toJson( QJsonDocument::Compact ) );
     if ( serialized.isEmpty() )
-      serialized = QStringLiteral( "{}" );
+      serialized = u"{}"_s;
   }
   else
   {
     QJsonObject errObj;
-    errObj.insert( QStringLiteral( "error" ), result.errorMessage );
+    errObj.insert( u"error"_s, result.errorMessage );
     serialized = QString::fromUtf8( QJsonDocument( errObj ).toJson( QJsonDocument::Compact ) );
   }
   toolMessage.content = serialized;
-  toolMessage.metadata.insert( QStringLiteral( "tool_call_id" ), call.id );
-  toolMessage.metadata.insert( QStringLiteral( "tool_name" ), call.name );
+  toolMessage.metadata.insert( u"tool_call_id"_s, call.id );
+  toolMessage.metadata.insert( u"tool_name"_s, call.name );
   if ( !result.success )
-    toolMessage.metadata.insert( QStringLiteral( "is_error" ), true );
+    toolMessage.metadata.insert( u"is_error"_s, true );
   return toolMessage;
 }
 
@@ -547,13 +554,11 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   summary.reserve( calls.size() );
   for ( const QgsAiToolCall &call : calls )
     summary << call.name;
-  emit requestStateChanged( QStringLiteral( "tool_use" ),
-                            QStringLiteral( "%1 wants to call: %2" ).arg( providerName, summary.join( QStringLiteral( ", " ) ) ) );
+  emit requestStateChanged( u"tool_use"_s, u"%1 wants to call: %2"_s.arg( providerName, summary.join( ", "_L1 ) ) );
 
   if ( !mToolRegistry )
   {
-    const QgsAiChatMessage error = buildAssistantMessage(
-      QStringLiteral( "The model requested tool use but no tool registry is configured. Aborting turn." ) );
+    const QgsAiChatMessage error = buildAssistantMessage( u"The model requested tool use but no tool registry is configured. Aborting turn."_s );
     mHistory.append( error );
     emit messageAdded( error );
     mActiveRequestId.clear();
@@ -564,8 +569,7 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   ++mToolIterations;
   if ( mToolIterations > MAX_TOOL_ITERATIONS_PER_TURN )
   {
-    const QgsAiChatMessage error = buildAssistantMessage(
-      QStringLiteral( "Stopping: the model exceeded the maximum number of tool calls (%1) for a single turn." ).arg( MAX_TOOL_ITERATIONS_PER_TURN ) );
+    const QgsAiChatMessage error = buildAssistantMessage( u"Stopping: the model exceeded the maximum number of tool calls (%1) for a single turn."_s.arg( MAX_TOOL_ITERATIONS_PER_TURN ) );
     mHistory.append( error );
     emit messageAdded( error );
     mActiveRequestId.clear();
@@ -578,10 +582,8 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   // execute everything inline so the loop itself can be exercised end-to-end.
   for ( const QgsAiToolCall &call : calls )
   {
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Tool call: name=%1 id=%2 argsBytes=%3" )
-        .arg( call.name, call.id ).arg( QJsonDocument( call.args ).toJson( QJsonDocument::Compact ).size() ),
-      QStringLiteral( "AI" ), Qgis::MessageLevel::Info, false );
+    QgsMessageLog::
+      logMessage( u"Tool call: name=%1 id=%2 argsBytes=%3"_s.arg( call.name, call.id ).arg( QJsonDocument( call.args ).toJson( QJsonDocument::Compact ).size() ), u"AI"_s, Qgis::MessageLevel::Info, false );
 
     const QgsAiToolResult result = mToolRegistry->execute( call.name, call.args );
     const QgsAiChatMessage resultMessage = buildToolResultMessage( call, result );

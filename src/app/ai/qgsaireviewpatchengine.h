@@ -1,11 +1,11 @@
 #ifndef QGSAIREVIEWPATCHENGINE_H
 #define QGSAIREVIEWPATCHENGINE_H
 
-#include "qgsaimodels.h"
 #include "qgis_app.h"
+#include "qgsaimodels.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QStringList>
 
 class QgsAiFileContextProvider;
@@ -45,15 +45,15 @@ class APP_EXPORT QgsAiReviewPatchEngine : public QObject
   private:
     struct FileBackup
     {
-      QString filePath;
-      QString originalContent;
-      bool wasMissing = false;  //!< true if the file did not exist before the patch was applied (create-file undo removes it).
+        QString filePath;
+        QString originalContent;
+        bool wasMissing = false; //!< True if the file did not exist before the patch was applied (create-file undo removes it).
     };
 
     struct AppliedPatch
     {
-      QString proposalId;
-      QList<FileBackup> backups;
+        QString proposalId;
+        QList<FileBackup> backups;
     };
 
     bool applyProposalInternal( const QgsAiPatchProposal &proposal, const QList<int> *hunkIndexes, AppliedPatch &appliedPatch, QString *errorMessage ) const;

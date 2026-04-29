@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * Smoke-test tool that returns its input under `echoed`. Used to validate the
  * full tool-use loop (schema in payload, model invocation, execute, tool_result
@@ -15,14 +19,9 @@ class APP_EXPORT QgsAiEchoTool : public QgsAiTool
   public:
     QgsAiEchoTool() = default;
 
-    QString name() const override { return QStringLiteral( "echo" ); }
+    QString name() const override { return u"echo"_s; }
 
-    QString description() const override
-    {
-      return QStringLiteral(
-        "Returns the provided text unchanged. Use this only when the user explicitly asks to test the tool loop."
-      );
-    }
+    QString description() const override { return QStringLiteral( "Returns the provided text unchanged. Use this only when the user explicitly asks to test the tool loop." ); }
 
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

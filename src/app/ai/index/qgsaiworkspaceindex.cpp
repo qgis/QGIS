@@ -1,5 +1,7 @@
 #include "qgsaiworkspaceindex.h"
 
+#include <cmath>
+
 #include "qgsaiembeddingclient.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsapplication.h"
@@ -13,23 +15,18 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QStringList>
 #include <QUuid>
 #include <QVariant>
-#include <cmath>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   const QStringList TEXT_EXTENSIONS = {
-    QStringLiteral( "h" ), QStringLiteral( "hpp" ), QStringLiteral( "cpp" ), QStringLiteral( "cc" ), QStringLiteral( "c" ),
-    QStringLiteral( "py" ), QStringLiteral( "md" ), QStringLiteral( "txt" ),
-    QStringLiteral( "json" ), QStringLiteral( "geojson" ), QStringLiteral( "csv" ), QStringLiteral( "tsv" ),
-    QStringLiteral( "qgs" ), QStringLiteral( "qml" ), QStringLiteral( "xml" ),
-    QStringLiteral( "ts" ), QStringLiteral( "js" ), QStringLiteral( "html" ), QStringLiteral( "css" ),
-    QStringLiteral( "yaml" ), QStringLiteral( "yml" ), QStringLiteral( "ini" ), QStringLiteral( "toml" ), QStringLiteral( "cfg" ),
-    QStringLiteral( "sh" ), QStringLiteral( "bat" ), QStringLiteral( "ps1" ),
-    QStringLiteral( "cmake" ), QStringLiteral( "make" ), QStringLiteral( "mk" ),
-    QStringLiteral( "sql" ), QStringLiteral( "rst" ),
+    u"h"_s,  u"hpp"_s,  u"cpp"_s, u"cc"_s,   u"c"_s,   u"py"_s,  u"md"_s,   u"txt"_s, u"json"_s, u"geojson"_s, u"csv"_s, u"tsv"_s,   u"qgs"_s,  u"qml"_s, u"xml"_s, u"ts"_s,
+    u"js"_s, u"html"_s, u"css"_s, u"yaml"_s, u"yml"_s, u"ini"_s, u"toml"_s, u"cfg"_s, u"sh"_s,   u"bat"_s,     u"ps1"_s, u"cmake"_s, u"make"_s, u"mk"_s,  u"sql"_s, u"rst"_s,
   };
 
   QByteArray vectorToBytes( const QVector<float> &v )
@@ -52,7 +49,7 @@ namespace
       std::memcpy( v.data(), bytes.constData(), bytes.size() );
     return v;
   }
-}
+} //namespace
 
 QgsAiWorkspaceIndex::QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent )
   : QObject( parent )
@@ -72,7 +69,7 @@ QString QgsAiWorkspaceIndex::connectionName() const
 {
   // One named SQL connection per index instance — avoid clashing with other
   // QGIS components that already use unnamed default connections.
-  return QStringLiteral( "qgsai_index_%1" ).arg( reinterpret_cast<quintptr>( this ) );
+  return u"qgsai_index_%1"_s.arg( reinterpret_cast<quintptr>( this ) );
 }
 
 QString QgsAiWorkspaceIndex::dbPath() const
@@ -82,9 +79,9 @@ QString QgsAiWorkspaceIndex::dbPath() const
 
   const QString root = mContextProvider->workspaceRoot();
   const QByteArray hash = QCryptographicHash::hash( root.toUtf8(), QCryptographicHash::Sha1 ).toHex().left( 16 );
-  const QString dir = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "ai_index" );
+  const QString dir = QgsApplication::qgisSettingsDirPath() + u"ai_index"_s;
   QDir().mkpath( dir );
-  return QDir( dir ).filePath( QStringLiteral( "ws_%1.sqlite" ).arg( QString::fromLatin1( hash ) ) );
+  return QDir( dir ).filePath( u"ws_%1.sqlite"_s.arg( QString::fromLatin1( hash ) ) );
 }
 
 bool QgsAiWorkspaceIndex::isTextFile( const QString &relativePath )
@@ -149,9 +146,7 @@ bool QgsAiWorkspaceIndex::ensureLoaded()
   QString err;
   if ( !loadAll( &err ) )
   {
-    QgsMessageLog::logMessage(
-      QStringLiteral( "Workspace index load failed: %1" ).arg( err ),
-      QStringLiteral( "AI/Index" ), Qgis::MessageLevel::Warning, false );
+    QgsMessageLog::logMessage( u"Workspace index load failed: %1"_s.arg( err ), u"AI/Index"_s, Qgis::MessageLevel::Warning, false );
     // Treat missing/corrupt DB as empty rather than fatal.
     mCache.clear();
     mLastSync = QDateTime();
@@ -182,11 +177,9 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
   mCache.clear();
   const QString path = dbPath();
   if ( path.isEmpty() || !QFileInfo::exists( path ) )
-    return true;  // Nothing to load yet — that's not an error.
+    return true; // Nothing to load yet — that's not an error.
 
-  QSqlDatabase db = QSqlDatabase::contains( connectionName() )
-                      ? QSqlDatabase::database( connectionName() )
-                      : QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName() );
+  QSqlDatabase db = QSqlDatabase::contains( connectionName() ) ? QSqlDatabase::database( connectionName() ) : QSqlDatabase::addDatabase( u"QSQLITE"_s, connectionName() );
   db.setDatabaseName( path );
   if ( !db.open() )
   {
@@ -196,7 +189,7 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
   }
 
   QSqlQuery q( db );
-  if ( !q.exec( QStringLiteral( "SELECT relative_path, chunk_index, text, embedding, last_sync FROM chunks ORDER BY id" ) ) )
+  if ( !q.exec( u"SELECT relative_path, chunk_index, text, embedding, last_sync FROM chunks ORDER BY id"_s ) )
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
@@ -228,13 +221,11 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString 
   if ( path.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Workspace root is unset; cannot persist index." );
+      *errorMessage = u"Workspace root is unset; cannot persist index."_s;
     return false;
   }
 
-  QSqlDatabase db = QSqlDatabase::contains( connectionName() )
-                      ? QSqlDatabase::database( connectionName() )
-                      : QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName() );
+  QSqlDatabase db = QSqlDatabase::contains( connectionName() ) ? QSqlDatabase::database( connectionName() ) : QSqlDatabase::addDatabase( u"QSQLITE"_s, connectionName() );
   db.setDatabaseName( path );
   if ( !db.open() )
   {
@@ -244,25 +235,27 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString 
   }
 
   QSqlQuery q( db );
-  q.exec( QStringLiteral( "CREATE TABLE IF NOT EXISTS chunks ("
-                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                          "relative_path TEXT NOT NULL, "
-                          "chunk_index INTEGER NOT NULL, "
-                          "text TEXT NOT NULL, "
-                          "embedding BLOB NOT NULL, "
-                          "last_sync INTEGER NOT NULL"
-                          ")" ) );
-  q.exec( QStringLiteral( "DELETE FROM chunks" ) );
+  q.exec( QStringLiteral(
+    "CREATE TABLE IF NOT EXISTS chunks ("
+    "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+    "relative_path TEXT NOT NULL, "
+    "chunk_index INTEGER NOT NULL, "
+    "text TEXT NOT NULL, "
+    "embedding BLOB NOT NULL, "
+    "last_sync INTEGER NOT NULL"
+    ")"
+  ) );
+  q.exec( u"DELETE FROM chunks"_s );
 
   if ( !db.transaction() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Cannot start SQLite transaction: %1" ).arg( db.lastError().text() );
+      *errorMessage = u"Cannot start SQLite transaction: %1"_s.arg( db.lastError().text() );
     return false;
   }
 
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
-  q.prepare( QStringLiteral( "INSERT INTO chunks (relative_path, chunk_index, text, embedding, last_sync) VALUES (?, ?, ?, ?, ?)" ) );
+  q.prepare( u"INSERT INTO chunks (relative_path, chunk_index, text, embedding, last_sync) VALUES (?, ?, ?, ?, ?)"_s );
   for ( const CachedChunk &c : chunks )
   {
     q.addBindValue( c.chunk.relativePath );
@@ -292,13 +285,13 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   if ( !mContextProvider )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Workspace context provider is unavailable." );
+      *errorMessage = u"Workspace context provider is unavailable."_s;
     return false;
   }
   if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "OpenAI API key is required for embeddings; configure it in AI Provider Settings." );
+      *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
     return false;
   }
 
@@ -334,7 +327,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   // we can call the OpenAI endpoint in larger batches than per-file.
   QList<CachedChunk> built;
   QStringList textsToEmbed;
-  QList<int> backRefIndex;  // for each text in textsToEmbed, the position in `built`
+  QList<int> backRefIndex; // for each text in textsToEmbed, the position in `built`
   for ( int fileIdx = 0; fileIdx < eligible.size(); ++fileIdx )
   {
     const QString rel = eligible.at( fileIdx );
@@ -372,7 +365,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   if ( vectors.size() != textsToEmbed.size() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Embedding count mismatch: expected %1 got %2" ).arg( textsToEmbed.size() ).arg( vectors.size() );
+      *errorMessage = u"Embedding count mismatch: expected %1 got %2"_s.arg( textsToEmbed.size() ).arg( vectors.size() );
     return false;
   }
 
@@ -385,9 +378,7 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   mCache = built;
   mLastSync = QDateTime::currentDateTimeUtc();
   mLoaded = true;
-  QgsMessageLog::logMessage(
-    QStringLiteral( "Workspace index built: files=%1 chunks=%2" ).arg( eligible.size() ).arg( built.size() ),
-    QStringLiteral( "AI/Index" ), Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"Workspace index built: files=%1 chunks=%2"_s.arg( eligible.size() ).arg( built.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
   return true;
 }
 
@@ -398,19 +389,19 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
   if ( query.trimmed().isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Empty query." );
+      *errorMessage = u"Empty query."_s;
     return results;
   }
   if ( mCache.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Workspace index is empty. Run reindex_workspace first." );
+      *errorMessage = u"Workspace index is empty. Run reindex_workspace first."_s;
     return results;
   }
   if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "OpenAI API key is required for query embedding." );
+      *errorMessage = u"OpenAI API key is required for query embedding."_s;
     return results;
   }
 
@@ -427,9 +418,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
   for ( int i = 0; i < mCache.size(); ++i )
     scored.append( { cosineSimilarity( qVec, mCache.at( i ).embedding ), i } );
 
-  std::sort( scored.begin(), scored.end(), []( const auto &a, const auto &b ) {
-    return a.first > b.first;
-  } );
+  std::sort( scored.begin(), scored.end(), []( const auto &a, const auto &b ) { return a.first > b.first; } );
 
   const int topK = std::clamp( k, 1, std::min( 20, mCache.size() ) );
   for ( int i = 0; i < topK; ++i )

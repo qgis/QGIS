@@ -6,13 +6,15 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSet>
+#include <QString>
 #include <QTextStream>
 #include <QUuid>
 
+using namespace Qt::StringLiterals;
+
 QgsAiReviewPatchEngine::QgsAiReviewPatchEngine( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QString QgsAiReviewPatchEngine::registerProposal( const QgsAiPatchProposal &proposal )
 {
@@ -21,7 +23,7 @@ QString QgsAiReviewPatchEngine::registerProposal( const QgsAiPatchProposal &prop
     mutableProposal.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
 
   mPendingProposals.insert( mutableProposal.id, mutableProposal );
-  mAuditTrail << QStringLiteral( "proposal-added:%1" ).arg( mutableProposal.id );
+  mAuditTrail << u"proposal-added:%1"_s.arg( mutableProposal.id );
   emit proposalAdded( mutableProposal.id );
   return mutableProposal.id;
 }
@@ -39,13 +41,13 @@ bool QgsAiReviewPatchEngine::hasPendingProposal( const QString &proposalId ) con
 QString QgsAiReviewPatchEngine::proposalDiff( const QgsAiPatchProposal &proposal )
 {
   QString diff;
-  diff += QStringLiteral( "# %1\n\n" ).arg( proposal.title.isEmpty() ? QStringLiteral( "Untitled proposal" ) : proposal.title );
+  diff += u"# %1\n\n"_s.arg( proposal.title.isEmpty() ? u"Untitled proposal"_s : proposal.title );
   for ( int i = 0; i < proposal.hunks.size(); ++i )
   {
     const QgsAiPatchHunk &hunk = proposal.hunks.at( i );
-    diff += QStringLiteral( "## Hunk %1 - %2\n" ).arg( i + 1 ).arg( hunk.filePath );
-    diff += QStringLiteral( "--- original\n%1\n" ).arg( hunk.originalText.left( 1500 ) );
-    diff += QStringLiteral( "+++ replacement\n%1\n\n" ).arg( hunk.replacementText.left( 1500 ) );
+    diff += u"## Hunk %1 - %2\n"_s.arg( i + 1 ).arg( hunk.filePath );
+    diff += u"--- original\n%1\n"_s.arg( hunk.originalText.left( 1500 ) );
+    diff += u"+++ replacement\n%1\n\n"_s.arg( hunk.replacementText.left( 1500 ) );
   }
   return diff;
 }
@@ -62,12 +64,12 @@ bool QgsAiReviewPatchEngine::validateHunkPath( const QgsAiPatchHunk &hunk, QStri
   if ( hunk.filePath.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Encountered a patch hunk with an empty file path." );
+      *errorMessage = u"Encountered a patch hunk with an empty file path."_s;
     return false;
   }
 
   if ( !mContextProvider )
-    return true;  // No sandbox configured (legacy callers); accept.
+    return true; // No sandbox configured (legacy callers); accept.
 
   // Reject path-traversal: the path must resolve inside the workspace.
   const QString resolved = mContextProvider->resolveWorkspaceFile( hunk.filePath );
@@ -80,15 +82,12 @@ bool QgsAiReviewPatchEngine::validateHunkPath( const QgsAiPatchHunk &hunk, QStri
       const QFileInfo info( hunk.filePath );
       const QString absolute = info.isAbsolute() ? info.absoluteFilePath() : QDir( root ).absoluteFilePath( hunk.filePath );
       const QString relative = QDir( root ).relativeFilePath( absolute );
-      const bool inside = !root.isEmpty()
-                          && !relative.startsWith( QStringLiteral( "../" ) )
-                          && relative != QLatin1String( ".." )
-                          && !QDir::isAbsolutePath( relative );
+      const bool inside = !root.isEmpty() && !relative.startsWith( "../"_L1 ) && relative != ".."_L1 && !QDir::isAbsolutePath( relative );
       if ( inside )
         return true;
     }
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Path is outside workspace or unreadable: %1" ).arg( hunk.filePath );
+      *errorMessage = u"Path is outside workspace or unreadable: %1"_s.arg( hunk.filePath );
     return false;
   }
   return true;
@@ -101,14 +100,14 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
   //   2. snapshot existing files for backup, then write/delete to disk
   // Splitting this way means a failure mid-way still leaves disk untouched.
 
-  QMap<QString, QString> fileContents;       // for edit + create-file, the post-state to write
-  QMap<QString, QString> originalContents;   // for backup
-  QSet<QString> filesToDelete;               // paths to remove
-  QSet<QString> filesBeingCreated;           // didn't exist before (used by undo)
+  QMap<QString, QString> fileContents;     // for edit + create-file, the post-state to write
+  QMap<QString, QString> originalContents; // for backup
+  QSet<QString> filesToDelete;             // paths to remove
+  QSet<QString> filesBeingCreated;         // didn't exist before (used by undo)
 
   auto resolvedPath = [this]( const QgsAiPatchHunk &hunk ) -> QString {
     if ( !mContextProvider )
-      return hunk.filePath;  // legacy callers
+      return hunk.filePath; // legacy callers
     const QString existing = mContextProvider->resolveWorkspaceFile( hunk.filePath );
     if ( !existing.isEmpty() )
       return existing;
@@ -129,7 +128,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( !QFileInfo::exists( path ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot delete: file does not exist: %1" ).arg( path );
+          *errorMessage = u"Cannot delete: file does not exist: %1"_s.arg( path );
         return false;
       }
       // Snapshot for undo.
@@ -137,7 +136,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( !sourceFile.open( QIODevice::ReadOnly ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot read file before delete (for backup): %1" ).arg( path );
+          *errorMessage = u"Cannot read file before delete (for backup): %1"_s.arg( path );
         return false;
       }
       originalContents.insert( path, QString::fromUtf8( sourceFile.readAll() ) );
@@ -150,7 +149,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( QFileInfo::exists( path ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot create: file already exists: %1" ).arg( path );
+          *errorMessage = u"Cannot create: file already exists: %1"_s.arg( path );
         return false;
       }
       filesBeingCreated.insert( path );
@@ -165,7 +164,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( !sourceFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot open file for patching: %1" ).arg( path );
+          *errorMessage = u"Cannot open file for patching: %1"_s.arg( path );
         return false;
       }
       const QString current = QString::fromUtf8( sourceFile.readAll() );
@@ -180,7 +179,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( replaceIndex < 0 )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Original text for file '%1' could not be found. Proposal is stale." ).arg( path );
+          *errorMessage = u"Original text for file '%1' could not be found. Proposal is stale."_s.arg( path );
         return false;
       }
 
@@ -202,7 +201,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
       if ( hunkIndex < 0 || hunkIndex >= proposal.hunks.size() )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Invalid hunk index: %1" ).arg( hunkIndex );
+          *errorMessage = u"Invalid hunk index: %1"_s.arg( hunkIndex );
         return false;
       }
 
@@ -242,17 +241,17 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
     const QString &path = it.key();
     QFileInfo info( path );
     QDir parent = info.dir();
-    if ( !parent.exists() && !parent.mkpath( QStringLiteral( "." ) ) )
+    if ( !parent.exists() && !parent.mkpath( u"."_s ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot create parent directory for: %1" ).arg( path );
+        *errorMessage = u"Cannot create parent directory for: %1"_s.arg( path );
       return false;
     }
     QFile targetFile( path );
     if ( !targetFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot write patched file: %1" ).arg( path );
+        *errorMessage = u"Cannot write patched file: %1"_s.arg( path );
       return false;
     }
 
@@ -265,7 +264,7 @@ bool QgsAiReviewPatchEngine::applyProposalInternal( const QgsAiPatchProposal &pr
     if ( !QFile::remove( path ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot delete file: %1" ).arg( path );
+        *errorMessage = u"Cannot delete file: %1"_s.arg( path );
       return false;
     }
   }
@@ -279,7 +278,7 @@ bool QgsAiReviewPatchEngine::acceptProposal( const QString &proposalId, QString 
   if ( proposal.id.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Unknown proposal ID." );
+      *errorMessage = u"Unknown proposal ID."_s;
     return false;
   }
 
@@ -290,7 +289,7 @@ bool QgsAiReviewPatchEngine::acceptProposal( const QString &proposalId, QString 
 
   mAppliedPatches.push_back( appliedPatch );
   mPendingProposals.remove( proposalId );
-  mAuditTrail << QStringLiteral( "proposal-accepted:%1" ).arg( proposalId );
+  mAuditTrail << u"proposal-accepted:%1"_s.arg( proposalId );
   emit proposalAccepted( proposalId );
   return true;
 }
@@ -301,7 +300,7 @@ bool QgsAiReviewPatchEngine::acceptHunks( const QString &proposalId, const QList
   if ( proposal.id.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Unknown proposal ID." );
+      *errorMessage = u"Unknown proposal ID."_s;
     return false;
   }
 
@@ -312,7 +311,7 @@ bool QgsAiReviewPatchEngine::acceptHunks( const QString &proposalId, const QList
 
   mAppliedPatches.push_back( appliedPatch );
   mPendingProposals.remove( proposalId );
-  mAuditTrail << QStringLiteral( "proposal-partial-accepted:%1" ).arg( proposalId );
+  mAuditTrail << u"proposal-partial-accepted:%1"_s.arg( proposalId );
   emit proposalAccepted( proposalId );
   return true;
 }
@@ -323,7 +322,7 @@ bool QgsAiReviewPatchEngine::rejectProposal( const QString &proposalId )
     return false;
 
   mPendingProposals.remove( proposalId );
-  mAuditTrail << QStringLiteral( "proposal-rejected:%1" ).arg( proposalId );
+  mAuditTrail << u"proposal-rejected:%1"_s.arg( proposalId );
   emit proposalRejected( proposalId );
   return true;
 }
@@ -333,7 +332,7 @@ bool QgsAiReviewPatchEngine::undoLastApply( QString *errorMessage )
   if ( mAppliedPatches.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "There is no applied proposal to undo." );
+      *errorMessage = u"There is no applied proposal to undo."_s;
     return false;
   }
 
@@ -346,7 +345,7 @@ bool QgsAiReviewPatchEngine::undoLastApply( QString *errorMessage )
       if ( QFile::exists( backup.filePath ) && !QFile::remove( backup.filePath ) )
       {
         if ( errorMessage )
-          *errorMessage = QStringLiteral( "Cannot remove file created by patch during undo: %1" ).arg( backup.filePath );
+          *errorMessage = u"Cannot remove file created by patch during undo: %1"_s.arg( backup.filePath );
         return false;
       }
       continue;
@@ -356,7 +355,7 @@ bool QgsAiReviewPatchEngine::undoLastApply( QString *errorMessage )
     if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Cannot restore file during undo: %1" ).arg( backup.filePath );
+        *errorMessage = u"Cannot restore file during undo: %1"_s.arg( backup.filePath );
       return false;
     }
 
@@ -364,6 +363,6 @@ bool QgsAiReviewPatchEngine::undoLastApply( QString *errorMessage )
     output << backup.originalContent;
   }
 
-  mAuditTrail << QStringLiteral( "proposal-undo:%1" ).arg( appliedPatch.proposalId );
+  mAuditTrail << u"proposal-undo:%1"_s.arg( appliedPatch.proposalId );
   return true;
 }

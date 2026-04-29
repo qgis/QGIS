@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAiFileContextProvider;
 class QgsMapCanvas;
 class QgsProject;
@@ -19,7 +23,7 @@ class APP_EXPORT QgsAiReadFileTool : public QgsAiTool
   public:
     explicit QgsAiReadFileTool( QgsAiFileContextProvider *contextProvider );
 
-    QString name() const override { return QStringLiteral( "read_file" ); }
+    QString name() const override { return u"read_file"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -38,7 +42,7 @@ class APP_EXPORT QgsAiSearchFilesTool : public QgsAiTool
   public:
     explicit QgsAiSearchFilesTool( QgsAiFileContextProvider *contextProvider );
 
-    QString name() const override { return QStringLiteral( "search_files" ); }
+    QString name() const override { return u"search_files"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -56,7 +60,7 @@ class APP_EXPORT QgsAiListFilesTool : public QgsAiTool
   public:
     explicit QgsAiListFilesTool( QgsAiFileContextProvider *contextProvider );
 
-    QString name() const override { return QStringLiteral( "list_files" ); }
+    QString name() const override { return u"list_files"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -74,7 +78,7 @@ class APP_EXPORT QgsAiListProjectLayersTool : public QgsAiTool
   public:
     explicit QgsAiListProjectLayersTool( QgsProject *project );
 
-    QString name() const override { return QStringLiteral( "list_project_layers" ); }
+    QString name() const override { return u"list_project_layers"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -92,7 +96,7 @@ class APP_EXPORT QgsAiGetCanvasExtentTool : public QgsAiTool
   public:
     explicit QgsAiGetCanvasExtentTool( QgsMapCanvas *canvas );
 
-    QString name() const override { return QStringLiteral( "get_active_canvas_extent" ); }
+    QString name() const override { return u"get_active_canvas_extent"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

@@ -1,12 +1,15 @@
 #ifndef QGSAIAGENTSESSIONMANAGER_H
 #define QGSAIAGENTSESSIONMANAGER_H
 
+#include "qgis_app.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"
-#include "qgis_app.h"
 
 #include <QList>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsAiFileContextProvider;
 class QgsAiReviewPatchEngine;
@@ -14,9 +17,9 @@ class QgsAiToolRegistry;
 
 struct APP_EXPORT QgsAiChatContextFile
 {
-  QString filePath;
-  QString selectedText;
-  bool allowExternal = false;
+    QString filePath;
+    QString selectedText;
+    bool allowExternal = false;
 };
 
 class APP_EXPORT QgsAiAgentSessionManager : public QObject
@@ -76,7 +79,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QgsAiFileContextProvider *mContextProvider = nullptr;
     QgsAiReviewPatchEngine *mReviewEngine = nullptr;
     QgsAiToolRegistry *mToolRegistry = nullptr;
-    QString mActiveAgent = QStringLiteral( "planner" );
+    QString mActiveAgent = u"planner"_s;
     QList<QgsAiChatMessage> mHistory;
     QList<QgsAiModelRouter::Provider> mPendingProviders;
     QString mActiveRequestId;

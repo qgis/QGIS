@@ -18,47 +18,41 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
   {
     QJsonObject schema;
-    schema.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
-    schema.insert( QStringLiteral( "properties" ), properties );
+    schema.insert( u"type"_s, u"object"_s );
+    schema.insert( u"properties"_s, properties );
     if ( !required.isEmpty() )
-      schema.insert( QStringLiteral( "required" ), required );
+      schema.insert( u"required"_s, required );
     return schema;
   }
 
   QJsonObject prop( const QString &type, const QString &description )
   {
     QJsonObject p;
-    p.insert( QStringLiteral( "type" ), type );
-    p.insert( QStringLiteral( "description" ), description );
+    p.insert( u"type"_s, type );
+    p.insert( u"description"_s, description );
     return p;
   }
 
   // Vector and raster file extensions we auto-detect. Lowercase, no leading dot.
   const QSet<QString> &vectorExts()
   {
-    static const QSet<QString> set { QStringLiteral( "shp" ), QStringLiteral( "geojson" ), QStringLiteral( "json" ),
-                                     QStringLiteral( "gpkg" ), QStringLiteral( "kml" ), QStringLiteral( "kmz" ),
-                                     QStringLiteral( "tab" ), QStringLiteral( "mif" ), QStringLiteral( "gml" ),
-                                     QStringLiteral( "gpx" ), QStringLiteral( "csv" ), QStringLiteral( "fgb" ),
-                                     QStringLiteral( "sqlite" ), QStringLiteral( "db" ) };
+    static const QSet<QString> set { u"shp"_s, u"geojson"_s, u"json"_s, u"gpkg"_s, u"kml"_s, u"kmz"_s, u"tab"_s, u"mif"_s, u"gml"_s, u"gpx"_s, u"csv"_s, u"fgb"_s, u"sqlite"_s, u"db"_s };
     return set;
   }
   const QSet<QString> &rasterExts()
   {
-    static const QSet<QString> set { QStringLiteral( "tif" ), QStringLiteral( "tiff" ), QStringLiteral( "asc" ),
-                                     QStringLiteral( "img" ), QStringLiteral( "jp2" ), QStringLiteral( "vrt" ),
-                                     QStringLiteral( "nc" ), QStringLiteral( "hdf" ), QStringLiteral( "hgt" ),
-                                     QStringLiteral( "ecw" ), QStringLiteral( "mbtiles" ), QStringLiteral( "dem" ),
-                                     QStringLiteral( "bil" ), QStringLiteral( "png" ), QStringLiteral( "jpg" ),
-                                     QStringLiteral( "jpeg" ) };
+    static const QSet<QString> set { u"tif"_s, u"tiff"_s, u"asc"_s, u"img"_s, u"jp2"_s, u"vrt"_s, u"nc"_s, u"hdf"_s, u"hgt"_s, u"ecw"_s, u"mbtiles"_s, u"dem"_s, u"bil"_s, u"png"_s, u"jpg"_s, u"jpeg"_s };
     return set;
   }
 
@@ -66,9 +60,9 @@ namespace
   {
     const QString ext = QFileInfo( path ).suffix().toLower();
     if ( vectorExts().contains( ext ) )
-      return QStringLiteral( "vector" );
+      return u"vector"_s;
     if ( rasterExts().contains( ext ) )
-      return QStringLiteral( "raster" );
+      return u"raster"_s;
     return QString();
   }
 
@@ -91,13 +85,13 @@ namespace
   QJsonObject extentJson( const QgsRectangle &extent )
   {
     QJsonObject e;
-    e.insert( QStringLiteral( "xmin" ), extent.xMinimum() );
-    e.insert( QStringLiteral( "ymin" ), extent.yMinimum() );
-    e.insert( QStringLiteral( "xmax" ), extent.xMaximum() );
-    e.insert( QStringLiteral( "ymax" ), extent.yMaximum() );
+    e.insert( u"xmin"_s, extent.xMinimum() );
+    e.insert( u"ymin"_s, extent.yMinimum() );
+    e.insert( u"xmax"_s, extent.xMaximum() );
+    e.insert( u"ymax"_s, extent.yMaximum() );
     return e;
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // add_layer_from_file
@@ -123,73 +117,71 @@ QString QgsAiAddLayerFromFileTool::description() const
 QJsonObject QgsAiAddLayerFromFileTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace-relative or absolute path to the source file." ) ) );
-  properties.insert( QStringLiteral( "name" ), prop( QStringLiteral( "string" ), QStringLiteral( "Optional display name. Defaults to the file stem." ) ) );
-  properties.insert( QStringLiteral( "kind" ), prop( QStringLiteral( "string" ), QStringLiteral( "Optional. One of: 'vector', 'raster', 'auto'. Default 'auto' (detect by extension)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "path" ) } );
+  properties.insert( u"path"_s, prop( u"string"_s, u"Workspace-relative or absolute path to the source file."_s ) );
+  properties.insert( u"name"_s, prop( u"string"_s, u"Optional display name. Defaults to the file stem."_s ) );
+  properties.insert( u"kind"_s, prop( u"string"_s, u"Optional. One of: 'vector', 'raster', 'auto'. Default 'auto' (detect by extension)."_s ) );
+  return schemaObject( properties, QJsonArray { u"path"_s } );
 }
 
 QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
 {
-  const QString rawPath = args.value( QStringLiteral( "path" ) ).toString().trimmed();
+  const QString rawPath = args.value( u"path"_s ).toString().trimmed();
   if ( rawPath.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'path' is required." ) );
+    return QgsAiToolResult::error( u"Argument 'path' is required."_s );
 
   const QString path = resolvePath( mContextProvider, rawPath );
   if ( path.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Cannot resolve path to an existing file: %1" ).arg( rawPath ) );
+    return QgsAiToolResult::error( u"Cannot resolve path to an existing file: %1"_s.arg( rawPath ) );
 
   QgsProject *project = mProject ? mProject : QgsProject::instance();
   if ( !project )
-    return QgsAiToolResult::error( QStringLiteral( "No active QgsProject available." ) );
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
 
-  QString kind = args.value( QStringLiteral( "kind" ) ).toString().toLower().trimmed();
-  if ( kind.isEmpty() || kind == QStringLiteral( "auto" ) )
+  QString kind = args.value( u"kind"_s ).toString().toLower().trimmed();
+  if ( kind.isEmpty() || kind == "auto"_L1 )
     kind = detectKind( path );
   if ( kind.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Cannot auto-detect layer kind from extension. Set 'kind' to 'vector' or 'raster'. Path: %1" ).arg( path ) );
+    return QgsAiToolResult::error( u"Cannot auto-detect layer kind from extension. Set 'kind' to 'vector' or 'raster'. Path: %1"_s.arg( path ) );
 
-  const QString name = args.value( QStringLiteral( "name" ) ).toString().trimmed().isEmpty()
-                         ? QFileInfo( path ).completeBaseName()
-                         : args.value( QStringLiteral( "name" ) ).toString().trimmed();
+  const QString name = args.value( u"name"_s ).toString().trimmed().isEmpty() ? QFileInfo( path ).completeBaseName() : args.value( u"name"_s ).toString().trimmed();
 
   QgsMapLayer *added = nullptr;
   QJsonObject output;
-  output.insert( QStringLiteral( "kind" ), kind );
+  output.insert( u"kind"_s, kind );
 
-  if ( kind == QStringLiteral( "vector" ) )
+  if ( kind == "vector"_L1 )
   {
-    auto layer = std::make_unique<QgsVectorLayer>( path, name, QStringLiteral( "ogr" ) );
+    auto layer = std::make_unique<QgsVectorLayer>( path, name, u"ogr"_s );
     if ( !layer->isValid() )
-      return QgsAiToolResult::error( QStringLiteral( "Vector layer is invalid: %1 (provider error: %2)" ).arg( path, layer->error().summary() ) );
+      return QgsAiToolResult::error( u"Vector layer is invalid: %1 (provider error: %2)"_s.arg( path, layer->error().summary() ) );
 
-    output.insert( QStringLiteral( "feature_count" ), static_cast<qint64>( layer->featureCount() ) );
-    output.insert( QStringLiteral( "geometry_type" ), QgsWkbTypes::geometryDisplayString( layer->geometryType() ) );
+    output.insert( u"feature_count"_s, static_cast<qint64>( layer->featureCount() ) );
+    output.insert( u"geometry_type"_s, QgsWkbTypes::geometryDisplayString( layer->geometryType() ) );
     added = layer.release();
   }
-  else if ( kind == QStringLiteral( "raster" ) )
+  else if ( kind == "raster"_L1 )
   {
-    auto layer = std::make_unique<QgsRasterLayer>( path, name, QStringLiteral( "gdal" ) );
+    auto layer = std::make_unique<QgsRasterLayer>( path, name, u"gdal"_s );
     if ( !layer->isValid() )
-      return QgsAiToolResult::error( QStringLiteral( "Raster layer is invalid: %1 (provider error: %2)" ).arg( path, layer->error().summary() ) );
+      return QgsAiToolResult::error( u"Raster layer is invalid: %1 (provider error: %2)"_s.arg( path, layer->error().summary() ) );
 
-    output.insert( QStringLiteral( "width" ), layer->width() );
-    output.insert( QStringLiteral( "height" ), layer->height() );
-    output.insert( QStringLiteral( "bands" ), layer->bandCount() );
+    output.insert( u"width"_s, layer->width() );
+    output.insert( u"height"_s, layer->height() );
+    output.insert( u"bands"_s, layer->bandCount() );
     added = layer.release();
   }
   else
   {
-    return QgsAiToolResult::error( QStringLiteral( "Unknown 'kind': %1 (expected 'vector' or 'raster')." ).arg( kind ) );
+    return QgsAiToolResult::error( u"Unknown 'kind': %1 (expected 'vector' or 'raster')."_s.arg( kind ) );
   }
 
   project->addMapLayer( added );
 
-  output.insert( QStringLiteral( "layer_id" ), added->id() );
-  output.insert( QStringLiteral( "name" ), added->name() );
-  output.insert( QStringLiteral( "crs" ), added->crs().authid() );
-  output.insert( QStringLiteral( "source" ), added->publicSource() );
-  output.insert( QStringLiteral( "extent" ), extentJson( added->extent() ) );
+  output.insert( u"layer_id"_s, added->id() );
+  output.insert( u"name"_s, added->name() );
+  output.insert( u"crs"_s, added->crs().authid() );
+  output.insert( u"source"_s, added->publicSource() );
+  output.insert( u"extent"_s, extentJson( added->extent() ) );
   return QgsAiToolResult::ok( output );
 }
 
@@ -215,51 +207,51 @@ QString QgsAiDescribeLayerTool::description() const
 QJsonObject QgsAiDescribeLayerTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "layer_id" ), prop( QStringLiteral( "string" ), QStringLiteral( "Id of the layer (as returned by list_project_layers / add_layer_from_file)." ) ) );
-  properties.insert( QStringLiteral( "sample_features" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Optional number of feature attribute samples to include (default 0, hard cap 10)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "layer_id" ) } );
+  properties.insert( u"layer_id"_s, prop( u"string"_s, u"Id of the layer (as returned by list_project_layers / add_layer_from_file)."_s ) );
+  properties.insert( u"sample_features"_s, prop( u"integer"_s, u"Optional number of feature attribute samples to include (default 0, hard cap 10)."_s ) );
+  return schemaObject( properties, QJsonArray { u"layer_id"_s } );
 }
 
 QgsAiToolResult QgsAiDescribeLayerTool::execute( const QJsonObject &args )
 {
-  const QString layerId = args.value( QStringLiteral( "layer_id" ) ).toString().trimmed();
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
   if ( layerId.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'layer_id' is required." ) );
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
 
   QgsProject *project = mProject ? mProject : QgsProject::instance();
   if ( !project )
-    return QgsAiToolResult::error( QStringLiteral( "No active QgsProject available." ) );
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
 
   QgsMapLayer *layer = project->mapLayer( layerId );
   if ( !layer )
-    return QgsAiToolResult::error( QStringLiteral( "No layer with id: %1" ).arg( layerId ) );
+    return QgsAiToolResult::error( u"No layer with id: %1"_s.arg( layerId ) );
 
-  const int requestedSamples = args.value( QStringLiteral( "sample_features" ) ).toInt( 0 );
+  const int requestedSamples = args.value( u"sample_features"_s ).toInt( 0 );
   const int maxSamples = std::clamp( requestedSamples, 0, 10 );
 
   QJsonObject output;
-  output.insert( QStringLiteral( "id" ), layer->id() );
-  output.insert( QStringLiteral( "name" ), layer->name() );
-  output.insert( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( layer->type() ) );
-  output.insert( QStringLiteral( "crs" ), layer->crs().authid() );
-  output.insert( QStringLiteral( "source" ), layer->publicSource() );
-  output.insert( QStringLiteral( "extent" ), extentJson( layer->extent() ) );
+  output.insert( u"id"_s, layer->id() );
+  output.insert( u"name"_s, layer->name() );
+  output.insert( u"type"_s, QgsMapLayerFactory::typeToString( layer->type() ) );
+  output.insert( u"crs"_s, layer->crs().authid() );
+  output.insert( u"source"_s, layer->publicSource() );
+  output.insert( u"extent"_s, extentJson( layer->extent() ) );
 
   if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
   {
-    output.insert( QStringLiteral( "geometry_type" ), QgsWkbTypes::geometryDisplayString( vector->geometryType() ) );
-    output.insert( QStringLiteral( "feature_count" ), static_cast<qint64>( vector->featureCount() ) );
+    output.insert( u"geometry_type"_s, QgsWkbTypes::geometryDisplayString( vector->geometryType() ) );
+    output.insert( u"feature_count"_s, static_cast<qint64>( vector->featureCount() ) );
 
     QJsonArray fields;
     const QgsFields layerFields = vector->fields();
     for ( const QgsField &field : layerFields )
     {
       QJsonObject f;
-      f.insert( QStringLiteral( "name" ), field.name() );
-      f.insert( QStringLiteral( "type" ), field.typeName() );
+      f.insert( u"name"_s, field.name() );
+      f.insert( u"type"_s, field.typeName() );
       fields.push_back( f );
     }
-    output.insert( QStringLiteral( "fields" ), fields );
+    output.insert( u"fields"_s, fields );
 
     if ( maxSamples > 0 )
     {
@@ -279,14 +271,14 @@ QgsAiToolResult QgsAiDescribeLayerTool::execute( const QJsonObject &args )
         }
         samples.push_back( row );
       }
-      output.insert( QStringLiteral( "sample_features" ), samples );
+      output.insert( u"sample_features"_s, samples );
     }
   }
   else if ( QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer ) )
   {
-    output.insert( QStringLiteral( "width" ), raster->width() );
-    output.insert( QStringLiteral( "height" ), raster->height() );
-    output.insert( QStringLiteral( "bands" ), raster->bandCount() );
+    output.insert( u"width"_s, raster->width() );
+    output.insert( u"height"_s, raster->height() );
+    output.insert( u"bands"_s, raster->bandCount() );
   }
 
   return QgsAiToolResult::ok( output );

@@ -2,11 +2,13 @@
 
 #include <QJsonObject>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAiToolRegistry::QgsAiToolRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsAiToolRegistry::~QgsAiToolRegistry() = default;
 
@@ -58,16 +60,16 @@ QJsonArray QgsAiToolRegistry::schemasJsonForFormat( WireFormat format, const QSt
     switch ( format )
     {
       case WireFormat::AnthropicTools:
-        entry.insert( QStringLiteral( "name" ), tool->name() );
-        entry.insert( QStringLiteral( "description" ), tool->description() );
-        entry.insert( QStringLiteral( "input_schema" ), tool->schema() );
+        entry.insert( u"name"_s, tool->name() );
+        entry.insert( u"description"_s, tool->description() );
+        entry.insert( u"input_schema"_s, tool->schema() );
         break;
 
       case WireFormat::OpenAiResponses:
-        entry.insert( QStringLiteral( "type" ), QStringLiteral( "function" ) );
-        entry.insert( QStringLiteral( "name" ), tool->name() );
-        entry.insert( QStringLiteral( "description" ), tool->description() );
-        entry.insert( QStringLiteral( "parameters" ), tool->schema() );
+        entry.insert( u"type"_s, u"function"_s );
+        entry.insert( u"name"_s, tool->name() );
+        entry.insert( u"description"_s, tool->description() );
+        entry.insert( u"parameters"_s, tool->schema() );
         break;
     }
     array.append( entry );
@@ -79,7 +81,7 @@ QgsAiToolResult QgsAiToolRegistry::execute( const QString &name, const QJsonObje
 {
   QgsAiTool *tool = find( name );
   if ( !tool )
-    return QgsAiToolResult::error( QStringLiteral( "Unknown tool: %1" ).arg( name ) );
+    return QgsAiToolResult::error( u"Unknown tool: %1"_s.arg( name ) );
   return tool->execute( args );
 }
 

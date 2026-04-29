@@ -11,8 +11,11 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 #include <QTemporaryFile>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
@@ -63,26 +66,26 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
   QString escapePath( const QString &path )
   {
     QString escaped = path;
-    escaped.replace( '\\', QStringLiteral( "\\\\" ) );
-    escaped.replace( '\'', QStringLiteral( "\\'" ) );
-    return QStringLiteral( "'%1'" ).arg( escaped );
+    escaped.replace( '\\', "\\\\"_L1 );
+    escaped.replace( '\'', "\\'"_L1 );
+    return u"'%1'"_s.arg( escaped );
   }
 
   QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
   {
     QJsonObject schema;
-    schema.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
-    schema.insert( QStringLiteral( "properties" ), properties );
+    schema.insert( u"type"_s, u"object"_s );
+    schema.insert( u"properties"_s, properties );
     if ( !required.isEmpty() )
-      schema.insert( QStringLiteral( "required" ), required );
+      schema.insert( u"required"_s, required );
     return schema;
   }
 
   QJsonObject prop( const QString &type, const QString &description )
   {
     QJsonObject p;
-    p.insert( QStringLiteral( "type" ), type );
-    p.insert( QStringLiteral( "description" ), description );
+    p.insert( u"type"_s, type );
+    p.insert( u"description"_s, description );
     return p;
   }
 
@@ -91,9 +94,9 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
     const QByteArray utf8 = text.toUtf8();
     if ( utf8.size() <= maxBytes )
       return text;
-    return QString::fromUtf8( utf8.left( maxBytes ) ) + QStringLiteral( "\n…[truncated]" );
+    return QString::fromUtf8( utf8.left( maxBytes ) ) + u"\n…[truncated]"_s;
   }
-}
+} //namespace
 
 QgsAiRunPythonTool::QgsAiRunPythonTool( QWidget *dialogParent )
   : mDialogParent( dialogParent )
@@ -114,34 +117,32 @@ QString QgsAiRunPythonTool::description() const
 QJsonObject QgsAiRunPythonTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "code" ), prop( QStringLiteral( "string" ), QStringLiteral( "The PyQGIS code to execute. Maximum 8000 characters." ) ) );
-  properties.insert( QStringLiteral( "description" ), prop( QStringLiteral( "string" ), QStringLiteral( "Short human-readable explanation of what the code does. Shown in the approval dialog." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "code" ) } );
+  properties.insert( u"code"_s, prop( u"string"_s, u"The PyQGIS code to execute. Maximum 8000 characters."_s ) );
+  properties.insert( u"description"_s, prop( u"string"_s, u"Short human-readable explanation of what the code does. Shown in the approval dialog."_s ) );
+  return schemaObject( properties, QJsonArray { u"code"_s } );
 }
 
 QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
 {
-  const QString code = args.value( QStringLiteral( "code" ) ).toString();
+  const QString code = args.value( u"code"_s ).toString();
   if ( code.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'code' is required and must be non-empty." ) );
+    return QgsAiToolResult::error( u"Argument 'code' is required and must be non-empty."_s );
   if ( code.size() > MAX_CODE_CHARS )
-    return QgsAiToolResult::error( QStringLiteral( "Refusing to run code exceeding %1 characters (got %2). Split the work into smaller calls." ).arg( MAX_CODE_CHARS ).arg( code.size() ) );
+    return QgsAiToolResult::error( u"Refusing to run code exceeding %1 characters (got %2). Split the work into smaller calls."_s.arg( MAX_CODE_CHARS ).arg( code.size() ) );
 
   if ( !QgsPythonRunner::isValid() )
-    return QgsAiToolResult::error( QStringLiteral( "Python runner is not available in this QGIS instance." ) );
+    return QgsAiToolResult::error( u"Python runner is not available in this QGIS instance."_s );
 
-  const QString description = args.value( QStringLiteral( "description" ) ).toString();
+  const QString description = args.value( u"description"_s ).toString();
 
   // Modal approval: user must explicitly click Run.
   QgsAiPythonApprovalDialog dialog( description, code, mDialogParent );
   const int dialogResult = dialog.exec();
   if ( dialogResult != QDialog::Accepted )
   {
-    QgsMessageLog::logMessage(
-      QStringLiteral( "run_python rejected by user (codeChars=%1)" ).arg( code.size() ),
-      QStringLiteral( "AI/Python" ), Qgis::MessageLevel::Info, false );
+    QgsMessageLog::logMessage( u"run_python rejected by user (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
     QJsonObject output;
-    output.insert( QStringLiteral( "status" ), QStringLiteral( "user_rejected" ) );
+    output.insert( u"status"_s, u"user_rejected"_s );
     return QgsAiToolResult::ok( output );
   }
 
@@ -149,23 +150,20 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   // them back without us worrying about Python-source quoting.
   const QString uniqueId = QUuid::createUuid().toString( QUuid::WithoutBraces );
   const QString tmpDir = QDir::tempPath();
-  const QString codePath = QDir( tmpDir ).filePath( QStringLiteral( "qgsai_pycode_%1.py" ).arg( uniqueId ) );
-  const QString outPath = QDir( tmpDir ).filePath( QStringLiteral( "qgsai_pyout_%1.json" ).arg( uniqueId ) );
+  const QString codePath = QDir( tmpDir ).filePath( u"qgsai_pycode_%1.py"_s.arg( uniqueId ) );
+  const QString outPath = QDir( tmpDir ).filePath( u"qgsai_pyout_%1.json"_s.arg( uniqueId ) );
 
   {
     QFile codeFile( codePath );
     if ( !codeFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
-      return QgsAiToolResult::error( QStringLiteral( "Cannot write temp code file: %1" ).arg( codePath ) );
+      return QgsAiToolResult::error( u"Cannot write temp code file: %1"_s.arg( codePath ) );
     codeFile.write( code.toUtf8() );
   }
 
-  QgsMessageLog::logMessage(
-    QStringLiteral( "run_python: executing approved code (codeChars=%1, codePath=%2)" ).arg( code.size() ).arg( codePath ),
-    QStringLiteral( "AI/Python" ), Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"run_python: executing approved code (codeChars=%1, codePath=%2)"_s.arg( code.size() ).arg( codePath ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
 
   // Build the wrapper with safely-quoted paths.
-  const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE )
-                            .arg( escapePath( codePath ), escapePath( outPath ) );
+  const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapePath( codePath ), escapePath( outPath ) );
 
   const bool ranOk = QgsPythonRunner::run( wrapper );
 
@@ -182,9 +180,9 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
       if ( doc.isObject() )
       {
         const QJsonObject obj = doc.object();
-        stdoutText = obj.value( QStringLiteral( "stdout" ) ).toString();
-        stderrText = obj.value( QStringLiteral( "stderr" ) ).toString();
-        tracebackText = obj.value( QStringLiteral( "error" ) ).toString();
+        stdoutText = obj.value( u"stdout"_s ).toString();
+        stderrText = obj.value( u"stderr"_s ).toString();
+        tracebackText = obj.value( u"error"_s ).toString();
       }
     }
   }
@@ -195,24 +193,19 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
 
   if ( !ranOk )
   {
-    QgsMessageLog::logMessage(
-      QStringLiteral( "run_python: QgsPythonRunner::run() returned false (wrapper failed). traceback='%1'" ).arg( tracebackText.left( 500 ) ),
-      QStringLiteral( "AI/Python" ), Qgis::MessageLevel::Warning, false );
-    return QgsAiToolResult::error(
-      QStringLiteral( "Python wrapper failed to execute. %1" ).arg( tracebackText.isEmpty() ? QString() : tracebackText ) );
+    QgsMessageLog::logMessage( u"run_python: QgsPythonRunner::run() returned false (wrapper failed). traceback='%1'"_s.arg( tracebackText.left( 500 ) ), u"AI/Python"_s, Qgis::MessageLevel::Warning, false );
+    return QgsAiToolResult::error( u"Python wrapper failed to execute. %1"_s.arg( tracebackText.isEmpty() ? QString() : tracebackText ) );
   }
 
   const bool hadException = !tracebackText.isEmpty();
-  QgsMessageLog::logMessage(
-    QStringLiteral( "run_python: completed (stdoutBytes=%1, stderrBytes=%2, exception=%3)" )
-      .arg( stdoutText.size() ).arg( stderrText.size() ).arg( hadException ),
-    QStringLiteral( "AI/Python" ), hadException ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info, false );
+  QgsMessageLog::
+    logMessage( u"run_python: completed (stdoutBytes=%1, stderrBytes=%2, exception=%3)"_s.arg( stdoutText.size() ).arg( stderrText.size() ).arg( hadException ), u"AI/Python"_s, hadException ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info, false );
 
   QJsonObject output;
-  output.insert( QStringLiteral( "status" ), hadException ? QStringLiteral( "error" ) : QStringLiteral( "ok" ) );
-  output.insert( QStringLiteral( "stdout" ), truncate( stdoutText, MAX_CAPTURE_BYTES ) );
-  output.insert( QStringLiteral( "stderr" ), truncate( stderrText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"status"_s, hadException ? u"error"_s : u"ok"_s );
+  output.insert( u"stdout"_s, truncate( stdoutText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"stderr"_s, truncate( stderrText, MAX_CAPTURE_BYTES ) );
   if ( hadException )
-    output.insert( QStringLiteral( "traceback" ), truncate( tracebackText, MAX_CAPTURE_BYTES ) );
+    output.insert( u"traceback"_s, truncate( tracebackText, MAX_CAPTURE_BYTES ) );
   return QgsAiToolResult::ok( output );
 }

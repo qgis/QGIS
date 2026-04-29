@@ -16,9 +16,10 @@ class QCheckBox;
  * before/after panels and an "include this hunk" checkbox.
  *
  * The dialog has three terminal actions:
- *  - **Accept all**       → exec() returns QDialog::Accepted, acceptedHunkIndexes() empty (meaning "all")
- *  - **Accept selected**  → returns QDialog::Accepted, acceptedHunkIndexes() lists the selected indexes
- *  - **Reject**           → returns QDialog::Rejected
+ *
+ * - **Accept all**       → exec() returns QDialog::Accepted, acceptedHunkIndexes() empty (meaning "all")
+ * - **Accept selected**  → returns QDialog::Accepted, acceptedHunkIndexes() lists the selected indexes
+ * - **Reject**           → returns QDialog::Rejected
  *
  * The dialog does NOT apply the proposal itself; the caller decides what to do
  * with the returned indexes (typically `QgsAiReviewPatchEngine::acceptHunks` or

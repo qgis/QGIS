@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAiReviewPatchEngine;
 class QWidget;
 
@@ -44,7 +48,7 @@ class APP_EXPORT QgsAiProposeEditTool : public QgsAiBasePatchTool
   public:
     QgsAiProposeEditTool( QgsAiReviewPatchEngine *engine, QWidget *dialogParent );
 
-    QString name() const override { return QStringLiteral( "propose_edit" ); }
+    QString name() const override { return u"propose_edit"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -59,7 +63,7 @@ class APP_EXPORT QgsAiProposeCreateFileTool : public QgsAiBasePatchTool
   public:
     QgsAiProposeCreateFileTool( QgsAiReviewPatchEngine *engine, QWidget *dialogParent );
 
-    QString name() const override { return QStringLiteral( "propose_create_file" ); }
+    QString name() const override { return u"propose_create_file"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -74,7 +78,7 @@ class APP_EXPORT QgsAiProposeDeleteFileTool : public QgsAiBasePatchTool
   public:
     QgsAiProposeDeleteFileTool( QgsAiReviewPatchEngine *engine, QWidget *dialogParent );
 
-    QString name() const override { return QStringLiteral( "propose_delete_file" ); }
+    QString name() const override { return u"propose_delete_file"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -89,7 +93,7 @@ class APP_EXPORT QgsAiProposeMultiEditTool : public QgsAiBasePatchTool
   public:
     QgsAiProposeMultiEditTool( QgsAiReviewPatchEngine *engine, QWidget *dialogParent );
 
-    QString name() const override { return QStringLiteral( "propose_multi_edit" ); }
+    QString name() const override { return u"propose_multi_edit"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

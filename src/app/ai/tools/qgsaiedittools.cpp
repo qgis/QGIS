@@ -6,28 +6,31 @@
 #include <QDateTime>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
   {
     QJsonObject schema;
-    schema.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
-    schema.insert( QStringLiteral( "properties" ), properties );
+    schema.insert( u"type"_s, u"object"_s );
+    schema.insert( u"properties"_s, properties );
     if ( !required.isEmpty() )
-      schema.insert( QStringLiteral( "required" ), required );
+      schema.insert( u"required"_s, required );
     return schema;
   }
 
   QJsonObject prop( const QString &type, const QString &description )
   {
     QJsonObject p;
-    p.insert( QStringLiteral( "type" ), type );
-    p.insert( QStringLiteral( "description" ), description );
+    p.insert( u"type"_s, type );
+    p.insert( u"description"_s, description );
     return p;
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // QgsAiBasePatchTool
@@ -41,9 +44,9 @@ QgsAiBasePatchTool::QgsAiBasePatchTool( QgsAiReviewPatchEngine *engine, QWidget 
 QgsAiToolResult QgsAiBasePatchTool::reviewAndApply( const QString &title, const QList<QgsAiPatchHunk> &hunks ) const
 {
   if ( !mEngine )
-    return QgsAiToolResult::error( QStringLiteral( "Review engine not available." ) );
+    return QgsAiToolResult::error( u"Review engine not available."_s );
   if ( hunks.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Cannot create an empty proposal." ) );
+    return QgsAiToolResult::error( u"Cannot create an empty proposal."_s );
 
   QgsAiPatchProposal proposal;
   proposal.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
@@ -60,9 +63,9 @@ QgsAiToolResult QgsAiBasePatchTool::reviewAndApply( const QString &title, const 
   {
     mEngine->rejectProposal( proposalId );
     QJsonObject output;
-    output.insert( QStringLiteral( "proposal_id" ), proposalId );
-    output.insert( QStringLiteral( "status" ), QStringLiteral( "rejected" ) );
-    output.insert( QStringLiteral( "applied_hunks" ), 0 );
+    output.insert( u"proposal_id"_s, proposalId );
+    output.insert( u"status"_s, u"rejected"_s );
+    output.insert( u"applied_hunks"_s, 0 );
     return QgsAiToolResult::ok( output );
   }
 
@@ -82,11 +85,11 @@ QgsAiToolResult QgsAiBasePatchTool::reviewAndApply( const QString &title, const 
   }
 
   QJsonObject output;
-  output.insert( QStringLiteral( "proposal_id" ), proposalId );
+  output.insert( u"proposal_id"_s, proposalId );
   if ( ok )
   {
-    output.insert( QStringLiteral( "status" ), QStringLiteral( "accepted" ) );
-    output.insert( QStringLiteral( "applied_hunks" ), appliedCount );
+    output.insert( u"status"_s, u"accepted"_s );
+    output.insert( u"applied_hunks"_s, appliedCount );
     return QgsAiToolResult::ok( output );
   }
 
@@ -94,10 +97,9 @@ QgsAiToolResult QgsAiBasePatchTool::reviewAndApply( const QString &title, const 
   // doesn't linger in the pending list and surface the error to the model.
   if ( mEngine->hasPendingProposal( proposalId ) )
     mEngine->rejectProposal( proposalId );
-  output.insert( QStringLiteral( "status" ), QStringLiteral( "apply_failed" ) );
-  output.insert( QStringLiteral( "error" ), errorMessage );
-  return QgsAiToolResult::error(
-    QStringLiteral( "Patch could not be applied: %1" ).arg( errorMessage ) );
+  output.insert( u"status"_s, u"apply_failed"_s );
+  output.insert( u"error"_s, errorMessage );
+  return QgsAiToolResult::error( u"Patch could not be applied: %1"_s.arg( errorMessage ) );
 }
 
 // ---------------------------------------------------------------------------
@@ -121,30 +123,28 @@ QString QgsAiProposeEditTool::description() const
 QJsonObject QgsAiProposeEditTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace path of the file to edit." ) ) );
-  properties.insert( QStringLiteral( "old_text" ), prop( QStringLiteral( "string" ), QStringLiteral( "Exact verbatim substring of the current file content." ) ) );
-  properties.insert( QStringLiteral( "new_text" ), prop( QStringLiteral( "string" ), QStringLiteral( "Replacement text. Empty string to delete the old_text region." ) ) );
-  properties.insert( QStringLiteral( "description" ), prop( QStringLiteral( "string" ), QStringLiteral( "Short human-readable summary of the change for the review dialog." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "path" ), QStringLiteral( "old_text" ), QStringLiteral( "new_text" ) } );
+  properties.insert( u"path"_s, prop( u"string"_s, u"Workspace path of the file to edit."_s ) );
+  properties.insert( u"old_text"_s, prop( u"string"_s, u"Exact verbatim substring of the current file content."_s ) );
+  properties.insert( u"new_text"_s, prop( u"string"_s, u"Replacement text. Empty string to delete the old_text region."_s ) );
+  properties.insert( u"description"_s, prop( u"string"_s, u"Short human-readable summary of the change for the review dialog."_s ) );
+  return schemaObject( properties, QJsonArray { u"path"_s, u"old_text"_s, u"new_text"_s } );
 }
 
 QgsAiToolResult QgsAiProposeEditTool::execute( const QJsonObject &args )
 {
-  const QString path = args.value( QStringLiteral( "path" ) ).toString().trimmed();
+  const QString path = args.value( u"path"_s ).toString().trimmed();
   if ( path.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'path' is required." ) );
-  if ( !args.contains( QStringLiteral( "old_text" ) ) || !args.contains( QStringLiteral( "new_text" ) ) )
-    return QgsAiToolResult::error( QStringLiteral( "Arguments 'old_text' and 'new_text' are required." ) );
+    return QgsAiToolResult::error( u"Argument 'path' is required."_s );
+  if ( !args.contains( u"old_text"_s ) || !args.contains( u"new_text"_s ) )
+    return QgsAiToolResult::error( u"Arguments 'old_text' and 'new_text' are required."_s );
 
   QgsAiPatchHunk hunk;
   hunk.filePath = path;
-  hunk.originalText = args.value( QStringLiteral( "old_text" ) ).toString();
-  hunk.replacementText = args.value( QStringLiteral( "new_text" ) ).toString();
+  hunk.originalText = args.value( u"old_text"_s ).toString();
+  hunk.replacementText = args.value( u"new_text"_s ).toString();
 
-  const QString description = args.value( QStringLiteral( "description" ) ).toString();
-  const QString title = description.isEmpty()
-                          ? QStringLiteral( "Edit %1" ).arg( path )
-                          : description;
+  const QString description = args.value( u"description"_s ).toString();
+  const QString title = description.isEmpty() ? u"Edit %1"_s.arg( path ) : description;
 
   return reviewAndApply( title, QList<QgsAiPatchHunk> { hunk } );
 }
@@ -168,27 +168,27 @@ QString QgsAiProposeCreateFileTool::description() const
 QJsonObject QgsAiProposeCreateFileTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace path for the new file." ) ) );
-  properties.insert( QStringLiteral( "content" ), prop( QStringLiteral( "string" ), QStringLiteral( "Full file content." ) ) );
-  properties.insert( QStringLiteral( "description" ), prop( QStringLiteral( "string" ), QStringLiteral( "Short human-readable summary." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "path" ), QStringLiteral( "content" ) } );
+  properties.insert( u"path"_s, prop( u"string"_s, u"Workspace path for the new file."_s ) );
+  properties.insert( u"content"_s, prop( u"string"_s, u"Full file content."_s ) );
+  properties.insert( u"description"_s, prop( u"string"_s, u"Short human-readable summary."_s ) );
+  return schemaObject( properties, QJsonArray { u"path"_s, u"content"_s } );
 }
 
 QgsAiToolResult QgsAiProposeCreateFileTool::execute( const QJsonObject &args )
 {
-  const QString path = args.value( QStringLiteral( "path" ) ).toString().trimmed();
+  const QString path = args.value( u"path"_s ).toString().trimmed();
   if ( path.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'path' is required." ) );
-  if ( !args.contains( QStringLiteral( "content" ) ) )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'content' is required." ) );
+    return QgsAiToolResult::error( u"Argument 'path' is required."_s );
+  if ( !args.contains( u"content"_s ) )
+    return QgsAiToolResult::error( u"Argument 'content' is required."_s );
 
   QgsAiPatchHunk hunk;
   hunk.filePath = path;
-  hunk.replacementText = args.value( QStringLiteral( "content" ) ).toString();
+  hunk.replacementText = args.value( u"content"_s ).toString();
   hunk.isCreate = true;
 
-  const QString description = args.value( QStringLiteral( "description" ) ).toString();
-  const QString title = description.isEmpty() ? QStringLiteral( "Create %1" ).arg( path ) : description;
+  const QString description = args.value( u"description"_s ).toString();
+  const QString title = description.isEmpty() ? u"Create %1"_s.arg( path ) : description;
   return reviewAndApply( title, QList<QgsAiPatchHunk> { hunk } );
 }
 
@@ -211,23 +211,23 @@ QString QgsAiProposeDeleteFileTool::description() const
 QJsonObject QgsAiProposeDeleteFileTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace path of the file to delete." ) ) );
-  properties.insert( QStringLiteral( "reason" ), prop( QStringLiteral( "string" ), QStringLiteral( "Why the file should be deleted (shown in the review dialog)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "path" ) } );
+  properties.insert( u"path"_s, prop( u"string"_s, u"Workspace path of the file to delete."_s ) );
+  properties.insert( u"reason"_s, prop( u"string"_s, u"Why the file should be deleted (shown in the review dialog)."_s ) );
+  return schemaObject( properties, QJsonArray { u"path"_s } );
 }
 
 QgsAiToolResult QgsAiProposeDeleteFileTool::execute( const QJsonObject &args )
 {
-  const QString path = args.value( QStringLiteral( "path" ) ).toString().trimmed();
+  const QString path = args.value( u"path"_s ).toString().trimmed();
   if ( path.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'path' is required." ) );
+    return QgsAiToolResult::error( u"Argument 'path' is required."_s );
 
   QgsAiPatchHunk hunk;
   hunk.filePath = path;
   hunk.isDelete = true;
 
-  const QString reason = args.value( QStringLiteral( "reason" ) ).toString();
-  const QString title = reason.isEmpty() ? QStringLiteral( "Delete %1" ).arg( path ) : reason;
+  const QString reason = args.value( u"reason"_s ).toString();
+  const QString title = reason.isEmpty() ? u"Delete %1"_s.arg( path ) : reason;
   return reviewAndApply( title, QList<QgsAiPatchHunk> { hunk } );
 }
 
@@ -251,30 +251,30 @@ QString QgsAiProposeMultiEditTool::description() const
 QJsonObject QgsAiProposeMultiEditTool::schema() const
 {
   QJsonObject editItem;
-  editItem.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
+  editItem.insert( u"type"_s, u"object"_s );
   QJsonObject editItemProps;
-  editItemProps.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace path of the file to edit." ) ) );
-  editItemProps.insert( QStringLiteral( "old_text" ), prop( QStringLiteral( "string" ), QStringLiteral( "Exact substring to replace." ) ) );
-  editItemProps.insert( QStringLiteral( "new_text" ), prop( QStringLiteral( "string" ), QStringLiteral( "Replacement text." ) ) );
-  editItem.insert( QStringLiteral( "properties" ), editItemProps );
-  editItem.insert( QStringLiteral( "required" ), QJsonArray { QStringLiteral( "path" ), QStringLiteral( "old_text" ), QStringLiteral( "new_text" ) } );
+  editItemProps.insert( u"path"_s, prop( u"string"_s, u"Workspace path of the file to edit."_s ) );
+  editItemProps.insert( u"old_text"_s, prop( u"string"_s, u"Exact substring to replace."_s ) );
+  editItemProps.insert( u"new_text"_s, prop( u"string"_s, u"Replacement text."_s ) );
+  editItem.insert( u"properties"_s, editItemProps );
+  editItem.insert( u"required"_s, QJsonArray { u"path"_s, u"old_text"_s, u"new_text"_s } );
 
   QJsonObject editsProp;
-  editsProp.insert( QStringLiteral( "type" ), QStringLiteral( "array" ) );
-  editsProp.insert( QStringLiteral( "description" ), QStringLiteral( "List of edits to bundle in one proposal." ) );
-  editsProp.insert( QStringLiteral( "items" ), editItem );
+  editsProp.insert( u"type"_s, u"array"_s );
+  editsProp.insert( u"description"_s, u"List of edits to bundle in one proposal."_s );
+  editsProp.insert( u"items"_s, editItem );
 
   QJsonObject properties;
-  properties.insert( QStringLiteral( "edits" ), editsProp );
-  properties.insert( QStringLiteral( "description" ), prop( QStringLiteral( "string" ), QStringLiteral( "Short human-readable summary of the batch." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "edits" ) } );
+  properties.insert( u"edits"_s, editsProp );
+  properties.insert( u"description"_s, prop( u"string"_s, u"Short human-readable summary of the batch."_s ) );
+  return schemaObject( properties, QJsonArray { u"edits"_s } );
 }
 
 QgsAiToolResult QgsAiProposeMultiEditTool::execute( const QJsonObject &args )
 {
-  const QJsonArray edits = args.value( QStringLiteral( "edits" ) ).toArray();
+  const QJsonArray edits = args.value( u"edits"_s ).toArray();
   if ( edits.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'edits' must be a non-empty array." ) );
+    return QgsAiToolResult::error( u"Argument 'edits' must be a non-empty array."_s );
 
   QList<QgsAiPatchHunk> hunks;
   hunks.reserve( edits.size() );
@@ -282,17 +282,15 @@ QgsAiToolResult QgsAiProposeMultiEditTool::execute( const QJsonObject &args )
   {
     const QJsonObject e = edits.at( i ).toObject();
     QgsAiPatchHunk hunk;
-    hunk.filePath = e.value( QStringLiteral( "path" ) ).toString().trimmed();
-    hunk.originalText = e.value( QStringLiteral( "old_text" ) ).toString();
-    hunk.replacementText = e.value( QStringLiteral( "new_text" ) ).toString();
+    hunk.filePath = e.value( u"path"_s ).toString().trimmed();
+    hunk.originalText = e.value( u"old_text"_s ).toString();
+    hunk.replacementText = e.value( u"new_text"_s ).toString();
     if ( hunk.filePath.isEmpty() )
-      return QgsAiToolResult::error( QStringLiteral( "edits[%1] is missing 'path'." ).arg( i ) );
+      return QgsAiToolResult::error( u"edits[%1] is missing 'path'."_s.arg( i ) );
     hunks.append( hunk );
   }
 
-  const QString description = args.value( QStringLiteral( "description" ) ).toString();
-  const QString title = description.isEmpty()
-                          ? QStringLiteral( "Batch edit (%1 hunks)" ).arg( hunks.size() )
-                          : description;
+  const QString description = args.value( u"description"_s ).toString();
+  const QString title = description.isEmpty() ? u"Batch edit (%1 hunks)"_s.arg( hunks.size() ) : description;
   return reviewAndApply( title, hunks );
 }

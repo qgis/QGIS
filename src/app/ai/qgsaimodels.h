@@ -20,14 +20,14 @@ enum class QgsAiChatRole
 
 struct APP_EXPORT QgsAiChatMessage
 {
-  QString id;
-  QgsAiChatRole role = QgsAiChatRole::User;
-  QString content;
-  QDateTime timestamp = QDateTime::currentDateTimeUtc();
-  QVariantMap metadata;
+    QString id;
+    QgsAiChatRole role = QgsAiChatRole::User;
+    QString content;
+    QDateTime timestamp = QDateTime::currentDateTimeUtc();
+    QVariantMap metadata;
 
-  QJsonObject toJson() const;
-  static QgsAiChatMessage fromJson( const QJsonObject &json );
+    QJsonObject toJson() const;
+    static QgsAiChatMessage fromJson( const QJsonObject &json );
 };
 
 /**
@@ -37,57 +37,57 @@ struct APP_EXPORT QgsAiChatMessage
  */
 struct APP_EXPORT QgsAiToolCall
 {
-  QString id;          // tool_use_id (Anthropic) / call_id (OpenAI)
-  QString name;        // tool name
-  QJsonObject args;    // parsed input arguments
+    QString id;       // tool_use_id (Anthropic) / call_id (OpenAI)
+    QString name;     // tool name
+    QJsonObject args; // parsed input arguments
 
-  QJsonObject toJson() const;
-  static QgsAiToolCall fromJson( const QJsonObject &json );
+    QJsonObject toJson() const;
+    static QgsAiToolCall fromJson( const QJsonObject &json );
 };
 
 struct APP_EXPORT QgsAiPatchHunk
 {
-  QString filePath;
-  QString originalText;
-  QString replacementText;
-  int priority = 0;
+    QString filePath;
+    QString originalText;
+    QString replacementText;
+    int priority = 0;
 
-  /**
+    /**
    * If true, the hunk represents a new file creation. \a originalText must be empty,
    * \a replacementText is the full content of the new file. The file at filePath must
    * not exist when the hunk is applied.
    */
-  bool isCreate = false;
+    bool isCreate = false;
 
-  /**
+    /**
    * If true, the hunk represents a file deletion. Both \a originalText and
    * \a replacementText are ignored; the file at filePath is removed (with backup).
    */
-  bool isDelete = false;
+    bool isDelete = false;
 
-  QJsonObject toJson() const;
-  static QgsAiPatchHunk fromJson( const QJsonObject &json );
+    QJsonObject toJson() const;
+    static QgsAiPatchHunk fromJson( const QJsonObject &json );
 };
 
 struct APP_EXPORT QgsAiPatchProposal
 {
-  QString id;
-  QString title;
-  QList<QgsAiPatchHunk> hunks;
-  QDateTime createdAt = QDateTime::currentDateTimeUtc();
+    QString id;
+    QString title;
+    QList<QgsAiPatchHunk> hunks;
+    QDateTime createdAt = QDateTime::currentDateTimeUtc();
 
-  QJsonObject toJson() const;
-  static QgsAiPatchProposal fromJson( const QJsonObject &json );
+    QJsonObject toJson() const;
+    static QgsAiPatchProposal fromJson( const QJsonObject &json );
 };
 
 struct APP_EXPORT QgsAiReviewSuggestion
 {
-  QString id;
-  QString summary;
-  QgsAiPatchProposal proposal;
+    QString id;
+    QString summary;
+    QgsAiPatchProposal proposal;
 
-  QJsonObject toJson() const;
-  static QgsAiReviewSuggestion fromJson( const QJsonObject &json );
+    QJsonObject toJson() const;
+    static QgsAiReviewSuggestion fromJson( const QJsonObject &json );
 };
 
 APP_EXPORT QString qgsAiChatRoleToString( QgsAiChatRole role );

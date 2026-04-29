@@ -15,28 +15,31 @@
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
   QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
   {
     QJsonObject schema;
-    schema.insert( QStringLiteral( "type" ), QStringLiteral( "object" ) );
-    schema.insert( QStringLiteral( "properties" ), properties );
+    schema.insert( u"type"_s, u"object"_s );
+    schema.insert( u"properties"_s, properties );
     if ( !required.isEmpty() )
-      schema.insert( QStringLiteral( "required" ), required );
+      schema.insert( u"required"_s, required );
     return schema;
   }
 
   QJsonObject prop( const QString &type, const QString &description )
   {
     QJsonObject p;
-    p.insert( QStringLiteral( "type" ), type );
-    p.insert( QStringLiteral( "description" ), description );
+    p.insert( u"type"_s, type );
+    p.insert( u"description"_s, description );
     return p;
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // read_file
@@ -59,35 +62,35 @@ QString QgsAiReadFileTool::description() const
 QJsonObject QgsAiReadFileTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "path" ), prop( QStringLiteral( "string" ), QStringLiteral( "Workspace-relative or absolute path to read." ) ) );
-  properties.insert( QStringLiteral( "start_line" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Optional 1-based first line to include." ) ) );
-  properties.insert( QStringLiteral( "end_line" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Optional 1-based last line to include (inclusive)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "path" ) } );
+  properties.insert( u"path"_s, prop( u"string"_s, u"Workspace-relative or absolute path to read."_s ) );
+  properties.insert( u"start_line"_s, prop( u"integer"_s, u"Optional 1-based first line to include."_s ) );
+  properties.insert( u"end_line"_s, prop( u"integer"_s, u"Optional 1-based last line to include (inclusive)."_s ) );
+  return schemaObject( properties, QJsonArray { u"path"_s } );
 }
 
 QgsAiToolResult QgsAiReadFileTool::execute( const QJsonObject &args )
 {
   if ( !mContextProvider )
-    return QgsAiToolResult::error( QStringLiteral( "File context provider not available." ) );
+    return QgsAiToolResult::error( u"File context provider not available."_s );
 
-  const QString path = args.value( QStringLiteral( "path" ) ).toString().trimmed();
+  const QString path = args.value( u"path"_s ).toString().trimmed();
   if ( path.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'path' is required." ) );
+    return QgsAiToolResult::error( u"Argument 'path' is required."_s );
 
   // 128 KB read cap: enough to cover most source files, prevents accidentally feeding huge data.
   const int maxBytes = 131072;
   const QgsAiFileContext context = mContextProvider->buildContext( path, QString(), maxBytes, /*allowExternal=*/false );
   if ( context.filePath.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Path is outside the workspace, missing, or unreadable: %1" ).arg( path ) );
+    return QgsAiToolResult::error( u"Path is outside the workspace, missing, or unreadable: %1"_s.arg( path ) );
   if ( context.binary )
-    return QgsAiToolResult::error( QStringLiteral( "Refusing to return content of binary file: %1" ).arg( path ) );
+    return QgsAiToolResult::error( u"Refusing to return content of binary file: %1"_s.arg( path ) );
 
   // Compose response
   QString content = context.fileSnippet;
 
   // Optional line range. start_line=1 means line index 0.
-  const int startLine = args.value( QStringLiteral( "start_line" ) ).toInt( 0 );
-  const int endLine = args.value( QStringLiteral( "end_line" ) ).toInt( 0 );
+  const int startLine = args.value( u"start_line"_s ).toInt( 0 );
+  const int endLine = args.value( u"end_line"_s ).toInt( 0 );
   if ( startLine > 0 || endLine > 0 )
   {
     const QStringList lines = content.split( '\n' );
@@ -103,11 +106,11 @@ QgsAiToolResult QgsAiReadFileTool::execute( const QJsonObject &args )
   const QString relative = root.isEmpty() ? context.filePath : QDir( root ).relativeFilePath( context.filePath );
 
   QJsonObject output;
-  output.insert( QStringLiteral( "path" ), relative );
-  output.insert( QStringLiteral( "absolute_path" ), context.filePath );
-  output.insert( QStringLiteral( "size_bytes" ), static_cast<qint64>( context.fileSize ) );
-  output.insert( QStringLiteral( "truncated" ), context.truncated );
-  output.insert( QStringLiteral( "content" ), content );
+  output.insert( u"path"_s, relative );
+  output.insert( u"absolute_path"_s, context.filePath );
+  output.insert( u"size_bytes"_s, static_cast<qint64>( context.fileSize ) );
+  output.insert( u"truncated"_s, context.truncated );
+  output.insert( u"content"_s, content );
   return QgsAiToolResult::ok( output );
 }
 
@@ -132,23 +135,23 @@ QString QgsAiSearchFilesTool::description() const
 QJsonObject QgsAiSearchFilesTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "query" ), prop( QStringLiteral( "string" ), QStringLiteral( "Substring to look for in file content." ) ) );
-  properties.insert( QStringLiteral( "glob" ), prop( QStringLiteral( "string" ), QStringLiteral( "Optional substring filter on the relative path (case-insensitive)." ) ) );
-  properties.insert( QStringLiteral( "max_results" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Maximum number of matches to return (default 50, max 200)." ) ) );
-  return schemaObject( properties, QJsonArray { QStringLiteral( "query" ) } );
+  properties.insert( u"query"_s, prop( u"string"_s, u"Substring to look for in file content."_s ) );
+  properties.insert( u"glob"_s, prop( u"string"_s, u"Optional substring filter on the relative path (case-insensitive)."_s ) );
+  properties.insert( u"max_results"_s, prop( u"integer"_s, u"Maximum number of matches to return (default 50, max 200)."_s ) );
+  return schemaObject( properties, QJsonArray { u"query"_s } );
 }
 
 QgsAiToolResult QgsAiSearchFilesTool::execute( const QJsonObject &args )
 {
   if ( !mContextProvider )
-    return QgsAiToolResult::error( QStringLiteral( "File context provider not available." ) );
+    return QgsAiToolResult::error( u"File context provider not available."_s );
 
-  const QString query = args.value( QStringLiteral( "query" ) ).toString();
+  const QString query = args.value( u"query"_s ).toString();
   if ( query.isEmpty() )
-    return QgsAiToolResult::error( QStringLiteral( "Argument 'query' is required and must be non-empty." ) );
+    return QgsAiToolResult::error( u"Argument 'query' is required and must be non-empty."_s );
 
-  const QString glob = args.value( QStringLiteral( "glob" ) ).toString().trimmed();
-  const int requestedMax = args.value( QStringLiteral( "max_results" ) ).toInt( 50 );
+  const QString glob = args.value( u"glob"_s ).toString().trimmed();
+  const int requestedMax = args.value( u"max_results"_s ).toInt( 50 );
   const int maxResults = std::clamp( requestedMax, 1, 200 );
 
   // Walk all workspace candidates, filter by glob substring on relative path, then grep each file.
@@ -171,9 +174,9 @@ QgsAiToolResult QgsAiSearchFilesTool::execute( const QJsonObject &args )
       const int lineNo = hit.left( sep ).toInt();
       const QString text = hit.mid( sep + 1 );
       QJsonObject match;
-      match.insert( QStringLiteral( "path" ), relative );
-      match.insert( QStringLiteral( "line" ), lineNo );
-      match.insert( QStringLiteral( "text" ), text );
+      match.insert( u"path"_s, relative );
+      match.insert( u"line"_s, lineNo );
+      match.insert( u"text"_s, text );
       matches.push_back( match );
       ++collected;
       if ( collected >= maxResults )
@@ -182,10 +185,10 @@ QgsAiToolResult QgsAiSearchFilesTool::execute( const QJsonObject &args )
   }
 
   QJsonObject output;
-  output.insert( QStringLiteral( "query" ), query );
-  output.insert( QStringLiteral( "matches" ), matches );
-  output.insert( QStringLiteral( "count" ), collected );
-  output.insert( QStringLiteral( "truncated" ), collected >= maxResults );
+  output.insert( u"query"_s, query );
+  output.insert( u"matches"_s, matches );
+  output.insert( u"count"_s, collected );
+  output.insert( u"truncated"_s, collected >= maxResults );
   return QgsAiToolResult::ok( output );
 }
 
@@ -208,18 +211,18 @@ QString QgsAiListFilesTool::description() const
 QJsonObject QgsAiListFilesTool::schema() const
 {
   QJsonObject properties;
-  properties.insert( QStringLiteral( "glob" ), prop( QStringLiteral( "string" ), QStringLiteral( "Optional substring filter on the relative path (e.g. '.cpp')." ) ) );
-  properties.insert( QStringLiteral( "max" ), prop( QStringLiteral( "integer" ), QStringLiteral( "Maximum number of paths to return (default 200, hard cap 2000)." ) ) );
+  properties.insert( u"glob"_s, prop( u"string"_s, u"Optional substring filter on the relative path (e.g. '.cpp')."_s ) );
+  properties.insert( u"max"_s, prop( u"integer"_s, u"Maximum number of paths to return (default 200, hard cap 2000)."_s ) );
   return schemaObject( properties );
 }
 
 QgsAiToolResult QgsAiListFilesTool::execute( const QJsonObject &args )
 {
   if ( !mContextProvider )
-    return QgsAiToolResult::error( QStringLiteral( "File context provider not available." ) );
+    return QgsAiToolResult::error( u"File context provider not available."_s );
 
-  const QString glob = args.value( QStringLiteral( "glob" ) ).toString().trimmed();
-  const int requestedMax = args.value( QStringLiteral( "max" ) ).toInt( 200 );
+  const QString glob = args.value( u"glob"_s ).toString().trimmed();
+  const int requestedMax = args.value( u"max"_s ).toInt( 200 );
   const int maxResults = std::clamp( requestedMax, 1, 2000 );
 
   const QStringList files = mContextProvider->workspaceFileCandidates( glob, maxResults );
@@ -229,9 +232,9 @@ QgsAiToolResult QgsAiListFilesTool::execute( const QJsonObject &args )
     array.push_back( f );
 
   QJsonObject output;
-  output.insert( QStringLiteral( "files" ), array );
-  output.insert( QStringLiteral( "count" ), files.size() );
-  output.insert( QStringLiteral( "truncated" ), files.size() >= maxResults );
+  output.insert( u"files"_s, array );
+  output.insert( u"count"_s, files.size() );
+  output.insert( u"truncated"_s, files.size() >= maxResults );
   return QgsAiToolResult::ok( output );
 }
 
@@ -263,7 +266,7 @@ QgsAiToolResult QgsAiListProjectLayersTool::execute( const QJsonObject &args )
   Q_UNUSED( args )
   QgsProject *project = mProject ? mProject : QgsProject::instance();
   if ( !project )
-    return QgsAiToolResult::error( QStringLiteral( "No active QgsProject available." ) );
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
 
   QJsonArray layers;
   const QMap<QString, QgsMapLayer *> projectLayers = project->mapLayers();
@@ -274,31 +277,31 @@ QgsAiToolResult QgsAiListProjectLayersTool::execute( const QJsonObject &args )
       continue;
 
     QJsonObject entry;
-    entry.insert( QStringLiteral( "id" ), layer->id() );
-    entry.insert( QStringLiteral( "name" ), layer->name() );
-    entry.insert( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( layer->type() ) );
-    entry.insert( QStringLiteral( "crs" ), layer->crs().authid() );
-    entry.insert( QStringLiteral( "source" ), layer->publicSource() );
+    entry.insert( u"id"_s, layer->id() );
+    entry.insert( u"name"_s, layer->name() );
+    entry.insert( u"type"_s, QgsMapLayerFactory::typeToString( layer->type() ) );
+    entry.insert( u"crs"_s, layer->crs().authid() );
+    entry.insert( u"source"_s, layer->publicSource() );
 
     if ( QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      entry.insert( QStringLiteral( "geometry_type" ), QgsWkbTypes::geometryDisplayString( vector->geometryType() ) );
-      entry.insert( QStringLiteral( "feature_count" ), static_cast<qint64>( vector->featureCount() ) );
+      entry.insert( u"geometry_type"_s, QgsWkbTypes::geometryDisplayString( vector->geometryType() ) );
+      entry.insert( u"feature_count"_s, static_cast<qint64>( vector->featureCount() ) );
     }
     else if ( QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer ) )
     {
-      entry.insert( QStringLiteral( "width" ), raster->width() );
-      entry.insert( QStringLiteral( "height" ), raster->height() );
-      entry.insert( QStringLiteral( "bands" ), raster->bandCount() );
+      entry.insert( u"width"_s, raster->width() );
+      entry.insert( u"height"_s, raster->height() );
+      entry.insert( u"bands"_s, raster->bandCount() );
     }
 
     layers.push_back( entry );
   }
 
   QJsonObject output;
-  output.insert( QStringLiteral( "project_file" ), project->fileName() );
-  output.insert( QStringLiteral( "layer_count" ), layers.size() );
-  output.insert( QStringLiteral( "layers" ), layers );
+  output.insert( u"project_file"_s, project->fileName() );
+  output.insert( u"layer_count"_s, layers.size() );
+  output.insert( u"layers"_s, layers );
   return QgsAiToolResult::ok( output );
 }
 
@@ -328,20 +331,20 @@ QgsAiToolResult QgsAiGetCanvasExtentTool::execute( const QJsonObject &args )
 {
   Q_UNUSED( args )
   if ( !mCanvas )
-    return QgsAiToolResult::error( QStringLiteral( "No map canvas available." ) );
+    return QgsAiToolResult::error( u"No map canvas available."_s );
 
   const QgsRectangle extent = mCanvas->extent();
   const QgsCoordinateReferenceSystem crs = mCanvas->mapSettings().destinationCrs();
 
   QJsonObject extentJson;
-  extentJson.insert( QStringLiteral( "xmin" ), extent.xMinimum() );
-  extentJson.insert( QStringLiteral( "ymin" ), extent.yMinimum() );
-  extentJson.insert( QStringLiteral( "xmax" ), extent.xMaximum() );
-  extentJson.insert( QStringLiteral( "ymax" ), extent.yMaximum() );
+  extentJson.insert( u"xmin"_s, extent.xMinimum() );
+  extentJson.insert( u"ymin"_s, extent.yMinimum() );
+  extentJson.insert( u"xmax"_s, extent.xMaximum() );
+  extentJson.insert( u"ymax"_s, extent.yMaximum() );
 
   QJsonObject output;
-  output.insert( QStringLiteral( "extent" ), extentJson );
-  output.insert( QStringLiteral( "crs" ), crs.authid() );
-  output.insert( QStringLiteral( "scale" ), mCanvas->scale() );
+  output.insert( u"extent"_s, extentJson );
+  output.insert( u"crs"_s, crs.authid() );
+  output.insert( u"scale"_s, mCanvas->scale() );
   return QgsAiToolResult::ok( output );
 }

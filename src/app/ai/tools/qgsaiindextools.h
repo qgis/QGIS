@@ -4,6 +4,10 @@
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAiWorkspaceIndex;
 
 /**
@@ -15,7 +19,7 @@ class APP_EXPORT QgsAiIndexStatusTool : public QgsAiTool
   public:
     explicit QgsAiIndexStatusTool( QgsAiWorkspaceIndex *index );
 
-    QString name() const override { return QStringLiteral( "index_status" ); }
+    QString name() const override { return u"index_status"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -33,7 +37,7 @@ class APP_EXPORT QgsAiSearchWorkspaceTool : public QgsAiTool
   public:
     explicit QgsAiSearchWorkspaceTool( QgsAiWorkspaceIndex *index );
 
-    QString name() const override { return QStringLiteral( "search_workspace" ); }
+    QString name() const override { return u"search_workspace"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
@@ -55,7 +59,7 @@ class APP_EXPORT QgsAiReindexWorkspaceTool : public QgsAiTool
   public:
     explicit QgsAiReindexWorkspaceTool( QgsAiWorkspaceIndex *index );
 
-    QString name() const override { return QStringLiteral( "reindex_workspace" ); }
+    QString name() const override { return u"reindex_workspace"_s; }
     QString description() const override;
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

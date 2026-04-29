@@ -18,12 +18,13 @@ class QgsAiFileContextProvider;
  * its answers on actual project content (RAG).
  *
  * MVP design (intentionally simple):
- *  - Plain SQLite database stored under qgisSettingsDirPath()/ai_index/, one
- *    file per workspace (hashed root path).
- *  - One row per text chunk: { file_path, chunk_index, text, embedding BLOB }.
- *  - Embeddings come from the OpenAI embeddings endpoint via QgsAiEmbeddingClient.
- *  - Retrieval is a linear cosine-similarity scan in C++ (fast enough for
- *    tens of thousands of chunks; we cap reindex at 500 files for the MVP).
+ *
+ * - Plain SQLite database stored under qgisSettingsDirPath()/ai_index/, one
+ *   file per workspace (hashed root path).
+ * - One row per text chunk: { file_path, chunk_index, text, embedding BLOB }.
+ * - Embeddings come from the OpenAI embeddings endpoint via QgsAiEmbeddingClient.
+ * - Retrieval is a linear cosine-similarity scan in C++ (fast enough for
+ *   tens of thousands of chunks; we cap reindex at 500 files for the MVP).
  *
  * Privacy: indexing sends the file chunks to OpenAI. Callers are expected to
  * surface a disclaimer before triggering reindex.
@@ -40,19 +41,19 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     struct Chunk
     {
-      QString relativePath;
-      int chunkIndex = 0;
-      QString text;
-      float score = 0.0f;  // populated by search()
+        QString relativePath;
+        int chunkIndex = 0;
+        QString text;
+        float score = 0.0f; // populated by search()
     };
 
     struct Status
     {
-      bool indexed = false;
-      int fileCount = 0;
-      int chunkCount = 0;
-      QDateTime lastSync;
-      QString workspaceRoot;
+        bool indexed = false;
+        int fileCount = 0;
+        int chunkCount = 0;
+        QDateTime lastSync;
+        QString workspaceRoot;
     };
 
     QgsAiWorkspaceIndex( QgsAiFileContextProvider *contextProvider, QgsAiEmbeddingClient *embeddingClient, QObject *parent = nullptr );
@@ -87,8 +88,8 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
   private:
     struct CachedChunk
     {
-      Chunk chunk;
-      QVector<float> embedding;
+        Chunk chunk;
+        QVector<float> embedding;
     };
 
     bool ensureLoaded();

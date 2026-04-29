@@ -1,14 +1,15 @@
 #ifndef QGSAITOOLREGISTRY_H
 #define QGSAITOOLREGISTRY_H
 
+#include <map>
+#include <memory>
+
 #include "qgis_app.h"
 #include "qgsaitool.h"
 
 #include <QJsonArray>
 #include <QObject>
 #include <QStringList>
-#include <map>
-#include <memory>
 
 class APP_EXPORT QgsAiToolRegistry : public QObject
 {
@@ -39,8 +40,8 @@ class APP_EXPORT QgsAiToolRegistry : public QObject
 
     enum class WireFormat
     {
-      AnthropicTools,    //!< `[{name, description, input_schema}]` for Anthropic Messages API
-      OpenAiResponses    //!< `[{type:"function", name, description, parameters}]` for OpenAI Responses API
+      AnthropicTools, //!< `[{name, description, input_schema}]` for Anthropic Messages API
+      OpenAiResponses //!< `[{type:"function", name, description, parameters}]` for OpenAI Responses API
     };
 
     /**

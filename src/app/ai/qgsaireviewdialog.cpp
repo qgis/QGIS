@@ -110,10 +110,7 @@ QString QgsAiReviewDialog::hunkSummary( const QgsAiPatchHunk &hunk ) const
     return tr( "Create new file: %1\n%2 bytes will be written." ).arg( hunk.filePath ).arg( hunk.replacementText.size() );
   if ( hunk.isDelete )
     return tr( "Delete file: %1\nA backup is kept until the chat session ends." ).arg( hunk.filePath );
-  return tr( "Edit file: %1\nReplace %2 character(s) with %3 character(s)." )
-           .arg( hunk.filePath )
-           .arg( hunk.originalText.size() )
-           .arg( hunk.replacementText.size() );
+  return tr( "Edit file: %1\nReplace %2 character(s) with %3 character(s)." ).arg( hunk.filePath ).arg( hunk.originalText.size() ).arg( hunk.replacementText.size() );
 }
 
 void QgsAiReviewDialog::onAcceptAll()
