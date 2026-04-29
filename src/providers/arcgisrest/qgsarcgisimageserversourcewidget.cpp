@@ -18,7 +18,10 @@
 #include "qgsarcgisimageserversourcewidget.h"
 
 #include "qgsgdalutils.h"
+#include "qgsimageserverprovider.h"
+#include "qgsmaplayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
 
 #include <QString>
 
@@ -26,11 +29,35 @@
 
 using namespace Qt::StringLiterals;
 
-QgsArcGisImageServerSourceWidget::QgsArcGisImageServerSourceWidget( const QString &providerKey, QWidget *parent )
+QgsArcGisImageServerSourceWidget::QgsArcGisImageServerSourceWidget( QgsMapLayer *layer, QWidget *parent )
   : QgsProviderSourceWidget( parent )
-  , mProviderKey( providerKey )
+  , mProviderKey( layer->providerType() )
 {
   setupUi( this );
+
+  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer * >( layer );
+  if ( QgsRasterDataProvider *dataProvider = rasterLayer->dataProvider() )
+  {
+    QgsImageServerProvider *imageServerProvider = qobject_cast< QgsImageServerProvider * >( dataProvider );
+    // this widget should ONLY be used for image server provider!
+    Q_ASSERT( imageServerProvider );
+    if ( imageServerProvider->serviceCapabilities().testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
+    {
+      mUseTilesCheckBox->setChecked( true );
+      mUseTilesCheckBox->setEnabled( false );
+      mUseTilesCheckBox->setToolTip( tr( "This service only supports data retrieval via tiles" ) );
+    }
+    else if ( !imageServerProvider->supportsTiles() )
+    {
+      mUseTilesCheckBox->setChecked( false );
+      mUseTilesCheckBox->setEnabled( false );
+      mUseTilesCheckBox->setToolTip( tr( "This service does not support data retrieval via tiles" ) );
+    }
+    else
+    {
+      mUseTilesCheckBox->setEnabled( true );
+    }
+  }
 
   mImageFormatCombo->addItem( tr( "Default" ) );
   mImageFormatCombo->addItem( tr( "TIFF" ), u"tiff"_s );
@@ -60,6 +87,12 @@ void QgsArcGisImageServerSourceWidget::setSourceUri( const QString &uri )
   if ( mImageFormatCombo->currentIndex() < 0 )
   {
     mImageFormatCombo->setCurrentIndex( 0 );
+  }
+
+  if ( mUseTilesCheckBox->isEnabled() )
+  {
+    // always default to tiled mode, it's opt-out
+    mUseTilesCheckBox->setChecked( mSourceParts.value( u"tiled"_s, true ).toBool() );
   }
 }
 
@@ -91,6 +124,11 @@ QString QgsArcGisImageServerSourceWidget::sourceUri() const
     parts.insert( u"format"_s, format );
   else
     parts.remove( u"format"_s );
+
+  if ( mUseTilesCheckBox->isEnabled() && !mUseTilesCheckBox->isChecked() )
+    parts.insert( u"tiled"_s, false );
+  else
+    parts.remove( u"tiled"_s );
 
   return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );
 }

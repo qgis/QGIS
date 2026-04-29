@@ -238,7 +238,9 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   mLayerMetadata.setExtent( metadataExtent );
   mLayerMetadata.setCrs( mCrs );
 
-  mTiled = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool() || mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly );
+  mSupportsTiles = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool() || mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly );
+  // default to tiled mode
+  mTiled = mSupportsTiles;
   if ( ( dataSource.param( u"tiled"_s ).toLower() == "false" || dataSource.param( u"tiled"_s ) == "0" ) && !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
   {
     mTiled = false;
@@ -302,6 +304,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mMeanValues( other.mMeanValues )
   , mStdevValues( other.mStdevValues )
   , mRequestHeaders( other.mRequestHeaders )
+  , mSupportsTiles( other.mSupportsTiles )
   , mTiled( other.mTiled )
   , mMinLOD( other.mMinLOD )
   , mMaxLOD( other.mMaxLOD )
@@ -1167,6 +1170,10 @@ QVariantMap QgsImageServerProviderMetadata::decodeUri( const QString &uri ) cons
   {
     components.insert( u"layer"_s, dsUri.param( u"layer"_s ) );
   }
+  if ( dsUri.param( u"tiled"_s ).compare( "false"_L1, Qt::CaseInsensitive ) == 0 || dsUri.param( u"tiled"_s ) == "0" )
+  {
+    components.insert( u"tiled"_s, false );
+  }
 
   return components;
 }
@@ -1190,6 +1197,10 @@ QString QgsImageServerProviderMetadata::encodeUri( const QVariantMap &parts ) co
   if ( !parts.value( u"format"_s ).toString().isEmpty() )
   {
     dsUri.setParam( u"format"_s, parts.value( u"format"_s ).toString() );
+  }
+  if ( parts.contains( u"tiled"_s ) && !parts.value( u"tiled"_s ).toBool() )
+  {
+    dsUri.setParam( u"tiled"_s, u"false"_s );
   }
   if ( !parts.value( u"layer"_s ).toString().isEmpty() )
   {

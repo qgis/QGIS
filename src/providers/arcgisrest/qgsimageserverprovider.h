@@ -40,6 +40,11 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QgsImageServerProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     explicit QgsImageServerProvider( const QgsImageServerProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
+
+
+    Qgis::ArcGisRestServiceCapabilities serviceCapabilities() const { return mCapabilities; }
+    bool supportsTiles() const { return mSupportsTiles; }
+
     Qgis::DataProviderFlags flags() const override;
     Qgis::RasterProviderCapabilities providerCapabilities() const override;
     /* Inherited from QgsDataProvider */
@@ -105,6 +110,7 @@ class QgsImageServerProvider : public QgsRasterDataProvider
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
     QgsHttpHeaders mRequestHeaders;
+    bool mSupportsTiles = false;
     bool mTiled = false;
     int mMinLOD = -1;
     int mMaxLOD = -1;
