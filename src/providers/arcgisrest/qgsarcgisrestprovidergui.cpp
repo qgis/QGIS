@@ -17,7 +17,6 @@
 
 #include "qgsafsprovider.h"
 #include "qgsapplication.h"
-#include "qgsarcgisimageserversourcewidget.h"
 #include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsarcgisrestsourceselect.h"
 #include "qgsarcgisrestsourcewidget.h"
@@ -55,7 +54,7 @@ class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
     QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
     bool canHandleLayer( QgsMapLayer *layer ) const override
     {
-      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != "arcgismapserver"_L1 && layer->providerType() != "arcgisimageserver"_L1 )
+      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != "arcgismapserver"_L1 )
         return false;
 
       return true;
@@ -65,10 +64,6 @@ class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
       if ( layer->providerType() == QgsAfsProvider::AFS_PROVIDER_KEY || layer->providerType() == "arcgismapserver"_L1 )
       {
         return new QgsArcGisRestSourceWidget( layer->providerType(), parent );
-      }
-      else if ( layer->providerType() == QgsAfsProvider::AFS_PROVIDER_KEY || layer->providerType() == "arcgisimageserver"_L1 )
-      {
-        return new QgsArcGisImageServerSourceWidget( layer->providerType(), parent );
       }
       return nullptr;
     }
