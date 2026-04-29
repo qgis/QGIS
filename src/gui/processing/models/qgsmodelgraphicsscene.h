@@ -277,6 +277,15 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void runFromChild( const QString &childId );
 
+
+    /**
+     * Emitted when the user delete a child algorithm.
+     *
+     * \since QGIS 4.2
+     */
+    void childAlgorithmDeleted( const QString &childId );
+
+
     /**
      * Emitted when the user opts to view previous results from the child algorithm with matching ID.
      *
@@ -290,6 +299,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     * \since QGIS 3.38
     */
     void showChildAlgorithmLog( const QString &childId );
+
+    /**
+     * Emitted when the user opts to view the previous log from the child algorithm with matching ID.
+     *
+     * \since QGIS 4.2
+     */
+    void showDataViewerDock( const QString &childId, const QString &paramName );
+
 
   protected:
     /**
@@ -328,6 +345,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
     void addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId );
+    void addDataViewerButtonForArrow( QgsModelArrowItem *arrow, const QString &childId = QString(), const QString &paramOrOutputName = QString() );
 
     Flags mFlags = Flags();
 
