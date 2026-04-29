@@ -203,6 +203,14 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      */
     SIP_SKIP void setShowBadge( bool visible );
 
+  signals:
+    /**
+     * Emitted when the path is updated.
+     *
+     * \since QGIS 4.0
+     */
+    void painterPathUpdated();
+
   public slots:
 
     /**
