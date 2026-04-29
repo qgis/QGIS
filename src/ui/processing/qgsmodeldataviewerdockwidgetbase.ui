@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsModelDataViewerDockWidgetBase</class>
+ <widget class="QgsDockWidget" name="QgsModelDataViewerDockWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1054</width>
+    <height>570</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Attribute Table</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QSplitter" name="mSplitter">
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+      <widget class="QgsMapCanvas" name="mMapCanvas"/>
+      <widget class="QgsAttributeTableView" name="mTableView"/>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolBar" name="mToolbar">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>18</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="floatable">
+       <bool>false</bool>
+      </property>
+      <addaction name="mActionZoomToLayer"/>
+      <addaction name="mActionZoomToSelection"/>
+      <addaction name="separator"/>
+      <addaction name="mActionPan"/>
+      <addaction name="mActionSelectFeatures"/>
+      <addaction name="separator"/>
+      <addaction name="mActionExpressionSelect"/>
+      <addaction name="mActionSelectAll"/>
+      <addaction name="mActionInvertSelection"/>
+      <addaction name="mActionSelectNone"/>
+      <addaction name="separator"/>
+      <addaction name="mActionToggleProjectLayers"/>
+      <addaction name="separator"/>
+      <addaction name="mActionAddLayerToMap"/>
+      <addaction name="separator"/>
+      <addaction name="mShowAttributeTable"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <action name="mActionExpressionSelect">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select features using an expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Select features using an expression</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all (Ctrl+A)</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Invert selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection (Ctrl+R)</string>
+   </property>
+  </action>
+  <action name="mShowAttributeTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show attribute table</string>
+   </property>
+   <property name="toolTip">
+    <string>Show attribute table</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="mActionSelectFeatures">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Features by Area or Single Click</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Features by Area or Single Click</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionZoomToSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom To Selection</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionZoomToLayer">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom To Layer</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionSelectNone">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select None</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection (Ctrl+R)</string>
+   </property>
+  </action>
+  <action name="mActionToggleProjectLayers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle project layers</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionAddLayerToMap">
+   <property name="text">
+    <string>Add layer to map</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan</string>
+   </property>
+   <property name="toolTip">
+    <string>Pan the map</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapCanvas</class>
+   <extends>QGraphicsView</extends>
+   <header>qgsmapcanvas.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAttributeTableView</class>
+   <extends>QTableView</extends>
+   <header>qgsattributetableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

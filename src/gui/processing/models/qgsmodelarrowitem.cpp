@@ -386,6 +386,7 @@ void QgsModelArrowItem::updatePath()
   {
     mBadgeItem->setCenter( path.pointAtPercent( 0.5 ) );
   }
+  emit painterPathUpdated();
 }
 
 QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const
