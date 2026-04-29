@@ -553,7 +553,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     catch ( cl::Error &e )
     {
       mLastError = QObject::tr( "Error compiling OpenCL kernel: %1" ).arg( e.what() );
-      return OpenCLKernelBuildError;
+      return QgsRasterCalculator::Result::OpenCLKernelBuildError;
     }
 
     // Create the buffers, output is float32 (4 bytes)

@@ -1214,7 +1214,7 @@ void TestQgsRasterCalculator::testComparisonExpressionWithOpenCL()
     QTemporaryDir tmpDir;
     const QString tmpFile = tmpDir.path() + "/output.tif";
     QgsRasterCalculator rc( expression, tmpFile, QStringLiteral( "GTiff" ), QgsRectangle(), QgsCoordinateReferenceSystem(), 2, 2, { QgsRasterCalculatorEntry { QStringLiteral( "dem@1" ), mpLandsatRasterLayer, 1 } }, QgsProject::instance()->transformContext() );
-    QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Success );
+    QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
   }
 }
 #endif
