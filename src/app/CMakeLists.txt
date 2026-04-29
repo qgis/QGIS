@@ -567,6 +567,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/ai
   ${CMAKE_SOURCE_DIR}/src/app/ai/tools
+  ${CMAKE_SOURCE_DIR}/src/app/ai/index
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer

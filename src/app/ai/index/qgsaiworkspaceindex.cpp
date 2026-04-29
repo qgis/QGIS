@@ -1,5 +1,6 @@
 #include "qgsaiworkspaceindex.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include "qgsaiembeddingclient.h"
@@ -104,7 +105,7 @@ QStringList QgsAiWorkspaceIndex::chunkText( const QString &content )
   int pos = 0;
   while ( pos < content.size() )
   {
-    int end = std::min( pos + CHUNK_TARGET_CHARS, content.size() );
+    int end = std::min( pos + CHUNK_TARGET_CHARS, static_cast<int>( content.size() ) );
     if ( end < content.size() )
     {
       const int searchFrom = end - CHUNK_TARGET_CHARS / 3;
@@ -420,7 +421,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
 
   std::sort( scored.begin(), scored.end(), []( const auto &a, const auto &b ) { return a.first > b.first; } );
 
-  const int topK = std::clamp( k, 1, std::min( 20, mCache.size() ) );
+  const int topK = std::clamp( k, 1, std::min( 20, static_cast<int>( mCache.size() ) ) );
   for ( int i = 0; i < topK; ++i )
   {
     Chunk c = mCache.at( scored.at( i ).second ).chunk;

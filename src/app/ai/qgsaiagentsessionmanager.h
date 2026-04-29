@@ -4,6 +4,7 @@
 #include "qgis_app.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"
+#include "qgsaitool.h"
 
 #include <QList>
 #include <QObject>
