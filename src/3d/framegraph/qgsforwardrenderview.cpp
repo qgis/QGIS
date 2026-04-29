@@ -95,7 +95,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 Qt3DRender::QRenderTarget *QgsForwardRenderView::buildMsaaTarget()
 {
   mColorTextureMS = new Qt3DRender::QTexture2DMultisample;
-  mColorTextureMS->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
+  mColorTextureMS->setFormat( Qt3DRender::QAbstractTexture::RGBA16F );
   mColorTextureMS->setSamples( 4 );
   mColorTextureMS->setGenerateMipMaps( false );
   mColorTextureMS->setWidth( mCurrentWidth );
