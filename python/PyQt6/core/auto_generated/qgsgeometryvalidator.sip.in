@@ -36,6 +36,16 @@ Validate geometry and produce a list of geometry errors. This method
 blocks the thread until the validation is finished.
 %End
 
+    static Qgis::GeometryValidationEngine defaultValidationEngine();
+%Docstring
+Returns the geometry validation engine configured in the application
+settings.
+
+:return: The geometry validation engine to use.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void errorFound( const QgsGeometry::Error &error );

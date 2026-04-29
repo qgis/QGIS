@@ -22,6 +22,8 @@ email                : jef at norbit dot de
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvertexid.h"
 
 #include <QString>
@@ -426,7 +428,7 @@ void QgsGeometryValidator::run()
         }
       }
 #else
-      QgsDebugError( u"Cannot use SFCGAL validation method in this QGIS build."_s ) );
+      QgsDebugError( u"Cannot use SFCGAL validation method in this QGIS build."_s );
 #endif
 
       break;
@@ -523,4 +525,12 @@ bool QgsGeometryValidator::ringInRing( const QgsCurve *inside, const QgsCurve *o
   }
 
   return true;
+}
+
+Qgis::GeometryValidationEngine QgsGeometryValidator::defaultValidationEngine()
+{
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
+    return Qgis::GeometryValidationEngine::Geos;
+
+  return Qgis::GeometryValidationEngine::QgisInternal;
 }

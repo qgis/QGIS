@@ -3201,10 +3201,8 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
 {
   tool = t;
   layer = l;
-  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
-    method = Qgis::GeometryValidationEngine::Geos;
 
+  Qgis::GeometryValidationEngine method = QgsGeometryValidator::defaultValidationEngine();
   validator = new QgsGeometryValidator( geom, nullptr, method );
   connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsVertexTool::validationErrorFound );
   connect( validator, &QThread::finished, tool, &QgsVertexTool::validationFinished );
