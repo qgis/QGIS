@@ -1,5 +1,6 @@
 #include "qgsaireadtools.h"
 
+#include "qgsaitoolschemautil.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapcanvas.h"
@@ -11,6 +12,8 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <algorithm>
+
 #include <QDir>
 #include <QFileInfo>
 #include <QJsonArray>
@@ -19,27 +22,6 @@
 #include <QStringList>
 
 using namespace Qt::StringLiterals;
-
-namespace
-{
-  QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
-  {
-    QJsonObject schema;
-    schema.insert( u"type"_s, u"object"_s );
-    schema.insert( u"properties"_s, properties );
-    if ( !required.isEmpty() )
-      schema.insert( u"required"_s, required );
-    return schema;
-  }
-
-  QJsonObject prop( const QString &type, const QString &description )
-  {
-    QJsonObject p;
-    p.insert( u"type"_s, type );
-    p.insert( u"description"_s, description );
-    return p;
-  }
-} //namespace
 
 // ---------------------------------------------------------------------------
 // read_file
@@ -95,7 +77,7 @@ QgsAiToolResult QgsAiReadFileTool::execute( const QJsonObject &args )
   {
     const QStringList lines = content.split( '\n' );
     const int from = std::max( 1, startLine ) - 1;
-    const int to = endLine > 0 ? std::min( lines.size(), endLine ) : lines.size();
+    const int to = endLine > 0 ? std::min( static_cast<int>( lines.size() ), endLine ) : static_cast<int>( lines.size() );
     if ( from >= lines.size() )
       content = QString();
     else

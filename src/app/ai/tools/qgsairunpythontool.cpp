@@ -1,5 +1,6 @@
 #include "qgsairunpythontool.h"
 
+#include "qgsaitoolschemautil.h"
 #include "qgsaipythonapprovaldialog.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
@@ -69,24 +70,6 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
     escaped.replace( '\\', "\\\\"_L1 );
     escaped.replace( '\'', "\\'"_L1 );
     return u"'%1'"_s.arg( escaped );
-  }
-
-  QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
-  {
-    QJsonObject schema;
-    schema.insert( u"type"_s, u"object"_s );
-    schema.insert( u"properties"_s, properties );
-    if ( !required.isEmpty() )
-      schema.insert( u"required"_s, required );
-    return schema;
-  }
-
-  QJsonObject prop( const QString &type, const QString &description )
-  {
-    QJsonObject p;
-    p.insert( u"type"_s, type );
-    p.insert( u"description"_s, description );
-    return p;
   }
 
   QString truncate( const QString &text, int maxBytes )

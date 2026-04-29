@@ -1,5 +1,6 @@
 #include "qgsailayertools.h"
 
+#include "qgsaitoolschemautil.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
@@ -26,24 +27,6 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  QJsonObject schemaObject( const QJsonObject &properties, const QJsonArray &required = QJsonArray() )
-  {
-    QJsonObject schema;
-    schema.insert( u"type"_s, u"object"_s );
-    schema.insert( u"properties"_s, properties );
-    if ( !required.isEmpty() )
-      schema.insert( u"required"_s, required );
-    return schema;
-  }
-
-  QJsonObject prop( const QString &type, const QString &description )
-  {
-    QJsonObject p;
-    p.insert( u"type"_s, type );
-    p.insert( u"description"_s, description );
-    return p;
-  }
-
   // Vector and raster file extensions we auto-detect. Lowercase, no leading dot.
   const QSet<QString> &vectorExts()
   {
