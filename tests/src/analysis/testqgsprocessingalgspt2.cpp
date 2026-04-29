@@ -2482,6 +2482,22 @@ void TestQgsProcessingAlgsPt2::checkValidity()
   it = invalidLayer->getFeatures();
   it.nextFeature( f );
   QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"Self-intersection"_s );
+
+#ifdef WITH_SFCGAL
+  // SFCGAL method
+  parameters.insert( u"METHOD"_s, 3 );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"INVALID_OUTPUT"_s ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), u"_errors"_s );
+  QCOMPARE( invalidLayer->featureCount(), 1 );
+  it = invalidLayer->getFeatures();
+  it.nextFeature( f );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"ring 0 self intersects"_s );
+#endif
 }
 
 void TestQgsProcessingAlgsPt2::hypsometricCurves()
