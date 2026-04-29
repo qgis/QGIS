@@ -1508,8 +1508,8 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelviewmousehandles.h
   processing/models/qgsmodelviewrubberband.h
   processing/models/qgsmodelviewtool.h
-  processing/models/qgsmodelviewtoolpan.h
   processing/models/qgsmodelviewtoollink.h
+  processing/models/qgsmodelviewtoolpan.h
   processing/models/qgsmodelviewtoolselect.h
   processing/models/qgsmodelviewtooltemporarykeypan.h
   processing/models/qgsmodelviewtooltemporarykeyzoom.h
