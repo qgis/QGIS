@@ -202,7 +202,6 @@ void QgsTerrainEntity::onLayersChanged()
   for ( QgsMapLayer *layer : keys )
   {
     disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
-    disconnect( layer, &QgsMapLayer::styleChanged, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
   }
 
@@ -215,7 +214,6 @@ void QgsTerrainEntity::onLayersChanged()
   {
     mLayers[layer] = static_cast< bool >( layer->renderer3D() );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsTerrainEntity::onLayer3DRendererChanged );
-    connect( layer, &QgsMapLayer::styleChanged, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::onLayerStyleOrFeatureChanged );
   }
 }
