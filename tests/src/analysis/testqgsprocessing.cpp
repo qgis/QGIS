@@ -13515,17 +13515,16 @@ void TestQgsProcessing::guiDefaultParameterValues()
   QgsProcessingParameterString *stringTestParam = new QgsProcessingParameterString( u"testStringParameter"_s, u"A test parameter"_s, u"test, test, test"_s );
   alg.addParameter( stringTestParam );
 
-  QgsSettings s;
-  s.setValue( u"/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter"_s, 42 );
-  s.setValue( u"/Processing/DefaultGuiParam/testAlgorithm/testStringParameter"_s, u"defaultString"_s );
+  QgsProcessing::settingsDefaultGuiParam->setValue( 42, { u"testAlgorithm"_s, u"testIntegerParameter"_s } );
+  QgsProcessing::settingsDefaultGuiParam->setValue( u"defaultString"_s, { u"testAlgorithm"_s, u"testStringParameter"_s } );
 
   QCOMPARE( intTestParam->defaultValueForGui(), 42 );
   QCOMPARE( intTestParam->guiDefaultValueOverride(), 42 );
   QCOMPARE( stringTestParam->defaultValueForGui(), u"defaultString"_s );
   QCOMPARE( stringTestParam->guiDefaultValueOverride(), u"defaultString"_s );
 
-  s.remove( u"/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter"_s );
-  s.remove( u"/Processing/DefaultGuiParam/testAlgorithm/testStringParameter"_s );
+  QgsProcessing::settingsDefaultGuiParam->remove( { u"testAlgorithm"_s, u"testIntegerParameter"_s } );
+  QgsProcessing::settingsDefaultGuiParam->remove( { u"testAlgorithm"_s, u"testStringParameter"_s } );
 }
 
 void TestQgsProcessing::testOutputs()

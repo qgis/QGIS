@@ -619,6 +619,25 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     settings->endGroup();
     settings->remove( u"variables"_s );
   }
+
+  // processing default GUI parameter values - dynamic per-algorithm-id and per-parameter-name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Processing/DefaultGuiParam"_s );
+    const QStringList algIds = settings->childGroups();
+    for ( const QString &algId : algIds )
+    {
+      settings->beginGroup( algId );
+      const QStringList paramNames = settings->childKeys();
+      for ( const QString &paramName : paramNames )
+      {
+        QgsProcessing::settingsDefaultGuiParam->setValue( settings->value( paramName ), { algId, paramName } );
+      }
+      settings->endGroup();
+    }
+    settings->endGroup();
+    settings->remove( u"Processing/DefaultGuiParam"_s );
+  }
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
