@@ -16,9 +16,25 @@ jobs:
       issues: write
 
     steps:
+      - name: Compute fetch depth
+        id: fetch_depth
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CREATED="${{ github.event.pull_request.created_at }}"
+            NOW_TS=$(date -u +%s)
+            THEN_TS=$(date -u -d "$CREATED" +%s)
+            DAYS=$(( (NOW_TS - THEN_TS) / 86400 ))
+            [ "$DAYS" -lt 0 ] && DAYS=0
+            DEPTH=$(( 100 + 10 * DAYS ))
+          else
+            DEPTH=200
+          fi
+          echo "Using fetch-depth=$DEPTH"
+          echo "depth=$DEPTH" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 200
+          fetch-depth: ${{ steps.fetch_depth.outputs.depth }}
           persist-credentials: true  # We need to persist credentials because of later git push
 
       - name: Set up Python
