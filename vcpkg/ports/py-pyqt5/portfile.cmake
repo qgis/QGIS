@@ -49,5 +49,7 @@ vcpkg_qmake_build(BUILD_LOGNAME "install" TARGETS "install")
 vcpkg_restore_env_variables(VARS PATH)
 
 vcpkg_python_test_import(MODULE "PyQt5.QtCore")
+vcpkg_python_test_import(MODULE "PyQt5.QtWebKit")
+vcpkg_python_test_import(MODULE "PyQt5.QtWebKitWidgets")
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
