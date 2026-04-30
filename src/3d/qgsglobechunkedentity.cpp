@@ -562,7 +562,6 @@ void QgsGlobeEntity::onLayersChanged()
   for ( QgsMapLayer *layer : keys )
   {
     disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsGlobeEntity::onLayer3DRendererChanged );
-    disconnect( layer, &QgsMapLayer::styleChanged, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
   }
 
@@ -575,7 +574,6 @@ void QgsGlobeEntity::onLayersChanged()
   {
     mLayers[layer] = static_cast< bool >( layer->renderer3D() );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsGlobeEntity::onLayer3DRendererChanged );
-    connect( layer, &QgsMapLayer::styleChanged, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
   }
 }

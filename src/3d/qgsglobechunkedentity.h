@@ -120,7 +120,6 @@ class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
     void onLayersChanged();
     void onLayer3DRendererChanged();
     void onLayerStyleOrFeatureChanged();
-    void onTerrainElevationOffsetChanged();
 
 
   private:
