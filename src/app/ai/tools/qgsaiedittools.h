@@ -2,6 +2,7 @@
 #define QGSAIEDITTOOLS_H
 
 #include "qgis_app.h"
+#include "qgsaimodels.h"
 #include "qgsaitool.h"
 
 #include <QString>
