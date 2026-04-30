@@ -4107,7 +4107,7 @@ void QgsProcessingPointWidgetWrapper::setWidgetContext( const QgsProcessingParam
     mPanel->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsProcessingPointWidgetWrapper::setDialog( QDialog *dialog )
+void QgsProcessingPointWidgetWrapper::setDialog( QWidget *dialog )
 {
   mDialog = dialog;
   if ( mPanel )
@@ -6372,7 +6372,7 @@ void QgsProcessingExtentWidgetWrapper::setWidgetContext( const QgsProcessingPara
     mExtentWidget->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsProcessingExtentWidgetWrapper::setDialog( QDialog *dialog )
+void QgsProcessingExtentWidgetWrapper::setDialog( QWidget *dialog )
 {
   mDialog = dialog;
   if ( mExtentWidget && mDialog && type() != Qgis::ProcessingMode::Modeler )
