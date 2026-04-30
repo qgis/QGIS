@@ -135,6 +135,10 @@ const QgsSettingsEntryString *QgsApplication::settingsApplicationFullName = new 
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSkippedGdalDrivers = new QgsSettingsEntryStringList( u"skip-drivers"_s, QgsSettingsTree::sTreeGdal, QStringList() );
 
+QgsSettingsTreeNamedListNode *QgsApplication::sTreeCustomVariables = QgsSettingsTree::sTreeApp->createNamedListNode( u"variables"_s );
+const QgsSettingsEntryVariant *QgsApplication::settingsCustomVariable
+  = new QgsSettingsEntryVariant( u"value"_s, sTreeCustomVariables, QVariant(), u"User-defined custom application variable, keyed by variable name. Available as @-prefixed variables in expressions."_s );
+
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
 const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( u"overrideFlag"_s, QgsSettingsTree::sTreeLocale, false );
@@ -2091,18 +2095,12 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
 
 QVariantMap QgsApplication::customVariables()
 {
-  //read values from QgsSettings
-  QgsSettings settings;
-
   QVariantMap variables;
 
-  //check if settings contains any variables
-  settings.beginGroup( "variables" );
-  QStringList childKeys = settings.childKeys();
-  for ( QStringList::const_iterator it = childKeys.constBegin(); it != childKeys.constEnd(); ++it )
+  const QStringList names = sTreeCustomVariables->items();
+  for ( const QString &name : names )
   {
-    QString name = *it;
-    variables.insert( name, settings.value( name ) );
+    variables.insert( name, settingsCustomVariable->value( name ) );
   }
 
   return variables;
@@ -2110,14 +2108,10 @@ QVariantMap QgsApplication::customVariables()
 
 void QgsApplication::setCustomVariables( const QVariantMap &variables )
 {
-  QgsSettings settings;
-
-  QVariantMap::const_iterator it = variables.constBegin();
-  settings.beginGroup( "variables" );
-  settings.remove( "" );
-  for ( ; it != variables.constEnd(); ++it )
+  sTreeCustomVariables->deleteAllItems();
+  for ( auto it = variables.constBegin(); it != variables.constEnd(); ++it )
   {
-    settings.setValue( it.key(), it.value() );
+    settingsCustomVariable->setValue( it.value(), { it.key() } );
   }
 
   emit instance() -> customVariablesChanged();
@@ -2125,10 +2119,7 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
 
 void QgsApplication::setCustomVariable( const QString &name, const QVariant &value )
 {
-  // save variable to settings
-  QgsSettings settings;
-
-  settings.setValue( u"variables/"_s + name, value );
+  settingsCustomVariable->setValue( value, { name } );
 
   emit instance() -> customVariablesChanged();
 }

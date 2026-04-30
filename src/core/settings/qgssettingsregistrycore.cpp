@@ -606,6 +606,19 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     }
     settings->endGroup();
   }
+
+  // application custom variables - dynamic per-variable name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"variables"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &name : keys )
+    {
+      QgsApplication::settingsCustomVariable->setValue( settings->value( name ), { name } );
+    }
+    settings->endGroup();
+    settings->remove( u"variables"_s );
+  }
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
