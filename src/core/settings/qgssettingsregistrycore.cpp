@@ -577,6 +577,19 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // encoding
   QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
 
+  // browser custom directory colors - dynamic per-path key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"qgis/browserPathColors"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &mangledPath : keys )
+    {
+      QgsDirectoryItem::settingsCustomPathColor->setValue( settings->value( mangledPath ).toString(), { mangledPath } );
+    }
+    settings->endGroup();
+    settings->remove( u"qgis/browserPathColors"_s );
+  }
+
   // news feed disabled state - dynamic per-feed key
   {
     auto settings = QgsSettings::get();
