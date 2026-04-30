@@ -11,6 +11,14 @@ VERSION="${QGISAI_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
+echo "==> Adding QGIS apt repository (libqca-qt6-2-dev not in noble core)"
+sudo install -d -m 0755 /etc/apt/keyrings
+wget -qO- https://download.qgis.org/downloads/qgis-archive-keyring.gpg \
+  | sudo tee /etc/apt/keyrings/qgis-archive-keyring.gpg > /dev/null
+sudo chmod 644 /etc/apt/keyrings/qgis-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/qgis-archive-keyring.gpg] https://qgis.org/ubuntu noble main" \
+  | sudo tee /etc/apt/sources.list.d/qgis.sources.list
+
 echo "==> Installing build dependencies (apt) — Ubuntu 24.04 noble"
 sudo apt-get update
 # Build deps for QGIS Qt6 + extras needed for AppImage packaging.
@@ -76,6 +84,7 @@ sudo apt-get install -y --no-install-recommends \
   libfcgi-dev \
   libdraco-dev \
   libgsl-dev \
+  libqca-qt6-2-dev \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
@@ -95,9 +104,6 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
 # providers can install QGIS_AI from source.
-# WITH_AUTH=OFF: QCA Qt6 (libqca-qt6-2-dev) is not in noble core repo and
-# would require adding the QGIS apt repository. Auth disabled for AppImage
-# only — desktop installs from source still get full auth support.
 # WITH_PYTHON=OFF + WITH_BINDINGS=OFF: noble ships sip6 which rejects the
 # /Movable/ annotation in python/PyQt6/core/conversions.sip:1249 (the
 # %If(MOVABLE_MAPPED_TYPE) guard does not gate parsing in sip6). Disabling
@@ -106,6 +112,10 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # pyanalysis, pyplugin-installer, qgispython, staged-plugins) that only
 # exist when WITH_BINDINGS=ON. Both are disabled together. PyQGIS plugin
 # support is lost in the AppImage; source builds still get it.
+# WITH_AUTH=ON (default): QCA Qt6 (libqca-qt6-2-dev) installed from the
+# QGIS apt repository above. qgsauthmanager.h #include <QtCrypto> is
+# referenced by other modules even when WITH_AUTH=OFF, so disabling
+# auth is not viable.
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
@@ -116,7 +126,6 @@ cmake -S . -B build -G Ninja \
   -DWITH_3D=ON \
   -DWITH_QTWEBENGINE=ON \
   -DWITH_PDAL=OFF \
-  -DWITH_AUTH=OFF \
   -DENABLE_TESTS=OFF \
   -DUSE_CCACHE=ON \
   -DENABLE_UNITY_BUILDS=ON \
