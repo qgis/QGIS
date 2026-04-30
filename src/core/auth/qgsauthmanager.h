@@ -32,10 +32,10 @@
 #ifndef QT_NO_SSL
 #include <QSslCertificate>
 #include <QSslKey>
+#include "qgsauthcertutils.h"
 #endif
 #ifdef HAVE_AUTH
 #include <QtCrypto>
-#include "qgsauthcertutils.h"
 #endif
 
 #include "qgsauthconfig.h"
