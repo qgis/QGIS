@@ -316,6 +316,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
+  for ( const QString &rendererKey : { u"singleBand"_s, u"multiBandSingleByte"_s, u"multiBandMultiByte"_s } )
+  {
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->copyValueFromKey( u"Raster/defaultContrastEnhancementAlgorithm/%1"_s, { rendererKey }, true );
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->copyValueFromKey( u"Raster/defaultContrastEnhancementLimits/%1"_s, { rendererKey }, true );
+  }
   // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
   QgsNetworkAccessManager::settingsProxyHost->copyValueFromKey( u"proxy/proxyHost"_s, true );
