@@ -1781,6 +1781,47 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertEqual(layer.featureCount(cat_b_id), 2)
         self.assertEqual(layer.featureCount(cat_default_id), 1)
 
+    def test_layer_counts_other_categories(self):
+        layer = QgsVectorLayer("Point?field=test_field:string", "test_layer", "memory")
+        self.assertTrue(layer.isValid())
+        fields = layer.fields()
+        layer.startEditing()
+        self.assertEqual(fields[0].type(), QVariant.String)
+
+        # add test values
+        for attr_value in ["a", "b", None]:
+            f = QgsFeature(fields)
+            f.setAttributes([attr_value])
+            self.assertTrue(layer.addFeature(f))
+
+        self.assertEqual(layer.featureCount(), 3)
+        layer.commitChanges()
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("test_field")
+
+        renderer.addCategory(QgsRendererCategory("a", createMarkerSymbol(), "a"))
+        cat_a_id = renderer.categories()[-1].uuid()
+        renderer.addCategory(
+            QgsRendererCategory(QVariant(), createMarkerSymbol(), "other values")
+        )
+        cat_other_id = renderer.categories()[-1].uuid()
+
+        self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_other_id})
+
+        ctx = QgsRenderContext()
+        renderer.startRender(ctx, layer.fields())
+
+        self.assertEqual(
+            renderer.legendKeysForFeature(layer.getFeature(1), ctx), {cat_a_id}
+        )
+        self.assertEqual(
+            renderer.legendKeysForFeature(layer.getFeature(3), ctx), {cat_other_id}
+        )
+        self.assertEqual(
+            renderer.legendKeysForFeature(layer.getFeature(2), ctx), {cat_other_id}
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
