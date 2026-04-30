@@ -1613,7 +1613,7 @@ QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QS
 QToolButton *QgsAttributeForm::createCommentInfoButton( QWidget *labelWidget )
 {
   QToolButton *infoButton = new QToolButton( labelWidget );
-  infoButton->setIcon( QgsApplication::getThemeIcon( u"/mIndicatorFieldComment.svg"_s ) );
+  infoButton->setIcon( QgsApplication::getThemeIcon( u"/mIndicatorFieldComment.svg"_s, QgsApplication::palette().color( QPalette::WindowText ) ) );
   infoButton->setFocusPolicy( Qt::NoFocus );
   // looks like an icon, but on click the tooltip of the label appears
   infoButton->setAutoRaise( true );
