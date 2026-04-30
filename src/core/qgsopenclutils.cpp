@@ -335,10 +335,10 @@ QString QgsOpenClUtils::preferredDevice()
 QString QgsOpenClUtils::deviceId( const cl::Device device )
 {
   return QStringLiteral( "%1|%2|%3|%4" )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Vendor, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Version, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Type, device ) );
+         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ),
+               deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
+               deviceInfo( QgsOpenClUtils::Info::Version, device ),
+               deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
 #if defined(_MSC_VER)
@@ -723,8 +723,7 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     if ( ok && version < 2.0f )
     {
       program.build( QStringLiteral( "-cl-std=CL%1 -I\"%2\"" )
-                     .arg( QgsOpenClUtils::activePlatformVersion( ) )
-                     .arg( sourcePath() ).toStdString().c_str() );
+                     .arg( QgsOpenClUtils::activePlatformVersion( ), sourcePath() ).toStdString().c_str() );
     }
     else
     {
