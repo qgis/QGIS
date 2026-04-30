@@ -32,6 +32,7 @@
 #include "qgslayoutsnapper.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
 #include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
@@ -570,6 +571,23 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // encoding
   QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
+
+  // news feed disabled state - dynamic per-feed key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"core/NewsFeed"_s );
+    const QStringList feedKeys = settings->childGroups();
+    for ( const QString &feedKey : feedKeys )
+    {
+      const QString disabledKey = feedKey + "/disabled"_L1;
+      if ( settings->contains( disabledKey ) )
+      {
+        QgsNewsFeedParser::settingsFeedDisabled->setValue( settings->value( disabledKey ).toBool(), { feedKey } );
+        settings->remove( disabledKey );
+      }
+    }
+    settings->endGroup();
+  }
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()
