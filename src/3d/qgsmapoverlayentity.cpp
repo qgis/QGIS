@@ -100,7 +100,6 @@ void QgsMapOverlayEntity::onLayersChanged()
   for ( QgsMapLayer *layer : keys )
   {
     disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsMapOverlayEntity::onLayer3DRendererChanged );
-    disconnect( layer, &QgsMapLayer::styleChanged, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
   }
 
@@ -113,7 +112,6 @@ void QgsMapOverlayEntity::onLayersChanged()
   {
     mLayers[layer] = static_cast< bool >( layer->renderer3D() );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsMapOverlayEntity::onLayer3DRendererChanged );
-    connect( layer, &QgsMapLayer::styleChanged, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
   }
 }

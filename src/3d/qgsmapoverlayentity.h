@@ -73,7 +73,6 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     void onLayersChanged();
     void onLayer3DRendererChanged();
     void onLayerStyleOrFeatureChanged();
-    void onTerrainElevationOffsetChanged();
     void onTextureReady( const QImage &image );
     void onSizeChanged();
 
