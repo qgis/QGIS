@@ -38,6 +38,8 @@
 #include "qgspolygon3dsymbol.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include "qgssimplelinematerial3dhandler.h"
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
@@ -46,6 +48,9 @@
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryBool *Qgs3D::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, false, u"Whether MSAA is enabled for 3D map rendering"_s );
+
 
 Qgs3D *Qgs3D::instance()
 {

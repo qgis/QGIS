@@ -16,10 +16,9 @@
 #include "qgs3doptions.h"
 
 #include "qgis.h"
+#include "qgs3d.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingstree.h"
 
 #include <QString>
 #include <Qt3DRender/QCamera>
@@ -27,8 +26,6 @@
 #include "moc_qgs3doptions.cpp"
 
 using namespace Qt::StringLiterals;
-
-const QgsSettingsEntryBool *Qgs3DOptionsWidget::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, false, u"Whether MSAA is enabled for 3D map rendering"_s );
 
 //
 // Qgs3DOptionsWidget
@@ -70,7 +67,7 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mGpuMemoryLimit->setClearValue( 500 );
   mGpuMemoryLimit->setValue( settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble() );
 
-  mMSAA->setChecked( settingMsaaEnabled->value() );
+  mMSAA->setChecked( Qgs3D::settingMsaaEnabled->value() );
 }
 
 QString Qgs3DOptionsWidget::helpKey() const
@@ -90,7 +87,7 @@ void Qgs3DOptionsWidget::apply()
 
   settings.setValue( u"map3d/gpuMemoryLimit"_s, mGpuMemoryLimit->value(), QgsSettings::App );
 
-  settingMsaaEnabled->setValue( mMSAA->isChecked() );
+  Qgs3D::settingMsaaEnabled->setValue( mMSAA->isChecked() );
 }
 
 
