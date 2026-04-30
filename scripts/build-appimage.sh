@@ -98,15 +98,19 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_AUTH=OFF: QCA Qt6 (libqca-qt6-2-dev) is not in noble core repo and
 # would require adding the QGIS apt repository. Auth disabled for AppImage
 # only — desktop installs from source still get full auth support.
-# WITH_BINDINGS=OFF: noble ships sip6 which rejects the /Movable/ annotation
-# used in python/PyQt6/core/conversions.sip:1249 (the %If(MOVABLE_MAPPED_TYPE)
-# guard does not gate parsing in sip6). This loses PyQGIS Python plugins
-# in the AppImage; sourceful installs still get them. Track upstream sip
-# compat work to re-enable.
+# WITH_PYTHON=OFF + WITH_BINDINGS=OFF: noble ships sip6 which rejects the
+# /Movable/ annotation in python/PyQt6/core/conversions.sip:1249 (the
+# %If(MOVABLE_MAPPED_TYPE) guard does not gate parsing in sip6). Disabling
+# WITH_BINDINGS alone is not enough because CMakeLists.txt:321 tests
+# WITH_PYTHON to add dependencies on python targets (pycore, pygui,
+# pyanalysis, pyplugin-installer, qgispython, staged-plugins) that only
+# exist when WITH_BINDINGS=ON. Both are disabled together. PyQGIS plugin
+# support is lost in the AppImage; source builds still get it.
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
   -DENABLE_AI_ASSISTANT=ON \
+  -DWITH_PYTHON=OFF \
   -DWITH_BINDINGS=OFF \
   -DWITH_DESKTOP=ON \
   -DWITH_3D=ON \
