@@ -45,6 +45,7 @@
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsproject.h"
 #include "qgsproxyprogresstask.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrycore.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
@@ -66,6 +67,9 @@ const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAttributeTableDefau
   = new QgsSettingsEntryBool( u"attribute-table-default-docked"_s, QgsSettingsTree::sTreeAttributeTable, false, u"If true, attribute tables will be docked by default."_s );
 
 const QgsSettingsEntryBool *QgsAttributeTableDialog::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
+
+const QgsSettingsEntryEnumFlag<QgsAttributeTableConfig::AddFeatureMethod> *QgsAttributeTableDialog::settingsDefaultAddFeatureMethod = new QgsSettingsEntryEnumFlag<
+  QgsAttributeTableConfig::AddFeatureMethod>( u"default-add-feature-method"_s, QgsSettingsTree::sTreeAttributeTable, QgsAttributeTableConfig::AddFeatureMethod::Table, u"Default method used to add a new feature from the attribute table when no per-layer method is set."_s );
 
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
@@ -180,8 +184,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
     method = mLayer->attributeTableConfig().addFeatureMethod();
   if ( method == QgsAttributeTableConfig::AddFeatureMethod::Unset )
   {
-    const QString lastMethod = settings.value( u"/qgis/attribute-table/default-add-feature-method"_s ).toString();
-    method = ( lastMethod == "attributeForm"_L1 ) ? QgsAttributeTableConfig::AddFeatureMethod::Form : QgsAttributeTableConfig::AddFeatureMethod::Table;
+    method = settingsDefaultAddFeatureMethod->value();
+    if ( method == QgsAttributeTableConfig::AddFeatureMethod::Unset )
+      method = QgsAttributeTableConfig::AddFeatureMethod::Table;
   }
   mAddFeatureButton->setDefaultAction( ( method == QgsAttributeTableConfig::AddFeatureMethod::Form ) ? mActionAddFeatureViaAttributeForm : mActionAddFeature );
 
@@ -731,8 +736,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
     return;
 
   //remember as last used mode ...
-  QgsSettings s;
-  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeTable"_s );
+  settingsDefaultAddFeatureMethod->setValue( QgsAttributeTableConfig::AddFeatureMethod::Table );
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeature );
   //... and set for the current layer
@@ -769,8 +773,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
     return;
 
   //remember as last used mode ...
-  QgsSettings s;
-  s.setValue( u"/qgis/attribute-table/default-add-feature-method"_s, u"attributeForm"_s );
+  settingsDefaultAddFeatureMethod->setValue( QgsAttributeTableConfig::AddFeatureMethod::Form );
   //... change the button's action ...
   mAddFeatureButton->setDefaultAction( mActionAddFeatureViaAttributeForm );
   //... and set for the current layer
