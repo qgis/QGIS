@@ -11,14 +11,6 @@ VERSION="${QGISAI_VERSION:-dev}"
 APPDIR="${PWD}/AppDir"
 NPROC="$(nproc)"
 
-echo "==> Adding QGIS apt repository (libqca-qt6-2-dev not in noble core)"
-sudo install -d -m 0755 /etc/apt/keyrings
-wget -qO- https://download.qgis.org/downloads/qgis-archive-keyring.gpg \
-  | sudo tee /etc/apt/keyrings/qgis-archive-keyring.gpg > /dev/null
-sudo chmod 644 /etc/apt/keyrings/qgis-archive-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/qgis-archive-keyring.gpg] https://qgis.org/ubuntu noble main" \
-  | sudo tee /etc/apt/sources.list.d/qgis.sources.list
-
 echo "==> Installing build dependencies (apt) — Ubuntu 24.04 noble"
 sudo apt-get update
 # Build deps for QGIS Qt6 + extras needed for AppImage packaging.
@@ -84,7 +76,6 @@ sudo apt-get install -y --no-install-recommends \
   libfcgi-dev \
   libdraco-dev \
   libgsl-dev \
-  libqca-qt6-2-dev \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
@@ -112,10 +103,10 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # pyanalysis, pyplugin-installer, qgispython, staged-plugins) that only
 # exist when WITH_BINDINGS=ON. Both are disabled together. PyQGIS plugin
 # support is lost in the AppImage; source builds still get it.
-# WITH_AUTH=ON (default): QCA Qt6 (libqca-qt6-2-dev) installed from the
-# QGIS apt repository above. qgsauthmanager.h #include <QtCrypto> is
-# referenced by other modules even when WITH_AUTH=OFF, so disabling
-# auth is not viable.
+# WITH_AUTH=OFF: QCA Qt6 not packaged for noble (not in core, not in
+# QGIS apt repo). qgsauthmanager.h has been patched to gate the
+# <QtCrypto> include on HAVE_AUTH so transitively-including translation
+# units compile when WITH_AUTH=OFF.
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
@@ -126,6 +117,7 @@ cmake -S . -B build -G Ninja \
   -DWITH_3D=ON \
   -DWITH_QTWEBENGINE=ON \
   -DWITH_PDAL=OFF \
+  -DWITH_AUTH=OFF \
   -DENABLE_TESTS=OFF \
   -DUSE_CCACHE=ON \
   -DENABLE_UNITY_BUILDS=ON \
