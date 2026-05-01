@@ -27,6 +27,7 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgssettingsproxy.h"
 
 #include <QString>
 
