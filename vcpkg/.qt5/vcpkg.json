@@ -21,7 +21,7 @@
       },
       {
         "kind": "git",
-        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
+        "baseline": "6384ff8ba186bedd86eea799b3804cc7488194af",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -173,6 +173,7 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-plotly",
         "py-psycopg",
         "py-psycopg2",
         {
