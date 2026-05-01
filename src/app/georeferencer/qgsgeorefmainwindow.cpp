@@ -2661,8 +2661,7 @@ void QgsGeoreferencerMainWindow::clearGCPData()
 void QgsGeoreferencerMainWindow::invalidateCanvasCoords()
 {
   int count = mPoints.count();
-  int j = 0;
-  for ( int i = 0; i < count; ++i, ++j )
+  for ( int i = 0; i < count; ++i )
   {
     QgsGeorefDataPoint *p = mPoints.at( i );
     p->updateCoords();

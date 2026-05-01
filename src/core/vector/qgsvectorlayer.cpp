@@ -2807,7 +2807,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           {
             QList<QVariant> translatedValueList;
             const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            for ( int i = 0; i < valueList.count(); i++ )
             {
               QMap<QString, QVariant> translatedValueMap;
               QString translatedKey
