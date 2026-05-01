@@ -247,7 +247,9 @@ namespace QgsWms
             group = strGroup + "/" + name;
           }
 
-          appendOwsLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, treeGroupChild, combinedBBox, group );
+          // when the group is opaque we should not append any child layers
+          if ( !layerTreeGroup->isWmsOpaque() )
+            appendOwsLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, treeGroupChild, combinedBBox, group );
         }
         else
         {
