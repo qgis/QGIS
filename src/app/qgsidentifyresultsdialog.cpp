@@ -130,6 +130,7 @@ const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidth = ne
 
 const QgsSettingsEntryInteger *QgsIdentifyResultsDialog::settingColumnWidthTable = new QgsSettingsEntryInteger( u"identify-column-width-table"_s, QgsSettingsTree::sTreeWindowState, 0 );
 
+
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
 {

@@ -45,7 +45,6 @@
 #include <QStatusBar>
 #include <QString>
 #include <QVariant>
-#include <QDebug>
 
 #include "moc_qgsmaptoolidentifyaction.cpp"
 
@@ -187,12 +186,21 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 }
 
 void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx, int featureCount) {  
+  // Put index starting at the  21st feature or the next feature after mMaxResults is reached
   QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx;
-  if (mResultsIdx == featureCount) {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "All features displayed already" ), Qgis::MessageLevel::Warning );
-  } else {
-    resultsDialog()->addFeature( *nextFeature );
-    ++mResultsIdx;
+
+  // Add features by batch
+  int newResultsIdx = 0;
+  while (newResultsIdx < mResultsBatchSize) {
+    if (mResultsIdx == featureCount) {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "All features displayed already" ), Qgis::MessageLevel::Warning );
+      break;
+    } else {
+      resultsDialog()->addFeature( *nextFeature );
+      ++mResultsIdx;    // Counter for all the features of a layer, should not exceed the layer's feature count
+      ++newResultsIdx; // Counter for the features after the first batch added to Identify Results
+      ++nextFeature;    // Moves on to the next feature
+    }
   }
 }
 
