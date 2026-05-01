@@ -21,6 +21,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 #include <QString>
 
@@ -48,10 +49,59 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
   initRestrictedLayers();
   initNicknameLayers();
 
+  // Throw a LayerNotDefined when one of the requested layers or groups is an opaque child only (without a same-named other layer)
+  const QStringList layersList = mParameters.queryLayersNickname() + mParameters.allLayersNickname();
+  auto firstPureOpaqueChildInNickname = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layername ) { return isAnOpaqueChildOnly( *mProject, mNicknameLayers, layername ); } );
+  if ( firstPureOpaqueChildInNickname != layersList.cend() )
+  {
+    QgsWmsParameter param( QgsWmsParameter::LAYER );
+    param.mValue = *firstPureOpaqueChildInNickname;
+    throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
+  }
+
   searchLayersToRender();
   removeUnwantedLayers();
 
   std::reverse( mLayersToRender.begin(), mLayersToRender.end() );
+}
+
+bool QgsWmsRenderContext::ignoreSameNamedLayerOnOpaque( QgsMapLayer *layer, const QString nickName, const QStringList parameterLayerNames )
+{
+  // If the project itself is passed as a layer parameter or the current layer is an external layer, then we return immediately because it should not be ignored
+  if ( isExternalLayer( nickName ) || parameterLayerNames.contains( QgsServerProjectUtils::wmsRootName( *mProject ) ) || parameterLayerNames.contains( mProject->title() ) )
+    return false;
+
+  QStringList opaqueParentNamesOfLayer;
+  QStringList nonOpaqueParentNamesOfLayer;
+  QgsLayerTreeLayer *layernode = mProject->layerTreeRoot()->findLayer( layer );
+  collectParentNames( QgsLayerTree::toGroup( layernode->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
+  // If the layer is not part of an opaque group the layer needs to be requested to render (or a group it belongs)
+  if ( opaqueParentNamesOfLayer.isEmpty() )
+  {
+    bool parentInParameters = std::any_of( nonOpaqueParentNamesOfLayer.begin(), nonOpaqueParentNamesOfLayer.end(), [&]( const QString &str ) { return parameterLayerNames.contains( str ); } );
+    if ( parameterLayerNames.contains( nickName ) || parentInParameters )
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  else
+  // If the layer is part of an opaque group the opaque group needs to be requeseted to render
+  {
+    bool opaqueParentInParameters = std::any_of( opaqueParentNamesOfLayer.begin(), opaqueParentNamesOfLayer.end(), [&]( const QString &str ) { return parameterLayerNames.contains( str ); } );
+
+    if ( opaqueParentInParameters )
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
 }
 
 bool QgsWmsRenderContext::addLayerToRender( QgsMapLayer *layer )
@@ -458,10 +508,15 @@ void QgsWmsRenderContext::searchLayersToRender()
     for ( const QString &layerName : queryLayerNames )
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+
       for ( QgsMapLayer *lyr : layers )
       {
         if ( !mLayersToRender.contains( lyr ) )
         {
+          if ( ignoreSameNamedLayerOnOpaque( lyr, layerName, mParameters.queryLayersNickname() ) )
+          {
+            continue;
+          }
           if ( !addLayerToRender( lyr ) )
           {
             throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
@@ -481,6 +536,10 @@ void QgsWmsRenderContext::searchLayersToRender()
       {
         if ( !mLayersToRender.contains( lyr ) )
         {
+          if ( ignoreSameNamedLayerOnOpaque( lyr, layerName, mParameters.allLayersNickname() ) )
+          {
+            continue;
+          }
           if ( !addLayerToRender( lyr ) )
           {
             throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
@@ -513,6 +572,13 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
   }
 
   QDomNodeList named = docEl.elementsByTagName( "NamedLayer" );
+
+  QStringList requestedSldLayerNames;
+  for ( int i = 0; i < named.size(); ++i )
+  {
+    requestedSldLayerNames.append( named.item( i ).firstChildElement( u"Name"_s ).text() );
+  }
+
   for ( int i = 0; i < named.size(); ++i )
   {
     QDomNodeList names = named.item( i ).toElement().elementsByTagName( "Name" );
@@ -524,6 +590,10 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         mSlds[lname] = namedElem;
         for ( const auto layer : mNicknameLayers.values( lname ) )
         {
+          if ( ignoreSameNamedLayerOnOpaque( layer, lname, requestedSldLayerNames ) )
+          {
+            continue;
+          }
           if ( !addLayerToRender( layer ) )
           {
             throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
@@ -542,6 +612,10 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         bool layerAdded = false;
         for ( QgsMapLayer *layer : mLayerGroups[lname] )
         {
+          if ( ignoreSameNamedLayerOnOpaque( layer, lname, requestedSldLayerNames ) )
+          {
+            continue;
+          }
           // Insert only allowed layers
           if ( checkLayerReadPermissions( layer ) )
           {
@@ -601,6 +675,10 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto layer : mNicknameLayers.values( nickname ) )
       {
+        if ( ignoreSameNamedLayerOnOpaque( layer, nickname, mParameters.queryLayersNickname() + mParameters.allLayersNickname() ) )
+        {
+          continue;
+        }
         if ( !addLayerToRender( layer ) )
         {
           throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
@@ -632,6 +710,10 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
       {
         for ( const auto layer : mNicknameLayers.values( name ) )
         {
+          if ( ignoreSameNamedLayerOnOpaque( layer, name, mParameters.queryLayersNickname() + mParameters.allLayersNickname() ) )
+          {
+            continue;
+          }
           if ( addLayerToRender( layer ) )
           {
             layerAdded = true;

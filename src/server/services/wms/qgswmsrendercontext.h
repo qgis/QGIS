@@ -296,6 +296,12 @@ namespace QgsWms
       bool addLayerToRender( QgsMapLayer *layer );
 
       /**
+       * Checks if the layer is in an opaque group and, if so, whether the opaque group is requested.
+       * If the layer is not in an opaque group, checks whether the layer is requested.
+       */
+      bool ignoreSameNamedLayerOnOpaque( QgsMapLayer *layer, const QString nickName, const QStringList parameterLayerNames );
+
+      /**
        * Check layer read permissions
        * Returns true if the layer is readable, false otherwise
        */
