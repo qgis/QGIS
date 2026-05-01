@@ -23,6 +23,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgsogrdbconnection.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
@@ -37,12 +38,7 @@ using namespace Qt::StringLiterals;
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsOgrProviderConnection( name )
 {
-  QgsSettings settings;
-  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
-  settings.beginGroup( u"GPKG"_s );
-  settings.beginGroup( u"connections"_s );
-  settings.beginGroup( name );
-  setUri( settings.value( u"path"_s ).toString() );
+  setUri( QgsOgrDbConnection::settingsOgrConnectionPath->value( { u"GPKG"_s, name } ) );
   setDefaultCapabilities();
 }
 
@@ -54,12 +50,7 @@ QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString 
 
 void QgsGeoPackageProviderConnection::store( const QString &name ) const
 {
-  QgsSettings settings;
-  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
-  settings.beginGroup( u"GPKG"_s );
-  settings.beginGroup( u"connections"_s );
-  settings.beginGroup( name );
-  settings.setValue( u"path"_s, uri() );
+  QgsOgrDbConnection::settingsOgrConnectionPath->setValue( uri(), { u"GPKG"_s, name } );
 }
 
 void QgsGeoPackageProviderConnection::remove( const QString &name ) const
