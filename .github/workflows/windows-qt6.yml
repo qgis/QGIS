@@ -34,7 +34,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea83089aa35e08e459464341fe24ad024ee2466f
+        uses: lukka/get-cmake@7bfc9baacbbdcb5e37957ad05c3546b3e222be3c
         with:
           cmakeVersion: 3.31.6
 
@@ -45,7 +45,7 @@ jobs:
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 #v1.12
+        uses: robinraju/release-downloader@28fc21f50d76778e7023361aa1f863e717d3d56f #v1.13
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
@@ -53,7 +53,7 @@ jobs:
           extract: true
 
       - name: 🛍️ Setup ccache
-        uses: hendrikmuhs/ccache-action@33522472633dbd32578e909b315f5ee43ba878ce #v1.2
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 #v1.2
         with:
           max-size: 1G
           key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -117,7 +117,7 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         with:
           name: qgis-sdk-x64-windows
@@ -125,7 +125,7 @@ jobs:
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         if: failure()
         with:
@@ -134,7 +134,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
 
         id: artifact-win64-qt6
         with:

@@ -136,14 +136,14 @@ jobs:
 
       - name: Login to Docker Hub
         if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2  # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121  # v4.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294  # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -159,7 +159,7 @@ jobs:
           STEPS_DOCKER_BUILD_OUTPUTS_IMAGEID: ${{ steps.docker-build.outputs.imageid }}
 
       - name: Restore build cache
-        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /home/runner/QGIS/.ccache
           key: build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -198,7 +198,7 @@ jobs:
                      /root/QGIS/.docker/docker-qgis-build.sh
 
       - name: Save build cache for push only
-        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
@@ -209,7 +209,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
@@ -346,14 +346,14 @@ jobs:
 
       - name: Login to Docker Hub
         if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2  # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121  # v4.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294  # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -430,7 +430,7 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-results-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ matrix.test-batch }}
           path: qgis_test_report
@@ -464,14 +464,14 @@ jobs:
 
       - name: Login to Docker Hub
         if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2  # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121  # v4.1.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294  #  v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  #  v7.1.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
