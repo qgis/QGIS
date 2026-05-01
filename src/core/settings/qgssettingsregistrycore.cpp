@@ -21,6 +21,7 @@
 #include "qgsbabelformatregistry.h"
 #include "qgscolorscheme.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
 #include "qgsfilebaseddataitemprovider.h"
@@ -638,6 +639,41 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     }
     settings->endGroup();
     settings->remove( u"Processing/DefaultGuiParam"_s );
+  }
+
+  // coordinate transform context - per source/destination CRS pair
+  // old keys: Projections/<srcAuthId>//<destAuthId>_coordinateOp and _allowFallback
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Projections"_s );
+    const QStringList projectionKeys = settings->allKeys();
+    for ( const QString &key : projectionKeys )
+    {
+      if ( !key.contains( "coordinateOp"_L1 ) )
+        continue;
+      const QStringList split = key.split( '/' );
+      if ( split.size() < 2 )
+        continue;
+      const QString srcAuthId = split.at( 0 );
+      const QString destAuthId = split.at( 1 ).split( '_' ).at( 0 );
+      if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+        continue;
+
+      const QString proj = settings->value( key ).toString();
+      const QString fallbackKey = u"%1//%2_allowFallback"_s.arg( srcAuthId, destAuthId );
+      const bool allowFallback = settings->value( fallbackKey ).toBool();
+      QgsCoordinateTransformContext::settingsCoordinateOperation->setValue( proj, { srcAuthId, destAuthId } );
+      QgsCoordinateTransformContext::settingsAllowFallback->setValue( allowFallback, { srcAuthId, destAuthId } );
+    }
+    // remove all legacy entries
+    for ( const QString &key : projectionKeys )
+    {
+      if ( key.contains( "srcTransform"_L1 ) || key.contains( "destTransform"_L1 ) || key.contains( "coordinateOp"_L1 ) || key.contains( "allowFallback"_L1 ) )
+      {
+        settings->remove( key );
+      }
+    }
+    settings->endGroup();
   }
 }
 
