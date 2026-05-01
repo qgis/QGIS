@@ -21,6 +21,7 @@
 
 #include "qgswmsutils.h"
 
+#include "qgslayertree.h"
 #include "qgsmediancut.h"
 #include "qgsmodule.h"
 #include "qgsproject.h"
@@ -175,4 +176,88 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat, parameter );
     }
   }
+
+  void collectParentNames( QgsLayerTreeGroup *parent, QStringList &opaqueParentNames, QStringList &nonOpaqueParentNames )
+  {
+    QString name = parent->serverProperties()->shortName();
+
+    if ( name.isEmpty() )
+      name = parent->name();
+
+    if ( parent->isWmsOpaque() )
+    {
+      opaqueParentNames << name;
+    }
+    else
+    {
+      nonOpaqueParentNames << name;
+    }
+    if ( QgsLayerTree::isGroup( parent->parent() ) )
+    {
+      auto parentsParent = QgsLayerTree::toGroup( parent->parent() );
+      collectParentNames( parentsParent, opaqueParentNames, nonOpaqueParentNames );
+    }
+  }
+
+  bool isAnOpaqueChildOnly( const QgsProject &project, QMultiMap<QString, QgsMapLayer *> nicknameLayers, const QString &layerName )
+  {
+    //non opaque parent names of layer are not used in this context
+    QStringList nonOpaqueParentNamesOfLayer;
+
+    //check the layers
+    int numberOfFoundOpaqueChildLayers = 0;
+    for ( const auto layer : nicknameLayers.values( layerName ) )
+    {
+      QStringList opaqueParentNamesOfLayer;
+      QgsLayerTreeLayer *layernode = project.layerTreeRoot()->findLayer( layer );
+      collectParentNames( QgsLayerTree::toGroup( layernode->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
+      if ( !opaqueParentNamesOfLayer.isEmpty() )
+      {
+        numberOfFoundOpaqueChildLayers++;
+      }
+    }
+
+    bool layerExistsAndIsOpaqueChildOnly = ( !nicknameLayers.values( layerName ).isEmpty() && numberOfFoundOpaqueChildLayers == static_cast<int>( nicknameLayers.values( layerName ).count() ) );
+
+    //check groups
+    int numberOfFoundOpaqueChildGroups = 0;
+    QList<QgsLayerTreeNode *> groupsWithThisName;
+    for ( const auto group : project.layerTreeRoot()->findGroups( true ) )
+    {
+      QString name = group->serverProperties()->shortName();
+
+      if ( name.isEmpty() )
+        name = group->name();
+
+      if ( name == layerName )
+      {
+        groupsWithThisName.append( group );
+        QStringList opaqueParentNamesOfLayer;
+        collectParentNames( QgsLayerTree::toGroup( group->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
+        if ( !opaqueParentNamesOfLayer.isEmpty() )
+        {
+          numberOfFoundOpaqueChildGroups++;
+        }
+      }
+    }
+    bool groupExistsAndIsOpaqueChildOnly = ( !groupsWithThisName.isEmpty() && numberOfFoundOpaqueChildGroups == static_cast<int>( groupsWithThisName.count() ) );
+
+    //If the layer name exists and all instances are in an opaque group,
+    //and at the same time either no groups with the same name exist or all groups with that name also are in an opaque group,
+    //it should return true.
+    if ( layerExistsAndIsOpaqueChildOnly && ( groupsWithThisName.isEmpty() || groupExistsAndIsOpaqueChildOnly ) )
+    {
+      return true;
+    }
+    //Also, if the group name exists and all instances are in an opaque group,
+    //and at the same time either no layers with the same name exist or all layers with that name also are in an opaque group,
+    //it should return true.
+    if ( groupExistsAndIsOpaqueChildOnly && ( nicknameLayers.values( layerName ).isEmpty() || layerExistsAndIsOpaqueChildOnly ) )
+    {
+      return true;
+    }
+    //otherwise false, like a layer that is allowed to request (inexitent layers are handled later)
+    return false;
+  }
+
 } // namespace QgsWms

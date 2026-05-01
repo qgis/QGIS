@@ -23,6 +23,7 @@
 #ifndef QGSWMSUTILS_H
 #define QGSWMSUTILS_H
 
+#include "qgslayertreegroup.h"
 #include "qgsmodule.h"
 #include "qgsserversettings.h"
 
@@ -69,6 +70,23 @@ namespace QgsWms
    * Write image response
    */
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr, int imageQuality = -1 );
+
+  /**
+   * Collects the \a parent's name and all the parents' parents' names recursively.
+   * \returns opaqueParentNames a list for opaque parents.
+   * \returns nonOpaqueParentNames a list for the non opaque parents.
+   * \since QGIS 4.2
+   */
+  void collectParentNames( QgsLayerTreeGroup *parent, QStringList &opaqueParentNames, QStringList &nonOpaqueParentNames );
+
+  /**
+   * Returns true when the \a layerName represents an opaque child only (without a same-named layer or group that is not opaque).
+   * Needs the \a project for parsing and the \a nicknameLayers map to find the layers accordingt to the layer names.
+   * \since QGIS 4.2
+   */
+  bool isAnOpaqueChildOnly( const QgsProject &project, QMultiMap<QString, QgsMapLayer *> nicknameLayers, const QString &layerName );
+
+
 } // namespace QgsWms
 
 #endif
