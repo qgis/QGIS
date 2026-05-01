@@ -100,3 +100,13 @@ void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
 {
   mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
 }
+
+bool QgsGroupWmsDataDialog::isOpaque() const
+{
+  return mOpaque->checkState() == Qt::Checked;
+}
+
+void QgsGroupWmsDataDialog::setIsOpaque( bool isOpaque )
+{
+  mOpaque->setCheckState( isOpaque ? Qt::Checked : Qt::Unchecked );
+}

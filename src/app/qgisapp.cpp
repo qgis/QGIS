@@ -12367,12 +12367,14 @@ void QgisApp::legendGroupSetWmsData()
 
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
   dlg.setHasTimeDimension( currentGroup->hasWmsTimeDimension() );
-  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() ) )
+  dlg.setIsOpaque( currentGroup->isWmsOpaque() );
+  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() || dlg.isOpaque() != currentGroup->isWmsOpaque() ) )
   {
     QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
     currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
+    currentGroup->setIsWmsOpaque( dlg.isOpaque() );
   }
 }
 
