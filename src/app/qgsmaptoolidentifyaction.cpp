@@ -112,6 +112,9 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
   resultsDialog()->clear();
+  if (mResultsIdx > 0) {
+    mResultsIdx = 0;
+  }
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   const QgsGeometry geometry = mSelectionHandler->selectedGeometry();
@@ -165,7 +168,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
     // Call QgsIdentifyResultsDialog::show() to adjust with items
     resultsDialog()->show();
     if (results.size() > mMaxResults) {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Hidden Features" ), tr( "Some features not displayed in Identify Results, use the Show More Features button." ), Qgis::MessageLevel::Warning );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Some features not displayed in Identify Results, use the Show More Features button." ), Qgis::MessageLevel::Warning );
     }
   }
 
@@ -178,15 +181,19 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   };
 
   mMoreFeaturesConnection = connect( resultsDialog(), &QgsIdentifyResultsDialog::moreFeaturesRequested, this, [this, results ]() {
-    this->handleShowMoreFeatures( results, mResultsIdx );
+    this->handleShowMoreFeatures( results, mResultsIdx, results.size() );
   } );
 
 }
 
-void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx) {  
-  QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx; // MITODO Fix this - Will crash if selected feature is 1 only and this is clicked (no feature to add)
-  resultsDialog()->addFeature( *nextFeature );
-  ++mResultsIdx;
+void QgsMapToolIdentifyAction::handleShowMoreFeatures( const QList<IdentifyResult> &l, int startIdx, int featureCount) {  
+  QList<IdentifyResult>::const_iterator nextFeature = l.constBegin() + startIdx;
+  if (mResultsIdx == featureCount) {
+    QgisApp::instance()->messageBar()->pushMessage( tr( "All features displayed already" ), Qgis::MessageLevel::Warning );
+  } else {
+    resultsDialog()->addFeature( *nextFeature );
+    ++mResultsIdx;
+  }
 }
 
 void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
