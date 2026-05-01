@@ -50,6 +50,8 @@ const QgsSettingsEntryStringList *QgsDirectoryItem::settingsAlwaysMonitorItemUri
   = new QgsSettingsEntryStringList( u"alwaysMonitorItemUris"_s, QgsSettingsTree::sTreeQgis, QStringList(), u"List of browser item URIs for which automatic monitoring is always enabled, regardless of other monitoring rules."_s );
 const QgsSettingsEntryInteger *QgsDirectoryItem::settingsMinScanInterval
   = new QgsSettingsEntryInteger( u"minscaninterval"_s, QgsSettingsTree::sTreeBrowser, 10000, u"Minimum interval (in milliseconds) between two successive scans of a directory in the browser."_s );
+const QgsSettingsEntryString *QgsDirectoryItem::settingsCustomPathColor
+  = new QgsSettingsEntryString( u"path-colors/%1"_s, QgsSettingsTree::sTreeBrowser, QString(), u"Custom icon color for a directory in the browser, keyed by the mangled directory path (slashes replaced with '|||'). Stored as a HexArgb string."_s );
 
 const QgsSettingsEntryVariant *QgsDirectoryParamWidget::settingsDirectoryHiddenColumns
   = new QgsSettingsEntryVariant( u"directory-hidden-columns"_s, QgsSettingsTree::sTreeBrowser, QVariant( QVariantList() ), u"Indices of columns hidden in the directory browser parameter widget"_s );
@@ -95,16 +97,12 @@ void QgsDirectoryItem::init( const QString &dirName )
       break;
   }
 
-  QgsSettings settings;
-  settings.beginGroup( u"qgis/browserPathColors"_s );
   QString settingKey = mDirPath;
   settingKey.replace( '/', "|||"_L1 );
-  if ( settings.childKeys().contains( settingKey ) )
+  if ( settingsCustomPathColor->exists( settingKey ) )
   {
-    const QString colorString = settings.value( settingKey ).toString();
-    mIconColor = QColor( colorString );
+    mIconColor = QColor( settingsCustomPathColor->value( settingKey ) );
   }
-  settings.endGroup();
 
   // we want directories shown before files
   setSortKey( u"  %1"_s.arg( dirName ) );
@@ -167,15 +165,12 @@ void QgsDirectoryItem::setIconColor( const QColor &color )
 
 void QgsDirectoryItem::setCustomColor( const QString &directory, const QColor &color )
 {
-  QgsSettings settings;
-  settings.beginGroup( u"qgis/browserPathColors"_s );
   QString settingKey = directory;
   settingKey.replace( '/', "|||"_L1 );
   if ( color.isValid() )
-    settings.setValue( settingKey, color.name( QColor::HexArgb ) );
+    settingsCustomPathColor->setValue( color.name( QColor::HexArgb ), { settingKey } );
   else
-    settings.remove( settingKey );
-  settings.endGroup();
+    settingsCustomPathColor->remove( { settingKey } );
 }
 
 QIcon QgsDirectoryItem::icon()

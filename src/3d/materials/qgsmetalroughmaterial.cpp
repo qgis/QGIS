@@ -41,6 +41,8 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
   , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( u"ambientOcclusionMap"_s, QVariant(), this ) )
   , mNormalMapParameter( new Qt3DRender::QParameter( u"normalMap"_s, QVariant(), this ) )
+  , mHeightMapParameter( new Qt3DRender::QParameter( u"heightMap"_s, QVariant(), this ) )
+  , mParallaxScaleParameter( new Qt3DRender::QParameter( u"parallaxScale"_s, 0.1f, this ) )
   , mEmissionMapParameter( new Qt3DRender::QParameter( u"emissionMap"_s, QVariant(), this ) )
   , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
@@ -184,6 +186,33 @@ void QgsMetalRoughMaterial::setNormalTexture( Qt3DRender::QAbstractTexture *norm
     updateFragmentShader();
 }
 
+void QgsMetalRoughMaterial::setHeightTexture( Qt3DRender::QAbstractTexture *height )
+{
+  bool oldUsingHeightMap = mUsingHeightMap;
+
+  if ( height )
+  {
+    mHeightMapParameter->setValue( QVariant::fromValue( height ) );
+    mUsingHeightMap = true;
+    mMetalRoughEffect->addParameter( mHeightMapParameter );
+  }
+  else
+  {
+    mHeightMapParameter->setValue( QVariant() );
+    mUsingHeightMap = false;
+    if ( mMetalRoughEffect->parameters().contains( mHeightMapParameter ) )
+      mMetalRoughEffect->removeParameter( mHeightMapParameter );
+  }
+
+  if ( oldUsingHeightMap != mUsingHeightMap )
+    updateFragmentShader();
+}
+
+void QgsMetalRoughMaterial::setParallaxScale( double scale )
+{
+  mParallaxScaleParameter->setValue( scale );
+}
+
 void QgsMetalRoughMaterial::setEmissionTexture( Qt3DRender::QAbstractTexture *emission )
 {
   bool oldUsingEmissionMap = mUsingEmissionMap;
@@ -248,12 +277,14 @@ void QgsMetalRoughMaterial::init()
   mMetalnessMapParameter->setParent( mMetalRoughEffect );
   mRoughnessMapParameter->setParent( mMetalRoughEffect );
   mNormalMapParameter->setParent( mMetalRoughEffect );
+  mHeightMapParameter->setParent( mMetalRoughEffect );
   mAmbientOcclusionMapParameter->setParent( mMetalRoughEffect );
   mEmissionMapParameter->setParent( mMetalRoughEffect );
 
   mMetalRoughEffect->addParameter( mBaseColorParameter );
   mMetalRoughEffect->addParameter( mMetalnessParameter );
   mMetalRoughEffect->addParameter( mRoughnessParameter );
+  mMetalRoughEffect->addParameter( mParallaxScaleParameter );
   mMetalRoughEffect->addParameter( mEmissionFactorParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
   mMetalRoughEffect->addParameter( mTextureRotationParameter );
@@ -276,6 +307,8 @@ void QgsMetalRoughMaterial::updateFragmentShader()
     defines += "AMBIENT_OCCLUSION_MAP";
   if ( mUsingNormalMap )
     defines += "NORMAL_MAP";
+  if ( mUsingHeightMap )
+    defines += "HEIGHT_MAP";
   if ( mUsingEmissionMap )
     defines += "EMISSION_MAP";
 

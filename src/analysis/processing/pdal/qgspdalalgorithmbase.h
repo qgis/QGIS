@@ -116,6 +116,13 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      */
     QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
 
+    /**
+     * Returns whether a file \a name has a virtual point cloud extension
+     *
+     * \since QGIS 4.2
+     */
+    static bool isVpcFileName( const QString &name );
+
   protected:
     /**
      * Runs pdal_wrench process with given \a processArgs command line arguments. Can communicate using \a feedback.

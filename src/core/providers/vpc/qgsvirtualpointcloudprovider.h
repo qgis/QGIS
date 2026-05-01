@@ -93,6 +93,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
 
   private:
     void parseFile();
+    QByteArray readFileContents( const QString &path );
     void populateAttributeCollection( QSet<QString> names );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
@@ -130,6 +131,7 @@ class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+    static bool isVpcFileName( const QString &name );
 };
 
 ///@endcond

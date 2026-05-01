@@ -21,6 +21,7 @@
 #include "qgsbabelformatregistry.h"
 #include "qgscolorscheme.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
 #include "qgsfilebaseddataitemprovider.h"
@@ -32,6 +33,7 @@
 #include "qgslayoutsnapper.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
 #include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
@@ -42,6 +44,7 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsproxy.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
@@ -315,6 +318,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
+  for ( const QString &rendererKey : { u"singleBand"_s, u"multiBandSingleByte"_s, u"multiBandMultiByte"_s } )
+  {
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->copyValueFromKey( u"Raster/defaultContrastEnhancementAlgorithm/%1"_s, { rendererKey }, true );
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->copyValueFromKey( u"Raster/defaultContrastEnhancementLimits/%1"_s, { rendererKey }, true );
+  }
   // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
   QgsNetworkAccessManager::settingsProxyHost->copyValueFromKey( u"proxy/proxyHost"_s, true );
@@ -570,6 +578,103 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // encoding
   QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
+
+  // browser custom directory colors - dynamic per-path key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"qgis/browserPathColors"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &mangledPath : keys )
+    {
+      QgsDirectoryItem::settingsCustomPathColor->setValue( settings->value( mangledPath ).toString(), { mangledPath } );
+    }
+    settings->endGroup();
+    settings->remove( u"qgis/browserPathColors"_s );
+  }
+
+  // news feed disabled state - dynamic per-feed key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"core/NewsFeed"_s );
+    const QStringList feedKeys = settings->childGroups();
+    for ( const QString &feedKey : feedKeys )
+    {
+      const QString disabledKey = feedKey + "/disabled"_L1;
+      if ( settings->contains( disabledKey ) )
+      {
+        QgsNewsFeedParser::settingsFeedDisabled->setValue( settings->value( disabledKey ).toBool(), { feedKey } );
+        settings->remove( disabledKey );
+      }
+    }
+    settings->endGroup();
+  }
+
+  // application custom variables - dynamic per-variable name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"variables"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &name : keys )
+    {
+      QgsApplication::settingsCustomVariable->setValue( settings->value( name ), { name } );
+    }
+    settings->endGroup();
+    settings->remove( u"variables"_s );
+  }
+
+  // processing default GUI parameter values - dynamic per-algorithm-id and per-parameter-name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Processing/DefaultGuiParam"_s );
+    const QStringList algIds = settings->childGroups();
+    for ( const QString &algId : algIds )
+    {
+      settings->beginGroup( algId );
+      const QStringList paramNames = settings->childKeys();
+      for ( const QString &paramName : paramNames )
+      {
+        QgsProcessing::settingsDefaultGuiParam->setValue( settings->value( paramName ), { algId, paramName } );
+      }
+      settings->endGroup();
+    }
+    settings->endGroup();
+    settings->remove( u"Processing/DefaultGuiParam"_s );
+  }
+
+  // coordinate transform context - per source/destination CRS pair
+  // old keys: Projections/<srcAuthId>//<destAuthId>_coordinateOp and _allowFallback
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Projections"_s );
+    const QStringList projectionKeys = settings->allKeys();
+    for ( const QString &key : projectionKeys )
+    {
+      if ( !key.contains( "coordinateOp"_L1 ) )
+        continue;
+      const QStringList split = key.split( '/' );
+      if ( split.size() < 2 )
+        continue;
+      const QString srcAuthId = split.at( 0 );
+      const QString destAuthId = split.at( 1 ).split( '_' ).at( 0 );
+      if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+        continue;
+
+      const QString proj = settings->value( key ).toString();
+      const QString fallbackKey = u"%1//%2_allowFallback"_s.arg( srcAuthId, destAuthId );
+      const bool allowFallback = settings->value( fallbackKey ).toBool();
+      QgsCoordinateTransformContext::settingsCoordinateOperation->setValue( proj, { srcAuthId, destAuthId } );
+      QgsCoordinateTransformContext::settingsAllowFallback->setValue( allowFallback, { srcAuthId, destAuthId } );
+    }
+    // remove all legacy entries
+    for ( const QString &key : projectionKeys )
+    {
+      if ( key.contains( "srcTransform"_L1 ) || key.contains( "destTransform"_L1 ) || key.contains( "coordinateOp"_L1 ) || key.contains( "allowFallback"_L1 ) )
+      {
+        settings->remove( key );
+      }
+    }
+    settings->endGroup();
+  }
 }
 
 void QgsSettingsRegistryCore::backwardCompatibility()

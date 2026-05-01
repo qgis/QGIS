@@ -14,7 +14,41 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="10" column="2">
+   <item row="8" column="1">
+    <widget class="QLabel" name="lblTextureScale_7">
+     <property name="text">
+      <string>Emission texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="lblTextureScale_4">
+     <property name="text">
+      <string>Roughness texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mEmissionTextureWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+     <property name="toolTip">
+      <string>Additional diffuse albedo texture which simulates emissive surfaces (eg Neon surfaces)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="13">
+    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
@@ -27,31 +61,105 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mAmbientOcclusionTextureWidget" native="true">
+   <item row="1" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mBaseColorTextureWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
+     <property name="toolTip">
+      <string>Diffuse albedo texture for non-metallic surfaces, and specular color texture for metallic surfaces</string>
+     </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="lblTextureScale">
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblTextureScale_9">
      <property name="text">
-      <string>Texture scale</string>
+      <string>Height (displacement) texture</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="11">
-    <widget class="QgsMaterialPreviewWidget" name="mPreviewWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
+   <item row="5" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mHeightTextureWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+     <property name="toolTip">
+      <string>Displacement texture for applying height offsets to the material.</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="2">
+   <item row="2" column="1">
+    <widget class="QLabel" name="lblTextureScale_3">
+     <property name="text">
+      <string>Metalness texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="lblTextureScale_2">
+     <property name="text">
+      <string>Base color texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mRoughnessTextureWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+     <property name="toolTip">
+      <string>A texture that defines the perceived smoothness or roughness of a surface. Smooth surfaces exhibit sharp reflections.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="lblTextureScale_5">
+     <property name="text">
+      <string>Normal texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mNormalTextureWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+     <property name="toolTip">
+      <string>The detail normal used to perturb the surface using bump mapping. Must be set to an OpenGL format normal map (not DirectX).</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLabel" name="lblTextureScale_8">
+     <property name="text">
+      <string>Emission strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="lblTextureScale_6">
+     <property name="text">
+      <string>Ambient occlusion texture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="2">
+    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2">
     <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
      <property name="suffix">
       <string> %</string>
@@ -70,96 +178,13 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
-    <widget class="QLabel" name="lblTextureRotation">
-     <property name="text">
-      <string>Texture rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mEmissionTextureWidget" native="true">
+   <item row="7" column="2">
+    <widget class="QgsImageSourceLineEdit" name="mAmbientOcclusionTextureWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <widget class="QLabel" name="lblTextureScale_7">
-     <property name="text">
-      <string>Emission texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="2">
-    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
-     <property name="suffix">
-      <string> °</string>
-     </property>
-     <property name="minimum">
-      <double>-360.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="lblTextureScale_4">
-     <property name="text">
-      <string>Roughness texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="lblTextureScale_2">
-     <property name="text">
-      <string>Base color texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="lblTextureScale_5">
-     <property name="text">
-      <string>Normal texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="lblTextureScale_6">
-     <property name="text">
-      <string>Ambient occlusion texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mBaseColorTextureWidget" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="lblTextureScale_3">
-     <property name="text">
-      <string>Metalness texture</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mRoughnessTextureWidget" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
-    <widget class="QgsImageSourceLineEdit" name="mNormalTextureWidget" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     <property name="toolTip">
+      <string>A texture which defines how much of the ambient light is accessible to a surface point.</string>
      </property>
     </widget>
    </item>
@@ -168,17 +193,30 @@
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="lblTextureScale_8">
-     <property name="text">
-      <string>Emission strength</string>
+     <property name="toolTip">
+      <string>A texture that defines whether a surface appears to be dielectric or conductor</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="2">
+   <item row="10" column="1">
+    <widget class="QLabel" name="lblTextureScale">
+     <property name="text">
+      <string>Texture scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLabel" name="lblTextureRotation">
+     <property name="text">
+      <string>Texture rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
     <widget class="QgsDoubleSpinBox" name="mEmissionStrengthSpinBox">
+     <property name="toolTip">
+      <string>Scaling factor for the emission effect.</string>
+     </property>
      <property name="suffix">
       <string> %</string>
      </property>
@@ -193,6 +231,35 @@
      </property>
      <property name="value">
       <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="lblTextureScale_10">
+     <property name="text">
+      <string>Height texture strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QgsDoubleSpinBox" name="mParallaxScaleSpinBox">
+     <property name="toolTip">
+      <string>Scaling factor for the height displacement effect. If visual artifacts are observed in the displacement, lowering the strength will help.</string>
+     </property>
+     <property name="suffix">
+      <string> %</string>
+     </property>
+     <property name="minimum">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>10.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -218,10 +285,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBaseColorTextureWidget</tabstop>
   <tabstop>mMetalnessTextureWidget</tabstop>
+  <tabstop>mBaseColorTextureWidget</tabstop>
   <tabstop>mRoughnessTextureWidget</tabstop>
   <tabstop>mNormalTextureWidget</tabstop>
+  <tabstop>mHeightTextureWidget</tabstop>
   <tabstop>mAmbientOcclusionTextureWidget</tabstop>
   <tabstop>mEmissionTextureWidget</tabstop>
   <tabstop>mEmissionStrengthSpinBox</tabstop>

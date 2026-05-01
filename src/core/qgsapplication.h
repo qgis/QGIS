@@ -31,6 +31,7 @@
 #include <QStringList>
 
 class QgsSettingsRegistryCore;
+class QgsSettingsTreeNamedListNode;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
@@ -182,6 +183,9 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const QgsSettingsEntryString *settingsApplicationFullName SIP_SKIP;
 
   static const QgsSettingsEntryStringList *settingsSkippedGdalDrivers SIP_SKIP;
+
+  static QgsSettingsTreeNamedListNode *sTreeCustomVariables SIP_SKIP;
+  static const QgsSettingsEntryVariant *settingsCustomVariable SIP_SKIP;
 
   /**
    * Constructor for QgsApplication.

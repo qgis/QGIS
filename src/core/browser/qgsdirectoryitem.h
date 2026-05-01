@@ -31,6 +31,7 @@ class QFileSystemWatcher;
 class QMouseEvent;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
 class QgsSettingsEntryStringList;
 class QgsSettingsEntryVariant;
 
@@ -183,6 +184,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     static const QgsSettingsEntryStringList *settingsAlwaysMonitorItemUris SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsMinScanInterval SIP_SKIP;
+
+    static const QgsSettingsEntryString *settingsCustomPathColor SIP_SKIP;
 #endif
 
     /**

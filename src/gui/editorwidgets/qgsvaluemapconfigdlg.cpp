@@ -102,16 +102,15 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 
   if ( valueList.count() > 0 )
   {
-    for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+    for ( int i = 0; i < valueList.count(); i++ )
     {
       orderedList.append( qMakePair( valueList[i].toMap().constBegin().value().toString(), valueList[i].toMap().constBegin().key() ) );
     }
   }
   else
   {
-    int row = 0;
     const QVariantMap values = config.value( u"map"_s ).toMap();
-    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++ )
     {
       if ( QgsVariantUtils::isNull( mit.value() ) )
         orderedList.append( qMakePair( mit.key(), QVariant() ) );

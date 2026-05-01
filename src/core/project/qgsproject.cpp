@@ -712,7 +712,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
               {
                 const QList<QVariant> valueList = field.editorWidgetSetup().config().value( u"map"_s ).toList();
 
-                for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+                for ( int i = 0; i < valueList.count(); i++ )
                 {
                   translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuemapdescriptions"_s.arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
                 }

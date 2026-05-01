@@ -36,7 +36,15 @@ uniform sampler2D ambientOcclusionMap;
 
 #ifdef NORMAL_MAP
 uniform sampler2D normalMap;
+#endif
+
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
 in vec4 worldTangent;
+#endif
+
+#ifdef HEIGHT_MAP
+uniform sampler2D heightMap;
+uniform float parallaxScale = 0.1;
 #endif
 
 #ifdef EMISSION_MAP
@@ -44,7 +52,7 @@ uniform sampler2D emissionMap;
 uniform float emissiveFactor = 1;
 #endif
 
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)|| defined(HEIGHT_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
 #endif
 
@@ -52,22 +60,24 @@ const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
 
-#ifdef NORMAL_MAP
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
 mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
+    vec3 N = normalize(wNormal);
+
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
     // This allows building the tangentMatrix below by simply transposing the
     // tangent -> eyespace matrix (which would now be orthogonal)
-    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, wNormal) * wNormal);
+    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, N) * N);
 
     // Calculate binormal vector. No "real" need to renormalize it,
     // as built by crossing two normal vectors.
     // To orient the binormal correctly, use the fourth coordinate of the tangent,
     // which is +1 for a right hand system, and -1 for a left hand system.
-    vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
+    vec3 wBinormal = cross(N, wFixedTangent.xyz) * wTangent.w;
 
     // Construct matrix to transform from tangent space to world space
-    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
+    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, N);
     return tangentToWorldMatrix;
 }
 
@@ -80,9 +90,79 @@ mat3 calcTangentSpace(const in vec3 wNormal, const in vec3 wPosition, const in v
 
     vec3 N = normalize(wNormal);
     vec3 T = normalize(Q1*st2.t - Q2*st1.t);
+    T = normalize(T - dot(T, N) * N);
     vec3 B = -normalize(cross(N, T));
 
     return mat3(T, B, N);
+}
+#endif
+
+#ifdef HEIGHT_MAP
+// https://www.artstation.com/blogs/andreariccardi/3VPo/a-new-approach-for-parallax-mapping-presenting-the-contact-refinement-parallax-mapping-technique
+// adapted from https://github.com/panthuncia/webgl_test/blob/main/index.html
+vec3 applyContactRefinementParallaxCoordsAndHeight(const in vec2 uv, const in vec3 viewDirTangent)
+{
+    float maxHeight = parallaxScale;
+    float minHeight = maxHeight * 0.5;
+
+    int numSteps = 15;
+
+    float viewCorrection = (-viewDirTangent.z) + 2.0;
+    float stepSize = 1.0 / (float(numSteps) + 1.0);
+
+    vec2 tsOffset = viewDirTangent.xy * vec2(1.0, -1.0)* viewCorrection;
+
+    vec2 stepOffset = tsOffset * vec2(maxHeight, maxHeight) * stepSize;
+    vec2 lastOffset = tsOffset * vec2(minHeight, minHeight) + uv;
+
+    float lastRayDepth = 1.0;
+    float lastHeight = 1.0;
+    vec2 p1;
+    vec2 p2;
+    bool refine = false;
+
+    while (numSteps > 0)
+    {
+        vec2 candidateOffset = lastOffset - stepOffset;
+        float currentRayDepth = lastRayDepth - stepSize;
+
+        float currentHeight = texture(heightMap, candidateOffset).r;
+
+        if (currentHeight > currentRayDepth)
+        {
+            p1 = vec2(currentRayDepth, currentHeight);
+            p2 = vec2(lastRayDepth, lastHeight);
+
+            if (refine)
+            {
+                lastHeight = currentHeight;
+                break;
+            } else {
+                refine = true;
+                lastRayDepth = p2.x;
+                stepSize /= float(numSteps);
+                stepOffset /= float(numSteps);
+                continue;
+            }
+        }
+        lastOffset = candidateOffset;
+        lastRayDepth = currentRayDepth;
+        lastHeight = currentHeight;
+        numSteps -= 1;
+    }
+
+    float diff1 = p1.x - p1.y;
+    float diff2 = p2.x - p2.y;
+    float denominator = diff2 - diff1;
+
+    float parallaxAmount = 0.0;
+    if(denominator != 0.0)
+    {
+        parallaxAmount = (p1.x * diff2 - p2.x * diff1) / denominator;
+    }
+
+    float offsetDepth = ((1.0 - parallaxAmount) * -maxHeight) + minHeight;
+    return vec3(tsOffset * offsetDepth + uv, lastHeight);
 }
 #endif
 
@@ -404,7 +484,7 @@ out vec4 fragColor;
 
 void main()
 {
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(EMISSION_MAP)
     vec2 activeTexCoord = texCoord;
 #else
     // unused
@@ -412,6 +492,28 @@ void main()
 #endif
 
     vec3 worldView = normalize(eyePosition - worldPosition);
+
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+    mat3 tangentToWorld;
+    if (length(worldTangent.xyz) > 0.001)
+    {
+        // use model tangents if they exist
+        tangentToWorld = calcTangentToWorldSpaceMatrix(worldNormal, worldTangent);
+    }
+    else
+    {
+        // fall back to derivative tangents if we don't have model tangents (worse quality)
+        tangentToWorld = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
+    }
+#endif
+
+#ifdef HEIGHT_MAP
+    // need the view vector in tangent space
+    mat3 worldToTangent = transpose(tangentToWorld);
+    vec3 tangentView = normalize(worldToTangent * worldView);
+    // apply parallax and then use adjusted coordinates from here
+    activeTexCoord = applyContactRefinementParallaxCoordsAndHeight(texCoord, tangentView).xy;
+#endif
 
 #ifdef BASE_COLOR_MAP
     vec4 c = texture(baseColorMap, activeTexCoord);
@@ -438,27 +540,15 @@ void main()
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n;
     vec3 mapN = texture(normalMap, activeTexCoord).rgb * 2.0 - 1.0;
-    if (length(worldTangent.xyz) > 0.001)
-    {
-        // use model tangents if they exist
-        n = normalize(calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * mapN);
-    }
-    else
-    {
-        // fall back to derivative tangents if we don't have model tangents (worse quality)
-        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
-        n = normalize(transposedTBN * mapN);
-    }
+    vec3 n = normalize(tangentToWorld * mapN);
 #else
-
 #ifdef FLAT_SHADING
  vec3 fdx = dFdx(worldPosition);
  vec3 fdy = dFdy(worldPosition);
  vec3 n = normalize(cross(fdx, fdy));
 #else
-    vec3 n = normalize(worldNormal);
+ vec3 n = normalize(worldNormal);
 #endif
 #endif
 

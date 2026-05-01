@@ -77,6 +77,23 @@ Returns the path to the normal texture map.
 .. seealso:: :py:func:`setNormalTexturePath`
 %End
 
+    QString heightTexturePath() const;
+%Docstring
+Returns the path to the height texture map.
+
+.. seealso:: :py:func:`setHeightTexturePath`
+%End
+
+    double parallaxScale() const;
+%Docstring
+Returns the parallax scale, which dictates the strength of the height
+displacement effect.
+
+.. seealso:: :py:func:`setParallaxScale`
+
+.. seealso:: :py:func:`heightTexturePath`
+%End
+
     QString emissionTexturePath() const;
 %Docstring
 Returns the path to the emission/luminosity texture map.
@@ -150,6 +167,23 @@ Sets the ``path`` to the roughness texture map.
 Sets the ``path`` to the normal texture map.
 
 .. seealso:: :py:func:`normalTexturePath`
+%End
+
+    void setHeightTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the height texture map.
+
+.. seealso:: :py:func:`heightTexturePath`
+%End
+
+    void setParallaxScale( double scale );
+%Docstring
+Sets the parallax ``scale``, which dictates the strength of the height
+displacement effect.
+
+.. seealso:: :py:func:`parallaxScale`
+
+.. seealso:: :py:func:`setHeightTexturePath`
 %End
 
     void setAmbientOcclusionTexturePath( const QString &path );
