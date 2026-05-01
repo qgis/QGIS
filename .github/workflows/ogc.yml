@@ -65,8 +65,8 @@ jobs:
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
           file: .ci/ogc/Dockerfile
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=qgis/qgis-deps-ogc:buildcache
+          cache-to: type=registry,qgis/qgis-deps-ogc:buildcache,mode=min
           load: true
 
       - name: Run build
