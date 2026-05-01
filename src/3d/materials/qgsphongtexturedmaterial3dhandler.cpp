@@ -87,16 +87,13 @@ QgsMaterial *QgsPhongTexturedMaterial3DHandler::toMaterial( const QgsAbstractMat
 
       // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
       // with context.map().selectionColor()
-      QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
       Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
-      texture->addTextureImage( textureImage );
-
       texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
       texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
       texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
-      texture->setGenerateMipMaps( true );
-      texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-      texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
+      Qgs3DUtils::setTextureFiltering( texture );
+
+      texture->addTextureImage( new QgsImageTexture( textureSourceImage ) );
 
       material->setDiffuseTexture( texture );
       material->setDiffuseTextureScale( static_cast<float>( phongSettings->textureScale() ) );

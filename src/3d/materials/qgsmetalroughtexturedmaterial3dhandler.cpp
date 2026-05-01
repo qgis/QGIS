@@ -92,10 +92,7 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
   if ( image.isNull() )
     return nullptr;
 
-  QgsImageTexture *textureImage = new QgsImageTexture( image );
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
-  // texture takes ownership of textureImage
-  texture->addTextureImage( textureImage );
 
   if ( isSrgb )
   {
@@ -108,9 +105,10 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
 
   texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
   texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-  texture->setGenerateMipMaps( true );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
+  Qgs3DUtils::setTextureFiltering( texture );
+
+  // texture takes ownership of textureImage
+  texture->addTextureImage( new QgsImageTexture( image ) );
 
   return texture;
 }

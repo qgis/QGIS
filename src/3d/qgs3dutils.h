@@ -47,6 +47,11 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+namespace Qt3DRender
+{
+  class QAbstractTexture;
+}
+
 class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
@@ -446,6 +451,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
+
+    /**
+     * Sets the default filtering options for a \a texture.
+     *
+     * \note This should not be called for textures which have special filtering considerations,
+     * eg look up tables, data tables, "screen space" textures, or textures where mipmapping is not appropriate.
+     */
+    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture );
 
     // we start with a maximal z range because we can't know this upfront. There's too many
     // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...

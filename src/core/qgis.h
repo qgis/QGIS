@@ -4352,6 +4352,21 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MaterialRenderingTechnique )
 
     /**
+     * Texture filtering qualities.
+     *
+     * \since QGIS 4.2
+     */
+    enum class TextureFilterQuality : int
+    {
+      Trilinear,      //!< Trilinear (LinearMipmapLinear)
+      Anisotropic2x,  //!< Anisotropic filtering (2x)
+      Anisotropic4x,  //!< Anisotropic filtering (4x)
+      Anisotropic8x,  //!< Anisotropic filtering (8x)
+      Anisotropic16x, //!< Anisotropic filtering (16x)
+    };
+    Q_ENUM( TextureFilterQuality )
+
+    /**
      * Light source types for 3D scenes.
      *
      * \since QGIS 3.26

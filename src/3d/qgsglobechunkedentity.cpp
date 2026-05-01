@@ -189,9 +189,8 @@ static Qt3DCore::QEntity *makeGlobeMesh(
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( textureQImage, QgsRectangle( lonMin, latMin, lonMax, latMax ), textureDebugText, entity );
 
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
+  Qgs3DUtils::setTextureFiltering( texture );
   texture->addTextureImage( textureImage );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   QgsGlobeMaterial *material = new QgsGlobeMaterial( entity );

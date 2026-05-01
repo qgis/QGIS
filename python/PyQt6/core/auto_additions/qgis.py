@@ -7790,6 +7790,25 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
+Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
+Qgis.TextureFilterQuality.Anisotropic4x.__doc__ = "Anisotropic filtering (4x)"
+Qgis.TextureFilterQuality.Anisotropic8x.__doc__ = "Anisotropic filtering (8x)"
+Qgis.TextureFilterQuality.Anisotropic16x.__doc__ = "Anisotropic filtering (16x)"
+Qgis.TextureFilterQuality.__doc__ = """Texture filtering qualities.
+
+.. versionadded:: 4.2
+
+* ``Trilinear``: Trilinear (LinearMipmapLinear)
+* ``Anisotropic2x``: Anisotropic filtering (2x)
+* ``Anisotropic4x``: Anisotropic filtering (4x)
+* ``Anisotropic8x``: Anisotropic filtering (8x)
+* ``Anisotropic16x``: Anisotropic filtering (16x)
+
+"""
+# --
+Qgis.TextureFilterQuality.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
