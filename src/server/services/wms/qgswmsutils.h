@@ -84,7 +84,7 @@ namespace QgsWms
    * Needs the \a project for parsing and the \a nicknameLayers map to find the layers accordingt to the layer names.
    * \since QGIS 4.2
    */
-  bool isAnOpaqueChildOnly( const QgsProject &project, QMultiMap<QString, QgsMapLayer *> nicknameLayers, const QString &layerName );
+  bool isAnOpaqueChildOnly( const QgsProject &project, const QMultiMap<QString, QgsMapLayer *> &nicknameLayers, const QString &layerName );
 
 
 } // namespace QgsWms

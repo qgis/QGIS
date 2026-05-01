@@ -71,9 +71,12 @@ bool QgsWmsRenderContext::ignoreSameNamedLayerOnOpaque( QgsMapLayer *layer, cons
   if ( isExternalLayer( nickName ) || parameterLayerNames.contains( QgsServerProjectUtils::wmsRootName( *mProject ) ) || parameterLayerNames.contains( mProject->title() ) )
     return false;
 
+  QgsLayerTreeLayer *layernode = mProject->layerTreeRoot()->findLayer( layer );
+  if ( !layernode )
+    return false;
+
   QStringList opaqueParentNamesOfLayer;
   QStringList nonOpaqueParentNamesOfLayer;
-  QgsLayerTreeLayer *layernode = mProject->layerTreeRoot()->findLayer( layer );
   collectParentNames( QgsLayerTree::toGroup( layernode->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
   // If the layer is not part of an opaque group the layer needs to be requested to render (or a group it belongs)
   if ( opaqueParentNamesOfLayer.isEmpty() )

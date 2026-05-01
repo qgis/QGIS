@@ -11,7 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 __author__ = "Dave Signer"
-__date__ = "11/04/2026"
+__date__ = "04/04/2026"
 __copyright__ = "Copyright 2026, The QGIS Project"
 
 import os

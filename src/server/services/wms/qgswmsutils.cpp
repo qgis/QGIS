@@ -199,7 +199,7 @@ namespace QgsWms
     }
   }
 
-  bool isAnOpaqueChildOnly( const QgsProject &project, QMultiMap<QString, QgsMapLayer *> nicknameLayers, const QString &layerName )
+  bool isAnOpaqueChildOnly( const QgsProject &project, const QMultiMap<QString, QgsMapLayer *> &nicknameLayers, const QString &layerName )
   {
     //non opaque parent names of layer are not used in this context
     QStringList nonOpaqueParentNamesOfLayer;
