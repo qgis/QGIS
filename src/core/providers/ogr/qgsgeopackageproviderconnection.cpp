@@ -24,7 +24,6 @@
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
 #include "qgsogrdbconnection.h"
-#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
@@ -55,11 +54,7 @@ void QgsGeoPackageProviderConnection::store( const QString &name ) const
 
 void QgsGeoPackageProviderConnection::remove( const QString &name ) const
 {
-  QgsSettings settings;
-  settings.beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
-  settings.beginGroup( u"GPKG"_s );
-  settings.beginGroup( u"connections"_s );
-  settings.remove( name );
+  QgsOgrDbConnection::sTreeOgrConnectionItems->deleteItem( name, { u"GPKG"_s } );
 }
 
 QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnection::table( const QString &schema, const QString &name, QgsFeedback *feedback ) const
