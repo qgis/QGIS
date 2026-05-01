@@ -17,8 +17,8 @@
 
 #include "qgssettingsregistryapp.h"
 
-#include "qgsattributetabledialog.h"
 #include "qgisapp.h"
+#include "qgsattributetabledialog.h"
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
