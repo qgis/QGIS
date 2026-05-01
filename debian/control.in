@@ -441,7 +441,7 @@ Depends:
  libqca-qt5-2-plugins,
  libqt5sql5-sqlite,
  qt5-image-formats-plugins,
- qt5-image-formats-plugin-pdf,
+#!resolute# qt5-image-formats-plugin-pdf,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)

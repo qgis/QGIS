@@ -1956,7 +1956,7 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
 {
   // no selected features, only one selected point feature
   //or two point features with the same x- or y-coordinates
-  if ( rect.isEmpty() )
+  if ( rect.isEmpty() || !QgsMapSettingsUtils::isValidExtent( rect ) )
   {
     // zoom in
     QgsPointXY c = rect.center();

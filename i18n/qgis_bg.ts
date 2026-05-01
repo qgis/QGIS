@@ -4275,7 +4275,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <name>GrassAlgorithm</name>
     <message>
         <source>Could not open GRASS GIS algorithm: {0}</source>
-        <translation type="unfinished"/>
+        <translation>Could not open GRASS GIS algorithm: {0}</translation>
     </message>
     <message>
         <source>Processing</source>
@@ -4284,7 +4284,8 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Failed to load: {0}
 {1}</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно зареждане: {0}
+{1}</translation>
     </message>
     <message>
         <source>GRASS GIS region extent</source>
@@ -4410,7 +4411,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Multiplicative factor to convert elevation units to meters</source>
         <extracomment>r.slope.aspect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Мултипликативен коефициент за преобразуване на единици за надморска височина в метри</translation>
     </message>
     <message>
         <source>Random vector</source>
@@ -5405,7 +5406,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Maximum number of cells to be created</source>
         <extracomment>r.random.cells</extracomment>
-        <translation type="unfinished"/>
+        <translation>Максимален брой клетки, които могат да бъдат създадени</translation>
     </message>
     <message>
         <source>Output values as percentages</source>
@@ -6005,7 +6006,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Assign unique categories to new points</source>
         <extracomment>v.net</extracomment>
-        <translation type="unfinished"/>
+        <translation>Присвояване на уникални категории на нови точки</translation>
     </message>
     <message>
         <source>Unit cost layer</source>
@@ -6790,7 +6791,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Switch the compression off</source>
         <extracomment>v.pack</extracomment>
-        <translation type="unfinished"/>
+        <translation>Изключете компресията</translation>
     </message>
     <message>
         <source>Scale factor for converting horizontal units to elevation units</source>
@@ -8230,7 +8231,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Offset for target elevation above the ground</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Отместване за целевата височина над земята</translation>
     </message>
     <message>
         <source>Number of vertex points per grid cell</source>
@@ -9020,7 +9021,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Names of ASTER DN layers (15 layers)</source>
         <extracomment>i.aster.toar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Имена на слоевете на ASTER DN (15 слоя)</translation>
     </message>
     <message>
         <source>Factor for output smoothness</source>
@@ -9110,7 +9111,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Base layer to take quant rules from</source>
         <extracomment>r.quant</extracomment>
-        <translation type="unfinished"/>
+        <translation>Базов слой, от който да се вземат квантови правила</translation>
     </message>
     <message>
         <source>Name of column with stop ids</source>
@@ -10550,7 +10551,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Use maximum likelihood estimation (instead of smap)</source>
         <extracomment>i.smap</extracomment>
-        <translation type="unfinished"/>
+        <translation>Използвайте оценка с максимална вероятност (вместо smap)</translation>
     </message>
     <message>
         <source>Threshold for the outliers</source>
@@ -10940,7 +10941,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Exclude border edges</source>
         <extracomment>r.li.edgedensity</extracomment>
-        <translation type="unfinished"/>
+        <translation>Изключване на ръбовете на границата</translation>
     </message>
     <message>
         <source>Minimum angle between two consecutive segments in Hermite method</source>
@@ -13610,7 +13611,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of the transport capacity coefficient raster map [s]</source>
         <extracomment>r.sim.sediment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Име на растерната карта на коефициента на транспортен капацитет [и]</translation>
     </message>
     <message>
         <source>Create hexagons (default: rectangles)</source>
@@ -22248,14 +22249,14 @@ If the input layer is a shapefile, the .prj file will be overwritten — or crea
         <location filename="../src/core/proj/qgscoordinatereferencesystemregistry.cpp" line="279"/>
         <location filename="../src/core/proj/qgscoordinatetransform.cpp" line="922"/>
         <location filename="../src/core/proj/qgscoordinatetransform.cpp" line="928"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="584"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="609"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="628"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="649"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="666"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="683"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="704"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="721"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="554"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="579"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="598"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="619"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="636"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="653"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="674"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="691"/>
         <location filename="../src/core/vector/qgsvectorlayerrenderer.cpp" line="433"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="768"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="819"/>
@@ -22344,28 +22345,28 @@ If no field is chosen, you can still override the output layer name by directly 
         <translation>DXF файлове</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="117"/>
         <location filename="../src/analysis/processing/qgsalgorithmwritevectortiles.cpp" line="68"/>
         <source>Unknown input layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="172"/>
         <source>DXF export completed</source>
         <translation>Извеждането в DXF е приключено</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="176"/>
         <source>DXF export failed, device is not writable</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="180"/>
         <source>DXF export failed, the device is invalid</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="184"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation type="unfinished"/>
     </message>
@@ -22498,19 +22499,19 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>Невъзможно преобразуването на &apos;%1&apos; в цяло число</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1302"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1317"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="290"/>
         <source>Cannot convert &apos;%1&apos; to DateTime</source>
         <translation>Невъзможно преобразуването на &apos;%1&apos; в дата и време</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2708"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2723"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="305"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
         <translation>Невъзможно преобразуването на &apos;%1&apos; в дата</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2737"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2752"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="320"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
         <translation>Невъзможно преобразуването на &apos;%1&apos; във време</translation>
@@ -22566,509 +22567,509 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>Невъзможно преобразуването на &apos;%1&apos; в булеви стойности</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="498"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="531"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="565"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="513"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="546"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="580"/>
         <source>Domain max must be greater than domain min</source>
         <translation>Стойността на domain max трябва да бъде по-голяма от donain min</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="536"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="570"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="551"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="585"/>
         <source>Exponent must be greater than 0</source>
         <translation>Стойността на експонента (exponent) трябва да е по-голяма от 0</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="653"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="668"/>
         <source>Cannot find layer with name or ID &apos;%1&apos;</source>
         <translation>Не може да намери слой с име или ID &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="666"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="862"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="681"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="877"/>
         <source>No such aggregate &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="797"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="921"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1058"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="812"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="936"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1073"/>
         <source>Could not calculate aggregate for: %1 (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="799"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="923"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1060"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="814"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="938"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1075"/>
         <source>Could not calculate aggregate for: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="810"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="822"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="825"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="837"/>
         <source>Cannot use relation aggregate function in this context</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="842"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="857"/>
         <source>Cannot find relation with id &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="937"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="949"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="952"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="964"/>
         <source>Cannot use aggregate function in this context</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1285"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1300"/>
         <source>A format is required to convert to DateTime when the language is specified</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1317"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1350"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1332"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1365"/>
         <source>&apos;%1-%2-%3&apos; is not a valid date</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1332"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1356"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1347"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1371"/>
         <source>&apos;%1-%2-%3&apos; is not a valid time</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1617"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7317"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1632"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7312"/>
         <source>Invalid pair of array, length not identical</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1630"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1645"/>
         <source>Function replace requires 2 or 3 arguments</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1644"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1658"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1659"/>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1673"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1705"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1688"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1720"/>
         <source>Invalid regular expression &apos;%1&apos;: %2</source>
         <translation>Грешен регулярен израз &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1796"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1834"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1811"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1849"/>
         <source>Function `raster_value` requires a valid raster layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1802"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1817"/>
         <source>Function `raster_value` requires a valid raster band number.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1808"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1823"/>
         <source>Function `raster_value` requires a valid point geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1854"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1869"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1913"/>
         <source>Function `raster_attributes` requires a valid raster layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1860"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1875"/>
         <source>Function `raster_attributes` requires a valid raster band number.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1866"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1881"/>
         <source>Function `raster_attributes` requires a valid raster value.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1931"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1946"/>
         <source>Function `attribute` requires one or two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1956"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1971"/>
         <source>Function `map_to_html_table` requires one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1990"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2005"/>
         <source>Function `map_to_html_dl` requires one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2052"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2073"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2142"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2067"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2088"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2157"/>
         <source>No layer provided to conduct constraints checks</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2131"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2146"/>
         <source>The attribute name did not match any field for the given feature</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2194"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2209"/>
         <source>Function `represent_attributes` requires no more than two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2201"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2216"/>
         <source>Cannot use represent attributes function: layer could not be resolved.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2207"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2222"/>
         <source>Cannot use represent attributes function: feature could not be resolved.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2288"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2303"/>
         <source>Function `maptip` requires no more than three parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2292"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2307"/>
         <source>Function `display` requires no more than three parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2299"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2314"/>
         <source>The layer is not valid.</source>
         <translation>Невалиден слой</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2306"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2321"/>
         <source>The feature is not valid.</source>
         <translation>Обектът е невалиден</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2369"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2384"/>
         <source>Function `is_selected` requires no more than two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2400"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2415"/>
         <source>Function `num_selected` requires no more than one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2438"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2453"/>
         <source>Could not extract file path from layer `%1`.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2458"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2473"/>
         <source>Could not open sqlite database %1. Error %2. </source>
         <translation>Невъзможно отварянето на sqlite база данни %1. Грешка %2.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2610"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2625"/>
         <source>Cannot convert &apos;%1&apos; to cordinate reference system</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2667"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2682"/>
         <source>Function format requires at least 1 argument</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2691"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2706"/>
         <source>A format is required to convert to Date when the language is specified</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2720"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2735"/>
         <source>A format is required to convert to Time when the language is specified</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2773"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2788"/>
         <source>Invalid formatting parameter: &apos;%1&apos;. It must be empty, or &apos;suffix&apos; or &apos;aligned&apos;.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2787"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2802"/>
         <source>Invalid axis name: &apos;%1&apos;. It must be either &apos;x&apos; or &apos;y&apos;.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2965"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2977"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7587"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7598"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7609"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7620"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7631"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7642"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7653"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7664"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2980"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2992"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7582"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7593"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7604"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7615"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7626"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7637"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7648"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7659"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3090"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3105"/>
         <source>The make_valid parameters require a newer GEOS library version</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3235"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3250"/>
         <source>Point index is out of range</source>
         <translation>Точковият индекс е извън диапазона</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3760"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3775"/>
         <source>Function make_point requires 2-4 arguments</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3839"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3854"/>
         <source>Function make_polygon requires an argument</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3953"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3989"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3968"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4004"/>
         <source>Segment must be greater than 2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4030"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4045"/>
         <source>Number of edges/sides must be greater than 2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4037"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4052"/>
         <source>Option can be 0 (inscribed) or 1 (circumscribed)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4119"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4134"/>
         <source>Option can be 0 (distance) or 1 (projected)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4140"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4155"/>
         <source>Index is out of range</source>
         <translation>Индексът е извън диапазона</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4392"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4387"/>
         <source>An error occurred while calculating perimeter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4662"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4657"/>
         <source>Function `sinuosity` requires a line geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4675"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4670"/>
         <source>Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4689"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4684"/>
         <source>Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4936"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4931"/>
         <source>Function `wedge_buffer` requires a point value for the center.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4955"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4950"/>
         <source>Function `tapered_buffer` requires a line geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4973"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4968"/>
         <source>Function `buffer_by_m` requires a line geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5073"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5068"/>
         <source>Function &apos;rotate&apos; requires a point value for the center</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5102"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5097"/>
         <source>Function &apos;scale&apos; requires a point value for the center</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5203"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5198"/>
         <source>Error caught in concave_hull() function: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5217"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5212"/>
         <source>Parameter can not be negative.</source>
         <translation>Параметърът не може да е отрицателно число.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5247"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5242"/>
         <source>Error calculating polygon main angle: %1</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5409"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5404"/>
         <source>Function `azimuth` requires exactly two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5442"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5437"/>
         <source>Function `azimuth` requires two points as arguments.</source>
         <translation>Функцията &apos;азимут&apos; изисква две точки като аргументи.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5504"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5499"/>
         <source>Function `bearing` requires two valid point geometries.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5512"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5507"/>
         <source>Function `bearing` requires point geometries or multi point geometries with a single part.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5534"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5529"/>
         <source>Function `bearing` requires a valid source CRS.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5542"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5537"/>
         <source>Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5556"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5551"/>
         <source>Error caught in bearing() function: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5778"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5773"/>
         <source>line_substring requires a curve geometry input</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5901"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5896"/>
         <source>Number of places must be positive</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6011"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6006"/>
         <source>Both color arguments must have the same type (string or color object)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6026"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6021"/>
         <source>Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6066"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6186"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6243"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6061"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6181"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6238"/>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
         <translation>Невъзможно преобразуването на &apos;%1:%2:%3&apos; в цвят</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6082"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6136"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6207"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6223"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6264"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6280"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6320"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6077"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6131"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6202"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6218"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6259"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6275"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6315"/>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
         <translation>Невъзможно преобразуването на &apos;%1:%2:%3:%4&apos; в цвят</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6157"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6152"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
         <translation>&quot;%1&quot; не е валидна цветова скала</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6298"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6343"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6293"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6338"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
         <translation>Невъзможно преобразуването на &apos;%1:%2:%3:%4:%5&apos; в цвят</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6407"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6402"/>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="51"/>
         <source>Cannot convert &apos;%1&apos; to color</source>
         <translation>Невъзможно преобразуването на &apos;%1&apos; в цвят</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6875"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6893"/>
         <source>Invalid band number %1 for layer</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6387"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6475"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6382"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6470"/>
         <source>Unknown color component &apos;%1&apos;</source>
         <translation>Непознат цветови компонент &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6396"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6391"/>
         <source>A minimum of two colors is required to create a ramp</source>
         <translation>Необходими са минимум два цвята за съставяне на скала</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6547"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6542"/>
         <source>Transform error caught in transform() function: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6857"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6852"/>
         <source>Layer %1 has invalid data provider</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6918"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6913"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>Невалидна растерна статистика: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6946"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7163"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7212"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7158"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7207"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>Няма такава опция &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7336"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7331"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7743"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7738"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7825"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7820"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>Слой &apos;%1&apos; не можа да се зареди.</translation>
     </message>
@@ -24165,7 +24166,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>неподдържан тип поле %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3113"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3121"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Неверен вариантен тип на полето %1[%2]: получена е стойност %3 с тип %4</translation>
     </message>
@@ -24175,21 +24176,21 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <location filename="../src/core/providers/ogr/qgsogrprovider.cpp" line="2656"/>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="713"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="239"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="787"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="805"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="834"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="858"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="932"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="938"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="785"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="803"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="832"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="856"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="930"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="936"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1004"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1008"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2837"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3118"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3212"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3227"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3248"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3281"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2845"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3126"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3220"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3235"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3256"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3289"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -24204,208 +24205,208 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>Запазеното име на атрибута ogc_fid е заменено с %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2046"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2054"/>
         <source>column_name1[,column_name2, …] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or querying compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2103"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2111"/>
         <source>If the database is of the SpatiaLite flavor, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2110"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2118"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavor, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2128"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2136"/>
         <source>column_name1[,column_name2, …] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2167"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2175"/>
         <source>Drawing units for the model space ($INSUNITS system variable).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2182"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2190"/>
         <source>Whether the current drawing uses imperial or metric hatch pattern and linetype ($MEASUREMENT system variable).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2225"/>
         <source>Path to the GCT: the GCT file describes the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2224"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2232"/>
         <source>Defines the feature to be created. The TYPE corresponds to one of the Name found in the GCT file for a type section. The SUBTYPE corresponds to one of the Name found in the GCT file for a sub-type section within the previous type section.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2248"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2256"/>
         <source>Selects which ArcGIS version this dataset should be compatible with. ALL is used by default and means any ArcGIS 10.x or ArcGIS Pro version. Using ARCGIS_PRO_3_2_OR_LATER is required to export 64-bit integer fields as such, otherwise they will be converted as Real fields. ARCGIS_PRO_3_2_OR_LATER also supports proper Date and Time field types.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2263"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2271"/>
         <source>Set layer name alias.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2273"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2281"/>
         <source>Whether the values of the geometry column can be NULL. Can be set to NO so that geometry is required. Default to &apos;YES&apos;.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2295"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2303"/>
         <source>A list of strings of format field_name=fgdb_field_type (separated by comma) to force the FileGDB column type of fields to be created.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2300"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2308"/>
         <source>XML documentation for the layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2304"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2312"/>
         <source>Customize how data is stored. By default text in UTF-8 and data up to 1TB.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2311"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2319"/>
         <source> Defaults to NO (through CreateLayer() API). When this option is set, a Shape_Area and Shape_Length special fields will be created for polygonal layers (Shape_Length only for linear layers). These fields will automatically be populated with the feature’s area or length whenever a new feature is added to the dataset or an existing feature is amended. When using ogr2ogr with a source layer that has Shape_Area/Shape_Length special fields, and this option is not explicitly specified, it will be automatically set, so that the resulting FileGeodatabase has those fields properly tagged.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2318"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2326"/>
         <source>ESRI File Geodatabase</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2376"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2416"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2384"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2424"/>
         <source>By default, the driver will read the first lines of each sheet to detect if the first line might be the name of columns. If set to FORCE, the driver will consider the first line as the header line. If set to DISABLE, it will be considered as the first feature. Otherwise auto-detection will occur.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2392"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2400"/>
         <source>MS Office Open XML spreadsheet [XLSX]</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2432"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2440"/>
         <source>Open Document Spreadsheet [ODS]</source>
         <translation>Open Document Spreadsheet [ODS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2465"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2473"/>
         <source>Maximum number of rows per group.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2480"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2488"/>
         <source>Name of the coordinate system for the edges.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2491"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2499"/>
         <source>(Geo)Parquet</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2505"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2513"/>
         <source>Line termination character sequence.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2515"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2523"/>
         <source>Format of geometry columns.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2524"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2532"/>
         <source>Controls whether layer and field names will be laundered for easier use. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2531"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2539"/>
         <source>Name for the geometry column. Defaults to wkb_geometry for GEOM_TYPE=geometry or the_geog for GEOM_TYPE=geography</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2535"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2543"/>
         <source>Name of schema into which to create the new table</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2538"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2546"/>
         <source>Whether to explicitly emit the CREATE SCHEMA statement to create the specified schema.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2543"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2551"/>
         <source>Whether to explicitly recreate the table if necessary.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2548"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2556"/>
         <source>Whether to explicitly destroy tables before recreating them.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2569"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2577"/>
         <source>Can be set to 2.0 or 2.2 for PostGIS 2.0/2.2 compatibility. Important to set it correctly if using non-linear geometry types</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2577"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2585"/>
         <source>PostgreSQL SQL dump</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2834"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2842"/>
         <source>Error converting value (%1) for attribute field %2: %3</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3139"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3147"/>
         <source>Feature geometry failed to transform</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3209"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3224"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3245"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3232"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3253"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
         <translation>Геометрията на обекта не е въведена (OGR грешка: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3279"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3287"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>Грешка при създаване на обект (OGR грешка: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3588"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3596"/>
         <source>Cannot overwrite an OGR layer in place</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3739"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3747"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="547"/>
         <source>Failed to transform feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3764"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3772"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="502"/>
         <source>Feature write errors:</source>
         <translation>Грешки при записване на обекти:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3788"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4418"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3796"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4426"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -24413,7 +24414,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="251"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1143"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1151"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Arc/Info ASCII Coverage</translation>
     </message>
@@ -24454,7 +24455,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrepairshapefile.cpp" line="67"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1314"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1322"/>
         <source>ESRI Shapefile</source>
         <translation>ESRI SHP (шейп) файл</translation>
     </message>
@@ -24474,8 +24475,8 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="302"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="304"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="306"/>
         <source>FMEObjects Gateway</source>
         <translation>FMEObjects Gateway</translation>
     </message>
@@ -24485,152 +24486,152 @@ Only %1 of %2 features written.</source>
         <translation>Зададено е празно име за файл</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1168"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1176"/>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
         <translation>По подразбиране геометрията на обектите при запис в .csv е отказана. Изведете геометрията във формат WKT чрез указване на GEOMETRY=AS_WKT. Може да  изведете геометрия на точкови обекти във вид на компоненти X, Y, Z, чрез задаване на GEOMETRY=AS_XYZ, GEOMETRY=AS_XY или GEOMETRY=AS_YX.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1216"/>
         <source>Double-quote strings. IF_AMBIGUOUS means that string values that look like numbers will be quoted.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1225"/>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
         <translation>Записване на маркер на последователността на байтовете UTF-8 (BOM) в началото на файла.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1231"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1239"/>
         <source>Comma Separated Value [CSV]</source>
         <translation>Comma Separated Value [CSV]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1315"/>
         <source>Set to YES to resize fields to their optimal size.</source>
         <translation>Изберете YES - ДА, за да промените размера на полето до оптималния размер.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1329"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1337"/>
         <source>DBF File</source>
         <translation>DBF файл</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1342"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1350"/>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
         <translation>Изберете YES - ДА, за да запишете свойството bbox cъдържащо ограничиващия правоъгълник на геометрията на ниво обекти и колекция обекти.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="318"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1363"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="316"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1371"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1406"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1414"/>
         <source>whether the document must be in RSS 2.0 or Atom 1.0 format. Default value : RSS</source>
         <translation>В какъв формат трябва да бъде документа, в RSS 2.0 или в Atom 1.0. По подразбиране се ползва : RSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1415"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1423"/>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
         <translation>Тип кодиране на пространствена информация. По подразбиране: SIMPLE. W3C_GEO поддържа само точкови геометрии. SIMPLE или W3C_GEO използват изключително географски WGS84 координати.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1435"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1443"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
         <translation>Ако е зададено NO, записват се само елементи &lt;entry&gt; и &lt;item&gt;. Потребителят е длъжен да предостави съответно заглавие и окончание на документа.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1448"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1456"/>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;title&gt; на заглавието. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1454"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1462"/>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;description&gt; на заглавието. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1460"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1468"/>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;link&gt; на заглавието. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1466"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1474"/>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;updated&gt; на заглавието. Трябва да имат формат XML datetime. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1473"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1481"/>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;author&gt;&lt;name&gt; на заглавието. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1479"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Стойност, която се поставя вътре в елемента &lt;id&gt; на заглавието. Ако не е зададена, ще бъде поставена фиктивна стойност при условие, че елемента е задължителен.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="323"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="321"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1495"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1501"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1509"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
         <translation>Ако е задаено този URI ще бъде използван за разположение на схема. Обърнете внимание, че файлът със схема не се използва от OGR, така че отговорността за съвпадане между схемата на OGR създадения GML файл зависи изцяло от потребителя.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1509"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1517"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
         <translation>Това записва GML схемата в съответстващия .xsd файл (със същото базово име). Ако се използва INTERNAL за схемата тя се записва вътре в GML файла, но тази възможност е експериментална и не съответства на XML спецификацията. OFF заключва създаването на схема (и се подразбира при използване на XSISCHEMAURI).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1522"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1530"/>
         <source>This is the prefix for the application target namespace.</source>
         <translation>Това е префикс за целевото пространство за името на приложението.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1527"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1535"/>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
         <translation>Задайте TRUE, за да избегнете записване на префикс за целевото пространство за името в GML файла.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1533"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1541"/>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
         <translation>По подразбиране &apos;http://ogr.maptools.org/&apos;. Това е целевото пространство за името на приложението.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1561"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1569"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
         <translation>валидна само при FORMAT=GML3/GML3Degree/GML3.2). По подразбиране YES. Ако е зададено NO, елементът &lt;gml:boundedBy&gt; няма да бъде записан за всеки обект.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1568"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1576"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
         <translation>По подразбиране YES - ДА. Ако е избран YES - ДА, изходният файл ще бъде записан в по-читаем вид, с използване на интервали, но това ще увеличи размера на файла.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="328"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1577"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="326"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1585"/>
         <source>Geography Markup Language [GML]</source>
         <translation>Geography Markup Language [GML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1591"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1599"/>
         <source>Human-readable identifier (e.g. short name) for the layer content</source>
         <translation>Идентификатор (напр. кратко име) за съдържанието на слоя предназначен за потребителя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1596"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1604"/>
         <source>Human-readable description for the layer content</source>
         <translation>Описание на съдържанието на слоя предназначено на потребителя</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1115"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1601"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2470"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1123"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1609"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2478"/>
         <source>Name for the feature identifier column</source>
         <translation>Име за колоната на идентификатора на обекта</translation>
     </message>
@@ -24640,255 +24641,255 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1090"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2446"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1098"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2454"/>
         <source>Compression method.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1100"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2455"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1108"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2463"/>
         <source>Geometry encoding.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1110"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1118"/>
         <source>Maximum number of rows per batch.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1120"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1606"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2475"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1128"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1614"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2483"/>
         <source>Name for the geometry column</source>
         <translation>Име за колоната на геометрия</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1127"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1135"/>
         <source>(Geo)Arrow</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1183"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1191"/>
         <source>Name of geometry column. Only used if GEOMETRY=AS_WKT. Defaults to &apos;WKT&apos;.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1188"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1196"/>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision. This option also creates a .prj file which stores coordinate system information.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1611"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1619"/>
         <source>If a spatial index must be created.</source>
         <translation>Ако трябва да бъде създаден пространствен индекс.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="337"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1638"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="335"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1646"/>
         <source>Generic Mapping Tools [GMT]</source>
         <translation>Generic Mapping Tools [GMT]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1651"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1659"/>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
         <translation>По подразбиране, когато се записва слой с обекти от типа wkbLineString, GPX драйверът ги записва като маршрути. Ако е зададен FORCE_GPX_TRACK=YES те ще се запишат като следи (трак).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1659"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1667"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
         <translation>По подразбиране, когато се записва слой с обекти от типа wkbMultiLineString, GPX драйверът ги записва като следи (трак). Ако е зададен FORCE_GPX_ROUTE=YES те ще се запишат като маршрути.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1668"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
         <translation>Ако е зададен GPX_USE_EXTENSIONS=YES в таг&lt;extensions&gt; ще се запишат допълнителни файлове.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1674"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1682"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
         <translation>Само ако се използва GPX_USE_EXTENSIONS=YES и GPX_EXTENSIONS_NS_URL е зададен. Стойност на пространство за име за допълнителни тагове. По подразбиране &apos;ogr&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1680"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1688"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
         <translation>Само ако се използва GPX_USE_EXTENSIONS=YES и GPX_EXTENSIONS_NS е зададен. URI на пространство за име. По подразбиране &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1686"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1694"/>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
         <translation>По подразбиране файловете се създават с използване на системни символи за завършване на редовете (CR/LF за win32 или LF за всички други системи). Това може да бъде презададено, чрез използване на параметър LINEFORMAT за създаване на слой , който може да има стойност от CRLF (DOS формат) или LF (Unix формат).</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="342"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1701"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="340"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1709"/>
         <source>GPS eXchange Format [GPX]</source>
         <translation>GPS eXchange Format [GPX]</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="365"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1717"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="363"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1725"/>
         <source>INTERLIS 1</source>
         <translation>INTERLIS 1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="370"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1732"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="368"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1740"/>
         <source>INTERLIS 2</source>
         <translation>INTERLIS 2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1750"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1758"/>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
         <translation>Позволява задаване на поле за използвания за KML &lt;description&gt; елемент.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1755"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1763"/>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
         <translation>Позволява задаване на режим за височина (AltitudeMode) за използване в геометриите на KML. Ще повлияе само върху 3D геометриите и трябва да бъде валида опция на KML.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="382"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1773"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="380"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1781"/>
         <source>Keyhole Markup Language [KML]</source>
         <translation>Keyhole Markup Language [KML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1789"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1797"/>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
         <translation>Използвайто това, за да включите &quot;режим на бърз пространствен индекс&quot;, при който файловете ще се записват 5 пъти по-бързо, но заявките ще се изпълняват 30 пъти по-бавно.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1818"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1826"/>
         <source>Mapinfo TAB</source>
         <translation>Mapinfo TAB</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1833"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1841"/>
         <source>Mapinfo MIF</source>
         <translation>Mapinfo MIF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1846"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1854"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1852"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1860"/>
         <source>Override the seed file to use.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1857"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1865"/>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1863"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1871"/>
         <source>Indicates whether the color table should be copied from the seed file.</source>
         <translation>Указва, дали да се копироват цветови таблици из файл с шаблон.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1868"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1876"/>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1874"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1882"/>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1880"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1888"/>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1886"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1894"/>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1892"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1900"/>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="395"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1900"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="393"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1908"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1936"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1944"/>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1942"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1950"/>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
         <translation>Ако е включено, числовите атрибути, чиито стойности се явяват празен ред, ще бъдат съхранени във вид със специално числова стойност. Тази опция обикновено не е необходима, но може да бъде полезна при превод от S-57 към S-57 без загуба на информация.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1949"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1957"/>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1955"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1963"/>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1962"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1970"/>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
         <translation>Необходимо ли е атрибутивните стойности да бъдат прекодирани в UTF-8 от кодирането, зададено в поле DSSI файл S57.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="430"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1972"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="428"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1980"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base файл</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="436"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1987"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="434"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1995"/>
         <source>Spatial Data Transfer Standard [SDTS]</source>
         <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2000"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2075"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2008"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2083"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
         <translation>Може да се използва за избягване на създаване на таблица geometry_columns и spatial_ref_sys в новата база. По подразбиране, при създаване на нова база, тези таблици с метаданни се създават.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1156"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1164"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on Win32 or LF on all other systems). This may be overridden through the use of the LINEFORMAT option.</source>
         <translation>По подразбиране, когато се създават нови CSV файлове, те се създават с тип завършване на редовете според установения тип на локалната платформа (CR/LF за Win32 или LF за всички останали системи). Това може да бъде презададено, чрез използване на опцията LINEFORMAT.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="373"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="371"/>
         <source>Creation of data source failed (OGR error: %1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="376"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="374"/>
         <source>Opening of data source in update mode failed (OGR error: %1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="396"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="394"/>
         <source>Overwriting of existing layer failed (OGR error: %1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="550"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="548"/>
         <source>Creation of layer failed (OGR error: %1)</source>
         <translation>Неуспешно създаване на слой (OGR грешка: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="553"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="551"/>
         <source>Opening of layer failed (OGR error: %1)</source>
         <translation>Неуспешно отваряне на слой (OGR грешка: %1)</translation>
     </message>
@@ -24903,143 +24904,143 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1195"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1203"/>
         <source>Field separator character.</source>
         <translation>Знак за разделител на полета.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1223"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1231"/>
         <source>Whether to write a header line with the field names.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1260"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1268"/>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1264"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1272"/>
         <source> POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured geometries.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1267"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1275"/>
         <source> MULTIPATCH files are supported since GDAL 2.2.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1297"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1305"/>
         <source>Set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1348"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1377"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1356"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1385"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Defaults to 15. Truncation will occur to remove trailing zeros.</source>
         <translation>Максимален брой цифри след десетичния разделител, които да се изписват в координатите. По подразбиране е 15. Ще се извърши премахване на последващите нули.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1354"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1362"/>
         <source>Whether to use RFC 7946 standard. If disabled GeoJSON 2008 initial version will be used. Default is NO (thus GeoJSON 2008). See also Documentation (via Help button)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1383"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1391"/>
         <source>Whether to start records with the RS=0x1E character (RFC 8142 standard). Defaults to NO: Newline Delimited JSON (geojsonl). 
 If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1392"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1400"/>
         <source>GeoJSON - Newline Delimited</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1426"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1434"/>
         <source>If defined to YES, extension fields will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1441"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1449"/>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1539"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1547"/>
         <source>GML version to use.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1549"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1557"/>
         <source>Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1745"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1753"/>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1765"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1773"/>
         <source>The DOCUMENT_ID datasource creation option can be used to specified the id of the root &lt;Document&gt; node. The default value is root_doc.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1800"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1808"/>
         <source>(multiples of 512): Block size for .map files. Defaults to 512. MapInfo 15.2 and above creates .tab files with a blocksize of 16384 bytes. Any MapInfo version should be able to handle block sizes from 512 to 32256.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1807"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1815"/>
         <source>xmin,ymin,xmax,ymax: Define custom layer bounds to increase the accuracy of the coordinates. Note: the geometry of written features must be within the defined box.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1913"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1921"/>
         <source>Should update files be incorporated into the base data on the fly.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1921"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1929"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1929"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1937"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled when SPLIT_MULTIPOINT is also enabled.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2017"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2025"/>
         <source>Controls the format used for the geometry column. Defaults to WKB. This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2027"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2096"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2035"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2104"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation>Контролира привеждането на името на полето и слоя към вид, удобен за използване в SQLite. Това означава преобразуване в долен регистър (малки букви) и замяна на някои специални символи (&apos; - #) с подчертани.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2061"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2069"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2086"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2094"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
         <translation>Вмъкване на съдържанието на EPSG CSV файловете в таблица spatial_ref_sys. За регулярни SQLite бази данни задайте NO.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2117"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2558"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2125"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2566"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
         <translation>Използва се за преопределяне на кода SRID на координатната система на слоя. Ако тази опция не е зададена и слоят има някаква координатна система, ще се извърши търсене на подходяща координатна система в таблицата spatial_ref_sys. Ако няма съвпадение, в таблицата spatial_ref_sys се добавя новата координатна система. Ако е зададена опцията SRID, търсенето (и последващото вмъкване на нов запис) няма да бъде изпълнявано, а ще се използва зададения SRID.</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystem.cpp" line="190"/>
         <location filename="../src/core/proj/qgscoordinatereferencesystem.cpp" line="2629"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2143"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2151"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="395"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="522"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovidergui.cpp" line="32"/>
@@ -25047,70 +25048,70 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2156"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2164"/>
         <source>Override the header file used - in place of header.dxf.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2161"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2169"/>
         <source>Override the trailer file used - in place of trailer.dxf.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="482"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2195"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="480"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2203"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2208"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2216"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
         <translation>Задава разширение на GeoConcept файла при извеждане. По-старите версии на GeoConcept изполват TXT. Текущата версия използва GXT.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="477"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2234"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="475"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2242"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2257"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2333"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2265"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2341"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
         <translation>Когато е избрана тази опция, новият слой ще бъде създаден в папка с име FeatureDataset. Ако такава папка отсъства, тя ще бъде създадена.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2268"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2339"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2276"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2347"/>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
         <translation>Задаване на името на колоната с геометрия на новия слой. По подразбиране &apos;SHAPE&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2278"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2344"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2286"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2352"/>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
         <translation>Име на OID колоната за създаване. По подразбиране &apos;OBJECTID&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="274"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2351"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2359"/>
         <source>ESRI FileGDB</source>
         <translation>ESRI FileGDB</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2366"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2406"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2374"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2414"/>
         <source>By default, the driver will try to detect the data type of fields. If set to STRING, all fields will be of String type.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3782"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4333"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>Неуспешно трансформиране, записването е спряно. (Изключение: %1)</translation>
     </message>
@@ -26024,49 +26025,49 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
         <translation>Завършва с/със</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="568"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="585"/>
         <source>Scale: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="569"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="586"/>
         <source>Offset: %1</source>
         <translation>Отместване: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2961"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="640"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2978"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="638"/>
         <source>GDAL/OGR VSIFileHandler</source>
         <translation>GDAL/OGR VSIFileHandler</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2969"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="648"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2986"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="646"/>
         <source>All supported files</source>
         <translation>Всички поддържани файлове</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3014"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3031"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>Този растер няма канали и е невалиден слой.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3534"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3551"/>
         <source>Raster attribute table has no columns: skipping.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3541"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3558"/>
         <source>Dataset is not valid and raster attribute table could not be loaded.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3574"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3591"/>
         <source>GDAL error setting the table type, raster attribute table could not be saved.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3608"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3625"/>
         <source>GDAL error creating column &apos;%1, raster attribute table could not be saved.</source>
         <translation type="unfinished"/>
     </message>
@@ -26087,7 +26088,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="76"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4389"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4399"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="62"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="46"/>
         <source>Nearest Neighbour</source>
@@ -26095,7 +26096,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="77"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4395"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4405"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="63"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="47"/>
         <source>Bilinear (2x2 Kernel)</source>
@@ -26103,7 +26104,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="78"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4392"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4402"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="64"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="48"/>
         <source>Cubic (4x4 Kernel)</source>
@@ -26111,7 +26112,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="79"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4393"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4403"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="65"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="226"/>
         <source>Cubic B-Spline (4x4 Kernel)</source>
@@ -26119,7 +26120,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="80"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4394"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4404"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="66"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="227"/>
         <source>Lanczos (6x6 Kernel)</source>
@@ -26127,7 +26128,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="81"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4390"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4400"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="67"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="228"/>
         <source>Average</source>
@@ -26159,7 +26160,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4391"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4401"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="69"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="230"/>
         <source>Gauss</source>
@@ -26167,7 +26168,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="82"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4396"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4406"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="68"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="229"/>
         <source>Mode</source>
@@ -26227,7 +26228,7 @@ This algorithm is a port of the SAGA &apos;DTM Filter (slope-based)&apos; tool.<
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="85"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4397"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4407"/>
         <location filename="../src/core/qgsfield.cpp" line="457"/>
         <source>None</source>
         <translation>Без</translation>
@@ -26488,13 +26489,13 @@ stderr: %4</translation>
         <translation>CouchDB</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="420"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="418"/>
         <source>OpenFileGDB</source>
         <translation>OpenFileGDB</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="286"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="288"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="287"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRI Personal GeoDatabase</translation>
     </message>
@@ -26505,29 +26506,29 @@ stderr: %4</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="281"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1246"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1254"/>
         <source>FlatGeobuf</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="294"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="292"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRI ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="299"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="297"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRI SHP (шейп) файлове</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="312"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="310"/>
         <source>GeoJSON Newline Delimited JSON</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="348"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="351"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1618"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="346"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="349"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1626"/>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5588"/>
         <location filename="../src/gui/providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp" line="23"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="57"/>
@@ -26536,47 +26537,47 @@ stderr: %4</translation>
         <translation>GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="357"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="355"/>
         <source>Grass Vector</source>
         <translation>GRASS вектор</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="361"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="359"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="375"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="373"/>
         <source>Ingres</source>
         <translation>Ingres</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="387"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="385"/>
         <source>Mapinfo File</source>
         <translation>Mapinfo файл</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="400"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="398"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="408"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="406"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="412"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="410"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="416"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="414"/>
         <source>OGDI Vectors</source>
         <translation>OGDI вектори</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="426"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="424"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="415"/>
         <location filename="../src/providers/postgres/qgspostgresprovidergui.cpp" line="34"/>
         <location filename="../src/providers/postgres/qgspostgresprovidergui.cpp" line="50"/>
@@ -26584,162 +26585,162 @@ stderr: %4</translation>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="442"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="440"/>
         <source>Systematic Organization of Spatial Information [SOSI]</source>
         <translation>Systematic Organization of Spatial Information [SOSI]</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="447"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="445"/>
         <source>SQLite/SpatiaLite</source>
         <translation>SQLite/SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="452"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="450"/>
         <source>Storage and eXchange Format</source>
         <translation>Storage and eXchange Format</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="457"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="455"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="461"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="459"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="465"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="463"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - виртуален растер</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="471"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="469"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="487"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="485"/>
         <source>Open Document Spreadsheet</source>
         <translation>Таблица Open Document</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="492"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="490"/>
         <source>MS Office Open XML spreadsheet</source>
         <translation>Таблица MS Office Open XML</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="497"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="495"/>
         <source>MS Excel format</source>
         <translation>MS Excel формат</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="502"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="500"/>
         <source>EDIGEO</source>
         <translation>EDIGEO</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="507"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="505"/>
         <source>NAS - ALKIS</source>
         <translation>NAS - ALKIS</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="512"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="510"/>
         <source>WAsP</source>
         <translation>WAsP</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="517"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="515"/>
         <source>PCI Geomatics Database File</source>
         <translation>PCI Geomatics база данни</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="522"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="520"/>
         <source>GPSTrackMaker</source>
         <translation>GPSTrackMaker</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="527"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="525"/>
         <source>Czech Cadastral Exchange Data Format</source>
         <translation>Чешки обменен кадастрален формат</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="532"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="530"/>
         <source>OpenStreetMap</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="537"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="535"/>
         <source>Special Use Airspace Format</source>
         <translation>Special Use Airspace формат</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="542"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="540"/>
         <source>OpenAir Special Use Airspace Format</source>
         <translation>OpenAir Special Use Airspace формат</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="547"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="545"/>
         <source>Planetary Data Systems TABLE</source>
         <translation>Planetary Data Systems ТАБЛИЦА</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="552"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="550"/>
         <source>Hydrographic Transfer Format</source>
         <translation>Hydrographic Transfer формат</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="557"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="555"/>
         <source>Scalable Vector Graphics</source>
         <translation>Scalable Vector Graphics</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="562"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="560"/>
         <source>Arc/Info Generate</source>
         <translation>Arc/Info Generate</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="567"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="565"/>
         <source>Geospatial PDF</source>
         <translation>Geospatial PDF</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="572"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="570"/>
         <source>SEG-Y</source>
         <translation>SEG-Y</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="577"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="575"/>
         <source>SEG-P1</source>
         <translation>SEG-P1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="578"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="576"/>
         <source>UKOOA P1/90</source>
         <translation>UKOOA P1/90</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1004"/>
         <source>Too many files opened (%1). Cannot open %2. You may raise the limit with the &apos;ulimit -n number_of_files&apos; command before starting QGIS.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1008"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
         <source>Too many files opened (%1). Cannot open %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2934"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2932"/>
         <source>Open %1</source>
         <translation>Отваряне %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2948"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2946"/>
         <source>Add Connection</source>
         <translation>Добавяне на връзка</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2949"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2947"/>
         <source>A connection with the same name already exists,
 please provide a new name:</source>
         <translation>Връзка с това име вече съществува,
@@ -26783,62 +26784,62 @@ please provide a new name:</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3644"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3642"/>
         <source>Not enough data to deserialize</source>
         <translation>Няма достатъчно данни за десериализиране</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3647"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3645"/>
         <source>Not enough memory</source>
         <translation>Няма достатъчно памет</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3650"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3648"/>
         <source>Unsupported geometry type</source>
         <translation>Неподдържан тип геометрия</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3653"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3651"/>
         <source>Unsupported operation</source>
         <translation>Неподдържана операция</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3656"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3654"/>
         <source>Corrupt data</source>
         <translation>Повредени данни</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3659"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3657"/>
         <source>Failure</source>
         <translation>Провал</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3662"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3660"/>
         <source>Unsupported SRS</source>
         <translation>Неподдържанa SRS</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3665"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3663"/>
         <source>Invalid handle</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3668"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3666"/>
         <source>Non existing feature</source>
         <translation>Несъществуващ обект</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3673"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3671"/>
         <source>Success</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3677"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3675"/>
         <source>GDAL result code: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3682"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3680"/>
         <source>Layer not found: %1</source>
         <translation>Слоят не е намерен: %1</translation>
     </message>
@@ -26848,8 +26849,8 @@ please provide a new name:</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2972"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="651"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2989"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="649"/>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="55"/>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
@@ -26859,27 +26860,27 @@ please provide a new name:</source>
         <translation>Всички файлове</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="786"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="784"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Дублиращо се поле (10 значими символа): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="804"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="802"/>
         <source>Creating the data source %1 failed: %2</source>
         <translation>Създаването на източник на данни %1 е неуспешно: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="833"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="831"/>
         <source>Unknown vector type of %1</source>
         <translation>Неизвестен векторен тип на %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="932"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="930"/>
         <source>field %1 with unsupported type %2 skipped</source>
         <translation>полето %1 е с неподдържан тип %2 и ще бъде пропуснато</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="938"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="936"/>
         <source>creation of field %1 failed</source>
         <translation>създаването на поле %1 e неуспешно</translation>
     </message>
@@ -27308,33 +27309,33 @@ SQL: %1</translation>
         <translation>Неуспешно запазване на стил на слоя. Невъзможно създаването на служебна таблица в базата данни.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="773"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="771"/>
         <source>URI %1 doesn&apos;t end with .shp or .dbf</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1551"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1607"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1627"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1683"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2307"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2377"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1549"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1605"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1625"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1681"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2305"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2375"/>
         <source>Cannot find layer %1.</source>
         <translation>Неупешно намиране на слой %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1618"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1616"/>
         <source>Cannot open %1 (%2).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4718"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4732"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4746"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4758"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4772"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4792"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2298"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4728"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4742"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4756"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4768"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4782"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4802"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2296"/>
         <source>Cannot open %1.</source>
         <translation>%1 не може да се отвори.</translation>
     </message>
@@ -28629,7 +28630,7 @@ The additional attributes and their values are taken from a second vector layer.
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1289"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4332"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4327"/>
         <source>An error occurred while calculating area</source>
         <translation type="unfinished"/>
     </message>
@@ -32131,7 +32132,7 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointslayerfromtable.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="70"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="71"/>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="60"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="73"/>
@@ -34161,7 +34162,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalinformation.cpp" line="63"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmrastersurfacevolume.cpp" line="58"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="315"/>
         <source>HTML files (*.html)</source>
         <translation>HTML файлове (*.html)</translation>
     </message>
@@ -36164,89 +36165,89 @@ Attributes are not modified by this algorithm.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="278"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="279"/>
         <source>Generate XYZ tiles (Directory)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="283"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="284"/>
         <source>tiles,xyz,tms,directory</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="288"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="289"/>
         <source>Generates XYZ tiles of map canvas content and saves them as individual images in a directory.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="299"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="300"/>
         <source>Tile width</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="300"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="301"/>
         <source>Tile height</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="301"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="302"/>
         <source>Use inverted tile Y axis (TMS convention)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="303"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="304"/>
         <source>Leaflet HTML output title</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="307"/>
         <source>Leaflet HTML output attribution</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="309"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="310"/>
         <source>Include OpenStreetMap basemap in Leaflet HTML output</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="315"/>
         <source>Output html (Leaflet)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="336"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="541"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="337"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="542"/>
         <source>%1 tiles will be created for zoom level %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="339"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="544"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="340"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="545"/>
         <source>A total of %1 tiles will be created</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="407"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="408"/>
         <source>Could not open html file %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="487"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="488"/>
         <source>Generate XYZ tiles (MBTiles)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="492"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="493"/>
         <source>tiles,xyz,tms,mbtiles</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="497"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="498"/>
         <source>Generates XYZ tiles of map canvas content and saves them as an MBTiles file.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="508"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
         <source>MBTiles files (*.mbtiles *.MBTILES)</source>
         <translation type="unfinished"/>
     </message>
@@ -40661,14 +40662,14 @@ Optionally, a separate table can be output which contains a summary of the class
         <translation>3D</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmapsettings.cpp" line="584"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="609"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="628"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="649"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="666"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="683"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="704"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="721"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="554"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="579"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="598"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="619"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="636"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="653"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="674"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="691"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="768"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="819"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="921"/>
@@ -41173,7 +41174,7 @@ An optional minimum area parameter allows removing only holes which are smaller 
         <location filename="../src/analysis/processing/qgsalgorithmimportphotos.cpp" line="44"/>
         <location filename="../src/analysis/processing/qgsalgorithmpixelcentroidsfrompolygons.cpp" line="41"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointslayerfromtable.cpp" line="40"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="60"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="61"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointtolayer.h" line="39"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsextent.cpp" line="44"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="43"/>
@@ -41298,7 +41299,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="35"/>
-        <source>invert,flip,swap,switch,latitude,longitude</source>
+        <source>invert,flip,swap,switch,latitude,longitude,reverse</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -43115,7 +43116,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnetworkanalysisbase.cpp" line="135"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="244"/>
         <source>Loading points…</source>
         <translation type="unfinished"/>
     </message>
@@ -45326,7 +45327,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="964"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1039"/>
         <source>ASF label %1</source>
         <translation type="unfinished"/>
     </message>
@@ -45643,7 +45644,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="272"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="480"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterminmax.cpp" line="53"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="508"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="37"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="243"/>
         <source>Output</source>
@@ -45666,7 +45667,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="152"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="518"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="519"/>
         <source>Failed to create MBTiles file %1</source>
         <translation type="unfinished"/>
     </message>
@@ -45728,12 +45729,12 @@ The export can be filtered to only bookmarks belonging to the current project, t
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="35"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="36"/>
         <source>Points to path</source>
         <translation>Точки към път</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="40"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="41"/>
         <source>This algorithm takes a point layer and connects its features to create a new line layer.
 
 An attribute or expression may be specified to define the order the points should be connected. If no order expression is specified, the feature ID is used.
@@ -45744,83 +45745,93 @@ An attribute or expression can be selected to group points having the same value
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="50"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="51"/>
         <source>Takes a point layer and connects its features to create a new line layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="55"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="56"/>
         <source>create,lines,points,connect,convert,join,path</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="71"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="72"/>
         <source>Create closed paths</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="73"/>
         <source>Order expression</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="74"/>
         <source>Sort text containing numbers naturally</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="75"/>
         <source>Path group expression</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="76"/>
         <source>Paths</source>
         <translation>Пътища</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="77"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="78"/>
         <source>Directory for text output</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="78"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="79"/>
         <source>Number of paths</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="83"/>
         <source>Order field</source>
         <translation>Поле за ред</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="176"/>
         <source>Group field</source>
         <translation>Поле за група</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="91"/>
         <source>Date format (if order field is DateTime)</source>
         <translation>Формат на дата (ако полето за ред е DateTime)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="174"/>
+        <source>Order by field %1 does not exist in input layer.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="199"/>
+        <source>Group field %1 does not exist in input layer.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="229"/>
         <source>Failed to create the text output directory</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="270"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="287"/>
         <source>Creating paths…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="307"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="322"/>
         <source>Skipping path with group %1 : insufficient vertices</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="344"/>
         <source>Cannot open file for writing </source>
         <translation type="unfinished"/>
     </message>
@@ -47524,7 +47535,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="126"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="354"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="369"/>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafromlayer.cpp" line="195"/>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafrompoint.cpp" line="127"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathlayertopoint.cpp" line="123"/>
@@ -47533,7 +47544,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtolayer.cpp" line="173"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="105"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="120"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4367"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4362"/>
         <source>An error occurred while calculating length</source>
         <translation type="unfinished"/>
     </message>
@@ -48466,17 +48477,17 @@ The minimum extent entered will internally be extended to a multiple of the tile
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="315"/>
         <source>Error reading tiles from the temporary image</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="324"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="325"/>
         <source>Error reading intermediate raster</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="335"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="336"/>
         <source>Error writing output raster</source>
         <translation type="unfinished"/>
     </message>
@@ -49390,7 +49401,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdaltile.cpp" line="70"/>
         <location filename="../src/analysis/processing/qgsalgorithmsplitvectorlayer.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmwritevectortiles.cpp" line="120"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="313"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
         <source>Output directory</source>
         <translation>Изходна директория</translation>
     </message>
@@ -50539,7 +50550,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2076"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2122"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation type="unfinished"/>
     </message>
@@ -50566,10 +50577,10 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2717"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2726"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2768"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2776"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2763"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2772"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2814"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation type="unfinished"/>
     </message>
@@ -50637,131 +50648,132 @@ The created point layer will be in the same spatial reference system as the sele
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2107"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2089"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2153"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2154"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2338"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2384"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2214"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2297"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2260"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2343"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2365"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2411"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2641"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2650"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2687"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2696"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2803"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2811"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2831"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2849"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2857"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2877"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2882"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3748"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2928"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3794"/>
         <source>%1: Could not interpret match list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3044"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3532"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3823"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3090"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3578"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3869"/>
         <source>%1: Could not interpret step list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3128"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3174"/>
         <source>%1: Could not interpret value list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3140"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3186"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3145"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3151"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3197"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3180"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3226"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3246"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3297"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3343"/>
         <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3332"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3398"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3452"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3378"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3444"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3498"/>
         <source>%1: Skipping unsupported expression</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3555"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3601"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3587"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3594"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3604"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3633"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3640"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3650"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3872"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3918"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3786"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3878"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3832"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3924"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3916"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3962"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: Пропускане на неподдържана част на израза</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4068"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4114"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4229"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4275"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation type="unfinished"/>
     </message>
@@ -52952,7 +52964,7 @@ For more details, please see the following papers:
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="658"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="671"/>
         <source>ArcGIS REST Servers</source>
         <translation type="unfinished"/>
     </message>
@@ -52977,7 +52989,7 @@ For more details, please see the following papers:
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="404"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="402"/>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="583"/>
         <location filename="../src/providers/mssql/qgsmssqlprovidergui.cpp" line="30"/>
         <source>MS SQL Server</source>
@@ -55992,12 +56004,12 @@ Depending on the geometry type of the vector layer, the attributes added to the 
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="166"/>
         <source>No project is available in this context</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="197"/>
         <source>Could not transform feature to project&apos;s CRS: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -63229,74 +63241,74 @@ Delete these features?</source>
 <context>
     <name>QgsAfsProvider</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="54"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="56"/>
         <source>Retrieve service definition</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="60"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="62"/>
         <source>getLayerInfo failed</source>
         <translation>getLayerInfo е неуспешно</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="116"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="119"/>
         <source>Could not retrieve layer extent</source>
         <translation>Неуспешно получаване на пространствен обхват на слоя</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="122"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="125"/>
         <source>Could not parse spatial reference</source>
         <translation>Неуспешно обработване на пространствено привързване</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="240"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="248"/>
         <source>Failed to determine geometry type</source>
         <translation>Неуспешно определяне на типа на геометрия</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="281"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="289"/>
         <source>Retrieve object IDs</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="361"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="369"/>
         <source>Error while deleting features: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="395"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="403"/>
         <source>Error while adding features: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="444"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="481"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="538"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="452"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="489"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="546"/>
         <source>Error while updating features: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="557"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="565"/>
         <source>Error while adding fields: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="574"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="582"/>
         <source>Error while deleting fields: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="596"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="604"/>
         <source>Error while creating attribute index: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="700"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="708"/>
         <source>SQL 92 WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="308"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="316"/>
         <source>Source</source>
         <translation>Източник</translation>
     </message>
@@ -65719,7 +65731,7 @@ Errors: %2
 <context>
     <name>QgsArcGisFeatureServiceItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="485"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="497"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65727,7 +65739,7 @@ Errors: %2
 <context>
     <name>QgsArcGisMapServiceItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="534"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="547"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65735,7 +65747,7 @@ Errors: %2
 <context>
     <name>QgsArcGisPortalGroupItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="325"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="334"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65743,12 +65755,12 @@ Errors: %2
 <context>
     <name>QgsArcGisPortalGroupsItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="248"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="255"/>
         <source>Groups</source>
         <translation>Групи</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="272"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="280"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65756,7 +65768,7 @@ Errors: %2
 <context>
     <name>QgsArcGisRestConnectionItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="215"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="222"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65843,7 +65855,7 @@ Errors: %2
 <context>
     <name>QgsArcGisRestFolderItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="434"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="445"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -65851,12 +65863,12 @@ Errors: %2
 <context>
     <name>QgsArcGisRestServicesItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="362"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="371"/>
         <source>Services</source>
         <translation>Услуги</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="381"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="391"/>
         <source>Connection failed: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -67046,7 +67058,7 @@ Clicking the button will let you select an application to use as the action</sou
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="467"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="466"/>
         <source>Update All</source>
         <translation>Обновяване на всичко</translation>
     </message>
@@ -67161,7 +67173,7 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Условно форматиране</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="311"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="310"/>
         <source>Dock Attribute Table</source>
         <translation type="unfinished"/>
     </message>
@@ -67192,115 +67204,115 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
         <source>Update Attributes</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="459"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="458"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>Неуспешно добавяне на поле &apos;%1&apos; от тип &apos;%2&apos;. Уникално ли е името на полето?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="469"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="468"/>
         <source>Update Filtered</source>
         <translation>Обновяване на филтъра</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="433"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="432"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="435"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="434"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="572"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="571"/>
         <source>Calculating field</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="742"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="741"/>
         <source>Feature Added</source>
         <translation>Добавен обект</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="960"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="959"/>
         <source>Attribute added</source>
         <translation>Добавен атрибут</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
         <source>Add Field</source>
         <translation>Добавяне на поле</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1001"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1000"/>
         <source>Deleted attribute</source>
         <translation>Изтрит атрибут</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>Неуспешно изтриване на атрибут/и</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
         <source>Attribute error</source>
         <translation>Атрибутивна грешка</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1062"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1084"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1083"/>
         <source>%n feature(s) deleted: %1</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1081"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1080"/>
         <source>%1 on layer %2. </source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1092"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1091"/>
         <source>Delete Feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="711"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="710"/>
         <source>Geometryless feature added</source>
         <translation>Добавени обекти без геометрия</translation>
     </message>
@@ -79960,195 +79972,196 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="632"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="641"/>
         <source>(disabled when attribute table only shows features visible in the current map canvas extent)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="768"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="777"/>
         <source>Expression Based Preview</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="971"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="979"/>
         <source>&amp;Set All Column Widths…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="981"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="989"/>
         <source>&amp;Autosize All Columns</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="990"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="998"/>
         <source>&amp;Sort…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="976"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="984"/>
         <source>&amp;Autosize</source>
         <translation>&amp;Автоматичен размер</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="263"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="269"/>
         <source>Sort…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="276"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="282"/>
         <source>By Custom Expression</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="301"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="307"/>
         <source>&apos;[Please define preview text]&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="634"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="643"/>
         <source>Automatically pan to the current feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="635"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="644"/>
         <source>Automatically zoom to the current feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="675"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="684"/>
         <source>An error occurred while filtering features</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="787"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="796"/>
         <source>Column Display Name</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="787"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="796"/>
         <source>Could not set column '%1' as display name.
 Parser error:
 %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="791"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="84"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="586"/>
         <source>Expression</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="857"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="865"/>
         <source>Copy Cell Content</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="868"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="876"/>
         <source>Zoom to Feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="871"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="879"/>
         <source>Pan to Feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="874"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="882"/>
         <source>Flash Feature</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="882"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="890"/>
         <source>Run Layer Action</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="927"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="935"/>
         <source>Actions on Selection (%1)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="944"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="952"/>
         <source>Open Form</source>
         <translation>Отваряне на форма</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="945"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="953"/>
         <source>Open Form…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="962"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="970"/>
         <source>&amp;Hide Column</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="966"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="974"/>
         <source>&amp;Set Width…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1384"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1392"/>
         <source>%L1 features loaded.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="987"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="995"/>
         <source>&amp;Organize Columns…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="266"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="272"/>
         <source>By Display Name (Ascending)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="271"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="277"/>
         <source>By Display Name (Descending)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1056"/>
         <source>Set column width</source>
         <translation>Задаване на ширина на колона</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1067"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1056"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1075"/>
         <source>Enter column width</source>
         <translation>Въвеждане на ширина на колона</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1067"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1075"/>
         <source>Set Column Width</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1102"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1110"/>
         <source>Configure Attribute Table Sort Order</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1378"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1386"/>
         <source>Loading features…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1379"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1387"/>
         <source>Attribute Table</source>
         <translation>Атрибутивна таблица</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1110"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1118"/>
         <source>Defined sort order in attribute table</source>
         <translation>Зададен ред на сортиране в атрибутивната таблица</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1124"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1132"/>
         <source>Sort ascending</source>
         <translation>Възходящо сортиране</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1378"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1386"/>
         <source>Abort</source>
         <translation>Прекрати</translation>
     </message>
@@ -95340,12 +95353,12 @@ p, li { white-space: pre-wrap; }
         <translation>maximum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9449"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9444"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9459"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9454"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation type="unfinished"/>
     </message>
@@ -98678,93 +98691,93 @@ This field is a geometry column, its removal may make the table unusable by QGIS
 <context>
     <name>QgsGdalProvider</name>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="541"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="558"/>
         <source>Dataset Description</source>
         <translation>Описание на набора данни</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="552"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="569"/>
         <source>Band %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="613"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="630"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Канали: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="612"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="629"/>
         <source>Dimensions</source>
         <translation>Измерения</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="157"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="174"/>
         <source>Open data source</source>
         <translation>Отваря източника на данни</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="535"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="552"/>
         <source>GDAL Driver Description</source>
         <translation>Описание на GDAL драйвера</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="538"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="555"/>
         <source>GDAL Driver Metadata</source>
         <translation>Метаданни за GDAL драйвера</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="545"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="562"/>
         <source>Compression</source>
         <translation>Компресия</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="575"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="592"/>
         <source>More information</source>
         <translation>Повече информация</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="579"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="596"/>
         <source>Mask band (exposed as alpha band)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="628"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="645"/>
         <source>Origin</source>
         <translation>Базис</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="631"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="648"/>
         <source>Pixel Size</source>
         <translation>Размер на пиксела</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="695"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="712"/>
         <source>Error occurred while reading block.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1340"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1357"/>
         <source>Band</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1378"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1395"/>
         <source>Format not supported</source>
         <translation>Форматът не се поддържа</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1370"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1431"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1387"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1448"/>
         <source>Cannot read data</source>
         <translation>Данните не могат да бъдат прочетени</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3645"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3662"/>
         <source>GDAL error saving raster attribute table, raster attribute table could not be saved.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3774"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3791"/>
         <source>Cannot get GDAL raster band: %1</source>
         <translation>Неуспешно зареждане на GDAL растерен канал: %1</translation>
     </message>
@@ -106314,67 +106327,67 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Data Source Name (DSN)</source>
-        <translation type="unfinished"/>
+        <translation>Име на източника на данни (DSN)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Име</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>DSN                        </source>
-        <translation type="unfinished"/>
+        <translation>ИНД</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>SSL</source>
-        <translation type="unfinished"/>
+        <translation>SSL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Proxy</source>
-        <translation type="unfinished"/>
+        <translation>Proxy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Enable proxy</source>
-        <translation type="unfinished"/>
+        <translation>Активиране на прокси сървър</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>HTTP</source>
-        <translation type="unfinished"/>
+        <translation>HTTP</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>SOCKS5</source>
-        <translation type="unfinished"/>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Host</source>
-        <translation type="unfinished"/>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Port</source>
-        <translation type="unfinished"/>
+        <translation>Порт</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>User name</source>
-        <translation type="unfinished"/>
+        <translation>Потребителско име</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Парола</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshananewconnectionbase.ui"/>
@@ -106392,7 +106405,7 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="392"/>
         <source>Schema or table name cannot be empty</source>
-        <translation type="unfinished"/>
+        <translation>Името на схемата или таблицата не може да бъде празно</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="378"/>
@@ -106403,28 +106416,28 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="407"/>
         <source>Provider does not have enough permissions</source>
-        <translation type="unfinished"/>
+        <translation>Доставчикът няма достатъчно разрешения</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="492"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="604"/>
         <source>Failed to retrieve feature count: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на броя на характеристиките: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="527"/>
         <source>Failed to retrieve minimum value: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на минимална стойност: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="549"/>
         <source>Failed to retrieve maximum value: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на максималната стойност: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="579"/>
         <source>Failed to retrieve unique values: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на уникални стойности: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="626"/>
@@ -106434,44 +106447,44 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="727"/>
         <source>Could not add feature with geometry type %1 to layer of type %2</source>
-        <translation type="unfinished"/>
+        <translation>Не можа да се добави елемент с геометрия тип %1 към слой тип %2</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="823"/>
         <source>Failed to add features: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно добавяне на функции: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="852"/>
         <source>Failed to delete features: Unable to find feature ids</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно изтриване на елементи: Не могат да бъдат намерени идентификатори на елементи</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="865"/>
         <source>Failed to delete features: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно изтриване на елементи: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="896"/>
         <source>Failed to truncate: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно отрязване: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="934"/>
         <source>Failed to add feature: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно добавяне на функция: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="945"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="991"/>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1082"/>
         <source>Failed to read attributes: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно четене на атрибути: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="979"/>
         <source>Failed to delete attributes: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно изтриване на атрибути: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1013"/>
@@ -106481,32 +106494,32 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1054"/>
         <source>Error renaming field &apos;%1&apos; to &apos;%2&apos;. Field with the same name already exists</source>
-        <translation type="unfinished"/>
+        <translation>Грешка при преименуването на поле &apos;%1&apos; на &apos;%2&apos;. Поле със същото име вече съществува.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1071"/>
         <source>Failed to rename attributes: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно преименуване на атрибути: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1130"/>
         <source>Failed to change feature geometry: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешна промяна на геометрията на елемента: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1233"/>
         <source>Failed to change feature attributes: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешна промяна на атрибутите на обекта: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1436"/>
         <source>Failed to estimate the data extent: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешна оценка на обхвата на данните: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanaprovider.cpp" line="1646"/>
         <source>Failed to retrieve crs: %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на CRS: %1</translation>
     </message>
 </context>
 <context>
@@ -106519,23 +106532,23 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanadataitems.cpp" line="248"/>
         <source>Server error occurred</source>
-        <translation type="unfinished"/>
+        <translation>Възникна грешка в сървъра</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitems.cpp" line="265"/>
         <source>
 %1 as %2</source>
-        <translation type="unfinished"/>
+        <translation>%1 като %2</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitems.cpp" line="268"/>
         <source> (srid %1)</source>
-        <translation type="unfinished"/>
+        <translation>(срид %1)</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitems.cpp" line="270"/>
         <source> (unknown srid)</source>
-        <translation type="unfinished"/>
+        <translation> (неизвестен srid)</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitems.cpp" line="293"/>
@@ -106548,7 +106561,7 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="221"/>
         <source>Add SAP HANA Table(s)</source>
-        <translation type="unfinished"/>
+        <translation>Добавяне на SAP HANA таблица(и) </translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="258"/>
@@ -106583,17 +106596,17 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="437"/>
         <source>SAP HANA</source>
-        <translation type="unfinished"/>
+        <translation>SAP HANA</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="437"/>
         <source>Unable to connect to a database</source>
-        <translation type="unfinished"/>
+        <translation>Невъзможно е да се свърже с база данни</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="447"/>
         <source>Scanning tables for %1</source>
-        <translation type="unfinished"/>
+        <translation>Сканиране на таблици за %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="458"/>
@@ -106603,7 +106616,7 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="480"/>
         <source>Failed to retrieve tables for %1</source>
-        <translation type="unfinished"/>
+        <translation>Неуспешно извличане на таблици за %1</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanasourceselect.cpp" line="482"/>
@@ -106698,7 +106711,7 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
         <location filename="../src/providers/hana/qgshanatablemodel.cpp" line="88"/>
         <location filename="../src/providers/hana/qgshanatablemodel.cpp" line="298"/>
         <source>Select columns in the &apos;%1&apos; column that uniquely identify features of this layer</source>
-        <translation type="unfinished"/>
+        <translation>Изберете колони в колоната &apos;%1&apos;, които уникално идентифицират характеристиките на този слой</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanatablemodel.cpp" line="93"/>
@@ -106727,17 +106740,17 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="88"/>
         <source>Auto-Find</source>
-        <translation type="unfinished"/>
+        <translation>Автоматично търсене</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="89"/>
         <source>Attempts to automatically find the layers based on the file name (can be slow).</source>
-        <translation type="unfinished"/>
+        <translation>Опити за автоматично намиране на слоевете въз основа на името на файла (може да е бавно).</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="91"/>
         <source>Apply Changes</source>
-        <translation type="unfinished"/>
+        <translation>Прилагане на промените</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="108"/>
@@ -106757,7 +106770,7 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="108"/>
         <source>Auth config</source>
-        <translation type="unfinished"/>
+        <translation>Конфигурация за удостоверяване</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="108"/>
@@ -106772,12 +106785,12 @@ b) Use the Configuration tab to add your credentials in an HTTP Basic Authentica
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="302"/>
         <source>Select File to Replace &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Изберете файл, който да замените с &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="315"/>
         <source>Select New Directory of Selected Files</source>
-        <translation type="unfinished"/>
+        <translation>Изберете нова директория на избраните файлове</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgshandlebadlayers.cpp" line="487"/>
@@ -122643,17 +122656,17 @@ Rasterizing map is recommended for proper rendering.</source>
     <name>QgsMapToolCapture</name>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="508"/>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1345"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1348"/>
         <source>Select an option from the Shape Digitizing Toolbar in order to capture shapes</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1318"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1321"/>
         <source>Cannot transform the point to the layer&apos;s coordinate system</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1371"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1374"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation type="unfinished"/>
     </message>
@@ -129728,12 +129741,12 @@ enhancement</source>
 <context>
     <name>QgsNetworkAccessManager</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="417"/>
+        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="485"/>
         <source>Network request %1 timed out</source>
         <translation>Времето за отговор на мрежата %1 е пресрочено</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="417"/>
+        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="485"/>
         <source>Network</source>
         <translation>Мрежа</translation>
     </message>
@@ -144117,12 +144130,12 @@ SQL: %3</source>
 <context>
     <name>QgsProcessingFieldMapParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="216"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="226"/>
         <source>Parent layer</source>
         <translation>Слой източник</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="219"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="229"/>
         <source>None</source>
         <translation>Без</translation>
     </message>
@@ -144130,7 +144143,7 @@ SQL: %3</source>
 <context>
     <name>QgsProcessingFieldMapWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="389"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="400"/>
         <source>an array of map items, each containing a &apos;name&apos;, &apos;type&apos; and &apos;expression&apos; values (and optional &apos;length&apos; and &apos;precision&apos; values).</source>
         <translation type="unfinished"/>
     </message>
@@ -162621,7 +162634,7 @@ Kindly select a group or smart group you might want to delete.</source>
 <context>
     <name>QgsTextFormatDialog</name>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2366"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2368"/>
         <source>Text Settings</source>
         <translation>Текстови настройки</translation>
     </message>
@@ -162748,7 +162761,7 @@ Kindly select a group or smart group you might want to delete.</source>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="82"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="739"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1986"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1988"/>
         <source>Text</source>
         <translation>Текст</translation>
     </message>
@@ -162768,7 +162781,7 @@ Kindly select a group or smart group you might want to delete.</source>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="90"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="92"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="743"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1987"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1989"/>
         <source>Buffer</source>
         <translation>Ореол</translation>
     </message>
@@ -162783,7 +162796,7 @@ Kindly select a group or smart group you might want to delete.</source>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="98"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="100"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="747"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1989"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1991"/>
         <source>Background</source>
         <translation>Фон</translation>
     </message>
@@ -162846,182 +162859,182 @@ Kindly select a group or smart group you might want to delete.</source>
         <translation>Избран шрифт</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1597"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1599"/>
         <source>Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1599"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1601"/>
         <source>Arranges label candidates in a cluster around the feature&apos;s centroid, preferring placements directly over the centroid.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1603"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1605"/>
         <source>Arranges label candidates directly over the feature or at a preset offset from the feature.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1605"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1607"/>
         <source>Arranges label candidates directly over the feature&apos;s centroid, or at a preset offset from the centroid.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1609"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1611"/>
         <source>Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1611"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1613"/>
         <source>Arranges label candidates parallel to a generalised line representing the polygon&apos;s perimeter. Placements which fall over straighter portions of the perimeter are preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1615"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1617"/>
         <source>Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1619"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1621"/>
         <source>Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1621"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1623"/>
         <source>Label candidates are arranged horizontally along the length of the feature.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1625"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1627"/>
         <source>Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon&apos;s orientation, with placements further from the edges of the polygon preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1629"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1631"/>
         <source>Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1633"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1635"/>
         <source>Arranges candidates following the curvature of the feature&apos;s perimeter. Placements which fall over straighter portions of the perimeter are preferred.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1637"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1639"/>
         <source>Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1645"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1647"/>
         <source>No Change</source>
         <translation>Без промяна</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1646"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1648"/>
         <source>All Uppercase</source>
         <translation>Всички главни букви</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1647"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1649"/>
         <source>All Lowercase</source>
         <translation>Всички малки букви</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1651"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1653"/>
         <source>Small Caps</source>
         <translation>Малки главни букви</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1652"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1654"/>
         <source>All Small Caps</source>
         <translation>Всички малки главни букви</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1654"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1656"/>
         <source>Title Case</source>
         <translation>Регистър на заглавието</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1655"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1657"/>
         <source>Force First Letter to Capital</source>
         <translation>Принудително въвеждане на главна първа буква</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1837"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1839"/>
         <source>Size%1</source>
         <translation>Размер%1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1837"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1839"/>
         <source> X</source>
         <translation> Х</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1938"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1940"/>
         <source>File not found</source>
         <translation>Файлът не е намерен</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1985"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1987"/>
         <source>Lowest Label Component</source>
         <translation>Компонент с най-нисък етикет</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2078"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2080"/>
         <source>Overlapping labels will never be placed for the layer, even if it means some labels will be missing. (To see unplaced labels use the &quot;Show Unplaced Labels&quot; toolbar action.)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2081"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2083"/>
         <source>If a label cannot otherwise be placed for a feature then an overlapping label is permitted.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2084"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2086"/>
         <source>Labels from this layer may freely overlap other labels or label obstacles without penalty.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2150"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2152"/>
         <source>Save Text Format</source>
         <translation>Запазване на текстовия формат</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2150"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2152"/>
         <source>Format with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2168"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2170"/>
         <source>Select SVG file</source>
         <translation>Избор на SVG файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2244"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2246"/>
         <source>Left of line</source>
         <translation>В ляво от линия</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2245"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2247"/>
         <source>Right of line</source>
         <translation>В дясно от линия</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2249"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2251"/>
         <source>Above line</source>
         <translation>Над линия</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2250"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2252"/>
         <source>Below line</source>
         <translation>Под линия</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2261"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2263"/>
         <source>Substitutions</source>
         <translation>Замествания</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2283"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2285"/>
         <source>Tab Positions</source>
         <translation type="unfinished"/>
     </message>
@@ -171210,42 +171223,42 @@ network reply update failed for authentication config</source>
 <context>
     <name>QgsWmsImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4309"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4329"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4336"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4340"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4365"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4324"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4344"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4351"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4355"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4384"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4309"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4324"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL: %3)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4329"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4344"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4336"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4351"/>
         <source>Map request error (Title: %1; Error: %2; URL: %3)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4340"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4355"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL: %4)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4365"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4380"/>
         <source>Map request failed [error: %1 url: %2]</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4384"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Не са показани повече от 100 log съобщения за грешка.</translation>
     </message>
@@ -171261,30 +171274,30 @@ network reply update failed for authentication config</source>
 <context>
     <name>QgsWmsLegendDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4822"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4837"/>
         <source>Redirect loop detected: %1</source>
         <translation>Пренасочване на запитването на един и същ адрес: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4823"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4849"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4838"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4864"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4895"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4910"/>
         <source>GetLegendGraphic request error</source>
         <translation>Грешка при GetLegendGraphic запитване</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4897"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4912"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Код на състояние: %1
 Причина описание: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4905"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4920"/>
         <source>Returned legend image is flawed [URL: %1]</source>
         <translation>Полученото изображение на легендата съдържа грешки [URL адрес: %1]</translation>
     </message>
@@ -171347,10 +171360,10 @@ Reason phrase: %2</source>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="460"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1156"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1171"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3337"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3751"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1164"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1179"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3352"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3766"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
@@ -171370,417 +171383,417 @@ Reason phrase: %2</source>
         <translation>Слоят с мозайки или матрицата с мозайки не е намерена</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1138"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1146"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation><numerusform>, %n несъвпадащ в кеша.</numerusform><numerusform>, %n несъвпадащи в кеша.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1156"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1164"/>
         <source>image is NULL</source>
         <translation>изображението е празно (NULL)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1171"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1179"/>
         <source>unexpected image size</source>
         <translation>неочакван размер на изображение</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1761"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1762"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1769"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1770"/>
         <source>OpenStreetMap tiles</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1763"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
         <source>OpenStreetMap is built by a community of mappers that contribute and maintain data about roads, trails, cafés, railway stations, and much more, all over the world.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1766"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1774"/>
         <source>Open Data Commons Open Database License (ODbL)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1770"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1778"/>
         <source>Base map and data from OpenStreetMap and OpenStreetMap Foundation (CC-BY-SA). © https://www.openstreetmap.org and contributors.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1779"/>
         <source>Creative Commons Attribution-ShareAlike (CC-BY-SA)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1774"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1782"/>
         <source>© OpenStreetMap and contributors (https://www.openstreetmap.org/copyright).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1785"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1793"/>
         <source>Source</source>
         <translation>Източник</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2030"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2045"/>
         <source>Dom Exception</source>
         <translation>Dom изключение</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2080"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2095"/>
         <source>Service Exception</source>
         <translation>Изключение (грешка) на услугата</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2085"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2100"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Запитването съдържа формат, който не се поддържа от сървъра.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2089"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2104"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Запитването съдържа координатна система, която не се поддържа от сървъра за един или повече слоеве.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2093"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2108"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Запитването съдържа координатна система, която не се поддържа от сървъра за един или повече слоеве.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2097"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2112"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>Запитването GetMap е за слой, който не се предлага от сървъра, или запитването GetFeatureInfo е за слой, който не е показан на картата.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2102"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2117"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Запитването е за слой в стил, което не се предлага от този сървър.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2106"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2121"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>Запитването GetFeatureInfo е приложено за слоя, който не поддържа заявки.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2110"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2125"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>Запитването GetFeatureInfo съдържа невалидна стойност за X или Y.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2114"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2129"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Стойността на незадължителния параметър UpdateSequence в запитването GetCapabilities е равна на текущия номер на последователност на обновление в услугите метаданни.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2119"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2134"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Стойността на незадължителния параметър UpdateSequence в запитването GetCapabilities е по-голяма от текущия номер на последователност на обновление в услугите метаданни.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2124"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Запитването не съдържа образец на стойността и сървърът не поддържа стойност по подразбиране.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2129"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2144"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Запитването съдържа невалиден образец на стойността.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2133"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2148"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Запитването е за незадължителна операция, която не се поддържа от сървъра.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2154"/>
         <source>Request contains a time value that does not match any available layer in the server.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2141"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2156"/>
         <source>Request contains some parameter values that do not match any available layer in the server</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2145"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2160"/>
         <source>(No error code was reported)</source>
         <translation>(Код за грешка не е бил докладван)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2149"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2164"/>
         <source>(Unknown error code)</source>
         <translation>(Неустановен код за грешка)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2152"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2167"/>
         <source>The WMS vendor also reported: </source>
         <translation>Допълнително WMS съобщение:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2353"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2546"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2737"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2905"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2368"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2561"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2752"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2920"/>
         <source>Property</source>
         <translation>Свойство</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2355"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2548"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2739"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2907"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2370"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2563"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2922"/>
         <source>Value</source>
         <translation>Стойност</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2359"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2477"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2374"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2492"/>
         <source>Name</source>
         <translation>Име</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2365"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
         <source>Visibility</source>
         <translation>Видимост</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2382"/>
         <source>Visible</source>
         <translation>Видим</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2382"/>
         <source>Hidden</source>
         <translation>Скрит</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2371"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2483"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2556"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2742"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2386"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2498"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2571"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2757"/>
         <source>Title</source>
         <translation>Заглавие</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2377"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2489"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2561"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2747"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2392"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2504"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2576"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2762"/>
         <source>Abstract</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2383"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2398"/>
         <source>Can Identify</source>
         <translation>Идентификацията е възможна</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2385"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2391"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2406"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2769"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2385"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2391"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2406"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2769"/>
         <source>No</source>
         <translation>Не</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2389"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2404"/>
         <source>Can be Transparent</source>
         <translation>Прозрачността е възможна</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2395"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2410"/>
         <source>Can Zoom In</source>
         <translation>Приближаването е възможно</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2401"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2416"/>
         <source>Cascade Count</source>
         <translation>Брой каскади</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2407"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2422"/>
         <source>Fixed Width</source>
         <translation>Фиксирана ширина</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2413"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2428"/>
         <source>Fixed Height</source>
         <translation>Фиксирана височина</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2420"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2435"/>
         <source>Dimensions</source>
         <translation>Измерения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
         <source>Unit</source>
         <translation>Единици</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
         <source>Extent</source>
         <translation>Пространствен обхват</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2435"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2450"/>
         <source>Metadata URLs</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2453"/>
         <source>Format</source>
         <translation>Формат</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2453"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2451"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2466"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2473"/>
         <source>Available in CRS</source>
         <translation>Налична координатна система</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2460"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2475"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation><numerusform>(и %n допилнителна)</numerusform><numerusform>(и %n допилнителни)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2468"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2483"/>
         <source>Available in style</source>
         <translation>Налични в стил</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2496"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2511"/>
         <source>LegendURLs</source>
         <translation>URL на легендата</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2522"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2537"/>
         <source>WMS Info</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2539"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2554"/>
         <source>Server Properties</source>
         <translation>Свойства на сървъра</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3337"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3352"/>
         <source>Get feature info request error (Title: %1; Error: %2; URL: %3)</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3537"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3552"/>
         <source>Result parsing failed. %n feature type(s) were guessed from gml (%2) but no features were parsed.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2673"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2688"/>
         <source>Selected Layers</source>
         <translation>Избрани слоеве</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2688"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2703"/>
         <source>Other Layers</source>
         <translation>Други слоеве</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2531"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2546"/>
         <source>Tile Layer Properties</source>
         <translation>Свойства на слоя с мозайка</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2533"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2548"/>
         <source>Cache Stats</source>
         <translation>Статистика на кеширането</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2551"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
         <source>WMS Version</source>
         <translation>WMS версия</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
         <source>Keywords</source>
         <translation>Ключови думи</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2571"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2586"/>
         <source>Online Resource</source>
         <translation>Онлайн ресурс</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2576"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2591"/>
         <source>Contact Person</source>
         <translation>За контакти</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2596"/>
         <source>Fees</source>
         <translation>Хонорар</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2586"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2601"/>
         <source>Access Constraints</source>
         <translation>Ограничения за достъп</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2649"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2664"/>
         <source>Image Formats</source>
         <translation>Формати на изображение</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2641"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2655"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2656"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2670"/>
         <source>Identify Formats</source>
         <translation>Идентификация на форматите</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2661"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2676"/>
         <source>Layer Count</source>
         <translation>Брой слоеве</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2609"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2624"/>
         <source>Tile Layer Count</source>
         <translation>Брой слоеве с мозайки</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1136"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1144"/>
         <source>%n tile request(s) in background</source>
         <comment>tile request count</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1137"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1145"/>
         <source>, %n cache hit(s)</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1147"/>
         <source>, %n error(s).</source>
         <comment>errors</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2031"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2046"/>
         <source>Could not get WMS Service Exception: %1 at line %2 column %3
 
 Response was:
@@ -171793,258 +171806,258 @@ Response was:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2591"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2606"/>
         <source>GetCapabilitiesUrl</source>
         <translation>URL на запитване GetCapabilities</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2595"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2610"/>
         <source>GetMapUrl</source>
         <translation>URL на запитване GetMap</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2597"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2601"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2605"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2612"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2616"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2620"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(предложен, но игнориран)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2599"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2614"/>
         <source>GetFeatureInfoUrl</source>
         <translation>URL за запитване GetFeatureInfo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2603"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2618"/>
         <source>GetLegendGraphic</source>
         <translation>Запитване GetLegendGraphic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2613"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2628"/>
         <source>GetTileUrl</source>
         <translation>URL за запитване GetTile</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2634"/>
         <source>Tile templates</source>
         <translation>Шаблони за мозайки</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2630"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2645"/>
         <source>FeatureInfo templates</source>
         <translation>Шаблони за FeatureInfo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2702"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2717"/>
         <source>Tileset Properties</source>
         <translation>Свойства на мозайките</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2711"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
         <source>Identifier</source>
         <translation>Идентификатор</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2711"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
         <source>Tile mode</source>
         <translation>Режим на мозайката</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2718"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2733"/>
         <source>WMTS</source>
         <translation>WMTS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2722"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2737"/>
         <source>WMS-C</source>
         <translation>WMS-C</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2741"/>
         <source>XYZ</source>
         <translation>XYZ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2730"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2745"/>
         <source>Invalid tile mode</source>
         <translation>Невалиден режим на мозайката</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2752"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2767"/>
         <source>Selected</source>
         <translation>Избран</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2758"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2773"/>
         <source>Available Styles</source>
         <translation>Налични стилове</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2768"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2772"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2783"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2787"/>
         <source>CRS</source>
         <translation>Координатна система</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2774"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2789"/>
         <source>Bounding Box</source>
         <translation>Рамка</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2781"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2796"/>
         <source>Available Tilesets</source>
         <translation>Налични мозайки</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Selected tile matrix set </source>
         <translation>Избрани настройки на матрицата с мозайки</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Scale</source>
         <translation>Мащаб</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Tile size [px]</source>
         <translation>Размер на блока с мозайка [пикс]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Tile size [mu]</source>
         <translation>Размер на блока с мозайка [ед. на картата]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Matrix size</source>
         <translation>Размер на матрицата</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Matrix extent [mu]</source>
         <translation>Обхват на матрицата [ед. на картата]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Bounds</source>
         <translation>Граници</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Width</source>
         <translation>Ширина</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Height</source>
         <translation>Височина</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Top</source>
         <translation>Най-горе</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Left</source>
         <translation>Ляво</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Bottom</source>
         <translation>Най-долу</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Right</source>
         <translation>Дясно</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2848"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2863"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2887"/>
         <source>%n missing row(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2848"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2863"/>
         <source>Layer&apos;s upper bound: %1</source>
         <translation>Горна граница на слоя: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2860"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2875"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2899"/>
         <source>%n missing column(s)</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2860"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2875"/>
         <source>Layer&apos;s left bound: %1</source>
         <translation>Лява граница на слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2887"/>
         <source>Layer&apos;s lower bound: %1</source>
         <translation>Долна граница на слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2899"/>
         <source>Layer&apos;s right bound: %1</source>
         <translation>Дясна граница на слоя: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2900"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2915"/>
         <source>Cache stats</source>
         <translation>Статистика на кеширането</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2910"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2925"/>
         <source>Hits</source>
         <translation>Съвпадения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2913"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2928"/>
         <source>Misses</source>
         <translation>Несъвпадения</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2931"/>
         <source>Errors</source>
         <translation>Грешки</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2969"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2984"/>
         <source>Format not supported</source>
         <translation>Форматът не се поддържа</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2989"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3004"/>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
         <translation>Контекста е непълно зададен (обхватът е зададен, но ширината и/или височината не са).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3459"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3536"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3474"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3551"/>
         <source>Cannot identify</source>
         <translation>Неуспешно идентифициране</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3725"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3740"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation>Грешка getfeatureinfo %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3734"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3749"/>
         <source>Cannot parse getfeatureinfo: %1</source>
         <translation>Неуспешно разпознат getfeatureinfo: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3749"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3764"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>Грешка getfeatureinfo: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4219"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4234"/>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
         <translation>Зареждане на легенда на слой GetLegendGraphic: %1 от %2 байта.</translation>
     </message>
@@ -172052,83 +172065,83 @@ Response was:
 <context>
     <name>QgsWmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4549"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4564"/>
         <source>Tile request error</source>
         <translation>Грешка при запитване за блок мозайка</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4549"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4564"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Код на състояние: %1
 Причина описание: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4568"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4633"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4706"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4724"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4732"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4583"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4648"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4721"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4739"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4747"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4669"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4684"/>
         <source>Access denied: %1</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4683"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4698"/>
         <source>%n tile request(s) in background</source>
         <comment>tile request count</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4684"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4699"/>
         <source>, %n cache hit(s)</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4686"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4701"/>
         <source>, %n error(s).</source>
         <comment>errors</comment>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4568"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4583"/>
         <source>Tile request error (Title: %1; Error: %2; URL: %3)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4633"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4648"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4685"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4700"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation><numerusform>, %n несъвпадащ в кеша.</numerusform><numerusform>, %n несъвпадащи в кеша.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4706"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4721"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Не са показани повече от 100 log съобщения за грешка.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4724"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4739"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
         <translation>Грешка в запитването за максимален брой мозайки. %1 запитвания %2 от максимални %3 (url адрес: %4) са завършили с грешка</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4732"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4747"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
         <translation>повторно запитване %1 за мозайка %2 (опит %3)</translation>
     </message>
@@ -177027,12 +177040,12 @@ Check the processing framework log to look for errors.</source>
 <context>
     <name>expression</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6682"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6677"/>
         <source>%1: Field not found %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6718"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6713"/>
         <source>%1: function cannot be evaluated without a context.</source>
         <translation type="unfinished"/>
     </message>
@@ -177040,47 +177053,47 @@ Check the processing framework log to look for errors.</source>
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6804"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6799"/>
         <source>Vector</source>
         <translation>Вектор</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6806"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6801"/>
         <source>Raster</source>
         <translation>Растер</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6808"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6803"/>
         <source>Mesh</source>
         <translation>Решетка</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6810"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
         <source>Vector Tile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6812"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
         <source>Plugin</source>
         <translation>Добавка</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6814"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
         <source>Annotation</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6816"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
         <source>Point Cloud</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6818"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
         <source>Group</source>
         <translation>Група</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6820"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
         <source>Tiled Scene</source>
         <translation type="unfinished"/>
     </message>

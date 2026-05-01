@@ -1,3 +1,320 @@
+Jürgen E. Fischer <jef@norbit.de>	2026-05-01
+
+    translation update for 3.44.10 from transifex
+
+Stefanos Natsis <uclaros@gmail.com>	2026-04-30
+
+    Manual backport of QGIS#64779 (#65959)
+
+    * Manual backport of QGIS#64779
+
+    Cherry-picked commits:
+    8208287bfd2a0a8c843b2e61165586559dfe8760
+    2d413edf28a2b7cea80c4fa116c54e2fa4c221d1
+
+    * Use full name for return enum value
+
+Jürgen E. Fischer <jef@norbit.de>	2026-04-27
+
+    debian packaging: disable qt5-image-formats-plugin-pdf dependency on ubuntu resolute (fixes #65928)
+
+Merge: f271a9e4571 72340ac5dbe
+Alexander Bruy <alexander.bruy@gmail.com>	2026-04-23
+
+    Merge pull request #65875 from 3nids/qtqtuick-344
+
+    add QtQuick to qgis.PyQt [backport 3.44]
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2026-04-21
+
+    add QtQuick to qgis.PyQt [backport 3.44]
+
+qgis-bot <58983587+qgis-bot@users.noreply.github.com>	2026-04-11
+
+    [Backport release-3_44] [wms] Set propert tile pixel ratio for XYZ tiles from openstreetmap.org when not specified or set to unknown (#65688)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-07
+
+    Fix build'
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-03
+
+    Fix some clazy warnings
+
+    (cherry picked from commit 6481cf7bcfe322ce455da0e5bb2bb3a6610cdba2)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-03
+
+    Fix type mismatch (extra const) triggering copies during sort
+
+    (cherry picked from commit ad673c459893624806cfc16ed5a76910514d7b7d)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-02
+
+    Fix crash when running "points to paths" with invalid field names
+
+    (cherry picked from commit 0c37419eec81fb0b4c098b6dd9b9877ea76791d1)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2026-04-06
+
+    [arcgis] Fix crash with the legend fetcher trying to access a deleted object
+
+Stefanos Natsis <uclaros@gmail.com>	2026-03-31
+
+    bbox center should not intersect geometry
+
+Stefanos Natsis <uclaros@gmail.com>	2026-03-31
+
+    extend test case
+
+Stefanos Natsis <uclaros@gmail.com>	2026-03-26
+
+    add guard for unneeded workaround of old geos bug
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-04-01
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-30
+
+    [dxf] Ensure exports using Meters at Scale units work
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-18
+
+    fix(GeoPdfExport): Use layer order for group layer children
+
+    Sort group layer children according to layer order in export details.
+
+    Fix #63475
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-23
+
+    [mssql] Fix not using geometry_columns to retrieve tables
+
+    ...for database connections with the geometryColumnsOnly flag set
+
+    (cherry picked from commit b2e1dd8325dac37138d739463515c6d07a659a00)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-20
+
+    Fix loss of data defined marker/line symbol layer size changes
+
+    This pattern of events can lead to old data defined expressions
+    resurrecting themselves:
+
+    1. Create a marker symbol
+    2. Go to the first (only) symbol layer's settings, set an expression
+      for data-defined size
+    3. do some other stuff, then go back to changing that symbol's settings
+    4. Go to the first (only) symbol layer's settings, CHANGE the data
+      defined size expression.
+    5. Make some other change in the widget (eg change the fixed size value)
+    6. Click somewhere else to dismiss the symbol layer widget, eg go back
+      up to the top-level symbol settings
+
+    The changes to the data defined size expression are lost, and the
+    old version keeps resurrecting itself.
+
+    Hack around this by disabling the strange logic which explicitly
+    restores the old value when a symbol only has a single layer.
+
+    This strange logic was introduced in https://github.com/qgis/QGIS/pull/2167,
+    and is intended to auto-scale any child symbol layer data-defined
+    size expressions to match changes in the overall marker symbol's
+    size. The logic is rather broken though (eg, resulting in the
+    silent loss of expression changes described above). It's also
+    questionable if this logic is desirable in the first place.
+
+    But it's also 11 year old logic, so I'm reluctant to just rip it
+    out. Instead, disable it when a symbol only has a SINGLE layer,
+    so at least the impact of the bug is removed in a case where
+    the original logic makes no sense anyway.
+
+    (Note that there's remaining issues with the 11 yo fix, because
+    I can also get expression change loss when editing data
+    defined scale expressions on multi-layer symbols)
+
+Jean Felder <jean.felder@oslandia.com>	2026-03-21
+
+    qgsbox3d: Fix toString in empty case
+
+    `QgsBox3d::toString()` was introduced in
+    06a09f83f31ae39e23ff860c4502eb425a14f14b to reproduce `QgsRectangle`
+    behavior. However, QgsRectangle::toString() behavior was changed
+    shortly after to fix `isEmpty()`. `QgsRectangle::toString()` now
+    returns a full string when it is empty.
+
+    This change changes `QgsBox3d::toString()` behavior to match the
+    `QgsRectangle` one.
+
+    See: https://github.com/qgis/qgis/pull/54646
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-23
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-20
+
+    Fix @geometry and $geometry different results for geometry generator
+
+    Ensure that @geometry always uses identical logic for
+    retrieving geometry from the expression context as the
+    older $geometry function.
+
+    (cherry picked from commit 2f594c0a79540fc2563ff8c468bf17365bde1504)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-23
+
+    Add test mask
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-20
+
+    Fix labels disappear when using cartographic placement, small symbols
+
+    ...or null symbol renderer, and label is set to use the symbol
+    bounds for offset
+
+    (cherry picked from commit f66ea7145ee1aa7d68fa4928354edf8e3b28f1fd)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-19
+
+    Follow up recent cache Vary response handling
+
+    Instead of completely skipping the cache for a new request
+    where the previously cached response was for a non-matching
+    Vary attribute, now we force evict the old reply from the
+    cache.
+
+    The previous behavior meant that only the FIRST value for
+    the varied attribute would ever be cached. Now we always
+    cache the MOST RECENTLY requested value for the varied
+    attribute.
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2026-03-12
+
+    [GUI] Fix distance frame enabling in labelling placement properties
+
+viperminiq <viperminiq@gmail.com>	2026-03-09
+
+    reset vertical crs
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-03-10
+
+    fix(GeoPdfExport): Use QStringLiteral
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2026-02-19
+
+    fix(GeoPdfExport): Fix mix of grouped and global layers
+
+Julien Cabieces <julien.cabieces@oslandia.com>	2025-10-16
+
+    fix(PDFExport): Fix themes export
+
+    Include group name in layerId key when mapping from layerId to tree
+    node. If not, same layer would be mapped to only one and only group if
+    this layer is included in different groups (with themes for instance).
+
+    Fix #62014
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-12
+
+    Drop failing test
+
+    Looks like this was only fixed in a newer Qt release
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-12
+
+    fix bad merge
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-06
+
+    Correctly respect "Vary" attributes when retrieving from cache
+
+    Since Qt's network cache is entirely built around URL matches
+    alone, add some downstream logic so that we correctly handle
+    responses with a "Vary" attribute and ensure that we do
+    not retrieve non-matching cached responses when the corresponding
+    header value differs.
+
+    Refs qgis#63009
+
+    (cherry picked from commit 7d0977d2f2437f917cc49789c5930cea1283345e)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-04
+
+    Don't allow multiple requests to attempt to write to same network cache resource
+
+    Because QNetworkDiskCache filenames are built ENTIRELY off the request
+    URL alone, we potentially may hit situations where multiple requests
+    to the same url (eg from different threads) are attempting to save
+    their responses to the same network cache file.
+
+    Put a guard in place so that only the first ongoing request to
+    that URL is permitted to save the result in the cache.
+
+    (cherry picked from commit 2a5ae88f0f436591838a14c9ebd3f33e5ebf14e2)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-04
+
+    Add failing tests for response Vary attribute
+
+    When the initial response contains a Vary: Authorization attribute,
+    we should only use the cached response for matching Authorization
+    headers.
+
+    Refs #63009
+
+    (cherry picked from commit cb9e0a7be4d441b541aa46e3c1677a5c1cc1d8dc)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-03
+
+    Add tests for QgsNetworkAccessManager cache control
+
+    Refs #63009
+
+    (cherry picked from commit 250c4be4aafa9ac41b5d1f7b6c21a4fef074546e)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-09
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-07
+
+    Improve docs
+
+    (cherry picked from commit b8468752efef9918f79d285f97b358aeb2a259e8)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-06
+
+    Fix nothing happens when zooming to very small line feature extent
+
+    If zooming to very small feature extent would fail, treat the same as
+    zooming to a point feature's extent and recenter the map instead.
+
+    (cherry picked from commit a0138ce9d58d34075e4577508329402d71e91720)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-06
+
+    Clear some clang-tidy warnings, rename variables for clarity
+
+    (cherry picked from commit 5d455147094b432539a7dd65f75166c9115278bf)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2026-03-06
+
+    Move QgsMapSettings extent validation logic to utility function
+
+    And add tests
+
+    (cherry picked from commit 84aaa35063d996aa634d85a46c0ed07f47def1c4)
+
+JuhoErvasti <juho.ervasti@gispo.fi>	2026-02-20
+
+    [capture-tool] remove whole curve only when it has more than 2 points
+
+Jürgen E. Fischer <jef@norbit.de>	2026-04-03
+
+    Release of 3.44.9
+
 Jürgen E. Fischer <jef@norbit.de>	2026-04-03
 
     translation update for 3.44.9 from transifex

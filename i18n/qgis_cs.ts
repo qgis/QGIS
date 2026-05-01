@@ -4541,7 +4541,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Drain</source>
         <extracomment>r.drain</extracomment>
-        <translation type="unfinished"/>
+        <translation>Odtok</translation>
     </message>
     <message>
         <source>Manning&apos;s n unique value</source>
@@ -4556,7 +4556,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Half-basins</source>
         <extracomment>r.watershed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Poloviční umyvadla</translation>
     </message>
     <message>
         <source>Number of passes through the dataset</source>
@@ -4641,7 +4641,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Expanded</source>
         <extracomment>r.grow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Rozšířený</translation>
     </message>
     <message>
         <source>month</source>
@@ -4976,7 +4976,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>LatLong</source>
         <extracomment>r.latlong</extracomment>
-        <translation type="unfinished"/>
+        <translation>LatLong</translation>
     </message>
     <message>
         <source>Effective porosity [-]</source>
@@ -5146,7 +5146,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Dominance</source>
         <extracomment>r.li.dominance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Dominance</translation>
     </message>
     <message>
         <source>Morphometric parameter in &apos;size&apos; window to calculate</source>
@@ -5401,7 +5401,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Components_Point</source>
         <extracomment>v.net.components</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bod_síťových_komponent</translation>
     </message>
     <message>
         <source>Maximum number of cells to be created</source>
@@ -5586,7 +5586,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Rectified</source>
         <extracomment>v.rectify</extracomment>
-        <translation type="unfinished"/>
+        <translation>Opraveno</translation>
     </message>
     <message>
         <source>Recodes categorical raster maps.</source>
@@ -5596,7 +5596,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Dither</source>
         <extracomment>r.composite</extracomment>
-        <translation type="unfinished"/>
+        <translation>Dither</translation>
     </message>
     <message>
         <source>Input raster map converted to reflectance (default is radiance)</source>
@@ -5646,7 +5646,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>y_input</source>
         <extracomment>r.spreadpath</extracomment>
-        <translation type="unfinished"/>
+        <translation>vstup_y</translation>
     </message>
     <message>
         <source>Traces a flow through an elevation model on a raster map.</source>
@@ -5741,7 +5741,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Accumulated</source>
         <extracomment>r.series.accumulate</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nahromaděné</translation>
     </message>
     <message>
         <source>QC Classification</source>
@@ -5841,7 +5841,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>NullRaster</source>
         <extracomment>r.null</extracomment>
-        <translation type="unfinished"/>
+        <translation>NullRaster</translation>
     </message>
     <message>
         <source>Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).</source>
@@ -5931,7 +5931,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Deviations</source>
         <extracomment>v.surf.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Odchylky</translation>
     </message>
     <message>
         <source>Surface generation program from rasterized contours.</source>
@@ -6111,7 +6111,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Distance</source>
         <extracomment>v.net.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vzdálenost_sítě</translation>
     </message>
     <message>
         <source>Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.</source>
@@ -6711,7 +6711,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Connectivity</source>
         <extracomment>v.net.connectivity</extracomment>
-        <translation type="unfinished"/>
+        <translation>Síťová_konektivita</translation>
     </message>
     <message>
         <source>Minimum distance or -1.0 for no limit</source>
@@ -7466,7 +7466,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Normality</source>
         <extracomment>v.normal</extracomment>
-        <translation type="unfinished"/>
+        <translation>Normálnost</translation>
     </message>
     <message>
         <source>File containing segment rules</source>
@@ -7646,7 +7646,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Emissivity</source>
         <extracomment>i.emissivity</extracomment>
-        <translation type="unfinished"/>
+        <translation>Emisivita</translation>
     </message>
     <message>
         <source>Interpolated rasters</source>
@@ -7981,7 +7981,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Shaded</source>
         <extracomment>r.shade</extracomment>
-        <translation type="unfinished"/>
+        <translation>Stínované</translation>
     </message>
     <message>
         <source>Interpolate points between line vertices</source>
@@ -8081,7 +8081,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Quadrats</source>
         <extracomment>v.qcount</extracomment>
-        <translation type="unfinished"/>
+        <translation>Kvadráty</translation>
     </message>
     <message>
         <source>Groundwater flow</source>
@@ -8186,12 +8186,12 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>method</source>
         <extracomment>r.statistics</extracomment>
-        <translation type="unfinished"/>
+        <translation>metoda</translation>
     </message>
     <message>
         <source>Clustered</source>
         <extracomment>v.cluster</extracomment>
-        <translation type="unfinished"/>
+        <translation>Seskupené</translation>
     </message>
     <message>
         <source>Name of the single-way atmospheric transmissivitymap [-]</source>
@@ -8346,7 +8346,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Path</source>
         <extracomment>v.net.path</extracomment>
-        <translation type="unfinished"/>
+        <translation>Síťová_cesta</translation>
     </message>
     <message>
         <source>v.kernel.rast - Generates a raster density map from vector points map.</source>
@@ -8356,7 +8356,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Renyi</source>
         <extracomment>r.li.renyi</extracomment>
-        <translation type="unfinished"/>
+        <translation>Renyi</translation>
     </message>
     <message>
         <source>Number of random categories matching vector objects to extract</source>
@@ -8386,7 +8386,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Voronoi</source>
         <extracomment>v.voronoi</extracomment>
-        <translation type="unfinished"/>
+        <translation>Voronoj</translation>
     </message>
     <message>
         <source>Extracts terrain parameters from a DEM.</source>
@@ -8486,7 +8486,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Random_Surface</source>
         <extracomment>r.random.surface</extracomment>
-        <translation type="unfinished"/>
+        <translation>Náhodný_povrch</translation>
     </message>
     <message>
         <source>Raster map containing midflame wind velocities (ft/min)</source>
@@ -8536,7 +8536,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Allpairs</source>
         <extracomment>v.net.allpairs</extracomment>
-        <translation type="unfinished"/>
+        <translation>Network_Allpairs</translation>
     </message>
     <message>
         <source>Produces tilings of the source projection for use in the destination region and projection.</source>
@@ -8616,7 +8616,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Cut</source>
         <extracomment>v.net.flow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Network_Cut</translation>
     </message>
     <message>
         <source>Maximum memory to be used in MB</source>
@@ -8776,7 +8776,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Albedo</source>
         <extracomment>i.albedo</extracomment>
-        <translation type="unfinished"/>
+        <translation>Albedo</translation>
     </message>
     <message>
         <source>Percentile to calculate</source>
@@ -9141,7 +9141,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Nearest</source>
         <extracomment>v.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nejbližší</translation>
     </message>
     <message>
         <source>Number of significant digits</source>
@@ -9351,7 +9351,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Blended</source>
         <extracomment>r.blend.combine</extracomment>
-        <translation type="unfinished"/>
+        <translation>Smíšené</translation>
     </message>
     <message>
         <source>Sort the result (ascending, descending)</source>
@@ -9421,7 +9421,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>SpanningTree</source>
         <extracomment>v.net.spanningtree</extracomment>
-        <translation type="unfinished"/>
+        <translation>SpanningTree</translation>
     </message>
     <message>
         <source>Output tessellation as a graph (lines), not areas</source>
@@ -9856,7 +9856,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Thinned</source>
         <extracomment>r.thin</extracomment>
-        <translation type="unfinished"/>
+        <translation>Zředěné</translation>
     </message>
     <message>
         <source>Name of input vector map</source>
@@ -9991,7 +9991,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Sink-watershed</source>
         <extracomment>r.terraflow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Povodí propadliny</translation>
     </message>
     <message>
         <source>Movement directions</source>
@@ -10036,7 +10036,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Barrier</source>
         <extracomment>r.flow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bariéra</translation>
     </message>
     <message>
         <source>r.sunmask.position - Calculates cast shadow areas from sun position and elevation raster map.</source>
@@ -10181,7 +10181,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Shannon</source>
         <extracomment>r.li.shannon</extracomment>
-        <translation type="unfinished"/>
+        <translation>Shannon</translation>
     </message>
     <message>
         <source>Name of input wind speed raster map [m/s]</source>
@@ -10686,7 +10686,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Horizon</source>
         <extracomment>r.horizon.height</extracomment>
-        <translation type="unfinished"/>
+        <translation>Horizont</translation>
     </message>
     <message>
         <source>X scale</source>
@@ -10726,7 +10726,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Richness</source>
         <extracomment>r.li.richness</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bohatství</translation>
     </message>
     <message>
         <source>Skip first n points</source>
@@ -11051,7 +11051,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Clumps</source>
         <extracomment>r.clump</extracomment>
-        <translation type="unfinished"/>
+        <translation>Shluky</translation>
     </message>
     <message>
         <source>Thins non-zero cells that denote linear features in a raster layer.</source>
@@ -11246,7 +11246,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Combined</source>
         <extracomment>v.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Kombinovaný</translation>
     </message>
     <message>
         <source>Ground truth training map</source>
@@ -11256,7 +11256,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Outliers</source>
         <extracomment>v.outlier</extracomment>
-        <translation type="unfinished"/>
+        <translation>Odlehlé hodnoty</translation>
     </message>
     <message>
         <source>Truncate floating point data</source>
@@ -11381,7 +11381,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>NReport</source>
         <extracomment>v.net.nreport</extracomment>
-        <translation type="unfinished"/>
+        <translation>NReport</translation>
     </message>
     <message>
         <source>Reprojected raster</source>
@@ -11696,7 +11696,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Components_Line</source>
         <extracomment>v.net.components</extracomment>
-        <translation type="unfinished"/>
+        <translation>Řádek_síťových_komponent</translation>
     </message>
     <message>
         <source>Output basic information about a raster layer.</source>
@@ -11811,7 +11811,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Mapgen</source>
         <extracomment>v.in.mapgen</extracomment>
-        <translation type="unfinished"/>
+        <translation>Mapgen</translation>
     </message>
     <message>
         <source>Unique stream ids (vect)</source>
@@ -11846,7 +11846,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Neighborhood</source>
         <extracomment>v.neighbors</extracomment>
-        <translation type="unfinished"/>
+        <translation>Sousedství</translation>
     </message>
     <message>
         <source>Cost assigned to null cells. By default, null cells are excluded</source>
@@ -11966,7 +11966,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Pielou</source>
         <extracomment>r.li.pielou</extracomment>
-        <translation type="unfinished"/>
+        <translation>Pielou</translation>
     </message>
     <message>
         <source>Scale to apply to intensity values</source>
@@ -12276,7 +12276,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Flow</source>
         <extracomment>v.net.flow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tok_sítě</translation>
     </message>
     <message>
         <source>The input raster map is a cost surface (direction surface must also be specified)</source>
@@ -12571,7 +12571,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Patched</source>
         <extracomment>r.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Opraveno</translation>
     </message>
     <message>
         <source>Clumps layer (preferably the output of r.clump)</source>
@@ -12656,7 +12656,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>lognormal</source>
         <extracomment>v.normal</extracomment>
-        <translation type="unfinished"/>
+        <translation>lognormální</translation>
     </message>
     <message>
         <source>Input vector point layer (first set of nodes)</source>
@@ -12736,7 +12736,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Partition</source>
         <extracomment>v.kcv</extracomment>
-        <translation type="unfinished"/>
+        <translation>Rozdělit</translation>
     </message>
     <message>
         <source>Fills lake at given point to given level.</source>
@@ -12781,7 +12781,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Goodness_of_fit</source>
         <extracomment>i.smap</extracomment>
-        <translation type="unfinished"/>
+        <translation>Goodness_of_fit</translation>
     </message>
     <message>
         <source>Sampling density for additional computing (range: 0.0 - 1.0 (0.5))</source>
@@ -12846,7 +12846,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Iso</source>
         <extracomment>v.net.iso</extracomment>
-        <translation type="unfinished"/>
+        <translation>Network_Iso</translation>
     </message>
     <message>
         <source>Input raster layer(s)</source>
@@ -13106,7 +13106,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Recoded</source>
         <extracomment>r.recode</extracomment>
-        <translation type="unfinished"/>
+        <translation>Překódováno</translation>
     </message>
     <message>
         <source>Name of input atmospheric pressure raster map [millibars]</source>
@@ -13121,7 +13121,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Network_Salesman</source>
         <extracomment>v.net.salesman</extracomment>
-        <translation type="unfinished"/>
+        <translation>Network_Salesman</translation>
     </message>
     <message>
         <source>g.version - Display GRASS GIS version info. &lt;p&gt;Prints only version if run with no options checked.</source>
@@ -13161,7 +13161,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Intervisibility</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Intervize</translation>
     </message>
     <message>
         <source>Discretization error in map units</source>
@@ -13181,7 +13181,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Watersheds</source>
         <extracomment>r.basins.fill</extracomment>
-        <translation type="unfinished"/>
+        <translation>Povodí</translation>
     </message>
     <message>
         <source>Report</source>
@@ -13261,7 +13261,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Typed</source>
         <extracomment>v.type</extracomment>
-        <translation type="unfinished"/>
+        <translation>Napsáno</translation>
     </message>
     <message>
         <source>Maximum distance between points in map units</source>
@@ -13801,7 +13801,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Generalized</source>
         <extracomment>v.generalize</extracomment>
-        <translation type="unfinished"/>
+        <translation>Zobecněné</translation>
     </message>
     <message>
         <source>Name of the Mannings n raster map</source>
@@ -13821,7 +13821,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Neighbors</source>
         <extracomment>r.neighbors</extracomment>
-        <translation type="unfinished"/>
+        <translation>Sousedi</translation>
     </message>
     <message>
         <source>Method used for point interpolation</source>
@@ -13891,7 +13891,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Perturbed</source>
         <extracomment>v.perturb</extracomment>
-        <translation type="unfinished"/>
+        <translation>Rozrušený</translation>
     </message>
     <message>
         <source>Estimates Map</source>
@@ -13971,7 +13971,7 @@ Field code block nemůže vrátit &apos;{0}&apos; proměnou! Deklarujte tuto pro
     <message>
         <source>Basin</source>
         <extracomment>r.water.outlet</extracomment>
-        <translation type="unfinished"/>
+        <translation>Povodí</translation>
     </message>
     <message>
         <source>Do not use SOLPOS algorithm of NREL</source>
@@ -18410,7 +18410,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/metalroughmaterialwidget.ui"/>
         <source>Metalness</source>
-        <translation type="unfinished"/>
+        <translation>Kovovost</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/metalroughmaterialwidget.ui"/>
@@ -22348,14 +22348,14 @@ If the input layer is a shapefile, the .prj file will be overwritten — or crea
         <location filename="../src/core/proj/qgscoordinatereferencesystemregistry.cpp" line="279"/>
         <location filename="../src/core/proj/qgscoordinatetransform.cpp" line="922"/>
         <location filename="../src/core/proj/qgscoordinatetransform.cpp" line="928"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="584"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="609"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="628"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="649"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="666"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="683"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="704"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="721"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="554"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="579"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="598"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="619"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="636"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="653"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="674"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="691"/>
         <location filename="../src/core/vector/qgsvectorlayerrenderer.cpp" line="433"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="768"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="819"/>
@@ -22444,28 +22444,28 @@ If no field is chosen, you can still override the output layer name by directly 
         <translation>Soubory DXF</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="114"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="117"/>
         <location filename="../src/analysis/processing/qgsalgorithmwritevectortiles.cpp" line="68"/>
         <source>Unknown input layer</source>
         <translation>Neznámá vstupní vrstva</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="169"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="172"/>
         <source>DXF export completed</source>
         <translation>DXF export hotový</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="176"/>
         <source>DXF export failed, device is not writable</source>
         <translation>DXF export selhal, zařízení není zapisovatelné</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="177"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="180"/>
         <source>DXF export failed, the device is invalid</source>
         <translation>DXF export selhal, zařízení je neplatné</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="181"/>
+        <location filename="../src/analysis/processing/qgsalgorithmdxfexport.cpp" line="184"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation>DXF export selhal, rozsah nemohl být určen</translation>
     </message>
@@ -22600,19 +22600,19 @@ Vzdálenost je zadána v jednotkách vrstvy a azimut ve stupních ve směru hodi
         <translation>Nemohu převést &apos;%1&apos; na int</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1302"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1317"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="290"/>
         <source>Cannot convert &apos;%1&apos; to DateTime</source>
         <translation>Nemohu převést &apos;%1&apos; na Datum-čas</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2708"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2723"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="305"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
         <translation>Nemohu převést &apos;%1&apos; na Datum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2737"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2752"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="320"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
         <translation>Nemohu převést &apos;%1&apos; na Čas</translation>
@@ -22668,509 +22668,509 @@ Vzdálenost je zadána v jednotkách vrstvy a azimut ve stupních ve směru hodi
         <translation>Nemohu převést &apos;%1&apos; na boolean</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="498"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="531"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="565"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="513"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="546"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="580"/>
         <source>Domain max must be greater than domain min</source>
         <translation>Domain max musí být vyšší než domain min</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="536"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="570"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="551"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="585"/>
         <source>Exponent must be greater than 0</source>
         <translation>Exponent musí být vyšší než 0</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="653"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="668"/>
         <source>Cannot find layer with name or ID &apos;%1&apos;</source>
         <translation>Nelze najít vrstvu s názvem nebo ID &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="666"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="862"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="681"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="877"/>
         <source>No such aggregate &apos;%1&apos;</source>
         <translation>Neexistuje žádný agregát &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="797"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="921"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1058"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="812"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="936"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1073"/>
         <source>Could not calculate aggregate for: %1 (%2)</source>
         <translation>Nelze vypočítat agregaci pro: %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="799"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="923"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1060"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="814"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="938"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1075"/>
         <source>Could not calculate aggregate for: %1</source>
         <translation>Nelze vypočítat agregaci pro: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="810"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="822"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="825"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="837"/>
         <source>Cannot use relation aggregate function in this context</source>
         <translation>V tomto kontextu nelze použít agregační funkci relací</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="842"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="857"/>
         <source>Cannot find relation with id &apos;%1&apos;</source>
         <translation>Nemohu najít vztah s id &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="937"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="949"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="952"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="964"/>
         <source>Cannot use aggregate function in this context</source>
         <translation>V tomto kontextu nelze použít agregační funkci</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1285"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1300"/>
         <source>A format is required to convert to DateTime when the language is specified</source>
         <translation>Pro převod na DateTime se vyžaduje formát, pokud je zadán jazyk</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1317"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1350"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1332"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1365"/>
         <source>&apos;%1-%2-%3&apos; is not a valid date</source>
         <translation>&apos;%1-%2-%3&apos; není platné datum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1332"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1356"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1347"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1371"/>
         <source>&apos;%1-%2-%3&apos; is not a valid time</source>
         <translation>&apos;%1-%2-%3&apos; není platný čas</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1617"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7317"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1632"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7312"/>
         <source>Invalid pair of array, length not identical</source>
         <translation>Neplatný pár polí, délka není stejná</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1630"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1645"/>
         <source>Function replace requires 2 or 3 arguments</source>
         <translation>Funkce replace vyžaduje 2 nebo 3 argumenty</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1644"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1658"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1659"/>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1673"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1705"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1688"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1720"/>
         <source>Invalid regular expression &apos;%1&apos;: %2</source>
         <translation>Neplatný regulární výraz &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1796"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1834"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1811"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1849"/>
         <source>Function `raster_value` requires a valid raster layer.</source>
         <translation>Funkce `raster_value` vyžaduje platnou rastrovou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1802"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1817"/>
         <source>Function `raster_value` requires a valid raster band number.</source>
         <translation>Funkce `raster_value` vyžaduje platné číslo rastrového pásma.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1808"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1823"/>
         <source>Function `raster_value` requires a valid point geometry.</source>
         <translation>Funkce `raster_value` vyžaduje platnou bodovou geometrii.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1854"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1869"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1913"/>
         <source>Function `raster_attributes` requires a valid raster layer.</source>
         <translation>Funkce `raster_attributes` vyžaduje platnou rastrovou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1860"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1875"/>
         <source>Function `raster_attributes` requires a valid raster band number.</source>
         <translation>Funkce `raster_attributes` vyžaduje platné číslo rastrového pásma.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1866"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1881"/>
         <source>Function `raster_attributes` requires a valid raster value.</source>
         <translation>Funkce `raster_attributes` vyžaduje platnou hodnotu rastru.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1931"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1946"/>
         <source>Function `attribute` requires one or two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1956"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1971"/>
         <source>Function `map_to_html_table` requires one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1990"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2005"/>
         <source>Function `map_to_html_dl` requires one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2052"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2073"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2142"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2067"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2088"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2157"/>
         <source>No layer provided to conduct constraints checks</source>
         <translation>Není k dispozici žádná vrstva pro provádění kontrol omezení</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2131"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2146"/>
         <source>The attribute name did not match any field for the given feature</source>
         <translation>Název atributu neodpovídá žádnému poli pro daný prvek.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2194"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2209"/>
         <source>Function `represent_attributes` requires no more than two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2201"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2216"/>
         <source>Cannot use represent attributes function: layer could not be resolved.</source>
         <translation>Nelze použít funkci reprezentace atributů: vrstvu se nepodařilo rozpoznat.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2207"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2222"/>
         <source>Cannot use represent attributes function: feature could not be resolved.</source>
         <translation>Nelze použít funkci reprezentace atributů: funkci se nepodařilo vyřešit.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2288"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2303"/>
         <source>Function `maptip` requires no more than three parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2292"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2307"/>
         <source>Function `display` requires no more than three parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2299"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2314"/>
         <source>The layer is not valid.</source>
         <translation>Vrstva není platná.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2306"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2321"/>
         <source>The feature is not valid.</source>
         <translation>Funkce není platná.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2369"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2384"/>
         <source>Function `is_selected` requires no more than two parameters. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2400"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2415"/>
         <source>Function `num_selected` requires no more than one parameter. %n given.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2438"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2453"/>
         <source>Could not extract file path from layer `%1`.</source>
         <translation>Nemohu získat cestu k souboru z vrstvy `%1`.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2458"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2473"/>
         <source>Could not open sqlite database %1. Error %2. </source>
         <translation>Nemohu otevřít sqlite databázi %1. Chyba %2. </translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2610"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2625"/>
         <source>Cannot convert &apos;%1&apos; to cordinate reference system</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2667"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2682"/>
         <source>Function format requires at least 1 argument</source>
         <translation>Formát funkce vyžaduje aspoň 1 argument</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2691"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2706"/>
         <source>A format is required to convert to Date when the language is specified</source>
         <translation>Pro převod na Date se vyžaduje formát, pokud je zadán jazyk</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2720"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2735"/>
         <source>A format is required to convert to Time when the language is specified</source>
         <translation>Pro převod na čas se vyžaduje formát, pokud je zadán jazyk</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2773"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2788"/>
         <source>Invalid formatting parameter: &apos;%1&apos;. It must be empty, or &apos;suffix&apos; or &apos;aligned&apos;.</source>
         <translation>Neplatný formátovací parametr: &apos;%1&apos;. Musí být prázdný, nebo &apos;suffix&apos; nebo &apos;aligned&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2787"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2802"/>
         <source>Invalid axis name: &apos;%1&apos;. It must be either &apos;x&apos; or &apos;y&apos;.</source>
         <translation>Neplatný název osy: &apos;%1&apos;. Musí to být buď &apos;x&apos; nebo &apos;y&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2965"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2977"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7587"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7598"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7609"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7620"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7631"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7642"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7653"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7664"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2980"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2992"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7582"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7593"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7604"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7615"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7626"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7637"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7648"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7659"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation>Funkce `%1` vyžaduje hodnotu, která představuje možnou cestu k souboru</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3090"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3105"/>
         <source>The make_valid parameters require a newer GEOS library version</source>
         <translation>Parametry make_valid vyžadují novější verzi knihovny GEOS.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3235"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3250"/>
         <source>Point index is out of range</source>
         <translation>Bodový index je mimo rozsah</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3760"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3775"/>
         <source>Function make_point requires 2-4 arguments</source>
         <translation>Funkce make_point vyžaduje 2-4 argumenty</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3839"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3854"/>
         <source>Function make_polygon requires an argument</source>
         <translation>Funkce make_polygon vyžaduje argument</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3953"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3989"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3968"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4004"/>
         <source>Segment must be greater than 2</source>
         <translation>Segment musí být větší než 2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4030"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4045"/>
         <source>Number of edges/sides must be greater than 2</source>
         <translation>Počet okrajů / stran musí být větší než 2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4037"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4052"/>
         <source>Option can be 0 (inscribed) or 1 (circumscribed)</source>
         <translation>Možnost může být 0 (vepsaná) nebo 1 (ohraničená)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4119"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4134"/>
         <source>Option can be 0 (distance) or 1 (projected)</source>
         <translation>Možnost může být 0 (vzdálenost) nebo 1 (projekce)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4140"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4155"/>
         <source>Index is out of range</source>
         <translation>Index je mimo rozsah</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4392"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4387"/>
         <source>An error occurred while calculating perimeter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4662"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4657"/>
         <source>Function `sinuosity` requires a line geometry.</source>
         <translation>Funkce `sinuosity` vyžaduje geometrii čáry.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4675"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4670"/>
         <source>Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part.</source>
         <translation>Funkce `straight_distance_2d` vyžaduje geometrii čáry nebo více čárovou geometrii s jednou částí.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4689"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4684"/>
         <source>Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part.</source>
         <translation>Funkce `roundness` vyžaduje polygonální geometrii nebo vícepolygonovou geometrii s jednou částí.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4936"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4931"/>
         <source>Function `wedge_buffer` requires a point value for the center.</source>
         <translation>Funkce `wedge_buffer` vyžaduje bodovou hodnotu pro střed.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4955"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4950"/>
         <source>Function `tapered_buffer` requires a line geometry.</source>
         <translation>Funkce `tapered_buffer` vyžaduje geometrii čáry.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4973"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4968"/>
         <source>Function `buffer_by_m` requires a line geometry.</source>
         <translation>Funkce `buffer_by_m` vyžaduje geometrii čáry.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5073"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5068"/>
         <source>Function &apos;rotate&apos; requires a point value for the center</source>
         <translation>Funkce `rotate` vyžaduje bodovou hodnotu pro střed</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5102"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5097"/>
         <source>Function &apos;scale&apos; requires a point value for the center</source>
         <translation>Funkce `scale` vyžaduje bodovou hodnotu pro střed</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5203"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5198"/>
         <source>Error caught in concave_hull() function: %1</source>
         <translation>Chyba zachycená ve funkci concave_hull(): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5217"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5212"/>
         <source>Parameter can not be negative.</source>
         <translation>Parametr nemůže být záporný.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5247"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5242"/>
         <source>Error calculating polygon main angle: %1</source>
         <translation>Chyba při výpočtu hlavního úhlu polygonu: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5409"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5404"/>
         <source>Function `azimuth` requires exactly two parameters. %n given.</source>
         <translation><numerusform>Funkce `azimut` vyžaduje přesně dva parametry. %n zadán.</numerusform><numerusform>Funkce `azimut` vyžaduje přesně dva parametry. %n zadány.</numerusform><numerusform>Funkce `azimut` vyžaduje přesně dva parametry. %n zadáno.</numerusform><numerusform>Funkce `azimut` vyžaduje přesně dva parametry. %n zadáno.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5442"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5437"/>
         <source>Function `azimuth` requires two points as arguments.</source>
         <translation>Funkce `azimut` vyžaduje dva body jako argumenty.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5504"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5499"/>
         <source>Function `bearing` requires two valid point geometries.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5512"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5507"/>
         <source>Function `bearing` requires point geometries or multi point geometries with a single part.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5534"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5529"/>
         <source>Function `bearing` requires a valid source CRS.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5542"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5537"/>
         <source>Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5556"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5551"/>
         <source>Error caught in bearing() function: %1</source>
         <translation>Chyba zachycená ve funkci bearing(): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5778"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5773"/>
         <source>line_substring requires a curve geometry input</source>
         <translation>line_substring vyžaduje vstup geometrie křivky</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5901"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5896"/>
         <source>Number of places must be positive</source>
         <translation>Počet míst musí být kladný</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6011"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6006"/>
         <source>Both color arguments must have the same type (string or color object)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6026"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6021"/>
         <source>Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6066"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6186"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6243"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6061"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6181"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6238"/>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
         <translation>Nemohu převést &apos;%1:%2:%3&apos; na barvu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6082"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6136"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6207"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6223"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6264"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6280"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6320"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6077"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6131"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6202"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6218"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6259"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6275"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6315"/>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
         <translation>Nemohu převést &apos;%1:%2:%3:%4&apos; na barvu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6157"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6152"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
         <translation>&quot;%1&quot; není platný barevný přechod</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6298"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6343"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6293"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6338"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
         <translation>Nemohu převést &apos;%1:%2:%3:%4:%5&apos; na barvu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6407"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6402"/>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="51"/>
         <source>Cannot convert &apos;%1&apos; to color</source>
         <translation>Nemohu převést &apos;%1&apos; na barvu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6875"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation>Funkce `decode_uri` vyžaduje platnou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6893"/>
         <source>Invalid band number %1 for layer</source>
         <translation>Neplatné číslo pásma %1 pro vrstvu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6387"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6475"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6382"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6470"/>
         <source>Unknown color component &apos;%1&apos;</source>
         <translation>Neznámá barevná komponenta &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6396"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6391"/>
         <source>A minimum of two colors is required to create a ramp</source>
         <translation>Pro vytvoření barevného rozsahu jsou vyžadovány nejméně dvě barvy</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6547"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6542"/>
         <source>Transform error caught in transform() function: %1</source>
         <translation>Chyba transformace zachycená ve funkci transform(): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6857"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6852"/>
         <source>Layer %1 has invalid data provider</source>
         <translation>Vrstva %1 má neplatného poskytovatele dat</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6918"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6913"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>Neplatná statistika rastru: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6946"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation>Funkce `raster_statistic` vyžaduje platnou rastrovou vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7163"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7212"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7158"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7207"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>Neexistuje možnost &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7336"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7331"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation>Funkce array_replace vyžaduje 2 nebo 3 argumenty</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7743"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7738"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation>Metoda hash %1 není v tomto systému k dispozici.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7825"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7820"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>Vrstva &apos;%1&apos; nemohla být načtena.</translation>
     </message>
@@ -24269,7 +24269,7 @@ Vzdálenost je zadána v jednotkách vrstvy a azimut ve stupních ve směru hodi
         <translation>nepodporovaný typ pro pole %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3113"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3121"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Neplatný typ varianty pro pole %1[%2]: získáno %3 s typem %4</translation>
     </message>
@@ -24279,21 +24279,21 @@ Vzdálenost je zadána v jednotkách vrstvy a azimut ve stupních ve směru hodi
         <location filename="../src/core/providers/ogr/qgsogrprovider.cpp" line="2656"/>
         <location filename="../src/core/providers/ogr/qgsogrprovidermetadata.cpp" line="713"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="239"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="787"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="805"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="834"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="858"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="932"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="938"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="785"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="803"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="832"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="856"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="930"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="936"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1004"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1008"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2837"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3118"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3212"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3227"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3248"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3281"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2845"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3126"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3220"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3235"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3256"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3289"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -24308,208 +24308,208 @@ Vzdálenost je zadána v jednotkách vrstvy a azimut ve stupních ve směru hodi
         <translation>Rezervovaný název atributu ogc_fid nahrazen za %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2046"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2054"/>
         <source>column_name1[,column_name2, …] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or querying compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
         <translation>název_sloupce1[,název_sloupce2, …] Seznam sloupců (String), které musí být komprimovány pomocí algoritmu ZLib DEFLATE. To může být výhodné pro databáze s velkými řetězcovými bloby. Používejte však s opatrností, protože hodnota takových sloupců bude vnímána jako komprimovaný binární obsah jinými utilitami SQLite (nebo předchozími verzemi OGR). V OGR se při vkládání, úpravě nebo dotazování komprimovaných sloupců komprese/dekomprese provádí transparentně. Na takové sloupce však nelze (snadno) dotazovat pomocí filtru atributů nebo klauzule WHERE. Poznámka: v definici tabulky mají takové sloupce deklarační typ &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2103"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2111"/>
         <source>If the database is of the SpatiaLite flavor, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
         <translation>Pokud je databáze typu SpatiaLite a pokud je OGR propojen s knihovnou libspatialite, lze tuto možnost použít ke kontrole, zda je nutné vytvořit prostorový index.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2110"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2118"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavor, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used.</source>
         <translation>Pokud je formát geometrického typu BLOB stejný jako v SpatiaLite, lze tuto možnost použít ke kontrole, zda se musí použít komprimovaný formát pro geometrie (LINESTRINGY, POLYGONY).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2128"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2136"/>
         <source>column_name1[,column_name2, …] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
         <translation>název_sloupce1[,název_sloupce2, …] Seznam sloupců (String), které musí být komprimovány pomocí algoritmu ZLib DEFLATE. To může být výhodné pro databáze s velkými řetězcovými bloby. Používejte však s opatrností, protože hodnota takových sloupců bude vnímána jako komprimovaný binární obsah jinými utilitami SQLite (nebo předchozími verzemi OGR). V OGR se při vkládání, úpravě nebo dotazování komprimovaných sloupců komprese/dekomprese provádí transparentně. Na takové sloupce však nelze (snadno) dotazovat pomocí filtru atributů nebo klauzule WHERE. Poznámka: v definici tabulky mají takové sloupce deklarační typ &apos;VARCHAR_deflate&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2167"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2175"/>
         <source>Drawing units for the model space ($INSUNITS system variable).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2182"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2190"/>
         <source>Whether the current drawing uses imperial or metric hatch pattern and linetype ($MEASUREMENT system variable).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2225"/>
         <source>Path to the GCT: the GCT file describes the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
         <translation>Cesta k souboru GCT: soubor GCT popisuje definice typů GeoConcept: V tomto souboru musí každý řádek začínat znakem //# následovaným klíčovým slovem. Řádky začínající znakem // jsou komentáře.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2224"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2232"/>
         <source>Defines the feature to be created. The TYPE corresponds to one of the Name found in the GCT file for a type section. The SUBTYPE corresponds to one of the Name found in the GCT file for a sub-type section within the previous type section.</source>
         <translation>Definuje prvek, který má být vytvořen. TYPE odpovídá jednomu z názvů nalezených v souboru GCT pro sekci typu. SUBTYPE odpovídá jednomu z názvů nalezených v souboru GCT pro sekci podtypu v rámci předchozí sekce typu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2248"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2256"/>
         <source>Selects which ArcGIS version this dataset should be compatible with. ALL is used by default and means any ArcGIS 10.x or ArcGIS Pro version. Using ARCGIS_PRO_3_2_OR_LATER is required to export 64-bit integer fields as such, otherwise they will be converted as Real fields. ARCGIS_PRO_3_2_OR_LATER also supports proper Date and Time field types.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2263"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2271"/>
         <source>Set layer name alias.</source>
         <translation>Nastavení aliasu názvu vrstvy.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2273"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2281"/>
         <source>Whether the values of the geometry column can be NULL. Can be set to NO so that geometry is required. Default to &apos;YES&apos;.</source>
         <translation>Zda hodnoty sloupce geometrie mohou být NULL. Lze nastavit na NE, aby byla geometrie povinná. Výchozí hodnota je &apos;ANO&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2295"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2303"/>
         <source>A list of strings of format field_name=fgdb_field_type (separated by comma) to force the FileGDB column type of fields to be created.</source>
         <translation>Seznam řetězců ve formátu field_name=fgdb_field_type (oddělených čárkou), které vynutí vytvoření polí typu sloupce FileGDB.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2300"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2308"/>
         <source>XML documentation for the layer.</source>
         <translation>Dokumentace XML pro vrstvu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2304"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2312"/>
         <source>Customize how data is stored. By default text in UTF-8 and data up to 1TB.</source>
         <translation>Přizpůsobit si způsob ukládání dat. Ve výchozím nastavení text v UTF-8 a data do 1 TB.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2311"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2319"/>
         <source> Defaults to NO (through CreateLayer() API). When this option is set, a Shape_Area and Shape_Length special fields will be created for polygonal layers (Shape_Length only for linear layers). These fields will automatically be populated with the feature’s area or length whenever a new feature is added to the dataset or an existing feature is amended. When using ogr2ogr with a source layer that has Shape_Area/Shape_Length special fields, and this option is not explicitly specified, it will be automatically set, so that the resulting FileGeodatabase has those fields properly tagged.</source>
         <translation> Výchozí hodnota je NE (prostřednictvím rozhraní CreateLayer() API). Pokud je tato možnost nastavena, pro polygonální vrstvy budou vytvořena speciální pole Shape_Area a Shape_Length (Shape_Length pouze pro lineární vrstvy). Tato pole budou automaticky naplněna plochou nebo délkou prvku vždy, když je do datové sady přidán nový prvek nebo je stávající prvek upraven. Pokud používáte ogr2ogr se zdrojovou vrstvou, která má speciální pole Shape_Area/Shape_Length a tato možnost není explicitně specifikována, bude automaticky nastavena, aby výsledná FileGeodatabase měla tato pole správně označená.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2318"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2326"/>
         <source>ESRI File Geodatabase</source>
         <translation>Souborová geodatabáze ESRI</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2376"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2416"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2384"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2424"/>
         <source>By default, the driver will read the first lines of each sheet to detect if the first line might be the name of columns. If set to FORCE, the driver will consider the first line as the header line. If set to DISABLE, it will be considered as the first feature. Otherwise auto-detection will occur.</source>
         <translation>Ve výchozím nastavení ovladač přečte první řádky každého listu, aby zjistil, zda by první řádek mohl být názvem sloupce. Pokud je nastaveno na VYNUCENO, ovladač bude první řádek považovat za záhlaví. Pokud je nastaveno na ZAKÁZÁNO, bude považován za první prvek. Jinak dojde k automatické detekci.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2392"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2400"/>
         <source>MS Office Open XML spreadsheet [XLSX]</source>
         <translation>Sešit MS Office Open XML [XLSX]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2432"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2440"/>
         <source>Open Document Spreadsheet [ODS]</source>
         <translation>Sešit Open Document [ODS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2465"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2473"/>
         <source>Maximum number of rows per group.</source>
         <translation>Maximální počet řádků na skupinu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2480"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2488"/>
         <source>Name of the coordinate system for the edges.</source>
         <translation>Název souřadnicového systému pro hrany.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2491"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2499"/>
         <source>(Geo)Parquet</source>
         <translation>(Geo)parket</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2505"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2513"/>
         <source>Line termination character sequence.</source>
         <translation>Sekvence znaků ukončení řádku.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2515"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2523"/>
         <source>Format of geometry columns.</source>
         <translation>Formát sloupců geometrie.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2524"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2532"/>
         <source>Controls whether layer and field names will be laundered for easier use. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation>Určuje, zda budou názvy vrstev a polí pro snazší použití vymazány. Vymazané názvy budou převedeny na malá písmena a některé speciální znaky (&apos; - #) budou změněny na podtržítka.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2531"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2539"/>
         <source>Name for the geometry column. Defaults to wkb_geometry for GEOM_TYPE=geometry or the_geog for GEOM_TYPE=geography</source>
         <translation>Název sloupce geometrie. Výchozí hodnota je wkb_geometry pro GEOM_TYPE=geometry nebo the_geog pro GEOM_TYPE=geography.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2535"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2543"/>
         <source>Name of schema into which to create the new table</source>
         <translation>Název schématu, do kterého se má vytvořit nová tabulka</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2538"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2546"/>
         <source>Whether to explicitly emit the CREATE SCHEMA statement to create the specified schema.</source>
         <translation>Zda se má explicitně vyslat příkaz VYTVOŘIT SCHÉMA na vytvoření zadaného schématu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2543"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2551"/>
         <source>Whether to explicitly recreate the table if necessary.</source>
         <translation>Zda se má tabulka v případě potřeby explicitně znovu vytvořit.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2548"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2556"/>
         <source>Whether to explicitly destroy tables before recreating them.</source>
         <translation>Zda se mají tabulky explicitně zničit před jejich opětovným vytvořením.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2569"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2577"/>
         <source>Can be set to 2.0 or 2.2 for PostGIS 2.0/2.2 compatibility. Important to set it correctly if using non-linear geometry types</source>
         <translation>Lze nastavit na 2.0 nebo 2.2 pro kompatibilitu s PostGIS 2.0/2.2. Důležité je správně nastavit, pokud používáte nelineární geometrické typy</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2577"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2585"/>
         <source>PostgreSQL SQL dump</source>
         <translation>PostgreSQL SQL výpis</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2834"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2842"/>
         <source>Error converting value (%1) for attribute field %2: %3</source>
         <translation>Chyba při převodu hodnoty (%1) pro atributové pole %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3139"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3147"/>
         <source>Feature geometry failed to transform</source>
         <translation>Geometrii prvku se nepodařilo transformovat</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3209"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3224"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3245"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3232"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3253"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
         <translation>Geometrie prvku nenaimportována (OGR chyba: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3279"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3287"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>Chyba vytvoření prvku (OGR chyba: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3588"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3596"/>
         <source>Cannot overwrite an OGR layer in place</source>
         <translation>Nemohu přepsat OGR vrstvu v místě</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3739"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3747"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="547"/>
         <source>Failed to transform feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Selhala transformace prvku s ID &apos;%1&apos;. Zápis zastaven. (Výjimka: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3764"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3772"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="502"/>
         <source>Feature write errors:</source>
         <translation>Chyby zápisu prvku:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3788"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4418"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3796"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4426"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -24517,7 +24517,7 @@ Pouze %1 z %2 prvků zapsáno.</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="251"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1143"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1151"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Arc/Info ASCII Coverage</translation>
     </message>
@@ -24558,7 +24558,7 @@ Pouze %1 z %2 prvků zapsáno.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrepairshapefile.cpp" line="67"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1314"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1322"/>
         <source>ESRI Shapefile</source>
         <translation>ESRI Shapefile</translation>
     </message>
@@ -24578,8 +24578,8 @@ Pouze %1 z %2 prvků zapsáno.</translation>
         <translation><numerusform>Úspěšně opraveno, nalezen %n prvek</numerusform><numerusform>Úspěšně opraveno, nalezeny %n prvky</numerusform><numerusform>Úspěšně opraveno, nalezeno %n prvků</numerusform><numerusform>Úspěšně opraveno, nalezeno %n prvků</numerusform></translation>
     </message>
     <message>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="302"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="304"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="306"/>
         <source>FMEObjects Gateway</source>
         <translation>FMEObjects Gateway</translation>
     </message>
@@ -24589,152 +24589,152 @@ Pouze %1 z %2 prvků zapsáno.</translation>
         <translation>Nebyl zadán název souboru</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1168"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1176"/>
         <source>By default, the geometry of a feature written to a .csv file is discarded. It is possible to export the geometry in its WKT representation by specifying GEOMETRY=AS_WKT. It is also possible to export point geometries into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY or GEOMETRY=AS_YX.</source>
         <translation>Ve výchozím nastavení je geometrie prvku zapsaná do souboru .csv zahozena. Geometrii je možné exportovat v její WKT reprezentaci zadáním GEOMETRY=AS_WKT. Je také možné exportovat geometrie bodů do jejich X, Y, Z komponentů zadáním GEOMETRY=AS_XYZ, GEOMETRY=AS_XY nebo GEOMETRY=AS_YX.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1208"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1216"/>
         <source>Double-quote strings. IF_AMBIGUOUS means that string values that look like numbers will be quoted.</source>
         <translation>Řetězce v uvozovkách. IF_AMBIGUOUS znamená, že řetězcové hodnoty, které vypadají jako čísla, budou v uvozovkách.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1217"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1225"/>
         <source>Write a UTF-8 Byte Order Mark (BOM) at the start of the file.</source>
         <translation>Zapsat UTF-8 Byte Order Mark (BOM) na začátek souboru.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1231"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1239"/>
         <source>Comma Separated Value [CSV]</source>
         <translation>Hodnoty oddělené čárkou [CSV]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1307"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1315"/>
         <source>Set to YES to resize fields to their optimal size.</source>
         <translation>Nastavit na ANO pro změnu velikosti polí na optimální velikost.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1329"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1337"/>
         <source>DBF File</source>
         <translation>DBF soubor</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1342"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1350"/>
         <source>Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.</source>
         <translation>Nastavením na ANO zapíšete vlastnost bbox s ohraničujícím rámečkem geometrií na úrovni kolekce prvků.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="318"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1363"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="316"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1371"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1406"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1414"/>
         <source>whether the document must be in RSS 2.0 or Atom 1.0 format. Default value : RSS</source>
         <translation>jestli dokument musí být ve formátu RSS 2.0 nebo Atom 1.0. Výchozí hodnota : RSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1415"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1423"/>
         <source>The encoding of location information. Default value : SIMPLE. W3C_GEO only supports point geometries. SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates.</source>
         <translation>Kódování informací o poloze. Výchozí hodnota : SIMPLE. W3C_GEO podporuje pouze bodovou geometrii. SIMPLE nebo W3C_GEO podporuje pouze geometrie v geografických souřadnicích WGS84.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1435"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1443"/>
         <source>If defined to NO, only &lt;entry&gt; or &lt;item&gt; elements will be written. The user will have to provide the appropriate header and footer of the document.</source>
         <translation>Pokud je definováno na NE, budou zapsány pouze prvky &lt;entry&gt; nebo &lt;item&gt;. Uživatel bude muset zadat odpovídající záhlaví a zápatí dokumentu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1448"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1456"/>
         <source>Value put inside the &lt;title&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;title&gt; v záhlaví. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1454"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1462"/>
         <source>Value put inside the &lt;description&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;description&gt; v záhlaví. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1460"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1468"/>
         <source>Value put inside the &lt;link&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;link&gt; v záhlaví. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1466"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1474"/>
         <source>Value put inside the &lt;updated&gt; element in the header. Should be formatted as a XML datetime. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;updated&gt; v záhlaví. Měla by být formátována jako XML datetime. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1473"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1481"/>
         <source>Value put inside the &lt;author&gt;&lt;name&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;author&gt;&lt;name&gt; v záhlaví. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1479"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
         <source>Value put inside the &lt;id&gt; element in the header. If not provided, a dummy value will be used as that element is compulsory.</source>
         <translation>Hodnota vložená do prvku &lt;id&gt; v záhlaví. Pokud není uvedena, použije se fiktivní hodnota, protože tento prvek je povinný.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="323"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="321"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1495"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1501"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1509"/>
         <source>If provided, this URI will be inserted as the schema location. Note that the schema file isn&apos;t actually accessed by OGR, so it is up to the user to ensure it will match the schema of the OGR produced GML data file.</source>
         <translation>Pokud je zadán, bude tento identifikátor URI vložen jako umístění schématu. Upozorňujeme, že soubor schématu není ve skutečnosti přístupný OGR, takže je na uživateli, aby se ujistil, že bude odpovídat schématu datového souboru GML vytvořeného OGR.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1509"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1517"/>
         <source>This writes a GML application schema file to a corresponding .xsd file (with the same basename). If INTERNAL is used the schema is written within the GML file, but this is experimental and almost certainly not valid XML. OFF disables schema generation (and is implicit if XSISCHEMAURI is used).</source>
         <translation>Tímto se zapíše soubor schématu aplikace GML do odpovídajícího souboru .xsd (se stejným základním názvem). Pokud je použito INTERNAL, schéma je zapsáno v souboru GML, ale jedná se o experimentální a téměř jistě se nejedná o platný XML. OFF zakáže generování schématu (a je implicitní, pokud je použit XSISCHEMAURI).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1522"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1530"/>
         <source>This is the prefix for the application target namespace.</source>
         <translation>Toto je prefix pro jmenný prostor cíle aplikace.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1527"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1535"/>
         <source>Can be set to TRUE to avoid writing the prefix of the application target namespace in the GML file.</source>
         <translation>Může být nastavený na TRUE, aby se zabránilo zápisu prefixu pro jmenný prostor cíle aplikace do souboru GML.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1533"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1541"/>
         <source>Defaults to &apos;http://ogr.maptools.org/&apos;. This is the application target namespace.</source>
         <translation>Výchozí hodnota je &quot;http://ogr.maptools.org/&quot;. Toto je jmenný prostor cíle aplikace.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1561"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1569"/>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If set to NO, the &lt;gml:boundedBy&gt; element will not be written for each feature.</source>
         <translation>platí pouze při FORMAT=GML3/GML3Degree/GML3.2) Výchozí hodnota je ANO. Pokud je nastaveno na NE, prvek &lt;gml:boundedBy&gt; se pro každý prvek nezapíše.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1568"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1576"/>
         <source>Default to YES. If YES, the output will be indented with spaces for more readability, but at the expense of file size.</source>
         <translation>Výchozí nastavení je ANO. Pokud je ANO, výstup bude odsazen mezerami pro lepší čitelnost, ale na úkor velikosti souboru.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="328"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1577"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="326"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1585"/>
         <source>Geography Markup Language [GML]</source>
         <translation>Geography Markup Language [GML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1591"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1599"/>
         <source>Human-readable identifier (e.g. short name) for the layer content</source>
         <translation>Lidsky čitelný identifikátor (např. krátké jméno) pro obsah vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1596"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1604"/>
         <source>Human-readable description for the layer content</source>
         <translation>Lidsky čitelný popis pro obsah vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1115"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1601"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2470"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1123"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1609"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2478"/>
         <source>Name for the feature identifier column</source>
         <translation>Název sloupce identifikátoru prvku</translation>
     </message>
@@ -24744,255 +24744,255 @@ Pouze %1 z %2 prvků zapsáno.</translation>
         <translation>Vytvoření pole %1 (%2) selhalo (chyba OGR: %3)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1090"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2446"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1098"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2454"/>
         <source>Compression method.</source>
         <translation>Metoda komprese.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1100"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2455"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1108"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2463"/>
         <source>Geometry encoding.</source>
         <translation>Kódování geometrie.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1110"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1118"/>
         <source>Maximum number of rows per batch.</source>
         <translation>Maximální počet řádků na dávku.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1120"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1606"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2475"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1128"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1614"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2483"/>
         <source>Name for the geometry column</source>
         <translation>Název sloupce geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1127"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1135"/>
         <source>(Geo)Arrow</source>
         <translation>(Geo)šipka</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1183"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1191"/>
         <source>Name of geometry column. Only used if GEOMETRY=AS_WKT. Defaults to &apos;WKT&apos;.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1188"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1196"/>
         <source>Create the associated .csvt file to describe the type of each column of the layer and its optional width and precision. This option also creates a .prj file which stores coordinate system information.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1611"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1619"/>
         <source>If a spatial index must be created.</source>
         <translation>Pokud musí být vytvořen prostorový index.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="337"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1638"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="335"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1646"/>
         <source>Generic Mapping Tools [GMT]</source>
         <translation>Generic Mapping Tools [GMT]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1651"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1659"/>
         <source>By default when writing a layer whose features are of type wkbLineString, the GPX driver chooses to write them as routes. If FORCE_GPX_TRACK=YES is specified, they will be written as tracks.</source>
         <translation>Ve výchozím nastavení při zápisu vrstvy, jejíž prvky jsou typu wkbLineString, se ovladač GPX rozhodne je zapsat jako trasy. Pokud je zadáno FORCE_GPX_TRACK=YES, budou zapsány jako stopy.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1659"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1667"/>
         <source>By default when writing a layer whose features are of type wkbMultiLineString, the GPX driver chooses to write them as tracks. If FORCE_GPX_ROUTE=YES is specified, they will be written as routes, provided that the multilines are composed of only one single line.</source>
         <translation>Ve výchozím nastavení při zápisu vrstvy, jejíž prvky jsou typu wkbMultiLineString, se ovladač GPX rozhodne je zapsat jako trasy. Pokud je zadáno FORCE_GPX_ROUTE=YES, budou zapsány jako trasy za předpokladu, že se multilinie skládají pouze z jednoho jediného řádku.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1668"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1676"/>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
         <translation>Pokud je zadáno GPX_USE_EXTENSIONS=YES, budou do tagu &lt;extensions&gt; zapsána další pole.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1674"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1682"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
         <translation>Používá se jen tehdy, že je nastaveno GPX_USE_EXTENSIONS=YES a GPX_EXTENSIONS_NS_URL. Hodnota jmenného prostoru použitá pro rozšiřující tagy. Ve výchozím nastavení &apos;ogr&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1680"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1688"/>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS is set. The namespace URI. By default, &apos;http://osgeo.org/gdal&apos;.</source>
         <translation>Používá se jen tehdy, že je nastaveno GPX_USE_EXTENSIONS=YES a GPX_EXTENSIONS_NS. URI jmenného prostoru. Výchozí nastavení je &apos;http://osgeo.org/gdal&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1686"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1694"/>
         <source>By default files are created with the line termination conventions of the local platform (CR/LF on win32 or LF on all other systems). This may be overridden through use of the LINEFORMAT layer creation option which may have a value of CRLF (DOS format) or LF (Unix format).</source>
         <translation>Ve výchozím nastavení se soubory vytvářejí s konvencemi ukončení řádků lokální platformy (CR/LF na Win32 nebo LF na všech ostatních systémech). Toto lze přepsat použitím volby pro vytváření vrstev LINEFORMAT, která může mít hodnotu CRLF (formát DOS) nebo LF (formát Unix).</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="342"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1701"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="340"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1709"/>
         <source>GPS eXchange Format [GPX]</source>
         <translation>GPS eXchange Format [GPX]</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="365"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1717"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="363"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1725"/>
         <source>INTERLIS 1</source>
         <translation>INTERLIS 1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="370"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1732"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="368"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1740"/>
         <source>INTERLIS 2</source>
         <translation>INTERLIS 2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1750"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1758"/>
         <source>Allows you to specify the field to use for the KML &lt;description&gt; element.</source>
         <translation>Umožňuje určit, pole, které se použije pro prvek &lt;description&gt; v KML.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1755"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1763"/>
         <source>Allows you to specify the AltitudeMode to use for KML geometries. This will only affect 3D geometries and must be one of the valid KML options.</source>
         <translation>Umožňuje určit režim AltitudeMode, který se má použit na geometrie KML. Toto ovlivní pouze 3D geometrie a musí to být jedna z platných možností KML.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="382"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1773"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="380"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1781"/>
         <source>Keyhole Markup Language [KML]</source>
         <translation>Keyhole Markup Language [KML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1789"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1797"/>
         <source>Use this to turn on &apos;quick spatial index mode&apos;. In this mode writing files can be about 5 times faster, but spatial queries can be up to 30 times slower.</source>
         <translation>Použijte to k zapnutí „režimu rychlého prostorového indexování“. V tomto režimu může být zápis souborů asi 5krát rychlejší, ale prostorové dotazy mohou být až 30krát pomalejší.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1818"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1826"/>
         <source>Mapinfo TAB</source>
         <translation>Mapinfo TAB</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1833"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1841"/>
         <source>Mapinfo MIF</source>
         <translation>Mapinfo MIF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1846"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1854"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
         <translation>Určete, zda se má použít 2D (seed_2d.dgn) nebo 3D (seed_3d.dgn) soubor seed. Tato možnost se ignoruje, pokud je zadána možnost SEED.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1852"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1860"/>
         <source>Override the seed file to use.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1857"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1865"/>
         <source>Indicate whether the whole seed file should be copied. If not, only the first three elements will be copied.</source>
         <translation>Určete, zda se má zkopírovat celý soubor seed. Pokud ne, budou zkopírovány pouze první tři prvky.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1863"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1871"/>
         <source>Indicates whether the color table should be copied from the seed file.</source>
         <translation>Určuje, zda má být tabulka barev zkopírována ze souboru seed.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1868"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1876"/>
         <source>Override the master unit name from the seed file with the provided one or two character unit name.</source>
         <translation>Přepsat název hlavní jednotky ze souboru seed zadaným názvem jednotky o jednom nebo dvou znacích.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1874"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1882"/>
         <source>Override the sub unit name from the seed file with the provided one or two character unit name.</source>
         <translation>Přepsat název podjednotky ze souboru seed zadaným názvem jednotky o jednom nebo dvou znacích.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1880"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1888"/>
         <source>Override the number of subunits per master unit. By default the seed file value is used.</source>
         <translation>Přepíše počet podjednotek na hlavní jednotku. Ve výchozím nastavení se používá hodnota ze souboru seed.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1886"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1894"/>
         <source>Override the number of UORs (Units of Resolution) per sub unit. By default the seed file value is used.</source>
         <translation>Přepíše počet UOR (jednotek rozlišení) na podjednotku. Ve výchozím nastavení se používá hodnota ze souboru seed.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1892"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1900"/>
         <source>ORIGIN=x,y,z: Override the origin of the design plane. By default the origin from the seed file is used.</source>
         <translation>ORIGIN=x,y,z: Přepíše počátek konstrukční roviny. Ve výchozím nastavení se použije počátek ze souboru seed.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="395"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1900"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="393"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1908"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1936"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1944"/>
         <source>Should all the low level geometry primitives be returned as special IsolatedNode, ConnectedNode, Edge and Face layers.</source>
         <translation>Měly by být všechny nízkoúrovňové geometrické primitivy vráceny jako speciální vrstvy IsolatedNode, ConnectedNode, Edge a Face.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1942"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1950"/>
         <source>If enabled, numeric attributes assigned an empty string as a value will be preserved as a special numeric value. This option should not generally be needed, but may be useful when translated S-57 to S-57 losslessly.</source>
         <translation>Pokud je tato možnost povolena, číselné atributy s přiřazeným prázdným řetězcem jako hodnotou budou zachovány jako speciální číselná hodnota. Tato možnost by obecně neměla být potřeba, ale může být užitečná při bezztrátovém převodu S-57 do S-57.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1949"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1957"/>
         <source>Should LNAM and LNAM_REFS fields be attached to features capturing the feature to feature relationships in the FFPT group of the S-57 file.</source>
         <translation>Pole LNAM a LNAM_REFS by měla být připojena k prvkům zachycujícím vztahy mezi prvky ve skupině FFPT souboru S-57.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1955"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1963"/>
         <source>Should additional attributes relating features to their underlying geometric primitives be attached. These are the values of the FSPT group, and are primarily needed when doing S-57 to S-57 translations.</source>
         <translation>Měly by být připojeny další atributy vztahující se k prvkům s jejich podkladovými geometrickými primitivy. Toto jsou hodnoty skupiny FSPT a jsou primárně potřebné při provádění převodů S-57 do S-57.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1962"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1970"/>
         <source>Should attribute values be recoded to UTF-8 from the character encoding specified in the S57 DSSI record.</source>
         <translation>Hodnoty atributů by měly být překódovány do UTF-8 z kódování znaků uvedeného v záznamu S57 DSSI.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="430"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1972"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="428"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1980"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base file</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="436"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1987"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="434"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1995"/>
         <source>Spatial Data Transfer Standard [SDTS]</source>
         <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2000"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2075"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2008"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2083"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
         <translation>Lze použít k zamezení vytváření tabulek geometry_columns a spatial_ref_sys v nové databázi. Ve výchozím nastavení se tyto tabulky metadat vytvářejí při vytváření nové databáze.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1156"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1164"/>
         <source>By default when creating new .csv files they are created with the line termination conventions of the local platform (CR/LF on Win32 or LF on all other systems). This may be overridden through the use of the LINEFORMAT option.</source>
         <translation>Ve výchozím nastavení se nové soubory .csv vytvářejí s konvencemi ukončení řádků lokální platformy (CR/LF ve Win32 nebo LF na všech ostatních systémech). Toto lze přepsat použitím volby LINEFORMAT.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="373"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="371"/>
         <source>Creation of data source failed (OGR error: %1)</source>
         <translation>Vytvoření datového zdroje selhalo (chyba OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="376"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="374"/>
         <source>Opening of data source in update mode failed (OGR error: %1)</source>
         <translation>Otevření datového zdroje v režimu aktualizace selhalo (chyba OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="396"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="394"/>
         <source>Overwriting of existing layer failed (OGR error: %1)</source>
         <translation>Přepsání existující vrstvy selhalo (chyba OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="550"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="548"/>
         <source>Creation of layer failed (OGR error: %1)</source>
         <translation>Vytvoření vrstvy selhalo (chyba OGR: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="553"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="551"/>
         <source>Opening of layer failed (OGR error: %1)</source>
         <translation>Otevření vrstvy selhalo (chyba OGR: %1)</translation>
     </message>
@@ -25007,144 +25007,144 @@ Pouze %1 z %2 prvků zapsáno.</translation>
         <translation>Vytvořené pole %1 nenalezeno (OGR chyba: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1195"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1203"/>
         <source>Field separator character.</source>
         <translation>Znak oddělovače polí.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1223"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1231"/>
         <source>Whether to write a header line with the field names.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1260"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1268"/>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D;</source>
         <translation>Přepíše typ vytvořeného shapefile. Může mít hodnotu NULL pro jednoduchý soubor .dbf bez souboru .shp, POINT, ARC, POLYGON nebo MULTIPOINT pro 2D, nebo POINTZ, ARCZ, POLYGONZ nebo MULTIPOINTZ pro 3D;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1264"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1272"/>
         <source> POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured geometries.</source>
         <translation> POINTM, ARCM, POLYGONM nebo MULTIPOINTM pro měřené geometrie a POINTZM, ARCZM, POLYGONZM nebo MULTIPOINTZM pro 3D měřené geometrie.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1267"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1275"/>
         <source> MULTIPATCH files are supported since GDAL 2.2.</source>
         <translation> Soubory MULTIPATCH jsou podporovány od verze GDAL 2.2.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1297"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1305"/>
         <source>Set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
         <translation>Nastavení hodnoty kódování v souboru DBF. Výchozí hodnota je LDID/87. Není jasné, jaké další hodnoty by mohly být vhodné.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1348"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1377"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1356"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1385"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Defaults to 15. Truncation will occur to remove trailing zeros.</source>
         <translation>Maximální počet číslic po desetinném oddělovači pro zapsání do souřadnic. Výchozí je 15. Nuly na konci se oříznou.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1354"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1362"/>
         <source>Whether to use RFC 7946 standard. If disabled GeoJSON 2008 initial version will be used. Default is NO (thus GeoJSON 2008). See also Documentation (via Help button)</source>
         <translation>Zda použít standard RFC 7946. Pokud je zakázáno, použije se počáteční verze GeoJSON 2008. Výchozí nastavení je NE (tedy GeoJSON 2008). Viz také Dokumentace (pomocí tlačítka Nápověda).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1383"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1391"/>
         <source>Whether to start records with the RS=0x1E character (RFC 8142 standard). Defaults to NO: Newline Delimited JSON (geojsonl). 
 If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
         <translation>Zda začínat záznamy znakem RS=0x1E (standard RFC 8142). Výchozí hodnota je NE: JSON oddělený znakem nového řádku (geojsonl).
 Pokud je nastaveno na ANO: Standard RFC 8142: Textové sekvence GeoJSON (geojsons).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1392"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1400"/>
         <source>GeoJSON - Newline Delimited</source>
         <translation>GeoJSON - Oddělený novým řádkem</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1426"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1434"/>
         <source>If defined to YES, extension fields will be written. If the field name not found in the base schema matches the foo_bar pattern, foo will be considered as the namespace of the element, and a &lt;foo:bar&gt; element will be written. Otherwise, elements will be written in the &lt;ogr:&gt; namespace.</source>
         <translation>Pokud je definováno na ANO, budou zapsána rozšiřující pole. Pokud název pole, který se nenachází v základním schématu, odpovídá vzoru foo_bar, bude foo považován za jmenný prostor elementu a element &lt;foo:bar&gt; bude zapsán. V opačném případě budou elementy zapsány do jmenného prostoru &lt;ogr:&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1441"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1449"/>
         <source>XML content that will be put between the &lt;channel&gt; element and the first &lt;item&gt; element for a RSS document, or between the xml tag and the first &lt;entry&gt; element for an Atom document.</source>
         <translation>Obsah XML, který bude vložen mezi element &lt;channel&gt; a první element &lt;item&gt; v případě dokumentu RSS nebo mezi značku XML a první element &lt;entry&gt; v případě dokumentu Atom.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1539"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1547"/>
         <source>GML version to use.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1549"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1557"/>
         <source>Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
         <translation>Platné pouze při FORMAT=GML3/GML3Degree/GML3.2. Výchozí nastavení je ANO. Pokud ANO, SRS s autoritou EPSG bude zapsáno s prefixem &apos;urn:ogc:def:crs:EPSG::&apos;. V případě, že SRS je geografický SRS bez explicitního pořadí AXIS, ale stejný kód autority SRS importovaný pomocí ImportFromEPSGA() by měl být považován za zeměpisnou šířku/délku, pak se funkce postará o prohození pořadí souřadnic. Pokud je nastaveno na NE, SRS s autoritou EPSG bude zapsáno s prefixem &apos;EPSG:&apos;, i když jsou v pořadí zeměpisná šířka/délka.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1745"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1753"/>
         <source>Allows you to specify the field to use for the KML &lt;name&gt; element.</source>
         <translation>Umožňuje určit pole, které se má použít pro prvek KML &lt;name&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1765"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1773"/>
         <source>The DOCUMENT_ID datasource creation option can be used to specified the id of the root &lt;Document&gt; node. The default value is root_doc.</source>
         <translation>Volbu pro vytvoření zdroje dat DOCUMENT_ID lze použít k zadání ID kořenového uzlu &lt;Document&gt;. Výchozí hodnota je root_doc.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1800"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1808"/>
         <source>(multiples of 512): Block size for .map files. Defaults to 512. MapInfo 15.2 and above creates .tab files with a blocksize of 16384 bytes. Any MapInfo version should be able to handle block sizes from 512 to 32256.</source>
         <translation>(násobky 512): Velikost bloku pro soubory .map. Výchozí hodnota je 512. MapInfo 15.2 a vyšší vytváří soubory .tab s velikostí bloku 16384 bajtů. Jakákoli verze MapInfo by měla být schopna zpracovat velikosti bloků od 512 do 32256.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1807"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1815"/>
         <source>xmin,ymin,xmax,ymax: Define custom layer bounds to increase the accuracy of the coordinates. Note: the geometry of written features must be within the defined box.</source>
         <translation>xmin,ymin,xmax,ymax: Definujte vlastní hranice vrstev pro zvýšení přesnosti souřadnic. Poznámka: geometrie zapsaných prvků musí být v definovaném poli.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1913"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1921"/>
         <source>Should update files be incorporated into the base data on the fly.</source>
         <translation>Měly by být aktualizační soubory začleňovány do základních dat za běhu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1921"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1929"/>
         <source>Should multipoint soundings be split into many single point sounding features. Multipoint geometries are not well handled by many formats, so it can be convenient to split single sounding features with many points into many single point features.</source>
         <translation>Měly by být vícebodové sondáže rozděleny na mnoho bodových sondážních prvků. Vícebodové geometrie nejsou v mnoha formátech dobře zpracovávány, takže může být vhodné rozdělit jednobodové sondážní prvky s mnoha body na mnoho bodových prvků.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1929"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1937"/>
         <source>Should a DEPTH attribute be added on SOUNDG features and assign the depth of the sounding. This should only be enabled when SPLIT_MULTIPOINT is also enabled.</source>
         <translation>Měl by být atribut DEPTH přidán k prvkům SOUNDG a přiřazen hloubku sondování. Toto by mělo být povoleno pouze tehdy, když je povolen i atribut SPLIT_MULTIPOINT.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2017"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2025"/>
         <source>Controls the format used for the geometry column. Defaults to WKB. This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
         <translation>Řídí formát použitý pro sloupec geometrie. Výchozí nastavení je WKB. Tento formát je obecně efektivnější z hlediska prostoru a zpracování, ale v jednoduchých aplikacích je obtížnější jej kontrolovat nebo používat než WKT (dobře známý text).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2027"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2096"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2035"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2104"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation>Určuje, zda budou názvy vrstev a polí pro snazší použití v SQLite vymazány. Vymazané názvy budou převedeny na malá písmena a některé speciální znaky (&apos; - #) budou změněny na podtržítka.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2061"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2069"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2086"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2094"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
         <translation>Vložit obsah souborů EPSG CSV do tabulky spatial_ref_sys. Pro běžnou databázi SQLite nastavte hodnotu na NE.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2117"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2558"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2125"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2566"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
         <translation>Používá se k vynucení čísla SRID pro SRS přidruženého k vrstvě. Pokud tato možnost není zadána a SRS je přidružen k vrstvě, provede se vyhledávání v tabulce spatial_ref_sys, aby se našla shoda pro SRS, a pokud se nenajde shoda, vloží se pro SRS do tabulky spatial_ref_sys nový záznam. Pokud je zadána možnost SRID, toto vyhledávání (a případné vložení nového záznamu) se neprovede: použije se zadaný SRID.</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystem.cpp" line="190"/>
         <location filename="../src/core/proj/qgscoordinatereferencesystem.cpp" line="2629"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2143"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2151"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="395"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="522"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovidergui.cpp" line="32"/>
@@ -25152,70 +25152,70 @@ Pokud je nastaveno na ANO: Standard RFC 8142: Textové sekvence GeoJSON (geojson
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2156"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2164"/>
         <source>Override the header file used - in place of header.dxf.</source>
         <translation>Přepsat použitý hlavičkový soubor - namísto header.dxf.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2161"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2169"/>
         <source>Override the trailer file used - in place of trailer.dxf.</source>
         <translation>Přepsat použitý patičkový soubor - namísto trailer.dxf.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="482"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2195"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="480"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2203"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2208"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2216"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
         <translation>Označuje příponu exportního souboru GeoConcept. Dřívější verze GeoConceptu používaly příponu TXT. V současné době se používá přípona GXT.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="477"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2234"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="475"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2242"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2257"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2333"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2265"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2341"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
         <translation>Pokud je tato možnost nastavena, nová vrstva bude vytvořena uvnitř pojmenované složky FeatureDataset. Pokud složka ještě neexistuje, bude vytvořena.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2268"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2339"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2276"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2347"/>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
         <translation>Nastavit jméno sloupce v nové vrstvě. Výchozí hodnoty &quot;tvar&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2278"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2344"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2286"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2352"/>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
         <translation>Název sloupce OID, který se má vytvořit. Výchozí hodnota je „OBJECTID“.</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="274"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2351"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2359"/>
         <source>ESRI FileGDB</source>
         <translation>ESRI FileGDB</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2366"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2406"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2374"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2414"/>
         <source>By default, the driver will try to detect the data type of fields. If set to STRING, all fields will be of String type.</source>
         <translation>Ve výchozím nastavení se ovladač pokusí detekovat datový typ polí. Pokud je nastaveno na STRING, všechna pole budou typu String.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3774"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="3782"/>
         <location filename="../src/core/vector/qgsvectorlayerexporter.cpp" line="525"/>
         <source>Stopping after %n error(s)</source>
         <translation><numerusform>Zastaveno po %n chybě</numerusform><numerusform>Zastaveno po %n chybách</numerusform><numerusform>Zastaveno po %n chybách</numerusform><numerusform>Zastaveno po %n chybách</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4325"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="4333"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>Transformace selhala, zápis zastaven. (Výjimka: %1)</translation>
     </message>
@@ -26131,49 +26131,49 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
         <translation>Končit s</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="568"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="585"/>
         <source>Scale: %1</source>
         <translation>Měřítko: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="569"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="586"/>
         <source>Offset: %1</source>
         <translation>Odsazení: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2961"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="640"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2978"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="638"/>
         <source>GDAL/OGR VSIFileHandler</source>
         <translation>GDAL/OGR VSIFileHandler</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2969"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="648"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2986"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="646"/>
         <source>All supported files</source>
         <translation>Všechny podporované soubory</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3014"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3031"/>
         <source>This raster file has no bands and is invalid as a raster layer.</source>
         <translation>Tento rastrový soubor nemá pásma a je neplatný jako rastrová vrstva.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3534"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3551"/>
         <source>Raster attribute table has no columns: skipping.</source>
         <translation>Tabulka atributů rastru nemá žádné sloupce: přeskočení.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3541"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3558"/>
         <source>Dataset is not valid and raster attribute table could not be loaded.</source>
         <translation>Datová sada není platná a tabulku atributů rastru nebylo možné načíst.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3574"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3591"/>
         <source>GDAL error setting the table type, raster attribute table could not be saved.</source>
         <translation>Chyba GDAL během nastavovaní typu tabulky, tabulku atributů rastru nebylo možné uložit.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3608"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3625"/>
         <source>GDAL error creating column &apos;%1, raster attribute table could not be saved.</source>
         <translation>Chyba GDAL během vytváření sloupce &apos;%1, tabulku atributů rastru nebylo možné uložit.</translation>
     </message>
@@ -26194,7 +26194,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="76"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4389"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4399"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="62"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="46"/>
         <source>Nearest Neighbour</source>
@@ -26202,7 +26202,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="77"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4395"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4405"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="63"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="47"/>
         <source>Bilinear (2x2 Kernel)</source>
@@ -26210,7 +26210,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="78"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4392"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4402"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="64"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="48"/>
         <source>Cubic (4x4 Kernel)</source>
@@ -26218,7 +26218,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="79"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4393"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4403"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="65"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="226"/>
         <source>Cubic B-Spline (4x4 Kernel)</source>
@@ -26226,7 +26226,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="80"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4394"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4404"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="66"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="227"/>
         <source>Lanczos (6x6 Kernel)</source>
@@ -26234,7 +26234,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="81"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4390"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4400"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="67"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="228"/>
         <source>Average</source>
@@ -26266,7 +26266,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
         <translation>Zarovnaný rastr</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4391"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4401"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="69"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="230"/>
         <source>Gauss</source>
@@ -26274,7 +26274,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmalignsingleraster.cpp" line="82"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4396"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4406"/>
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="68"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="229"/>
         <source>Mode</source>
@@ -26334,7 +26334,7 @@ This algorithm is a port of the SAGA &apos;DTM Filter (slope-based)&apos; tool.<
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="85"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4397"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4407"/>
         <location filename="../src/core/qgsfield.cpp" line="457"/>
         <source>None</source>
         <translation>Žádná</translation>
@@ -26595,13 +26595,13 @@ stderr: %4</translation>
         <translation>CouchDB</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="420"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="418"/>
         <source>OpenFileGDB</source>
         <translation>OpenFileGDB</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="286"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="288"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="287"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRI Personal GeoDatabase</translation>
     </message>
@@ -26612,29 +26612,29 @@ stderr: %4</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="281"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1246"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1254"/>
         <source>FlatGeobuf</source>
         <translation>FlatGeobuf</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="294"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="292"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRI ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="299"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="297"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRI Shapefiles</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="312"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="310"/>
         <source>GeoJSON Newline Delimited JSON</source>
         <translation>GeoJSON oddělený novým řádkem JSON</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="348"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="351"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1618"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="346"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="349"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1626"/>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="5588"/>
         <location filename="../src/gui/providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp" line="23"/>
         <location filename="../src/gui/providers/ogr/qgsogrguiprovider.cpp" line="57"/>
@@ -26643,47 +26643,47 @@ stderr: %4</translation>
         <translation>GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="357"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="355"/>
         <source>Grass Vector</source>
         <translation>Grass Vektor</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="361"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="359"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="375"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="373"/>
         <source>Ingres</source>
         <translation>Ingres</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="387"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="385"/>
         <source>Mapinfo File</source>
         <translation>MapInfo soubory</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="400"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="398"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="408"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="406"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="412"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="410"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="416"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="414"/>
         <source>OGDI Vectors</source>
         <translation>OGDI Vektory</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="426"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="424"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="415"/>
         <location filename="../src/providers/postgres/qgspostgresprovidergui.cpp" line="34"/>
         <location filename="../src/providers/postgres/qgspostgresprovidergui.cpp" line="50"/>
@@ -26691,162 +26691,162 @@ stderr: %4</translation>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="442"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="440"/>
         <source>Systematic Organization of Spatial Information [SOSI]</source>
         <translation>Systematic Organization of Spatial Information [SOSI]</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="447"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="445"/>
         <source>SQLite/SpatiaLite</source>
         <translation>SQLite/SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="452"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="450"/>
         <source>Storage and eXchange Format</source>
         <translation>Úložný a výměnný formát</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="457"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="455"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="461"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="459"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="465"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="463"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Virtual Datasource</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="471"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="469"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="487"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="485"/>
         <source>Open Document Spreadsheet</source>
         <translation>Sešit Open Document</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="492"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="490"/>
         <source>MS Office Open XML spreadsheet</source>
         <translation>Sešit MS Office Open XML</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="497"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="495"/>
         <source>MS Excel format</source>
         <translation>Formát MS Excel</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="502"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="500"/>
         <source>EDIGEO</source>
         <translation>EDIGEO</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="507"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="505"/>
         <source>NAS - ALKIS</source>
         <translation>NAS - ALKIS</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="512"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="510"/>
         <source>WAsP</source>
         <translation>WAsP</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="517"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="515"/>
         <source>PCI Geomatics Database File</source>
         <translation>PCI Geomatics databázový soubor</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="522"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="520"/>
         <source>GPSTrackMaker</source>
         <translation>GPSTrackMaker</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="527"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="525"/>
         <source>Czech Cadastral Exchange Data Format</source>
         <translation>Výměnný formát českých katastrálních dat</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="532"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="530"/>
         <source>OpenStreetMap</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="537"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="535"/>
         <source>Special Use Airspace Format</source>
         <translation>Special Use Airspace Format</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="542"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="540"/>
         <source>OpenAir Special Use Airspace Format</source>
         <translation>OpenAir Special Use Airspace Format</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="547"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="545"/>
         <source>Planetary Data Systems TABLE</source>
         <translation>Planetární datové systémy TABULKA</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="552"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="550"/>
         <source>Hydrographic Transfer Format</source>
         <translation>Formát hydrografického přenosu</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="557"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="555"/>
         <source>Scalable Vector Graphics</source>
         <translation>Škálovatelná vektorová grafika (SVG)</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="562"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="560"/>
         <source>Arc/Info Generate</source>
         <translation>Arc/Info Generate</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="567"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="565"/>
         <source>Geospatial PDF</source>
         <translation>Geospatial PDF</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="572"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="570"/>
         <source>SEG-Y</source>
         <translation>SEG-Y</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="577"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="575"/>
         <source>SEG-P1</source>
         <translation>SEG-P1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="578"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="576"/>
         <source>UKOOA P1/90</source>
         <translation>UKOOA P1/90</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1004"/>
         <source>Too many files opened (%1). Cannot open %2. You may raise the limit with the &apos;ulimit -n number_of_files&apos; command before starting QGIS.</source>
         <translation>Otevřeno příliš mnoho souborů (%1). Nelze otevřít %2. Limit můžete zvýšit příkazem &apos;ulimit -n number_of_files&apos; před spuštěním QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1008"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1006"/>
         <source>Too many files opened (%1). Cannot open %2</source>
         <translation>Otevřeno příliš mnoho souborů (%1). Nelze otevřít %2</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2934"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2932"/>
         <source>Open %1</source>
         <translation>Otevřít %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2948"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2946"/>
         <source>Add Connection</source>
         <translation>Přidat spojení</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2949"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2947"/>
         <source>A connection with the same name already exists,
 please provide a new name:</source>
         <translation>Připojení stejného jména již existuje,
@@ -26890,62 +26890,62 @@ zadejte prosím nové jméno:</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3644"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3642"/>
         <source>Not enough data to deserialize</source>
         <translation>Nedostatek dat k deserializaci</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3647"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3645"/>
         <source>Not enough memory</source>
         <translation>Nedostatek paměti</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3650"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3648"/>
         <source>Unsupported geometry type</source>
         <translation>Nepodporovaný typ geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3653"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3651"/>
         <source>Unsupported operation</source>
         <translation>Nepodporovaná operace</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3656"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3654"/>
         <source>Corrupt data</source>
         <translation>Poškozená data</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3659"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3657"/>
         <source>Failure</source>
         <translation>Selhání</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3662"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3660"/>
         <source>Unsupported SRS</source>
         <translation>Nepodporované SRS</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3665"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3663"/>
         <source>Invalid handle</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3668"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3666"/>
         <source>Non existing feature</source>
         <translation>Neexistující prvek</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3673"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3671"/>
         <source>Success</source>
         <translation>Úspěch</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3677"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3675"/>
         <source>GDAL result code: %1</source>
         <translation>GDAL výsledný kód: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3682"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3680"/>
         <source>Layer not found: %1</source>
         <translation>Vrstva nenalezena: %1</translation>
     </message>
@@ -26955,8 +26955,8 @@ zadejte prosím nové jméno:</translation>
         <translation>GeoPackage databáze (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2972"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="651"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2989"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="649"/>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="55"/>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
@@ -26966,27 +26966,27 @@ zadejte prosím nové jméno:</translation>
         <translation>Všechny soubory</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="786"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="784"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Duplicitní pole (10 významných znaků): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="804"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="802"/>
         <source>Creating the data source %1 failed: %2</source>
         <translation>Vytvoření datového zdroje %1 selhalo:%2</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="833"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="831"/>
         <source>Unknown vector type of %1</source>
         <translation>Neznámý vektorový typ %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="932"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="930"/>
         <source>field %1 with unsupported type %2 skipped</source>
         <translation>pole %1 nepodporovaného typu %2 přeskočeno</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="938"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="936"/>
         <source>creation of field %1 failed</source>
         <translation>vytvoření pole %1 selhalo</translation>
     </message>
@@ -27418,33 +27418,33 @@ SQL: %1</translation>
         <translation>Nemohu uložit styl vrstvy: Není možné vytvořit cílovou tabulku v databázi.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="773"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="771"/>
         <source>URI %1 doesn&apos;t end with .shp or .dbf</source>
         <translation>URI %1 nekončí na .shp nebo .dbf</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1551"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1607"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1627"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1683"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2307"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2377"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1549"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1605"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1625"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1681"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2305"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2375"/>
         <source>Cannot find layer %1.</source>
         <translation>Nemohu najít vrstvu %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1618"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="1616"/>
         <source>Cannot open %1 (%2).</source>
         <translation>Nelze otevřít %1 (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4718"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4732"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4746"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4758"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4772"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4792"/>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2298"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4728"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4742"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4756"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4768"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4782"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="4802"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="2296"/>
         <source>Cannot open %1.</source>
         <translation>Nelze otevřít %1.</translation>
     </message>
@@ -28749,7 +28749,7 @@ Další atributy a jejich hodnoty jsou převzaty z druhé vektorové vrstvy. Pro
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1289"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4332"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4327"/>
         <source>An error occurred while calculating area</source>
         <translation type="unfinished"/>
     </message>
@@ -28875,7 +28875,7 @@ Další atributy a jejich hodnoty jsou převzaty z druhé vektorové vrstvy. Pro
         <location filename="../src/core/vector/qgsvectorlayerrenderer.cpp" line="648"/>
         <location filename="../src/core/vector/qgsvectorlayerrenderer.cpp" line="953"/>
         <source>Finalizing</source>
-        <translation type="unfinished"/>
+        <translation>Finalizace</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayerrenderer.cpp" line="711"/>
@@ -30177,7 +30177,9 @@ Tímto se smažou všechna data v tabulce.</translation>
         <source>Are you sure you want to refresh the materialized view &quot;%1.%2&quot;?
 
 This will update all data within the table.</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete aktualizovat materializovaný pohled „%1.%2“?
+
+Tímto se aktualizují všechna data v tabulce.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitemguiprovider.cpp" line="73"/>
@@ -30828,7 +30830,7 @@ This will update all data within the table.</source>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="84"/>
         <source>Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?</source>
-        <translation type="unfinished"/>
+        <translation>Export konfigurací ověřování s prázdným heslem povede k souboru ve formátu prostého textu, který může obsahovat citlivé informace. Jste si jisti, že to chcete provést?</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="90"/>
@@ -30988,7 +30990,11 @@ Operaci NELZE vrátit zpět!</translation>
 Operation can NOT be undone!
 
 (Current database will be backed up and new one created.)</source>
-        <translation type="unfinished"/>
+        <translation>Jste si jisti, že chcete VYMAZAT celou ověřovací databázi?
+
+Operaci NELZE vrátit zpět!
+
+(Aktuální databáze bude zálohována a bude vytvořena nová.)</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="320"/>
@@ -31143,7 +31149,8 @@ Operation can NOT be undone!
         <location filename="../src/gui/editorwidgets/qgsclassificationwidgetwrapperfactory.cpp" line="34"/>
         <source>Displays a combo box containing values of attributes used for classification.
 Only available when the layer uses a categorized symbol renderer.</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazuje rozbalovací pole s hodnotami atributů použitých pro klasifikaci.
+K dispozici pouze tehdy, když vrstva používá vykreslovač kategorizovaných symbolů.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="499"/>
@@ -31163,7 +31170,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="3407"/>
         <source>unable to convert &apos;%1&apos; element to a valid expression: it is not supported yet or it has invalid arguments</source>
-        <translation type="unfinished"/>
+        <translation>nelze převést prvek &apos;%1&apos; na platný výraz: zatím není podporován nebo má neplatné argumenty</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="3419"/>
@@ -31364,7 +31371,7 @@ Only available when the layer uses a categorized symbol renderer.</source>
         <location filename="../src/core/qgsogcutils.cpp" line="3168"/>
         <location filename="../src/core/qgsogcutils.cpp" line="3174"/>
         <source>Function %1 3rd argument should be a numeric value or a string made of a numeric value followed by a string</source>
-        <translation type="unfinished"/>
+        <translation>Funkce %1 3. argument by měl být číselná hodnota nebo řetězec složený z číselné hodnoty následované řetězcem</translation>
     </message>
     <message>
         <location filename="../src/core/qgsogcutils.cpp" line="3295"/>
@@ -31817,7 +31824,7 @@ Z and M values at the start and end of the new line substrings are linearly inte
     <message>
         <location filename="../src/3d/processing/qgsalgorithmtessellate.cpp" line="70"/>
         <source>The output layer consists of multipolygon geometries for each input feature, with each multipolygon consisting of multiple triangle component polygons.</source>
-        <translation type="unfinished"/>
+        <translation>Výstupní vrstva se skládá z multipolygonálních geometrií pro každý vstupní prvek, přičemž každý multipolygon se skládá z více polygonů trojúhelníkových komponent.</translation>
     </message>
     <message>
         <location filename="../src/3d/processing/qgsalgorithmtessellate.cpp" line="75"/>
@@ -32144,7 +32151,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundingbox.cpp" line="54"/>
         <source>See the &apos;Minimum bounding geometry&apos; algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features.</source>
-        <translation type="unfinished"/>
+        <translation>Výpočet ohraničujícího rámečku, který pokrývá celou vrstvu nebo seskupené podmnožiny prvků, naleznete v algoritmu „Minimální ohraničující geometrie“.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmboundingbox.cpp" line="59"/>
@@ -32263,7 +32270,7 @@ Attributes are not modified by this algorithm.</source>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="52"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointslayerfromtable.cpp" line="76"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="70"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="71"/>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="60"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="73"/>
@@ -32454,7 +32461,7 @@ Output attributes are computed depending on each given aggregate definition.</so
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="59"/>
         <source>The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.</source>
-        <translation type="unfinished"/>
+        <translation>Parametr segments řídí počet úseček, které se mají použít k aproximaci čtvrtkruhu při vytváření zaoblených odsazení.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbuffer.cpp" line="65"/>
@@ -32687,7 +32694,7 @@ The attributes associated to each point in the output layer are the same ones as
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconvexhull.cpp" line="54"/>
         <source>See the &apos;Minimum bounding geometry&apos; algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features.</source>
-        <translation type="unfinished"/>
+        <translation>Výpočet konvexního obalu, který pokrývá celou vrstvu nebo seskupené podmnožiny prvků, naleznete v algoritmu „Minimální ohraničující geometrie“.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconvexhull.cpp" line="59"/>
@@ -32844,7 +32851,7 @@ If enabled, the optional &quot;Keep disjoint features separate&quot; setting wil
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropgeometry.cpp" line="55"/>
         <source>This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus odstraní veškeré geometrické prvky ze vstupní vrstvy a vrátí vrstvu obsahující pouze atributy prvku.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropgeometry.cpp" line="60"/>
@@ -33157,7 +33164,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="237"/>
         <source>This algorithm creates a selection in a vector layer. Features are selected wherever they are within the specified maximum distance from the features in an additional reference layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří výběr ve vektorové vrstvě. Prvky jsou vybrány všude, kde se nacházejí v zadané maximální vzdálenosti od prvků v další referenční vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="303"/>
@@ -33182,7 +33189,7 @@ Optionally, feature geometries can also be clipped to the extent. If this option
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractbylocation.cpp" line="389"/>
         <source>This algorithm creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří výběr ve vektorové vrstvě. Kritéria pro výběr prvků jsou založena na prostorovém vztahu mezi každým prvkem a prvky v další vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancewithin.cpp" line="289"/>
@@ -33740,7 +33747,7 @@ Optionally, geodesic lines can be created, which represent the shortest path on 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlineintersection.cpp" line="76"/>
         <source>This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří bodové prvky tam, kde se čáry ve vrstvě Průsečík protínají s čárami ve vstupní vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmeancoordinates.cpp" line="29"/>
@@ -33995,7 +34002,7 @@ Optionally, the destination coordinate reference system (CRS) for the merged lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="174"/>
         <source>%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). %1 field will be converted to string type.</source>
-        <translation type="unfinished"/>
+        <translation>pole %1 ve vrstvě %2 má jiný datový typ než cílová vrstva (%3 místo %4). Pole %1 bude převedeno na typ řetězce.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="184"/>
@@ -34042,7 +34049,7 @@ Optionally, the destination coordinate reference system (CRS) for the merged lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmminimumenclosingcircle.cpp" line="65"/>
         <source>See the &apos;Minimum bounding geometry&apos; algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features.</source>
-        <translation type="unfinished"/>
+        <translation>Výpočet minimální ohraničující kružnice, který pokrývá celou vrstvu nebo seskupené podmnožiny prvků, naleznete v algoritmu „Minimální ohraničující geometrie“.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmminimumenclosingcircle.cpp" line="70"/>
@@ -34242,7 +34249,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="194"/>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="257"/>
         <source>The raster values can optionally be scaled by a preset amount and an offset can be algebraically added.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové hodnoty lze volitelně škálovat o přednastavenou hodnotu a lze k nim algebraicky přidat posun.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="245"/>
@@ -34252,7 +34259,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="255"/>
         <source>This algorithm sets the M value for every vertex in the feature geometry to a value sampled from a band within a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus nastaví hodnotu M pro každý vrchol v geometrii prvku na hodnotu vzorkovanou z pásma v rastrové vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="262"/>
@@ -34278,7 +34285,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="192"/>
         <source>This algorithm sets the z value of every vertex in the feature geometry to a value sampled from a band within a raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus nastaví hodnotu z každého vrcholu v geometrii prvku na hodnotu vzorkovanou z pásu v rastrové vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdrape.cpp" line="199"/>
@@ -34299,7 +34306,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalinformation.cpp" line="63"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmrastersurfacevolume.cpp" line="58"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="315"/>
         <source>HTML files (*.html)</source>
         <translation>HTML soubory (*.html)</translation>
     </message>
@@ -34495,7 +34502,7 @@ Note that duplicate vertices are not tested between different parts of a multipa
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="56"/>
         <source>The distance from the calculated pole to the polygon boundary will be stored as a new attribute in the output layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vzdálenost od vypočítaného pólu k hranici polygonu bude uložena jako nový atribut ve výstupní vrstvě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpoleofinaccessibility.cpp" line="62"/>
@@ -34946,7 +34953,9 @@ If &apos;Also remove empty geometries&apos; is checked, the algorithm removes fe
         <source>This algorithm creates a new layer with all the selected features in a given vector layer.
 
 If the selected layer has no selected features, the newly created layer will be empty.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytvoří novou vrstvu se všemi vybranými prvky v dané vektorové vrstvě.
+
+Pokud vybraná vrstva neobsahuje žádné vybrané prvky, nově vytvořená vrstva bude prázdná.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsaveselectedfeatures.cpp" line="62"/>
@@ -35629,7 +35638,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="152"/>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="159"/>
         <source>The entered constant value has decimals but will be written to a raster dataset of type %1. The decimals of the constant value will be omitted.</source>
-        <translation type="unfinished"/>
+        <translation>Zadaná konstantní hodnota má desetinná místa, ale bude zapsána do rastrové datové sady typu %1. Desetinná místa konstantní hodnoty budou vynechána.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconstantraster.cpp" line="136"/>
@@ -35727,7 +35736,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="55"/>
         <source>This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus posouvá geometrie v rámci vrstvy jejich odsazením o zadané posunutí x a y.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="57"/>
@@ -35747,7 +35756,7 @@ Atributy se tímto algoritmem nijak nemění.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="54"/>
         <source>This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. Each copy is incrementally displaced by a preset amount in the x/y/z/m axis.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří kopie prvků ve vrstvě vytvořením více přeložených verzí každého prvku. Každá kopie je postupně posunuta o přednastavenou hodnotu v osách x/y/z/m.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmarraytranslatedfeatures.cpp" line="60"/>
@@ -36313,89 +36322,89 @@ Atributy se tímto algoritmem nijak nemění.</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="278"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="279"/>
         <source>Generate XYZ tiles (Directory)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="283"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="284"/>
         <source>tiles,xyz,tms,directory</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="288"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="289"/>
         <source>Generates XYZ tiles of map canvas content and saves them as individual images in a directory.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="299"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="300"/>
         <source>Tile width</source>
         <translation>Šířka dlaždice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="300"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="301"/>
         <source>Tile height</source>
         <translation>Výška dlaždice</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="301"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="302"/>
         <source>Use inverted tile Y axis (TMS convention)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="303"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="304"/>
         <source>Leaflet HTML output title</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="307"/>
         <source>Leaflet HTML output attribution</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="309"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="310"/>
         <source>Include OpenStreetMap basemap in Leaflet HTML output</source>
         <translation>Zahrnout podkladovou mapu OpenStreetMap do HTML výstupu Leaflet</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="315"/>
         <source>Output html (Leaflet)</source>
         <translation>Výstup html (Leaflet)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="336"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="541"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="337"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="542"/>
         <source>%1 tiles will be created for zoom level %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="339"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="544"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="340"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="545"/>
         <source>A total of %1 tiles will be created</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="407"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="408"/>
         <source>Could not open html file %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="487"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="488"/>
         <source>Generate XYZ tiles (MBTiles)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="492"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="493"/>
         <source>tiles,xyz,tms,mbtiles</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="497"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="498"/>
         <source>Generates XYZ tiles of map canvas content and saves them as an MBTiles file.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="508"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
         <source>MBTiles files (*.mbtiles *.MBTILES)</source>
         <translation>Soubory MBTiles (*.mbtiles *.MBTILES)</translation>
     </message>
@@ -36502,7 +36511,7 @@ Optionally, a specific output CRS can be specified. If it is not specified, the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="86"/>
         <source>This parameter is optional. When left unset, the algorithm will fallback to extracting labels from all currently visible layers in the project.</source>
-        <translation type="unfinished"/>
+        <translation>Tento parametr je volitelný. Pokud není nastaven, algoritmus se vrátí k extrakci popisků ze všech aktuálně viditelných vrstev v projektu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlabels.cpp" line="91"/>
@@ -36871,7 +36880,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="906"/>
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="1272"/>
         <source>Cannot write to %1. This file may be open in another application or may be an invalid path.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapisovat do %1. Tento soubor může být otevřen v jiné aplikaci nebo má neplatnou cestu.</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutexporter.cpp" line="984"/>
@@ -37279,7 +37288,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
-        <translation type="unfinished"/>
+        <translation>Algoritmus „%1“ nelze spustit v pozadí vlákna, pro tento krok se přepíná do hlavního vlákna</translation>
     </message>
     <message>
         <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
@@ -38505,7 +38514,7 @@ Extracted label information include: position (served as point geometries), the 
     <message>
         <location filename="../src/core/labeling/qgspallabeling.cpp" line="2777"/>
         <source>Label position geometry is not in layer coordinates reference system. Layer CRS: &apos;%1&apos;, Geometry CRS: &apos;%2&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Geometrie pozice popisku není v referenčním systému souřadnic vrstvy. Vrstva SRS: &apos;%1&apos;, Geometrie SRS: &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/labeling/qgspallabeling.cpp" line="2879"/>
@@ -40286,7 +40295,7 @@ Poslední snímky:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="50"/>
         <source>unique</source>
-        <translation type="unfinished"/>
+        <translation>unikátní</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="51"/>
@@ -40339,7 +40348,7 @@ Poslední snímky:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="64"/>
         <source>filled</source>
-        <translation type="unfinished"/>
+        <translation>vyplněný</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="65"/>
@@ -40550,7 +40559,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="181"/>
         <source>The layer &lt;b&gt;%1&lt;/b&gt; is loaded in the current project with name &lt;b&gt;%2&lt;/b&gt;, do you want to remove it from the project and rename it?</source>
-        <translation type="unfinished"/>
+        <translation>V aktuálním projektu je načtena vrstva &lt;b&gt;%1&lt;/b&gt; s názvem &lt;b&gt;%2&lt;/b&gt;, chcete ji z projektu odebrat a přejmenovat?</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="199"/>
@@ -40560,7 +40569,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="206"/>
         <source>The layer &lt;b&gt;%1&lt;/b&gt; exists in the current project &lt;b&gt;%2&lt;/b&gt;, do you want to remove it from the project and rename it?</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva &lt;b&gt;%1&lt;/b&gt; existuje v aktuálním projektu &lt;b&gt;%2&lt;/b&gt;, chcete ji z projektu odebrat a přejmenovat?</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="247"/>
@@ -40578,7 +40587,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="290"/>
         <source>The layer &lt;b&gt;%1&lt;/b&gt; exists in the current project &lt;b&gt;%2&lt;/b&gt;, do you want to remove it from the project and delete it?</source>
-        <translation type="unfinished"/>
+        <translation>Vrstva &lt;b&gt;%1&lt;/b&gt; existuje v aktuálním projektu &lt;b&gt;%2&lt;/b&gt;, chcete ji z projektu odebrat a smazat?</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/ogr/qgsgeopackageitemguiprovider.cpp" line="299"/>
@@ -40642,7 +40651,7 @@ The algorithm calculates a statistical summary for the values from matching feat
     <message>
         <location filename="../src/gui/providers/ogr/qgsogritemguiprovider.cpp" line="137"/>
         <source>The layer &apos;%1&apos; cannot be deleted because it is in the current project as &apos;%2&apos;, remove it from the project and retry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrstvu &apos;%1&apos; nelze smazat, protože se v aktuálním projektu nachází jako &apos;%2&apos;, odeberte ji z projektu a zkuste to znovu.</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayerprovidergui.cpp" line="28"/>
@@ -40820,14 +40829,14 @@ Optionally, a separate table can be output which contains a summary of the class
         <translation>3D</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmapsettings.cpp" line="584"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="609"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="628"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="649"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="666"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="683"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="704"/>
-        <location filename="../src/core/qgsmapsettings.cpp" line="721"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="554"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="579"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="598"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="619"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="636"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="653"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="674"/>
+        <location filename="../src/core/qgsmapsettings.cpp" line="691"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="768"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="819"/>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="921"/>
@@ -41234,7 +41243,7 @@ Non-curved geometries will be retained without change.</source>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="91"/>
         <source>string representing a CRS, either an authority/id pair (e.g. &apos;EPSG:4326&apos;), a proj string prefixes by &quot;PROJ:&quot; (e.g. &apos;PROJ: +proj=...&apos;) or a WKT string prefixed by &quot;WKT:&quot; (e.g. &apos;WKT:GEOGCRS[&quot;WGS 84&quot;...]&apos;)</source>
-        <translation type="unfinished"/>
+        <translation>řetězec reprezentující SRS, buď pár autorita/id (např. &apos;EPSG:4326&apos;), řetězec proj s prefixem &quot;PROJ:&quot; (např. &apos;PROJ: +proj=...&apos;) nebo řetězec WKT s prefixem &quot;WKT:&quot; (např. &apos;WKT:GEOGSRS[&quot;WGS 84&quot;...]&apos;)</translation>
     </message>
     <message>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="92"/>
@@ -41332,7 +41341,7 @@ An optional minimum area parameter allows removing only holes which are smaller 
         <location filename="../src/analysis/processing/qgsalgorithmimportphotos.cpp" line="44"/>
         <location filename="../src/analysis/processing/qgsalgorithmpixelcentroidsfrompolygons.cpp" line="41"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointslayerfromtable.cpp" line="40"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="60"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="61"/>
         <location filename="../src/analysis/processing/qgsalgorithmpointtolayer.h" line="39"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsextent.cpp" line="44"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsinpolygons.cpp" line="43"/>
@@ -41457,8 +41466,8 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="35"/>
-        <source>invert,flip,swap,switch,latitude,longitude</source>
-        <translation>invertovat, převrátit, prohodit, přepnout, zeměpisná šířka, délka</translation>
+        <source>invert,flip,swap,switch,latitude,longitude,reverse</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="50"/>
@@ -41468,7 +41477,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="55"/>
         <source>This algorithm swaps the X and Y coordinate values in input geometries. It can be used to repair geometries which have accidentally had their latitude and longitude values reversed.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus prohodí hodnoty souřadnic X a Y ve vstupních geometriích. Lze jej použít k opravě geometrií, u kterých byly omylem přehozeny hodnoty zeměpisné šířky a délky.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmswapxy.cpp" line="61"/>
@@ -41511,7 +41520,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="234"/>
         <source>Unable to save project. It&apos;s not possible to create the destination table on the database. &lt;b&gt;%1&lt;/b&gt;: %2</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit projekt. Cílovou tabulku v databázi nelze vytvořit. &lt;b&gt;%1&lt;/b&gt;: %2</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageprojectstorage.cpp" line="265"/>
@@ -41566,13 +41575,13 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="967"/>
         <location filename="../src/providers/postgres/qgspostgresprojectstorage.cpp" line="151"/>
         <source>Unable to save project. It&apos;s not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin.</source>
-        <translation type="unfinished"/>
+        <translation>Projekt se nepodařilo uložit. Cílovou tabulku v databázi nelze vytvořit. Možná je to způsobeno oprávněními k databázi (uživatel=%1). Kontaktujte prosím administrátora databáze.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprojectstorage.cpp" line="192"/>
         <location filename="../src/providers/postgres/qgspostgresprojectstorage.cpp" line="174"/>
         <source>Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vložit nebo aktualizovat projekt (project=%1) do cílové tabulky v databázi. Možná je to způsobeno oprávněními k tabulce (uživatel=%2). Kontaktujte prosím administrátora databáze.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="31"/>
@@ -41627,7 +41636,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsymmetricaldifference.cpp" line="100"/>
         <source>Performing symmetrical difference between layers with different geometry types (INPUT has %1 and OVERLAY has %2) can lead to unexpected results</source>
-        <translation type="unfinished"/>
+        <translation>Provedení symetrického rozdílu mezi vrstvami s různými typy geometrie (INPUT má %1 a OVERLAY má %2) může vést k neočekávaným výsledkům</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtaperedbuffer.cpp" line="29"/>
@@ -41643,7 +41652,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtaperedbuffer.cpp" line="84"/>
         <source>This algorithm creates tapered buffers along line geometries, using a specified start and end buffer diameter corresponding to the buffer diameter at the start and end of the linestrings.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytváří zúžené vyrovnávací paměti podél geometrie linií s použitím zadaného počátečního a koncového průměru vyrovnávací paměti odpovídajícího průměru vyrovnávací paměti na začátku a konci řetězců čar.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtaperedbuffer.cpp" line="90"/>
@@ -41676,7 +41685,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtaperedbuffer.cpp" line="205"/>
         <source>This algorithm creates variable width buffers along lines, using the M value of the line geometries as the diameter of the buffer at each vertex.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vytvoří obalové zóny variabilní šířky podél linií, na základě M hodnot liniových geometrií jako průměr obalové zóny v každém lomovém bodě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtaperedbuffer.cpp" line="211"/>
@@ -42301,7 +42310,7 @@ By default only the m value from the first vertex of each feature is extracted, 
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2926"/>
         <source>Layer ID for an annotation layer, or &quot;main&quot; for the main annotation layer in a project.</source>
-        <translation type="unfinished"/>
+        <translation>ID vrstvy pro vrstvu anotací nebo „main“ pro hlavní vrstvu anotací v projektu.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="3003"/>
@@ -42766,7 +42775,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="175"/>
         <source>This algorithm exports a mesh layer&apos;s vertices to a point vector layer, with the dataset values on vertices as attribute values.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus exportuje vrcholy síťové vrstvy do bodové vektorové vrstvy s hodnotami datové sady na vrcholech jako hodnotami atributů.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="190"/>
@@ -42875,7 +42884,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="401"/>
         <source>This algorithm exports a mesh layer&apos;s faces to a polygon vector layer, with the dataset values on faces as attribute values.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus exportuje plochy síťové vrstvy do vektorové vrstvy polygonu, přičemž hodnoty datové sady na ploškách jsou uvedeny jako hodnoty atributů.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="416"/>
@@ -42885,7 +42894,7 @@ Any NoData pixels are skipped in the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="437"/>
         <source>This algorithm exports a mesh layer&apos;s edges to a line vector layer, with the dataset values on edges as attribute values.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus exportuje hrany síťové vrstvy do čárové vektorové vrstvy, přičemž hodnoty datové sady na hranách jsou uvedeny jako hodnoty atributů.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="452"/>
@@ -43009,7 +43018,7 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1009"/>
         <source>Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Seznam hodnot k exportu oddělených čárkami. Pokud je vyplněno, nastavení přírůstku, minima a maxima se ignorují.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1015"/>
@@ -43044,7 +43053,7 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1074"/>
         <source>Invalid minimum, maximum and interval values, difference between minimum and maximum must be greater or equal than interval</source>
-        <translation type="unfinished"/>
+        <translation>Neplatné minimální, maximální a intervalové hodnoty, rozdíl mezi minimem a maximem musí být větší nebo roven intervalu</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1119"/>
@@ -43083,7 +43092,8 @@ For data on volume (3D stacked dataset values), the exported dataset values are 
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1263"/>
         <source>This algorithm extracts mesh's dataset values from line contained in a vector layer.
 Each line is discretized with a resolution distance parameter for extraction of values on its vertices.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus extrahuje hodnoty datové sady sítě z čáry obsažené ve vektorové vrstvě.
+Každá čára je diskretizována s parametrem rozlišovací vzdálenosti pro extrakci hodnot na jejích vrcholech.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportmesh.cpp" line="1269"/>
@@ -43274,7 +43284,7 @@ If the time step is kept to its default value (0 hours), the time step used is t
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnetworkanalysisbase.cpp" line="135"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="227"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="244"/>
         <source>Loading points…</source>
         <translation>Načítám body…</translation>
     </message>
@@ -44511,7 +44521,7 @@ If either the source raster layer or the zone raster layer value is NoData for a
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterstatistics.cpp" line="50"/>
         <source>This algorithm computes basic statistics from the values in a given band of the raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává základní statistiky z hodnot v daném pásmu rastrové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbasicstatistics.cpp" line="70"/>
@@ -44799,7 +44809,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="162"/>
         <source>Creates a style database by extracting all symbols, color ramps, text formats and label settings from a QGIS project.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří databázi stylů extrakcí všech symbolů, barevných škál, textových formátů a nastavení popisků z projektu QGIS.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsprojectstylealgorithms.cpp" line="206"/>
@@ -44881,7 +44891,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="124"/>
         <source>The north arrow “%1” is not linked to a map item. The arrow orientation may be misleading.</source>
-        <translation type="unfinished"/>
+        <translation>Severní šipka „%1“ není propojena s položkou mapy. Orientace šipky může být zavádějící.</translation>
     </message>
     <message>
         <location filename="../src/gui/layout/qgslayoutvaliditychecks.cpp" line="177"/>
@@ -45488,7 +45498,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <translation>Widget pro interakci s binárními (BLOB) poli.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="964"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1039"/>
         <source>ASF label %1</source>
         <translation>ASF štítek %1</translation>
     </message>
@@ -45805,7 +45815,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="272"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="480"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterminmax.cpp" line="53"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="508"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="37"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="243"/>
         <source>Output</source>
@@ -45828,7 +45838,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="152"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="518"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="519"/>
         <source>Failed to create MBTiles file %1</source>
         <translation type="unfinished"/>
     </message>
@@ -45890,12 +45900,12 @@ The export can be filtered to only bookmarks belonging to the current project, t
         <translation>Pole jména</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="35"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="36"/>
         <source>Points to path</source>
         <translation>Body na trasu</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="40"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="41"/>
         <source>This algorithm takes a point layer and connects its features to create a new line layer.
 
 An attribute or expression may be specified to define the order the points should be connected. If no order expression is specified, the feature ID is used.
@@ -45906,83 +45916,93 @@ An attribute or expression can be selected to group points having the same value
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="50"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="51"/>
         <source>Takes a point layer and connects its features to create a new line layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="55"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="56"/>
         <source>create,lines,points,connect,convert,join,path</source>
         <translation>vytvořit, čáry, body, připojit, převést, spojit, cesta</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="71"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="72"/>
         <source>Create closed paths</source>
         <translation>Vytvořit uzavřené cesty</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="73"/>
         <source>Order expression</source>
         <translation>Seřadit výraz</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="74"/>
         <source>Sort text containing numbers naturally</source>
         <translation>Přirozené řazení textu obsahujícího čísla</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="74"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="75"/>
         <source>Path group expression</source>
         <translation>Výraz pro skupinu cest</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="75"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="76"/>
         <source>Paths</source>
         <translation>Cesty</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="77"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="78"/>
         <source>Directory for text output</source>
         <translation>Složka pro textový výstup</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="78"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="79"/>
         <source>Number of paths</source>
         <translation>Počet cest</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="82"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="83"/>
         <source>Order field</source>
         <translation>Pole pořadí</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="86"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="87"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="176"/>
         <source>Group field</source>
         <translation>Pole skupiny</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="91"/>
         <source>Date format (if order field is DateTime)</source>
         <translation>Formát data (pokud pole řazení je DateTime)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="212"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="174"/>
+        <source>Order by field %1 does not exist in input layer.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="199"/>
+        <source>Group field %1 does not exist in input layer.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="229"/>
         <source>Failed to create the text output directory</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="270"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="287"/>
         <source>Creating paths…</source>
         <translation>Vytvářím cesty…</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="307"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="322"/>
         <source>Skipping path with group %1 : insufficient vertices</source>
         <translation>Přeskakování cesty se skupinou %1: nedostatek vrcholů</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="329"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="344"/>
         <source>Cannot open file for writing </source>
         <translation>Nelze otevřít soubor pro zápis </translation>
     </message>
@@ -46074,7 +46094,7 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1132"/>
         <source>Are you sure you want to delete the %1 bookmark group? This will delete all bookmarks in this group.</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete smazat skupinu záložek %1? Tímto smažete všechny záložky v této skupině.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappbrowserproviders.cpp" line="1143"/>
@@ -46340,7 +46360,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaspect.cpp" line="53"/>
         <source>The final aspect raster layer contains values from 0 to 360 that express the slope direction: starting from North (0°) and continuing clockwise.</source>
-        <translation type="unfinished"/>
+        <translation>Poslední rastrová vrstva aspektů obsahuje hodnoty od 0 do 360, které vyjadřují směr sklonu: počínaje severem (0°) a pokračující ve směru hodinových ručiček.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaspect.cpp" line="59"/>
@@ -46437,7 +46457,9 @@ The name and characteristics of the attribute are defined as parameters. The new
         <source>This algorithm converts a geometry into its curved geometry equivalent.
 
 Already curved geometries will be retained without change.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus převádí geometrii na její ekvivalent zakřivené geometrie.
+
+Již zakřivené geometrie budou zachovány beze změny.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconverttocurves.cpp" line="60"/>
@@ -46501,7 +46523,7 @@ No errors will be raised if the directory already exists.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="91"/>
         <source>Could not create directory %1. Please check that you have write permissions for the specified path.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit adresář %1. Zkontrolujte, zda máte oprávnění k zápisu pro zadanou cestu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcreatedirectory.cpp" line="95"/>
@@ -46599,7 +46621,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="118"/>
         <source>Geometry type of revised layer (%1) does not match the original layer (%2). Consider using the &quot;Tolerant Match&quot; option instead.</source>
-        <translation type="unfinished"/>
+        <translation>Typ geometrie revidované vrstvy (%1) neodpovídá původní vrstvě (%2). Zvažte použití možnosti „Tolerantní shoda“.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="123"/>
@@ -46609,7 +46631,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="128"/>
         <source>CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching</source>
-        <translation type="unfinished"/>
+        <translation>SRS pro revidovanou vrstvu (%1) neodpovídá původní vrstvě (%2) - přesnost reprojekce může ovlivnit shodu geometrie</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="149"/>
@@ -46624,7 +46646,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="212"/>
         <source>A non-unique set of comparison attributes was found for one or more features without geometries - results may be misleading (features %1 and %2)</source>
-        <translation type="unfinished"/>
+        <translation>Pro jeden nebo více prvků bez geometrií byla nalezena nejedinečná sada atributů pro porovnání – výsledky mohou být zavádějící (prvky %1 a %2)</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmdetectdatasetchanges.cpp" line="412"/>
@@ -46884,7 +46906,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="67"/>
         <source>This algorithm filters features by their geometry type. Incoming features will be directed to different outputs based on whether they have a point, line or polygon geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus filtruje prvky podle typu jejich geometrie. Příchozí prvky budou směrovány do různých výstupů na základě toho, zda mají bodovou, liniovou nebo polygonovou geometrii.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="73"/>
@@ -46915,7 +46937,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="270"/>
         <source>This algorithm filters layer by their type. Incoming layers will be directed to different outputs based on whether they are a vector or raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus filtruje vrstvy podle jejich typu. Příchozí vrstvy budou směrovány na různé výstupy podle toho, zda se jedná o vektorovou nebo rastrovou vrstvu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfilterbygeometry.cpp" line="288"/>
@@ -46940,7 +46962,7 @@ The algorithm outputs three layers, one containing all features which are consid
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="57"/>
         <source>This algorithm flattens a relationship for a vector layer, exporting a single layer containing one master feature per related feature. This master feature contains all the attributes for the related features.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus zploští vztah pro vektorovou vrstvu a exportuje jednu vrstvu obsahující jeden hlavní prvek pro každý související prvek. Tento hlavní prvek obsahuje všechny atributy pro související prvky.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="76"/>
@@ -47336,7 +47358,9 @@ Tento soubor může být otevřen v jiné aplikaci.</translation>
         <source>Trying to create the image resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o vytvoření obrázku vedl k přetečení paměti.
+
+Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="243"/>
@@ -47623,7 +47647,7 @@ Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmlinedensity.cpp" line="106"/>
         <source>Raster cells must be fully contained by the search circle. Therefore, the search radius must not be smaller than half of the pixel diagonal.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové buňky musí být zcela obsaženy v kružnici vyhledávání. Poloměr vyhledávání proto nesmí být menší než polovina úhlopříčky pixelu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="33"/>
@@ -47688,7 +47712,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="126"/>
-        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="354"/>
+        <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="369"/>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafromlayer.cpp" line="195"/>
         <location filename="../src/analysis/processing/qgsalgorithmserviceareafrompoint.cpp" line="127"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathlayertopoint.cpp" line="123"/>
@@ -47697,7 +47721,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtolayer.cpp" line="173"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="105"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="120"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4367"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4362"/>
         <source>An error occurred while calculating length</source>
         <translation type="unfinished"/>
     </message>
@@ -48226,7 +48250,10 @@ The subset is defined randomly, using a percentage or count value to define the 
 Number of missed points: %2
 Polygons with missing points: %3
 Features with empty or missing geometries: %4</source>
-        <translation type="unfinished"/>
+        <translation>Celkový počet vygenerovaných bodů: %1
+Počet chybějících bodů: %2
+Polygony s chybějícími body: %3
+Prvky s prázdnou nebo chybějící geometrií: %4</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsonlines.cpp" line="33"/>
@@ -48265,7 +48292,10 @@ Features with empty or missing geometries: %4</source>
 Number of missed points: %2
 Features with missing points:  %3
 Features with empty or missing geometries: %4</source>
-        <translation type="unfinished"/>
+        <translation>Celkový počet vygenerovaných bodů: %1
+Počet chybějících bodů: %2
+Prvky s chybějícími body: %3
+Prvky s prázdnou nebo chybějící geometrií: %4</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="238"/>
@@ -48291,7 +48321,7 @@ By default, the values will range between the minimum and maximum value of the s
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="324"/>
         <source>The chosen lower bound for random number range is greater than the upper bound. The lower bound value must be smaller than the upper bound value.</source>
-        <translation type="unfinished"/>
+        <translation>Zvolená dolní hranice pro rozsah náhodných čísel je větší než horní hranice. Hodnota dolní hranice musí být menší než hodnota horní hranice.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="333"/>
@@ -48299,13 +48329,13 @@ By default, the values will range between the minimum and maximum value of the s
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="362"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="380"/>
         <source>Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové datové sady typu %3 akceptují pouze kladné hodnoty mezi %1 a %2. Pro náhodné hodnoty zvolte prosím jiné meze.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="353"/>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="371"/>
         <source>Raster datasets of type %3 only accept values between %1 and %2. Please choose other bounds for random values.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrové datové sady typu %3 akceptují pouze hodnoty mezi %1 a %2. Pro náhodné hodnoty prosím zvolte jiné meze.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomraster.cpp" line="437"/>
@@ -48635,17 +48665,17 @@ The minimum extent entered will internally be extended to a multiple of the tile
         <translation>Chyba při vytváření GDAL výstupní vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="314"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="315"/>
         <source>Error reading tiles from the temporary image</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="324"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="325"/>
         <source>Error reading intermediate raster</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="335"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="336"/>
         <source>Error writing output raster</source>
         <translation type="unfinished"/>
     </message>
@@ -48925,7 +48955,7 @@ The algorithm preserves the data type of the input raster. Therefore byte/intege
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmroundrastervalues.cpp" line="125"/>
         <source>Input raster is of byte or integer type. The cell values cannot be rounded and will be output using the same data type.</source>
-        <translation type="unfinished"/>
+        <translation>Vstupní rastr je typu bajt nebo celé číslo. Hodnoty buněk nelze zaokrouhlovat a budou vydány s použitím stejného datového typu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmruggedness.cpp" line="31"/>
@@ -49058,7 +49088,8 @@ Optional GDAL-defined dataset and layer options can be specified. For more infor
         <location filename="../src/analysis/processing/qgsalgorithmsavelog.cpp" line="55"/>
         <source>This algorithm saves the model's execution log to a file.
 Optionally, the log can be saved in a HTML formatted version.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus ukládá protokol provádění modelu do souboru.
+Volitelně lze protokol uložit ve verzi formátovaném HTML.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavelog.cpp" line="61"/>
@@ -49294,7 +49325,7 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmslope.cpp" line="51"/>
         <source>This algorithm calculates the angle of inclination of the terrain from an input raster layer. The slope is expressed in degrees.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává úhel sklonu terénu ze vstupní rastrové vrstvy. Sklon je vyjádřen ve stupních.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmslope.cpp" line="58"/>
@@ -49314,12 +49345,12 @@ Both the encoding specified by an optional .cpg file and any encoding details pr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="41"/>
         <source>A tolerance is specified in layer units to control how close vertices need to be to the reference layer geometries before they are snapped.</source>
-        <translation type="unfinished"/>
+        <translation>Tolerance je zadána v jednotkách vrstev a řídí, jak blízko musí být vrcholy ke geometriím referenční vrstvy, než budou přichyceny.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="44"/>
         <source>Snapping occurs to both nodes and edges. Depending on the snapping behavior, either nodes or edges will be preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Přichycení probíhá jak k uzlům, tak k hranám. V závislosti na chování přichycení budou upřednostňovány buď uzly, nebo hrany.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="47"/>
@@ -49494,7 +49525,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="57"/>
         <source>Creates an index to speed up access to the features in a layer based on their spatial location. Support for spatial index creation is dependent on the layer&apos;s data provider.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří index pro urychlení přístupu k prvkům ve vrstvě na základě jejich prostorového umístění. Podpora pro vytváření prostorových indexů závisí na poskytovateli dat vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="88"/>
@@ -49562,7 +49593,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdaltile.cpp" line="70"/>
         <location filename="../src/analysis/processing/qgsalgorithmsplitvectorlayer.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmwritevectortiles.cpp" line="120"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="313"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
         <source>Output directory</source>
         <translation>Výstupní adresář</translation>
     </message>
@@ -49945,12 +49976,12 @@ The resulting layer has the same features as the input polygon layer, but with t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatistics.cpp" line="54"/>
         <source>Calculates statistics for a raster layer&apos;s values for each feature of an overlapping polygon vector layer.</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítá statistiky pro hodnoty rastrové vrstvy pro každý prvek překrývající se polygonové vektorové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatistics.cpp" line="59"/>
         <source>This algorithm calculates statistics of a raster layer for each feature of an overlapping polygon vector layer. The results will be written in place.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává statistiky rastrové vrstvy pro každý prvek překrývající se polygonové vektorové vrstvy. Výsledky budou zapsány na místě.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalminmaxpoint.cpp" line="30"/>
@@ -50002,7 +50033,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatisticsfeaturebased.cpp" line="53"/>
         <source>This algorithm calculates statistics of a raster layer for each feature of an overlapping polygon vector layer.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vypočítává statistiky rastrové vrstvy pro každý prvek překrývající se polygonové vektorové vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmzonalstatisticsfeaturebased.cpp" line="59"/>
@@ -50448,12 +50479,12 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="33"/>
         <source>Layer short name is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or underscore</source>
-        <translation type="unfinished"/>
+        <translation>Zkrácený název vrstvy není platný. Musí začínat písmenem abecedy bez diakritiky, za nímž následují libovolná alfanumerická písmena, tečka, pomlčka nebo podtržítko</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="35"/>
         <source>One or more layers or groups have the same name or short name. Both the &apos;name&apos; and &apos;short name&apos; for layers and groups must be unique</source>
-        <translation type="unfinished"/>
+        <translation>Jedna nebo více vrstev nebo skupin má stejný název nebo zkrácený název. Jak „název“, tak „zkrácený název“ vrstev a skupin musí být jedinečné</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="37"/>
@@ -50463,7 +50494,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/project/qgsprojectservervalidator.cpp" line="39"/>
         <source>The project root name (either the project short name or project title) is already used by a layer or a group</source>
-        <translation type="unfinished"/>
+        <translation>Kořenový název projektu (buď zkrácený název projektu, nebo název projektu) je již používán vrstvou nebo skupinou</translation>
     </message>
     <message>
         <location filename="../src/core/qgscolorramp.cpp" line="25"/>
@@ -50713,7 +50744,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1125"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2076"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2122"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: Vrstva stylu nemá vlastnost rozvržení, přeskakuji</translation>
     </message>
@@ -50740,10 +50771,10 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1335"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1344"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2717"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2726"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2768"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2776"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2763"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2772"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2814"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2822"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: Výrazy v interpolační funkci nejsou podporovány, přeskakuji.</translation>
     </message>
@@ -50811,131 +50842,132 @@ The created point layer will be in the same spatial reference system as the sele
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2107"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2089"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2153"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2154"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2338"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2384"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2009"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2214"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2297"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2260"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2343"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2365"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2411"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2641"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2650"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2687"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2696"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: Přeskakuji nepodporovaný typ interpolace offsetu (%2).</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2803"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2811"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2831"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2849"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2857"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2877"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: Seznamy ve funkci interpolace popisků nejsou podporovány, přeskakuji.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2882"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3748"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2928"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3794"/>
         <source>%1: Could not interpret match list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3044"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3532"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3823"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3090"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3578"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3869"/>
         <source>%1: Could not interpret step list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3128"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3174"/>
         <source>%1: Could not interpret value list</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3140"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3186"/>
         <source>%1: Cubic-bezier interpolation is not supported, linear used instead.</source>
         <translation>%1: Kubicko-bezierova interpolace není podporována, používá se lineární.</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3145"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3191"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: Přeskakování neimplementované interpolační metody %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3151"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3197"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: Přeskakování neimplementovaného interpolačního vstupu %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3180"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3226"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3200"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3246"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: Nelze analyzovat neřetězcovou barvu %2, přeskakuji</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3297"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3343"/>
         <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3332"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3398"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3452"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3378"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3444"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3498"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: Přeskakuji nepodporovaný výraz</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3555"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3601"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3587"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3594"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3604"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3633"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3640"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3650"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3872"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3918"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: Seznam hodnot spritu se nepodařilo interpretovat metodou %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3786"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3878"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3832"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3924"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3916"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3962"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: Přeskakuji nepodporovanou část výrazu</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4068"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4114"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>Neplatný typ zdroje &quot;%1&quot; pro zdroj &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4229"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4275"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>Schéma %1 není podporováno pro rastrový zdroj %2</translation>
     </message>
@@ -51140,7 +51172,8 @@ Před pokusem o odstranění algoritmu je odstraňte.</translation>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1222"/>
         <source>The selected algorithm depends on other currently non-active algorithms.
 Activate them them before trying to activate it..</source>
-        <translation type="unfinished"/>
+        <translation>Vybraný algoritmus závisí na dalších aktuálně neaktivních algoritmech.
+Před pokusem o jeho aktivaci je nejprve aktivujte.</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodeldesignerdialog.cpp" line="883"/>
@@ -51588,7 +51621,8 @@ SQL: %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrastershareddata.cpp" line="132"/>
         <source>Tile with ID (%1) could not be found in provider storage while fetching tile data from backend.
 SQL: %2</source>
-        <translation type="unfinished"/>
+        <translation>Dlaždice s ID (%1) nebyla nalezena v úložišti poskytovatele při načítání dat dlaždic z backendu.
+SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrastershareddata.cpp" line="204"/>
@@ -51674,17 +51708,17 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/wfs/qgsbackgroundcachedshareddata.cpp" line="747"/>
         <source>Layer extent reported by the server is not correct. You may need to zoom again on layer while features are being downloaded</source>
-        <translation type="unfinished"/>
+        <translation>Rozsah vrstvy hlášený serverem není správný. Během stahování prvků bude možná nutné vrstvu znovu přiblížit.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgsbackgroundcachedshareddata.cpp" line="776"/>
         <source>Download of features for layer %1 failed or partially failed: %2. You may attempt reloading the layer with F5</source>
-        <translation type="unfinished"/>
+        <translation>Stahování prvků pro vrstvu %1 selhalo nebo selhalo částečně: %2. Můžete se pokusit vrstvu znovu načíst stisknutím klávesy F5</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgsbackgroundcachedshareddata.cpp" line="802"/>
         <source>Layer extent reported by the server is not correct. You may need to zoom on layer and then zoom out to see all features</source>
-        <translation type="unfinished"/>
+        <translation>Rozsah vrstvy hlášený serverem není správný. Pro zobrazení všech prvků bude pravděpodobně nutné vrstvu přiblížit a poté ji oddálit.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgsbackgroundcachedshareddata.cpp" line="853"/>
@@ -51924,7 +51958,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmbatchnominatimgeocode.cpp" line="71"/>
         <source>The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. It is provided under the ODbL license which requires to share alike. Visit https://nominatim.org/ to learn more.</source>
-        <translation type="unfinished"/>
+        <translation>Data geokódéru Nominatim jsou zpřístupněna Nadací OpenStreetMap a jejími přispěvateli. Jsou poskytována pod licencí ODbL, která vyžaduje sdílení za stejných podmínek. Více informací naleznete na adrese https://nominatim.org/.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="34"/>
@@ -51934,7 +51968,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="39"/>
         <source>This algorithm takes a vector layer and generates a new one that has the exact same content but without the selected columns.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vezme vektorovou vrstvu a vygeneruje novou, která má přesně stejný obsah, ale bez vybraných sloupců.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="44"/>
@@ -51970,7 +52004,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="172"/>
         <source>This algorithm takes a vector layer and generates a new one that retains only the selected fields. All other fields will be dropped.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus vezme vektorovou vrstvu a vygeneruje novou, která zachová pouze vybraná pole. Všechna ostatní pole budou odstraněna.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdropfields.cpp" line="177"/>
@@ -52055,7 +52089,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="83"/>
         <source>This algorithm uses the GPSBabel tool to convert GPX features from one type to another (e.g. converting all waypoint features to a route feature).</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus používá nástroj GPSBabel k převodu GPX prvků z jednoho typu na jiný (např. převod všech bodů trasy na prvek trasy).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="88"/>
@@ -52132,7 +52166,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="601"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="821"/>
         <source>Process %1 failed to start. Either %1 is missing, or you may have insufficient permissions to run the program.</source>
-        <translation type="unfinished"/>
+        <translation>Spuštění procesu %1 se nezdařilo. Buď chybí %1, nebo nemáte dostatečná oprávnění ke spuštění programu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalinformation.cpp" line="103"/>
@@ -52197,7 +52231,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="289"/>
         <source>This algorithm uses the GPSBabel tool to convert a GPS data file from a range of formats to the GPX standard format.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus používá nástroj GPSBabel k převodu datového souboru GPS z různých formátů do standardního formátu GPX.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="294"/>
@@ -52253,7 +52287,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="497"/>
         <source>This algorithm uses the GPSBabel tool to download data from a GPS device into the GPX standard format.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus využívá nástroj GPSBabel ke stahování dat z GPS zařízení do standardního formátu GPX.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="502"/>
@@ -52285,7 +52319,7 @@ The output layer will have a point geometry reflecting the geocoded location as 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="716"/>
         <source>This algorithm uses the GPSBabel tool to upload data to a GPS device from the GPX standard format.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus používá nástroj GPSBabel k nahrání dat do GPS zařízení ze standardního formátu GPX.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="721"/>
@@ -52913,22 +52947,22 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/processing/qgsprocessingcontext.cpp" line="99"/>
         <source>Feature (%1) from “%2” has invalid geometry. Please fix the geometry or change the “Invalid features filtering” option for this input or globally in Processing settings.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek (%1) z „%2“ má neplatnou geometrii. Opravte geometrii nebo změňte možnost „Filtrování neplatných prvků“ pro tento vstup nebo globálně v nastavení zpracování.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingcontext.cpp" line="101"/>
         <source>Feature (%1) has invalid geometry. Please fix the geometry or change the “Invalid features filtering” option for input layers or globally in Processing settings.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek (%1) má neplatnou geometrii. Opravte geometrii nebo změňte možnost „Filtrování neplatných prvků“ pro vstupní vrstvy nebo globálně v nastavení zpracování.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingcontext.cpp" line="113"/>
         <source>Feature (%1) from “%2” has invalid geometry and has been skipped. Please fix the geometry or change the “Invalid features filtering” option for this input or globally in Processing settings.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek (%1) z „%2“ má neplatnou geometrii a byl přeskočen. Opravte geometrii nebo změňte možnost „Filtrování neplatných prvků“ pro tento vstup nebo globálně v nastavení zpracování.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingcontext.cpp" line="115"/>
         <source>Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the “Invalid features filtering” option for input layers or globally in Processing settings.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek (%1) má neplatnou geometrii a byl přeskočen. Opravte geometrii nebo změňte možnost „Filtrování neplatných prvků“ pro vstupní vrstvy nebo globálně v nastavení zpracování.</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametermeshdataset.h" line="125"/>
@@ -53147,7 +53181,7 @@ For more details, please see the following papers:
         <translation>Opravdu chcete vymazat spojení na %1?</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="658"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="671"/>
         <source>ArcGIS REST Servers</source>
         <translation>Servery ArcGIS REST</translation>
     </message>
@@ -53172,7 +53206,7 @@ For more details, please see the following papers:
         <translation>Nebyl zadán žádný klíč pro dané zobrazení/dotaz.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="404"/>
+        <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="402"/>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="583"/>
         <location filename="../src/providers/mssql/qgsmssqlprovidergui.cpp" line="30"/>
         <source>MS SQL Server</source>
@@ -53672,12 +53706,12 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="219"/>
         <source>Airy</source>
-        <translation type="unfinished"/>
+        <translation>Vzdušný</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="221"/>
         <source>Aitoff</source>
-        <translation type="unfinished"/>
+        <translation>Aitoff</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="223"/>
@@ -53717,7 +53751,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="237"/>
         <source>Cassini</source>
-        <translation type="unfinished"/>
+        <translation>Cassini</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="239"/>
@@ -53742,7 +53776,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="247"/>
         <source>Collignon</source>
-        <translation type="unfinished"/>
+        <translation>Collignon</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="249"/>
@@ -53807,17 +53841,17 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="273"/>
         <source>Euler</source>
-        <translation type="unfinished"/>
+        <translation>Euler</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="275"/>
         <source>Fahey</source>
-        <translation type="unfinished"/>
+        <translation>Fahey</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="277"/>
         <source>Foucaut</source>
-        <translation type="unfinished"/>
+        <translation>Foucaut</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="279"/>
@@ -53847,7 +53881,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="291"/>
         <source>Gnomonic</source>
-        <translation type="unfinished"/>
+        <translation>Gnomonický</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="293"/>
@@ -53907,7 +53941,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="315"/>
         <source>Laborde</source>
-        <translation type="unfinished"/>
+        <translation>Laborde</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="317"/>
@@ -53917,17 +53951,17 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="319"/>
         <source>Lagrange</source>
-        <translation type="unfinished"/>
+        <translation>Lagrangeův</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="321"/>
         <source>Larrivee</source>
-        <translation type="unfinished"/>
+        <translation>Larrivee</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="323"/>
         <source>Laskowski</source>
-        <translation type="unfinished"/>
+        <translation>Laskowski</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="325"/>
@@ -53962,7 +53996,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="337"/>
         <source>Loximuthal</source>
-        <translation type="unfinished"/>
+        <translation>Loximuthal</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="339"/>
@@ -54017,7 +54051,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="359"/>
         <source>Mollweide</source>
-        <translation type="unfinished"/>
+        <translation>Mollweide</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="361"/>
@@ -54047,12 +54081,12 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="371"/>
         <source>Nell</source>
-        <translation type="unfinished"/>
+        <translation>Nell</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="373"/>
         <source>Nell-Hammer</source>
-        <translation type="unfinished"/>
+        <translation>Nell-Hammer</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="375"/>
@@ -54097,12 +54131,12 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="391"/>
         <source>Orthographic</source>
-        <translation type="unfinished"/>
+        <translation>Ortografický</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="393"/>
         <source>Patterson</source>
-        <translation type="unfinished"/>
+        <translation>Patterson</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="395"/>
@@ -54172,7 +54206,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="421"/>
         <source>Robinson</source>
-        <translation type="unfinished"/>
+        <translation>Robinson</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="423"/>
@@ -54202,7 +54236,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="433"/>
         <source>Stereographic</source>
-        <translation type="unfinished"/>
+        <translation>Stereografický</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="435"/>
@@ -54222,12 +54256,12 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="441"/>
         <source>Times</source>
-        <translation type="unfinished"/>
+        <translation>Časy</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="443"/>
         <source>Tissot</source>
-        <translation type="unfinished"/>
+        <translation>Tissot</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="445"/>
@@ -54347,7 +54381,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="491"/>
         <source>Gauss-Schreiber</source>
-        <translation type="unfinished"/>
+        <translation>Gauss-Schreiber</translation>
     </message>
     <message>
         <location filename="../src/core/providers/copc/qgscopcprovider.cpp" line="220"/>
@@ -54569,7 +54603,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="477"/>
         <source>Download with &quot;Protocol&quot; source type has failed, do you want to try the &quot;File&quot; source type?</source>
-        <translation type="unfinished"/>
+        <translation>Stahování s typem zdroje &quot;Protokol&quot; selhalo, chcete vyzkoušet typ zdroje &quot;Soubor&quot;?</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="566"/>
@@ -54619,7 +54653,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1670"/>
         <source>layer &apos;%1&apos; requires layer &apos;%2&apos; to be loaded but &apos;%2&apos; could not be found, please load it manually if possible.</source>
-        <translation type="unfinished"/>
+        <translation>vrstva &apos;%1&apos; vyžaduje načtení vrstvy &apos;%2&apos;, ale &apos;%2&apos; nebylo možné najít, pokud je to možné, načtěte ji ručně.</translation>
     </message>
     <message>
         <location filename="../src/app/layers/qgsapplayerhandling.cpp" line="1671"/>
@@ -54797,12 +54831,12 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="206"/>
         <source>Unable to save layer metadata. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation type="unfinished"/>
+        <translation>Nemohu uložit metadata vrstvy: Není možné vytvořit cílovou tabulku v databázi. Může to být kvůli oprávnění tabulky (uživatel=%1). Kontaktujte prosím svého správce databáze</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="333"/>
         <source>Unable to save layer metadata. It&apos;s not possible to insert a new record into the qgis_layer_metadata table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit metadata vrstvy. Není možné vložit nový záznam do tabulky qgis_layer_metadata. Možná je to způsobeno oprávněními k tabulce (uživatel=%1). Kontaktujte prosím správce databáze.</translation>
     </message>
     <message>
         <location filename="../src/analysis/interpolation/qgsgridfilewriter.cpp" line="95"/>
@@ -54960,7 +54994,7 @@ Only the first 999 classes have been generated.</source>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalexportvector.cpp" line="52"/>
         <source>This algorithm exports point cloud data to a vector layer with 3D points (a GeoPackage), optionally with extra attributes.</source>
-        <translation type="unfinished"/>
+        <translation>Tento algoritmus exportuje data mračna bodů do vektorové vrstvy s 3D body (GeoPackage), volitelně s dalšími atributy.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalexportvector.cpp" line="57"/>
@@ -56187,12 +56221,12 @@ Depending on the geometry type of the vector layer, the attributes added to the 
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="163"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="166"/>
         <source>No project is available in this context</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="194"/>
+        <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="197"/>
         <source>Could not transform feature to project&apos;s CRS: %1</source>
         <translation type="unfinished"/>
     </message>
@@ -57548,7 +57582,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/maprenderer/qgsmaprendererjob.cpp" line="1570"/>
         <source>(labeling)</source>
-        <translation type="unfinished"/>
+        <translation>(tvorba popisků)</translation>
     </message>
     <message>
         <location filename="../src/core/mesh/qgsmeshlayerrenderer.cpp" line="427"/>
@@ -57702,7 +57736,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/providers/gdal/qgsgdalclouddataitems.cpp" line="228"/>
         <source>Cloud</source>
-        <translation type="unfinished"/>
+        <translation>Mrak</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsdataitems.cpp" line="291"/>
@@ -57729,12 +57763,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="303"/>
         <source>Things</source>
-        <translation type="unfinished"/>
+        <translation>Věci</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="303"/>
         <source>Thing</source>
-        <translation type="unfinished"/>
+        <translation>Věc</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="305"/>
@@ -57754,12 +57788,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="309"/>
         <source>Datastreams</source>
-        <translation type="unfinished"/>
+        <translation>Datové toky</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="309"/>
         <source>Datastream</source>
-        <translation type="unfinished"/>
+        <translation>Datový tok</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="311"/>
@@ -57784,12 +57818,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="315"/>
         <source>Observations</source>
-        <translation type="unfinished"/>
+        <translation>Pozorování</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="315"/>
         <source>Observation</source>
-        <translation type="unfinished"/>
+        <translation>Pozorování</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="317"/>
@@ -57804,12 +57838,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="319"/>
         <source>MultiDatastreams</source>
-        <translation type="unfinished"/>
+        <translation>Více datových proudů</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="319"/>
         <source>MultiDatastream</source>
-        <translation type="unfinished"/>
+        <translation>Více datový proud</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="620"/>
@@ -57959,7 +57993,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <location filename="../src/core/stac/qgsstacdataitems.cpp" line="630"/>
         <location filename="../src/gui/stac/qgsstacsourceselectprovider.cpp" line="32"/>
         <source>STAC</source>
-        <translation type="unfinished"/>
+        <translation>STAC</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgsrenderer.cpp" line="369"/>
@@ -58092,12 +58126,12 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/tiledscene/qgstiledscenerendererregistry.cpp" line="26"/>
         <source>Textured</source>
-        <translation type="unfinished"/>
+        <translation>Texturované</translation>
     </message>
     <message>
         <location filename="../src/core/tiledscene/qgstiledscenerendererregistry.cpp" line="29"/>
         <source>Wireframe</source>
-        <translation type="unfinished"/>
+        <translation>Drátěný model</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="268"/>
@@ -58821,7 +58855,7 @@ Kontaktujte prosím vývojáře.
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8649"/>
         <source>Some of the &lt;b&gt;%n&lt;/b&gt; selected feature(s) about to be deleted &lt;b&gt;are outside of the current map view&lt;/b&gt;. Would you still like to continue?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>&lt;b&gt;%n&lt;/b&gt; vybraný prvek &lt;b&gt;je mimo aktuální mapové okno&lt;/b&gt;. Opravdu chcete pokračovat?</numerusform><numerusform>Některé ze &lt;b&gt;%n&lt;/b&gt; vybraných prvků &lt;b&gt;jsou mimo aktuální mapové okno&lt;/b&gt;. Opravdu chcete pokračovat?</numerusform><numerusform>Některé z &lt;b&gt;%n&lt;/b&gt; vybraných prvků &lt;b&gt;jsou mimo aktuální mapové okno&lt;/b&gt;. Opravdu chcete pokračovat?</numerusform><numerusform>Některé z &lt;b&gt;%n&lt;/b&gt; vybraných prvků &lt;b&gt;jsou mimo aktuální mapové okno&lt;/b&gt;. Opravdu chcete pokračovat?</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8650"/>
@@ -58890,7 +58924,8 @@ Kontaktujte prosím vývojáře.
         <location filename="../src/app/qgisapp.cpp" line="10748"/>
         <source>Starting editing the frame of this mesh layer will remove all dataset groups.
 Alternatively, you can create a new mesh layer from that one.</source>
-        <translation type="unfinished"/>
+        <translation>Zahájením úpravy rámečku této síťové vrstvy odstraníte všechny skupiny datových sad.
+Případně můžete z této síťové vrstvy vytvořit novou.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10752"/>
@@ -59996,7 +60031,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8685"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>&lt;b&gt;%n&lt;/b&gt; vybraný prvek bude vymazán. Přejete si pokračovat?</numerusform><numerusform>&lt;b&gt;%n&lt;/b&gt; vybrané prvky budou vymazány. Přejete si pokračovat?</numerusform><numerusform>&lt;b&gt;%n&lt;/b&gt; vybraných prvků bude vymazáno. Přejete si pokračovat?</numerusform><numerusform>&lt;b&gt;%n&lt;/b&gt; vybraných prvků bude vymazáno. Přejete si pokračovat?</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8705"/>
@@ -60400,7 +60435,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6897"/>
         <source>Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?</source>
-        <translation type="unfinished"/>
+        <translation>Spuštění skriptu z nedůvěryhodného zdroje může poškodit váš počítač. Pokračujte pouze v případě, že zdroji skriptu důvěřujete. Chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7617"/>
@@ -60577,7 +60612,10 @@ Smazat tyto prvky?</numerusform></translation>
 Some errors can be fixed by removing invalid elements.
 
 Do you want to try to fix errors before starting editing?</source>
-        <translation type="unfinished"/>
+        <translation>Alespoň jedna topologická chyba v síti brání zahájení úprav.
+Některé chyby lze opravit odstraněním neplatných prvků.
+
+Chcete se pokusit opravit chyby před zahájením úprav?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="10841"/>
@@ -60660,7 +60698,7 @@ Chyby: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="11410"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
-        <translation type="unfinished"/>
+        <translation>Filtrovaná vrstva nevrátila žádné řádky. Poskytovatel rastrů PostgreSQL vyžaduje alespoň jeden řádek, aby mohl extrahovat informace potřebné k vytvoření platné vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="11440"/>
@@ -60893,7 +60931,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13612"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
-        <translation type="unfinished"/>
+        <translation>Chcete uložit změny v tabulkách atributů (pásma: %1) přidružených k vrstvě &apos;%2&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13623"/>
@@ -60909,7 +60947,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
-        <translation type="unfinished"/>
+        <translation>Při ukládání tabulky atributů rastru pro vrstvu &apos;%1&apos; do souboru VAT.DBF &apos;%2&apos; došlo k chybě: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="13679"/>
@@ -61010,7 +61048,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="16144"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
-        <translation type="unfinished"/>
+        <translation>Tento soubor projektu byl vytvořen novější verzí QGIS (%1) a nebylo možné jej kompletně načíst.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="16370"/>
@@ -61207,7 +61245,7 @@ Zrušte tyto úkoly a zkuste to znovu.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="16132"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
-        <translation type="unfinished"/>
+        <translation>Tento soubor projektu byl uložen programem QGIS verze %1. Při ukládání tohoto souboru projektu jej QGIS aktualizuje na verzi %2, což ho může znemožnit použití se staršími verzemi QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="16137"/>
@@ -62645,7 +62683,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/core/actions/qgsactionscoperegistry.cpp" line="39"/>
         <source>Available only when connected to a form action button in a drag and drop attribute form.</source>
-        <translation type="unfinished"/>
+        <translation>Dostupné pouze při připojení k tlačítku akce formuláře ve formuláři s atributem přetažení.</translation>
     </message>
     <message>
         <location filename="../src/core/actions/qgsactionscoperegistry.cpp" line="37"/>
@@ -63226,12 +63264,12 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1232"/>
         <source>Perpendicular mode cannot be used on geographic coordinates. Change the coordinates system in the project properties.</source>
-        <translation type="unfinished"/>
+        <translation>Kolmý režim nelze použít na zeměpisných souřadnicích. Změňte souřadnicový systém ve vlastnostech projektu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1233"/>
         <source>Parallel mode cannot be used on geographic coordinates. Change the coordinates system in the project properties.</source>
-        <translation type="unfinished"/>
+        <translation>Paralelní režim nelze použít na zeměpisných souřadnicích. Změňte souřadnicový systém ve vlastnostech projektu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="1237"/>
@@ -63252,12 +63290,12 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2128"/>
         <source>Angle constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties.</source>
-        <translation type="unfinished"/>
+        <translation>Úhlové omezení nelze použít na zeměpisných souřadnicích. Změňte souřadnicový systém ve vlastnostech projektu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2129"/>
         <source>Distance constraint cannot be used on geographic coordinates. Change the coordinates system in the project properties.</source>
-        <translation type="unfinished"/>
+        <translation>Omezení vzdálenosti nelze použít pro zeměpisné souřadnice. Změňte souřadnicový systém ve vlastnostech projektu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2131"/>
@@ -63446,74 +63484,74 @@ Smazat tyto prvky?</numerusform></translation>
 <context>
     <name>QgsAfsProvider</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="54"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="56"/>
         <source>Retrieve service definition</source>
         <translation>Načíst definici služby</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="60"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="62"/>
         <source>getLayerInfo failed</source>
         <translation>getLayerInfo selhalo</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="116"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="119"/>
         <source>Could not retrieve layer extent</source>
         <translation>Nelze získat rozsah vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="122"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="125"/>
         <source>Could not parse spatial reference</source>
         <translation>Nelze parsovat prostorovou referenci</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="240"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="248"/>
         <source>Failed to determine geometry type</source>
         <translation>Selhalo určení typu geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="281"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="289"/>
         <source>Retrieve object IDs</source>
         <translation>Získat ID objektů</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="361"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="369"/>
         <source>Error while deleting features: %1</source>
         <translation>Chyba během mazání atributů: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="395"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="403"/>
         <source>Error while adding features: %1</source>
         <translation>Chyba při přidávání prvků: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="444"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="481"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="538"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="452"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="489"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="546"/>
         <source>Error while updating features: %1</source>
         <translation>Chyba při aktualizaci prvků: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="557"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="565"/>
         <source>Error while adding fields: %1</source>
         <translation>Chyba při přidávání polí: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="574"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="582"/>
         <source>Error while deleting fields: %1</source>
         <translation>Chyba při mazání polí: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="596"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="604"/>
         <source>Error while creating attribute index: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="700"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="708"/>
         <source>SQL 92 WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="308"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="316"/>
         <source>Source</source>
         <translation>Zdroj</translation>
     </message>
@@ -63673,7 +63711,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="25"/>
         <source>The radius of the neighborhood: bigger values mean objects further away will add to the occlusion.</source>
-        <translation type="unfinished"/>
+        <translation>Poloměr okolí: vyšší hodnoty znamenají, že vzdálenější objekty přispějí k zakrytí.</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="26"/>
@@ -64825,12 +64863,12 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="717"/>
         <source>One or more selected files exist in the current project. Are you sure you want to delete these files?</source>
-        <translation type="unfinished"/>
+        <translation>V aktuálním projektu existuje jeden nebo více vybraných souborů. Opravdu chcete tyto soubory smazat?</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="717"/>
         <source>The file %1 exists in the current project. Are you sure you want to delete it?</source>
-        <translation type="unfinished"/>
+        <translation>Soubor %1 existuje v aktuálním projektu. Opravdu ho chcete smazat?</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="719"/>
@@ -64876,7 +64914,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="868"/>
         <source>The file %1 exists in the current project. Are you sure you want to rename it?</source>
-        <translation type="unfinished"/>
+        <translation>Soubor %1 existuje v aktuálním projektu. Opravdu ho chcete přejmenovat?</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="870"/>
@@ -64943,7 +64981,7 @@ Smazat tyto prvky?</numerusform></translation>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="289"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type.</source>
-        <translation type="unfinished"/>
+        <translation>Prvek nelze přidat, protože odstranění polygonových průsečíků by změnilo typ geometrie.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsappgpsdigitizing.cpp" line="294"/>
@@ -65485,7 +65523,7 @@ Chyby: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="89"/>
         <source>&lt;p&gt;No transform is available between &lt;i&gt;%1&lt;/i&gt; and &lt;i&gt;%2&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;This transformation requires the grid file “%3”, which is not available for use on the system.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Mezi &lt;i&gt;%1&lt;/i&gt; a &lt;i&gt;%2&lt;/i&gt; není k dispozici žádná transformace.&lt;/p&gt;&lt;p&gt;Tato transformace vyžaduje soubor mřížky „%3“, který není v systému k dispozici pro použití.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="95"/>
@@ -65523,7 +65561,7 @@ Chyby: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="149"/>
         <source>&lt;p&gt;Current transform “&lt;i&gt;%1&lt;/i&gt;” has an accuracy of %2 meters, while the preferred transformation “&lt;i&gt;%3&lt;/i&gt;” has accuracy %4 meters.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Proudová transformace „&lt;i&gt;%1&lt;/i&gt;“ má přesnost %2 metry, zatímco preferovaná transformace „&lt;i&gt;%3&lt;/i&gt;“ má přesnost %4 metry.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="151"/>
@@ -65553,7 +65591,7 @@ Chyby: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="233"/>
         <source>&lt;p&gt;This project specifies a preset transform between &lt;i&gt;%1&lt;/i&gt; and &lt;i&gt;%2&lt;/i&gt;, which is not available for use on the system.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Tento projekt určuje přednastavenou transformaci mezi &lt;i&gt;%1&lt;/i&gt; a &lt;i&gt;%2&lt;/i&gt;, která není v systému k dispozici pro použití.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="235"/>
@@ -65588,7 +65626,7 @@ Chyby: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="285"/>
         <source>&lt;p&gt;Transformation between %1 and %2 is not currently supported.&lt;/p&gt;&lt;p&gt;&lt;b&gt;The results will be unpredictable and should not be used for high accuracy work.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Transformace mezi %1 a %2 není momentálně podporována.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Výsledky budou nepředvídatelné a neměly by být používány pro práci s vysokou přesností.&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="293"/>
@@ -65942,7 +65980,7 @@ Chyby: %2
 <context>
     <name>QgsArcGisFeatureServiceItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="485"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="497"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -65950,7 +65988,7 @@ Chyby: %2
 <context>
     <name>QgsArcGisMapServiceItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="534"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="547"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -65958,7 +65996,7 @@ Chyby: %2
 <context>
     <name>QgsArcGisPortalGroupItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="325"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="334"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -65966,12 +66004,12 @@ Chyby: %2
 <context>
     <name>QgsArcGisPortalGroupsItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="248"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="255"/>
         <source>Groups</source>
         <translation>Skupiny</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="272"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="280"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -65979,7 +66017,7 @@ Chyby: %2
 <context>
     <name>QgsArcGisRestConnectionItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="215"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="222"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -66066,7 +66104,7 @@ Chyby: %2
 <context>
     <name>QgsArcGisRestFolderItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="434"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="445"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -66074,12 +66112,12 @@ Chyby: %2
 <context>
     <name>QgsArcGisRestServicesItem</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="362"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="371"/>
         <source>Services</source>
         <translation>Služby</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="381"/>
+        <location filename="../src/providers/arcgisrest/qgsarcgisrestdataitems.cpp" line="391"/>
         <source>Connection failed: %1</source>
         <translation>Připojení selhalo: %1</translation>
     </message>
@@ -67269,7 +67307,7 @@ Clicking the button will let you select an application to use as the action</sou
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="467"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="466"/>
         <source>Update All</source>
         <translation>Aktualizovat vše</translation>
     </message>
@@ -67384,7 +67422,7 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Podmíněné formátování</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="311"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="310"/>
         <source>Dock Attribute Table</source>
         <translation>Atributová tabulka jako panel</translation>
     </message>
@@ -67415,116 +67453,116 @@ Clicking the button will let you select an application to use as the action</sou
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
         <source>An error occurred while trying to update the field %1</source>
         <translation>Při pokusu o aktualizaci pole %1 došlo k chybě</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
         <source>An error occurred while evaluating the calculation string:
 %1</source>
         <translation>Při hodnocení výpočetního řetězce došlo k chybě:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="530"/>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="614"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="529"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="613"/>
         <source>Update Attributes</source>
         <translation>Aktualizace atributů</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="459"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="458"/>
         <source> %1 — Features Total: %L2, Filtered: %L3, Selected: %L4</source>
         <translation> %1 — Prvků celkem: %L2, filtrováno: %L3, vybráno: %L4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
         <source>Failed to add field &apos;%1&apos; of type &apos;%2&apos;. Is the field name unique?</source>
         <translation>Selhalo přidání pole &apos;%1&apos; typu &apos;%2&apos;. Je název pole jedinečný?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="469"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="468"/>
         <source>Update Filtered</source>
         <translation>Aktualizovat filtrované</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="433"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="432"/>
         <source>Multiedit is not supported when using custom UI forms</source>
         <translation>Multiedit není podporován při použití vlastních formulářů UI</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="435"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="434"/>
         <source>Search is not supported when using custom UI forms</source>
         <translation>Vyhledávání není podporováno při použití vlastních formulářů UI</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="572"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="571"/>
         <source>Calculating field</source>
         <translation>Výpočet pole</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="742"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="741"/>
         <source>Feature Added</source>
         <translation>Prvek přidán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="960"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="959"/>
         <source>Attribute added</source>
         <translation>Atribut přidán</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="973"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="972"/>
         <source>Add Field</source>
         <translation>Přidat pole</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1001"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1000"/>
         <source>Deleted attribute</source>
         <translation>Smazán atribut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>Atribut(y) nemohl(y) být smazán(y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1011"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1010"/>
         <source>Attribute error</source>
         <translation>Chyba atributu</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1062"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1061"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>%n prvek ve vrstvě &quot;%1&quot;, </numerusform><numerusform>%n prvky ve vrstvě &quot;%1&quot;, </numerusform><numerusform>%n prvků ve vrstvě &quot;%1&quot;, </numerusform><numerusform>%n prvků ve vrstvě &quot;%1&quot;, </numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation><numerusform>Odstranit alespoň %n prvek z jiné vrstvy</numerusform><numerusform>Odstranit alespoň %n prvky z jiných vrstev</numerusform><numerusform>Odstranit alespoň %n prvků z jiných vrstev</numerusform><numerusform>Odstranit alespoň %n prvků z jiné vrstvy</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1066"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1065"/>
         <source>Delete of feature on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1084"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1083"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n prvek odstraněn: %1</numerusform><numerusform>%n prvky odstraněny: %1</numerusform><numerusform>%n prvků odstraněno: %1</numerusform><numerusform>%n prvků odstraněno: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1081"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1080"/>
         <source>%1 on layer %2. </source>
         <translation>%1 ve vrstvě %2. </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="1092"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="1091"/>
         <source>Delete Feature</source>
         <translation>Smazat prvek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="711"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="710"/>
         <source>Geometryless feature added</source>
         <translation>Prvek bez geometrie přidán</translation>
     </message>
@@ -67683,7 +67721,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
         <source>&lt;p&gt;Enforcing the not null constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Vynucení omezení not null zabrání zapsání prvku, které toto omezení nesplňují.&lt;/p&gt;&lt;p&gt;Neinformovaná omezení zobrazí uživatelům varování, ale nezabrání zapsání prvku.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
@@ -67698,7 +67736,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
         <source>&lt;p&gt;Enforcing the expression constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Vynucení omezení výrazu zabrání zapsání prvku, které toto omezení nesplňují.&lt;/p&gt;&lt;p&gt;Neinformovaná omezení zobrazí uživatelům varování, ale nezabrání zapsání prvku.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
@@ -67857,7 +67895,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
         <source>Using fields in a default value expression only works if &quot;Apply default value on update&quot; is checked.</source>
-        <translation type="unfinished"/>
+        <translation>Použití polí ve výrazu výchozí hodnoty funguje pouze v případě, že je zaškrtnuto políčko „Použít výchozí hodnotu při aktualizaci“.</translation>
     </message>
     <message>
         <location filename="../src/ui/attributeformconfig/qgsattributetypeedit.ui"/>
@@ -68565,7 +68603,9 @@ def my_form_open(dialog, layer, feature):
         <source>Are you sure you want to remove the selected Certificate Authority from the database?
 
 Operation can NOT be undone!</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit vybranou certifikační autoritu z databáze?
+
+Operaci NELZE vrátit zpět!</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthauthoritieseditor.cpp" line="552"/>
@@ -70017,7 +70057,9 @@ Error: %2</source>
         <source>Are you sure you want to remove the selected certificate identity from the database?
 
 Operation can NOT be undone!</source>
-        <translation type="unfinished"/>
+        <translation>Opravdu chcete odstranit vybranou identitu certifikátu z databáze?
+
+Operaci NELZE vrátit zpět!</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthidentitieseditor.ui"/>
@@ -71100,7 +71142,7 @@ Popis: %3</translation>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
         <source>If set, the specified header key will be used instead of the default HTTP Authorization header when sending authenticated requests</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je nastaveno, bude při odesílání ověřených požadavků použit zadaný klíč záhlaví místo výchozí záhlaví HTTP Authorization</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
@@ -72996,7 +73038,7 @@ Server response: %1</source>
     <message>
         <location filename="../src/ui/qgscalloutpanelwidget.ui"/>
         <source>Callout</source>
-        <translation type="unfinished"/>
+        <translation>Popisek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscalloutpanelwidget.ui"/>
@@ -73292,7 +73334,7 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui"/>
         <source>The checked and unchecked representation state are the raw values stored in the layer when the checkbox is checked or unchecked.</source>
-        <translation type="unfinished"/>
+        <translation>Zaškrtnutý a nezaškrtnutý stav reprezentace jsou nezpracované hodnoty uložené ve vrstvě, když je políčko zaškrtnuté nebo nezaškrtnuté.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgscheckboxconfigdlgbase.ui"/>
@@ -75470,7 +75512,10 @@ Záporná místa na mocniny 10</translation>
 used in the case that the specified coordinate operation fails
 (such as when coordinates from outside a required grid shift
 file are transformed).</source>
-        <translation type="unfinished"/>
+        <translation>Nastavuje, zda lze použít „přibližné“ záložní transformace
+v případě, že selže zadaná operace se souřadnicemi
+(například při transformaci souřadnic z vnějšku požadovaného
+souboru s posunem mřížky).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscoordinateoperationwidgetbase.ui"/>
@@ -75504,7 +75549,7 @@ file are transformed).</source>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="290"/>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="371"/>
         <source>User-defined</source>
-        <translation type="unfinished"/>
+        <translation>Definováno uživatelem</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinatereferencesystemmodel.cpp" line="388"/>
@@ -75825,7 +75870,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="40"/>
         <source>Oh dear! Something unexpected happened and QGIS ended without being able to handle the error gracefully.&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Jé, panečku! Stalo se něco neočekávaného a QGIS skončil, aniž by byl schopen chybu řádně ošetřit.&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="42"/>
@@ -75845,7 +75890,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="74"/>
         <source>This is a third party custom script, and this issue should be reported to the author of that script.</source>
-        <translation type="unfinished"/>
+        <translation>Toto je vlastní skript třetí strany a tento problém by měl být nahlášen autorovi daného skriptu.</translation>
     </message>
     <message>
         <location filename="../src/crashhandler/qgscrashdialog.cpp" line="80"/>
@@ -75922,7 +75967,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="53"/>
         <source>The data provider supports attribute table storage but some drivers do not support &apos;thematic&apos; types, for this reason the option is disabled.</source>
-        <translation type="unfinished"/>
+        <translation>Poskytovatel dat podporuje ukládání tabulek atributů, ale některé ovladače nepodporují „tematické“ typy, z tohoto důvodu je tato možnost zakázána.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgscreaterasterattributetabledialog.cpp" line="57"/>
@@ -75991,7 +76036,7 @@ a aktuální soubor je [%3]</translation>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table into a sidecar VAT.DBF file.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The resulting file will not be associated with any particular band.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tato metoda uloží tabulku atributů do vedlejšího souboru VAT.DBF.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Výsledný soubor nebude spojen s žádným konkrétním pásmem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgscreaterasterattributetabledialogbase.ui"/>
@@ -76515,14 +76560,18 @@ The default actions are activated in the Action section of the layer properties.
         <source>Cannot save '%1' — this Proj string definition is equivalent to %2.
 
 Try changing the CRS definition to a WKT format instead.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit &apos;%1&apos; – tato definice řetězce projektu je ekvivalentní %2.
+
+Zkuste místo toho změnit definici SRS na formát WKT.</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgscustomprojectionoptions.cpp" line="320"/>
         <source>Cannot save '%1' — the definition is equivalent to %2.
 
 (Try removing &quot;%3&quot; from the WKT definition.)</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit &apos;%1&apos; – definice je ekvivalentní %2.
+
+(Zkuste z definice WKT odstranit &quot;%3&quot;.)</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgscustomprojectionoptions.cpp" line="324"/>
@@ -76565,7 +76614,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui"/>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to a WKT or Proj string format for specifying a CRS.</source>
-        <translation type="unfinished"/>
+        <translation>Zde si můžete definovat vlastní souřadnicový referenční systém (SRS). Definice musí odpovídat formátu řetězce WKT nebo Proj pro zadání SRS.</translation>
     </message>
 </context>
 <context>
@@ -77117,7 +77166,7 @@ Try changing the CRS definition to a WKT format instead.</source>
     <message>
         <location filename="../src/app/devtools/querylogger/qgsqueryloggerpanelwidget.cpp" line="191"/>
         <source>Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?</source>
-        <translation type="unfinished"/>
+        <translation>Upozornění na zabezpečení: protokoly dotazů mohou obsahovat citlivá data včetně uživatelských jmen nebo hesel. S tímto protokolem zacházejte jako s důvěrnými údaji a buďte opatrní, s kým jej sdílíte. Pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/app/devtools/querylogger/qgsqueryloggerpanelwidget.cpp" line="194"/>
@@ -79415,7 +79464,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Columns filled with &apos;0/1&apos;, &apos;true/false&apos;, &apos;t/f&apos;, and &apos;yes/no&apos; (case insensitive) are automatically detected as boolean fields. Additional values for TRUE and FALSE can be entered here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sloupce vyplněné hodnotami „0/1“, „true/false“, „t/f“ a „yes/no“ (bez rozlišení velkých a malých písmen) jsou automaticky detekovány jako booleovská pole. Zde lze zadat další hodnoty pro TRUE a FALSE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
@@ -79445,7 +79494,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Column data type is determined automatically scanning the file but it is possible to override the types through the type combo boxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Typ dat sloupce se určuje automaticky při prohledávání souboru, ale je možné typy přepsat pomocí rozbalovacích seznamů typů.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui"/>
@@ -80243,195 +80292,196 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="632"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="641"/>
         <source>(disabled when attribute table only shows features visible in the current map canvas extent)</source>
         <translation>(zakázáno, pokud tabulka atributů zobrazuje pouze prvky viditelné v aktuálním rozsahu plátna mapy)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="768"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="777"/>
         <source>Expression Based Preview</source>
         <translation>Náhled založený na výrazu</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="971"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="979"/>
         <source>&amp;Set All Column Widths…</source>
         <translation>&amp;Nastavit šířku všech sloupců…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="981"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="989"/>
         <source>&amp;Autosize All Columns</source>
         <translation>&amp;Automaticky nastavit velikost všech sloupců</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="990"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="998"/>
         <source>&amp;Sort…</source>
         <translation>&amp;Řadit…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="976"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="984"/>
         <source>&amp;Autosize</source>
         <translation>&amp;Automaticky nastavit velikost</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="263"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="269"/>
         <source>Sort…</source>
         <translation>Řadit…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="276"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="282"/>
         <source>By Custom Expression</source>
         <translation>Dle vlastního výrazu</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="301"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="307"/>
         <source>&apos;[Please define preview text]&apos;</source>
         <translation>&apos;[Prosím, definujte text náhledu]&apos;</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="634"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="643"/>
         <source>Automatically pan to the current feature</source>
         <translation>Automaticky se posune na aktuální prvek</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="635"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="644"/>
         <source>Automatically zoom to the current feature</source>
         <translation>Automaticky přiblíží na aktuální prvek</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="675"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="684"/>
         <source>An error occurred while filtering features</source>
         <translation>Nastala chyba při filtrování prvků</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="787"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="796"/>
         <source>Column Display Name</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="787"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="796"/>
         <source>Could not set column '%1' as display name.
 Parser error:
 %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="791"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="84"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="586"/>
         <source>Expression</source>
         <translation>Výraz</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="857"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="865"/>
         <source>Copy Cell Content</source>
         <translation>Kopírovat obsah buňky</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="868"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="876"/>
         <source>Zoom to Feature</source>
         <translation>Přiblížit na prvek</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="871"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="879"/>
         <source>Pan to Feature</source>
         <translation>Posunout na prvek</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="874"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="882"/>
         <source>Flash Feature</source>
         <translation>Rychle ukázat prvek</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="882"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="890"/>
         <source>Run Layer Action</source>
         <translation>Spustit akci vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="927"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="935"/>
         <source>Actions on Selection (%1)</source>
         <translation>Akce na výběru (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="944"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="952"/>
         <source>Open Form</source>
         <translation>Otevřít formulář</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="945"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="953"/>
         <source>Open Form…</source>
         <translation>Otevřít formulář…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="962"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="970"/>
         <source>&amp;Hide Column</source>
         <translation>&amp;Skrýt sloupec</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="966"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="974"/>
         <source>&amp;Set Width…</source>
         <translation>&amp;Nastavit šířku…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1384"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1392"/>
         <source>%L1 features loaded.</source>
         <translation>%L1 prvků načteno.</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="987"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="995"/>
         <source>&amp;Organize Columns…</source>
         <translation>&amp;Uspořádat sloupce…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="266"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="272"/>
         <source>By Display Name (Ascending)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="271"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="277"/>
         <source>By Display Name (Descending)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1056"/>
         <source>Set column width</source>
         <translation>Nastavit šířku sloupce</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1048"/>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1067"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1056"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1075"/>
         <source>Enter column width</source>
         <translation>Zadejte šířku sloupce</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1067"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1075"/>
         <source>Set Column Width</source>
         <translation>Nastavit šířku sloupce</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1102"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1110"/>
         <source>Configure Attribute Table Sort Order</source>
         <translation>Nastavit pořadí řazení atributové tabulky</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1378"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1386"/>
         <source>Loading features…</source>
         <translation>Načítám prvky…</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1379"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1387"/>
         <source>Attribute Table</source>
         <translation>Atributová tabulka</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1110"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1118"/>
         <source>Defined sort order in attribute table</source>
         <translation>Definovaný způsob řazení v atributové tabulce</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1124"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1132"/>
         <source>Sort ascending</source>
         <translation>Řadit vzestupně</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1378"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="1386"/>
         <source>Abort</source>
         <translation>Přerušit</translation>
     </message>
@@ -80615,7 +80665,7 @@ Parser error:
     <message>
         <location filename="../src/app/dwg/qgsdwgimportdialog.cpp" line="104"/>
         <source>GDAL/OGR not built with GPKG (sqlite3) support. You will not be able to export the DWG in a GPKG.</source>
-        <translation type="unfinished"/>
+        <translation>GDAL/OGR není vytvořen s podporou GPKG (sqlite3). Nebudete moci exportovat DWG do GPKG.</translation>
     </message>
     <message>
         <location filename="../src/app/dwg/qgsdwgimportdialog.cpp" line="214"/>
@@ -82194,12 +82244,12 @@ Chyba: %2</translation>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Vertical exageration for hillshading</source>
-        <translation type="unfinished"/>
+        <translation>Vertikální zveličování pro zastínění kopců</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Use multidirectional lights instead of the specified azimuth for hillshading.</source>
-        <translation type="unfinished"/>
+        <translation>Pro zastínění kopců používat místo zadaného azimutu vícesměrová světla.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
@@ -82214,17 +82264,17 @@ Chyba: %2</translation>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Eye-Dome Lighting</source>
-        <translation type="unfinished"/>
+        <translation>Osvětlení Eye-Dome</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Adjusts how strong the added shading will be. Greater values mean stronger effect.</source>
-        <translation type="unfinished"/>
+        <translation>Upravuje intenzitu přidaného stínování. Vyšší hodnoty znamenají silnější efekt.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
         <source>Distance away from the original pixel to sample neighbors.</source>
-        <translation type="unfinished"/>
+        <translation>Vzdálenost od původního pixelu k sousedním vzorkům.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgselevationshadingrenderersettingswidget.ui"/>
@@ -82329,7 +82379,9 @@ Chyba: %2</translation>
 containing embedded styling information.
 
 &apos;%1&apos; does not contain embedded styling and cannot be displayed.</source>
-        <translation type="unfinished"/>
+        <translation>Vykreslovač vložených symbolů lze použít pouze s vrstvami obsahujícími vložené informace o stylech.
+
+Vrstva „%1“ neobsahuje vložené styly a nelze ji zobrazit.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsembeddedsymbolrendererwidget.cpp" line="72"/>
@@ -83790,7 +83842,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Concatenates array elements into a string separated by a delimiter and using optional string for empty values.</source>
-        <translation type="unfinished"/>
+        <translation>Zřetězí prvky pole do řetězce odděleného oddělovačem a pro prázdné hodnoty použije volitelný řetězec.</translation>
     </message>
     <message>
         <source>array_to_string(array(&apos;1&apos;,&apos;2&apos;,&apos;3&apos;))</source>
@@ -83806,7 +83858,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string representing a color mixing the red, green, blue, and alpha values of two provided colors based on a given ratio.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec představující barvu, která je kombinací červených, zelených, modrých a alfa hodnot dvou zadaných barev na základě daného poměru.</translation>
     </message>
     <message>
         <source>degrees(3.14159)</source>
@@ -83974,7 +84026,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Formats a date type or string into a custom string format. Uses Qt date/time format strings. See &lt;a href=&apos;https://doc.qt.io/qt-5/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Formátuje typ data nebo řetězec do vlastního řetězcového formátu. Používá řetězce formátu data/času Qt. Viz &lt;a href=&apos;https://doc.qt.io/qt-5/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>is_selected(@atlas_feature)</source>
@@ -84054,7 +84106,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the minutes part from a datetime or time, or the number of minutes from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s minutami z data nebo data/času, nebo počet minut z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the minutes part from a time or datetime.</source>
@@ -84090,7 +84142,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a NULL value if value1 equals value2; otherwise it returns value1. This can be used to conditionally substitute values with NULL.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu NULL, pokud se hodnota1 rovná hodnotě2; jinak vrací hodnotu1. Toto lze použít k podmíněnému nahrazení hodnot hodnotou NULL.</translation>
     </message>
     <message>
         <source>num_geometries(geom_from_wkt(&apos;GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))&apos;))</source>
@@ -84098,7 +84150,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the number of interior rings in a polygon or geometry collection, or NULL if the input geometry is not a polygon or collection.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí počet vnitřních kruhů v polygonu nebo kolekci geometrií, nebo NULL, pokud vstupní geometrie není polygon ani kolekce.</translation>
     </message>
     <message>
         <source>number of vertices in the current feature&apos;s geometry</source>
@@ -84106,7 +84158,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the number of rings (including exterior rings) in a polygon or geometry collection, or NULL if the input geometry is not a polygon or collection.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí počet kruhů (včetně vnějších kruhů) v polygonu nebo kolekci geometrií, nebo NULL, pokud vstupní geometrie není polygon ani kolekce geometrií.</translation>
     </message>
     <message>
         <source>project</source>
@@ -84214,7 +84266,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Return the first matching position matching a regular expression within an unicode string, or 0 if the substring is not found.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí první odpovídající pozici odpovídající regulárnímu výrazu v řetězci Unicode, nebo 0, pokud podřetězec nebyl nalezen.</translation>
     </message>
     <message>
         <source>regexp_match(&apos;QGIS ROCKS&apos;,&apos;\\sROCKS&apos;)</source>
@@ -84226,7 +84278,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array of all strings captured by capturing groups, in the order the groups themselves appear in the supplied regular expression against a string.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole všech řetězců zachycených zachycujícími skupinami v pořadí, v jakém se samotné skupiny objevují v zadaném regulárním výrazu pro daný řetězec.</translation>
     </message>
     <message>
         <source>regexp_matches</source>
@@ -84254,7 +84306,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using \\1, \\2, etc.</source>
-        <translation type="unfinished"/>
+        <translation>Řetězec, který nahradí všechny odpovídající výskyty zadaného regulárního výrazu. Zachycené skupiny lze do náhradního řetězce vložit pomocí \\1, \\2 atd.</translation>
     </message>
     <message>
         <source>regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;\\sSHOULD\\s&apos;,&apos; DOES &apos;)</source>
@@ -84294,7 +84346,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string with the supplied string or array of strings replaced by a string or an array of strings.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec, kde je zadaný řetězec nebo pole řetězců nahrazeno řetězcem nebo polem řetězců.</translation>
     </message>
     <message>
         <source>the string or array of strings to replace</source>
@@ -84362,7 +84414,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a rotated version of a geometry. Calculations are in the Spatial Reference System of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí otočenou verzi geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>rotate</source>
@@ -84386,7 +84438,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec doplněný zprava na zadanou šířku pomocí výplňového znaku. Pokud je cílová šířka menší než délka řetězce, řetězec se ořízne.</translation>
     </message>
     <message>
         <source>rpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
@@ -84398,7 +84450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the seconds part from a datetime or time, or the number of seconds from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část se sekundami z data nebo data/času, nebo počet sekund z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the seconds part from a time or datetime.</source>
@@ -84566,7 +84618,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Converts a string into a time object. An optional format string can be provided to parse the string; see &lt;a href=&apos;https://doc.qt.io/qt-5/qtime.html#fromString-1&apos;&gt;QTime::fromString&lt;/a&gt; for additional documentation on the format.</source>
-        <translation type="unfinished"/>
+        <translation>Převede řetězec na objekt typu time. Pro analýzu řetězce lze použít volitelný formátovací řetězec; další dokumentaci k formátu naleznete v &lt;a href=&apos;https://doc.qt.io/qt-5/qtime.html#fromString-1&apos;&gt;QTime::fromString&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Extracts the week number from a date, or the number of weeks from an interval.</source>
@@ -85278,11 +85330,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the x coordinate of a point geometry, or the x coordinate of the centroid for a non-point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí souřadnici x bodové geometrie nebo souřadnici x těžiště v případě geometrie, která není bodová.</translation>
     </message>
     <message>
         <source>Returns the y coordinate of a point geometry, or the y coordinate of the centroid for a non-point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí souřadnici y bodové geometrie nebo souřadnici y těžiště v případě geometrie, která není bodová.</translation>
     </message>
     <message>
         <source>Extracts the year part from a date, or the number of years from an interval.</source>
@@ -85306,7 +85358,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the current scale denominator of the map canvas.&lt;br&gt;&lt;br&gt;Note: This function is only available in some contexts and will be 0 otherwise.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí aktuální jmenovatel měřítka mapového plátna.&lt;br&gt;&lt;br&gt;Poznámka: Tato funkce je dostupná pouze v některých kontextech a jinak bude mít hodnotu 0.</translation>
     </message>
     <message>
         <source>Returns an aggregate value calculated using features from another layer.</source>
@@ -85338,11 +85390,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>calculates a daily average of &quot;passengers&quot; by dividing the &quot;passengers&quot; field by 7 before summing the values</source>
-        <translation type="unfinished"/>
+        <translation>vypočítá denní průměr „cestujících“ vydělením pole „cestující“ číslem 7 a následným sečtením hodnot</translation>
     </message>
     <message>
         <source>sums up all values from the &quot;passengers&quot; field from features where the &quot;class&quot; attribute is greater than 3 only</source>
-        <translation type="unfinished"/>
+        <translation>sečte všechny hodnoty z pole „cestující“ pouze z objektů, kde je atribut „třída“ větší než 3</translation>
     </message>
     <message>
         <source>comma separated list of the name field for all features in the rail_stations layer</source>
@@ -85478,7 +85530,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the bisector angle (average angle) to the geometry for a specified vertex on a linestring geometry. Angles are in degrees clockwise from north.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí úhel osy (průměrný úhel) geometrie pro zadaný vrchol na geometrii čáry. Úhly jsou ve stupních ve směru hodinových ručiček od severu.</translation>
     </message>
     <message>
         <source>angle_at_vertex</source>
@@ -85575,7 +85627,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>vertex index, starting from 0; if the value is negative, the selected vertex index will be its total count minus the absolute value</source>
-        <translation type="unfinished"/>
+        <translation>index vrcholu, počínaje od 0; pokud je hodnota záporná, vybraný index vrcholu bude jeho celkový počet mínus absolutní hodnota</translation>
     </message>
     <message>
         <source>array_all</source>
@@ -85743,15 +85795,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>CASE WHEN $area &gt; 10000 THEN &apos;Big property&apos; WHEN $area &gt; 5000 THEN &apos;Medium property&apos; ELSE &apos;Small property&apos; END</source>
-        <translation type="unfinished"/>
+        <translation>CASE WHEN $area &gt; 10000 THEN &apos;Big property&apos; WHEN $area &gt; 5000 THEN &apos;Medium property&apos; ELSE &apos;Small property&apos; END</translation>
     </message>
     <message>
         <source>Returns the string &apos;Big property&apos; if the area is bigger than 10000, &apos;Medium property&apos; if the area is between 5000 and 10000, and &apos;Small property&apos; for others</source>
-        <translation type="unfinished"/>
+        <translation>Vrací řetězec „Velká nemovitost“, pokud je plocha větší než 10000, „Střední nemovitost“, pokud je plocha mezi 5000 a 10000, a „Malá nemovitost“ pro ostatní</translation>
     </message>
     <message>
         <source>This group contains functions that are available in the attribute form context. For example, in field widget settings.</source>
-        <translation type="unfinished"/>
+        <translation>Tato skupina obsahuje funkce, které jsou dostupné v kontextu formuláře atributů. Například v nastavení widgetu pole.</translation>
     </message>
     <message>
         <source>Form</source>
@@ -85807,7 +85859,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>optional expression to use to order features used to calculate aggregate. By default, the features will be returned in an unspecified order.</source>
-        <translation type="unfinished"/>
+        <translation>volitelný výraz pro seřazení prvků použitých k výpočtu agregace. Ve výchozím nastavení budou prvky vráceny v neurčeném pořadí.</translation>
     </message>
     <message>
         <source>Returns the number of elements of an array.</source>
@@ -86395,7 +86447,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates a buffer along a line geometry where the buffer diameter varies according to the m-values at the line vertices.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří vyrovnávací paměť podél geometrie čáry, kde se průměr vyrovnávací paměti mění v závislosti na hodnotách m ve vrcholech čáry.</translation>
     </message>
     <message>
         <source>buffer_by_m</source>
@@ -86415,7 +86467,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A variable width buffer starting with a diameter of 0.5 and ending with a diameter of 0.2 along the linestring geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vyrovnávací paměť s proměnnou šířkou začínající průměrem 0,5 a končící průměrem 0,2 podél geometrie linestringu.</translation>
     </message>
     <message>
         <source>line,according,values,varies,vertices,buffer,diameter</source>
@@ -86895,7 +86947,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a datetime whose date and time are the number of milliseconds, msecs, that have passed since 1970-01-01T00:00:00.000, Coordinated Universal Time (Qt.UTC), and converted to Qt.LocalTime.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací datum a čas, jehož datum a čas představují počet milisekund (ms), které uplynuly od 1970-01-01T00:00:00.000 koordinovaného světového času (Qt.UTC) a byly převedeny na Qt.LocalTime.</translation>
     </message>
     <message>
         <source>datetime_from_epoch</source>
@@ -86951,7 +87003,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Takes a layer and decodes the uri of the underlying data provider. It depends on the dataprovider, which data is available.</source>
-        <translation type="unfinished"/>
+        <translation>Vezme vrstvu a dekóduje URI podkladového poskytovatele dat. Záleží na poskytovateli dat, která data jsou k dispozici.</translation>
     </message>
     <message>
         <source>decode_uri</source>
@@ -86963,7 +87015,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The part of the uri to return. If unspecified, a map with all uri parts will be returned.</source>
-        <translation type="unfinished"/>
+        <translation>Část URI, která se má vrátit. Pokud není zadána, bude vrácena mapa se všemi částmi URI.</translation>
     </message>
     <message>
         <source>decode_uri(@layer)</source>
@@ -87019,11 +87071,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the display expression for a given feature in a layer. The expression is evaluated by default. Can be used with zero, one or more arguments, see below for details.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí výraz pro zobrazení daného prvku ve vrstvě. Výraz je vyhodnocen ve výchozím nastavení. Lze použít s nulou, jedním nebo více argumenty, podrobnosti viz níže.</translation>
     </message>
     <message>
         <source>If called with no parameters, the function will evaluate the display expression of the current feature in the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána bez parametrů, vyhodnotí výraz zobrazení aktuálního prvku v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>display_expression()</source>
@@ -87035,7 +87087,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function will evaluate the specified feature from the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána pouze s parametrem &apos;feature&apos;, vyhodnotí zadaný prvek z aktuální vrstvy.</translation>
     </message>
     <message>
         <source>The feature which should be evaluated.</source>
@@ -87055,7 +87107,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If the function is called with both a layer and a feature, it will evaluate the specified feature from the specified layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána s vrstvou i s prvkem, vyhodnotí zadaný prvek ze zadané vrstvy.</translation>
     </message>
     <message>
         <source>The layer (or its ID or name)</source>
@@ -87063,7 +87115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the &apos;eval&apos; function).</source>
-        <translation type="unfinished"/>
+        <translation>Pokud musí být výraz vyhodnocen. Pokud je hodnota false, výraz bude vrácen pouze jako řetězcový literál (který by mohl být později vyhodnocen pomocí funkce &apos;eval&apos;).</translation>
     </message>
     <message>
         <source>display_expression( &apos;streets&apos;, get_feature_by_id(&apos;streets&apos;, 1))</source>
@@ -87167,7 +87219,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Evaluates a template which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.</source>
-        <translation type="unfinished"/>
+        <translation>Vyhodnotí šablonu, která je předávána v řetězci. Užitečné pro rozšíření dynamických parametrů předávaných jako kontextové proměnné nebo pole.</translation>
     </message>
     <message>
         <source>eval_template</source>
@@ -87239,7 +87291,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a line string representing the exterior ring of a polygon geometry. If the geometry is not a polygon then the result will be NULL.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí line string reprezentující vnější kruh v polygonové geometrii. Pokud geometrie není polygon, výsledkem bude NULL.</translation>
     </message>
     <message>
         <source>polygon,line,ring,exterior,result,representing</source>
@@ -87359,7 +87411,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a copy of the geometry with the x and y coordinates swapped. Useful for repairing geometries which have had their latitude and longitude values reversed.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí kopii geometrie s prohozenými souřadnicemi x a y. Užitečné pro opravu geometrií, u kterých byly prohozeny hodnoty zeměpisné šířky a délky.</translation>
     </message>
     <message>
         <source>flip_coordinates</source>
@@ -87615,7 +87667,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a map with the fields names as keys and the raster attribute table values as values from the attribute table entry that matches the given raster value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu s názvy polí jako klíči a hodnotami tabulky atributů rastru jako hodnotami z položky tabulky atributů, která odpovídá dané hodnotě rastru.</translation>
     </message>
     <message>
         <source>raster_attributes</source>
@@ -87967,7 +88019,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Retrieves a z coordinate of the geometry, or NULL if the geometry has no z value.</source>
-        <translation type="unfinished"/>
+        <translation>Načte souřadnici z geometrie, nebo hodnotu NULL, pokud geometrie nemá žádnou hodnotu z.</translation>
     </message>
     <message>
         <source>z_at</source>
@@ -88187,7 +88239,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the value of a map, given its key. Returns NULL if the key does not exist.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí hodnotu mapy na základě jejího klíče. Vrátí NULL, pokud klíč neexistuje.</translation>
     </message>
     <message>
         <source>scale of the item &apos;Map 0&apos; (if it exists) in the current print layout</source>
@@ -88195,7 +88247,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a map with an added key/value. If the key already exists, its value is overridden.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu s přidaným klíčem/hodnotou. Pokud klíč již existuje, jeho hodnota se přepíše.</translation>
     </message>
     <message>
         <source>least,occurring,field,minority,aggregate</source>
@@ -88347,7 +88399,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The regular expression to test against. Backslash characters must be double escaped (e.g., &quot;\\s&quot; to match a white space character or  &quot;\\b&quot; to match a word boundary).</source>
-        <translation type="unfinished"/>
+        <translation>Regulární výraz, se kterým se má testovat. Znaky zpětného lomítka musí být dvojitě escapovány (např. „\\s“ pro mezeru nebo „\\b“ pro hranici slova).</translation>
     </message>
     <message>
         <source>return,found,matching,unicode,regular,position,substring,first</source>
@@ -88631,7 +88683,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the maximum z coordinate of a geometry, or NULL if the geometry has no z value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí maximální souřadnici z geometrie, nebo hodnotu NULL, pokud geometrie nemá žádnou hodnotu z.</translation>
     </message>
     <message>
         <source>z_max</source>
@@ -88667,7 +88719,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the minimum z coordinate of a geometry, or NULL if the geometry has no z value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí minimální souřadnici z geometrie, nebo NULL, pokud geometrie nemá žádnou hodnotu z.</translation>
     </message>
     <message>
         <source>z_min</source>
@@ -88743,7 +88795,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extracts the hour part from a datetime or time, or the number of hours from an interval.</source>
-        <translation type="unfinished"/>
+        <translation>Extrahuje část s hodinami z data nebo data/času, nebo počet hodin z intervalu.</translation>
     </message>
     <message>
         <source>Extracts the hour part from a time or datetime.</source>
@@ -88991,7 +89043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a specific interior ring from a polygon geometry, or NULL if the geometry is not a polygon.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací určitý vnitřní prstenec z polygonové geometrie nebo NULL, pokud geometrie není polygonová.</translation>
     </message>
     <message>
         <source>&apos;LINESTRING(3 3, 4 4)&apos;</source>
@@ -89111,7 +89163,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the angle parallel to the geometry at a specified distance along a linestring geometry. Angles are in degrees clockwise from north.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí úhel rovnoběžný s geometrií v zadané vzdálenosti podél geometrie čáry. Úhly jsou ve stupních ve směru hodinových ručiček od severu.</translation>
     </message>
     <message>
         <source>line_interpolate_angle</source>
@@ -89143,7 +89195,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the distance along a linestring corresponding to the closest position the linestring comes to a specified point geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí vzdálenost podél čáry odpovídající nejbližší poloze čáry k zadané geometrii bodu.</translation>
     </message>
     <message>
         <source>line_locate_point</source>
@@ -89223,7 +89275,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec doplněný zleva na zadanou šířku pomocí výplňového znaku. Pokud je cílová šířka menší než délka řetězce, řetězec se ořízne.</translation>
     </message>
     <message>
         <source>lpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
@@ -90047,7 +90099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a map containing all the entries of the given maps. If two maps contain the same key, the value of the second map is taken.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí mapu obsahující všechny položky zadaných map. Pokud dvě mapy obsahují stejný klíč, použije se hodnota druhé mapy.</translation>
     </message>
     <message>
         <source>map_concat</source>
@@ -90143,11 +90195,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the maptip for a given feature in a layer. The expression is evaluated by default. Can be used with zero, one or more arguments, see below for details.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí popisek mapy pro daný prvek ve vrstvě. Výraz je vyhodnocen ve výchozím nastavení. Lze použít s nulou, jedním nebo více argumenty, podrobnosti viz níže.</translation>
     </message>
     <message>
         <source>If called with no parameters, the function will evaluate the maptip of the current feature in the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána bez parametrů, vyhodnotí popisek mapy aktuálního prvku v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>maptip()</source>
@@ -90551,7 +90603,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if value is not within the specified range. The range is considered inclusive of the bounds.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud hodnota není v zadaném rozsahu. Rozsah je považován za rozsah zahrnující meze.</translation>
     </message>
     <message>
         <source>NOT BETWEEN</source>
@@ -90575,7 +90627,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>index of the vertex of the current geometry (indices start at 0; negative values apply from the last index, starting at -1)</source>
-        <translation type="unfinished"/>
+        <translation>index vrcholu aktuální geometrie (indexy začínají na 0; záporné hodnoty se uplatňují od posledního indexu, počínaje -1)</translation>
     </message>
     <message>
         <source>Returns the y coordinate of the current point feature. If the feature is a multipoint feature, then the y-coordinate of the first point will be returned. &lt;b&gt;WARNING: This function is deprecated. It is recommended to use the replacement y() function with @geometry variable instead.&lt;/b&gt;</source>
@@ -90599,7 +90651,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí TRUE, pokud první parametr odpovídá (bez ohledu na velká/malá písmena) dodanému vzoru. LIKE může být použit místo ILIKE, aby se zavedla citlivost na velká/malá písmena. Pracuje i s čísly.</translation>
     </message>
     <message>
         <source>Returns TRUE if value is found within a list of values.</source>
@@ -90739,7 +90791,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Applies a dash pattern to a geometry, returning a MultiLineString geometry which is the input geometry stroked along each line/ring with the specified pattern.</source>
-        <translation type="unfinished"/>
+        <translation>Aplikuje čárkovaný vzor na geometrii a vrací geometrii MultiLineString, což je vstupní geometrie vytažená podél každé čáry/kruhu se zadaným vzorem.</translation>
     </message>
     <message>
         <source>apply_dash_pattern</source>
@@ -90751,7 +90803,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>dash pattern, as an array of numbers representing dash and gap lengths. Must contain an even number of elements.</source>
-        <translation type="unfinished"/>
+        <translation>čárkovaný vzor jako pole čísel představujících délky čárek a mezer. Musí obsahovat sudý počet prvků.</translation>
     </message>
     <message>
         <source>optional rule for constraining the start of the pattern. Valid values are &apos;no_rule&apos;, &apos;full_dash&apos;, &apos;half_dash&apos;, &apos;full_gap&apos;, &apos;half_gap&apos;.</source>
@@ -90763,7 +90815,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>optional rule for specifying which part of patterns are adjusted to fit the desired pattern rules. Valid values are &apos;both&apos;, &apos;dash&apos;, &apos;gap&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>volitelné pravidlo pro určení, které části vzorů se upraví tak, aby odpovídaly požadovaným pravidlům vzorů. Platné hodnoty jsou „oba“, „pomlčka“, „mezera“.</translation>
     </message>
     <message>
         <source>Optional distance specifying a specific distance along the pattern to commence at.</source>
@@ -90823,7 +90875,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the lowest index (0 for the first one) of a value within an array. Returns -1 if the value is not found.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí nejnižší index (0 pro první) hodnoty v poli. Vrátí -1, pokud hodnota není nalezena.</translation>
     </message>
     <message>
         <source>array_find(array(&apos;a&apos;, &apos;b&apos;, &apos;c&apos;), &apos;b&apos;)</source>
@@ -90847,7 +90899,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the Nth value (0 for the first one) or the last -Nth value (-1 for the last one) of an array.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí N-tou hodnotu (0 pro první) nebo poslední -N-tou hodnotu (-1 pro poslední) pole.</translation>
     </message>
     <message>
         <source>array_get(array(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;),-1)</source>
@@ -90927,7 +90979,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the mean of arithmetic values in an array. Non numeric values in the array are ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí průměr aritmetických hodnot v poli. Nečíselné hodnoty v poli jsou ignorovány.</translation>
     </message>
     <message>
         <source>array_mean</source>
@@ -90943,7 +90995,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the median of arithmetic values in an array. Non arithmetic values in the array are ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí medián aritmetických hodnot v poli. Nearitmetické hodnoty v poli jsou ignorovány.</translation>
     </message>
     <message>
         <source>array_median</source>
@@ -91059,7 +91111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the item at the given index removed. Supports positive (0 for the first element) and negative (the last -Nth value, -1 for the last element) index.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, z něhož byl odstraněn prvek na daném indexu. Podporuje kladný (0 pro první prvek) a záporný (poslední -N-tá hodnota, -1 pro poslední prvek) index.</translation>
     </message>
     <message>
         <source>array_remove_at(array(1, 2, 3), 1)</source>
@@ -91087,7 +91139,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an array with the supplied value or array of values replaced by another value or an array of values.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí pole, kde je zadaná hodnota nebo pole hodnot nahrazeno jinou hodnotou nebo polem hodnot.</translation>
     </message>
     <message>
         <source>the value or array of values to replace</source>
@@ -91131,7 +91183,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the sum of arithmetic values in an array. Non numeric values in the array are ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí součet aritmetických hodnot v poli. Nečíselné hodnoty v poli jsou ignorovány.</translation>
     </message>
     <message>
         <source>array_sum</source>
@@ -91147,7 +91199,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used.</source>
-        <translation type="unfinished"/>
+        <translation>cesta k souboru nebo hodnota mapové vrstvy. Pokud je zadána hodnota mapové vrstvy, použije se zdrojový soubor vrstvy.</translation>
     </message>
     <message>
         <source>Returns the north-based bearing as the angle in radians measured clockwise on the ellipsoid from the vertical on point_a to point_b.</source>
@@ -91555,7 +91607,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Set to &apos;hard&apos; or &apos;soft&apos; to narrow down to a specific constraint type. If not set, the function will return FALSE if either a hard or a soft constraint fails.</source>
-        <translation type="unfinished"/>
+        <translation>Nastavením na hodnotu „tvrdé“ nebo „měkké“ zúžíte výběr na konkrétní typ omezení. Pokud není nastaveno, funkce vrátí hodnotu FALSE, pokud selže buď tvrdé, nebo měkké omezení.</translation>
     </message>
     <message>
         <source>is_attribute_valid(&apos;HECTARES&apos;)</source>
@@ -91727,7 +91779,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Retrieves a m coordinate of the geometry, or NULL if the geometry has no m value.</source>
-        <translation type="unfinished"/>
+        <translation>Načte souřadnici m geometrie, nebo hodnotu NULL, pokud geometrie nemá žádnou hodnotu m.</translation>
     </message>
     <message>
         <source>m_at</source>
@@ -91735,7 +91787,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>index of the vertex of the geometry (indices start at 0; negative values apply from the last index, starting at -1)</source>
-        <translation type="unfinished"/>
+        <translation>index vrcholu geometrie (indexy začínají na 0; záporné hodnoty se uplatňují od posledního indexu, počínaje -1)</translation>
     </message>
     <message>
         <source>m_at(geom_from_wkt(&apos;LineStringZM(0 0 0 0, 10 10 0 5, 10 10 0 0)&apos;), 1)</source>
@@ -91827,11 +91879,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tests whether a geometry crosses another. Returns TRUE if the supplied geometries have some, but not all, interior points in common.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se geometrie nekříží s jinou geometrii. Vrátí TRUE, pokud zadané geometrie mají nějaké (ale ne všechny) společné interiérové body.</translation>
     </message>
     <message>
         <source>Takes a polygon or line layer geometry and generates a new one in which the geometries have a larger number of vertices than the original one.</source>
-        <translation type="unfinished"/>
+        <translation>Vezme geometrii polygonu nebo čárové vrstvy a vygeneruje novou, ve které má geometrie větší počet vrcholů než původní.</translation>
     </message>
     <message>
         <source>densify_by_count</source>
@@ -91875,7 +91927,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tests whether geometries do not spatially intersect. Returns TRUE if the geometries do not share any space together.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se geometrie prostorově neprotínají. Vrátí TRUE pokud zadané geometrie nesdílí žádný společný prostor.</translation>
     </message>
     <message>
         <source>Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function to evaluate attribute values from the current feature. &lt;b&gt;WARNING: This function is deprecated. It is recommended to use the replacement @feature variable instead.&lt;/b&gt;</source>
@@ -91883,19 +91935,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the geometry of the current feature. Can be used for processing with other functions. &lt;b&gt;WARNING: This function is deprecated. It is recommended to use the replacement @geometry variable instead.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí geometrii aktuálního prvku. Lze použít pro zpracování s jinými funkcemi. &lt;b&gt;VAROVÁNÍ: Tato funkce je zastaralá. Doporučuje se místo ní použít náhradní proměnnou @geometry.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Returns the feature id of the current row. &lt;b&gt;WARNING: This function is deprecated. It is recommended to use the replacement @id variable instead.&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí ID prvku aktuálního řádku. &lt;b&gt;VAROVÁNÍ: Tato funkce je zastaralá. Doporučuje se místo ní použít náhradní proměnnou @id.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Returns TRUE if value is within the specified range. The range is considered inclusive of the bounds. To test for exclusion NOT BETWEEN can be used.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud je hodnota v zadaném rozsahu. Rozsah je považován za rozsah zahrnující meze. Pro testování vyloučení lze použít NOT BETWEEN.</translation>
     </message>
     <message>
         <source>the value to compare with a range. It can be a string, a number or a date.</source>
-        <translation type="unfinished"/>
+        <translation>hodnota, která se má porovnat s rozsahem. Může to být řetězec, číslo nebo datum.</translation>
     </message>
     <message>
         <source>2 BETWEEN 2 AND 3</source>
@@ -91919,7 +91971,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Loading field values from online sources isn&apos;t supported before the layer is actually inserted, ie. when building queries.</source>
-        <translation type="unfinished"/>
+        <translation>Načítání hodnot polí z online zdrojů není podporováno před skutečným vložením vrstvy, tj. při vytváření dotazů.</translation>
     </message>
     <message>
         <source>2 NOT BETWEEN 2 AND 3</source>
@@ -91979,11 +92031,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>An image file path or a map layer value. If a map layer value is specified then the file source of the layer will be used.</source>
-        <translation type="unfinished"/>
+        <translation>Cesta k souboru obrázku nebo hodnota vrstvy mapy. Pokud je zadána hodnota vrstvy mapy, použije se zdrojový soubor vrstvy.</translation>
     </message>
     <message>
         <source>The tag to return. If empty, a map with all exif tag values will be returned.</source>
-        <translation type="unfinished"/>
+        <translation>Tag, který se má vrátit. Pokud je prázdný, bude vrácena mapa se všemi hodnotami tagu EXIF.</translation>
     </message>
     <message>
         <source>exif(&apos;/my/photo.jpg&apos;,&apos;Exif.Image.Orientation&apos;)</source>
@@ -92015,7 +92067,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Forces a geometry to respect the convention where exterior rings are counter-clockwise, interior rings are clockwise.</source>
-        <translation type="unfinished"/>
+        <translation>Vynutí, aby geometrie respektovala konvenci, kde vnější kroužky jsou proti směru hodinových ručiček, vnitřní kroužky jsou po směru hodinových ručiček.</translation>
     </message>
     <message>
         <source>force_polygon_ccw</source>
@@ -92027,7 +92079,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Forces a geometry to respect the convention where exterior rings are clockwise, interior rings are counter-clockwise.</source>
-        <translation type="unfinished"/>
+        <translation>Vynutí, aby geometrie respektovala konvenci, kde vnější kroužky jsou po směru hodinových ručiček, vnitřní kroužky jsou proti směru hodinových ručiček.</translation>
     </message>
     <message>
         <source>force_polygon_cw</source>
@@ -92043,7 +92095,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A string with placeholders %1, %2, etc., for the arguments. Placeholders can be repeated. The lowest numbered placeholder is replaced by arg1, the next by arg2, etc.</source>
-        <translation type="unfinished"/>
+        <translation>Řetězec se zástupnými symboly %1, %2 atd. pro argumenty. Zástupné symboly se mohou opakovat. Zástupný symbol s nejnižším číslem je nahrazen symbolem arg1, další symbolem arg2 atd.</translation>
     </message>
     <message>
         <source>format(&apos;This is %2&apos;,&apos;a bit unexpected but 2 is lowest number in string&apos;,&apos;normal&apos;)</source>
@@ -92063,7 +92115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a number formatted with the locale separator for thousands. By default the current QGIS user locale is used. Also truncates the decimal places to the number of supplied places.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací číslo formátované s oddělovačem tisíců podle locale. Ve výchozím nastavení se používá aktuální locale uživatele QGIS. Také zkrátí desetinná místa na počet zadaných míst.</translation>
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, &lt;a href=&apos;https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes&apos;&gt;ISO 639 language code&lt;/a&gt;) used to format the number into a string. By default the current QGIS user locale is used.</source>
@@ -92123,7 +92175,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a specific geometry from a geometry collection, or NULL if the input geometry is not a collection. Also returns a part from a multipart geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí specifickou geometrii z kolekce geometrií nebo hodnotu NULL, pokud vstupní geometrie není kolekcí. Také vrátí součást z vícedílné geometrie.</translation>
     </message>
     <message>
         <source>Returns a string value describing the type of a geometry (Point, Line or Polygon)</source>
@@ -92175,7 +92227,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Along with the layer ID, a map containing the columns (key) and their respective value to be used.</source>
-        <translation type="unfinished"/>
+        <translation>Spolu s ID vrstvy, mapa obsahující sloupce (klíč) a jejich příslušné hodnoty, které se mají použít.</translation>
     </message>
     <message>
         <source>Map containing the column and value pairs to use</source>
@@ -92235,11 +92287,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the angle of the long axis (clockwise, in degrees from North) of the oriented minimal bounding rectangle, which completely covers the geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí úhel dlouhé osy (ve směru hodinových ručiček, ve stupních od severu) orientovaného minimálního ohraničujícího obdélníku, který zcela pokrývá geometrii.</translation>
     </message>
     <message>
         <source>Returns a valid geometry or an empty geometry if the geometry could not be made valid.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí platnou geometrii nebo prázdnou geometrii, pokud geometrii nebylo možné nastavit jako platnou.</translation>
     </message>
     <message>
         <source>make_valid</source>
@@ -92251,7 +92303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>if set to true, then components that have collapsed into a lower dimensionality will be kept. For example, a ring collapsing to a line, or a line collapsing to a point.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je nastaveno na hodnotu true, pak budou zachovány komponenty, které se sbalily do nižší dimenze. Například kruh sbalující se do čáry nebo čára sbalující se do bodu.</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_valid(geom_from_wkt(&apos;POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))&apos;)))</source>
@@ -92315,7 +92367,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>comma separated list of layer credits for layers shown in the &apos;Main Map&apos; layout item, e.g &apos;CC-BY-NC, CC-BY-SA&apos;</source>
-        <translation type="unfinished"/>
+        <translation>seznam autorů vrstev oddělených čárkami pro vrstvy zobrazené v položce rozvržení „Hlavní mapa“, např. „CC-BY-NC, CC-BY-SA“</translation>
     </message>
     <message>
         <source>array_to_string( map_credits( &apos;Main Map&apos;, include_layer_names := true, layer_name_separator := &apos;: &apos; ) )</source>
@@ -92323,7 +92375,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>comma separated list of layer names and their credits for layers shown in the &apos;Main Map&apos; layout item, e.g. &apos;Railway lines: CC-BY-NC, Basemap: CC-BY-SA&apos;</source>
-        <translation type="unfinished"/>
+        <translation>seznam názvů vrstev a jejich autorů oddělených čárkami pro vrstvy zobrazené v položce rozvržení „Hlavní mapa“, např. „Železniční tratě: CC-BY-NC, Základní mapa: CC-BY-SA“</translation>
     </message>
     <message>
         <source>Returns TRUE if the given key exists in the map.</source>
@@ -92439,7 +92491,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>optional argument specifying whether to include duplicate nodes which close lines or polygons rings. Defaults to false, set to true to avoid including these duplicate nodes in the output collection.</source>
-        <translation type="unfinished"/>
+        <translation>volitelný argument určující, zda se mají zahrnout duplicitní uzly, které uzavírají kruhy čar nebo polygonů. Výchozí hodnota je false, nastavení na true zabrání zahrnutí těchto duplicitních uzlů do výstupní kolekce.</translation>
     </message>
     <message>
         <source>geom_to_wkt(nodes_to_points(geom_from_wkt(&apos;LINESTRING(0 0, 1 1, 2 2)&apos;)))</source>
@@ -92503,7 +92555,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the number of geometries in a geometry collection, or the number of parts in a multi-part geometry. The function returns NULL if the input geometry is not a collection.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí počet geometrií v kolekci geometrií nebo počet částí ve vícedílné geometrii. Funkce vrátí hodnotu NULL, pokud vstupní geometrie není kolekcí.</translation>
     </message>
     <message>
         <source>num_geometries</source>
@@ -92547,7 +92599,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the number of selected features on a given layer. By default works on the layer on which the expression is evaluated.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí počet vybraných prvků na dané vrstvě. Ve výchozím nastavení pracuje s vrstvou, na které je výraz vyhodnocen.</translation>
     </message>
     <message>
         <source>num_selected</source>
@@ -92583,7 +92635,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>number of segments to use to represent a quarter circle when a round join style is used. A larger number results in a smoother line with more nodes.</source>
-        <translation type="unfinished"/>
+        <translation>počet segmentů, které se mají použít k reprezentaci čtvrtkruhu při použití stylu zaobleného spojení. Větší číslo vede k hladší linii s více uzly.</translation>
     </message>
     <message>
         <source>join style for corners, where 1 = round, 2 = miter and 3 = bevel</source>
@@ -92923,7 +92975,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Performs a regular expression match on a string value. Backslash characters must be double escaped (e.g., &quot;\\s&quot; to match a white space character).</source>
-        <translation type="unfinished"/>
+        <translation>Provádí porovnání regulárního výrazu s řetězcovou hodnotou. Znaky zpětného lomítka musí být dvojitě escapovány (např. &quot;\\s&quot; pro porovnání s mezerou).</translation>
     </message>
     <message>
         <source>~</source>
@@ -93027,19 +93079,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.</source>
-        <translation type="unfinished"/>
+        <translation>volitelný výraz pro vyhodnocení prvků z cílové vrstvy. Pokud není nastaven, funkce vrátí pouze booleovskou hodnotu označující, zda existuje alespoň jedna shoda.</translation>
     </message>
     <message>
         <source>an optional expression to filter the target features to check. If not set, all the features will be checked.</source>
-        <translation type="unfinished"/>
+        <translation>Volitelný výraz pro filtrování cílových prvků, které se mají zkontrolovat. Pokud není nastaven, budou zkontrolovány všechny prvky.</translation>
     </message>
     <message>
         <source>an optional integer to limit the number of matching features. If not set, all the matching features will be returned.</source>
-        <translation type="unfinished"/>
+        <translation>volitelné celé číslo pro omezení počtu odpovídajících prvků. Pokud není nastaveno, budou vráceny všechny odpovídající prvky.</translation>
     </message>
     <message>
         <source>set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)</source>
-        <translation type="unfinished"/>
+        <translation>nastavte toto na hodnotu true pro vytvoření lokálního prostorového indexu (většinou je to nežádoucí, pokud nepracujete s obzvláště pomalým poskytovatelem dat)</translation>
     </message>
     <message>
         <source>overlay_contains(&apos;regions&apos;)</source>
@@ -93063,7 +93115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions contained in the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti obsažené v aktuálním prvku</translation>
     </message>
     <message>
         <source>array_sort(overlay_contains(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93071,11 +93123,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions contained in the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro regiony obsažené v aktuálním prvku a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions contained in the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti obsažené v aktuálním prvku</translation>
     </message>
     <message>
         <source>Returns whether the current feature spatially crosses at least one feature from a target layer, or an array of expression-based results for the features in the target layer crossed by the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Crosses&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Crosses.html&apos;&gt;ST_Crosses&lt;/a&gt; function.</source>
@@ -93107,7 +93159,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions crossed by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti, kterými se aktuální prvek prochází</translation>
     </message>
     <message>
         <source>array_sort(overlay_crosses(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93115,11 +93167,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions crossed by the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro oblasti protínané aktuálním objektem a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions crossed by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti protínané aktuálním prvkem</translation>
     </message>
     <message>
         <source>Returns whether the current feature is spatially disjoint from all the features of a target layer, or an array of expression-based results for the features in the target layer that are disjoint from the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Disjoint&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Disjoint.html&apos;&gt;ST_Disjoint&lt;/a&gt; function.</source>
@@ -93151,7 +93203,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions spatially disjoint from the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti prostorově oddělené od aktuálního prvku</translation>
     </message>
     <message>
         <source>array_sort(overlay_disjoint(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93159,11 +93211,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions spatially disjoint from the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro oblasti prostorově oddělené od aktuálního prvku a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions spatially disjoint from the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti prostorově oddělené od aktuálního prvku</translation>
     </message>
     <message>
         <source>Returns whether the current feature&apos;s geometry is exactly equal to at least one feature&apos;s geometry from a target layer, or an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature&apos;s geometry. Note that the order of vertices matters.</source>
@@ -93223,7 +93275,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>only valid when used with an expression, set this to &apos;des&apos; to return the results ordered by the overlap value in descending order or set this to &apos;asc&apos; for ascending order.</source>
-        <translation type="unfinished"/>
+        <translation>platí pouze při použití s ​​výrazem. Nastavte tuto hodnotu na &apos;des&apos; pro vrácení výsledků seřazených sestupně podle hodnoty překrytí nebo na &apos;asc&apos; pro vzestupné pořadí.</translation>
     </message>
     <message>
         <source>overlay_intersects(&apos;regions&apos;)</source>
@@ -93247,7 +93299,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions intersected by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti protínané aktuálním prvkem</translation>
     </message>
     <message>
         <source>array_sort(overlay_intersects(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93255,11 +93307,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions intersected by the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro oblasti protínané aktuálním prvkem a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions intersected by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>pole geometrií (v WKT) až pro dvě oblasti protínané aktuálním prvkem</translation>
     </message>
     <message>
         <source>overlay_intersects(layer:=&apos;regions&apos;, min_overlap:=0.54)</source>
@@ -93291,15 +93343,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an optional expression to filter the target features to check. If not set, all the features in the target layer will be used.</source>
-        <translation type="unfinished"/>
+        <translation>volitelný výraz pro filtrování cílových prvků, které se mají kontrolovat. Pokud není nastaven, budou použity všechny prvky v cílové vrstvě.</translation>
     </message>
     <message>
         <source>an optional integer to limit the number of matching features. If not set, only the nearest feature will be returned. If set to -1, returns all the matching features.</source>
-        <translation type="unfinished"/>
+        <translation>volitelné celé číslo pro omezení počtu shodných rysů. Pokud není nastaveno, bude vrácen pouze nejbližší prvek. Pokud je nastaveno na -1, vrátí všechny shodné rysy.</translation>
     </message>
     <message>
         <source>an optional distance to limit the search of matching features. If not set, all the features in the target layer will be used.</source>
-        <translation type="unfinished"/>
+        <translation>volitelná vzdálenost pro omezení vyhledávání odpovídajících prvků. Pokud není nastavena, budou použity všechny prvky v cílové vrstvě.</translation>
     </message>
     <message>
         <source>overlay_nearest(&apos;airports&apos;)</source>
@@ -93331,7 +93383,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>the name of the closest airport within a distance of 5000 map units from the current feature, as an array</source>
-        <translation type="unfinished"/>
+        <translation>název nejbližšího letiště ve vzdálenosti 5000 mapových jednotek od aktuálního prvku, jako pole</translation>
     </message>
     <message>
         <source>overlay_nearest(layer:=&apos;airports&apos;, expression:=&quot;name&quot;, filter:= &quot;Use&quot;=&apos;Civilian&apos;, limit:=3)</source>
@@ -93347,7 +93399,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an array of names, for all the airports within a distance of 5000 map units from the current feature, ordered by distance</source>
-        <translation type="unfinished"/>
+        <translation>pole názvů všech letišť ve vzdálenosti 5000 mapových jednotek od aktuálního prvku, seřazených podle vzdálenosti</translation>
     </message>
     <message>
         <source>Returns whether the current feature spatially touches at least one feature from a target layer, or an array of expression-based results for the features in the target layer touched by the current feature.&lt;br&gt;&lt;br&gt;Read more on the underlying GEOS &quot;Touches&quot; predicate, as described in PostGIS &lt;a href=&apos;https://postgis.net/docs/ST_Touches.html&apos;&gt;ST_Touches&lt;/a&gt; function.</source>
@@ -93375,7 +93427,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions touched by the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti, kterých se aktuální prvek dotýká</translation>
     </message>
     <message>
         <source>array_sort(overlay_touches(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93383,7 +93435,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions touched by the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro regiony, kterých se aktuální prvek dotýká a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions touched by the current feature</source>
@@ -93419,7 +93471,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>a string as a comma separated list of names, for the regions containing the current feature</source>
-        <translation type="unfinished"/>
+        <translation>řetězec jako seznam názvů oddělených čárkami pro oblasti obsahující aktuální prvek</translation>
     </message>
     <message>
         <source>array_sort(overlay_within(layer:=&apos;regions&apos;, expression:=&quot;name&quot;, filter:= population &gt; 10000))</source>
@@ -93427,7 +93479,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an ordered array of names, for the regions containing the current feature and with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>uspořádané pole názvů pro oblasti obsahující aktuální prvek a s populací větší než 10000</translation>
     </message>
     <message>
         <source>an array of geometries (in WKT), for up to two regions containing the current feature</source>
@@ -93495,7 +93547,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>index of node to return, where 1 is the first node; if the value is negative, the selected vertex index will be its total count minus the absolute value</source>
-        <translation type="unfinished"/>
+        <translation>index uzlu, který se má vrátit, kde 1 je první uzel; pokud je hodnota záporná, index vybraného vrcholu bude jeho celkový počet mínus absolutní hodnota</translation>
     </message>
     <message>
         <source>geom_to_wkt(point_n(geom_from_wkt(&apos;POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))&apos;),2))</source>
@@ -93531,7 +93583,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a point projected from a start point using a distance, a bearing (azimuth) and an elevation in radians.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí bod promítnutý z počátečního bodu pomocí vzdálenosti, azimutu a výšky v radiánech.</translation>
     </message>
     <message>
         <source>azimuth in radians clockwise, where 0 corresponds to north</source>
@@ -93951,7 +94003,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a string with the supplied map keys replaced by paired values. Longer map keys are evaluated first.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec, ve kterém jsou zadané klíče mapy nahrazeny párovými hodnotami. Delší klíče mapy jsou vyhodnoceny jako první.</translation>
     </message>
     <message>
         <source>replace(&apos;forty two&apos;,map(&apos;for&apos;,&apos;4&apos;,&apos;two&apos;,&apos;2&apos;,&apos;forty two&apos;,&apos;42&apos;))</source>
@@ -93967,7 +94019,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If called with no parameters, the function will return the representation of the attributes of the current feature in the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána bez parametrů, vrátí reprezentaci atributů aktuálního prvku v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>represent_attributes()</source>
@@ -93979,7 +94031,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function will return the representation of the attributes of the specified feature from the current layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána pouze s parametrem &apos;feature&apos;, vrátí reprezentaci atributů zadaného prvku z aktuální vrstvy.</translation>
     </message>
     <message>
         <source>represent_attributes(@atlas_feature)</source>
@@ -93991,7 +94043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If called with a &apos;layer&apos; and a &apos;feature&apos; parameter, the function will return the representation of the attributes of the specified feature from the specified layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána s parametrem &apos;layer&apos; a &apos;feature&apos;, vrátí reprezentaci atributů zadaného prvku ze zadané vrstvy.</translation>
     </message>
     <message>
         <source>The layer (or its ID or name).</source>
@@ -94043,7 +94095,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a scaled version of a geometry. Calculations are in the Spatial Reference System of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí zmenšenou verzi geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>x-axis scaling factor</source>
@@ -94107,7 +94159,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scaling a population which varies between 1000 and 10000 to a font size between 9 and 20</source>
-        <translation type="unfinished"/>
+        <translation>škálování populace, která se pohybuje mezi 1000 a 10000, na velikost písma mezi 9 a 20</translation>
     </message>
     <message>
         <source>9.6111111</source>
@@ -94227,7 +94279,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the sinuosity of a curve, which is the ratio of the curve length to the straight (2D) distance between its endpoints.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí vlnitost křivky, což je poměr délky křivky k přímé (2D) vzdálenosti mezi jejími koncovými body.</translation>
     </message>
     <message>
         <source>sinuosity</source>
@@ -94315,7 +94367,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map with default values for additional columns on the table. The values need to be fully quoted. Functions are allowed.</source>
-        <translation type="unfinished"/>
+        <translation>Mapa s výchozími hodnotami pro další sloupce v tabulce. Hodnoty musí být v uvozovkách. Funkce jsou povoleny.</translation>
     </message>
     <message>
         <source>sqlite_fetch_and_increment(@layer, &apos;sequence_table&apos;, &apos;last_unique_id&apos;, &apos;sequence_id&apos;, &apos;global&apos;, map(&apos;last_change&apos;, &apos;date(&apos;&apos;now&apos;&apos;)&apos;, &apos;user&apos;, &apos;&apos;&apos;&apos; || @user_account_name || &apos;&apos;&apos;&apos;))</source>
@@ -94399,7 +94451,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Randomly sized square waves with wavelengths between 2 and 3 and amplitudes between 0.1 and 0.2 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Náhodně velké obdélníkové vlny s vlnovými délkami mezi 2 a 3 a amplitudami mezi 0,1 a 0,2 podél linestringu</translation>
     </message>
     <message>
         <source>Returns the first node from a geometry.</source>
@@ -94431,7 +94483,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the direct/euclidean distance between the first and last vertex of a geometry. The geometry must be a curve (circularstring, linestring).</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí přímou/euklidovskou vzdálenost mezi prvním a posledním vrcholem geometrie. Geometrie musí být křivka (kružnicový řetězec, čárový řetězec).</translation>
     </message>
     <message>
         <source>straight_distance_2d</source>
@@ -94463,7 +94515,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Return the first matching position of a substring within another string, or 0 if the substring is not found.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí první odpovídající pozici podřetězce v jiném řetězci, nebo 0, pokud podřetězec nebyl nalezen.</translation>
     </message>
     <message>
         <source>strpos</source>
@@ -94499,7 +94551,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>integer representing start position to extract beginning with 1; if start is negative, the return string will begin at the end of the string minus the start value</source>
-        <translation type="unfinished"/>
+        <translation>celé číslo představující počáteční pozici pro extrakci počínaje 1; pokud je start záporný, návratový řetězec začne na konci řetězce mínus počáteční hodnota</translation>
     </message>
     <message>
         <source>substr(&apos;HELLO WORLD&apos;,3,5)</source>
@@ -94599,7 +94651,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Creates a buffer along a line geometry where the buffer diameter varies evenly over the length of the line.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří vyrovnávací paměť podél geometrie čáry, kde se průměr vyrovnávací paměti rovnoměrně mění po celé délce čáry.</translation>
     </message>
     <message>
         <source>tapered_buffer</source>
@@ -94775,11 +94827,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date. By default the current QGIS user locale is used.</source>
-        <translation type="unfinished"/>
+        <translation>jazyk (malá písmena, dvou- nebo třípísmenný kód jazyka ISO 639) použitý k převodu řetězce na datum. Ve výchozím nastavení se používá aktuální uživatelské prostředí QGIS.</translation>
     </message>
     <message>
         <source>2019-06-29, if the current locale uses the name &apos;June&apos; for the sixth month, otherwise an error occurs</source>
-        <translation type="unfinished"/>
+        <translation>2019-06-29, pokud aktuální národní prostředí používá pro šestý měsíc název „červen“, jinak dojde k chybě</translation>
     </message>
     <message>
         <source>Converts a string into a datetime object. An optional format string can be provided to parse the string; see &lt;a href=&apos;https://doc.qt.io/qt-5/qdate.html#fromString-2&apos;&gt;QDate::fromString&lt;/a&gt;, &lt;a href=&apos;https://doc.qt.io/qt-5/qtime.html#fromString-1&apos;&gt;QTime::fromString&lt;/a&gt; or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.</source>
@@ -94787,11 +94839,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a datetime. By default the current QGIS user locale is used.</source>
-        <translation type="unfinished"/>
+        <translation>jazyk (malá písmena, dvou- nebo třípísmenný kód jazyka ISO 639) použitý k převodu řetězce na datum a čas. Ve výchozím nastavení se používá aktuální uživatelské prostředí QGIS.</translation>
     </message>
     <message>
         <source>2019-06-29T12:34, if the current locale uses the name &apos;June&apos; for the sixth month, otherwise an error occurs</source>
-        <translation type="unfinished"/>
+        <translation>2019-06-29T12:34, pokud aktuální národní prostředí používá název &apos;červen&apos; pro šestý měsíc, jinak dojde k chybě</translation>
     </message>
     <message>
         <source>Converts a degree, minute, second coordinate to its decimal equivalent.</source>
@@ -94871,7 +94923,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Converts a string to an interval type. Can be used to take days, hours, month, etc of a date.</source>
-        <translation type="unfinished"/>
+        <translation>Převede řetězec na typ intervalu. Může být použito vytažení dnů, hodin, měsíce atd. z data.</translation>
     </message>
     <message>
         <source>to_interval(&apos;1 day 2 hours&apos;)</source>
@@ -94943,7 +94995,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a time</source>
-        <translation type="unfinished"/>
+        <translation>jazyk (malá písmena, dvou- nebo třípísmenný kód jazyka ISO 639) použitý k převodu řetězce na čas</translation>
     </message>
     <message>
         <source>to_time(&apos;12:30:01&apos;)</source>
@@ -94987,7 +95039,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a translated version of a geometry. Calculations are in the Spatial Reference System of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí přeloženou verzi geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>translate</source>
@@ -95019,7 +95071,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tries an expression and returns its value if error-free. If the expression returns an error, an alternative value will be returned when provided otherwise the function will return NULL.</source>
-        <translation type="unfinished"/>
+        <translation>Zkouší výraz a vrací jeho hodnotu, pokud je bez chyb. Pokud výraz vrací chybu, bude vrácena alternativní hodnota, pokud je zadána, jinak funkce vrátí NULL.</translation>
     </message>
     <message>
         <source>try</source>
@@ -95131,7 +95183,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>buffer width (in degrees). Note that the wedge will extend to half of the angular width either side of the azimuth direction.</source>
-        <translation type="unfinished"/>
+        <translation>šířka vyrovnávací paměti (ve stupních). Všimněte si, že klín se bude rozprostírat do poloviny úhlové šířky na obě strany od směru azimutu.</translation>
     </message>
     <message>
         <source>outer radius for buffers</source>
@@ -95147,7 +95199,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A wedge shaped buffer centered on the point (1,2), facing to the East, with a width of 180 degrees and outer radius of 1.</source>
-        <translation type="unfinished"/>
+        <translation>Klínovitý nárazník se středem v bodě (1,2), směřující na východ, o šířce 180 stupňů a vnějším poloměru 1.</translation>
     </message>
     <message>
         <source>week(&apos;2012-05-12&apos;)</source>
@@ -95195,15 +95247,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects the &apos;Main St.&apos; named feature in the &quot;streets&quot; layer</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud aktuální prvek prostorově protíná prvek s názvem „Hlavní ulice“ ve vrstvě „ulice“</translation>
     </message>
     <message>
         <source>Tests whether a geometry intersects another. Returns TRUE if the geometries spatially intersect (share any portion of space) and false if they do not.</source>
-        <translation type="unfinished"/>
+        <translation>Zkouší, zda se geometrie protíná s jinou. Vrací TRUE, pokud se geometrie prostorově protínají (sdílejí jakoukoli část prostoru) a false, pokud ne.</translation>
     </message>
     <message>
         <source>Tests whether a geometry&apos;s bounding box overlaps another geometry&apos;s bounding box. Returns TRUE if the geometries spatially intersect the bounding box defined and false if they do not.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se ohraničující rámeček geometrie překrývá s ohraničujícím rámečkem jiné geometrie. Vrací hodnotu TRUE, pokud geometrie prostorově protínají definovaný ohraničující rámeček, a hodnotu false, pokud se tak nestane.</translation>
     </message>
     <message>
         <source>Returns TRUE if a line string is closed (start and end points are coincident), or false if a line string is not closed. If the geometry is not a line string then the result will be NULL.</source>
@@ -95231,11 +95283,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a feature is selected. Can be used with zero, one or two arguments, see below for details.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud je vybrán prvek. Lze použít s nulou, jedním nebo dvěma argumenty, podrobnosti viz níže.</translation>
     </message>
     <message>
         <source>If called with no parameters, the function will return TRUE if the current feature in the current layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána bez parametrů, vrátí hodnotu TRUE, pokud je vybrán aktuální prvek v aktuální vrstvě.</translation>
     </message>
     <message>
         <source>TRUE if the current feature in the current layer is selected.</source>
@@ -95243,7 +95295,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If called with a &apos;feature&apos; parameter only, the function returns TRUE if the specified feature from the current layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána pouze s parametrem &apos;feature&apos;, vrátí hodnotu TRUE, pokud je vybrán zadaný prvek z aktuální vrstvy.</translation>
     </message>
     <message>
         <source>TRUE if the current atlas feature is selected.</source>
@@ -95259,11 +95311,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If the function is called with both a layer and a feature, it will return TRUE if the specified feature from the specified layer is selected.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je funkce volána s vrstvou i s prvkem, vrátí hodnotu TRUE, pokud je vybrán zadaný prvek ze zadané vrstvy.</translation>
     </message>
     <message>
         <source>TRUE if the current building&apos;s street is selected (assuming the building layer has a field named &apos;street_name&apos; and the &apos;streets&apos; layer has a field called &apos;name&apos; with unique values).</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je vybrána ulice aktuální budovy (za předpokladu, že vrstva budovy má pole s názvem „název_ulice“ a vrstva „ulice“ má pole s názvem „název“ s jedinečnými hodnotami).</translation>
     </message>
     <message>
         <source>TRUE if the feature with the id 1 on the &quot;streets&quot; layer is selected.</source>
@@ -95271,11 +95323,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns TRUE if a geometry is valid; if it is well-formed in 2D according to the OGC rules.</source>
-        <translation type="unfinished"/>
+        <translation>Vrací hodnotu TRUE, pokud je geometrie platná; pokud je správně zformovaná ve 2D podle pravidel OGC.</translation>
     </message>
     <message>
         <source>Tests whether a geometry overlaps another. Returns TRUE if the geometries share space, are of the same dimension, but are not completely contained by each other.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se geometrie nepřekrývá s jinou geometrii. Vrátí TRUE, pokud zadané geometrie sdílejí společný prostor ale nejsou zcela obsaženy jedna v druhé.</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially contains a region</source>
@@ -95299,7 +95351,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature is spatially disjoint from all the regions with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud je aktuální prvek prostorově oddělen od všech regionů s populací větší než 10000</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region</source>
@@ -95311,7 +95363,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud aktuální prvek prostorově protíná oblast a plocha průsečíku (alespoň jedné z částí v případě multipolygonů) je větší nebo rovna 0,54</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially intersects a region and the intersection area maximum inscribed circle&apos;s radius (of at least one of the parts in case of multipart) is greater or equal to 0.54</source>
@@ -95323,7 +95375,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if there is an airport within a distance of 5000 map units from the current feature</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud se v dosahu 5000 mapových jednotek od aktuálního prvku nachází letiště</translation>
     </message>
     <message>
         <source>TRUE if the current feature spatially touches a region</source>
@@ -95339,11 +95391,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>TRUE if the current feature is spatially within a region with a population greater than 10000</source>
-        <translation type="unfinished"/>
+        <translation>PRAVDA, pokud se aktuální prvek prostorově nachází v oblasti s populací větší než 10000</translation>
     </message>
     <message>
         <source>Tests whether a geometry touches another. Returns TRUE if the geometries have at least one point in common, but their interiors do not intersect.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se geometrie dotýká jiné. Vrací hodnotu TRUE, pokud mají geometrie alespoň jeden společný bod, ale jejich vnitřní body se neprotínají.</translation>
     </message>
     <message>
         <source>Constructs triangular waves along the boundary of a geometry.</source>
@@ -95387,7 +95439,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Randomly sized triangular waves with wavelengths between 2 and 3 and amplitudes between 0.1 and 0.2 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Trojúhelníkové vlny náhodné velikosti s vlnovými délkami mezi 2 a 3 a amplitudami mezi 0,1 a 0,2 podél linestringu</translation>
     </message>
     <message>
         <source>trim(&apos;   hello world  &apos;)</source>
@@ -95395,7 +95447,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns an URL encoded string from a map. Transforms all characters in their properly-encoded form producing a fully-compliant query string.&lt;br&gt;Note that the plus sign &apos;+&apos; is not converted.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí řetězec kódovaný ve formátu URL z mapy. Transformuje všechny znaky do jejich správně kódované podoby a vytváří tak plně kompatibilní řetězec dotazu.&lt;br&gt;Znaménko plus &apos;+&apos; se nepřevádí.</translation>
     </message>
     <message>
         <source>url_encode</source>
@@ -95479,11 +95531,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Randomly sized curved waves with wavelengths between 2 and 3 and amplitudes between 0.1 and 0.2 along the linestring</source>
-        <translation type="unfinished"/>
+        <translation>Náhodně velké zakřivené vlny s vlnovými délkami mezi 2 a 3 a amplitudami mezi 0,1 a 0,2 podél linestringu</translation>
     </message>
     <message>
         <source>Tests whether a geometry is within another. Returns TRUE if the geometry1 is completely within geometry2.</source>
-        <translation type="unfinished"/>
+        <translation>Testuje, zda se geometrie nachází uvnitř jiné geometrie. Vrací hodnotu TRUE, pokud se geometrie1 nachází kompletně uvnitř geometrie2.</translation>
     </message>
     <message>
         <source>within( geom_from_wkt( &apos;POINT( 0.5 0.5)&apos; ), geom_from_wkt( &apos;POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))&apos; ) )</source>
@@ -95507,7 +95559,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>an integer. If wrap_length is positive the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.</source>
-        <translation type="unfinished"/>
+        <translation>celé číslo. Pokud je argument wrap_length kladný, číslo představuje ideální maximální počet znaků k zalomení; pokud je záporný, číslo představuje minimální počet znaků k zalomení.</translation>
     </message>
     <message>
         <source>wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13)</source>
@@ -95535,7 +95587,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the maximum x coordinate of a geometry. Calculations are in the spatial reference system of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí maximální souřadnici x geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>x_max</source>
@@ -95547,7 +95599,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the minimum x coordinate of a geometry. Calculations are in the spatial reference system of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí minimální souřadnici x geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>x_min</source>
@@ -95567,7 +95619,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the maximum y coordinate of a geometry. Calculations are in the spatial reference system of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí maximální souřadnici y geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>y_max</source>
@@ -95579,7 +95631,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the minimum y coordinate of a geometry. Calculations are in the spatial reference system of this geometry.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí minimální souřadnici y geometrie. Výpočty probíhají v prostorovém referenčním systému této geometrie.</translation>
     </message>
     <message>
         <source>y_min</source>
@@ -95615,7 +95667,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the z coordinate of a point geometry, or NULL if the geometry has no z value.</source>
-        <translation type="unfinished"/>
+        <translation>Vrátí souřadnici z bodové geometrie nebo hodnotu NULL, pokud geometrie nemá žádnou hodnotu z.</translation>
     </message>
     <message>
         <source>z( geom_from_wkt( &apos;POINTZ(2 5 7)&apos; ) )</source>
@@ -95630,12 +95682,12 @@ p, li { white-space: pre-wrap; }
         <translation>maximum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9449"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9444"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation>Je-li parametr represent_value nazýván parametrem 1, musí být atribut.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9459"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9454"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation>represent_value se musí jmenovat přesně s 1 nebo 2 parametry.</translation>
     </message>
@@ -96401,7 +96453,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="670"/>
         <source>The imported expressions are from newer version of QGIS (%1) and some of the expression might not work the current version (%2). Are you sure you want to continue?</source>
-        <translation type="unfinished"/>
+        <translation>Importované výrazy pocházejí z novější verze QGIS (%1) a některé výrazy nemusí fungovat v aktuální verzi (%2). Jste si jisti, že chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="783"/>
@@ -96421,7 +96473,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/gui/qgsexpressiontreeview.cpp" line="805"/>
         <source>The expression with label &apos;%1&apos; was already defined.The old expression &quot;%2&quot; will be overwritten by &quot;%3&quot;.Are you sure you want to overwrite the expression?</source>
-        <translation type="unfinished"/>
+        <translation>Výraz s popiskem &apos;%1&apos; byl již definován. Starý výraz &quot;%2&quot; bude přepsán výrazem &quot;%3&quot;. Jste si jisti, že chcete výraz přepsat?</translation>
     </message>
 </context>
 <context>
@@ -96628,7 +96680,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option displays file paths as clickable hyperlinks. When you click on the file path, the file should normally be opened by the default viewer defined in your operating system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tato možnost zobrazuje cesty k souborům jako klikatelné hypertextové odkazy. Po kliknutí na cestu k souboru by se soubor měl normálně otevřít ve výchozím prohlížeči definovaném ve vašem operačním systému.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsexternalresourceconfigdlg.ui"/>
@@ -97304,7 +97356,7 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui"/>
         <source>You are editing information on this layer but the layer is currently not in edit mode. If you click OK, edit mode will automatically be turned on.</source>
-        <translation type="unfinished"/>
+        <translation>Editujete informace o vrstvě, která není v režimu editace. Kliknutím na OK se režim editace automaticky zapne.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui"/>
@@ -97752,7 +97804,8 @@ Změňte název skriptu a uložte, aby se QGIS při spuštění automaticky nač
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1556"/>
         <source>
 This field is part of a primary key, its removal may make the table unusable by QGIS!</source>
-        <translation type="unfinished"/>
+        <translation>
+Toto pole je součástí primárního klíče, jeho odstranění může způsobit, že tabulka nebude v QGIS použitelná!</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1560"/>
@@ -98504,7 +98557,7 @@ Toto pole je geometrický sloupec, jeho odstranění může způsobit, že tabul
     <message>
         <location filename="../src/ui/qgsfontoptionswidgetbase.ui"/>
         <source>References to fonts present in this replacement list will automatically be replaced with the matching replacement font family</source>
-        <translation type="unfinished"/>
+        <translation>Odkazy na fonty uvedené v tomto seznamu náhrad budou automaticky nahrazeny odpovídající rodinou náhradních fontů</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfontoptionswidgetbase.ui"/>
@@ -98529,7 +98582,7 @@ Toto pole je geometrický sloupec, jeho odstranění může způsobit, že tabul
     <message>
         <location filename="../src/ui/qgsfontoptionswidgetbase.ui"/>
         <source>If checked, known freely licensed fonts which are not installed locally but are referenced in a project or style will be automatically downloaded and made available for use.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je toto políčko zaškrtnuto, budou automaticky stažena a zpřístupněna k použití známá volně licencovaná písma, která nejsou nainstalována lokálně, ale jsou odkazována v projektu nebo stylu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfontoptionswidgetbase.ui"/>
@@ -98976,93 +99029,93 @@ Toto pole je geometrický sloupec, jeho odstranění může způsobit, že tabul
 <context>
     <name>QgsGdalProvider</name>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="541"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="558"/>
         <source>Dataset Description</source>
         <translation>Popis datasetu</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="552"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="569"/>
         <source>Band %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="613"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="630"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Kanálů: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="612"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="629"/>
         <source>Dimensions</source>
         <translation>Rozměry</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="157"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="174"/>
         <source>Open data source</source>
         <translation>Otevřít zdroj dat</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="535"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="552"/>
         <source>GDAL Driver Description</source>
         <translation>GDAL Driver popis</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="538"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="555"/>
         <source>GDAL Driver Metadata</source>
         <translation>GDAL Driver Metadata</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="545"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="562"/>
         <source>Compression</source>
         <translation>Komprese</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="575"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="592"/>
         <source>More information</source>
         <translation>Více informací</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="579"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="596"/>
         <source>Mask band (exposed as alpha band)</source>
         <translation>Pásmo masky (vystavené jako alfa pásmo)</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="628"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="645"/>
         <source>Origin</source>
         <translation>Původ</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="631"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="648"/>
         <source>Pixel Size</source>
         <translation>Velikost pixelu</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="695"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="712"/>
         <source>Error occurred while reading block.</source>
         <translation>Při čtení bloku došlo k chybě.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1340"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1357"/>
         <source>Band</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1378"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1395"/>
         <source>Format not supported</source>
         <translation>Formát není podporován</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1370"/>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1431"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1387"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="1448"/>
         <source>Cannot read data</source>
         <translation>Nemohu číst data</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3645"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3662"/>
         <source>GDAL error saving raster attribute table, raster attribute table could not be saved.</source>
         <translation>Chyba GDAL při ukládání tabulky atributů rastru, tabulku atributů rastru se nepodařilo uložit.</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3774"/>
+        <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="3791"/>
         <source>Cannot get GDAL raster band: %1</source>
         <translation>Nemohu získat GDAL rastrové pásmo: %1</translation>
     </message>
@@ -99201,7 +99254,9 @@ Would you like to use a streaming method to access this dataset instead (recomme
         <source>The database does not contain any layers or there was an error opening the file.
 Check file and directory permissions on
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Databáze neobsahuje žádné vrstvy nebo došlo k chybě při otevírání souboru.
+Zkontrolujte oprávnění k souboru a adresáři pro
+%1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackagedataitems.cpp" line="231"/>
@@ -102034,7 +102089,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="44"/>
         <source>In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:</source>
-        <translation type="unfinished"/>
+        <translation>V příkazech pro stahování a nahrávání mohou být speciální slova, která budou QGISem při použití těchto příkazů nahrazena. Tato slova jsou:</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="46"/>
@@ -102054,7 +102109,7 @@ Kontrola geometrie může být provedena, ale nebude možné opravit žádné ch
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="46"/>
         <source>GPSBabel feature type argument matching selected feature type (e.g. &apos;-w&apos; for waypoints, &apos;-t&apos; for tracks, and &apos;-r&apos; for routes)</source>
-        <translation type="unfinished"/>
+        <translation>Argument typu prvku GPSBabel odpovídající vybranému typu prvku (např. &apos;-w&apos; pro trasové body, &apos;-t&apos; pro stopy a &apos;-r&apos; pro trasy)</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsgpsdeviceoptions.cpp" line="75"/>
@@ -102836,7 +102891,7 @@ zelená = dobrá nebo 3D korekce
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
         <source>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zaškrtnuto, azimut hlášený GPS zařízením bude ignorován a azimut bude místo toho vypočítán podle úhlu mezi předchozími dvěma GPS polohami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
@@ -106343,7 +106398,9 @@ Opravdu chcete smazat schéma a všechny tyto objekty?</translation>
 
 The SAP HANA ODBC driver is a part of the SAP HANA Client,
 which can be found at https://tools.hana.ondemand.com/#hanatools.</source>
-        <translation type="unfinished"/>
+        <translation>Název ovladače SAP HANA ODBC.
+
+Ovladač SAP HANA ODBC je součástí klienta SAP HANA, který lze nalézt na adrese https://tools.hana.ondemand.com/#hanatools.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshananewconnection.cpp" line="75"/>
@@ -107108,7 +107165,7 @@ b) Na kartě Konfigurace můžete přidat svá přihlašovací údaje do metody 
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="92"/>
         <source>Apply fixes to unavailable layers and load them in the project if the new path is correct.</source>
-        <translation type="unfinished"/>
+        <translation>Opravit nedostupné vrstvy a načíst je do projektu, pokud je nová cesta správná.</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="487"/>
@@ -108004,7 +108061,7 @@ By default the algorithm will warn on errors. Optionally, the algorithm can be s
     <message>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="75"/>
         <source>The %1 grid shift file has been successfully installed. Please restart QGIS for this change to take effect.</source>
-        <translation type="unfinished"/>
+        <translation>Soubor s posunem mřížky %1 byl úspěšně nainstalován. Pro projevení této změny restartujte QGIS.</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="80"/>
@@ -108565,27 +108622,27 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="146"/>
         <source>Labels are placed exactly on the label anchor only, and no other fallback placements are permitted.</source>
-        <translation type="unfinished"/>
+        <translation>Popisky se umisťují přesně pouze na kotvu popisku a žádná jiná záložní umístění nejsou povolena.</translation>
     </message>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="150"/>
         <source>The label anchor is treated as a hint for the preferred label placement, but other placements close to the anchor point are permitted.</source>
-        <translation type="unfinished"/>
+        <translation>Kotva popisku je považována za vodítko pro preferované umístění popisku, ale povolena jsou i jiná umístění v blízkosti kotevního bodu.</translation>
     </message>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="162"/>
         <source>Labels are placed so that the start of their text is placed at the anchor point.</source>
-        <translation type="unfinished"/>
+        <translation>Popisky se umisťují tak, aby začátek jejich textu byl umístěn v kotevním bodě.</translation>
     </message>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="165"/>
         <source>Labels are placed so that the center of their text is placed at the anchor point.</source>
-        <translation type="unfinished"/>
+        <translation>Popisky se umisťují tak, aby střed jejich textu byl umístěn v kotevním bodě.</translation>
     </message>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="168"/>
         <source>Labels are placed so that the end of their text is placed at the anchor point.</source>
-        <translation type="unfinished"/>
+        <translation>Popisky se umisťují tak, aby konec jejich textu byl umístěn v kotevním bodě.</translation>
     </message>
     <message>
         <location filename="../src/gui/labeling/qgslabellineanchorwidget.cpp" line="171"/>
@@ -110432,7 +110489,7 @@ CTRL + kliknutí pro zobrazení odkazu</translation>
     <message>
         <location filename="../src/app/qgslayertreeviewlowaccuracyindicator.cpp" line="61"/>
         <source>%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy.</source>
-        <translation type="unfinished"/>
+        <translation>%1 je dynamický SRS, ale není nastavena žádná epocha souřadnic. Souřadnice jsou nejednoznačné a mají omezenou přesnost.</translation>
     </message>
 </context>
 <context>
@@ -112990,7 +113047,9 @@ Chyba analyzátoru:
         <source>Printing the layout resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
-        <translation type="unfinished"/>
+        <translation>Tisk rozvržení vedl k přetečení paměti.
+
+Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2270"/>
@@ -113028,7 +113087,9 @@ Tento soubor může být otevřen v jiné aplikaci.</translation>
         <source>Trying to create image %1 (%2×%3 @ %4dpi ) resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o vytvoření obrázku %1 (%2×%3 @ %4dpi) vedl k přetečení paměti.
+
+Zkuste prosím nižší rozlišení nebo menší velikost papíru.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2345"/>
@@ -113140,7 +113201,9 @@ Zkuste prosím nižší rozlišení nebo menší formát papíru.</translation>
         <source>Exporting the SVG resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
-        <translation type="unfinished"/>
+        <translation>Export SVG souboru vedl k přetečení paměti.
+
+Zkuste prosím nižší rozlišení nebo menší velikost papíru.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="2551"/>
@@ -113250,7 +113313,9 @@ Please try a lower resolution or a smaller paper size.</source>
         <source>Trying to create image of %2×%3 @ %4dpi resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o vytvoření obrázku o rozměrech %2×%3 s rozlišením %4 dpi vedl k přetečení paměti.
+
+Zkuste prosím nižší rozlišení nebo menší velikost papíru.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="1057"/>
@@ -113504,7 +113569,7 @@ Chyba vyhodnocení: %1</translation>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4059"/>
         <source>If you require a vector-based output file from QGIS it is suggested that you try exporting to PDF if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Pokud potřebujete vektorový výstupní soubor z QGIS, doporučuje se zkusit export do PDF, pokud výstup SVG není uspokojivý.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4074"/>
@@ -113514,7 +113579,7 @@ Chyba vyhodnocení: %1</translation>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4075"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended.</source>
-        <translation type="unfinished"/>
+        <translation>Pokročilé kompoziční efekty jako režimy prolínání nebo průhlednost vektorových vrstev jsou v tomto rozvržení zapnuty. Tyto efekty nelze vytisknout jako vektor. Doporučujeme tisk jako rastr.</translation>
     </message>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4076"/>
@@ -113649,7 +113714,7 @@ Chyba vyhodnocení: %1</translation>
     <message>
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4757"/>
         <source>The layout generated the following warnings. Please review and address these before proceeding with the layout export.</source>
-        <translation type="unfinished"/>
+        <translation>Rozvržení vygenerovalo následující varování. Před pokračováním v exportu rozvržení si je prosím projděte a vyřešte.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/layout/qgslayoutdesignerdialog.cpp" line="4782"/>
@@ -120759,7 +120824,7 @@ Načíst i tak?</translation>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="118"/>
         <source>Raster band %1 already has an associated attribute table loaded from &apos;%2&apos;. Are you sure you want to replace the existing raster attribute table?</source>
-        <translation type="unfinished"/>
+        <translation>Rastrový pás %1 již má přidruženou tabulku atributů načtenou z &apos;%2&apos;. Opravdu chcete nahradit existující tabulku atributů rastru?</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsloadrasterattributetabledialog.cpp" line="135"/>
@@ -121681,7 +121746,7 @@ Načíst i tak?</translation>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="3365"/>
         <source>Based on a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy.</source>
-        <translation type="unfinished"/>
+        <translation>Založeno na dynamickém SRS, ale není nastavena žádná souřadnicová epocha. Souřadnice jsou nejednoznačné a mají omezenou přesnost.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="3382"/>
@@ -122867,7 +122932,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="143"/>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="203"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table.</source>
-        <translation type="unfinished"/>
+        <translation>Žádný prvek nevybrán. Vyberte prosím prvek nástrojem výběru nebo v atributové tabulce.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="151"/>
@@ -122887,7 +122952,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="207"/>
         <source>Several features are selected. Please select only one feature to which a part should be added.</source>
-        <translation type="unfinished"/>
+        <translation>Je vybráno více prvků. Vyberte prosím pouze jeden prvek, ke kterému se část přidá.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="218"/>
@@ -122980,17 +123045,17 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <name>QgsMapToolCapture</name>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="508"/>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1345"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1348"/>
         <source>Select an option from the Shape Digitizing Toolbar in order to capture shapes</source>
         <translation>Vyberte možnost z panelu nástrojů Digitalizace tvarů pro zachycení tvarů</translation>
     </message>
     <message>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1318"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1321"/>
         <source>Cannot transform the point to the layer&apos;s coordinate system</source>
         <translation>Bod nelze transformovat do souřadného systému vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1371"/>
+        <location filename="../src/gui/maptools/qgsmaptoolcapture.cpp" line="1374"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Bod nelze transformovat do souřadného systému vrstvy</translation>
     </message>
@@ -125298,7 +125363,8 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
         <location filename="../src/gui/symbology/qgsmergedfeaturerendererwidget.cpp" line="43"/>
         <source>The merged feature renderer only applies to line and polygon layers. 
 &apos;%1&apos; is not a line or polygon layer and then cannot be displayed</source>
-        <translation type="unfinished"/>
+        <translation>Sloučený renderer prvků se vztahuje pouze na čárové a polygonové vrstvy.
+&apos;%1&apos; není čárová ani polygonová vrstva, a proto ji nelze zobrazit</translation>
     </message>
 </context>
 <context>
@@ -125422,7 +125488,7 @@ Pro správné vykreslení se doporučuje rastrová mapa.</translation>
     <message>
         <location filename="../src/ui/3d/qgsmesh3dpropswidget.ui"/>
         <source>Level of detail can only be set when mesh simplification is enabled (see Rendering tab in the Mesh Layer Properties)</source>
-        <translation type="unfinished"/>
+        <translation>Úroveň detailů lze nastavit pouze tehdy, je-li povoleno zjednodušení sítě (viz záložka Rendering ve vlastnostech vrstvy sítě)</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgsmesh3dpropswidget.ui"/>
@@ -126680,7 +126746,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Display the value from a vertical layer from the top (surface). The level is truncated to the maximum number of vertical layers for particular face.</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazí hodnotu ze svislé vrstvy shora (povrchu). Úroveň je zkrácena na maximální počet svislých vrstev pro danou plochu.</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -126695,7 +126761,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Display the value from a vertical layer from the bottom (bed). The level is truncated to the maximum number of vertical layers for particular face.</source>
-        <translation type="unfinished"/>
+        <translation>Zobrazí hodnotu ze svislé vrstvy odspodu (lože). Úroveň je zkrácena na maximální počet svislých vrstev pro danou plochu.</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -126715,7 +126781,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Averages values from multiple vertical layers from the top (surface). The level is truncated to the maximum number of vertical layers for particular face.</source>
-        <translation type="unfinished"/>
+        <translation>Průměruje hodnoty z více vertikálních vrstev shora (povrchu). Úroveň je zkrácena na maximální počet vertikálních vrstev pro danou plochu.</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -126725,7 +126791,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Averages values from multiple vertical layers from the bottom (bed). The level is truncated to the maximum number of vertical layers for particular face.</source>
-        <translation type="unfinished"/>
+        <translation>Průměruje hodnoty z více vertikálních vrstev od dna (lože). Úroveň je zkrácena na maximální počet vertikálních vrstev pro danou plochu.</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -126765,7 +126831,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Depth averaging method averages the values based on range defined relative to surface. The range is defined in the same length units as defined by model (e.g. meters)</source>
-        <translation type="unfinished"/>
+        <translation>Metoda průměrování hloubky průměruje hodnoty na základě rozsahu definovaného vzhledem k povrchu. Rozsah je definován ve stejných délkových jednotkách, jaké jsou definovány modelem (např. metry)</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -126785,7 +126851,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
         <source>Height averaging method averages the values based on range defined relative to bed elevation. The range is defined in the same length units as defined by model (e.g. meters)</source>
-        <translation type="unfinished"/>
+        <translation>Metoda průměrování výšky průměruje hodnoty na základě rozsahu definovaného vzhledem k nadmořské výšce dna. Rozsah je definován ve stejných délkových jednotkách, jaké jsou definovány modelem (např. metry)</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderer3daveragingwidgetbase.ui"/>
@@ -127258,7 +127324,7 @@ If the terrain has no value for the point, the default elevation will be used.</
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderervectorsettingswidgetbase.ui"/>
         <source>knots</source>
-        <translation type="unfinished"/>
+        <translation>uzly</translation>
     </message>
     <message>
         <location filename="../src/ui/mesh/qgsmeshrenderervectorsettingswidgetbase.ui"/>
@@ -130068,12 +130134,12 @@ enhancement</source>
 <context>
     <name>QgsNetworkAccessManager</name>
     <message>
-        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="417"/>
+        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="485"/>
         <source>Network request %1 timed out</source>
         <translation>Síťový požadavek %1 překročil časový limit</translation>
     </message>
     <message>
-        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="417"/>
+        <location filename="../src/core/network/qgsnetworkaccessmanager.cpp" line="485"/>
         <source>Network</source>
         <translation>Síť</translation>
     </message>
@@ -130794,7 +130860,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="140"/>
         <source>HTTP address of the WFS service, or landing page of a OGC API service&lt;br&gt;(an ending slash might be needed for some OGC API servers)</source>
-        <translation type="unfinished"/>
+        <translation>HTTP adresa služby WFS nebo vstupní stránka služby OGC API&lt;br&gt;(u některých serverů OGC API může být vyžadováno koncové lomítko)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="149"/>
@@ -130953,7 +131019,7 @@ b) Na kartě Konfigurace můžete přidat své přihlašovací údaje do metody 
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This might be necessary on some &lt;span style=&quot; font-weight:600;&quot;&gt;broken&lt;/span&gt; ESRI map servers when using WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toto může být nutné na některých &lt;span style=&quot; font-weight:600;&quot;&gt;nefunkčních&lt;/span&gt; mapových serverech ESRI při použití WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui"/>
@@ -132644,7 +132710,7 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="564"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a string of comma-separated values.</source>
-        <translation type="unfinished"/>
+        <translation>Pole &apos;%1&apos; z vrstvy %2 bylo převedeno ze seznamu na řetězec hodnot oddělených čárkami.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="605"/>
@@ -132685,7 +132751,7 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="738"/>
         <source>Field &apos;%1&apos; from layer %2 has been converted from a list to a JSON-formatted string value.</source>
-        <translation type="unfinished"/>
+        <translation>Pole &apos;%1&apos; z vrstvy %2 bylo převedeno ze seznamu na řetězcovou hodnotu ve formátu JSON.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="752"/>
@@ -133077,7 +133143,7 @@ Vždy síť: vždy načíst ze sítě a nekontrolovat, zda má mezipaměť platn
     <message>
         <location filename="../src/gui/providers/ogr/qgsogritemguiprovider.cpp" line="197"/>
         <source>The %1 &apos;%2&apos; cannot be deleted because it is in the current project as &apos;%3&apos;, remove it from the project and retry.</source>
-        <translation type="unfinished"/>
+        <translation>Objekt %1 &apos;%2&apos; nelze smazat, protože se v aktuálním projektu nachází jako &apos;%3&apos;. Odeberte jej z projektu a zkuste to znovu.</translation>
     </message>
 </context>
 <context>
@@ -135608,7 +135674,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>This specifies the maximum angular deviation (in radians) allowed for a series of points to be converted to a curve.</source>
-        <translation type="unfinished"/>
+        <translation>Toto určuje maximální úhlovou odchylku (v radiánech) povolenou pro převod série bodů do křivky.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -135648,7 +135714,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>In some cases more than one GDAL driver can be used to load the same vector format. Use the list below to specify which to use.</source>
-        <translation type="unfinished"/>
+        <translation>V některých případech lze použít více GDAL ovladačů k načtení stejného vektorového formátu. Použijte seznam níže pro určení, který se má použít.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -135673,7 +135739,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>If the inherent inaccuracy in a selected CRS exceeds this threshold a warning message will be shown</source>
-        <translation type="unfinished"/>
+        <translation>Pokud inherentní nepřesnost ve vybraném SRS překročí tuto prahovou hodnotu, zobrazí se varovná zpráva</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -135688,7 +135754,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</source>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <source>If checked, a warning icon will show next to any map layers with CRS accuracy warnings</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zaškrtnuto, zobrazí se vedle všech vrstev mapy s varováním ohledně přesnosti SRS ikona varování</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
@@ -136343,7 +136409,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui"/>
         <source>Database name, or service name (described in tnsnames.ora) if no host and port has been set</source>
-        <translation type="unfinished"/>
+        <translation>Název databáze nebo název služby (popsaný v souboru tnsnames.ora), pokud nebyl nastaven hostitel a port</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui"/>
@@ -136830,7 +136896,7 @@ Chyba: %3</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3502"/>
         <source>Cannot insert geometry metadata for table &apos;%1&apos; and geometry column &apos;%2&apos;. Both needs to be uppercase</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vložit geometrická metadata pro tabulku &apos;%1&apos; a geometrický sloupec &apos;%2&apos;. Oba musí být napsány velkými písmeny</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="3539"/>
@@ -138655,7 +138721,7 @@ Please search the list of installed plugins. You should find the plugin there, b
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metadata. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"/>
+        <translation>Odpověď serveru je 200 OK, ale neobsahuje metadata pluginů. To je pravděpodobně způsobeno adresou proxy nebo nesprávným URL repozitáře. Nastavení proxy můžete změnit v možnostech QGIS.</translation>
     </message>
     <message>
         <source>Plugin does not support Qt6 versions of QGIS</source>
@@ -139714,13 +139780,15 @@ enhancement</source>
         <location filename="../src/app/3d/qgspointcloud3dsymbolwidget.cpp" line="142"/>
         <source>The distance in pixels between the points of the smallest chunk to be rendered.
 Raising this value will result in a less detailed scene which can improve performance</source>
-        <translation type="unfinished"/>
+        <translation>Vzdálenost v pixelech mezi body nejmenšího segmentu, který má být vykreslen.
+Zvýšení této hodnoty povede k méně detailní scéně, což může zlepšit výkon</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgspointcloud3dsymbolwidget.cpp" line="143"/>
         <source>The maximum number of points that will be rendered simultaneously.
 Raising this value may allow missing chunks to be rendered while lowering it may improve performance</source>
-        <translation type="unfinished"/>
+        <translation>Maximální počet bodů, které budou vykresleny současně.
+Zvýšení této hodnoty může umožnit vykreslení chybějících částí, zatímco snížení může zlepšit výkon.</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgspointcloud3dsymbolwidget.cpp" line="147"/>
@@ -141238,7 +141306,8 @@ enhancement</source>
         <location filename="../src/gui/symbology/qgspointdisplacementrendererwidget.cpp" line="432"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a (single) point layer and cannot be displayed by the point displacement renderer.</source>
-        <translation type="unfinished"/>
+        <translation>Vykreslovač s přemístěním bodů se týká pouze (jednotlivých) bodových vrstev. 
+&apos;%1&apos; není (jednotlivá) bodová vrstva a nemůže být zobrazena pomocí vykreslovače s přemístěním bodů.</translation>
     </message>
 </context>
 <context>
@@ -142940,7 +143009,8 @@ SQL: %3</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
-        <translation type="unfinished"/>
+        <translation>Při načítání rastrových metadat pro %1 došlo k chybě, pokračuje se (možná velmi pomalá) analýza rastrových dat: %2
+Zvažte prosím přidání rastrových omezení pomocí funkce PostGIS AddRasterConstraints.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1251"/>
@@ -143746,7 +143816,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1003"/>
         <source>Verbose</source>
-        <translation type="unfinished"/>
+        <translation>Podrobný</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1004"/>
@@ -144522,12 +144592,12 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldMapParameterDefinitionWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="216"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="226"/>
         <source>Parent layer</source>
         <translation>Nadřazená vrstva</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="219"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="229"/>
         <source>None</source>
         <translation>Žádná</translation>
     </message>
@@ -144535,7 +144605,7 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingFieldMapWidgetWrapper</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="389"/>
+        <location filename="../src/gui/processing/qgsprocessingfieldmapwidgetwrapper.cpp" line="400"/>
         <source>an array of map items, each containing a &apos;name&apos;, &apos;type&apos; and &apos;expression&apos; values (and optional &apos;length&apos; and &apos;precision&apos; values).</source>
         <translation>pole položek mapy, z nichž každá obsahuje hodnoty &apos;name&apos;, &apos;type&apos; a &apos;expression&apos; (a volitelné hodnoty &apos;length&apos; a &apos;precision&apos;).</translation>
     </message>
@@ -146615,12 +146685,12 @@ SQL: %3</translation>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="767"/>
         <source>Trying to commit changes without a layer specified. This only works if the transaction mode is buffered</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o potvrzení změn bez zadané vrstvy. Toto funguje pouze v případě, že je transakční režim uložen do vyrovnávací paměti</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="793"/>
         <source>Trying to roll back changes without a layer specified. This only works if the transaction mode is buffered</source>
-        <translation type="unfinished"/>
+        <translation>Pokus o vrácení změn bez zadané vrstvy. Toto funguje pouze v případě, že je transakční režim uložen do vyrovnávací paměti</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="1744"/>
@@ -146790,7 +146860,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="4721"/>
         <source>Unable to save auxiliary storage file (&apos;%1&apos;). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze uložit soubor pomocného úložiště (&apos;%1&apos;). Projekt byl uložen, ale poslední změny pomocných dat nelze obnovit. Doporučuje se projekt znovu načíst.</translation>
     </message>
     <message>
         <location filename="../src/core/project/qgsproject.cpp" line="4767"/>
@@ -147152,7 +147222,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="202"/>
         <source>Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction.</source>
-        <translation type="unfinished"/>
+        <translation>Automatická transakční editace znamená, že na podporovaných zdrojích dat (databázích Postgres) je stav úprav všech tabulek, které pocházejí ze stejné databáze, synchronizován a proveden v transakci na straně serveru.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="203"/>
@@ -148919,7 +148989,7 @@ Pokračovat?</translation>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectionwidget.cpp" line="781"/>
         <source>The selected CRS is based on %1, which has a limited accuracy of &lt;b&gt;at best %2 meters&lt;/b&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Vybraný SRS je založen na %1, který má omezenou přesnost &lt;b&gt;maximálně %2 metrů&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectionwidget.cpp" line="785"/>
@@ -150627,7 +150697,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="623"/>
         <source>Error reading Raster Attribute Table table from file: number of fields and number of attributes do not match.</source>
-        <translation type="unfinished"/>
+        <translation>Chyba při čtení tabulky atributů rastru ze souboru: počet polí a počet atributů se neshodují.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="645"/>
@@ -150647,17 +150717,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="666"/>
         <source>The attribute table has some but not all the fields required for color definition (Red, Green, Blue).</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů obsahuje některá, ale ne všechna pole potřebná pro definici barvy (červená, zelená, modrá).</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="675"/>
         <source>The attribute table has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax).</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů obsahuje některá, ale ne všechna pole potřebná pro definici barevné křivky (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax).</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="679"/>
         <source>The attribute table has all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax) but no Min and Max field.</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů obsahuje všechna pole potřebná pro definici kapátka (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax), ale žádná pole Min a Max.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterattributetable.cpp" line="998"/>
@@ -151052,7 +151122,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="157"/>
         <source>The raster layer has no associated attribute tables, you can create a new attribute table or load one from a VAT.DBF file.</source>
-        <translation type="unfinished"/>
+        <translation>Rastrová vrstva nemá žádné přidružené tabulky atributů, můžete vytvořit novou tabulku atributů nebo ji načíst ze souboru VAT.DBF.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="204"/>
@@ -151104,7 +151174,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="323"/>
         <source>The attribute table does not seem to be valid and it may produce an unusable symbology, validation errors:&lt;br&gt;%1&lt;br&gt;</source>
-        <translation type="unfinished"/>
+        <translation>Tabulka atributů se zdá být neplatná a může způsobit nepoužitelnou symboliku, chyby validace:&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterattributetablewidget.cpp" line="326"/>
@@ -151268,7 +151338,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/raster/qgsrasterlayertemporalpropertieswidget.cpp" line="441"/>
         <source>Begin</source>
-        <translation type="unfinished"/>
+        <translation>Začít</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterlayertemporalpropertieswidget.cpp" line="443"/>
@@ -151834,7 +151904,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/raster/qgsrasterelevationpropertieswidgetbase.ui"/>
         <source>Lower </source>
-        <translation type="unfinished"/>
+        <translation>Nižší </translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrasterelevationpropertieswidgetbase.ui"/>
@@ -152469,7 +152539,7 @@ Klikněte na tlačíko nápovědy k získání platných možností vytváření
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="525"/>
         <source>NoData</source>
-        <translation type="unfinished"/>
+        <translation>ŽádnáData</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="751"/>
@@ -154196,7 +154266,7 @@ směrodatná od&amp;chylka ×</translation>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
         <source>When activated, filters restrict the option of subsequent filters based on the selection of a previous filter.</source>
-        <translation type="unfinished"/>
+        <translation>Po aktivaci filtry omezují možnosti následných filtrů na základě výběru předchozího filtru.</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgsrelationreferenceconfigdlgbase.ui"/>
@@ -154356,7 +154426,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, it is possible to add a feature without geometry to a spatial layer. Two &amp;quot;Add child feature&amp;quot; buttons are showed: with and without geometry.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pokud je zaškrtnuto, je možné do prostorové vrstvy přidat prvek bez geometrie. Zobrazí se dvě tlačítka „Přidat podřízený prvek“: s geometrií a bez geometrie.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrelationeditorconfigwidgetbase.ui"/>
@@ -156885,7 +156955,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsdataitems.cpp" line="178"/>
         <source>MultiPoints</source>
-        <translation type="unfinished"/>
+        <translation>Multibody</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsdataitems.cpp" line="183"/>
@@ -156946,7 +157016,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/gui/providers/sensorthings/qgssensorthingssourcewidget.cpp" line="611"/>
         <source>Entity</source>
-        <translation type="unfinished"/>
+        <translation>Entita</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/sensorthings/qgssensorthingssourcewidget.cpp" line="613"/>
@@ -157030,7 +157100,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsprovider.cpp" line="204"/>
         <source>Endpoint</source>
-        <translation type="unfinished"/>
+        <translation>Koncový bod</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsprovider.cpp" line="235"/>
@@ -157234,7 +157304,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/ui/qgssensorthingssourcewidgetbase.ui"/>
         <source>QgsSensorThingsSourceWidgetBase</source>
-        <translation type="unfinished"/>
+        <translation>QgsSensorThingsSourceWidgetBase</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssourcewidgetbase.ui"/>
@@ -157244,7 +157314,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/ui/qgssensorthingssourcewidgetbase.ui"/>
         <source>Expansions</source>
-        <translation type="unfinished"/>
+        <translation>Rozšíření</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssourcewidgetbase.ui"/>
@@ -157342,7 +157412,7 @@ and only the geometry column of the main typename can be used as the geometry co
     <message>
         <location filename="../src/gui/providers/sensorthings/qgssensorthingssubseteditor.cpp" line="88"/>
         <source>Modulo</source>
-        <translation type="unfinished"/>
+        <translation>Modulo</translation>
     </message>
     <message>
         <location filename="../src/gui/providers/sensorthings/qgssensorthingssubseteditor.cpp" line="90"/>
@@ -157406,17 +157476,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>eq</source>
-        <translation type="unfinished"/>
+        <translation>eq</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>le</source>
-        <translation type="unfinished"/>
+        <translation>le</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>and</source>
-        <translation type="unfinished"/>
+        <translation>a</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
@@ -157436,57 +157506,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>gt</source>
-        <translation type="unfinished"/>
+        <translation>gt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>ge</source>
-        <translation type="unfinished"/>
+        <translation>ge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>Arithmetic</source>
-        <translation type="unfinished"/>
+        <translation>Aritmetický</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>div</source>
-        <translation type="unfinished"/>
+        <translation>div</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>lt</source>
-        <translation type="unfinished"/>
+        <translation>lt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>sub</source>
-        <translation type="unfinished"/>
+        <translation>sub</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>not</source>
-        <translation type="unfinished"/>
+        <translation>není</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>mod</source>
-        <translation type="unfinished"/>
+        <translation>mod</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>Comparisons</source>
-        <translation type="unfinished"/>
+        <translation>Porovnání</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>mul</source>
-        <translation type="unfinished"/>
+        <translation>mul</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
         <source>ne</source>
-        <translation type="unfinished"/>
+        <translation>ne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssensorthingssubseteditorbase.ui"/>
@@ -158244,7 +158314,8 @@ enhancement</source>
         <location filename="../src/app/qgssnappingwidget.cpp" line="132"/>
         <source>Avoid Overlap on Active Layer.
 Beware that this option will be applied on all vertices of the edited geometries, even if outside the current view extent</source>
-        <translation type="unfinished"/>
+        <translation>Zabraňte překrývání v aktivní vrstvě.
+Upozorňujeme, že tato možnost bude použita na všechny vrcholy upravených geometrií, i když jsou mimo aktuální rozsah zobrazení</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingwidget.cpp" line="133"/>
@@ -159543,12 +159614,12 @@ zadejte prosím nové jméno:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Filters…</source>
-        <translation type="unfinished"/>
+        <translation>Filtry…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Filters:</source>
-        <translation type="unfinished"/>
+        <translation>Filtry:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -163057,7 +163128,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
 <context>
     <name>QgsTextFormatDialog</name>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2366"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2368"/>
         <source>Text Settings</source>
         <translation>Nastavení textu</translation>
     </message>
@@ -163184,7 +163255,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="82"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="739"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1986"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1988"/>
         <source>Text</source>
         <translation>Text</translation>
     </message>
@@ -163204,7 +163275,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
         <location filename="../src/gui/qgstextformatwidget.cpp" line="90"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="92"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="743"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1987"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1989"/>
         <source>Buffer</source>
         <translation>Obalová zóna</translation>
     </message>
@@ -163219,7 +163290,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
         <location filename="../src/gui/qgstextformatwidget.cpp" line="98"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="100"/>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="747"/>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1989"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1991"/>
         <source>Background</source>
         <translation>Pozadí</translation>
     </message>
@@ -163282,182 +163353,182 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
         <translation>Vybraný typ písma</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1597"/>
-        <source>Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1599"/>
-        <source>Arranges label candidates in a cluster around the feature&apos;s centroid, preferring placements directly over the centroid.</source>
-        <translation type="unfinished"/>
+        <source>Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature.</source>
+        <translation>Uspořádá kandidáty na popisky v kruhu ve směru hodinových ručiček kolem prvku, přičemž preferuje umístění v pravém horním rohu prvku.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1603"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1601"/>
+        <source>Arranges label candidates in a cluster around the feature&apos;s centroid, preferring placements directly over the centroid.</source>
+        <translation>Uspořádá kandidáty na popisky do shluku kolem centroidu prvku, přičemž preferuje umístění přímo nad centroidem.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1605"/>
         <source>Arranges label candidates directly over the feature or at a preset offset from the feature.</source>
         <translation>Uspořádá kandidáty na popisky přímo nad prvkem nebo s přednastaveným odsazením od prvku.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1605"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1607"/>
         <source>Arranges label candidates directly over the feature&apos;s centroid, or at a preset offset from the centroid.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1609"/>
-        <source>Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty na popisky přímo nad těžištěm prvku nebo s přednastaveným odsazením od těžiště.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1611"/>
+        <source>Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred.</source>
+        <translation>Uspořádá kandidáty na popisky rovnoběžně s obecnou čarou představující prvek. Upřednostňují se umístění, která překrývají rovnější části čáry.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1613"/>
         <source>Arranges label candidates parallel to a generalised line representing the polygon&apos;s perimeter. Placements which fall over straighter portions of the perimeter are preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty na popisky rovnoběžně s obecnou čarou představující obvod polygonu. Upřednostňují se umístění, která spadají přes rovnější části obvodu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1615"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1617"/>
         <source>Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1619"/>
-        <source>Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty podle zakřivení liniového prvku. Upřednostňují se umístění, která spadají přes rovnější části čáry.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextformatwidget.cpp" line="1621"/>
+        <source>Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred.</source>
+        <translation>Uspořádá kandidáty na popisky roztroušeně po polygonu. Popisky budou vždy umístěny vodorovně, s preferovaným umístěním dále od okrajů polygonu.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1623"/>
         <source>Label candidates are arranged horizontally along the length of the feature.</source>
         <translation>Kandidáti na popisky jsou uspořádáni vodorovně podél délky prvku.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1625"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1627"/>
         <source>Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon&apos;s orientation, with placements further from the edges of the polygon preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty na popisky roztroušeně po polygonu. Popisky jsou otočeny tak, aby respektovaly orientaci polygonu, s preferovaným umístěním dále od okrajů polygonu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1629"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1631"/>
         <source>Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature.</source>
-        <translation type="unfinished"/>
+        <translation>Kandidáti na popisky jsou umístěni na předem definovaných pozicích kolem objektů. Přednost se dává pozicím s největší kartografickou atraktivitou, např. vpravo nahoře a vpravo dole od objektu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1633"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1635"/>
         <source>Arranges candidates following the curvature of the feature&apos;s perimeter. Placements which fall over straighter portions of the perimeter are preferred.</source>
-        <translation type="unfinished"/>
+        <translation>Uspořádá kandidáty podle zakřivení obvodu prvku. Upřednostňují se umístění, která spadají přes rovnější části obvodu.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1637"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1639"/>
         <source>Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature.</source>
-        <translation type="unfinished"/>
+        <translation>Kandidáti na popisky se umisťují mimo objekty, přičemž se preferují umístění, která poskytují největší vizuální asociaci mezi popiskem a objektem.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1645"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1647"/>
         <source>No Change</source>
         <translation>Bez změny</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1646"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1648"/>
         <source>All Uppercase</source>
         <translation>Všechna velká písmena</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1647"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1649"/>
         <source>All Lowercase</source>
         <translation>Všechna malá písmena</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1651"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1653"/>
         <source>Small Caps</source>
         <translation>Malé kapitálky</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1652"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1654"/>
         <source>All Small Caps</source>
         <translation>Všechny malé kapitálky</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1654"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1656"/>
         <source>Title Case</source>
         <translation>Každé slovo velkým písmenem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1655"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1657"/>
         <source>Force First Letter to Capital</source>
         <translation>Vynutit velké první písmeno</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1837"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1839"/>
         <source>Size%1</source>
         <translation>Velikost%1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1837"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1839"/>
         <source> X</source>
         <translation> X</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1938"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1940"/>
         <source>File not found</source>
         <translation>Soubor nenalezen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="1985"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="1987"/>
         <source>Lowest Label Component</source>
         <translation>Slabý popisek komponent</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2078"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2080"/>
         <source>Overlapping labels will never be placed for the layer, even if it means some labels will be missing. (To see unplaced labels use the &quot;Show Unplaced Labels&quot; toolbar action.)</source>
-        <translation type="unfinished"/>
+        <translation>Překrývající se popisky nebudou pro vrstvu nikdy umístěny, i kdyby to znamenalo, že některé popisky budou chybět. (Chcete-li zobrazit neumístěné popisky, použijte akci „Zobrazit neumístěné popisky“ na panelu nástrojů.)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2081"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2083"/>
         <source>If a label cannot otherwise be placed for a feature then an overlapping label is permitted.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud nelze pro prvek umístit popisek jinak, je povolen překrývající se popisek.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2084"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2086"/>
         <source>Labels from this layer may freely overlap other labels or label obstacles without penalty.</source>
         <translation>Popisky z této vrstvy se mohou volně překrývat s jinými popisky nebo popisky překážek bez penalizace.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2150"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2152"/>
         <source>Save Text Format</source>
         <translation>Uložit textový formát</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2150"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2152"/>
         <source>Format with name &apos;%1&apos; already exists. Overwrite?</source>
         <translation>Formát s názvem &apos;%1&apos; již existuje. Přepsat?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2168"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2170"/>
         <source>Select SVG file</source>
         <translation>Vyberte SVG soubor</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2244"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2246"/>
         <source>Left of line</source>
         <translation>Vlevo od linie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2245"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2247"/>
         <source>Right of line</source>
         <translation>Vpravo od linie</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2249"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2251"/>
         <source>Above line</source>
         <translation>Nad linií</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2250"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2252"/>
         <source>Below line</source>
         <translation>Pod linií</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2261"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2263"/>
         <source>Substitutions</source>
         <translation>Náhrada</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgstextformatwidget.cpp" line="2283"/>
+        <location filename="../src/gui/qgstextformatwidget.cpp" line="2285"/>
         <source>Tab Positions</source>
         <translation>Tab pozice</translation>
     </message>
@@ -164296,7 +164367,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The Placement Mode option controls the overall placement of labels relative to their corresponding features.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Možnost Režim umístění řídí celkové umístění popisků vzhledem k odpovídajícím prvkům.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -164331,7 +164402,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>The overrun distance allows labels which extend past the start or end of line features. Increasing this distance can allow for labels to be shown for shorter line features.</source>
-        <translation type="unfinished"/>
+        <translation>Přesahující vzdálenost umožňuje zobrazení popisků, které přesahují začátek nebo konec liniových prvků. Zvětšení této vzdálenosti umožňuje zobrazení popisků i pro kratší liniové prvky.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -164391,7 +164462,7 @@ Láskavě vyberte skupinu nebo inteligentní skupinu, kterou chcete smazat.</tra
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
         <source>The overlap mode controls whether overlapping labels are permitted for features in the layer, and how they should be handled.</source>
-        <translation type="unfinished"/>
+        <translation>Režim překrývání určuje, zda jsou pro prvky ve vrstvě povoleny překrývající se popisky a jak by s nimi mělo být zacházeno.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextformatwidgetbase.ui"/>
@@ -166127,7 +166198,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="286"/>
         <source>Z values from the features will be used for elevation, and the terrain height will be ignored.</source>
-        <translation type="unfinished"/>
+        <translation>Hodnoty Z z prvků budou použity pro výšku a výška terénu bude ignorována.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="292"/>
@@ -166169,7 +166240,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="325"/>
         <source>The terrain will be sampled at every individual vertex before being added to the vertex&apos;s z value.</source>
-        <translation type="unfinished"/>
+        <translation>Terén bude vzorkován v každém jednotlivém vrcholu, než bude připočítán k hodnotě z vrcholu.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="330"/>
@@ -166179,7 +166250,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="330"/>
         <source>The terrain will be sampled once at the feature&apos;s centroid, with the centroid height being added to each vertex&apos;s z value.</source>
-        <translation type="unfinished"/>
+        <translation>Terén bude jednou vzorkován v těžišti prvku, přičemž výška těžiště bude přičtena k hodnotě z každého vrcholu.</translation>
     </message>
     <message>
         <location filename="../src/app/vector/qgsvectorelevationpropertieswidget.cpp" line="382"/>
@@ -166267,7 +166338,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
         <source>If checked, then features will be shown in profile charts using the same symbols or colors as they use on 2D maps.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zaškrtnuto, budou se prvky v profilových mapách zobrazovat stejnými symboly nebo barvami, jaké se používají na 2D mapách.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
@@ -166792,7 +166863,7 @@ Chyba byla: %2</translation>
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="845"/>
         <source>ERROR: %1 attribute value change(s) not applied. Data provider &apos;%2&apos; does not have ChangeFeatures or ChangeAttributeValues capabilities</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished"/>
+        <translation>CHYBA: %1 změna hodnoty atributu nebyla použita. Poskytovatel dat &apos;%2&apos; nemá funkce ChangeFeatures ani ChangeAttributeValues</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/vector/qgsvectorlayereditbuffer.cpp" line="853"/>
@@ -167857,7 +167928,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui"/>
         <source>Selections</source>
-        <translation type="unfinished"/>
+        <translation>Výběry</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui"/>
@@ -168183,7 +168254,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui"/>
         <source>If checked, any metadata present in the source layer will be copied to the output layer.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je zaškrtnuto, veškerá metadata přítomná ve zdrojové vrstvě budou zkopírována do výstupní vrstvy.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui"/>
@@ -169334,7 +169405,7 @@ Chyba byla: %2</translation>
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="342"/>
         <source>When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature.</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je prvek vázán k tomuto panelu, přetažením obdélníku a výběrem vrcholů na plátně vyberete pouze ty, které jsou vázané na prvek.</translation>
     </message>
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="371"/>
@@ -169644,7 +169715,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselectbase.ui"/>
         <source>Build a layer by referring to the current project&apos;s vector layer names and/or any configured embedded layer names as tables in the custom SQL query.</source>
-        <translation type="unfinished"/>
+        <translation>Vytvořit vrstvu odkazem na názvy vektorových vrstev aktuálního projektu a/nebo jakékoli nakonfigurované názvy vložených vrstev jako tabulky ve vlastním dotazu SQL.</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselectbase.ui"/>
@@ -169946,7 +170017,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="740"/>
         <source>The geometry field of a typename that is not the main typename is ignored in the selected fields.</source>
-        <translation type="unfinished"/>
+        <translation>Pole geometrie názvu typu, které není hlavním názvem typu, je ve vybraných polích ignorováno.</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="956"/>
@@ -170770,7 +170841,11 @@ This might be due to an incorrect WCS Server URL.
 Tag: %3
 Response was:
 %4</source>
-        <translation type="unfinished"/>
+        <translation>Nepodařilo se získat funkce WCS v očekávaném formátu (DTD): nenalezen žádný %1.
+Důvodem může být nesprávná adresa URL serveru WCS.
+Tag: %3
+Odpověď:
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="518"/>
@@ -170789,7 +170864,11 @@ This is probably due to an incorrect WCS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished"/>
+        <translation>Nemohu získat WCS schopnosti: %1 na řádku %2 sloupec %3
+To je zřejmě kvůli nesprávnému URL WCS Serveru.
+Odpověď byla:
+
+%4</translation>
     </message>
 </context>
 <context>
@@ -171586,7 +171665,7 @@ aktualizace síťové odpovědi pro konfiguraci ověřování selhala</translati
     <message>
         <location filename="../src/gui/vector/qgswmsdimensiondialog.cpp" line="37"/>
         <source>OAPIF supports &quot;Name&quot; and &quot;Date&quot; only. For &quot;WMS&quot;, &quot;Time&quot; and &quot;Elevation&quot; are predefined values according to OGC specifications but it can be user-defined.</source>
-        <translation type="unfinished"/>
+        <translation>OAPIF podporuje pouze „Název“ a „Datum“. Pro „WMS“ jsou „Čas“ a „Nadmořská výška“ předdefinované hodnoty podle specifikací OGC, ale lze je definovat i uživatelem.</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgswmsdimensiondialog.cpp" line="167"/>
@@ -171655,42 +171734,42 @@ aktualizace síťové odpovědi pro konfiguraci ověřování selhala</translati
 <context>
     <name>QgsWmsImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4309"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4329"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4336"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4340"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4365"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4324"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4344"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4351"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4355"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4384"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4309"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4324"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL: %3)</source>
         <translation>Chyba požadavku mapy (Stav: %1; Fráze důvodu: %2; URL:%3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4329"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4344"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>Vrácený obrázek je chybný [Typ-obsahu: %1; URL: %2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4336"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4351"/>
         <source>Map request error (Title: %1; Error: %2; URL: %3)</source>
         <translation>Chyba požadavku mapy (Nadpis:%1; Chyba:%2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4340"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4355"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL: %4)</source>
         <translation>Chyba požadavku mapy (Stav: %1; Odpověď: %2; Typ-obsahu: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4365"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4380"/>
         <source>Map request failed [error: %1 url: %2]</source>
         <translation>Požadavek mapy selhal [chyba:%1 url:%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4369"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4384"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Nezaznamenávám více než 100 chyb požadavků.</translation>
     </message>
@@ -171706,30 +171785,30 @@ aktualizace síťové odpovědi pro konfiguraci ověřování selhala</translati
 <context>
     <name>QgsWmsLegendDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4822"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4837"/>
         <source>Redirect loop detected: %1</source>
         <translation>Zjištěna přesměrovávací smyčka: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4823"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4849"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4838"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4864"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4895"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4910"/>
         <source>GetLegendGraphic request error</source>
         <translation>Chyba požadavku GetLegendGraphic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4897"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4912"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Stav: %1
 Reason phrase: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4905"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4920"/>
         <source>Returned legend image is flawed [URL: %1]</source>
         <translation>Vrácený obrázek legendy je chybný [URL: %1]</translation>
     </message>
@@ -171792,10 +171871,10 @@ Reason phrase: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="460"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1156"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1171"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3337"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3751"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1164"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1179"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3352"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3766"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
@@ -171815,417 +171894,417 @@ Reason phrase: %2</translation>
         <translation>Dlaždicová vrstva nebo mřížka nenalezena</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1138"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1146"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation><numerusform>, %n výpadek cache.</numerusform><numerusform>, %n výpadky cache.</numerusform><numerusform>, %n výpadků cache.</numerusform><numerusform>, %n výpadků cache.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1156"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1164"/>
         <source>image is NULL</source>
         <translation>obrázek je NULL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1171"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1179"/>
         <source>unexpected image size</source>
         <translation>neočekávaná velikost obrázku</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1761"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1762"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1769"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1770"/>
         <source>OpenStreetMap tiles</source>
         <translation>Dlaždice OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1763"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
         <source>OpenStreetMap is built by a community of mappers that contribute and maintain data about roads, trails, cafés, railway stations, and much more, all over the world.</source>
-        <translation type="unfinished"/>
+        <translation>OpenStreetMap je vytvořen komunitou maperů, kteří přispívají a spravují data o silnicích, stezkách, kavárnách, železničních stanicích a mnoha dalších místech po celém světě.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1766"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1774"/>
         <source>Open Data Commons Open Database License (ODbL)</source>
         <translation>Open Data Commons Open Database License (ODbL)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1770"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1778"/>
         <source>Base map and data from OpenStreetMap and OpenStreetMap Foundation (CC-BY-SA). © https://www.openstreetmap.org and contributors.</source>
         <translation>Základní mapa a data z OpenStreetMap a OpenStreetMap Foundation (CC-BY-SA). © https://www.openstreetmap.org a přispěvatelé.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1771"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1779"/>
         <source>Creative Commons Attribution-ShareAlike (CC-BY-SA)</source>
         <translation>Creative Commons Uveďte autora-ShareAlike (CC-BY-SA)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1774"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1782"/>
         <source>© OpenStreetMap and contributors (https://www.openstreetmap.org/copyright).</source>
         <translation>© OpenStreetMap a přispěvatelé (https://www.openstreetmap.org/copyright).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1785"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1793"/>
         <source>Source</source>
         <translation>Zdroj</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2030"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2045"/>
         <source>Dom Exception</source>
         <translation>Výjimka DOM</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2080"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2095"/>
         <source>Service Exception</source>
         <translation>Výjimka služby</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2085"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2100"/>
         <source>Request contains a format not offered by the server.</source>
         <translation>Požadavek obsahuje formát nenabízený serverem.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2089"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2104"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Požadavek obsahuje SRS, které není nabízeno serverem pro jednu nebo více vrstev.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2093"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2108"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Požadavek obsahuje SRS, které není nabízeno serverem pro jednu či více Vrstev.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2097"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2112"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>Požadavek GetMap pro vrstvu není nabízen serverem nebo požadavek GetFeatureInfo pro Vrstvu není zobrazen v mapě.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2102"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2117"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Požadavek pro Vrsvu ve Stylu není nabízen serverem.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2106"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2121"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>Požadavek GetFeatureInfo nelze aplikovat na Vrstvu, která není výslovně dotazovatelná.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2110"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2125"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>Požadavek GetFeatureInfo obsahuje neplatné hodnoty X nebo Y.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2114"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2129"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Hodnota (volitelného) parametru UpdateSequence v požadavku GetCapabilities odpovídá aktuální hodnotě &quot;service metadata update sequence number&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2119"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2134"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Hodnota (volitelného) parametru UpdateSequence v požadavku GetCapabities je větší než aktuální hodnota &quot;service metadata update sequence number&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2124"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Požadavek neobsahuje hodnotu &quot;sample dimension&quot;, server nenabízí žádnou výchozí hodnotu pro tento rozměr.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2129"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2144"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Požadavek neobsahuje platnou hodnotu &quot;sample dimension&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2133"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2148"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Požadavek pro volitelnou operaci, která není podporována serverem.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2154"/>
         <source>Request contains a time value that does not match any available layer in the server.</source>
         <translation>Požadavek obsahuje časovou hodnotu, která neodpovídá žádné dostupné vrstvě na serveru.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2141"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2156"/>
         <source>Request contains some parameter values that do not match any available layer in the server</source>
         <translation>Požadavek obsahuje některé hodnoty parametrů, které neodpovídají žádné dostupné vrstvě na serveru</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2145"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2160"/>
         <source>(No error code was reported)</source>
         <translation>(žádná chyba nehlášena)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2149"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2164"/>
         <source>(Unknown error code)</source>
         <translation>(neznámý kód chyby)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2152"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2167"/>
         <source>The WMS vendor also reported: </source>
         <translation>Poskytovatel WMS také nahlásil: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2353"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2546"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2737"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2905"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2368"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2561"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2752"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2920"/>
         <source>Property</source>
         <translation>Vlastnost</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2355"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2548"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2739"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2907"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2370"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2563"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2922"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2359"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2477"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2374"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2492"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2365"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
         <source>Visibility</source>
         <translation>Viditelnost</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2382"/>
         <source>Visible</source>
         <translation>Viditelné</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2382"/>
         <source>Hidden</source>
         <translation>Skryté</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2371"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2483"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2556"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2742"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2386"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2498"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2571"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2757"/>
         <source>Title</source>
         <translation>Nadpis</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2377"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2489"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2561"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2747"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2392"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2504"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2576"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2762"/>
         <source>Abstract</source>
         <translation>Abstrakt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2383"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2398"/>
         <source>Can Identify</source>
         <translation>Mohu rozpoznat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2385"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2391"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2406"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2769"/>
         <source>Yes</source>
         <translation>Ano</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2385"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2391"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2754"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2406"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2412"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2769"/>
         <source>No</source>
         <translation>Ne</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2389"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2404"/>
         <source>Can be Transparent</source>
         <translation>Může být rozpoznán</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2395"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2410"/>
         <source>Can Zoom In</source>
         <translation>Může být zvětšen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2401"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2416"/>
         <source>Cascade Count</source>
         <translation>Kaskádový počet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2407"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2422"/>
         <source>Fixed Width</source>
         <translation>Pevná šířka</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2413"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2428"/>
         <source>Fixed Height</source>
         <translation>Pevná výška</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2420"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2435"/>
         <source>Dimensions</source>
         <translation>Rozměry</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
         <source>Unit</source>
         <translation>Jednotka</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2423"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
         <source>Extent</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2435"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2450"/>
         <source>Metadata URLs</source>
         <translation>URL metadat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2453"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2438"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2453"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2451"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2466"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2473"/>
         <source>Available in CRS</source>
         <translation>Dostupné v SRS</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2460"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2475"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation><numerusform>(a %n více)</numerusform><numerusform>(a %n více)</numerusform><numerusform>(a %n více)</numerusform><numerusform>(a %n více)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2468"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2483"/>
         <source>Available in style</source>
         <translation>Dostupné ve stylu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2496"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2511"/>
         <source>LegendURLs</source>
         <translation>LegendURLs</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2522"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2537"/>
         <source>WMS Info</source>
         <translation>WMS informace</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2539"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2554"/>
         <source>Server Properties</source>
         <translation>Vlastnosti serveru</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3337"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3352"/>
         <source>Get feature info request error (Title: %1; Error: %2; URL: %3)</source>
         <translation>Chyba při požadavku na informace o prvku (Název: %1; Chyba: %2; URL: %3)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3537"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3552"/>
         <source>Result parsing failed. %n feature type(s) were guessed from gml (%2) but no features were parsed.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2673"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2688"/>
         <source>Selected Layers</source>
         <translation>Vybrané vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2688"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2703"/>
         <source>Other Layers</source>
         <translation>Jiné vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2531"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2546"/>
         <source>Tile Layer Properties</source>
         <translation>Vlastnosti dlaždicové vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2533"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2548"/>
         <source>Cache Stats</source>
         <translation>Statistiky vyrovnávací paměti</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2551"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
         <source>WMS Version</source>
         <translation>Verze WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2566"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
         <source>Keywords</source>
         <translation>Klíčová slova</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2571"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2586"/>
         <source>Online Resource</source>
         <translation>Online zdroj</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2576"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2591"/>
         <source>Contact Person</source>
         <translation>Kontaktní osoba</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2596"/>
         <source>Fees</source>
         <translation>Poplatky</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2586"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2601"/>
         <source>Access Constraints</source>
         <translation>Omezení přístupu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2649"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2664"/>
         <source>Image Formats</source>
         <translation>Formát obrazových dat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2641"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2655"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2656"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2670"/>
         <source>Identify Formats</source>
         <translation>Rozpoznat formáty</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2661"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2676"/>
         <source>Layer Count</source>
         <translation>Počet vrstev</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2609"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2624"/>
         <source>Tile Layer Count</source>
         <translation>Počet dlaždic vrstvy</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1136"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1144"/>
         <source>%n tile request(s) in background</source>
         <comment>tile request count</comment>
         <translation><numerusform>%n požadavek dlaždic v pozadí</numerusform><numerusform>%n požadavky dlaždic v pozadí</numerusform><numerusform>%n požadavků dlaždic v pozadí</numerusform><numerusform>%n požadavků dlaždic v pozadí</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1137"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1145"/>
         <source>, %n cache hit(s)</source>
         <comment>tile cache hits</comment>
         <translation><numerusform>, %n zásah cache</numerusform><numerusform>, %n zásahy cache</numerusform><numerusform>, %n zásahů cache</numerusform><numerusform>, %n zásahů cache</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1147"/>
         <source>, %n error(s).</source>
         <comment>errors</comment>
         <translation><numerusform>, %n chyba.</numerusform><numerusform>, %n chyby.</numerusform><numerusform>, %n chyb.</numerusform><numerusform>, %n chyb.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2031"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2046"/>
         <source>Could not get WMS Service Exception: %1 at line %2 column %3
 
 Response was:
@@ -172238,258 +172317,258 @@ Reakce byla:
 %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2591"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2606"/>
         <source>GetCapabilitiesUrl</source>
         <translation>GetCapabilitiesUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2595"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2610"/>
         <source>GetMapUrl</source>
         <translation>GetMapUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2597"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2601"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2605"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2612"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2616"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2620"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
         <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(inzerován ale ignorován)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2599"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2614"/>
         <source>GetFeatureInfoUrl</source>
         <translation>GetFeatureInfoUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2603"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2618"/>
         <source>GetLegendGraphic</source>
         <translation>GetLegendGraphic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2613"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2628"/>
         <source>GetTileUrl</source>
         <translation>GetTileUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2634"/>
         <source>Tile templates</source>
         <translation>Šablony dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2630"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2645"/>
         <source>FeatureInfo templates</source>
         <translation>FeatureInfo šablony</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2702"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2717"/>
         <source>Tileset Properties</source>
         <translation>Vlastnosti sady dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2711"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
         <source>Identifier</source>
         <translation>Identifikátor</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2711"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
         <source>Tile mode</source>
         <translation>Režim dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2718"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2733"/>
         <source>WMTS</source>
         <translation>WMTS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2722"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2737"/>
         <source>WMS-C</source>
         <translation>WMS-C</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2726"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2741"/>
         <source>XYZ</source>
         <translation>XYZ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2730"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2745"/>
         <source>Invalid tile mode</source>
         <translation>Neplatný režim dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2752"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2767"/>
         <source>Selected</source>
         <translation>Vybrané</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2758"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2773"/>
         <source>Available Styles</source>
         <translation>Dostupné styly</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2768"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2772"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2783"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2787"/>
         <source>CRS</source>
         <translation>SRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2774"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2789"/>
         <source>Bounding Box</source>
         <translation>Ohraničení</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2781"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2796"/>
         <source>Available Tilesets</source>
         <translation>Dostupné sady dlaždic</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Selected tile matrix set </source>
         <translation>Vybraná sada dlaždicové matice </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Scale</source>
         <translation>Měřítko</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Tile size [px]</source>
         <translation>Velikost dlaždice [pixely]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Tile size [mu]</source>
         <translation>Velikost dlaždice [map.jedn.]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Matrix size</source>
         <translation>Velikost matice</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2816"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2831"/>
         <source>Matrix extent [mu]</source>
         <translation>Rozsah matice [map.jedn.]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Bounds</source>
         <translation>Hranice</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Width</source>
         <translation>Šířka</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Height</source>
         <translation>Výška</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Top</source>
         <translation>Nahoře</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Left</source>
         <translation>Vlevo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Bottom</source>
         <translation>Dole</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2817"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2832"/>
         <source>Right</source>
         <translation>Napravo</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2848"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2863"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2887"/>
         <source>%n missing row(s)</source>
         <translation><numerusform>%n chybějící řádek</numerusform><numerusform>%n chybějící řádky</numerusform><numerusform>%n chybějících řádků</numerusform><numerusform>%n chybějících řádků</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2848"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2863"/>
         <source>Layer&apos;s upper bound: %1</source>
         <translation>Horní hranice vrstvy: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2860"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2875"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2899"/>
         <source>%n missing column(s)</source>
         <translation><numerusform>%n chybějící sloupec</numerusform><numerusform>%n chybějící sloupce</numerusform><numerusform>%n chybějících sloupců</numerusform><numerusform>%n chybějících sloupců</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2860"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2875"/>
         <source>Layer&apos;s left bound: %1</source>
         <translation>Levá hranice vrstvy: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2887"/>
         <source>Layer&apos;s lower bound: %1</source>
         <translation>Dolní hranice vrstvy: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2899"/>
         <source>Layer&apos;s right bound: %1</source>
         <translation>Pravá hranice vrstvy: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2900"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2915"/>
         <source>Cache stats</source>
         <translation>Statistiky vyrovnávací paměti</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2910"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2925"/>
         <source>Hits</source>
         <translation>Hits</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2913"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2928"/>
         <source>Misses</source>
         <translation>Omyly</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2916"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2931"/>
         <source>Errors</source>
         <translation>Chyby</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2969"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2984"/>
         <source>Format not supported</source>
         <translation>Formát není podporován</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2989"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3004"/>
         <source>Context not fully specified (extent was defined but width and/or height was not).</source>
         <translation>Kontext nebyl zcela specifikován (rozsah byl definován, ale šířka a/nebo výška nebyla).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3459"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3536"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3474"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3551"/>
         <source>Cannot identify</source>
         <translation>Nelze určit</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3725"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3740"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation>Map getfeatureinfo chyba %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3734"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3749"/>
         <source>Cannot parse getfeatureinfo: %1</source>
         <translation>Nemohu parsovat getfeatureinfo: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3749"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3764"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>Map getfeatureinfo chyba: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4219"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4234"/>
         <source>%1 of %2 bytes of GetLegendGraphic downloaded.</source>
         <translation>%1 of %2 bajtů z GetLegendGraphic staženo.</translation>
     </message>
@@ -172497,83 +172576,83 @@ Reakce byla:
 <context>
     <name>QgsWmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4549"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4564"/>
         <source>Tile request error</source>
         <translation>Chyba požadavku na dlaždice</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4549"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4564"/>
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>Stav: %1
 Reason phrase: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4568"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4633"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4706"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4724"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4732"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4583"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4648"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4721"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4739"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4747"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4669"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4684"/>
         <source>Access denied: %1</source>
         <translation>Přístup zamítnut: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4683"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4698"/>
         <source>%n tile request(s) in background</source>
         <comment>tile request count</comment>
         <translation><numerusform>%n požadavek dlaždic v pozadí</numerusform><numerusform>%n požadavky dlaždic v pozadí</numerusform><numerusform>%n požadavků dlaždic v pozadí</numerusform><numerusform>%n požadavků dlaždic v pozadí</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4684"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4699"/>
         <source>, %n cache hit(s)</source>
         <comment>tile cache hits</comment>
         <translation><numerusform>, %n zásah cache</numerusform><numerusform>, %n zásahy cache</numerusform><numerusform>, %n zásahů cache</numerusform><numerusform>, %n zásahů cache</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4686"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4701"/>
         <source>, %n error(s).</source>
         <comment>errors</comment>
         <translation><numerusform>, %n chyba.</numerusform><numerusform>, %n chyby.</numerusform><numerusform>, %n chyb.</numerusform><numerusform>, %n chyb.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4568"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4583"/>
         <source>Tile request error (Title: %1; Error: %2; URL: %3)</source>
         <translation>Chyba požadavku na dlaždice (Dlaždice: %1; Chyba: %2; URL: %3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4572"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4587"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4633"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4648"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>Vrácený obrázek je chybný [Typ-obsahu: %1; URL: %2]</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4685"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4700"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation><numerusform>, %n výpadek cache.</numerusform><numerusform>, %n výpadky cache.</numerusform><numerusform>, %n výpadků cache.</numerusform><numerusform>, %n výpadků cache.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4706"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4721"/>
         <source>Not logging more than 100 request errors.</source>
         <translation>Nezaznamenávám více než 100 chyb požadavků.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4724"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4739"/>
         <source>Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)</source>
         <translation>Chyba maximálního počtu opakování požadavku na dlaždici. %1 selhalo s požadavky na dlaždici %2 z tileRequest %3 (url: %4).</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4732"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4747"/>
         <source>repeat tileRequest %1 tile %2(retry %3)</source>
         <translation type="unfinished"/>
     </message>
@@ -172588,7 +172667,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/providers/wms/qgswmstsettingswidget.cpp" line="64"/>
         <source>The project does not have a temporal range set. Update the project temporal range via the Project Properties with valid values in order to use it here.</source>
-        <translation type="unfinished"/>
+        <translation>Projekt nemá nastavený časový rozsah. Aktualizujte časový rozsah projektu platnými hodnotami ve vlastnostech projektu, abyste jej zde mohli použít.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmstsettingswidget.cpp" line="111"/>
@@ -172656,7 +172735,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/qgswmstsettingswidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The static WMS-T options are disabled because the layer is set to &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt;. To enable them first disable &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamic Temporal Control&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Statické možnosti WMS-T jsou zakázány, protože vrstva je nastavena na &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamické časové řízení&lt;/span&gt;. Chcete-li je povolit, nejprve &lt;span style=&quot; font-weight:600;&quot;&gt;Dynamické časové řízení&lt;/span&gt; zakažte.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmstsettingswidgetbase.ui"/>
@@ -172681,7 +172760,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/qgswmstsettingswidgetbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;If the capabilities of this layer move out of this time range the range will be reset to layer&apos;s advertised default layer time range.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Pokud se možnosti této vrstvy posunou mimo tento časový rozsah, rozsah se resetuje na výchozí inzerovaný časový rozsah vrstvy.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmstsettingswidgetbase.ui"/>
@@ -174097,7 +174176,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui"/>
         <source>Number of smooth iterations. More iterations results in smoother geometries, at the expense of greatly increasing the number of vertices in those geometries.</source>
-        <translation type="unfinished"/>
+        <translation>Počet hladkých iterací. Více iterací vede k hladším geometriím, ale na úkor výrazného zvýšení počtu vrcholů v těchto geometriích.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui"/>
@@ -174107,7 +174186,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui"/>
         <source>Offset from existing vertices at which to insert smoothed vertices. Larger values result in &quot;looser&quot; smoothing, smaller values result in &quot;tight&quot; smoothing.</source>
-        <translation type="unfinished"/>
+        <translation>Odsazení od existujících vrcholů, kam se mají vložit vyhlazené vrcholy. Vyšší hodnoty vedou k „volnějšímu“ vyhlazování, menší hodnoty k „těsnějšímu“ vyhlazování.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui"/>
@@ -176540,7 +176619,7 @@ Reason phrase: %2</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
         <source>If enabled, the dash pattern sizes will be dynamically tweaked to ensure that the end of the line is represented by a complete dash element</source>
-        <translation type="unfinished"/>
+        <translation>Pokud je tato možnost povolena, velikosti čárkovaného vzoru budou dynamicky upravovány tak, aby konec čáry byl reprezentován kompletním prvkem čárkování</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui"/>
@@ -177476,12 +177555,12 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
 <context>
     <name>expression</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6682"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6677"/>
         <source>%1: Field not found %2</source>
         <translation>%1: Pole nenalezeno %2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6718"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6713"/>
         <source>%1: function cannot be evaluated without a context.</source>
         <translation>%1: funkce nemůže být bez kontextu vyhodnocena.</translation>
     </message>
@@ -177489,47 +177568,47 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6804"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6799"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6806"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6801"/>
         <source>Raster</source>
         <translation>Rastr</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6808"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6803"/>
         <source>Mesh</source>
         <translation>Síť (mesh)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6810"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
         <source>Vector Tile</source>
         <translation>Vektorová dlaždice</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6812"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
         <source>Plugin</source>
         <translation>Zásuvný modul</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6814"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
         <source>Annotation</source>
         <translation>Anotace</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6816"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
         <source>Point Cloud</source>
         <translation>Mračno bodů</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6818"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
         <source>Group</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6820"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
         <source>Tiled Scene</source>
         <translation>Dlaždicová scéna</translation>
     </message>
@@ -178151,7 +178230,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Aggregates data of an existing space time raster dataset using the time intervals of a second space time dataset</source>
-        <translation type="unfinished"/>
+        <translation>Agreguje data existující datové sady časoprostorového rastru s využitím časových intervalů druhé datové sady časoprostorového rastru</translation>
     </message>
     <message>
         <source>Aggregates temporally the maps of a space time raster dataset by a user defined granularity</source>
@@ -178183,7 +178262,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Assigns a color table from an existing raster or raster3d map to each raster map of the space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Přiřadí barevnou tabulku z existující rastrové nebo rastrové 3D mapy ke každé rastrové mapě časoprostorové rastrové datové sady</translation>
     </message>
     <message>
         <source>Assigns a predefined color table to each raster map of the space time raster dataset</source>
@@ -178331,11 +178410,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Calculates univariate statistics from the non-null cells for each registered 3D raster map of a space time 3D raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává univariační statistiky z nenulových buněk pro každou registrovanou 3D rastrovou mapu časoprostorové 3D rastrové sady dat</translation>
     </message>
     <message>
         <source>Calculates univariate statistics from the non-null cells for each registered raster map of a space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Vypočítává univariační statistiky z nenulových buněk pro každou registrovanou rastrovou mapu datové sady časoprostorového rastru</translation>
     </message>
     <message>
         <source>Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset</source>
@@ -178735,7 +178814,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Creates / modifies the color table for each raster map of the space time raster dataset according to user defined rules</source>
-        <translation type="unfinished"/>
+        <translation>Vytvoří/upraví tabulku barev pro každou rastrovou mapu časoprostorové rastrové datové sady podle uživatelem definovaných pravidel</translation>
     </message>
     <message>
         <source>Creates a latitude raster map</source>
@@ -179119,7 +179198,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Najít nejbližší prvek ve vektoru &apos;do&apos; pro prvky ve vektoru &apos;od&apos;. Do tabulky atributů vstupního vektoru &apos;od&apos; lze nahrát různé informace o tomto vztahu</translation>
     </message>
     <message>
         <source>Find shortest path on vector network</source>
@@ -179151,11 +179230,11 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
-        <translation type="unfinished"/>
+        <translation>Generování rastru kumulativních nákladů na přesun mezi lokalitami na základě vstupních rastrů nadmořské výšky a tření a souřadnic výchozího bodu (bodů)</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
-        <translation type="unfinished"/>
+        <translation>Generování rastru kumulativních nákladů na přesun mezi lokalitami na základě vstupních rastrů s výškou a třením a vektoru výchozího(ých) bodu(ů)</translation>
     </message>
     <message>
         <source>Generate surface</source>
@@ -179467,7 +179546,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished"/>
+        <translation>Nastavte každou výstupní buňku jako funkci hodnot přiřazených odpovídajícím buňkám ve vstupních rastrech</translation>
     </message>
     <message>
         <source>Manage datasets</source>
@@ -179583,7 +179662,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Observes specific locations in a space time raster dataset over a period of time using vector points</source>
-        <translation type="unfinished"/>
+        <translation>Pozoruje specifická místa v rastrové datové sadě časoprostoru v průběhu času pomocí vektorových bodů</translation>
     </message>
     <message>
         <source>Others</source>
@@ -179647,7 +179726,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset</source>
-        <translation type="unfinished"/>
+        <translation>Provádí různé agregační algoritmy z r.series na všech nebo podmnožině rastrových map v časoprostorové rastrové datové sadě</translation>
     </message>
     <message>
         <source>Performs spatio-temporal mapcalc expressions on temporally sampled maps of space time raster datasets</source>
@@ -179907,7 +179986,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Sample a space time raster dataset at specific coordinates and write the output to file using different layouts</source>
-        <translation type="unfinished"/>
+        <translation>Vzorkování datové sady časoprostorového rastru na specifických souřadnicích a zápis výstupu do souboru s použitím různých rozvržení</translation>
     </message>
     <message>
         <source>Sample raster at site locations</source>
@@ -179915,7 +179994,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout</source>
-        <translation type="unfinished"/>
+        <translation>Vzorkuje vstupní datovou sadu (datové sady) časoprostoru s ukázkovou datovou sadou časoprostoru a vypíše výsledek na standardní výstup</translation>
     </message>
     <message>
         <source>Sampling</source>
@@ -180506,7 +180585,7 @@ Zkontrolujte protokol zpracování frameworku a vyhledejte chyby.</translation>
     </message>
     <message>
         <source>Use convert all layers to convert a whole dataset. Supported output formats for this option are GPKG and GML.</source>
-        <translation type="unfinished"/>
+        <translation>Pro převod celé datové sady použijte příkaz „Převést všechny vrstvy“. Podporované výstupní formáty pro tuto možnost jsou GPKG a GML.</translation>
     </message>
     <message>
         <source>The algorithm converts simple features data between file formats.
@@ -180515,7 +180594,12 @@ Use convert all layers to convert a whole dataset.
 Supported output formats for this option are:
 - GPKG
 - GML</source>
-        <translation type="unfinished"/>
+        <translation>Algoritmus převádí jednoduchá data prvků mezi formáty souborů.
+
+Pomocí příkazu „Převést všechny vrstvy“ převedete celou datovou sadu.
+Podporované výstupní formáty pro tuto možnost jsou:
+- GPKG
+- GML</translation>
     </message>
 </context>
 <context>
@@ -181988,7 +182072,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="791"/>
         <source>The current feature being evaluated. This can be used with the &apos;attribute&apos; function to evaluate attribute values from the current feature.</source>
-        <translation type="unfinished"/>
+        <translation>Aktuálně vyhodnocovaný prvek. Tuto funkci lze použít s funkcí „attribute“ k vyhodnocení hodnot atributů z aktuálního prvku.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="792"/>
@@ -182113,7 +182197,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="824"/>
         <source>ID of current map destination. This will be &apos;canvas&apos; for canvas renders, and the item ID for layout map renders.</source>
-        <translation type="unfinished"/>
+        <translation>ID aktuálního cíle mapy. Pro rendery plátna to bude „canvas“ a pro rendery mapy rozvržení to bude ID položky.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="825"/>
@@ -182273,7 +182357,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="860"/>
         <source>Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20].</source>
-        <translation type="unfinished"/>
+        <translation>Úroveň přiblížení vektorové dlaždice vykreslované mapy (odvozená z aktuálního měřítka mapy). Obvykle v intervalu [0, 20].</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="861"/>
@@ -182318,7 +182402,7 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="870"/>
         <source>Last cursor position on the canvas in the current layers&apos;s geographical coordinates. QGIS Server: When used in a maptip expression for a raster layer, this variable holds the GetFeatureInfo position.</source>
-        <translation type="unfinished"/>
+        <translation>Poslední pozice kurzoru na plátně v zeměpisných souřadnicích aktuální vrstvy. QGIS Server: Při použití ve výrazu maptip pro rastrovou vrstvu tato proměnná obsahuje pozici GetFeatureInfo.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="873"/>
@@ -182373,12 +182457,12 @@ Algoritmus také umožňuje přeskupit pásma pro nově vytvořený rastr.</tran
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="899"/>
         <source>Current geometry ring number for feature being rendered (for polygon features only). The exterior ring has a value of 0.</source>
-        <translation type="unfinished"/>
+        <translation>Číslo aktuálního geometrického kruhu pro vykreslovaný prvek (pouze pro polygonové prvky). Vnější kruh má hodnotu 0.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="900"/>
         <source>Number of points in the rendered geometry&apos;s part. It is only meaningful for line geometries and for symbol layers that set this variable.</source>
-        <translation type="unfinished"/>
+        <translation>Počet bodů v části vykreslené geometrie. Má smysl pouze pro čárové geometrie a pro vrstvy symbolů, které tuto proměnnou nastavují.</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpression.cpp" line="901"/>

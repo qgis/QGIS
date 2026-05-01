@@ -6197,6 +6197,57 @@ class TestQgsExpression : public QObject
 
       QCOMPARE( QgsExpressionNodeLiteral( value ).dump(), expected );
     }
+
+    void testGeometryRetrieval()
+    {
+      QgsExpressionContext context;
+
+      QgsExpression exp = QgsExpression( QStringLiteral( "$geometry" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QVERIFY( QgsVariantUtils::isNull( exp.evaluate( &context ) ) );
+      exp = QgsExpression( QStringLiteral( "@geometry" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QVERIFY( QgsVariantUtils::isNull( exp.evaluate( &context ) ) );
+
+      // using geometry directly set on context
+      context.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt(@geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+
+      // using geometry via feature
+
+      context = QgsExpressionContext();
+      QgsFeature f;
+      f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 11, 22 ) ) );
+      context.setFeature( f );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (11 22)" ) );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt(@geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (11 22)" ) );
+
+      // geometry set directly should take precedence over the geometry from the feature
+      context.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+      exp = QgsExpression( QStringLiteral( "geom_to_wkt(@geometry)" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Point (1 2)" ) );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )

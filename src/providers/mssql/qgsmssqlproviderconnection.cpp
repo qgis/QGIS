@@ -383,7 +383,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsMssqlProviderConn
   const QgsDataSourceUri dsUri { uri() };
 
   // Defaults to false
-  const bool useGeometryColumnsOnly { !table.isEmpty() && ( dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) ) };
+  const bool useGeometryColumnsOnly { table.isEmpty() && ( dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) ) };
 
   // Defaults to true
   const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };

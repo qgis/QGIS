@@ -121,10 +121,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
         // Only adjust ellipsoid to CRS if it's not set to planimetric
         QgsProject::instance()->setCrs( mFirstCRS.horizontalCrs(), !planimetric );
         const QgsCoordinateReferenceSystem vertCrs = mFirstCRS.verticalCrs();
-        if ( vertCrs.isValid() )
-        {
-          QgsProject::instance()->setVerticalCrs( vertCrs );
-        }
+        QgsProject::instance()->setVerticalCrs( vertCrs );
         break;
       }
 

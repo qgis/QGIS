@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opACOS,
       opATAN,
       opEQ, // =
-      opNE, //!=
+      opNE, // !=
       opGT, // >
       opLT, // <
       opGE, // >=

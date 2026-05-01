@@ -43,7 +43,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bookworm trixie jammy noble plucky questing"))
+ifeq (,$(filter $(DISTRIBUTION),bookworm trixie jammy noble plucky questing resolute))
 	DISTRIBUTION := sid
 endif
 
@@ -104,7 +104,7 @@ CMAKE_OPTS := \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
 	-DPUSH_TO_CDASH=TRUE
 
-ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing resolute sid))
 CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
 endif
 
@@ -119,12 +119,12 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),sid trixie plucky questing))
+ifneq (,$(filter $(DISTRIBUTION),sid trixie plucky questing resolute))
 	CMAKE_OPTS += \
 		-DWITH_QTWEBKIT=FALSE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"trixie sid noble plucky questing"))
+ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing resolute))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 

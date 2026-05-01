@@ -1535,13 +1535,15 @@ bool QgsGeometry::intersects( const QgsRectangle &r ) const
     return true;
   }
 
-  // Workaround for issue issue GH #51429
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12 )
+  // Workaround for issue issue GH #51492
   // in case of multi polygon, intersection with an empty rect fails
   if ( flatType == Qgis::WkbType::MultiPolygon && r.isEmpty() )
   {
     const QgsPointXY center { r.xMinimum(), r.yMinimum() };
     return contains( QgsGeometry::fromPointXY( center ) );
   }
+#endif
 
   QgsGeometry g = fromRect( r );
   return intersects( g );
