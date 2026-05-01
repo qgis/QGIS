@@ -29,6 +29,7 @@
 class QgsCptCityColorRamp;
 class QgsCptCityDataItem;
 class QgsCptCitySelectionItem;
+class QgsSettingsEntryString;
 
 #define DEFAULT_CPTCITY_ARCHIVE "cpt-city-qgis-min"
 
@@ -40,6 +41,10 @@ class QgsCptCitySelectionItem;
 class CORE_EXPORT QgsCptCityArchive
 {
   public:
+    static const QgsSettingsEntryString *settingsCptCityBaseDir SIP_SKIP;
+
+    static const QgsSettingsEntryString *settingsCptCityArchiveName SIP_SKIP;
+
     QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 

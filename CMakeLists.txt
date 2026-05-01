@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.22.0)
+cmake_minimum_required(VERSION 3.22.0...4.3)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
@@ -9,9 +9,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.27")
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
-endif()
-if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.31")
-  cmake_policy(SET CMP0177 NEW)
 endif()
 
 # don't relink it only the shared object changes
@@ -81,6 +78,7 @@ message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
@@ -578,7 +576,7 @@ if(WITH_CORE)
   # search for Qt
 
   set(QT_VERSION_MAJOR 6)
-  set(QT_MIN_VERSION 6.6.0)
+  set(QT_MIN_VERSION 6.4.0)
   set(QT_VERSION_BASE "Qt6")
   set(QT_VERSION_BASE_LOWER "qt6")
 

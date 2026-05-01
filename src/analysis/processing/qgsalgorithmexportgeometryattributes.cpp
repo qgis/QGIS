@@ -91,7 +91,10 @@ bool QgsExportGeometryAttributesAlgorithm::prepareAlgorithm( const QVariantMap &
 {
   Q_UNUSED( parameters );
 
-  mProjectCrs = context.project()->crs();
+  if ( QgsProject *project = context.project() )
+  {
+    mProjectCrs = project->crs();
+  }
   return true;
 }
 

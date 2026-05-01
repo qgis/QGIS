@@ -1,0 +1,80 @@
+{
+  "name": "overlay_equals_exact",
+  "type": "function",
+  "groups": [
+    "GeometryGroup"
+  ],
+  "description": "Returns whether the current feature's geometry is point-by-point exactly equal to at least one feature's geometry from a target layer, or returns an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature's geometry. Note that the order of vertices matters.",
+  "arguments": [
+    {
+      "arg": "layer",
+      "description": "the layer whose overlay is checked"
+    },
+    {
+      "arg": "expression",
+      "description": "an optional expression to evaluate on the features from the target layer. If not set, the function will just return a boolean indicating whether there is at least one match.",
+      "optional": true
+    },
+    {
+      "arg": "filter",
+      "description": "an optional expression to filter the target features to check. If not set, all the features will be checked.",
+      "optional": true
+    },
+    {
+      "arg": "limit",
+      "description": "an optional integer to limit the number of matching features. If not set, all the matching features will be returned.",
+      "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": "false"
+    },
+    {
+      "arg": "backend",
+      "optional": true,
+      "default": "'QGIS'",
+      "description": "Geometry backend implementation: 'QGIS' or 'GEOS'. Both internal implementation uses fuzzy comparison with very low (1e-8) tolerance.<ul><li>'QGIS' works on 2D, 3D and 4D</li><li>'GEOS' works only on 2D components (Z or M components are ignored)</li></ul>."
+    }
+  ],
+  "examples": [
+    {
+      "expression": "overlay_equals_exact('regions')",
+      "returns": "TRUE if the current feature's geometry is exactly the same as the geometry of a region"
+    },
+    {
+      "expression": "overlay_equals_exact('regions', filter:= population > 10000)",
+      "returns": "TRUE if the current feature's geometry is exactly the same as the geometry of a region whose population is greater than 10000"
+    },
+    {
+      "expression": "overlay_equals_exact('regions', name, backend:='GEOS')",
+      "returns": "an array of names, for the regions exactly equal to the current feature (example with 'GEOS' backend)"
+    },
+    {
+      "expression": "array_to_string(overlay_equals_exact('regions', name))",
+      "returns": "a string as a comma separated list of names, for the regions exactly equal to the current feature"
+    },
+    {
+      "expression": "array_sort(overlay_equals_exact(layer:='regions', expression:=\"name\", filter:= population > 10000))",
+      "returns": "an ordered array of names, for the regions exactly equal to the current feature and with a population greater than 10000"
+    },
+    {
+      "expression": "overlay_equals_exact(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
+      "returns": "an array of geometries (in WKT), for up to two regions exactly equal to the current feature"
+    }
+  ],
+  "notes": "This function requires exact equality of geometries, meaning that the geometries 'LINESTRING( 0 0, 1 1 )' and 'LINESTRING( 1 1, 0 0 )' are different.",
+  "tags": [
+    "predicate",
+    "current",
+    "equals",
+    "equal",
+    "target",
+    "array",
+    "exactly",
+    "described",
+    "underlying",
+    "features"
+  ]
+}

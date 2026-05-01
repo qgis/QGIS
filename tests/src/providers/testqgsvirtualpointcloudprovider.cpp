@@ -104,11 +104,11 @@ void TestQgsVirtualPointCloudProvider::filters()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"vpc"_s );
   QVERIFY( metadata );
 
-  QCOMPARE( metadata->filters( Qgis::FileFilterType::PointCloud ), u"Virtual Point Clouds (*.vpc *.VPC)"_s );
+  QCOMPARE( metadata->filters( Qgis::FileFilterType::PointCloud ), u"Virtual Point Clouds (*.vpc *.VPC *.vpz *.VPZ)"_s );
   QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
-  QVERIFY( registryPointCloudFilters.contains( "(*.vpc *.VPC)" ) );
+  QVERIFY( registryPointCloudFilters.contains( "(*.vpc *.VPC *.vpz *.VPZ)" ) );
 }
 
 void TestQgsVirtualPointCloudProvider::encodeUri()
@@ -119,6 +119,9 @@ void TestQgsVirtualPointCloudProvider::encodeUri()
   QVariantMap parts;
   parts.insert( u"path"_s, u"/home/point_clouds/dataset.vpc"_s );
   QCOMPARE( metadata->encodeUri( parts ), u"/home/point_clouds/dataset.vpc"_s );
+
+  parts.insert( u"path"_s, u"/home/point_clouds/dataset.vpz"_s );
+  QCOMPARE( metadata->encodeUri( parts ), u"/home/point_clouds/dataset.vpz"_s );
 }
 
 void TestQgsVirtualPointCloudProvider::decodeUri()
@@ -126,8 +129,10 @@ void TestQgsVirtualPointCloudProvider::decodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"vpc"_s );
   QVERIFY( metadata );
 
-  const QVariantMap parts = metadata->decodeUri( u"/home/point_clouds/dataset.vpc"_s );
+  QVariantMap parts = metadata->decodeUri( u"/home/point_clouds/dataset.vpc"_s );
   QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/point_clouds/dataset.vpc"_s );
+  parts = metadata->decodeUri( u"/home/point_clouds/dataset.vpz"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/point_clouds/dataset.vpz"_s );
 }
 
 void TestQgsVirtualPointCloudProvider::absoluteRelativeUri()
@@ -140,6 +145,10 @@ void TestQgsVirtualPointCloudProvider::absoluteRelativeUri()
 
   QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + u"/point_clouds/virtual/tiles.vpc"_s;
   QString relativeUri = u"./point_clouds/virtual/tiles.vpc"_s;
+  QCOMPARE( metadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( metadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+  absoluteUri = QStringLiteral( TEST_DATA_DIR ) + u"/point_clouds/virtual/tiles.vpz"_s;
+  relativeUri = u"./point_clouds/virtual/tiles.vpz"_s;
   QCOMPARE( metadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( metadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
@@ -160,8 +169,20 @@ void TestQgsVirtualPointCloudProvider::preferredUri()
   QCOMPARE( candidates.at( 0 ).metadata()->key(), u"vpc"_s );
   QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"/home/test/dataset.vpz"_s );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"vpc"_s );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"/home/test/dataset.VPZ"_s );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"vpc"_s );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.vpc"_s, u"vpc"_s ) );
+  QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.vpz"_s, u"vpc"_s ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.vpc"_s, u"ogr"_s ) );
+  QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.vpz"_s, u"ogr"_s ) );
 }
 
 void TestQgsVirtualPointCloudProvider::layerTypesForUri()
@@ -170,6 +191,7 @@ void TestQgsVirtualPointCloudProvider::layerTypesForUri()
   QVERIFY( metadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
   QCOMPARE( metadata->validLayerTypesForUri( u"/home/test/cloud.vpc"_s ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( metadata->validLayerTypesForUri( u"/home/test/cloud.vpz"_s ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
   QCOMPARE( metadata->validLayerTypesForUri( u"/home/test/cloud.copc.laz"_s ), QList<Qgis::LayerType>() );
   QCOMPARE( metadata->validLayerTypesForUri( u"/home/test/ept.json"_s ), QList<Qgis::LayerType>() );
 }
@@ -177,6 +199,7 @@ void TestQgsVirtualPointCloudProvider::layerTypesForUri()
 void TestQgsVirtualPointCloudProvider::uriIsBlocklisted()
 {
   QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( u"/home/test/dataset.vpc"_s ) );
+  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( u"/home/test/dataset.vpz"_s ) );
 }
 
 void TestQgsVirtualPointCloudProvider::querySublayers()
@@ -193,16 +216,27 @@ void TestQgsVirtualPointCloudProvider::querySublayers()
   QVERIFY( res.empty() );
 
   // valid VPC layer
-  res = metadata->querySublayers( mTestDataDir + "/point_clouds/virtual/tiles.vpc" );
+  res = metadata->querySublayers( mTestDataDir + "point_clouds/virtual/tiles.vpc" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), u"tiles"_s );
-  QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "/point_clouds/virtual/tiles.vpc" );
+  QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "point_clouds/virtual/tiles.vpc" );
   QCOMPARE( res.at( 0 ).providerKey(), u"vpc"_s );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
 
   // make sure result is valid to load layer from
   QgsProviderSublayerDetails::LayerOptions options { QgsCoordinateTransformContext() };
   std::unique_ptr<QgsPointCloudLayer> ml( qgis::down_cast<QgsPointCloudLayer *>( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
+  res = metadata->querySublayers( mTestDataDir + "point_clouds/virtual/tiles.vpz" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), u"tiles"_s );
+  QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "point_clouds/virtual/tiles.vpz" );
+  QCOMPARE( res.at( 0 ).providerKey(), u"vpc"_s );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
+
+  // make sure result is valid to load layer from
+  ml.reset( qgis::down_cast<QgsPointCloudLayer *>( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 }
 
@@ -228,6 +262,20 @@ void TestQgsVirtualPointCloudProvider::validLayer()
   QCOMPARE( layer->pointCount(), 3365334 );
 
   QVERIFY( !layer->dataProvider()->index() );
+
+  layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + u"point_clouds/virtual/tiles.vpz"_s, u"layer"_s, u"vpc"_s );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( layer->crs().authid(), u"EPSG:5514"_s );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), -498328.32, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), -1205552.89, 0.1 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), -497853.64, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), -1205189.02, 0.1 );
+  QCOMPARE( layer->dataProvider()->polygonBounds().asMultiPolygon().size(), 18 );
+  QCOMPARE( layer->dataProvider()->pointCount(), 3365334 );
+  QCOMPARE( layer->pointCount(), 3365334 );
+
+  QVERIFY( !layer->dataProvider()->index() );
 }
 
 void TestQgsVirtualPointCloudProvider::attributes()
@@ -235,7 +283,45 @@ void TestQgsVirtualPointCloudProvider::attributes()
   auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + u"point_clouds/virtual/tiles.vpc"_s, u"layer"_s, u"vpc"_s );
   QVERIFY( layer->isValid() );
 
-  const QgsPointCloudAttributeCollection attributes = layer->attributes();
+  QgsPointCloudAttributeCollection attributes = layer->attributes();
+  QCOMPARE( attributes.count(), 16 );
+  QCOMPARE( attributes.at( 0 ).name(), u"X"_s );
+  QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );
+  QCOMPARE( attributes.at( 1 ).name(), u"Y"_s );
+  QCOMPARE( attributes.at( 1 ).type(), QgsPointCloudAttribute::Int32 );
+  QCOMPARE( attributes.at( 2 ).name(), u"Z"_s );
+  QCOMPARE( attributes.at( 2 ).type(), QgsPointCloudAttribute::Int32 );
+  QCOMPARE( attributes.at( 3 ).name(), u"Intensity"_s );
+  QCOMPARE( attributes.at( 3 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 4 ).name(), u"ReturnNumber"_s );
+  QCOMPARE( attributes.at( 4 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 5 ).name(), u"NumberOfReturns"_s );
+  QCOMPARE( attributes.at( 5 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 6 ).name(), u"ScanDirectionFlag"_s );
+  QCOMPARE( attributes.at( 6 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 7 ).name(), u"EdgeOfFlightLine"_s );
+  QCOMPARE( attributes.at( 7 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 8 ).name(), u"Classification"_s );
+  QCOMPARE( attributes.at( 8 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 9 ).name(), u"ScanAngleRank"_s );
+  QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Float );
+  QCOMPARE( attributes.at( 10 ).name(), u"UserData"_s );
+  QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 11 ).name(), u"PointSourceId"_s );
+  QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 12 ).name(), u"GpsTime"_s );
+  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Double );
+  QCOMPARE( attributes.at( 13 ).name(), u"Red"_s );
+  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 14 ).name(), u"Green"_s );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 15 ).name(), u"Blue"_s );
+  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
+
+  layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + u"point_clouds/virtual/tiles.vpz"_s, u"layer"_s, u"vpc"_s );
+  QVERIFY( layer->isValid() );
+
+  attributes = layer->attributes();
   QCOMPARE( attributes.count(), 16 );
   QCOMPARE( attributes.at( 0 ).name(), u"X"_s );
   QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );

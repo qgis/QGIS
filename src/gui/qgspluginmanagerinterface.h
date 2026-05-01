@@ -54,8 +54,12 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     //! add repository to the repository listWidget
     virtual void addToRepositoryList( const QMap<QString, QString> &repository ) = 0;
 
-    //! show the Plugin Manager window and optionally open tab tabIndex
-    virtual void showPluginManager( int tabIndex = -1 ) = 0;
+    /**
+     * Shows the Plugin Manager window and optionally open tab tabIndex and pre-fill search term.
+     *
+     * The \a searchTerm argument was added in QGIS 4.2
+     */
+    virtual void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) = 0;
 
     //! show the given message in the Plugin Manager internal message bar
     virtual void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 ) = 0;

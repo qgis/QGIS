@@ -204,6 +204,17 @@ class CORE_EXPORT QgsImageOperation
      */
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
 
+    /**
+     * Performs a flood fill operation on an image, replacing contiguous areas of the same color.
+     *
+     * \param image image to process
+     * \param startPoint the starting pixel coordinate for the fill
+     * \param newColor the color to fill the contiguous area with
+     * \param tolerance tolerance for color matching (0-255). A value of 0 means exact matches only.
+     * \param feedback optional feedback object for responsive cancellation
+     */
+    static QImage floodFill( const QImage &image, const QPoint &startPoint, const QColor &newColor, int tolerance = 0, QgsFeedback *feedback = nullptr );
+
   private:
     //for blocked operations
     enum LineOperationDirection

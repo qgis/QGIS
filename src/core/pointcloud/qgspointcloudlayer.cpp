@@ -1078,7 +1078,7 @@ bool QgsPointCloudLayer::rollBack()
     {
       const int position = pair.first;
       const QList<QgsPointCloudNodeId> &nodes = pair.second;
-      for ( const QgsPointCloudNodeId &n : nodes )
+      for ( QgsPointCloudNodeId n : nodes )
         emit chunkAttributeValuesChanged( n, position );
     }
   }
@@ -1095,7 +1095,7 @@ bool QgsPointCloudLayer::rollBack()
     mEditable = false;
     emit editingStopped();
 
-    for ( const QgsPointCloudNodeId &n : updatedNodes )
+    for ( QgsPointCloudNodeId n : updatedNodes )
       emit chunkAttributeValuesChanged( n, -1 );
 
     // emitting layerModified() is not required as that's done automatically
@@ -1140,7 +1140,7 @@ bool QgsPointCloudLayer::isModified() const
   }
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
+bool QgsPointCloudLayer::changeAttributeValue( QgsPointCloudNodeId n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
 {
   if ( mIsVpc )
     return false;
@@ -1289,5 +1289,18 @@ QgsPointCloudIndex QgsPointCloudLayer::overview() const
     return QgsPointCloudIndex();
 
   const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
-  return vpcProvider->overview();
+
+  if ( vpcProvider->overviews().isEmpty() )
+    return QgsPointCloudIndex();
+
+  return vpcProvider->overviews().first();
+}
+
+QVector<QgsPointCloudIndex> QgsPointCloudLayer::overviews() const
+{
+  if ( !mDataProvider || !mIsVpc )
+    return {};
+
+  const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
+  return vpcProvider->overviews();
 }

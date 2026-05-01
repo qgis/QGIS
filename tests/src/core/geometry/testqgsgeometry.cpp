@@ -501,55 +501,263 @@ void TestQgsGeometry::equality()
   // null geometries
   QVERIFY( !QgsGeometry().isExactlyEqual( QgsGeometry() ) );
 
-  // compare to null
-  QgsGeometry g1( std::make_unique<QgsPoint>( 1.0, 2.0 ) );
-  QVERIFY( !g1.isExactlyEqual( QgsGeometry() ) );
-  QVERIFY( !QgsGeometry().isExactlyEqual( g1 ) );
+  // ========= POINT
+  {
+    // compare to null
+    QgsGeometry g1 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
+    QVERIFY( !g1.isExactlyEqual( QgsGeometry() ) );
+    QVERIFY( !QgsGeometry().isExactlyEqual( g1 ) );
 
-  // compare implicitly shared copies
-  QgsGeometry g2( g1 );
-  QVERIFY( g2.isExactlyEqual( g1 ) );
-  QVERIFY( g1.isExactlyEqual( g2 ) );
-  QVERIFY( g1.isExactlyEqual( g1 ) );
+    // compare implicitly shared copies
+    QgsGeometry g2( g1 );
+    QVERIFY( g2.isExactlyEqual( g1 ) );
+    QVERIFY( g1.isExactlyEqual( g2 ) );
+    QVERIFY( g1.isExactlyEqual( g1 ) );
 
-  // equal geometry, but different internal data
-  g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
-  QVERIFY( g2.isExactlyEqual( g1 ) );
-  QVERIFY( g1.isExactlyEqual( g2 ) );
+    // equal geometry, but different internal data
+    g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
 
-  // tpopologically equal
-  g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ))" );
-  QVERIFY( g2.isTopologicallyEqual( g1 ) );
-  QVERIFY( g1.isTopologicallyEqual( g2 ) );
+    // topologically equal
+    g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
 
-  g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ), ( 3.0 2.0 ))" );
-  QVERIFY( !g2.isTopologicallyEqual( g1 ) );
-  QVERIFY( !g1.isTopologicallyEqual( g2 ) );
+    // topologically equal - duplicated data
+    g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ), ( 1.0 2.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
 
-  // fuzzy equal
-  g2 = QgsGeometry::fromWkt( "Point( 1.5 2.5 ))" );
-  QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
-  QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
-  QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
-  QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+    // topologically equal - not the same at all
+    g2 = QgsGeometry::fromWkt( "MultiPoint(( 1.0 2.0 ), ( -1.0 2.0 ))" );
+    QVERIFY( !g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( !g1.isTopologicallyEqual( g2 ) );
 
-  QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
-  QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+    // fuzzy equal
+    g2 = QgsGeometry::fromWkt( "Point( 1.5 2.5 ))" );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
 
-  // different dimensionality
-  g2 = QgsGeometry::fromWkt( "PointM( 1.0 2.0 3.0)" );
-  QVERIFY( !g2.isExactlyEqual( g1 ) );
-  QVERIFY( !g1.isExactlyEqual( g2 ) );
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
 
-  // different type
-  g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 3.0 4.0 )" );
-  QVERIFY( !g2.isExactlyEqual( g1 ) );
-  QVERIFY( !g1.isExactlyEqual( g2 ) );
+    // different dimensionality
+    g2 = QgsGeometry::fromWkt( "PointM( 1.0 2.0 3.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1 ) );
+    QVERIFY( !g1.isExactlyEqual( g2 ) );
 
-  // different direction
-  g1 = QgsGeometry::fromWkt( "LineString( 3.0 4.0, 1.0 2.0 )" );
-  QVERIFY( !g2.isExactlyEqual( g1 ) );
-  QVERIFY( !g1.isExactlyEqual( g2 ) );
+    // different type
+    g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 3.0 4.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1 ) );
+    QVERIFY( !g1.isExactlyEqual( g2 ) );
+  }
+
+  // ========= LINESTRING
+  {
+    // compare to null
+    QgsGeometry g1 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 10.0 20.0 )" );
+    QVERIFY( !g1.isExactlyEqual( QgsGeometry() ) );
+    QVERIFY( !QgsGeometry().isExactlyEqual( g1 ) );
+
+    // compare implicitly shared copies
+    QgsGeometry g2( g1 );
+    QVERIFY( g2.isExactlyEqual( g1 ) );
+    QVERIFY( g1.isExactlyEqual( g2 ) );
+    QVERIFY( g1.isExactlyEqual( g1 ) );
+
+    // equal geometry, but different internal data
+    g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 10.0 20.0 )" );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
+
+    // topologically equal
+    g2 = QgsGeometry::fromWkt( "MultiLineString(( 1.0 2.0, 10.0 20.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - duplicated data
+    g2 = QgsGeometry::fromWkt( "MultiLineString(( 1.0 2.0, 10.0 20.0 ), ( 1.0 2.0, 10.0 20.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - duplicated data inverted
+    g2 = QgsGeometry::fromWkt( "MultiLineString(( 1.0 2.0, 10.0 20.0 ), ( 10.0 20.0, 1.0 2.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - not the same at all
+    g2 = QgsGeometry::fromWkt( "MultiLineString(( 1.0 2.0, 10.0 20.0 ), ( -1.0 2.0, 10.0 20.0 ))" );
+    QVERIFY( !g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( !g1.isTopologicallyEqual( g2 ) );
+
+    // fuzzy equal
+    g2 = QgsGeometry::fromWkt( "LineString( 1.5 2.5, 10.5 20.5 )" );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+
+    // different dimensionality
+    g2 = QgsGeometry::fromWkt( "LineStringM( 1.0 2.0 3.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1 ) );
+    QVERIFY( !g1.isExactlyEqual( g2 ) );
+
+    // different type
+    g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0, 3.0 4.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1 ) );
+    QVERIFY( !g1.isExactlyEqual( g2 ) );
+
+    // different direction
+    g2 = QgsGeometry::fromWkt( "LineString( 10.0 20.0, 1.0 2.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1 ) );
+    QVERIFY( !g1.isExactlyEqual( g2 ) );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // ============ 3D
+    g1 = QgsGeometry::fromWkt( "LineStringZ( 1.0 2.0 3.0, 10.0 20.0 30.0 )" );
+
+    // equal geometry, but different internal data
+    g2 = QgsGeometry::fromWkt( "LineStringZ( 1.0 2.0 3.0, 10.0 20.0 30.0 )" );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
+
+    g2 = QgsGeometry::fromWkt( "LineStringZ( 1.0 2.0 3.0, 10.0 20.0 3.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
+
+    // topologically equal
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZ(( 1.0 2.0 3.0, 10.0 20.0 30.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - duplicated data
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZ(( 1.0 2.0 3.0, 10.0 20.0 30.0 ), ( 1.0 2.0 3.0, 10.0 20.0 30.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - different direction
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZ(( 10.0 20.0 30.0, 1.0 2.0 3.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - bad Z
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZ(( 1.0 2.0 3.0, 10.0 20.0 -1.0 ))" );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - not the same at all
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZ(( 1.0 2.0 3.0, 10.0 20.0 30.0 ), ( -1.0 2.0 3.0, 10.0 20.0 30.0 ))" );
+    QVERIFY( !g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( !g1.isTopologicallyEqual( g2 ) );
+
+    // fuzzy equal - good Z
+    g2 = QgsGeometry::fromWkt( "LineStringZ( 1.5 2.5 3.5, 10.5 20.5 30.5 )" );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - bad Z
+    g2 = QgsGeometry::fromWkt( "LineStringZ( 1.5 2.5 3.5, 10.5 20.5 -1.0 )" );
+    // QGIS fails as expected
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+
+    // ============ 3D+M
+    g1 = QgsGeometry::fromWkt( "LineStringZM( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0)" );
+
+    // equal geometry, but different internal data
+    g2 = QgsGeometry::fromWkt( "LineStringZM( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 )" );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
+
+    g2 = QgsGeometry::fromWkt( "LineStringZM( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 -1.0 )" );
+    QVERIFY( !g2.isExactlyEqual( g1, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g1.isExactlyEqual( g2, Qgis::GeometryBackend::QGIS ) );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isExactlyEqual( g1, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isExactlyEqual( g2, Qgis::GeometryBackend::GEOS ) );
+
+    // topologically equal
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZM(( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - duplicated data
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZM(( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 ), ( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - different direction
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZM(( 10.0 20.0 30.0 40.0, 1.0 2.0 3.0 4.0 ))" );
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - bad M
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZM(( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 -1.0 ))" );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( g1.isTopologicallyEqual( g2 ) );
+
+    // topologically equal - not the same at all
+    g2 = QgsGeometry::fromWkt( "MultiLineStringZM(( 1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 ), ( -1.0 2.0 3.0 4.0, 10.0 20.0 30.0 40.0 ))" );
+    QVERIFY( !g2.isTopologicallyEqual( g1 ) );
+    QVERIFY( !g1.isTopologicallyEqual( g2 ) );
+
+    // fuzzy equal - good M
+    g2 = QgsGeometry::fromWkt( "LineStringZM( 1.5 2.5 3.5 4.5, 10.5 20.5 30.5 40.5 )" );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.49, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - bad M
+    g2 = QgsGeometry::fromWkt( "LineStringZM( 1.5 2.5 3.5 4.5, 10.5 20.5 30.5 -1.0 )" );
+    // QGIS fails as expected
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.50, Qgis::GeometryBackend::QGIS ) );
+    QVERIFY( !g1.isFuzzyEqual( g2, 0.50, Qgis::GeometryBackend::QGIS ) );
+    // check passes because GEOS works only on 2D components
+    QVERIFY( g2.isFuzzyEqual( g1, 0.71, Qgis::GeometryBackend::GEOS ) );
+    QVERIFY( g1.isFuzzyEqual( g2, 0.71, Qgis::GeometryBackend::GEOS ) );
+
+    // fuzzy equal - below threshold
+    QVERIFY( !g2.isFuzzyEqual( g1, 0.70, Qgis::GeometryBackend::GEOS ) );
+  }
 }
 
 void TestQgsGeometry::vertexIterator()

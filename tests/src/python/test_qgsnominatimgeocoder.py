@@ -18,7 +18,6 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -30,10 +29,6 @@ class TestQgsNominatimGeocoder(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestQgsGeocoderLocatorFilter.com")
-        QCoreApplication.setApplicationName("TestQgsGeocoderLocatorFilter")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

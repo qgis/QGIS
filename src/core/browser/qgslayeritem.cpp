@@ -306,3 +306,8 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
 
   return { u };
 }
+
+QList<QgsLayerItem::LayerUriWithDetails> QgsLayerItem::layerUrisWithDetails() const
+{
+  return {};
+}

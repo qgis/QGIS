@@ -30,6 +30,34 @@
 
 using namespace Qt::StringLiterals;
 
+QString resolveAxisConflict( const QString &axisWithPossibleConflict, const QString &fixedAxis, bool isUpFixed )
+{
+  // mapping of original axis which clashes to suggested value, respecting right hand rule
+  static const QMap<QString, QString> rightHandRulesUpFixed = {
+    { u"x"_s, u"z"_s },
+    { u"-x"_s, u"-z"_s },
+    { u"y"_s, u"x"_s },
+    { u"-y"_s, u"-x"_s },
+    { u"z"_s, u"y"_s },
+    { u"-z"_s, u"-y"_s },
+  };
+  static const QMap<QString, QString> rightHandRulesForwardFixed = {
+    { u"x"_s, u"y"_s },
+    { u"-x"_s, u"-y"_s },
+    { u"y"_s, u"z"_s },
+    { u"-y"_s, u"-z"_s },
+    { u"z"_s, u"x"_s },
+    { u"-z"_s, u"-x"_s },
+  };
+
+  if ( fixedAxis.last( 1 ) == axisWithPossibleConflict.last( 1 ) )
+  {
+    return isUpFixed ? rightHandRulesUpFixed.value( axisWithPossibleConflict ) : rightHandRulesForwardFixed.value( axisWithPossibleConflict );
+  }
+  return QString();
+}
+
+
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
 {
@@ -62,6 +90,18 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   cboShape->addItem( tr( "3D Model" ), QVariant::fromValue( Qgis::Point3DShape::Model ) );
   cboShape->addItem( tr( "Billboard" ), QVariant::fromValue( Qgis::Point3DShape::Billboard ) );
 
+  for ( QComboBox *combo : { mComboModelUpAxis, mComboModelForwardAxis } )
+  {
+    combo->addItem( tr( "X" ), u"x"_s );
+    combo->addItem( tr( "Y" ), u"y"_s );
+    combo->addItem( tr( "Z" ), u"z"_s );
+    combo->addItem( tr( "-X" ), u"-x"_s );
+    combo->addItem( tr( "-Y" ), u"-y"_s );
+    combo->addItem( tr( "-Z" ), u"-z"_s );
+  }
+  mComboModelUpAxis->setCurrentIndex( mComboModelUpAxis->findData( "z" ) );
+  mComboModelForwardAxis->setCurrentIndex( mComboModelForwardAxis->findData( "y" ) );
+
   btnChangeSymbol->setSymbolType( Qgis::SymbolType::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
 
@@ -84,6 +124,30 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   // Sync between billboard height and TZ
   connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
   connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight, &QDoubleSpinBox::setValue );
+
+  connect( mComboModelUpAxis, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
+    // ensure up axis is different to forward axis
+    const QString upAxis = mComboModelUpAxis->currentData().toString();
+    const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
+    const QString resolvedAxisConflict = resolveAxisConflict( forwardAxis, upAxis, true );
+    if ( !resolvedAxisConflict.isEmpty() )
+    {
+      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( resolvedAxisConflict ) );
+    }
+
+    emit changed();
+  } );
+  connect( mComboModelForwardAxis, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
+    // ensure up axis is different to forward axis
+    const QString upAxis = mComboModelUpAxis->currentData().toString();
+    const QString forwardAxis = mComboModelForwardAxis->currentData().toString();
+    const QString resolvedAxisConflict = resolveAxisConflict( upAxis, forwardAxis, false );
+    if ( !resolvedAxisConflict.isEmpty() )
+    {
+      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( resolvedAxisConflict ) );
+    }
+    emit changed();
+  } );
 
   connect( mButtonDDScaleX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
   connect( mButtonDDScaleY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
@@ -110,7 +174,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
 
   cboShape->setCurrentIndex( cboShape->findData( QVariant::fromValue( pointSymbol->shape() ) ) );
-  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
+  mRenderingTechnique = Qgis::MaterialRenderingTechnique::InstancedPoints;
   bool forceNullMaterial = false;
   switch ( pointSymbol->shape() )
   {
@@ -143,7 +207,10 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       forceNullMaterial = ( pointSymbol->shapeProperties().contains( u"overwriteMaterial"_s ) && !pointSymbol->shapeProperties().value( u"overwriteMaterial"_s ).toBool() )
                           || !pointSymbol->materialSettings()
                           || pointSymbol->materialSettings()->type() == "null"_L1;
-      technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::TrianglesFromModel;
+
+      whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( pointSymbol->shapeProperty( u"upAxis"_s ).toString() ) );
+      whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( pointSymbol->shapeProperty( u"forwardAxis"_s ).toString() ) );
       break;
     }
     case Qgis::Point3DShape::Billboard:
@@ -151,14 +218,16 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       {
         btnChangeSymbol->setSymbol( pointSymbol->billboardSymbol()->clone() );
       }
-      technique = QgsMaterialSettingsRenderingTechnique::Points;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Billboards;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;
   }
 
   widgetMaterial->setSettings( pointSymbol->materialSettings(), layer );
-  widgetMaterial->setTechnique( technique );
+  widgetMaterial->setTechnique( mRenderingTechnique );
+  widgetMaterial->setFilterByTechnique( true );
+  emit renderingTechniqueChanged();
 
   if ( forceNullMaterial )
   {
@@ -226,6 +295,8 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       break;
     case Qgis::Point3DShape::Model:
       vm[u"model"_s] = lineEditModel->source();
+      vm[u"upAxis"_s] = mComboModelUpAxis->currentData().toString();
+      vm[u"forwardAxis"_s] = mComboModelForwardAxis->currentData().toString();
       break;
     case Qgis::Point3DShape::Billboard:
       sym->setBillboardSymbol( btnChangeSymbol->clonedSymbol<QgsMarkerSymbol>() );
@@ -246,7 +317,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
-  sym->setMaterialSettings( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings().release() );
   sym->setTransform( tr );
 
   QgsPropertyCollection ddp;
@@ -267,6 +338,11 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 QString QgsPoint3DSymbolWidget::symbolType() const
 {
   return u"point"_s;
+}
+
+Qgis::MaterialRenderingTechnique QgsPoint3DSymbolWidget::renderingTechnique() const
+{
+  return mRenderingTechnique;
 }
 
 void QgsPoint3DSymbolWidget::onShapeChanged()
@@ -290,12 +366,16 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
     << labelBillboardHeight
     << spinBillboardHeight
     << labelBillboardSymbol
-    << btnChangeSymbol;
+    << btnChangeSymbol
+    << mComboModelForwardAxis
+    << mComboModelUpAxis
+    << labelUpAxis
+    << labelForwardAxis;
 
   materialsGroupBox->show();
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
-  QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
+  mRenderingTechnique = Qgis::MaterialRenderingTechnique::InstancedPoints;
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
@@ -317,21 +397,23 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       activeWidgets << labelRadius << spinRadius << labelMinorRadius << spinMinorRadius;
       break;
     case Qgis::Point3DShape::Model:
-      activeWidgets << labelModel << lineEditModel;
-      technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
+      activeWidgets << labelModel << lineEditModel << mComboModelForwardAxis << mComboModelUpAxis << labelUpAxis << labelForwardAxis;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::TrianglesFromModel;
       break;
     case Qgis::Point3DShape::Billboard:
       activeWidgets << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
       // Always hide material and transformationwidget for billboard
       materialsGroupBox->hide();
       transformationWidget->hide();
-      technique = QgsMaterialSettingsRenderingTechnique::Points;
+      mRenderingTechnique = Qgis::MaterialRenderingTechnique::Billboards;
       break;
     case Qgis::Point3DShape::ExtrudedText:
       break;
   }
 
-  widgetMaterial->setTechnique( technique );
+  widgetMaterial->setTechnique( mRenderingTechnique );
+  widgetMaterial->setFilterByTechnique( true );
+  emit renderingTechniqueChanged();
 
   if ( cboShape->currentIndex() == 6 )
   {

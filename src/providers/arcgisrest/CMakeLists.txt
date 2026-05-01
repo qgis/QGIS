@@ -8,6 +8,7 @@ set (AFS_SRCS
 )
 if (WITH_GUI)
   set(AFS_GUI_SRCS
+    qgsarcgisimageserversourcewidget.cpp
     qgsarcgisrestdataitemguiprovider.cpp
     qgsarcgisrestprovidergui.cpp
     qgsarcgisrestsourceselect.cpp
@@ -16,6 +17,7 @@ if (WITH_GUI)
   )
 
   set(AFS_UIS
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisimageserversourcewidgetbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsnewarcgisrestconnectionbase.ui
@@ -127,6 +129,47 @@ else()
   )
 
   install (TARGETS provider_arcgismapserver
+    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
+  )
+endif()
+
+
+###############################################################################
+
+set (IMS_SRCS
+  qgsimageserverprovider.cpp
+)
+
+add_library (provider_arcgisimageserver_a STATIC ${IMS_SRCS})
+
+target_include_directories(provider_arcgisimageserver_a PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
+)
+
+# We use private headers from core that need this
+target_compile_definitions(provider_arcgisimageserver_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
+target_link_libraries (provider_arcgisimageserver_a
+  qgis_core
+  ${QCA_LIBRARY}
+)
+
+if (FORCE_STATIC_LIBS)
+  # for (external) mobile apps to be able to pick up provider for linking
+  install (TARGETS provider_arcgisimageserver_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+else()
+  add_library(provider_arcgisimageserver MODULE ${IMS_SRCS})
+
+  # We use private headers from core that need this
+  target_compile_definitions(provider_arcgisimageserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
+  target_link_libraries(provider_arcgisimageserver
+    qgis_core
+    ${QCA_LIBRARY}
+  )
+
+  install (TARGETS provider_arcgisimageserver
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
   )

@@ -17,11 +17,16 @@ import unittest
 from qgis.core import (
     Qgis,
     QgsBarChartPlot,
+    QgsCategorizedSymbolRenderer,
+    QgsClassificationFixedInterval,
+    QgsClassificationPrettyBreaks,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsFillSymbol,
     QgsFontUtils,
     QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
     QgsLayout,
     QgsLayoutItemChart,
     QgsLayoutItemMap,
@@ -34,6 +39,10 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsRendererCategory,
+    QgsRendererRange,
+    QgsRuleBasedRenderer,
+    QgsSimpleMarkerSymbolLayer,
     QgsTextFormat,
     QgsVectorLayer,
 )
@@ -412,6 +421,459 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(chart_item_restored.sortFeatures())
         self.assertEqual(chart_item_restored.sortExpression(), '"int"')
         self.assertFalse(chart_item_restored.sortAscending())
+
+    def test_categorized_renderer(self):
+        """
+        Test rendering a bar chart using a vector layer categorized renderer
+        """
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("ESPG:4326"))
+
+        layer = QgsVectorLayer(
+            "Point?crs=EPSG:4326&field=category:string&field=value:double",
+            "test",
+            "memory",
+        )
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry(QgsPoint(10, 10)))
+        f.setAttributes(["category_a", 10.0])
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry(QgsPoint(0, 0)))
+        f2.setAttributes(["category_b", 5.0])
+        f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry(QgsPoint(-10, -10)))
+        f3.setAttributes(["category_c", 3.0])
+        f4 = QgsFeature()
+        f4.setAttributes(["category_b", 6.0])
+        f5 = QgsFeature()
+        f5.setAttributes(["category_a", 11.0])
+        assert provider.addFeatures([f, f2, f3, f4, f5])
+        assert layer.featureCount() == 5
+
+        QgsProject.instance().addMapLayer(layer)
+
+        cats = []
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        sym1.changeSymbolLayer(0, l1)
+        cats.append(QgsRendererCategory("category_a", sym1, "Category 'A'"))
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        sym2.changeSymbolLayer(0, l2)
+        cats.append(QgsRendererCategory("category_b", sym2, 'Category "B"'))
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        sym3.changeSymbolLayer(0, l3)
+        cats.append(QgsRendererCategory("category_c", sym3, "Category +C+"))
+
+        renderer = QgsCategorizedSymbolRenderer("category", cats)
+        layer.setRenderer(renderer)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        chart_item = QgsLayoutItemChart(layout)
+        layout.addLayoutItem(chart_item)
+        chart_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        plot = QgsBarChartPlot()
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.xAxis().setTextFormat(format)
+
+        plot.setYMaximum(5)
+        plot.yAxis().setGridIntervalMajor(5)
+        plot.yAxis().setGridIntervalMinor(1)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.yAxis().setTextFormat(format)
+        plot.yAxis().setLabelInterval(1)
+
+        # set bar series symbol
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#000000",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(0, series_symbol)
+
+        chart_item.setPlot(plot)
+
+        series_details = QgsLayoutItemChart.SeriesDetails("Series 1")
+        series_details.setXExpression("")
+        series_details.setYExpression("")
+        chart_item.setSeriesList([series_details])
+
+        chart_item.setSourceLayer(layer)
+        chart_item.setGenerateCategoriesFromRenderer(True)
+        chart_item.setApplyRendererStyle(False)
+
+        self.assertTrue(self.render_layout_check("categorized_renderer", layout))
+
+        chart_item.setApplyRendererStyle(True)
+
+        self.assertTrue(
+            self.render_layout_check("categorized_renderer_with_style", layout)
+        )
+
+    def test_graduated_renderer(self):
+        """
+        Test rendering a bar chart using a vector layer graduated renderer
+        """
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("ESPG:4326"))
+
+        layer = QgsVectorLayer(
+            "Point?crs=EPSG:4326&field=category:string&field=value:double",
+            "test",
+            "memory",
+        )
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry(QgsPoint(10, 10)))
+        f.setAttributes(["category_a", 10.0])
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry(QgsPoint(0, 0)))
+        f2.setAttributes(["category_b", 5.0])
+        f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry(QgsPoint(-10, -10)))
+        f3.setAttributes(["category_c", 3.0])
+        f4 = QgsFeature()
+        f4.setAttributes(["category_b", 6.0])
+        f5 = QgsFeature()
+        f5.setAttributes(["category_a", 11.0])
+        assert provider.addFeatures([f, f2, f3, f4, f5])
+        assert layer.featureCount() == 5
+
+        QgsProject.instance().addMapLayer(layer)
+
+        renderer = QgsGraduatedSymbolRenderer()
+
+        ramp = QgsGradientColorRamp(QColor(255, 0, 0), QColor(0, 0, 255))
+        renderer.setSourceColorRamp(ramp)
+        renderer.setClassificationMethod(QgsClassificationPrettyBreaks())
+
+        symbol = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        symbol.changeSymbolLayer(0, l1)
+        renderer.setSourceSymbol(symbol.clone())
+
+        renderer.setClassAttribute("value")
+        renderer.updateClasses(layer, 4)
+
+        layer.setRenderer(renderer)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        chart_item = QgsLayoutItemChart(layout)
+        layout.addLayoutItem(chart_item)
+        chart_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        plot = QgsBarChartPlot()
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.xAxis().setTextFormat(format)
+
+        plot.setYMaximum(5)
+        plot.yAxis().setGridIntervalMajor(5)
+        plot.yAxis().setGridIntervalMinor(1)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.yAxis().setTextFormat(format)
+        plot.yAxis().setLabelInterval(1)
+
+        # set bar series symbol
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#000000",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(0, series_symbol)
+
+        chart_item.setPlot(plot)
+
+        series_details = QgsLayoutItemChart.SeriesDetails("Series 1")
+        series_details.setXExpression("")
+        series_details.setYExpression("")
+        chart_item.setSeriesList([series_details])
+
+        chart_item.setSourceLayer(layer)
+        chart_item.setGenerateCategoriesFromRenderer(True)
+        chart_item.setApplyRendererStyle(False)
+
+        self.assertTrue(self.render_layout_check("graduated_renderer", layout))
+
+        chart_item.setApplyRendererStyle(True)
+
+        self.assertTrue(
+            self.render_layout_check("graduated_renderer_with_style", layout)
+        )
+
+    def test_rule_based_renderer(self):
+        """
+        Test rendering a bar chart using a vector layer rule-based renderer
+        """
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("ESPG:4326"))
+
+        layer = QgsVectorLayer(
+            "Point?crs=EPSG:4326&field=category:string&field=value:double",
+            "test",
+            "memory",
+        )
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry(QgsPoint(10, 10)))
+        f.setAttributes(["category_a", 10.0])
+        f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry(QgsPoint(0, 0)))
+        f2.setAttributes(["category_b", 5.0])
+        f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry(QgsPoint(-10, -10)))
+        f3.setAttributes(["category_c", 3.0])
+        f4 = QgsFeature()
+        f4.setAttributes(["category_b", 6.0])
+        f5 = QgsFeature()
+        f5.setAttributes(["category_a", 11.0])
+        assert provider.addFeatures([f, f2, f3, f4, f5])
+        assert layer.featureCount() == 5
+
+        QgsProject.instance().addMapLayer(layer)
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+
+        sym1 = QgsMarkerSymbol()
+        l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l1.setColor(QColor(255, 0, 0))
+        sym1.changeSymbolLayer(0, l1)
+        root_rule.appendChild(
+            QgsRuleBasedRenderer.Rule(
+                sym1,
+                filterExp="category='category_a'",
+                label="Cat. 'A'",
+                description="Category A",
+            )
+        )
+
+        sym2 = QgsMarkerSymbol()
+        l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l2.setColor(QColor(0, 255, 0))
+        sym2.changeSymbolLayer(0, l2)
+        root_rule.appendChild(
+            QgsRuleBasedRenderer.Rule(
+                sym2,
+                filterExp="category='category_b'",
+                label='Cat. "B"',
+                description="Category B",
+            )
+        )
+
+        sym3 = QgsMarkerSymbol()
+        l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 5)
+        l3.setColor(QColor(0, 0, 255))
+        sym3.changeSymbolLayer(0, l3)
+        root_rule.appendChild(
+            QgsRuleBasedRenderer.Rule(
+                sym3,
+                filterExp="category='category_c'",
+                label="Cat. +C+",
+                description="Category C",
+            )
+        )
+
+        renderer = QgsRuleBasedRenderer(root_rule)
+        layer.setRenderer(renderer)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        chart_item = QgsLayoutItemChart(layout)
+        layout.addLayoutItem(chart_item)
+        chart_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        plot = QgsBarChartPlot()
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.xAxis().setTextFormat(format)
+
+        plot.setYMaximum(5)
+        plot.yAxis().setGridIntervalMajor(5)
+        plot.yAxis().setGridIntervalMinor(1)
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        plot.yAxis().setTextFormat(format)
+        plot.yAxis().setLabelInterval(1)
+
+        # set bar series symbol
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#000000",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(0, series_symbol)
+
+        chart_item.setPlot(plot)
+
+        series_details = QgsLayoutItemChart.SeriesDetails("Series 1")
+        series_details.setXExpression("")
+        series_details.setYExpression("")
+        chart_item.setSeriesList([series_details])
+
+        chart_item.setSourceLayer(layer)
+        chart_item.setGenerateCategoriesFromRenderer(True)
+        chart_item.setApplyRendererStyle(False)
+
+        self.assertTrue(self.render_layout_check("rulebased_renderer", layout))
+
+        chart_item.setApplyRendererStyle(True)
+
+        self.assertTrue(
+            self.render_layout_check("rulebased_renderer_with_style", layout)
+        )
 
 
 if __name__ == "__main__":

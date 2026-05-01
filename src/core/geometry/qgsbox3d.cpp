@@ -341,8 +341,6 @@ QString QgsBox3D::toString( int precision ) const
 
   if ( isNull() )
     rep = u"Null"_s;
-  else if ( isEmpty() )
-    rep = u"Empty"_s;
   else
     rep = u"%1,%2,%3 : %4,%5,%6"_s.arg( mBounds2d.xMinimum(), 0, 'f', precision )
             .arg( mBounds2d.yMinimum(), 0, 'f', precision )

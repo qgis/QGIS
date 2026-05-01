@@ -515,13 +515,28 @@ class TestQgsBox3d(unittest.TestCase):
 
     def testToString(self):
         box1 = QgsBox3d()
+        self.assertTrue(box1.isNull())
         self.assertEqual(box1.toString(), "Null")
 
         box2 = QgsBox3d(0, 0, 0, 0, 0, 0)
-        self.assertEqual(box2.toString(), "Empty")
+        self.assertTrue(box2.isEmpty())
+        self.assertEqual(
+            box2.toString(),
+            (
+                "0.0000000000000000,0.0000000000000000,0.0000000000000000 : "
+                "0.0000000000000000,0.0000000000000000,0.0000000000000000"
+            ),
+        )
 
         box3 = QgsBox3d(1, 1, 1, 1, 1, 1)
-        self.assertEqual(box3.toString(), "Empty")
+        self.assertTrue(box3.isEmpty())
+        self.assertEqual(
+            box3.toString(),
+            (
+                "1.0000000000000000,1.0000000000000000,1.0000000000000000 : "
+                "1.0000000000000000,1.0000000000000000,1.0000000000000000"
+            ),
+        )
 
         box4 = QgsBox3d(1, 2, 3, 4, 5, 6)
         self.assertEqual(

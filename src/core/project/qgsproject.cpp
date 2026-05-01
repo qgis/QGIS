@@ -71,7 +71,10 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssensormanager.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingstree.h"
 #include "qgssnappingconfig.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsthreadingutils.h"
@@ -110,6 +113,13 @@ using namespace Qt::StringLiterals;
 
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
+
+const QgsSettingsEntryBool *QgsProject::settingsAnonymizeNewProjects = new QgsSettingsEntryBool( u"anonymize-new"_s, QgsSettingsTree::sTreeProject, false );
+
+const QgsSettingsEntryBool *QgsProject::settingsAnonymizeSavedProjects = new QgsSettingsEntryBool( u"anonymize-saved"_s, QgsSettingsTree::sTreeProject, false );
+
+const QgsSettingsEntryBool *QgsProject::settingsDefaultProjectPathsRelative = new QgsSettingsEntryBool( u"default-project-paths-relative"_s, QgsSettingsTree::sTreeCore, true );
+
 
 /**
  * Takes the given scope and key and convert them to a string list of key
@@ -1015,6 +1025,18 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
   if ( crs != mCrs )
   {
+    // if new crs is set that is not on the same celestial body as previous one and ellipsoid is to be adjusted,
+    // there is a need to first set ellipsoid to NONE without raising signal
+    // this prevents various classes that listen to crsChanged() to try to convert the the new crs to the older ellipsoid
+    // that is only updated after the crs signals are raised (end of the this function)
+    // setting the ellipsoid to none prevents that as conversions do not make sense when change not only crs but also celestial body
+    if ( adjustEllipsoid && !mCrs.isSameCelestialBody( crs ) )
+    {
+      mBlockEllipsoidChangedSignal = true;
+      setEllipsoid( Qgis::geoNone() );
+      mBlockEllipsoidChangedSignal = false;
+    }
+
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
     const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
     mCrs = crs;
@@ -1061,7 +1083,9 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
 
   mProjectScope.reset();
   writeEntry( u"Measure"_s, u"/Ellipsoid"_s, ellipsoid );
-  emit ellipsoidChanged( ellipsoid );
+
+  if ( !mBlockEllipsoidChangedSignal )
+    emit ellipsoidChanged( ellipsoid );
 }
 
 QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
@@ -1255,7 +1279,7 @@ void QgsProject::clear()
   mCrs3D = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   mElevationShadingRenderer = QgsElevationShadingRenderer();
-  if ( !mSettings.value( u"projects/anonymize_new_projects"_s, false, QgsSettings::Core ).toBool() )
+  if ( !settingsAnonymizeNewProjects->value() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -1271,7 +1295,7 @@ void QgsProject::clear()
   const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( QgsSettingsRegistryCore::settingsMeasureDisplayUnits->value(), &ok );
   setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
-  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( u"/qgis/measure/areaunits"_s ).toString(), &ok );
+  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( QgsSettingsRegistryCore::settingsMeasureAreaUnits->value(), &ok );
   setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
 
   setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalMiddle );
@@ -1323,7 +1347,7 @@ void QgsProject::clear()
   writeEntry( u"PositionPrecision"_s, u"/Automatic"_s, true );
   writeEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 2 );
 
-  const bool defaultRelativePaths = mSettings.value( u"/qgis/defaultProjectPathsRelative"_s, true ).toBool();
+  const bool defaultRelativePaths = settingsDefaultProjectPathsRelative->value();
   setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
 
   setBackgroundColor( QgsSettingsRegistryCore::settingsDefaultCanvasColor->value() );
@@ -1617,6 +1641,9 @@ void QgsProject::preloadProviders(
 
           std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
           Q_ASSERT( provider && provider->isValid() );
+
+          provider->moveToThread( QThread::currentThread() );
+          QgsDebugMsgLevel( u"Retrieved created provider for %1 (belongs to thread %2)"_s.arg( layId, QgsThreadingUtils::threadDescription( provider->thread() ) ), 2 );
 
           loadedProviders.insert( layId, provider.release() );
           emit layerLoaded( i, totalProviderCount );
@@ -3321,7 +3348,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( u"projectname"_s, title() );
   qgisNode.setAttribute( u"version"_s, Qgis::version() );
 
-  if ( !mSettings.value( u"projects/anonymize_saved_projects"_s, false, QgsSettings::Core ).toBool() )
+  if ( !settingsAnonymizeSavedProjects->value() )
   {
     const QString newSaveUser = QgsApplication::userLoginName();
     const QString newSaveUserFull = QgsApplication::userFullName();
@@ -5053,9 +5080,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   QgsCoordinateReferenceSystem defaultCrs;
 
   // TODO QGIS 5.0 -- remove this method, and place it somewhere in app (where it belongs)
-  // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
-  if ( mSettings.value( u"/projections/unknownCrsBehavior"_s, u"NoAction"_s, QgsSettings::App ).toString() == u"UseProjectCrs"_s
-       || mSettings.value( u"/projections/unknownCrsBehavior"_s, 0, QgsSettings::App ).toString() == "2"_L1 )
+  if ( QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value() == Qgis::UnknownLayerCrsBehavior::UseProjectCrs )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
     defaultCrs = crs();
@@ -5063,7 +5088,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    const QString layerDefaultCrs = mSettings.value( u"/Projections/layerDefaultCrs"_s, u"EPSG:4326"_s ).toString();
+    const QString layerDefaultCrs = QgsSettingsRegistryCore::settingsLayerDefaultCrs->value();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 

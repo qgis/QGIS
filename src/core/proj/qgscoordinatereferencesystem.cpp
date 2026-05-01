@@ -1660,6 +1660,21 @@ QString QgsCoordinateReferenceSystem::toOgcUrn() const
     {
       return u"urn:ogc:def:crs:OGC:1.3:%1"_s.arg( parts[1] );
     }
+    else if ( parts[0].startsWith( "IAU"_L1 ) )
+    {
+      if ( parts[0].contains( "_"_L1 ) )
+      {
+        const auto subParts = parts[0].split( '_' );
+        if ( subParts.length() == 2 )
+        {
+          return u"urn:ogc:def:crs:%1:%2:%3"_s.arg( subParts[0], subParts[1], parts[1] );
+        }
+      }
+      else
+      {
+        return u"urn:ogc:def:crs:%1::%2"_s.arg( parts[0], parts[1] );
+      }
+    }
     else
     {
       QgsMessageLog::logMessage( u"Error converting published CRS to URN %1: (not OGC or EPSG)"_s.arg( authid() ), u"CRS"_s, Qgis::MessageLevel::Critical );
@@ -3378,6 +3393,16 @@ void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
     sStringCache()->clear();
   }
   sCrsStringLock()->unlock();
+}
+
+bool QgsCoordinateReferenceSystem::isEarthCrs() const
+{
+  return celestialBodyName() == "Earth"_L1;
+}
+
+bool QgsCoordinateReferenceSystem::isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const
+{
+  return celestialBodyName() == other.celestialBodyName();
 }
 
 // invalid < regular < user

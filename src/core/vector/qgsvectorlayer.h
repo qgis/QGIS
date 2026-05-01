@@ -808,11 +808,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \param rect search rectangle
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * \see invertSelectionInRectangle(QgsRectangle & rect)
+     * \see invertSelectionInRectangle()
      * \see selectByExpression()
      * \see selectByIds()
      */
-    Q_INVOKABLE void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    Q_INVOKABLE void selectByRect( const QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -865,7 +865,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \see   invertSelection()
      */
-    Q_INVOKABLE void invertSelectionInRectangle( QgsRectangle &rect );
+    Q_INVOKABLE void invertSelectionInRectangle( const QgsRectangle &rect );
 
     /**
      * Returns a copy of the user-selected features.
@@ -1215,7 +1215,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,
@@ -1708,7 +1708,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see changeAttributeValue()
      * \see updateFeature()
      */
-    Q_INVOKABLE bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value for a feature (but does not immediately commit the changes).
@@ -1808,6 +1808,35 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      */
     Q_INVOKABLE void removeFieldAlias( int index );
+
+    /**
+       * Sets the custom comment for the field.
+       * \param index attribute index
+       * \param customCommentString custom comment (can be empty as well)
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE void setFieldCustomComment( int index, const QString &customCommentString );
+
+    /**
+       * Removes the custom comment for the field.
+       * \param index attribute index
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE void removeFieldCustomComment( int index );
+
+    /**
+       * Returns the custom comment for the field.
+       * \param index attribute index
+       * \since QGIS 4.2
+       */
+    Q_INVOKABLE QString attributeCustomComment( int index ) const;
+
+    /**
+       * Returns a map of all the custom comments.
+       * Key is the attribute name and value the custom comment for that attribute
+       * \since QGIS 4.2
+       */
+    QgsStringMap attributeCustomComments() const;
 
     /**
      * Renames an attribute field  (but does not commit it).
@@ -2248,7 +2277,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumValue()
      * \see maximumValue()
      */
-    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
+    Q_INVOKABLE QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -2279,7 +2308,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
-    QVariant minimumValue( int index ) const final;
+    Q_INVOKABLE QVariant minimumValue( int index ) const final;
 
     /**
      * Returns the maximum value for an attribute column or an invalid variant in case of error.
@@ -2295,7 +2324,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
-    QVariant maximumValue( int index ) const final;
+    Q_INVOKABLE QVariant maximumValue( int index ) const final;
 
 
     /**
@@ -2832,6 +2861,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     void onRelationsLoaded();
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
+    void onDependencyAfterCommitChanges();
     void emitDataChanged();
 
   private:
@@ -2929,6 +2959,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     //! Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute
     QgsStringMap mAttributeAliasMap;
+
+    //! Map that stores the custom comments for attributes. Key is the attribute name and value the custom comment for that attribute
+    QgsStringMap mAttributeCustomCommentMap;
 
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;

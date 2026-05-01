@@ -29,7 +29,7 @@ QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pl
   : mPluginManager( pluginManager )
 {}
 
-void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
+void QgsAppPluginManagerInterface::showPluginManager( int tabIndex, const QString &searchTerm )
 {
   mPluginManager->getCppPluginsMetadata();
   mPluginManager->reloadModelData();
@@ -38,6 +38,11 @@ void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
   if ( tabIndex > -1 )
   {
     mPluginManager->selectTabItem( tabIndex );
+  }
+
+  if ( !searchTerm.isEmpty() )
+  {
+    mPluginManager->search( searchTerm );
   }
 
   mPluginManager->exec();

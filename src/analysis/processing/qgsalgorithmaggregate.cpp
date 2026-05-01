@@ -240,7 +240,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
 
     if ( !geometry.isNull() && !geometry.isEmpty() )
     {
-      geometry = QgsGeometry::unaryUnion( geometry.asGeometryCollection() );
+      geometry = QgsGeometry::unaryUnion( geometry.asGeometryCollection(), QgsGeometryParameters(), feedback );
       if ( geometry.isEmpty() )
       {
         QStringList keyString;

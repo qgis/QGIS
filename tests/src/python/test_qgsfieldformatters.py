@@ -53,7 +53,7 @@ class TestQgsValueMapFieldFormatter(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
-        QgsSettings().setValue("qgis/nullValue", "NULL")
+        QgsApplication.setNullRepresentation("NULL")
         layer = QgsVectorLayer(
             "none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
             "layer",
@@ -460,10 +460,6 @@ class TestQgsRangeFieldFormatter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -700,12 +696,6 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(
-            "QGIS_TestPyQgsCheckBoxFieldFormatter.com"
-        )
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsCheckBoxFieldFormatter")
-        QgsSettings().clear()
         start_app()
 
     def test_representValue(self):
@@ -810,10 +800,6 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFieldFormatter.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsFieldFormatter")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
@@ -1157,10 +1143,6 @@ class TestQgsDateTimeFieldFormatter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsDateTimeFieldFormatter.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsDateTimeFieldFormatter")
-        QgsSettings().clear()
         QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 

@@ -231,6 +231,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void currentLayerChanged( QgsMapLayer *layer );
     //! Update the extra snap layer, this should be called whenever the capturecurve changes
     void updateExtraSnapLayer();
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   protected:
     // TODO QGIS 5.0 returns an enum instead of a magic constant

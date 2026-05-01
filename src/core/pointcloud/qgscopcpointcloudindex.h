@@ -47,11 +47,11 @@ class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
 
     void load( const QString &urlString, const QString &authcfg = QString() ) override;
 
-    bool hasNode( const QgsPointCloudNodeId &n ) const override;
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
+    bool hasNode( QgsPointCloudNodeId n ) const override;
+    QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const override;
 
-    std::unique_ptr< QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
+    std::unique_ptr< QgsPointCloudBlock> nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request ) override;
 
     //! Returns the raw, encoded, compressed data for a node or empty if missing
     const QByteArray rawNodeData( QgsPointCloudNodeId n ) const;
@@ -84,17 +84,19 @@ class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
      */
     QVariantMap extraMetadata() const override;
 
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &n ) const override;
+
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
     bool loadHierarchy() const;
 
     //! Fetches all nodes leading to node \a node into memory
-    bool fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const;
+    bool fetchNodeHierarchy( QgsPointCloudNodeId n ) const;
 
     /**
      * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
      */
-    virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+    void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
     void populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const;
 

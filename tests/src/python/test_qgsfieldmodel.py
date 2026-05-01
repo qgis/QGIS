@@ -695,6 +695,25 @@ class TestQgsFieldModel(QgisTestCase):
             QgsFieldModel.fieldToolTip(f),
             "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em>",
         )
+        f.setCustomComment(
+            "Custom Comment text that should override the normal comment"
+        )
+        self.assertEqual(
+            QgsFieldModel.fieldToolTip(f),
+            "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Custom Comment text that should override the normal comment</em>",
+        )
+        # none to remove the custom comment and show the normal comment again
+        f.setCustomComment(None)
+        self.assertEqual(
+            QgsFieldModel.fieldToolTip(f),
+            "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em>",
+        )
+        # empty comment leads to no comment shown
+        f.setCustomComment("")
+        self.assertEqual(
+            QgsFieldModel.fieldToolTip(f),
+            "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font>",
+        )
 
     def testFieldTooltipExtended(self):
         layer = QgsVectorLayer("Point?", "tooltip", "memory")
@@ -711,10 +730,22 @@ class TestQgsFieldModel(QgisTestCase):
             QgsFieldModel.fieldToolTipExtended(f, layer),
             "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>",
         )
+        f.setCustomComment(
+            "Custom Comment text that should override the normal comment"
+        )
+        self.assertEqual(
+            QgsFieldModel.fieldToolTipExtended(f, layer),
+            "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Custom Comment text that should override the normal comment</em><br><font style='font-family:monospace;'>1+1</font>",
+        )
         f.setAlias("my alias")
         constraints = f.constraints()
         constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintUnique)
         f.setConstraints(constraints)
+        self.assertEqual(
+            QgsFieldModel.fieldToolTipExtended(f, layer),
+            "<b>my alias</b> (my_real)<br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL UNIQUE</font><br><em>Custom Comment text that should override the normal comment</em><br><font style='font-family:monospace;'>1+1</font>",
+        )
+        f.setCustomComment(None)
         self.assertEqual(
             QgsFieldModel.fieldToolTipExtended(f, layer),
             "<b>my alias</b> (my_real)<br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL UNIQUE</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>",

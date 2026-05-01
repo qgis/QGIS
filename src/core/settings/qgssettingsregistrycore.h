@@ -171,6 +171,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     static const QgsSettingsEntryBool *settingsLayerTreeShowLegendClassifiers;
 
+    /**
+     * Settings entry for hidden ID in layer tooltips.
+     * \since QGIS 4.2
+     */
+    static const QgsSettingsEntryBool *settingsLayerTreeShowIdInLayerTooltips;
+
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
 
@@ -208,6 +214,15 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry for distance display units
     static const QgsSettingsEntryString *settingsMeasureDisplayUnits;
+
+    //! Settings entry for area display units
+    static const QgsSettingsEntryString *settingsMeasureAreaUnits;
+
+    //! Settings entry for behavior when encountering a layer with an unknown CRS (NoAction, PromptUserForCrs, UseProjectCrs, UseDefaultCrs)
+    static const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *settingsUnknownCrsBehavior;
+
+    //! Settings entry for the default CRS used for layers with unknown CRS
+    static const QgsSettingsEntryString *settingsLayerDefaultCrs;
 
     //! Settings entry for layer tree insertion method
     static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;

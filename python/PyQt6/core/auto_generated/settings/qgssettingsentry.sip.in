@@ -55,6 +55,8 @@ settings description for the gui.
 %End
   public:
 
+
+
     static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
 %Docstring
 Transforms a dynamic key part string to list

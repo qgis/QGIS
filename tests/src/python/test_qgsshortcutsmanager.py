@@ -25,10 +25,6 @@ class TestQgsShortcutsManager(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsShortcutsManager.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsShortcutsManager")
-        QgsSettings().clear()
         start_app()
 
     @staticmethod

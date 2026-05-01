@@ -80,6 +80,7 @@ class QgsFieldPrivate : public QSharedData
       , comment( other.comment )
       , metadata( other.metadata )
       , alias( other.alias )
+      , customComment( other.customComment )
       , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
@@ -103,6 +104,7 @@ class QgsFieldPrivate : public QSharedData
         && ( precision == other.precision )
         && ( metadata == other.metadata )
         && ( alias == other.alias )
+        && ( customComment == other.customComment )
         && ( defaultValueDefinition == other.defaultValueDefinition )
         && ( constraints == other.constraints )
         && ( flags == other.flags )
@@ -140,6 +142,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Alias for field name (friendly name shown to users)
     QString alias;
+
+    //! Custom comment for the field
+    QString customComment;
 
     //! Flags for the field (searchable, …)
     Qgis::FieldConfigurationFlags flags = Qgis::FieldConfigurationFlag::NoFlag;

@@ -65,8 +65,8 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
     void paintManually( QPainter *painter, const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
     void paintAsWidget( QPainter *painter, const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
     int height( const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
-    QgsDetailedItemWidget *mpWidget = nullptr;
-    QCheckBox *mpCheckBox = nullptr;
+    std::unique_ptr<QgsDetailedItemWidget> mpWidget;
+    std::unique_ptr<QCheckBox> mpCheckBox;
     int mVerticalSpacing;
     int mHorizontalSpacing;
 };

@@ -385,7 +385,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   if ( noMoreFeatures && res && ( !feedback || !feedback->isCanceled() ) )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
-    mCachedExtent = QgsGeometry::unaryUnion( { mCachedExtent, extentGeom } );
+    mCachedExtent = QgsGeometry::unaryUnion( { mCachedExtent, extentGeom }, QgsGeometryParameters(), feedback );
   }
   nextPage = noMoreFeatures || !res ? QString() : queryUrl;
 

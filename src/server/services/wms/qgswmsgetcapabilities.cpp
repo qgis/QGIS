@@ -59,7 +59,7 @@ namespace QgsWms
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement, const QString &crsText );
 
-    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList );
+    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList, bool hasEarthCrs = true );
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, const QgsWmsLayerInfos &layerInfos, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings );
 
@@ -786,7 +786,7 @@ namespace QgsWms
     const QgsRectangle wgs84BoundingRect = combineWgs84BoundingRect( layerIds, wmsLayerInfos );
     QMap<QString, QgsRectangle> crsExtents = combineCrsExtents( layerIds, wmsLayerInfos );
 
-    appendCrsElementsToLayer( doc, parentLayer, crsExtents.keys(), QStringList() );
+    appendCrsElementsToLayer( doc, parentLayer, crsExtents.keys(), QStringList(), !wgs84BoundingRect.isNull() );
     appendLayerWgs84BoundingRect( doc, parentLayer, wgs84BoundingRect );
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
@@ -864,15 +864,18 @@ namespace QgsWms
     {
       const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
-      // Get WMS WGS84 bounding rectangle
+      // Get WMS WGS84 bounding rectangle (only meaningful for Earth-based CRS)
       QgsRectangle wmsWgs84BoundingRect;
-      try
+      if ( project->crs().isEarthCrs() )
       {
-        wmsWgs84BoundingRect = QgsWmsLayerInfos::transformExtent( wmsExtent, project->crs(), wgs84, project->transformContext(), true );
-      }
-      catch ( QgsCsException &cse )
-      {
-        QgsMessageLog::logMessage( u"Error transforming extent: %1"_s.arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
+        try
+        {
+          wmsWgs84BoundingRect = QgsWmsLayerInfos::transformExtent( wmsExtent, project->crs(), wgs84, project->transformContext(), true );
+        }
+        catch ( QgsCsException &cse )
+        {
+          QgsMessageLog::logMessage( u"Error transforming extent: %1"_s.arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
+        }
       }
 
       // Get WMS extents in output CRSes
@@ -888,7 +891,7 @@ namespace QgsWms
 
       layerParentElem.setAttribute( u"queryable"_s, hasQueryableLayers( projectLayerTreeRoot->findLayerIds(), wmsLayerInfos ) ? u"1"_s : u"0"_s );
 
-      appendCrsElementsToLayer( doc, layerParentElem, wmsCrsExtents.keys(), QStringList() );
+      appendCrsElementsToLayer( doc, layerParentElem, wmsCrsExtents.keys(), QStringList(), project->crs().isEarthCrs() );
       appendLayerWgs84BoundingRect( doc, layerParentElem, wmsWgs84BoundingRect );
       appendLayerCrsExtents( doc, layerParentElem, wmsCrsExtents );
 
@@ -1256,7 +1259,7 @@ namespace QgsWms
           // Append not null Bounding rectangles
           if ( !layerInfos.wgs84BoundingRect.isNull() )
           {
-            appendCrsElementsToLayer( doc, layerElem, layerInfos.crsExtents.keys(), QStringList() );
+            appendCrsElementsToLayer( doc, layerElem, layerInfos.crsExtents.keys(), QStringList(), l->crs().isEarthCrs() );
 
             appendLayerWgs84BoundingRect( doc, layerElem, layerInfos.wgs84BoundingRect );
 
@@ -1432,7 +1435,7 @@ namespace QgsWms
       }
     }
 
-    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList )
+    void appendCrsElementsToLayer( QDomDocument &doc, QDomElement &layerElement, const QStringList &crsList, const QStringList &constrainedCrsList, bool hasEarthCrs )
     {
       if ( layerElement.isNull() )
       {
@@ -1470,9 +1473,9 @@ namespace QgsWms
         }
       }
 
-      // Support for CRS:84 is mandatory (equals EPSG:4326 with reversed axis)
+      // Support for CRS:84 is mandatory for Earth-based layers (equals EPSG:4326 with reversed axis)
       // https://github.com/opengeospatial/ets-wms13/blob/47155399c09b200cb21382874fdb21d5fae4ab6e/src/site/markdown/index.md
-      if ( version == "1.3.0"_L1 )
+      if ( version == "1.3.0"_L1 && hasEarthCrs )
       {
         appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, QString( "CRS:84" ) );
       }

@@ -43,9 +43,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
 }
 
 QgsMapToolZoom::~QgsMapToolZoom()
-{
-  delete mRubberBand;
-}
+{}
 
 QgsMapTool::Flags QgsMapToolZoom::flags() const
 {
@@ -62,8 +60,8 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( !mDragging )
   {
     mDragging = true;
-    delete mRubberBand;
-    mRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
+    mRubberBand.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon ) );
+
     QColor color( Qt::blue );
     color.setAlpha( 63 );
     mRubberBand->setColor( color );
@@ -110,8 +108,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mDragging || tooShort )
   {
     mDragging = false;
-    delete mRubberBand;
-    mRubberBand = nullptr;
+    mRubberBand.reset();
+
 
     // change to zoom in/out by the default multiple
     mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
@@ -119,8 +117,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   else
   {
     mDragging = false;
-    delete mRubberBand;
-    mRubberBand = nullptr;
+    mRubberBand.reset();
+
 
     // store the rectangle
     mZoomRect.setRight( e->pos().x() );
@@ -148,8 +146,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolZoom::deactivate()
 {
-  delete mRubberBand;
-  mRubberBand = nullptr;
+  mRubberBand.reset();
+
 
   QgsMapTool::deactivate();
 }
@@ -184,7 +182,6 @@ void QgsMapToolZoom::keyReleaseEvent( QKeyEvent *e )
   if ( e->key() == Qt::Key_Escape && mDragging )
   {
     mCanceled = true;
-    delete mRubberBand;
-    mRubberBand = nullptr;
+    mRubberBand.reset();
   }
 }

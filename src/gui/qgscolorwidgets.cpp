@@ -21,7 +21,8 @@
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
 #include <QDrag>
@@ -40,6 +41,9 @@
 #include "moc_qgscolorwidgets.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryEnumFlag<QgsColorTextWidget::ColorTextFormat> *QgsColorTextWidget::settingsTextFormat
+  = new QgsSettingsEntryEnumFlag<QgsColorTextWidget::ColorTextFormat>( u"text-format"_s, QgsSettingsTree::sTreeColorWidgets, QgsColorTextWidget::HexRgb );
 
 #define HUE_MAX 360
 
@@ -843,13 +847,11 @@ QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-  mBoxImage = new QImage( width() - mMargin * 2, height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( width() - static_cast<int>( mMargin * 2 ), height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
 }
 
 QgsColorBox::~QgsColorBox()
-{
-  delete mBoxImage;
-}
+{}
 
 QSize QgsColorBox::sizeHint() const
 {
@@ -915,8 +917,8 @@ void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 void QgsColorBox::resizeEvent( QResizeEvent *event )
 {
   mDirty = true;
-  delete mBoxImage;
-  mBoxImage = new QImage( event->size().width() - mMargin * 2, event->size().height() - mMargin * 2, QImage::Format_RGB32 );
+  mBoxImage = std::make_unique<QImage>( event->size().width() - static_cast<int>( mMargin * 2 ), event->size().height() - static_cast<int>( mMargin * 2 ), QImage::Format_RGB32 );
+
   QgsColorWidget::resizeEvent( event );
 }
 
@@ -1576,8 +1578,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   connect( mMenuButton, &QAbstractButton::clicked, this, &QgsColorTextWidget::showMenu );
 
   //restore format setting
-  QgsSettings settings;
-  mFormat = settings.enumValue( u"ColorWidgets/textWidgetFormat"_s, HexRgb );
+  mFormat = settingsTextFormat->value();
 
   updateText();
 }
@@ -1682,8 +1683,7 @@ void QgsColorTextWidget::showMenu()
   }
 
   //save format setting
-  QgsSettings settings;
-  settings.setEnumValue( u"ColorWidgets/textWidgetFormat"_s, mFormat );
+  settingsTextFormat->setValue( mFormat );
 
   updateText();
 }

@@ -17,11 +17,18 @@
 
 #include "qgsabstractdbsourceselect.h"
 #include "qgsaddtaborgroup.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgscodeeditor.h"
+#include "qgscolorwidgets.h"
 #include "qgsdualview.h"
 #include "qgsfeaturefiltermodel.h"
+#include "qgsgradientcolorrampdialog.h"
+#include "qgshistogramwidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
+#include "qgsmaptoolidentify.h"
+#include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -105,6 +112,18 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
 
   // single settings - added in 4.2
   settingsCadFloaterActive->copyValueFromKey( u"/Cad/Floater"_s, true );
+  QgsAdvancedDigitizingDockWidget::settingsCadCommonAngle->copyValueFromKey( u"/Cad/CommonAngle"_s, true );
+  QgsMapCanvas::settingsCustomCoordinateCrs->copyValueFromKey( u"qgis/custom_coordinate_crs"_s, true );
+  QgsGradientColorRampDialog::settingsPlotHue->copyValueFromKey( u"GradientEditor/plotHue"_s, true );
+  QgsGradientColorRampDialog::settingsPlotLightness->copyValueFromKey( u"GradientEditor/plotLightness"_s, true );
+  QgsGradientColorRampDialog::settingsPlotSaturation->copyValueFromKey( u"GradientEditor/plotSaturation"_s, true );
+  QgsGradientColorRampDialog::settingsPlotAlpha->copyValueFromKey( u"GradientEditor/plotAlpha"_s, true );
+  QgsColorTextWidget::settingsTextFormat->copyValueFromKey( u"ColorWidgets/textWidgetFormat"_s, true );
+  QgsRendererMeshPropertiesWidget::settingsTab->copyValueFromKey( u"/Windows/RendererMeshProperties/tab"_s, true );
+  QgsMapToolIdentify::settingIdentifyMode->copyValueFromKey( u"Map/identifyMode"_s, true );
+  QgsMapToolIdentify::settingIdentifyMode->copyValueFromKey( u"/Map/identifyMode"_s, true );
+  QgsHistogramWidget::settingsHistogramShowMean->copyValueFromKey( u"HistogramWidget/showMean"_s, true );
+  QgsHistogramWidget::settingsHistogramShowStdev->copyValueFromKey( u"HistogramWidget/showStdev"_s, true );
   settingsRasterHistogramShowMarkers->copyValueFromKey( u"Raster/histogram/showMarkers"_s, true );
   settingsRasterHistogramZoomToMinMax->copyValueFromKey( u"Raster/histogram/zoomToMinMax"_s, true );
   settingsRasterHistogramUpdateStyleToMinMax->copyValueFromKey( u"Raster/histogram/updateStyleToMinMax"_s, true );

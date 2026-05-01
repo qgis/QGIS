@@ -30,6 +30,9 @@ using namespace Qt::StringLiterals;
 class QFileSystemWatcher;
 class QMouseEvent;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryStringList;
+class QgsSettingsEntryVariant;
 
 /**
  * \ingroup core
@@ -171,11 +174,15 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 #ifndef SIP_RUN
 
-    /**
-     * Settings entry for monitor directories in browser.
-     * \since QGIS 4.0.1
-     */
     static const QgsSettingsEntryBool *settingsMonitorDirectoriesInBrowser;
+
+    static const QgsSettingsEntryStringList *settingsHiddenPaths SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsDisableMonitorItemUris SIP_SKIP;
+
+    static const QgsSettingsEntryStringList *settingsAlwaysMonitorItemUris SIP_SKIP;
+
+    static const QgsSettingsEntryInteger *settingsMinScanInterval SIP_SKIP;
 #endif
 
     /**
@@ -253,6 +260,8 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryVariant *settingsDirectoryHiddenColumns SIP_SKIP;
+
     QgsDirectoryParamWidget( const QString &path, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:

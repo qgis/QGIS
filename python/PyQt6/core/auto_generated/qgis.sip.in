@@ -368,6 +368,7 @@ The development version
       CreateLabeling,
       ReloadData,
       FeatureSymbology,
+      CacheData,
       EditingCapabilities,
     };
 
@@ -616,6 +617,14 @@ The development version
       ReadOnly,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
+
+
+    enum class BrowserItemFilterFlag /BaseType=IntFlag/
+    {
+      HideWhenNotFilteringByLayerType,
+    };
+
+    typedef QFlags<Qgis::BrowserItemFilterFlag> BrowserItemFilterFlags;
 
 
     enum class DataItemProviderCapability /BaseType=IntFlag/
@@ -1493,6 +1502,14 @@ The development version
       Preferred,
       PreferredSimplified,
       PreferredGdal,
+    };
+
+    enum class UnknownLayerCrsBehavior /BaseType=IntEnum/
+    {
+      NoAction,
+      PromptUserForCrs,
+      UseProjectCrs,
+      UseDefaultCrs,
     };
 
     enum class Axis /BaseType=IntEnum/
@@ -2410,10 +2427,38 @@ The development version
       Billboard,
     };
 
+    enum class MaterialRenderingTechnique /BaseType=IntEnum/
+    {
+      Triangles,
+      Lines,
+      InstancedPoints,
+      Points,
+      TrianglesWithFixedTexture,
+      TrianglesFromModel,
+      TrianglesDataDefined,
+      Billboards,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
+    };
+
+    enum class SkyboxType /BaseType=IntEnum/
+    {
+      DistinctTextures,
+      // this is currently broken for z-up coordinate system
+      //Panoramic, //!< Panoramic texture
+    };
+
+    enum class SkyboxCubeMapping /BaseType=IntEnum/
+    {
+      NativeZUp,
+      OpenGLYUp,
+      GodotYUp,
+      UnrealEngineZUp,
+      LeftHandedYUpMirrored,
     };
 
     enum class NavigationMode /BaseType=IntEnum/
@@ -2434,6 +2479,12 @@ The development version
       Never,
       WhenDragging,
       Always,
+    };
+
+    enum class Export3DSceneFormat /BaseType=IntEnum/
+    {
+      Obj,
+      StlAscii
     };
 
     enum class ProfileSurfaceSymbology /BaseType=IntEnum/
@@ -2542,6 +2593,20 @@ The development version
       Unknown,
       SceneServer,
     };
+
+    enum class ArcGisRestServiceCapability /BaseType=IntFlag/
+    {
+      Map,
+      Query,
+      Update,
+      Delete,
+      Create,
+      Image,
+      TilesOnly,
+    };
+
+    typedef QFlags<Qgis::ArcGisRestServiceCapability> ArcGisRestServiceCapabilities;
+
 
     enum class RelationshipType /BaseType=IntEnum/
     {
@@ -3852,6 +3917,8 @@ QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QF
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
+QFlags<Qgis::BrowserItemFilterFlag> operator|(Qgis::BrowserItemFilterFlag f1, QFlags<Qgis::BrowserItemFilterFlag> f2);
+
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
@@ -4019,6 +4086,8 @@ QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::Extru
 QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
 
 QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapability f1, QFlags<Qgis::SymbolConverterCapability> f2);
+
+QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
 
 
