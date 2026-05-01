@@ -230,6 +230,15 @@ vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
     return clamp(F, f, vec3(1.0));
 }
 
+// A modified Fresnel function that respects surface roughness
+// It explicitly injects the roughness value into the Fresnel equation to forcefully clamp
+// the maximum reflectivity at grazing angles based on how rough the material is.
+// ** Only applicable for image based lighting **
+vec3 fresnelSchlickRoughness(const in vec3 F0, const in float cosTheta, const in float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
 float geometrySchlickGGX(const in float nDotV, const in float k)
 {
     // see https://learnopengl.com/PBR/Theory, "Geometry function"
@@ -284,7 +293,7 @@ vec3 specularModel(const in vec3 F0,
     float sDotNPrime = max(sDotN, 0.001);
     float vDotNPrime = max(vDotN, 0.001);
 
-    vec3 F = fresnelFactor(F0, sDotH);
+    vec3 F = isIBL ? fresnelSchlickRoughness(F0, sDotH, roughness) : fresnelFactor(F0, sDotH);
     float G = geometricModel(sDotNPrime, vDotNPrime, roughness, isIBL);
 
     vec3 cSpec = F * G / (4.0 * sDotNPrime * vDotNPrime);
@@ -427,7 +436,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
-    vec3 kS = fresnelFactor(F0, lDotH);
+    vec3 kS = fresnelSchlickRoughness(F0, max(vDotN, 0.0), roughness);
     vec3 color = specular + diffuse * (vec3(1.0) - kS);
 
     // Reduce by ambient occlusion amount
