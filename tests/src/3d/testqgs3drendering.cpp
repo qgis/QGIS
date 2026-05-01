@@ -58,6 +58,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgssimplelinematerialsettings.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglesymbolrenderer.h"
@@ -193,6 +194,7 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
+  Qgs3D::settingTextureFilterQuality->setValue( Qgis::TextureFilterQuality::Trilinear );
 
   mProject = std::make_unique<QgsProject>();
 
