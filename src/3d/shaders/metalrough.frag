@@ -226,7 +226,7 @@ vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
 {
     // Calculate the Fresnel effect value
     vec3 f = color;
-    vec3 F = f + (1.0 - f) * pow(1.0 - cosineFactor, 5.0);
+    vec3 F = f + (1.0 - f) * pow(clamp(1.0 - cosineFactor, 0.0, 1.0), 5.0);
     return clamp(F, f, vec3(1.0));
 }
 
@@ -236,7 +236,7 @@ vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
 // ** Only applicable for image based lighting **
 vec3 fresnelSchlickRoughness(const in vec3 F0, const in float cosTheta, const in float roughness)
 {
-    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
 float geometrySchlickGGX(const in float nDotV, const in float k)
