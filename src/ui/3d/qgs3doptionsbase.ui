@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>677</width>
-    <height>383</height>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
          <x>0</x>
          <y>0</y>
          <width>677</width>
-         <height>383</height>
+         <height>402</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -68,7 +68,7 @@
           <property name="title">
            <string>Graphics Memory</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
+          <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,2">
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="text">
@@ -98,82 +98,6 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QGroupBox" name="cameraTerrain">
-          <property name="title">
-           <string>Default Camera Settings</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="1" colspan="2">
-            <widget class="QComboBox" name="cboCameraProjectionType"/>
-           </item>
-           <item row="2" column="1" colspan="2">
-            <widget class="QgsSpinBox" name="spinCameraFieldOfView">
-             <property name="suffix">
-              <string>°</string>
-             </property>
-             <property name="maximum">
-              <number>180</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labelCameraProjectionType">
-             <property name="text">
-              <string>Projection type</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="labelFieldofView">
-             <property name="text">
-              <string>Field of View</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1" colspan="2">
-            <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
-           </item>
-           <item row="4" column="1" colspan="2">
-            <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
-             <property name="minimum">
-              <double>0.010000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>1.000000000000000</double>
-             </property>
-             <property name="value">
-              <double>5.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="labelCameraNavigationMode">
-             <property name="text">
-              <string>Navigation mode</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="labelMovementSpeed">
-             <property name="text">
-              <string>Movement speed</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="labelCameraNavigationMode_2">
-             <property name="text">
-              <string>Invert vertical axis</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1" colspan="2">
-            <widget class="QComboBox" name="mInvertVerticalAxisCombo"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item row="3" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
@@ -190,15 +114,101 @@
         <item row="2" column="0">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
-           <string>Rendering</string>
+           <string>Rendering Quality</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="1">
+          <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2">
+           <item row="1" column="1">
+            <widget class="QComboBox" name="mTextureFilterQualityCombo"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Texture filtering</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
             <widget class="QCheckBox" name="mMSAA">
              <property name="text">
               <string>Enable multisample anti-aliasing (MSAA)</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="cameraTerrain">
+          <property name="title">
+           <string>Default Camera Settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelCameraProjectionType">
+             <property name="text">
+              <string>Projection type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="cboCameraProjectionType"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelFieldofView">
+             <property name="text">
+              <string>Field of View</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QgsSpinBox" name="spinCameraFieldOfView">
+             <property name="suffix">
+              <string>°</string>
+             </property>
+             <property name="maximum">
+              <number>180</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelCameraNavigationMode">
+             <property name="text">
+              <string>Navigation mode</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelMovementSpeed">
+             <property name="text">
+              <string>Movement speed</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
+             <property name="minimum">
+              <double>0.010000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>5.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="labelCameraNavigationMode_2">
+             <property name="text">
+              <string>Invert vertical axis</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="mInvertVerticalAxisCombo"/>
            </item>
           </layout>
          </widget>
@@ -230,6 +240,14 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>cboCameraProjectionType</tabstop>
+  <tabstop>spinCameraFieldOfView</tabstop>
+  <tabstop>mCameraNavigationModeCombo</tabstop>
+  <tabstop>mCameraMovementSpeed</tabstop>
+  <tabstop>mInvertVerticalAxisCombo</tabstop>
+  <tabstop>mGpuMemoryLimit</tabstop>
+  <tabstop>mTextureFilterQualityCombo</tabstop>
+  <tabstop>mMSAA</tabstop>
  </tabstops>
  <resources/>
  <connections/>
