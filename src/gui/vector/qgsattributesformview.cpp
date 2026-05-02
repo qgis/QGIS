@@ -335,7 +335,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [qmlCode]( int index ) {
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::currentIndexChanged ), qmlCode, [qmlCode]( int index ) {
         qmlCode->clear();
         switch ( index )
         {
