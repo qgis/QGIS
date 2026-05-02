@@ -795,17 +795,20 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       const QVector3D p3( static_cast<float>( triangle->xAt( 2 ) ), static_cast<float>( triangle->yAt( 2 ) ), static_cast<float>( triangle->zAt( 2 ) ) );
       std::array<QVector3D, 3> points = { p1, p2, p3 };
 
-      for ( const QVector3D &point : points )
+      if ( buildRoof || extrusionHeight == 0 )
       {
-        addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin );
-      }
-
-      if ( mAddBackFaces )
-      {
-        for ( size_t i = points.size(); i-- > 0; )
+        for ( const QVector3D &point : points )
         {
-          const QVector3D &point = points[i];
-          addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin );
+          addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin );
+        }
+
+        if ( mAddBackFaces )
+        {
+          for ( size_t i = points.size(); i-- > 0; )
+          {
+            const QVector3D &point = points[i];
+            addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin );
+          }
         }
       }
 
@@ -885,17 +888,20 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           const std::array<QVector3D, 3> points = { trianglePoints[i + 0], trianglePoints[i + 1], trianglePoints[i + 2] };
 
           // roof
-          for ( const QVector3D &point : points )
+          if ( buildRoof || extrusionHeight == 0 )
           {
-            addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
-          }
-
-          if ( mAddBackFaces )
-          {
-            for ( size_t i = points.size(); i-- > 0; )
+            for ( const QVector3D &point : points )
             {
-              const QVector3D &point = points[i];
-              addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+              addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+            }
+
+            if ( mAddBackFaces )
+            {
+              for ( size_t i = points.size(); i-- > 0; )
+              {
+                const QVector3D &point = points[i];
+                addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+              }
             }
           }
 
