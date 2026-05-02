@@ -271,6 +271,10 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
+    // Storage for global parameters
+    // QRenderPassFilter has dual usage -- one for storage of filtering keys,
+    // the other for storage of parameters for use in shaders. Here we are
+    // using it for storage of parameters only, not for filtering!
     Qt3DRender::QRenderPassFilter *mGlobalParamsFilter = nullptr;
 
     // Post processing pass branch nodes:
