@@ -322,13 +322,6 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QgsFeature previewFeature;
       mLayer->getFeatures().nextFeature( previewFeature );
 
-      //update preview on text change
-      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature] {
-        qmlWrapper->setQmlCode( qmlCode->text() );
-        qmlWrapper->reinitWidget();
-        qmlWrapper->setFeature( previewFeature );
-      } );
-
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( tr( "Free Text…" ) );
@@ -457,9 +450,37 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addFieldButton );
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
-      expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( qmlCodeBox );
       layout->addWidget( qmlCode );
+
+      QTextEdit *errorFeedbackWidget = new QTextEdit();
+      errorFeedbackWidget->setMaximumHeight( 90 );
+      layout->addWidget( errorFeedbackWidget );
+
+      //update preview on text change
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        qmlWrapper->setQmlCode( qmlCode->text() );
+        qmlWrapper->reinitWidget();
+        qmlWrapper->setFeature( previewFeature );
+        if ( QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() ) )
+        {
+          const QList<QQmlError> errors = qmlWidget->errors();
+          if ( !errors.isEmpty() )
+          {
+            QStringList errorStrings;
+            for ( const QQmlError &error : errors )
+            {
+              errorStrings << u"%1:%2: %3"_s.arg( QString::number( error.line() ), QString::number( error.column() ), error.description() );
+            }
+            errorFeedbackWidget->setText( errorStrings.join( "\n" ) );
+          }
+          else
+          {
+            errorFeedbackWidget->setText( QObject::tr( "Valid code" ) );
+          }
+        }
+      } );
+
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
       qmlPreviewBox->setMinimumWidth( 200 );
       qmlPreviewBox->setWidget( qmlWrapper->widget() );
