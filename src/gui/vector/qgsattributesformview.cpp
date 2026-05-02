@@ -313,7 +313,8 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       QLineEdit *title = new QLineEdit( itemName );
 
       //qmlCode
-      QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      QgsCodeEditor *qmlCode = new QgsCodeEditor( this, QString(), true, true, QgsCodeEditor::Flag::CodeFolding, QgsCodeEditor::Mode::ScriptEditor );
+      qmlCode->setLineNumbersVisible( true );
       qmlCode->setEditingTimeoutInterval( 250 );
       qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
