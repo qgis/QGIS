@@ -210,7 +210,7 @@ void QgsFrameGraph::addGlobalParameters( const QList<Qt3DRender::QParameter *> &
 {
   for ( Qt3DRender::QParameter *param : parameters )
   {
-    mGlobalParamsFilter->addParameter( param );
+    mGlobalParamsStorage->addParameter( param );
   }
 }
 
@@ -269,8 +269,8 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mMainViewPort = new Qt3DRender::QViewport( mRenderSurfaceSelector );
   mMainViewPort->setNormalizedRect( QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
 
-  mGlobalParamsFilter = new Qt3DRender::QRenderPassFilter( mMainViewPort );
-  mGlobalParamsFilter->setObjectName( "GlobalParametersFilter" );
+  mGlobalParamsStorage = new Qt3DRender::QRenderPassFilter( mMainViewPort );
+  mGlobalParamsStorage->setObjectName( "GlobalParametersStore" );
 
   // Forward render
   constructForwardRenderPass();
@@ -281,13 +281,13 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   // rubber bands (they should be always on top)
   Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
   rubberBandsPass->setObjectName( "rubberBandsPass" );
-  rubberBandsPass->setParent( mGlobalParamsFilter );
+  rubberBandsPass->setParent( mGlobalParamsStorage );
 
-  mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsFilter );
+  mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
   mMsaaBlitNode->setEnabled( false );
 
-  mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsFilter );
+  mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaDepthBlitNode->setObjectName( "MsaaDepthBlitFramebuffer" );
   mMsaaDepthBlitNode->setEnabled( false );
 
@@ -302,7 +302,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   // post process
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
-  postprocessingPass->setParent( mGlobalParamsFilter );
+  postprocessingPass->setParent( mGlobalParamsStorage );
   postprocessingPass->setObjectName( "PostProcessingPass" );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
@@ -325,7 +325,7 @@ bool QgsFrameGraph::registerRenderView( std::unique_ptr<QgsAbstractRenderView> r
   if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
     mRenderViewMap[name] = std::move( renderView );
-    mRenderViewMap[name]->topGraphNode()->setParent( topNode ? topNode : mGlobalParamsFilter );
+    mRenderViewMap[name]->topGraphNode()->setParent( topNode ? topNode : mGlobalParamsStorage );
     mRenderViewMap[name]->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
