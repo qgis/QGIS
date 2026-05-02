@@ -45,6 +45,9 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   cboRenderedFacade->addItem( tr( "Walls" ), qgsFlagValueToKeys( Qgis::ExtrusionFaces( Qgis::ExtrusionFace::Walls ) ) );
   cboRenderedFacade->addItem( tr( "Walls and Roof" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
   cboRenderedFacade->addItem( tr( "Walls, Roof and Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor ) );
+  cboRenderedFacade->addItem( tr( "Roof" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Roof ) );
+  cboRenderedFacade->addItem( tr( "Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Floor ) );
+  cboRenderedFacade->addItem( tr( "Roof and Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor ) );
 
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
