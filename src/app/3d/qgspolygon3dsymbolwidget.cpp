@@ -42,13 +42,6 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   cboCullingMode->setItemData( 1, tr( "Only the back of the shapes is visible" ), Qt::ToolTipRole );
   cboCullingMode->setItemData( 2, tr( "Only the front of the shapes is visible" ), Qt::ToolTipRole );
 
-  cboRenderedFacade->addItem( tr( "Walls" ), qgsFlagValueToKeys( Qgis::ExtrusionFaces( Qgis::ExtrusionFace::Walls ) ) );
-  cboRenderedFacade->addItem( tr( "Walls and Roof" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
-  cboRenderedFacade->addItem( tr( "Walls, Roof and Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor ) );
-  cboRenderedFacade->addItem( tr( "Roof" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Roof ) );
-  cboRenderedFacade->addItem( tr( "Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Floor ) );
-  cboRenderedFacade->addItem( tr( "Roof and Floor" ), qgsFlagValueToKeys( Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor ) );
-
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
 
@@ -56,13 +49,15 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( cboRenderedFacade, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( chkAddBackFaces, &QCheckBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( chkInvertNormals, &QCheckBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( mCheckFloor, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( mCheckWalls, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( mCheckRoof, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( chkAddBackFaces, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( chkInvertNormals, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( groupEdges, &QGroupBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( groupEdges, &QGroupBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
   connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
@@ -88,7 +83,9 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   cboAltClamping->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeBinding() ) );
   cboCullingMode->setCurrentIndex( cboCullingMode->findData( polygonSymbol->cullingMode() ) );
-  cboRenderedFacade->setCurrentIndex( cboRenderedFacade->findData( qgsFlagValueToKeys( polygonSymbol->extrusionFaces() ) ) );
+  mCheckFloor->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Floor ) );
+  mCheckWalls->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Walls ) );
+  mCheckRoof->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Roof ) );
 
   chkAddBackFaces->setChecked( polygonSymbol->addBackFaces() );
   chkInvertNormals->setChecked( polygonSymbol->invertNormals() );
@@ -111,7 +108,11 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentData().toInt() ) );
-  sym->setExtrusionFaces( qgsFlagKeysToValue( cboRenderedFacade->currentData().toString(), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
+  Qgis::ExtrusionFaces faces;
+  faces.setFlag( Qgis::ExtrusionFace::Floor, mCheckFloor->isChecked() );
+  faces.setFlag( Qgis::ExtrusionFace::Walls, mCheckWalls->isChecked() );
+  faces.setFlag( Qgis::ExtrusionFace::Roof, mCheckRoof->isChecked() );
+  sym->setExtrusionFaces( faces );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
   sym->setMaterialSettings( widgetMaterial->settings().release() );
