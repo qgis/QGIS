@@ -140,7 +140,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "sign-group",
             "anothersign",
         }
-        # Check if ther right layers are in the result
+        # Check if the right layers are in the result
         self.assertEqual(
             set(received_layernames),
             expected_layernames,
@@ -238,7 +238,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "sign-group",
             "anothersign",
         }
-        # Check if ther right layers are in the result - same as in getCapabilities
+        # Check if the right layers are in the result - same as in getCapabilities
         self.assertEqual(
             set(received_layernames),
             expected_layernames,
@@ -1057,7 +1057,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
-            "there should be no server exception for a layer wiht a samenamed opaque group): anothersign",
+            "there should be no server exception for a layer with a samenamed opaque group): anothersign",
         )
 
         # check if all features are there (layer + opaque group)
