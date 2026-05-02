@@ -154,7 +154,7 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
   newCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );
   newCubeMap->setMinificationFilter( Qt3DRender::QTextureCubeMap::Linear );
   newCubeMap->setGenerateMipMaps( false );
-  newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::Repeat ) );
+  newCubeMap->setWrapMode( Qt3DRender::QTextureWrapMode( Qt3DRender::QTextureWrapMode::ClampToEdge ) );
   newCubeMap->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
   // all faces must have the SAME size, so take the maximum size from the input images
