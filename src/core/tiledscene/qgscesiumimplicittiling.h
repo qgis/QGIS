@@ -107,7 +107,7 @@ class CORE_EXPORT QgsCesiumImplicitTiling
     {
         // definition of the tiling scheme
 
-        //! total number of avilable levels within the implicit tiling
+        //! total number of available levels within the implicit tiling
         int availableLevels = 0;
         //! how many levels are stored in a single subtree
         int subtreeLevels = 0;
