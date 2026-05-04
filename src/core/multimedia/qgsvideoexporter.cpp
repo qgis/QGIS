@@ -22,6 +22,7 @@
 #include <QUrl>
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrame>
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 #include <QtMultimedia/QVideoFrameInput>
 #endif
