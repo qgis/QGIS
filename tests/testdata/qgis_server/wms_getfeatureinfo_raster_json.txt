@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "landsat",
       "id": "landsat",
       "properties": {
         "Band 1": "125",
