@@ -67,8 +67,8 @@ QgsMapOverlayEntity::QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsOverlayT
 
   connect( mTextureGenerator, &QgsMapOverlayTextureGenerator::textureReady, this, &QgsMapOverlayEntity::onTextureReady );
 
-  onLayersChanged();
-  connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsMapOverlayEntity::onLayersChanged );
+  mLayerWatcher.reset( new QgsLayerStyleWatcher( mapSettings ) );
+  connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, [this]() { this->update( mExtent, mFrustumExtent, mRotation, mShowFrustum ); } );
 }
 
 QgsMapOverlayEntity::~QgsMapOverlayEntity()
@@ -85,59 +85,6 @@ void QgsMapOverlayEntity::update( const QgsRectangle &extent, const QVector<QgsP
     mRotation = rotationDegrees;
     mShowFrustum = showFrustum;
     mTextureGenerator->render( extent, frustumExtent, rotationDegrees, showFrustum );
-  }
-}
-
-void QgsMapOverlayEntity::invalidateMapImages()
-{
-  update( mExtent, mFrustumExtent, mRotation, mShowFrustum );
-}
-
-void QgsMapOverlayEntity::onLayersChanged()
-{
-  // disconnect all watched layers
-  const QList<QgsMapLayer *> keys = mLayers.keys();
-  for ( QgsMapLayer *layer : keys )
-  {
-    disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsMapOverlayEntity::onLayer3DRendererChanged );
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
-  }
-
-  mLayers.clear();
-
-  // connect on all layer renderer3DChanged and styleChanged signals
-  // then keep if they have or not a 3D renderer
-  const QList<QgsMapLayer *> layers = mMapSettings->layers();
-  for ( QgsMapLayer *layer : layers )
-  {
-    mLayers[layer] = static_cast< bool >( layer->renderer3D() );
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsMapOverlayEntity::onLayer3DRendererChanged );
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::onLayerStyleOrFeatureChanged );
-  }
-}
-
-void QgsMapOverlayEntity::onLayerStyleOrFeatureChanged()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    // if layer has no 3D renderer and its 2D style changed, we must invalidate the map images.
-    if ( mLayers.contains( layer ) && !static_cast< bool >( layer->renderer3D() ) )
-    {
-      invalidateMapImages();
-    }
-  }
-}
-
-void QgsMapOverlayEntity::onLayer3DRendererChanged()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    // if layer has gone from having a 3d renderer to not having one, or vice versa, we must invalidate the map images.
-    if ( mLayers.contains( layer ) && mLayers[layer] != static_cast< bool >( layer->renderer3D() ) )
-    {
-      mLayers[layer] = static_cast< bool >( layer->renderer3D() );
-      invalidateMapImages();
-    }
   }
 }
 
