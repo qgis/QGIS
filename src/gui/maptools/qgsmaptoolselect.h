@@ -16,7 +16,6 @@
 #ifndef QGSMAPTOOLSELECT_H
 #define QGSMAPTOOLSELECT_H
 
-#include "qgis_app.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolselectionhandler.h"
 
@@ -25,7 +24,7 @@ class QgsHighlight;
 
 class QMouseEvent;
 
-class APP_EXPORT QgsMapToolSelect : public QgsMapTool
+class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:

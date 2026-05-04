@@ -19,12 +19,12 @@ email                : jpalmer at linz dot govt dot nz
 #include <memory>
 
 #include "qgis.h"
-#include "qgisapp.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgshighlight.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -41,6 +41,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include <QAction>
 #include <QApplication>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QString>
 #include <QtConcurrentRun>
@@ -74,7 +75,11 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
 
   if ( !layer )
   {
-    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    emit canvas->messageEmitted( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    // QgsMessageLog::logMessage( QObject::tr( "No active vector layer: To select features, choose a vector layer in the layers panel" ), QString(), Qgis::MessageLevel::Info, true );
+    // QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    // emit messageEmitted( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    // emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
   }
   return layer;
 }
@@ -204,7 +209,8 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsDebugError( u"Caught CRS exception "_s );
-    QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "CRS Exception" ), QObject::tr( "Selection extends beyond layer's coordinate system" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( QObject::tr( "CRS Exception: Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning, true );
+    // QgisApp::instance()->messageBar()->pushMessage( QObject::tr( "CRS Exception" ), QObject::tr( "Selection extends beyond layer's coordinate system" ), Qgis::MessageLevel::Warning );
     return false;
   }
 }

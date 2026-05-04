@@ -16,7 +16,6 @@
 
 #include "qgsmaptoolselect.h"
 
-#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"

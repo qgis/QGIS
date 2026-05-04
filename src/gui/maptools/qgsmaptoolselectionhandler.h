@@ -16,6 +16,7 @@
 #ifndef QGSMAPTOOLSELECTIONHANDLER_H
 #define QGSMAPTOOLSELECTIONHANDLER_H
 
+#include "qgis_gui.h"
 #include "qgsgeometry.h"
 
 #include <QObject>
@@ -31,6 +32,8 @@ class QgsMapMouseEvent;
 class QgsRubberBand;
 class QgsSnapIndicator;
 class QgsIdentifyMenu;
+class QgsUserInputWidget;
+
 
 /// @cond private
 
@@ -78,7 +81,7 @@ class QgsDistanceWidget : public QWidget
  * \brief Utility class for handling various methods to create geometry for selection in layers.
  * \since QGIS 3.2
  */
-class QgsMapToolSelectionHandler : public QObject
+class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 {
     Q_OBJECT
 
@@ -173,6 +176,8 @@ class QgsMapToolSelectionHandler : public QObject
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
+
+    QgsUserInputWidget *mUserInputDockWidget;
 
     //! the rubberband for selection visualization
     std::unique_ptr<QgsRubberBand> mSelectionRubberBand;

@@ -15,14 +15,15 @@
 
 #include "qgsmaptoolselectionhandler.h"
 
-#include "qgisapp.h"
 #include "qgsdoublespinbox.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
+#include "qgsuserinputwidget.h"
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
@@ -109,11 +110,19 @@ QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, Qg
 {
   mIdentifyMenu->setAllowMultipleReturn( false );
   mIdentifyMenu->setExecWithSingleResult( true );
+
+  mUserInputDockWidget = new QgsUserInputWidget( mCanvas );
+  mUserInputDockWidget->setObjectName( u"UserInputDockWidget"_s );
+  mUserInputDockWidget->setAnchorWidget( mCanvas );
+  mUserInputDockWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
+  mUserInputDockWidget->setAnchorPoint( QgsFloatingWidget::TopRight );
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
 {
   cancel();
+  delete mUserInputDockWidget;
+  mUserInputDockWidget = nullptr;
 }
 
 void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -422,7 +431,7 @@ void QgsMapToolSelectionHandler::createDistanceWidget()
   deleteDistanceWidget();
 
   mDistanceWidget = new QgsDistanceWidget( tr( "Selection radius:" ) );
-  QgisApp::instance()->addUserInputWidget( mDistanceWidget );
+  mUserInputDockWidget->addUserInputWidget( mDistanceWidget );
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectionHandler::updateRadiusRubberband );

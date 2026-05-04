@@ -16,6 +16,8 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
+#include "qgis.h"
+#include "qgis_gui.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
@@ -24,6 +26,8 @@ email                : jpalmer at linz dot govt dot nz
 #include <QList>
 #include <QPoint>
 #include <QRect>
+
+#define SIP_NO_FILE
 
 class QMouseEvent;
 class QgsMapCanvas;
@@ -105,7 +109,7 @@ namespace QgsMapToolSelectUtils
    * \param layer The target layer
    * \returns Expanded rectangle in map units
   */
-  QgsRectangle expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsMapLayer *layer );
+  QgsRectangle GUI_EXPORT expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsMapLayer *layer );
 
   /**
    * Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords
@@ -113,7 +117,7 @@ namespace QgsMapToolSelectUtils
    * \param selectRect The input rectangle in device coords
    * \param rubberBand The rubberband that will be set in map units using the input rectangle
   */
-  void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
+  void GUI_EXPORT setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
 
   /**
    * Class that handles actions which can be displayed in a context menu related to feature selection.
