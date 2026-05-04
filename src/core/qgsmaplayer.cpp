@@ -2303,6 +2303,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"sld"_s, u"http://www.opengis.net/sld"_s ) );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"fes"_s, u"http://www.opengis.net/fes/2.0"_s ) );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"ogc"_s, u"http://www.opengis.net/ogc"_s ) );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     const QDomDocument::ParseResult result = myDocument.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing );
     if ( result )
     {
@@ -2314,6 +2315,12 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
       line = result.errorLine;
       column = result.errorColumn;
     }
+#else
+    if ( myDocument.setContent( &xmlReader, true, &myErrorMessage, &line, &column ) )
+    {
+      resultFlag = true;
+    }
+#endif
     if ( !resultFlag )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
