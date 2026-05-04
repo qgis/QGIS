@@ -201,12 +201,23 @@ export OUTPUT="QGIS_AI-${VERSION}-x86_64.AppImage"
 # Allow running AppImage tools in CI containers (which lack FUSE).
 export APPIMAGE_EXTRACT_AND_RUN=1
 
+# linuxdeploy resolves dependencies of the qgis binary by name; libqgis_app.so
+# and the other QGIS shared libs install under ${APPDIR}/usr/lib/qgis (a
+# subdir of usr/lib that linuxdeploy does not search by default). Make them
+# discoverable via LD_LIBRARY_PATH and pass them as explicit --library args.
+export LD_LIBRARY_PATH="${APPDIR}/usr/lib:${APPDIR}/usr/lib/qgis:${APPDIR}/usr/lib/x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH:-}"
+LIBRARY_ARGS=()
+while IFS= read -r -d '' lib; do
+  LIBRARY_ARGS+=( "--library" "$lib" )
+done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
+
 .tools/linuxdeploy-x86_64.AppImage \
   --appdir "${APPDIR}" \
   --plugin qt \
   --output appimage \
   --desktop-file "${APPDIR}/com.francemazzi.qgisai.desktop" \
-  --icon-file "${APPDIR}/qgis.png"
+  --icon-file "${APPDIR}/qgis.png" \
+  "${LIBRARY_ARGS[@]}"
 
 echo "==> Done"
 ls -lh QGIS_AI-*.AppImage
