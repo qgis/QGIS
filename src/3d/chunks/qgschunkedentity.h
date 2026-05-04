@@ -160,6 +160,50 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     int mPrimitivesBudget = std::numeric_limits<int>::max();
 };
 
+
+/**
+ * \ingroup qgis_3d
+ *
+ * The main goal of this class is to update the terrain map tiles only when necessary.
+ *
+ * This class watches for layer renderer changes. When specific cases occur it calls the mCallBackToInvalidateMapImages callback.
+ * It watches for:
+ *
+ * - layer without a 3D renderer, when the 2D style changes
+ * - layer without a 3D renderer, when a new 3D renderer is set
+ * - layer with a 3D renderer, when the 3D renderer is removed
+ *
+ * \since QGIS 4.2
+ */
+class QgsLayerStyleWatcher : public QObject
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Default constructor
+     * mapSettings 3D settings to retrieve layers
+     */
+    QgsLayerStyleWatcher( Qgs3DMapSettings *mapSettings );
+
+    //! Default destructor
+    virtual ~QgsLayerStyleWatcher() override = default;
+
+  signals:
+    //! a valid style change ahs been detected
+    void styleChanged();
+
+  private slots:
+    void onLayersChanged();
+    void onLayer3DRendererChanged();
+    void onLayerStyleOrFeatureChanged();
+
+  protected:
+    Qgs3DMapSettings *mMapSettings = nullptr;
+    //! Layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
+    QHash<QgsMapLayer *, bool> mLayers;
+};
+
 /// @endcond
 
 #endif // QGSCHUNKEDENTITY_H

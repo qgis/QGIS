@@ -32,6 +32,7 @@
 
 #include "qgschunkedentity.h"
 #include "qgschunkqueuejob.h"
+#include "qobjectuniqueptr.h"
 
 #define SIP_NO_FILE
 
@@ -74,9 +75,6 @@ class QgsTerrainEntity : public QgsChunkedEntity
   private slots:
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
-    void onLayersChanged();
-    void onLayer3DRendererChanged();
-    void onLayerStyleOrFeatureChanged();
     void onTerrainElevationOffsetChanged();
 
   private:
@@ -84,9 +82,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
-
-    //! layers that are currently being used for map rendering (and thus being watched for renderer updates). Bool value tells if the layer has a 3D renderer or not.
-    QHash<QgsMapLayer *, bool> mLayers;
+    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher = nullptr;
 };
 
 

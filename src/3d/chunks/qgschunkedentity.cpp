@@ -15,6 +15,7 @@
 
 #include "qgschunkedentity.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
@@ -22,6 +23,7 @@
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
+#include "qgsmaplayer.h"
 
 #include <QElapsedTimer>
 #include <QString>
@@ -33,7 +35,6 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-
 
 static float screenSpaceError( const QgsAABB &nodeBbox, float nodeError, const QgsChunkedEntity::SceneContext &sceneContext )
 {
@@ -788,6 +789,68 @@ QList<QgsRayCastHit> QgsChunkedEntity::rayIntersection( const QgsRay3D &ray, con
   Q_UNUSED( ray )
   Q_UNUSED( context )
   return {};
+}
+
+
+// ---------------
+
+
+QgsLayerStyleWatcher::QgsLayerStyleWatcher( Qgs3DMapSettings *mapSettings )
+  : QObject()
+  , mMapSettings( mapSettings )
+{
+  onLayersChanged();
+  connect( mMapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsLayerStyleWatcher::onLayersChanged );
+}
+
+void QgsLayerStyleWatcher::onLayersChanged()
+{
+  // disconnect all watched layers
+  const QList<QgsMapLayer *> keys = mLayers.keys();
+  for ( QgsMapLayer *layer : keys )
+  {
+    disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsLayerStyleWatcher::onLayer3DRendererChanged );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsLayerStyleWatcher::onLayerStyleOrFeatureChanged );
+  }
+
+  mLayers.clear();
+
+  // connect on all layer renderer3DChanged and styleChanged signals
+  // then keep if they have or not a 3D renderer
+  const QList<QgsMapLayer *> layers = mMapSettings->layers();
+  for ( QgsMapLayer *layer : layers )
+  {
+    mLayers[layer] = static_cast< bool >( layer->renderer3D() );
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsLayerStyleWatcher::onLayer3DRendererChanged );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsLayerStyleWatcher::onLayerStyleOrFeatureChanged );
+  }
+
+  emit styleChanged();
+}
+
+void QgsLayerStyleWatcher::onLayerStyleOrFeatureChanged()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    // if layer has no 3D renderer and its 2D style changed, we must invalidate the map images.
+    if ( mLayers.contains( layer ) && !static_cast< bool >( layer->renderer3D() ) )
+    {
+      emit styleChanged();
+    }
+  }
+}
+
+void QgsLayerStyleWatcher::onLayer3DRendererChanged()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    // if layer has gone from having a 3d renderer to not having one, or vice versa, we must invalidate the map images.
+    if ( mLayers.contains( layer ) && mLayers[layer] != static_cast< bool >( layer->renderer3D() ) )
+    {
+      mLayers[layer] = static_cast< bool >( layer->renderer3D() );
+      emit styleChanged();
+    }
+  }
 }
 
 /// @endcond
