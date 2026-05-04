@@ -467,14 +467,14 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
+  mLayerWatcher.reset( new QgsLayerStyleWatcher( mapSettings ) );
+  connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsGlobeEntity::invalidateMapImages );
+
   connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] { setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() ); } );
   connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
-  connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsGlobeEntity::onLayersChanged );
   connect( mapSettings, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsGlobeEntity::invalidateMapImages );
-
-  onLayersChanged();
 
   mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
@@ -526,7 +526,6 @@ QList<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const
   return { hit };
 }
 
-
 void QgsGlobeEntity::invalidateMapImages()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, u"3D"_s, u"Invalidate textures"_s );
@@ -555,52 +554,5 @@ void QgsGlobeEntity::invalidateMapImages()
   setNeedsUpdate( true );
 }
 
-void QgsGlobeEntity::onLayersChanged()
-{
-  // disconnect all watched layers
-  const QList<QgsMapLayer *> keys = mLayers.keys();
-  for ( QgsMapLayer *layer : keys )
-  {
-    disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsGlobeEntity::onLayer3DRendererChanged );
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
-  }
-
-  mLayers.clear();
-
-  // connect on all layer renderer3DChanged and styleChanged signals
-  // then keep if they have or not a 3D renderer
-  const QList<QgsMapLayer *> layers = mMapSettings->layers();
-  for ( QgsMapLayer *layer : layers )
-  {
-    mLayers[layer] = static_cast< bool >( layer->renderer3D() );
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsGlobeEntity::onLayer3DRendererChanged );
-    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsGlobeEntity::onLayerStyleOrFeatureChanged );
-  }
-}
-
-void QgsGlobeEntity::onLayerStyleOrFeatureChanged()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    // if layer has no 3D renderer and its 2D style changed, we must invalidate the map images.
-    if ( mLayers.contains( layer ) && !static_cast< bool >( layer->renderer3D() ) )
-    {
-      invalidateMapImages();
-    }
-  }
-}
-
-void QgsGlobeEntity::onLayer3DRendererChanged()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    // if layer has gone from having a 3d renderer to not having one, or vice versa, we must invalidate the map images.
-    if ( mLayers.contains( layer ) && mLayers[layer] != static_cast< bool >( layer->renderer3D() ) )
-    {
-      mLayers[layer] = static_cast< bool >( layer->renderer3D() );
-      invalidateMapImages();
-    }
-  }
-}
 
 /// @endcond
