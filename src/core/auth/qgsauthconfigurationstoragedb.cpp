@@ -177,6 +177,7 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
 
   auto boundQuery = []( const QSqlQuery *query ) -> QString {
     QString str = query->lastQuery();
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 6, 0 )
     const QStringList keys = query->boundValueNames();
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
@@ -190,6 +191,7 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
       it.next();
       str.replace( it.key(), it.value().toString() );
     }
+#endif
     return str;
   };
 
