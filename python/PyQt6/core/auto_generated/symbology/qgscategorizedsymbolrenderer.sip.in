@@ -522,6 +522,7 @@ default QVariant.toString output.
 
 
 
+
     void rebuildHash();
 %Docstring
 hashtable for faster access to symbols

@@ -516,6 +516,8 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
     mExpression->prepare( &context.expressionContext() );
   }
 
+  mAttrIsNumeric = mAttrNum != -1 && fields.at( mAttrNum ).isNumeric();
+
   for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
     cat.symbol()->startRender( context, fields );
@@ -1104,7 +1106,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
   {
     bool match = false;
 
-    if ( QgsVariantUtils::isNull( cat.value() ) )
+    if ( QgsVariantUtils::isNull( cat.value() ) || ( mAttrIsNumeric && cat.value().toString().isEmpty() ) )
     {
       elseRuleUUID = cat.uuid();
     }

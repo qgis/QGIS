@@ -1782,45 +1782,61 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertEqual(layer.featureCount(cat_default_id), 1)
 
     def test_layer_counts_other_categories(self):
-        layer = QgsVectorLayer("Point?field=test_field:string", "test_layer", "memory")
-        self.assertTrue(layer.isValid())
-        fields = layer.fields()
-        layer.startEditing()
-        self.assertEqual(fields[0].type(), QVariant.String)
+        """Test that features with values that don't match any category are counted in the
+        fallback 'else' category"""
 
-        # add test values
-        for attr_value in ["a", "b", None]:
-            f = QgsFeature(fields)
-            f.setAttributes([attr_value])
-            self.assertTrue(layer.addFeature(f))
+        def _test(type, values, fallback_value):
+            layer = QgsVectorLayer(
+                f"Point?field=test_field:{type}", "test_layer", "memory"
+            )
+            self.assertTrue(layer.isValid())
+            fields = layer.fields()
+            layer.startEditing()
 
-        self.assertEqual(layer.featureCount(), 3)
-        layer.commitChanges()
+            # add test values
+            values.append(None)
+            for attr_value in values:
+                f = QgsFeature(fields)
+                f.setAttributes([attr_value])
+                self.assertTrue(layer.addFeature(f))
 
-        renderer = QgsCategorizedSymbolRenderer()
-        renderer.setClassAttribute("test_field")
+            self.assertEqual(layer.featureCount(), 3)
+            layer.commitChanges()
 
-        renderer.addCategory(QgsRendererCategory("a", createMarkerSymbol(), "a"))
-        cat_a_id = renderer.categories()[-1].uuid()
-        renderer.addCategory(
-            QgsRendererCategory(QVariant(), createMarkerSymbol(), "other values")
-        )
-        cat_other_id = renderer.categories()[-1].uuid()
+            renderer = QgsCategorizedSymbolRenderer()
+            renderer.setClassAttribute("test_field")
 
-        self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_other_id})
+            renderer.addCategory(
+                QgsRendererCategory(
+                    str(values[0]), createMarkerSymbol(), str(values[0])
+                )
+            )
+            cat_a_id = renderer.categories()[-1].uuid()
+            renderer.addCategory(
+                QgsRendererCategory(
+                    fallback_value, createMarkerSymbol(), "other values"
+                )
+            )
+            cat_other_id = renderer.categories()[-1].uuid()
 
-        ctx = QgsRenderContext()
-        renderer.startRender(ctx, layer.fields())
+            self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_other_id})
 
-        self.assertEqual(
-            renderer.legendKeysForFeature(layer.getFeature(1), ctx), {cat_a_id}
-        )
-        self.assertEqual(
-            renderer.legendKeysForFeature(layer.getFeature(3), ctx), {cat_other_id}
-        )
-        self.assertEqual(
-            renderer.legendKeysForFeature(layer.getFeature(2), ctx), {cat_other_id}
-        )
+            ctx = QgsRenderContext()
+            renderer.startRender(ctx, layer.fields())
+
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(1), ctx), {cat_a_id}
+            )
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(3), ctx), {cat_other_id}
+            )
+            self.assertEqual(
+                renderer.legendKeysForFeature(layer.getFeature(2), ctx), {cat_other_id}
+            )
+
+        _test("string", ["a", "b"], QVariant())
+        _test("int", [1, 2], QVariant())
+        _test("int", [1, 2], "")
 
 
 if __name__ == "__main__":

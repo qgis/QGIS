@@ -490,6 +490,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum = -1;
 
+    //! whether the attribute is numeric (derived from attribute name in startRender)
+    bool mAttrIsNumeric = false;
+
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;
     bool mCounting = false;
