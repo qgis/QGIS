@@ -76,6 +76,7 @@ sudo apt-get install -y --no-install-recommends \
   libfcgi-dev \
   libdraco-dev \
   libgsl-dev \
+  libssl-dev \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
@@ -84,6 +85,28 @@ sudo apt-get install -y --no-install-recommends \
   desktop-file-utils \
   gdal-data \
   proj-data
+
+echo "==> Building QCA Qt6 from source (not packaged on Ubuntu noble)"
+# QCA (Qt Cryptographic Architecture) Qt6 build is required by QGIS auth
+# (find_package(QCA REQUIRED) when WITH_AUTH=ON). Noble's repo only has
+# Qt5 variants (libqca-qt5-2-dev) and the QGIS apt repo does not yet
+# publish a Qt6 build for noble. Compile from source — small library
+# (~5 min build with ninja + parallel jobs) and ships with the AppImage.
+QCA_SRC=/tmp/qca-src
+QCA_BUILD=/tmp/qca-build
+if [ ! -d "$QCA_SRC" ]; then
+  git clone --depth 1 --branch v2.3.10 https://invent.kde.org/libraries/qca.git "$QCA_SRC"
+fi
+cmake -S "$QCA_SRC" -B "$QCA_BUILD" -G Ninja \
+  -DBUILD_WITH_QT6=ON \
+  -DBUILD_TESTS=OFF \
+  -DBUILD_TOOLS=OFF \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/usr/local \
+  -DWITH_ossl_PLUGIN=yes
+cmake --build "$QCA_BUILD" -j "$NPROC"
+sudo cmake --install "$QCA_BUILD"
+sudo ldconfig
 
 echo "==> Relaxing Qt6 minimum version 6.6.0 -> 6.4.0 (noble ships 6.4.2)"
 # Noble's qt6-base-dev is 6.4.2; QGIS upstream requires >= 6.6.0. We patch
@@ -103,10 +126,8 @@ echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # pyanalysis, pyplugin-installer, qgispython, staged-plugins) that only
 # exist when WITH_BINDINGS=ON. Both are disabled together. PyQGIS plugin
 # support is lost in the AppImage; source builds still get it.
-# WITH_AUTH=OFF: QCA Qt6 not packaged for noble (not in core, not in
-# QGIS apt repo). qgsauthmanager.h has been patched to gate the
-# <QtCrypto> include on HAVE_AUTH so transitively-including translation
-# units compile when WITH_AUTH=OFF.
+# WITH_AUTH=ON (default): QCA Qt6 built from source above and installed
+# under /usr/local. CMake's FindQCA picks it up automatically.
 cmake -S . -B build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="${APPDIR}/usr" \
@@ -117,7 +138,6 @@ cmake -S . -B build -G Ninja \
   -DWITH_3D=ON \
   -DWITH_QTWEBENGINE=ON \
   -DWITH_PDAL=OFF \
-  -DWITH_AUTH=OFF \
   -DENABLE_TESTS=OFF \
   -DUSE_CCACHE=ON \
   -DENABLE_UNITY_BUILDS=ON \
