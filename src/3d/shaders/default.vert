@@ -43,8 +43,8 @@ void main()
     pos = rotateByQuat(pos, instanceRotation);
     pos += instanceTranslation;
 
-    vec3 norm = rotateByQuat(vertexNormal, instanceRotation);
-    vec3 tang = rotateByQuat(vertexTangent.xyz, instanceRotation);
+    vec3 norm = rotateByQuat(vertexNormal / instanceScale, instanceRotation);
+    vec3 tang = rotateByQuat(vertexTangent.xyz * instanceScale, instanceRotation);
 #else
     vec3 pos = vertexPosition;
     vec3 norm = vertexNormal;
