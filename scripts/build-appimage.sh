@@ -100,7 +100,6 @@ fi
 cmake -S "$QCA_SRC" -B "$QCA_BUILD" -G Ninja \
   -DBUILD_WITH_QT6=ON \
   -DBUILD_TESTS=OFF \
-  -DBUILD_TOOLS=OFF \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr/local \
   -DWITH_ossl_PLUGIN=yes
