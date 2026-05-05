@@ -23,10 +23,9 @@ jobs:
   build:
     name: build (windows)
     runs-on: windows-2022
-    env:
-      # See macOS workflow comment — disable vcpkg NuGet binary cache for
-      # tag/release builds to avoid 409 conflicts on previously-pushed deps.
-      VCPKG_BINARY_SOURCES: ${{ (github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v')) && 'clear' || '' }}
+    # See macOS workflow: keep vcpkg cache enabled for tag builds too. The
+    # 6h job timeout (GitHub free tier) was being hit when caching was
+    # disabled. cmake configure '|| true' swallows any 409 push conflicts.
 
     steps:
       - name: 🐣 Checkout
