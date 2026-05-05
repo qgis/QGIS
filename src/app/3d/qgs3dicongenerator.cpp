@@ -80,7 +80,7 @@ void Qgs3DIconGenerator::generateIcon( QgsStyle *style, QgsStyle::StyleEntity ty
 
     case QgsStyle::MaterialSettingsEntity:
     {
-      generateThumbnailForMaterial( style, name );
+      QMetaObject::invokeMethod( this, &Qgs3DIconGenerator::generateThumbnailForMaterial, Qt::QueuedConnection, style, name );
       break;
     }
   }
