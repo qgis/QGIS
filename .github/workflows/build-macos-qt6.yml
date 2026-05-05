@@ -24,10 +24,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
-            triplet: x64-osx-dynamic-release
-            deployment-target: "10.15"
-            osx-architecture: "x86_64"
+          # macos-15-intel runners now consistently exceed the 6h job timeout
+          # on this build (verified across qgisai-v0.1.2 and v0.1.3). Until
+          # GitHub restores reliable Intel macOS runners we ship Apple Silicon
+          # only. Intel users can run the AppImage in a Linux VM, build from
+          # source, or use Rosetta-translated upstream QGIS for now.
           - os: macos-15
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
@@ -225,15 +226,13 @@ jobs:
           path: |
             artifacts
 
-      - name: Create universal app
+      - name: Extract arm64 app
         run: |
-          mkdir -p x64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-x64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-x64-osx-dynamic-release.tar.gz -C x64
-          mkdir -p arm64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C arm64
-
-          pip install lipomerge
-          lipomerge ./x64 ./arm64 universal
+          # Arm64-only build: extract the .app bundle straight into the
+          # 'universal' directory so downstream sign + create-dmg steps don't
+          # need conditionals on architecture.
+          mkdir -p universal
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C universal
         env:
           STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME: ${{steps.workflow-artifact-ids.outputs.filename}}
 
@@ -244,14 +243,12 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
-      - name: 🔏 Sign universal app
+      - name: 🔏 Sign app
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
         run: |
-          # lipomerge strips signatures from binaries it touches, so we need to
-          # re-sign the universal .app from scratch with our Developer ID
-          # certificate. --options runtime enables the hardened runtime which is
-          # required for notarization.
-          APP_PATH=$(ls -d universal/*/*.app | head -n1)
+          # Sign the .app with our Developer ID certificate. --options runtime
+          # enables the hardened runtime which is required for notarization.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
           echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
           codesign --deep --force \
             --options runtime \
@@ -281,7 +278,7 @@ jobs:
             --icon "${QGIS_APP_NAME}.app" 130 160 \
             --app-drop-link 400 155 \
             ${QGIS_APP_NAME}-Installer.dmg \
-            universal/*/*.app
+            universal/*.app
         env:
           STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_DISPLAY_NAME: ${{steps.workflow-artifact-ids.outputs.display-name}}
 
