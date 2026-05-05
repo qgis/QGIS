@@ -127,6 +127,24 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
   }
 }
 
+bool QgsStacDataItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context )
+{
+  if ( QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item ) )
+  {
+    if ( assetItem->stacAsset()->isDownloadable() )
+    {
+      // only handle double clicks when item doesn't represent an asset loadable as a map layer
+      const QgsMimeDataUtils::UriList mimeUris = assetItem->mimeUris();
+      if ( mimeUris.isEmpty() || !mimeUris.at( 0 ).isValid() )
+      {
+        downloadAssets( assetItem, context );
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void QgsStacDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   const QgsStacConnection::Data connection = QgsStacConnection::connection( item->name() );

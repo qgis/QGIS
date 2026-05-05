@@ -70,6 +70,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
+#include "qgsstacdataitems.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorlayerexporter.h"
@@ -1117,7 +1118,7 @@ int QgsLayerItemGuiProvider::precedenceWhenPopulatingMenus() const
 
 bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( !item || item->type() != Qgis::BrowserItemType::Layer )
+  if ( !item )
     return false;
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
@@ -1126,10 +1127,17 @@ bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemG
     QgisApp::instance()->handleDropUriList( layerUriList );
     return true;
   }
-  else
+  else if ( auto stacItem = qobject_cast<QgsStacAssetItem *>( item ) )
   {
-    return false;
+    // only handle double-click on stac items which can be loaded as layers here:
+    const QgsMimeDataUtils::UriList layerUriList = stacItem->mimeUris();
+    if ( !layerUriList.isEmpty() && layerUriList.at( 0 ).isValid() )
+    {
+      QgisApp::instance()->handleDropUriList( layerUriList );
+      return true;
+    }
   }
+  return false;
 }
 
 void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &items )
