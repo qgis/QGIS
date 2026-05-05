@@ -38,10 +38,7 @@ namespace Qt3DCore
 {
   class QGeometry;
 }
-namespace Qt3DExtras
-{
-  class Qt3DWindow;
-}
+
 
 /**
  * \ingroup qgis_3d
@@ -192,9 +189,7 @@ class _3D_EXPORT QgsAbstractMaterial3DHandler SIP_ABSTRACT
      *
      * This method can be overridden to customize the lighting or mesh for a specific material.
      */
-    virtual Qt3DCore::QEntity *createPreviewScene(
-      const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *window, Qt3DCore::QEntity *parent
-    ) const;
+    virtual Qt3DCore::QEntity *createPreviewScene( const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *window, Qt3DCore::QEntity *parent ) const;
 
     /**
      * Updates an existing material preview scene with new material \a settings.

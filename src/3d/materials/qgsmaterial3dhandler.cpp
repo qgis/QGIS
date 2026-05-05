@@ -134,7 +134,7 @@ Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewMesh( const QStrin
 }
 
 Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene(
-  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *, Qt3DCore::QEntity *parent
+  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *, Qt3DCore::QEntity *parent
 ) const
 {
   auto *root = new Qt3DCore::QEntity( parent );
