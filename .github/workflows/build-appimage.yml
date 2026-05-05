@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload release assets
         if: ${{ github.event_name == 'release' || startsWith(github.ref, 'refs/tags/qgisai-v') }}
-        uses: AButler/upload-release-assets@45be2facf3acc71812c1c17b4cefef5f6e8cac8a  # v3.0.1
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         with:
+          tag_name: ${{ github.ref_name }}
           files: 'QGIS_AI-*.AppImage'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
