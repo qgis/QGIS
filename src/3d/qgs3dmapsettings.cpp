@@ -19,9 +19,11 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dterrainregistry.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgscolorutils.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgslightsource.h"
 #include "qgsmaplayerlistutils_p.h"
@@ -76,10 +78,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapThemes( other.mMapThemes )
   , mDpi( other.mDpi )
   , mIsFpsCounterEnabled( other.mIsFpsCounterEnabled )
-  , mBackgroundType( other.mBackgroundType )
-  , mGradientBackgroundTopColor( other.mGradientBackgroundTopColor )
-  , mGradientBackgroundBottomColor( other.mGradientBackgroundBottomColor )
-  , mSkyboxSettings( other.mSkyboxSettings )
   , mShadowSettings( other.mShadowSettings )
   , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
@@ -102,6 +100,9 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShow2DMapOverlay( other.mShow2DMapOverlay )
 {
   setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
+
+  if ( other.mBackgroundSettings )
+    mBackgroundSettings.reset( other.mBackgroundSettings->clone() );
 
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
@@ -255,23 +256,24 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     setTerrainSettings( terrainSettings.release() );
   }
 
-  QDomElement elemSkybox = elem.firstChildElement( u"skybox"_s );
-  mSkyboxSettings.readXml( elemSkybox, context );
-
-  QDomElement elemGradientBackground = elem.firstChildElement( u"gradient-background"_s );
-  if ( !elemGradientBackground.isNull() )
+  mBackgroundSettings.reset();
+  QDomElement elemBackground = elem.firstChildElement( u"background"_s );
+  if ( !elemBackground.isNull() )
   {
-    mGradientBackgroundTopColor = QgsColorUtils::colorFromString( elemGradientBackground.attribute( u"top-color"_s ) );
-    mGradientBackgroundBottomColor = QgsColorUtils::colorFromString( elemGradientBackground.attribute( u"bottom-color"_s ) );
+    const QString bgType = elemBackground.attribute( u"type"_s );
+    if ( bgType == "skybox"_L1 )
+    {
+      auto skybox = std::make_unique<QgsSkyboxSettings>();
+      skybox->readXml( elemBackground, context );
+      mBackgroundSettings = std::move( skybox );
+    }
+    else if ( bgType == "gradient"_L1 )
+    {
+      auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+      gradient->readXml( elemBackground, context );
+      mBackgroundSettings = std::move( gradient );
+    }
   }
-
-  const QString bgType = elemSkybox.attribute( u"background-type"_s );
-  if ( bgType == "skybox"_L1 )
-    mBackgroundType = BackgroundType::Skybox;
-  else if ( bgType == "gradient"_L1 && !elemGradientBackground.isNull() )
-    mBackgroundType = BackgroundType::Gradient;
-  else
-    mBackgroundType = BackgroundType::NoBackground;
 
   QDomElement elemShadows = elem.firstChildElement( u"shadow-rendering"_s );
   mShadowSettings.readXml( elemShadows, context );
@@ -408,28 +410,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemSkybox = doc.createElement( u"skybox"_s );
-  QString bgTypeStr;
-  switch ( mBackgroundType )
+  if ( mBackgroundSettings )
   {
-    case BackgroundType::Skybox:
-      bgTypeStr = u"skybox"_s;
-      break;
-    case BackgroundType::Gradient:
-      bgTypeStr = u"gradient"_s;
-      break;
-    case BackgroundType::NoBackground:
-      bgTypeStr = u"none"_s;
-      break;
+    QDomElement elemBackground = doc.createElement( u"background"_s );
+    elemBackground.setAttribute( u"type"_s, mBackgroundSettings->type() );
+    mBackgroundSettings->writeXml( elemBackground, context );
+    elem.appendChild( elemBackground );
   }
-  elemSkybox.setAttribute( u"background-type"_s, bgTypeStr );
-  mSkyboxSettings.writeXml( elemSkybox, context );
-  elem.appendChild( elemSkybox );
-
-  QDomElement elemGradientBackground = doc.createElement( u"gradient-background"_s );
-  elemGradientBackground.setAttribute( u"top-color"_s, QgsColorUtils::colorToString( mGradientBackgroundTopColor ) );
-  elemGradientBackground.setAttribute( u"bottom-color"_s, QgsColorUtils::colorToString( mGradientBackgroundBottomColor ) );
-  elem.appendChild( elemGradientBackground );
 
   QDomElement elemShadows = doc.createElement( u"shadow-rendering"_s );
   mShadowSettings.writeXml( elemShadows, context );
@@ -669,58 +656,19 @@ QColor Qgs3DMapSettings::backgroundColor() const
   return mBackgroundColor;
 }
 
-Qgs3DMapSettings::BackgroundType Qgs3DMapSettings::backgroundType() const
+const QgsAbstract3DMapBackgroundSettings *Qgs3DMapSettings::backgroundSettings() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mBackgroundType;
+  return mBackgroundSettings.get();
 }
 
-void Qgs3DMapSettings::setBackgroundType( BackgroundType type )
+void Qgs3DMapSettings::setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( type == mBackgroundType )
-    return;
-
-  mBackgroundType = type;
-  emit backgroundTypeChanged();
-}
-
-QColor Qgs3DMapSettings::gradientBackgroundTopColor() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mGradientBackgroundTopColor;
-}
-
-void Qgs3DMapSettings::setGradientBackgroundTopColor( const QColor &color )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( color == mGradientBackgroundTopColor )
-    return;
-
-  mGradientBackgroundTopColor = color;
-  emit backgroundTypeChanged();
-}
-
-QColor Qgs3DMapSettings::gradientBackgroundBottomColor() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mGradientBackgroundBottomColor;
-}
-
-void Qgs3DMapSettings::setGradientBackgroundBottomColor( const QColor &color )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( color == mGradientBackgroundBottomColor )
-    return;
-
-  mGradientBackgroundBottomColor = color;
-  emit backgroundTypeChanged();
+  mBackgroundSettings.reset( settings );
+  emit backgroundSettingsChanged();
 }
 
 void Qgs3DMapSettings::setSelectionColor( const QColor &color )
@@ -1329,7 +1277,9 @@ QgsSkyboxSettings Qgs3DMapSettings::skyboxSettings() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mSkyboxSettings;
+  if ( mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1 )
+    return *dynamic_cast<const QgsSkyboxSettings *>( mBackgroundSettings.get() );
+  return QgsSkyboxSettings();
 }
 
 QgsShadowSettings Qgs3DMapSettings::shadowSettings() const
@@ -1350,8 +1300,7 @@ void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSetting
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mSkyboxSettings = skyboxSettings;
-  emit skyboxSettingsChanged();
+  setBackgroundSettings( skyboxSettings.clone() );
 }
 
 void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSettings )
@@ -1374,14 +1323,17 @@ bool Qgs3DMapSettings::isSkyboxEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mBackgroundType == BackgroundType::Skybox;
+  return mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1;
 }
 
 void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  setBackgroundType( enabled ? BackgroundType::Skybox : BackgroundType::NoBackground );
+  if ( enabled )
+    setBackgroundSettings( ( mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1 ) ? mBackgroundSettings->clone() : new QgsSkyboxSettings() );
+  else
+    setBackgroundSettings( nullptr );
 }
 
 bool Qgs3DMapSettings::isFpsCounterEnabled() const
@@ -1595,8 +1547,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );

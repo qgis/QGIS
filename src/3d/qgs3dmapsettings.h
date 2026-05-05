@@ -20,6 +20,7 @@
 
 #include "qgis_3d.h"
 #include "qgs3daxissettings.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgsambientocclusionsettings.h"
 #include "qgscoordinatereferencesystem.h"
@@ -56,15 +57,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
-    //! Background rendering type for the 3D map view
-    enum class BackgroundType
-    {
-      NoBackground,
-      Gradient,
-      Skybox,
-    };
-    Q_ENUM( BackgroundType )
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -208,42 +200,21 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QColor backgroundColor() const;
 
     /**
-     * Returns the background type for the 3D map view.
-     * \see setBackgroundType()
+     * Returns the background settings for the 3D scene, or null if no background is set.
+     *
+     * \see setBackgroundSettings()
      * \since QGIS 4.2
      */
-    BackgroundType backgroundType() const;
+    const QgsAbstract3DMapBackgroundSettings *backgroundSettings() const;
 
     /**
-     * Sets the background \a type for the 3D map view.
-     * \see backgroundType()
+     * Sets the background \a settings for the 3D scene. Ownership is transferred.
+     *
+     * \see backgroundSettings()
+     * \see backgroundSettingsChanged()
      * \since QGIS 4.2
      */
-    void setBackgroundType( BackgroundType type );
-
-    /**
-     * Sets the top color of the gradient background of the 3D map view
-     * \since QGIS 4.2
-     */
-    void setGradientBackgroundTopColor( const QColor &color );
-
-    /**
-     * Returns the top color of the gradient background of the 3D map view
-     * \since QGIS 4.2
-     */
-    QColor gradientBackgroundTopColor() const;
-
-    /**
-     * Sets the bottom color of the gradient background of the 3D map view
-     * \since QGIS 4.2
-     */
-    void setGradientBackgroundBottomColor( const QColor &color );
-
-    /**
-     * Returns the bottom color of the gradient background of the 3D map view
-     * \since QGIS 4.2
-     */
-    QColor gradientBackgroundBottomColor() const;
+    void setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings SIP_TRANSFER );
 
     //! Sets color used for selected features
     void setSelectionColor( const QColor &color );
@@ -661,8 +632,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns the current configuration of the skybox
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use backgroundSettings() instead.
      */
-    QgsSkyboxSettings skyboxSettings() const SIP_SKIP;
+    Q_DECL_DEPRECATED QgsSkyboxSettings skyboxSettings() const SIP_SKIP;
 
     /**
      * Returns the current configuration of shadows
@@ -679,8 +651,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use setBackgroundSettings() instead.
      */
-    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
+    Q_DECL_DEPRECATED void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
     /**
      * Sets the current configuration of shadow rendering
@@ -698,7 +671,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns whether the skybox is enabled.
      * \see setIsSkyboxEnabled()
      * \since QGIS 3.16
-     * \deprecated QGIS 4.2. Use backgroundType() instead.
+     * \deprecated QGIS 4.2. Use backgroundSettings() instead.
      */
     Q_DECL_DEPRECATED bool isSkyboxEnabled() const SIP_DEPRECATED;
 
@@ -706,9 +679,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets whether the skybox is enabled.
      * \see isSkyboxEnabled()
      * \since QGIS 3.16
-     * \deprecated QGIS 4.2. Use setBackgroundType() instead.
+     * \deprecated QGIS 4.2. Use setBackgroundSettings() instead.
      */
     Q_DECL_DEPRECATED void setIsSkyboxEnabled( bool enabled ) SIP_DEPRECATED;
+
     /**
      * Returns whether FPS counter label is enabled
      * \see setIsFpsCounterEnabled()
@@ -1041,8 +1015,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
+     * \deprecated QGIS 4.2. Use backgroundSettingsChanged() instead.
      */
-    void skyboxSettingsChanged();
+    Q_DECL_DEPRECATED void skyboxSettingsChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when background settings are changed.
+     * \since QGIS 4.2
+     */
+    void backgroundSettingsChanged();
 
     /**
      * Emitted when shadow rendering settings are changed
@@ -1117,12 +1098,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void show2DMapOverlayChanged();
 
-    /**
-     * Emitted when the background type or gradient colors change.
-     * \since QGIS 4.2
-     */
-    void backgroundTypeChanged();
-
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -1164,13 +1139,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    BackgroundType mBackgroundType = BackgroundType::NoBackground;
-    QColor mGradientBackgroundTopColor = QColor( 0, 128, 255 );
-    QColor mGradientBackgroundBottomColor = Qt::black;
-
-    QgsSkyboxSettings mSkyboxSettings;                     //!< Skybox related configuration
-    QgsShadowSettings mShadowSettings;                     //!< Shadow rendering related settings
-    QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
+    std::unique_ptr<QgsAbstract3DMapBackgroundSettings> mBackgroundSettings; //!< Stores background settings
+    QgsShadowSettings mShadowSettings;                                       //!< Shadow rendering related settings
+    QgsAmbientOcclusionSettings mAmbientOcclusionSettings;                   //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;

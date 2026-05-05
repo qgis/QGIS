@@ -50,6 +50,7 @@ set(QGIS_3D_SRCS
   qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
+  qgsfixedgradientbackgroundsettings.cpp
   qgsgradientbackgroundentity.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
@@ -195,6 +196,8 @@ set(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
+  qgsabstract3dmapbackgroundsettings.h
+  qgsfixedgradientbackgroundsettings.h
   qgsgradientbackgroundentity.h
   qgsskyboxentity.h
   qgsskyboxsettings.h

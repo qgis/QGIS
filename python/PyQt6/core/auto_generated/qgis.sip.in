@@ -2437,11 +2437,11 @@ The development version
       Directional,
     };
 
-    enum class SkyboxType /BaseType=IntEnum/
+    enum class Map3DBackgroundType /BaseType=IntEnum/
     {
-      DistinctTextures,
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,
+      FixedBackground,
+      DistinctTextureSkybox
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/

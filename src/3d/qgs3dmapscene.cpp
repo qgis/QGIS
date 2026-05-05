@@ -34,6 +34,7 @@
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
@@ -148,9 +149,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundTypeChanged, this, &Qgs3DMapScene::onGradientBackgroundChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -210,8 +208,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-  onSkyboxSettingsChanged();
-  onGradientBackgroundChanged();
+  connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
+  onBackgroundSettingsChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
@@ -1130,51 +1128,35 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged()
+void Qgs3DMapScene::onBackgroundSettingsChanged()
 {
-  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox )
+  const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
+  if ( !settings )
   {
-    mSkybox->deleteLater();
-    mSkybox = nullptr;
-  }
-
-  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Skybox )
-  {
-    QMap<QString, QString> faces;
-    switch ( skyboxSettings.skyboxType() )
+    if ( mBackgroundEntity )
     {
-      case Qgis::SkyboxType::DistinctTextures:
-        faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity( skyboxSettings.cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
-        break;
-#if 0 // this is broken for z-up coordinate system
-      case Qgis::SkyboxType::Panoramic:
-        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
-        break;
-#endif
+      mBackgroundEntity->deleteLater();
+      mBackgroundEntity = nullptr;
     }
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mSkybox->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
-    mSkybox->addComponent( frameGraph->forwardRenderView().renderLayer() );
-  }
-}
-
-void Qgs3DMapScene::onGradientBackgroundChanged()
-{
-  if ( mGradientBackground )
-  {
-    mGradientBackground->deleteLater();
-    mGradientBackground = nullptr;
+    return;
   }
 
-  if ( mMap.backgroundType() == Qgs3DMapSettings::BackgroundType::Gradient )
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  if ( settings->type() == "skybox"_L1 )
   {
-    mGradientBackground = new QgsGradientBackgroundEntity( mMap.gradientBackgroundTopColor(), mMap.gradientBackgroundBottomColor(), this );
-    QgsFrameGraph *frameGraph = mEngine->frameGraph();
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
-    mGradientBackground->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
+    const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
+    mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
   }
+  else if ( settings->type() == "gradient"_L1 )
+  {
+    const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
+    mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
+  }
+
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
 }
 
 void Qgs3DMapScene::onShadowSettingsChanged()

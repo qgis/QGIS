@@ -28,13 +28,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-    enum class BackgroundType
-    {
-      NoBackground,
-      Gradient,
-      Skybox,
-    };
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
@@ -213,48 +206,24 @@ Sets background color of the 3D map view
 Returns background color of the 3D map view
 %End
 
-    BackgroundType backgroundType() const;
+    const QgsAbstract3DMapBackgroundSettings *backgroundSettings() const;
 %Docstring
-Returns the background type for the 3D map view.
+Returns the background settings for the 3D scene, or null if no
+background is set.
 
-.. seealso:: :py:func:`setBackgroundType`
+.. seealso:: :py:func:`setBackgroundSettings`
 
 .. versionadded:: 4.2
 %End
 
-    void setBackgroundType( BackgroundType type );
+    void setBackgroundSettings( QgsAbstract3DMapBackgroundSettings *settings /Transfer/ );
 %Docstring
-Sets the background ``type`` for the 3D map view.
+Sets the background ``settings`` for the 3D scene. Ownership is
+transferred.
 
-.. seealso:: :py:func:`backgroundType`
+.. seealso:: :py:func:`backgroundSettings`
 
-.. versionadded:: 4.2
-%End
-
-    void setGradientBackgroundTopColor( const QColor &color );
-%Docstring
-Sets the top color of the gradient background of the 3D map view
-
-.. versionadded:: 4.2
-%End
-
-    QColor gradientBackgroundTopColor() const;
-%Docstring
-Returns the top color of the gradient background of the 3D map view
-
-.. versionadded:: 4.2
-%End
-
-    void setGradientBackgroundBottomColor( const QColor &color );
-%Docstring
-Sets the bottom color of the gradient background of the 3D map view
-
-.. versionadded:: 4.2
-%End
-
-    QColor gradientBackgroundBottomColor() const;
-%Docstring
-Returns the bottom color of the gradient background of the 3D map view
+.. seealso:: :py:func:`backgroundSettingsChanged`
 
 .. versionadded:: 4.2
 %End
@@ -750,7 +719,7 @@ pixels Default value is 96
 
 
 
- bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundType() instead."/;
+ bool isSkyboxEnabled() const /Deprecated="Since 4.2. Use backgroundSettings() instead."/;
 %Docstring
 Returns whether the skybox is enabled.
 
@@ -760,10 +729,10 @@ Returns whether the skybox is enabled.
 
 .. deprecated:: 4.2
 
-   Use :py:func:`~Qgs3DMapSettings.backgroundType` instead.
+   Use :py:func:`~Qgs3DMapSettings.backgroundSettings` instead.
 %End
 
- void setIsSkyboxEnabled( bool enabled ) /Deprecated="Since 4.2. Use setBackgroundType() instead."/;
+ void setIsSkyboxEnabled( bool enabled ) /Deprecated="Since 4.2. Use setBackgroundSettings() instead."/;
 %Docstring
 Sets whether the skybox is enabled.
 
@@ -773,8 +742,9 @@ Sets whether the skybox is enabled.
 
 .. deprecated:: 4.2
 
-   Use :py:func:`~Qgs3DMapSettings.setBackgroundType` instead.
+   Use :py:func:`~Qgs3DMapSettings.setBackgroundSettings` instead.
 %End
+
     bool isFpsCounterEnabled() const;
 %Docstring
 Returns whether FPS counter label is enabled
@@ -1169,11 +1139,22 @@ Emitted when the camera movement speed was changed
 .. versionadded:: 3.18
 %End
 
-    void skyboxSettingsChanged();
+ void skyboxSettingsChanged() /Deprecated="Since 4.2. Use backgroundSettingsChanged() instead."/;
 %Docstring
 Emitted when skybox settings are changed
 
 .. versionadded:: 3.16
+
+.. deprecated:: 4.2
+
+   Use :py:func:`~Qgs3DMapSettings.backgroundSettingsChanged` instead.
+%End
+
+    void backgroundSettingsChanged();
+%Docstring
+Emitted when background settings are changed.
+
+.. versionadded:: 4.2
 %End
 
     void shadowSettingsChanged();
@@ -1264,13 +1245,6 @@ Emitted when the 2D map overlay is enabled or disabled
 .. seealso:: :py:func:`setIs2DMapOverlayEnabled`
 
 .. versionadded:: 4.0
-%End
-
-    void backgroundTypeChanged();
-%Docstring
-Emitted when the background type or gradient colors change.
-
-.. versionadded:: 4.2
 %End
 
   private:

@@ -35,6 +35,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsfontutils.h"
@@ -357,9 +358,10 @@ void TestQgs3DRendering::testGradientBackground()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
 
-  map->setBackgroundType( Qgs3DMapSettings::BackgroundType::Gradient );
-  map->setGradientBackgroundTopColor( QColor( 30, 120, 220 ) );
-  map->setGradientBackgroundBottomColor( QColor( 0, 0, 0 ) );
+  auto *gradientBg = new QgsFixedGradientBackgroundSettings();
+  gradientBg->setTopColor( QColor( 30, 120, 220 ) );
+  gradientBg->setBottomColor( QColor( 0, 0, 0 ) );
+  map->setBackgroundSettings( gradientBg );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );

@@ -7786,16 +7786,20 @@ Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 # --
 Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SkyboxType.DistinctTextures.__doc__ = "Cube map built from distinct textures"
-Qgis.SkyboxType.__doc__ = """Skybox types for 3D scenes.
+Qgis.Map3DBackgroundType.NoBackground.__doc__ = ""
+Qgis.Map3DBackgroundType.FixedBackground.__doc__ = ""
+Qgis.Map3DBackgroundType.DistinctTextureSkybox.__doc__ = ""
+Qgis.Map3DBackgroundType.__doc__ = """Background types for 3D map view.
 
 .. versionadded:: 4.2
 
-* ``DistinctTextures``: Cube map built from distinct textures
+* ``NoBackground``: 
+* ``FixedBackground``: 
+* ``DistinctTextureSkybox``: 
 
 """
 # --
-Qgis.SkyboxType.baseClass = Qgis
+Qgis.Map3DBackgroundType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SkyboxCubeMapping.NativeZUp.__doc__ = "Textures exported for Z-up (+X Right, +Y Forward, +Z Up)"
 Qgis.SkyboxCubeMapping.OpenGLYUp.__doc__ = "Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)"

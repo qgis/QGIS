@@ -4350,17 +4350,16 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LightSourceType )
 
     /**
-     * Skybox types for 3D scenes.
-     *
+     * Background types for 3D map view.
      * \since QGIS 4.2
      */
-    enum class SkyboxType : int
+    enum class Map3DBackgroundType : int
     {
-      DistinctTextures, //!< Cube map built from distinct textures
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,
+      FixedBackground,
+      DistinctTextureSkybox
     };
-    Q_ENUM( SkyboxType )
+    Q_ENUM( Map3DBackgroundType )
 
     /**
      * Skybox texture cube mapping for distinct texture skyboxes.
