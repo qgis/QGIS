@@ -431,6 +431,23 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static bool isSimple( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
+
+    /**
+     * Returns the geometry component of a geometry collection at the specified index.
+     *
+     * - For geometries composed of multiple elements (e.g. GeometryColletion, MultiPoint,
+     *   MultiLineString, MultiPolygon), this method returns the sub-geometry at the given index.
+     * - For singular geometries, return the geometry itself when index is 0.
+     *
+     * \param geom geometry to perform the operation
+     * \param index index of geometry to return
+     * \param errorMsg Error message returned by SFGCAL
+     * \return the sub-geometry or a nullptr if the operation failed
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom geometryN( const sfcgal::geometry *geom, unsigned int index, QString *errorMsg = nullptr );
+
     /**
      * Calculate the boundary of \a geom
      *

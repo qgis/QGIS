@@ -321,6 +321,22 @@ class CORE_EXPORT QgsSfcgalGeometry
     bool isEmpty() const SIP_THROW( QgsSfcgalException );
 
     /**
+     * Returns the geometry component of a geometry collection at the specified index.
+     *
+     * - For geometries composed of multiple elements (e.g. GeometryColletion, MultiPoint,
+     *   MultiLineString, MultiPolygon), this method returns the sub-geometry at the given index.
+     * - For singular geometries, return the geometry itself when index is 0.
+     *
+     * \param index index of geometry to return
+     * \return the sub-geometry
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     *
+     * \since QGIS 4.2
+     */
+    std::unique_ptr<QgsSfcgalGeometry> geometryN( unsigned int index ) const SIP_THROW( QgsSfcgalException );
+
+    /**
      * Computes the area of \a geom.
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is

@@ -336,6 +336,26 @@ Checks if ``geom`` is empty.
                             operation
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> geometryN( unsigned int index ) const;
+%Docstring
+Returns the geometry component of a geometry collection at the specified
+index.
+
+- For geometries composed of multiple elements (e.g. GeometryColletion,
+  MultiPoint, MultiLineString, MultiPolygon), this method returns the
+  sub-geometry at the given index.
+- For singular geometries, return the geometry itself when index is 0.
+
+:param index: index of geometry to return
+
+:return: the sub-geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+.. versionadded:: 4.2
+%End
+
     double area( bool withDiscretization = false ) const;
 %Docstring
 Computes the area of ``geom``.
