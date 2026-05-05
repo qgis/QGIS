@@ -1092,6 +1092,17 @@ sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, co
   return sfcgal::make_shared_geom( result );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_split_3d( geom, planePoint.x(), planePoint.y(), planePoint.z(), planeNormal.x(), planeNormal.y(), planeNormal.z(), closeGeometries );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );

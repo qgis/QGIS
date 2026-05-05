@@ -101,6 +101,7 @@ class TestQgsSfcgal : public QgsTest
     void toPolyhedralSurface();
     void geometryN_data();
     void geometryN();
+    void split3D();
 
   private:
     //! Must be called before each render test
@@ -1327,6 +1328,41 @@ void TestQgsSfcgal::geometryN()
       QVERIFY_EXCEPTION_THROWN( geom.geometryN( 1 ), QgsSfcgalException );
     }
   }
+}
+
+void TestQgsSfcgal::split3D()
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> cube = QgsSfcgalGeometry::createCube( 5 );
+  QCOMPARE( cube->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( cube->geometryType(), "cube" );
+
+  std::unique_ptr<QgsSfcgalGeometry> poly = cube->primitiveAsPolyhedralSurface();
+
+  const QgsPoint planePoint( 0.0, 0.0, 0.0 );
+  const QgsVector3D planeNormal( 1.0, 0.0, -1.0 );
+
+  std::unique_ptr<QgsSfcgalGeometry> splitCube = poly->split3D( planePoint, planeNormal, true );
+  QCOMPARE( splitCube->wkbType(), Qgis::WkbType::GeometryCollectionZ );
+  QCOMPARE( splitCube->partCount(), 2 );
+
+  std::unique_ptr<QgsSfcgalGeometry> firstPart = splitCube->geometryN( 0 );
+  const QString expectedFirstPartWkt = "POLYHEDRALSURFACE Z (((5.0 0.0 5.0,5.0 5.0 5.0,0.0 5.0 5.0,0.0 0.0 5.0,5.0 0.0 5.0)),"
+                                       "((5.0 0.0 5.0,0.0 0.0 5.0,0.0 0.0 0.0,2.5 0.0 2.5,5.0 0.0 5.0)),"
+                                       "((0.0 5.0 5.0,5.0 5.0 5.0,0.0 5.0 0.0,0.0 5.0 5.0)),"
+                                       "((0.0 0.0 0.0,0.0 5.0 0.0,5.0 5.0 5.0,5.0 0.0 5.0,2.5 0.0 2.5,0.0 0.0 0.0)),"
+                                       "((0.0 5.0 0.0,0.0 0.0 0.0,0.0 0.0 5.0,0.0 5.0 5.0,0.0 5.0 0.0)))";
+
+
+  std::unique_ptr<QgsSfcgalGeometry> secondPart = splitCube->geometryN( 1 );
+  const QString expectedSecondPartWkt = "POLYHEDRALSURFACE Z (((0.0 0.0 0.0,0.0 5.0 0.0,5.0 5.0 0.0,5.0 0.0 0.0,0.0 0.0 0.0)),"
+                                        "((0.0 0.0 0.0,5.0 0.0 0.0,5.0 0.0 5.0,2.5 0.0 2.5,0.0 0.0 0.0)),"
+                                        "((5.0 5.0 0.0,0.0 5.0 0.0,5.0 5.0 5.0,5.0 5.0 0.0)),"
+                                        "((5.0 0.0 0.0,5.0 5.0 0.0,5.0 5.0 5.0,5.0 0.0 5.0,5.0 0.0 0.0)),"
+                                        "((0.0 5.0 0.0,0.0 0.0 0.0,2.5 0.0 2.5,5.0 0.0 5.0,5.0 5.0 5.0,0.0 5.0 0.0)))";
+  QCOMPARE( secondPart->asWkt( 1 ), expectedSecondPartWkt );
+
+#endif
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )

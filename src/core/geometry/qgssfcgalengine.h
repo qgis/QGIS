@@ -729,6 +729,22 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QgsMatrix4x4 &mat, QString *errorMsg = nullptr );
 
     /**
+     * Splits the given geometry with a plane defined by a point \a planePoint and a normal vector \a planeNormal.
+     *
+     * \param geom the 3D geometry on which to perform the operation: a PolyhedralSurface or a TIN
+     * \param planePoint a point belonging to the splitting plane
+     * \param planeNormal the normal vector of the splitting plane
+     * \param closeGeometries If true, ensures resulting geometries are closed.
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \return A GeometryCollection containing the split geometries, or an empty
+     *         GeometryCollection if the plane does not intersect the geometry
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_geom split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg = nullptr );
+
+    /**
      * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
      *
      * \param prim primitive to perform the operation

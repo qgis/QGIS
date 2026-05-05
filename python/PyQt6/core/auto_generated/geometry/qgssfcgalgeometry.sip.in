@@ -508,6 +508,33 @@ Apply 3D matrix transform ``mat`` to geometry ``geom``
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> split3D( const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries ) const;
+%Docstring
+Splits the given geometry with a plane defined by a point ``planePoint``
+and a normal vector ``planeNormal``.
+
+:param planePoint: a point belonging to the splitting plane
+:param planeNormal: the normal vector of the splitting plane
+:param closeGeometries: If true, ensures resulting geometries are
+                        closed.
+:param errorMsg: Error message returned by SFGCAL
+
+:return: A GeometryCollection containing the split geometries, or an
+         empty GeometryCollection if the plane does not intersect the
+         geometry
+
+.. note::
+
+   the geometry needs to be a PolyhedralSurface or a TIN
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
     bool intersects( const QgsAbstractGeometry *otherGeom ) const;
 %Docstring
 Checks if ``otherGeom`` intersects this.
