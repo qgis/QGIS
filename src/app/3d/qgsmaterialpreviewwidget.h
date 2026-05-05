@@ -29,6 +29,9 @@ namespace Qt3DRender
   class QCamera;
   class QRenderAspect;
   class QRenderSettings;
+  class QRenderSurfaceSelector;
+  class QTexture2D;
+  class QLayer;
 } //namespace Qt3DRender
 
 namespace Qt3DExtras
@@ -63,23 +66,32 @@ class Qgs3DWindow : public QWindow
     ~Qgs3DWindow() override;
     void setRootEntity( Qt3DCore::QEntity *root );
     Qt3DRender::QCamera *camera() const;
-    Qt3DExtras::QForwardRenderer *defaultFrameGraph() const;
+    Qt3DRender::QLayer *sceneLayer();
 
   protected:
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent * ) override;
 
   private:
+    void setupFrameGraph();
+    void setupPostProcessQuad();
+
     Qt3DCore::QAspectEngine *m_aspectEngine = nullptr;
     Qt3DRender::QRenderAspect *m_renderAspect = nullptr;
     Qt3DInput::QInputAspect *m_inputAspect = nullptr;
     Qt3DLogic::QLogicAspect *m_logicAspect = nullptr;
     Qt3DRender::QRenderSettings *m_renderSettings = nullptr;
-    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
     Qt3DRender::QCamera *m_defaultCamera = nullptr;
     Qt3DInput::QInputSettings *m_inputSettings = nullptr;
     Qt3DCore::QEntity *m_root = nullptr;
     Qt3DCore::QEntity *m_userRoot = nullptr;
+
+    Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector = nullptr;
+    Qt3DRender::QTexture2D *m_colorTexture = nullptr;
+    Qt3DRender::QTexture2D *m_depthTexture = nullptr;
+    Qt3DRender::QLayer *m_sceneLayer = nullptr;
+    Qt3DRender::QLayer *m_quadLayer = nullptr;
+    Qt3DCore::QEntity *m_quadEntity = nullptr;
 
     bool m_initialized = false;
 };

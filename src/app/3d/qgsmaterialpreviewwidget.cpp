@@ -16,6 +16,7 @@
 #include "qgsmaterialpreviewwidget.h"
 
 #include "qgs3d.h"
+#include "qgs3dutils.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsmaterialregistry.h"
@@ -23,20 +24,43 @@
 #include <QActionGroup>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QString>
 #include <QVBoxLayout>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCoreAspect>
 #include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetOutput>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QViewport>
 
 #include "moc_qgsmaterialpreviewwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DWindow::Qgs3DWindow()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -44,7 +68,6 @@ Qgs3DWindow::Qgs3DWindow()
   , m_inputAspect( new Qt3DInput::QInputAspect )
   , m_logicAspect( new Qt3DLogic::QLogicAspect )
   , m_renderSettings( new Qt3DRender::QRenderSettings )
-  , m_forwardRenderer( new Qt3DExtras::QForwardRenderer )
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
@@ -57,10 +80,12 @@ Qgs3DWindow::Qgs3DWindow()
   m_aspectEngine->registerAspect( m_logicAspect );
 
   m_defaultCamera->setParent( m_root );
-  m_forwardRenderer->setCamera( m_defaultCamera );
-  m_forwardRenderer->setSurface( this );
-  m_renderSettings->setActiveFrameGraph( m_forwardRenderer );
   m_inputSettings->setEventSource( this );
+
+  setSurfaceType( QSurface::OpenGLSurface );
+
+  setupFrameGraph();
+  setupPostProcessQuad();
 
   setSurfaceType( QSurface::OpenGLSurface );
 }
@@ -87,9 +112,9 @@ Qt3DRender::QCamera *Qgs3DWindow::camera() const
   return m_defaultCamera;
 }
 
-Qt3DExtras::QForwardRenderer *Qgs3DWindow::defaultFrameGraph() const
+Qt3DRender::QLayer *Qgs3DWindow::sceneLayer()
 {
-  return m_forwardRenderer;
+  return m_sceneLayer;
 }
 
 void Qgs3DWindow::showEvent( QShowEvent *e )
@@ -105,9 +130,146 @@ void Qgs3DWindow::showEvent( QShowEvent *e )
   QWindow::showEvent( e );
 }
 
-void Qgs3DWindow::resizeEvent( QResizeEvent * )
+void Qgs3DWindow::resizeEvent( QResizeEvent *e )
 {
   m_defaultCamera->setAspectRatio( float( width() ) / std::max( 1.f, static_cast<float>( height() ) ) );
+
+  if ( m_colorTexture )
+  {
+    const int w = static_cast< int >( width() * devicePixelRatio() );
+    const int h = static_cast< int >( height() * devicePixelRatio() );
+    m_colorTexture->setWidth( w );
+    m_colorTexture->setHeight( h );
+    m_depthTexture->setWidth( w );
+    m_depthTexture->setHeight( h );
+  }
+  QWindow::resizeEvent( e );
+}
+
+void Qgs3DWindow::setupFrameGraph()
+{
+  m_surfaceSelector = new Qt3DRender::QRenderSurfaceSelector( m_root );
+  m_surfaceSelector->setSurface( this );
+
+  Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport( m_surfaceSelector );
+  viewport->setNormalizedRect( QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
+
+  m_sceneLayer = new Qt3DRender::QLayer( m_root );
+  m_sceneLayer->setRecursive( true );
+  m_quadLayer = new Qt3DRender::QLayer( m_root );
+
+  Qt3DRender::QLayerFilter *sceneFilter = new Qt3DRender::QLayerFilter( viewport );
+  sceneFilter->addLayer( m_sceneLayer );
+
+  Qt3DRender::QRenderTargetSelector *rtSelector = new Qt3DRender::QRenderTargetSelector( sceneFilter );
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( rtSelector );
+
+  m_colorTexture = new Qt3DRender::QTexture2D( renderTarget );
+  m_colorTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
+  m_colorTexture->setGenerateMipMaps( false );
+  m_colorTexture->setWidth( 1 );
+  m_colorTexture->setHeight( 1 );
+
+  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+  colorOutput->setTexture( m_colorTexture );
+  renderTarget->addOutput( colorOutput );
+
+  m_depthTexture = new Qt3DRender::QTexture2D( renderTarget );
+  m_depthTexture->setFormat( Qt3DRender::QAbstractTexture::D24 );
+  m_depthTexture->setGenerateMipMaps( false );
+  m_depthTexture->setWidth( 1 );
+  m_depthTexture->setHeight( 1 );
+
+  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  depthOutput->setTexture( m_depthTexture );
+  renderTarget->addOutput( depthOutput );
+
+  rtSelector->setTarget( renderTarget );
+
+  Qt3DRender::QClearBuffers *sceneClear = new Qt3DRender::QClearBuffers( rtSelector );
+  sceneClear->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+
+  // background color should match default window background color
+  sceneClear->setClearColor( Qgs3DUtils::srgbToLinear( QApplication::palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) ) );
+
+  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector( sceneClear );
+  cameraSelector->setCamera( m_defaultCamera );
+
+  Qt3DRender::QLayerFilter *quadFilter = new Qt3DRender::QLayerFilter( viewport );
+  quadFilter->addLayer( m_quadLayer );
+
+  Qt3DRender::QClearBuffers *quadClear = new Qt3DRender::QClearBuffers( quadFilter );
+  quadClear->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+  quadClear->setClearColor( QColor( Qt::black ) );
+
+  m_renderSettings->setActiveFrameGraph( m_surfaceSelector );
+}
+
+void Qgs3DWindow::setupPostProcessQuad()
+{
+  m_quadEntity = new Qt3DCore::QEntity( m_root );
+  m_quadEntity->addComponent( m_quadLayer );
+
+  Qt3DExtras::QPlaneMesh *mesh = new Qt3DExtras::QPlaneMesh( m_quadEntity );
+  mesh->setWidth( 2.0f );
+  mesh->setHeight( 2.0f );
+  m_quadEntity->addComponent( mesh );
+
+  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial( m_quadEntity );
+  Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
+  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( effect );
+
+  technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
+  technique->graphicsApiFilter()->setMajorVersion( 3 );
+  technique->graphicsApiFilter()->setMinorVersion( 3 );
+  technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+
+  Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass( technique );
+
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace( pass );
+  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  pass->addRenderState( cullFace );
+
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest( pass );
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  pass->addRenderState( depthTest );
+  Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( pass );
+
+  shader->setVertexShaderCode( R"GLSL(
+    #version 330 core
+    in vec3 vertexPosition;
+    in vec2 vertexTexCoord;
+    out vec2 texCoord;
+    void main() {
+      gl_Position = vec4(vertexPosition.x, vertexPosition.z, 0.0, 1.0);
+      texCoord = vertexTexCoord;
+    }
+  )GLSL" );
+
+  // apply gamma correction and tone mapping (clamping!) to match postprocess.frag
+  shader->setFragmentShaderCode( R"GLSL(
+    #version 330 core
+    in vec2 texCoord;
+    out vec4 fragColor;
+    uniform sampler2D colorTexture;
+    void main() {
+      vec3 color = texture(colorTexture, texCoord).rgb;
+      color = min(color, 1.0);
+      fragColor = vec4(pow(color, vec3(1.0 / 2.2)), 1.0);
+    }
+  )GLSL" );
+
+  pass->setShaderProgram( shader );
+  technique->addRenderPass( pass );
+  effect->addTechnique( technique );
+  material->setEffect( effect );
+
+  Qt3DRender::QParameter *texParam = new Qt3DRender::QParameter( u"colorTexture"_s, m_colorTexture, material );
+  material->addParameter( texParam );
+
+  m_quadEntity->addComponent( material );
 }
 
 
@@ -202,8 +364,6 @@ void QgsMaterialPreviewWidget::showEvent( QShowEvent *e )
     return;
 
   mView = new Qgs3DWindow();
-  mView->defaultFrameGraph()->setClearColor( palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
-
   mView->installEventFilter( this );
 
   QWidget *container = QWidget::createWindowContainer( mView, this );
@@ -216,6 +376,8 @@ void QgsMaterialPreviewWidget::showEvent( QShowEvent *e )
   setLayout( layout );
 
   mSceneRoot = new Qt3DCore::QEntity;
+  mSceneRoot->addComponent( mView->sceneLayer() );
+
   setupCamera( mView->camera() );
   mView->setRootEntity( mSceneRoot );
   QWidget::showEvent( e );
