@@ -114,23 +114,7 @@ void Qgs3DWindow::resizeEvent( QResizeEvent * )
 QgsMaterialPreviewWidget::QgsMaterialPreviewWidget( QWidget *parent )
   : QWidget( parent )
 {
-  mView = new Qgs3DWindow();
-  mView->defaultFrameGraph()->setClearColor( palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
-
-  mView->installEventFilter( this );
-
-  QWidget *container = QWidget::createWindowContainer( mView, this );
-  container->setMinimumSize( 200, 200 );
-  container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
-  auto *layout = new QVBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( container );
-  setLayout( layout );
-
-  mSceneRoot = new Qt3DCore::QEntity;
-  setupCamera( mView->camera() );
-  mView->setRootEntity( mSceneRoot );
+  // defer initialization until showEvent!
 }
 
 void QgsMaterialPreviewWidget::setMaterialType( const QString &type )
@@ -155,6 +139,9 @@ void QgsMaterialPreviewWidget::setupCamera( Qt3DRender::QCamera *camera )
 void QgsMaterialPreviewWidget::updatePreview( const QgsAbstractMaterialSettings *settings )
 {
   mLastPreviewSettings.reset( settings->clone() );
+  if ( !mView )
+    return;
+
   const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mLastPreviewSettings.get() );
   if ( !handler )
     return;
@@ -207,4 +194,34 @@ bool QgsMaterialPreviewWidget::eventFilter( QObject *watched, QEvent *event )
     }
   }
   return QWidget::eventFilter( watched, event );
+}
+
+void QgsMaterialPreviewWidget::showEvent( QShowEvent *e )
+{
+  if ( mView )
+    return;
+
+  mView = new Qgs3DWindow();
+  mView->defaultFrameGraph()->setClearColor( palette().color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
+
+  mView->installEventFilter( this );
+
+  QWidget *container = QWidget::createWindowContainer( mView, this );
+  container->setMinimumSize( 200, 200 );
+  container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+  auto *layout = new QVBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->addWidget( container );
+  setLayout( layout );
+
+  mSceneRoot = new Qt3DCore::QEntity;
+  setupCamera( mView->camera() );
+  mView->setRootEntity( mSceneRoot );
+  QWidget::showEvent( e );
+
+  if ( mLastPreviewSettings )
+  {
+    updatePreview( mLastPreviewSettings.get() );
+  }
 }

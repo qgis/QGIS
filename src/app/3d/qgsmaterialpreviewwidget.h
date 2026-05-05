@@ -97,6 +97,7 @@ class QgsMaterialPreviewWidget : public QWidget
 
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
+    void showEvent( QShowEvent *e ) override;
 
   private:
     void setupCamera( Qt3DRender::QCamera *camera );
