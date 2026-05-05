@@ -212,6 +212,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
 void QgsPointCloudRendererPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
 {
+  mContext = context;
   mMapCanvas = context.mapCanvas();
   mMessageBar = context.messageBar();
   if ( mActiveWidget )
@@ -423,7 +424,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
       QgsSymbolWidgetContext context;
       context.setMapCanvas( mMapCanvas );
       context.setMessageBar( mMessageBar );
-      mActiveWidget->setContext( context );
+      mActiveWidget->setContext( mContext );
     }
 
     connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
@@ -467,22 +468,18 @@ double QgsPointCloudRendererPropertiesWidget::overviewSwitchingScale() const
 
 QgsExpressionContext QgsPointCloudRendererPropertiesWidget::createExpressionContext() const
 {
-  QgsExpressionContext context;
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
 
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  QgsExpressionContext context( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
 
   auto pointCloudScope = std::make_unique<QgsExpressionContextScope>( tr( "Point Cloud" ) );
-
-  if ( mLayer )
-  {
-    context << QgsExpressionContextUtils::layerScope( mLayer );
-  }
-
-  // the above adds attributes only, but we want color from the renderer to be available for modification
-  pointCloudScope->addVariable(
-    QgsExpressionContextScope::StaticVariable( u"point_color"_s, QVariant::fromValue( QColor( 255, 255, 255 ) ), true, false, QObject::tr( "Color produced by the renderer before an expression is applied" ) )
-  );
-
   context.appendScope( pointCloudScope.release() );
+
+  for ( const QgsExpressionContextScope &scope : mContext.additionalExpressionContextScopes() )
+    context.appendScope( new QgsExpressionContextScope( scope ) );
+
+  context.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
+
   return context;
 }

@@ -2,12 +2,12 @@
 # monkey patching scoped based enum
 QgsPointCloudRenderer.Color = QgsPointCloudRenderer.Property.Color
 QgsPointCloudRenderer.Color.is_monkey_patched = True
-QgsPointCloudRenderer.Color.__doc__ = ""
+QgsPointCloudRenderer.Color.__doc__ = "Point color"
 QgsPointCloudRenderer.Property.__doc__ = """Data-defined properties that can be set on the renderer.
 
 .. versionadded:: 4.2
 
-* ``Color``: 
+* ``Color``: Point color
 
 """
 # --

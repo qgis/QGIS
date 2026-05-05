@@ -98,10 +98,9 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
   QSet<QString> res;
-  if ( mDataDefinedProperties.isActive( Property::Color ) )
+  if ( mDataDefinedProperties.hasActiveProperties() )
   {
-    const QgsExpression expression( mDataDefinedProperties.property( Property::Color ).expressionString() );
-    res = expression.referencedVariables();
+    res = mDataDefinedProperties.referencedVariables();
   }
   return res;
 }
@@ -139,15 +138,18 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 
   mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
 
-  if ( mDataDefinedProperties.isActive( Property::Color ) )
+  if ( mDataDefinedProperties.hasActiveProperties() )
     context.renderContext().expressionContext().appendScope( new QgsExpressionContextScope() );
 }
 
-void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
+void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext &context )
 {
 #ifdef QGISDEBUG
   Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
 #endif
+
+  if ( mDataDefinedProperties.hasActiveProperties() )
+    delete context.renderContext().expressionContext().popScope();
 }
 
 bool QgsPointCloudRenderer::legendItemChecked( const QString & )
@@ -466,7 +468,7 @@ QColor QgsPointCloudRenderer::colorFromExpression( const QgsPointCloudBlock *blo
     offset += att.size();
   }
 
-  scope->setVariable( u"point_color"_s, QVariant::fromValue( rendererColor ), false );
+  ctx.setOriginalValueVariable( QVariant::fromValue( rendererColor ) );
 
   return mDataDefinedProperties.valueAsColor( Property::Color, ctx, rendererColor );
 }

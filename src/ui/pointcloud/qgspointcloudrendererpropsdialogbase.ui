@@ -309,7 +309,7 @@
             <item row="0" column="0">
             <widget class="QLabel" name="label1">
               <property name="text">
-              <string>Base color accessible as @point_color</string>
+              <string>Base color accessible as @value</string>
               </property>
             </widget>
             </item>

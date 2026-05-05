@@ -22,12 +22,12 @@
 #include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspropertycollection.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
 class QgsPointCloudRendererWidget;
 class QgsMapCanvas;
-class QgsSymbolWidgetContext;
 class QgsMessageBar;
 
 /**
@@ -86,6 +86,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     bool mBlockChangedSignal = false;
 
     QgsPropertyCollection mDataDefinedProperties;
+
+    QgsSymbolWidgetContext mContext;
 };
 
 

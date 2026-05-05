@@ -755,13 +755,6 @@ to the specified DOM ``element``.
 .. seealso:: :py:func:`restoreCommonProperties`
 %End
 
-    QColor colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
-%Docstring
-Computes color from the expression set, uses expression referenced
-variables and renderer base color.
-
-.. versionadded:: 4.0
-%End
 
   private:
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );

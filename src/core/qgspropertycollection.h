@@ -237,6 +237,12 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 
     /**
+     * Returns the set of any variables referenced by the active expression properties in the collection.
+     * \since QGIS 4.2
+     */
+    virtual QSet<QString> referencedVariables() const = 0;
+
+    /**
      * Returns TRUE if the collection contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
@@ -404,6 +410,13 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
+
+    /**
+     * Returns the set of any variables referenced by the active expression properties in the collection.
+     * \since QGIS 4.2
+     */
+    QSet<QString> referencedVariables() const final;
+
     bool isActive( int key ) const final;
 
     /**
@@ -582,6 +595,13 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      *                      where the actual available field names may not be known beforehand.
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
+
+    /**
+     * Returns the set of any variables referenced by the active expression properties in the stack.
+     * \since QGIS 4.2
+     */
+    QSet<QString> referencedVariables() const override;
+
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;

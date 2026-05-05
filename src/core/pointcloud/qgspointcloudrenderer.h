@@ -346,7 +346,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, Property ) : int
     {
-      Color = 0,
+      Color = 0, //!< Point color
     };
 
     QgsPointCloudRenderer();
@@ -886,9 +886,9 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Computes color from the expression set, uses expression referenced variables and renderer base color.
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.2
      */
-    QColor colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context );
+    QColor colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context ) SIP_SKIP;
 
   private:
 #ifdef SIP_RUN
