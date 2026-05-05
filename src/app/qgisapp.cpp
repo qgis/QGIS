@@ -16510,6 +16510,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+  map->setMsaaEnabled( Qgs3DOptionsWidget::settingMsaaEnabled->value() );
 
   QgsVector3D savedOrigin = map->origin();
 
