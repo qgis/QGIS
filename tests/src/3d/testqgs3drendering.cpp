@@ -66,6 +66,8 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgstest.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayer3drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
@@ -141,6 +143,7 @@ class TestQgs3DRendering : public QgsTest
     void testExtrudedPolygonsHighlighting();
     void testInstancedRenderingHighlighting();
     void testModelPointRenderingHighlighting();
+    void testTiledSceneInstanced();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -3319,6 +3322,40 @@ void TestQgs3DRendering::testModelPointRenderingHighlighting()
   Qgs3DUtils::captureSceneImage( engine, scene );
   imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testTiledSceneInstanced()
+{
+  auto layer = std::make_unique<QgsTiledSceneLayer>( testDataPath( "/3dtiles/instanced_rtc/tileset.json" ), u"instanced"_s, u"cesiumtiles"_s );
+  QVERIFY( layer->dataProvider()->isValid() );
+
+  layer->setRenderer3D( new QgsTiledSceneLayer3DRenderer() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  map->setExtent( QgsRectangle( -8417257.0, 4871967.0, -8416943.0, 4872283.0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  map->setTerrainShadingEnabled( true );
+
+  QgsDirectionalLightSettings *defaultLight = new QgsDirectionalLightSettings();
+  map->setLightSources( { defaultLight } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 500, 30, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "tiled_scene_instanced", "tiled_scene_instanced", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
