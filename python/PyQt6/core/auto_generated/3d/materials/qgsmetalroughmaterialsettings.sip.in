@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsmetalroughmaterialsettings.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMetalRoughMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring(signature="appended")
+A PBR metal rough shading material used for rendering.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsmetalroughmaterialsettings.h"
+%End
+  public:
+    QgsMetalRoughMaterialSettings();
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the
+metal rough material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsMetalRoughMaterialSettings.
+%End
+
+    virtual QgsMetalRoughMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+
+    QColor baseColor() const;
+%Docstring
+Returns the base material color.
+
+.. seealso:: :py:func:`setBaseColor`
+%End
+
+    double metalness() const;
+%Docstring
+Returns the material's metalness, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setMetalness`
+%End
+
+    double roughness() const;
+%Docstring
+Returns the material's roughness, as a value between 0 and 1.
+
+.. seealso:: :py:func:`setRoughness`
+%End
+
+    void setBaseColor( const QColor &color );
+%Docstring
+Sets the base material ``color``.
+
+.. seealso:: :py:func:`baseColor`
+%End
+
+    void setMetalness( double metalness );
+%Docstring
+Sets the material's ``metalness``, as a value between 0 and 1.
+
+.. seealso:: :py:func:`metalness`
+%End
+
+    void setRoughness( double roughness );
+%Docstring
+Sets the material's ``roughness``, as a value between 0 and 1.
+
+.. seealso:: :py:func:`roughness`
+%End
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsMetalRoughMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsmetalroughmaterialsettings.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

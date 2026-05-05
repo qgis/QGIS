@@ -156,7 +156,7 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
 
 void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
-    if (ends_with(inputFile, ".vpc"))
+    if (isVpcFilename(inputFile))
     {
         // using spatial processing
 

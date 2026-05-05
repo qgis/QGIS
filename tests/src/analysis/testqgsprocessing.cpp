@@ -33,6 +33,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmeshlayer.h"
 #include "qgsnativealgorithms.h"
+#include "qgsogrproviderutils.h"
 #include "qgspluginlayer.h"
 #include "qgspoint.h"
 #include "qgspointcloudlayer.h"
@@ -846,11 +847,6 @@ void TestQgsProcessing::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsSettings settings;
   settings.clear();
 
@@ -860,7 +856,7 @@ void TestQgsProcessing::initTestCase()
    * QgsApplication::initQgis()
    *       as any previously-set value would otherwise disappear.
    */
-  settings.setValue( "qgis/walForSqlite3", false );
+  QgsOgrProviderUtils::settingsWalForSqlite3->setValue( false );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
@@ -13519,17 +13515,16 @@ void TestQgsProcessing::guiDefaultParameterValues()
   QgsProcessingParameterString *stringTestParam = new QgsProcessingParameterString( u"testStringParameter"_s, u"A test parameter"_s, u"test, test, test"_s );
   alg.addParameter( stringTestParam );
 
-  QgsSettings s;
-  s.setValue( u"/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter"_s, 42 );
-  s.setValue( u"/Processing/DefaultGuiParam/testAlgorithm/testStringParameter"_s, u"defaultString"_s );
+  QgsProcessing::settingsDefaultGuiParam->setValue( 42, { u"testAlgorithm"_s, u"testIntegerParameter"_s } );
+  QgsProcessing::settingsDefaultGuiParam->setValue( u"defaultString"_s, { u"testAlgorithm"_s, u"testStringParameter"_s } );
 
   QCOMPARE( intTestParam->defaultValueForGui(), 42 );
   QCOMPARE( intTestParam->guiDefaultValueOverride(), 42 );
   QCOMPARE( stringTestParam->defaultValueForGui(), u"defaultString"_s );
   QCOMPARE( stringTestParam->guiDefaultValueOverride(), u"defaultString"_s );
 
-  s.remove( u"/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter"_s );
-  s.remove( u"/Processing/DefaultGuiParam/testAlgorithm/testStringParameter"_s );
+  QgsProcessing::settingsDefaultGuiParam->remove( { u"testAlgorithm"_s, u"testIntegerParameter"_s } );
+  QgsProcessing::settingsDefaultGuiParam->remove( { u"testAlgorithm"_s, u"testStringParameter"_s } );
 }
 
 void TestQgsProcessing::testOutputs()

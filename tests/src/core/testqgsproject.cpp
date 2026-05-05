@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayerutils.h"
@@ -90,13 +91,6 @@ void TestQgsProject::cleanup()
 
 void TestQgsProject::initTestCase()
 {
-  // Runs once before any tests are run
-
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsSettings().clear();
@@ -335,6 +329,23 @@ void TestQgsProject::testPathResolverSvg()
   QCOMPARE( svg1x, ourSvgPath );
   QCOMPARE( svg2x, invalidSvgPath );
   QCOMPARE( svg3x, librarySvgPath );
+
+  // Test that relative paths are correctly handled if the QgsPathResolver is constructed with symlink path
+
+  QTemporaryDir tempdir;
+  QDir tmpdir( tempdir.path() );
+  tmpdir.mkdir( u"projectpath"_s );
+  tmpdir.mkdir( u"projectpath/symbols"_s );
+  QFile file = QFile( tempdir.filePath( u"projectpath/symbols/foo.svg"_s ) );
+  if ( file.open( QIODevice::WriteOnly ) )
+  {
+    file.write( "<svg></svg>" );
+    file.close();
+  }
+  QFile::link( tmpdir.filePath( u"projectpath"_s ), tmpdir.filePath( u"symlinkpath"_s ) );
+  tmpdir.mkdir( u"symlinkpath"_s );
+  QgsPathResolver symlinkresolver( tmpdir.filePath( u"symlinkpath/project.qgs"_s ) );
+  QCOMPARE( QgsSymbolLayerUtils::svgSymbolPathToName( tmpdir.filePath( u"symlinkpath/symbols/foo.svg"_s ), symlinkresolver ), u"./symbols/foo.svg"_s );
 }
 
 
@@ -345,7 +356,6 @@ void TestQgsProject::testProjectUnits()
   // DISTANCE
 
   //first set a default QGIS distance unit
-  QgsSettings s;
   QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Feet ) );
 
   QgsProject *prj = new QgsProject;
@@ -364,14 +374,14 @@ void TestQgsProject::testProjectUnits()
   // AREA
 
   //first set a default QGIS area unit
-  s.setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( Qgis::AreaUnit::SquareYards ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::AreaUnit::SquareYards ) );
 
   // new project should inherit QGIS default area unit
   prj->clear();
   QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //changing default QGIS unit should not affect existing project
-  s.setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( Qgis::AreaUnit::Acres ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( Qgis::AreaUnit::Acres ) );
   QCOMPARE( prj->areaUnits(), Qgis::AreaUnit::SquareYards );
 
   //test setting new units for project
@@ -598,8 +608,7 @@ void TestQgsProject::projectSaveUser()
   QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
   QCOMPARE( p.lastSaveVersion().text(), QgsProjectVersion( Qgis::version() ).text() );
 
-  QgsSettings s;
-  s.setValue( u"projects/anonymize_saved_projects"_s, true, QgsSettings::Core );
+  QgsProject::settingsAnonymizeSavedProjects->setValue( true );
 
   p.write();
 
@@ -609,7 +618,7 @@ void TestQgsProject::projectSaveUser()
   QVERIFY( !p.metadata().creationDateTime().isValid() );
   QVERIFY( !p.lastSaveDateTime().isValid() );
 
-  s.setValue( u"projects/anonymize_saved_projects"_s, false, QgsSettings::Core );
+  QgsProject::settingsAnonymizeSavedProjects->setValue( false );
 
   p.write();
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
@@ -775,20 +784,19 @@ void TestQgsProject::testCrsExpressions()
 
 void TestQgsProject::testDefaultRelativePaths()
 {
-  QgsSettings s;
-  const bool bk_defaultRelativePaths = s.value( u"/qgis/defaultProjectPathsRelative"_s, QVariant( true ) ).toBool();
+  const bool bk_defaultRelativePaths = QgsProject::settingsDefaultProjectPathsRelative->value();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( true );
   QgsProject p1;
   const bool p1PathsAbsolute = p1.readBoolEntry( u"Paths"_s, u"/Absolute"_s, false );
   const Qgis::FilePathType p1Type = p1.filePathStorage();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, false );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( false );
   p1.clear();
   const bool p1PathsAbsolute_2 = p1.readBoolEntry( u"Paths"_s, u"/Absolute"_s, false );
   const Qgis::FilePathType p2Type = p1.filePathStorage();
 
-  s.setValue( u"/qgis/defaultProjectPathsRelative"_s, bk_defaultRelativePaths );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( bk_defaultRelativePaths );
 
   QCOMPARE( p1PathsAbsolute, false );
   QCOMPARE( p1PathsAbsolute_2, true );

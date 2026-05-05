@@ -54,13 +54,9 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
 QgsCoordinateBoundsPreviewMapWidget::~QgsCoordinateBoundsPreviewMapWidget()
 {
   setMapTool( nullptr );
-  delete mPanTool;
-  mPanTool = nullptr;
+
 
   qDeleteAll( mLayers );
-  delete mPreviewBand;
-  delete mCanvasPreviewBand;
-  delete mCanvasCenterMarker;
 }
 
 void QgsCoordinateBoundsPreviewMapWidget::setPreviewRect( const QgsRectangle &rect )

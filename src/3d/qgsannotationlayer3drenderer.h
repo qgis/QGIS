@@ -58,15 +58,6 @@ class QgsAnnotationLayer;
  */
 class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
 {
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsAnnotationLayer3DRenderer *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsAnnotationLayer3DRenderer;
-    else
-      sipType = nullptr;
-  SIP_END
-#endif
-
   public:
     QgsAnnotationLayer3DRenderer();
 

@@ -198,12 +198,22 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
     return;
   }
 
-  QgsBox3D rootBox3D( context.extent(), zMin, zMax );
-  // add small padding to avoid clipping of point features located at the edge of the bounding box
-  rootBox3D.grow( 1.0 );
+  // choose the smaller root extent between context and mLayer ones:
+  QgsRectangle extent = context.extent();
+  const QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
+  if ( layerExtentInMapCrs.isValid() )
+  {
+    extent = context.extent().intersect( layerExtentInMapCrs );
+  }
+  if ( extent.isValid() )
+  {
+    QgsBox3D rootBox3D( extent, zMin, zMax );
+    // add small padding to avoid clipping of point features located at the edge of the bounding box
+    rootBox3D.grow( 1.0 );
 
-  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
-  setupQuadtree( rootBox3D, rootError );
+    const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
+    setupQuadtree( rootBox3D, rootError );
+  }
 }
 
 QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;
@@ -231,16 +241,9 @@ QVector<QgsChunkNode *> QgsRuleBasedChunkLoaderFactory::createChildren( QgsChunk
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity(
   Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule
 )
-  : QgsChunkedEntity( map, 3, new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
+  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
-  mTransform = new Qt3DCore::QTransform;
-  if ( applyTerrainOffset() )
-  {
-    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
-  }
-  this->addComponent( mTransform );
-  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged );
-
+  onTerrainElevationOffsetChanged();
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -298,18 +301,4 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
   return true;
 }
 
-void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
-{
-  float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
-  if ( !applyTerrainOffset() )
-  {
-    newOffset = 0.0;
-  }
-  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
-}
-
-QList<QgsRayCastHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
-{
-  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
-}
 /// @endcond

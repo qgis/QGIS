@@ -167,6 +167,8 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    // === WARNING ===
+    // implementation of `QgsAbstractGeometry::operator==` are mainly delegated to `fuzzyEquals` functions if the default tolerance/epsilon value is changed, documentation must be updaded accordingly and also changed in expression helper files (resources/function_help/json)
     virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
     virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
 

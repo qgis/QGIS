@@ -206,6 +206,14 @@ Qt3DRender::QRenderCapture *QgsFrameGraph::depthRenderCapture()
   return depthRenderView().renderCapture();
 }
 
+void QgsFrameGraph::addGlobalParameters( const QList<Qt3DRender::QParameter *> &parameters )
+{
+  for ( Qt3DRender::QParameter *param : parameters )
+  {
+    mGlobalParamsStorage->addParameter( param );
+  }
+}
+
 QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
   : Qt3DCore::QEntity( root )
   , mSize( s )
@@ -220,15 +228,20 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   //  | QViewport | (0,0,1,1)
   //  +-----------+
   //             |
-  //     +--------------------------+-------------------+-----------------+
-  //     |                          |                   |                 |
-  // +--------------------+ +--------------+ +-----------------+ +-----------------+
-  // | two forward passes | | shadows pass | |  depth buffer   | | post-processing |
-  // |  (solid objects    | |              | | processing pass | |    passes       |
-  // |  and transparent)  | +--------------+ +-----------------+ +-----------------+
-  // +--------------------+
+  //     +------------------------+------------------+------------------+-------------------+
+  //     |                        |                  |                  |                   |
+  //     |                    (optional)             |                  |                   |
+  // +------------------+ +-----------------+ +--------------+ +-----------------+ +-----------------+
+  // | forward passes   | |    MSAA blit    | | shadows pass | |  depth buffer   | | post-processing |
+  // | (solid objects,  | | (color + depth) | |              | | processing pass | |    passes       |
+  // | transparent,     | +-----------------+ +--------------+ +-----------------+ +-----------------+
+  // | highlights,      |
+  // | rubber bands)    |
+  // +------------------+
   //
   // Notes:
+  // - (optional) MSAA blits multisampled (4 samples) color and depth textures
+  //   so that other passes can sample them
   // - depth buffer processing pass is used whenever we need depth map information
   //   (for camera navigation) and it converts depth texture to a color texture
   //   so that we can capture it with QRenderCapture - currently it is unable
@@ -256,6 +269,9 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mMainViewPort = new Qt3DRender::QViewport( mRenderSurfaceSelector );
   mMainViewPort->setNormalizedRect( QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
 
+  mGlobalParamsStorage = new Qt3DRender::QRenderPassFilter( mMainViewPort );
+  mGlobalParamsStorage->setObjectName( "GlobalParametersStore" );
+
   // Forward render
   constructForwardRenderPass();
 
@@ -265,7 +281,15 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   // rubber bands (they should be always on top)
   Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
   rubberBandsPass->setObjectName( "rubberBandsPass" );
-  rubberBandsPass->setParent( mMainViewPort );
+  rubberBandsPass->setParent( mGlobalParamsStorage );
+
+  mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
+  mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
+  mMsaaBlitNode->setEnabled( false );
+
+  mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
+  mMsaaDepthBlitNode->setObjectName( "MsaaDepthBlitFramebuffer" );
+  mMsaaDepthBlitNode->setEnabled( false );
 
   // shadow rendering pass
   constructShadowRenderPass();
@@ -278,7 +302,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   // post process
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
-  postprocessingPass->setParent( mMainViewPort );
+  postprocessingPass->setParent( mGlobalParamsStorage );
   postprocessingPass->setObjectName( "PostProcessingPass" );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
@@ -301,7 +325,7 @@ bool QgsFrameGraph::registerRenderView( std::unique_ptr<QgsAbstractRenderView> r
   if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
     mRenderViewMap[name] = std::move( renderView );
-    mRenderViewMap[name]->topGraphNode()->setParent( topNode ? topNode : mMainViewPort );
+    mRenderViewMap[name]->topGraphNode()->setParent( topNode ? topNode : mGlobalParamsStorage );
     mRenderViewMap[name]->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
@@ -479,6 +503,11 @@ void QgsFrameGraph::setSize( QSize s )
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
+
+  mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaDepthBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+  mMsaaDepthBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
 }
 
 Qt3DRender::QRenderCapture *QgsFrameGraph::renderCapture()
@@ -497,6 +526,48 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   forwardRenderView().setDebugOverlayEnabled( enabled );
+}
+
+void QgsFrameGraph::setMsaaEnabled( bool enabled )
+{
+  mMsaaEnabled = enabled;
+
+  if ( !enabled && mMsaaBlitConfigured )
+  {
+    mMsaaBlitNode->setSource( nullptr );
+    mMsaaBlitNode->setDestination( nullptr );
+    mMsaaDepthBlitNode->setSource( nullptr );
+    mMsaaDepthBlitNode->setDestination( nullptr );
+    mMsaaBlitConfigured = false;
+  }
+
+  forwardRenderView().setMsaaEnabled( enabled );
+
+  if ( enabled && !mMsaaBlitConfigured )
+  {
+    mMsaaBlitConfigured = true;
+    mMsaaBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
+    mMsaaBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
+    mMsaaBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaBlitNode->setSourceAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+    mMsaaBlitNode->setDestinationAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
+    mMsaaBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+
+    mMsaaDepthBlitNode->setSource( forwardRenderView().msaaRenderTarget() );
+    mMsaaDepthBlitNode->setDestination( forwardRenderView().regularRenderTarget() );
+    mMsaaDepthBlitNode->setSourceRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaDepthBlitNode->setDestinationRect( QRect( 0, 0, mSize.width(), mSize.height() ) );
+    mMsaaDepthBlitNode->setSourceAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
+    mMsaaDepthBlitNode->setDestinationAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
+    mMsaaDepthBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+  }
+
+  Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();
+  highlightsRenderView().setRenderTarget( target );
+  mRubberBandsRenderTargetSelector->setTarget( target );
+  mMsaaBlitNode->setEnabled( enabled );
+  mMsaaDepthBlitNode->setEnabled( enabled );
 }
 
 void QgsFrameGraph::removeClipPlanes()

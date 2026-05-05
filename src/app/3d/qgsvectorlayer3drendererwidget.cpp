@@ -69,12 +69,23 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
 
   QgsAbstract3DRenderer *r = mLayer->renderer3D();
+  bool rendererSet = false;
   if ( r && r->type() == "vector"_L1 )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     widgetSymbol->setSymbol( vectorRenderer->symbol(), mLayer );
+    rendererSet = true;
   }
-  else
+  else if ( QgsAbstractVectorLayer3DRenderer *vectorRenderer = dynamic_cast< QgsAbstractVectorLayer3DRenderer * >( r ) )
+  {
+    std::unique_ptr< QgsVectorLayer3DRenderer > newRenderer = QgsVectorLayer3DRenderer::convertFromRenderer( vectorRenderer );
+    if ( newRenderer )
+    {
+      widgetSymbol->setSymbol( newRenderer->symbol(), mLayer );
+      rendererSet = true;
+    }
+  }
+  if ( !rendererSet )
   {
     const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
     sym->setDefaultPropertiesFromLayer( mLayer );

@@ -29,7 +29,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtCore import QUrl
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -47,10 +47,6 @@ class TestGdalProviderVirtualLayers(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestGdalProviderVirtualLayers.com")
-        QCoreApplication.setApplicationName("TestGdalProviderVirtualLayers")
-        QgsSettings().clear()
         Processing.initialize()
         cls.registry = QgsApplication.instance().processingRegistry()
 

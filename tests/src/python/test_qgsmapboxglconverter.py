@@ -49,10 +49,6 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestQgsMapBoxGlStyleConverter.com")
-        QCoreApplication.setApplicationName("QGIS_TestQgsMapBoxGlStyleConverter")
-        QgsSettings().clear()
         start_app()
 
     def testNoLayer(self):
@@ -80,6 +76,23 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         )
         self.assertEqual(
             QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5, 2), "54"
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.interpolateExpression(
+                5,
+                13,
+                27,
+                29,
+                1,
+                1,
+                0.42,
+                0.0,
+                0.58,
+                1.0,
+                QgsMapBoxGlStyleConverter.InterpolationType.CubicBezier,
+            ),
+            "scale_cubic_bezier(@vector_tile_zoom,5,13,27,29,0.42,0,0.58,1)",
         )
 
     def testColorAsHslaComponents(self):
@@ -644,6 +657,33 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END',
         )
 
+        prop, default_color, default_val = (
+            QgsMapBoxGlStyleConverter.parseInterpolateListByZoom(
+                [
+                    "interpolate",
+                    ["cubic-bezier", 0.2, 0, 0.9, 1],
+                    ["zoom"],
+                    3,
+                    ["step", ["get", "symbolrank"], 11, 9, 10],
+                    6,
+                    ["step", ["get", "symbolrank"], 14, 9, 12, 12, 10],
+                    8,
+                    ["step", ["get", "symbolrank"], 16, 9, 14, 12, 12, 15, 10],
+                    13,
+                    ["step", ["get", "symbolrank"], 22, 9, 20, 12, 16, 15, 14],
+                ],
+                QgsMapBoxGlStyleConverter.PropertyType.Numeric,
+                conversion_context,
+                2,
+            )
+        )
+        self.assertEqual(
+            prop.expressionString(),
+            (
+                """CASE WHEN @vector_tile_zoom >= 3 AND @vector_tile_zoom <= 6 THEN (scale_cubic_bezier(@vector_tile_zoom,3,6,CASE  WHEN "symbolrank" >= 9 THEN (10) ELSE (11) END,CASE  WHEN "symbolrank" >= 12 THEN (10)  WHEN "symbolrank" >= 9 THEN (12) ELSE (14) END,0.2,0,0.9,1)) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 8 THEN (scale_cubic_bezier(@vector_tile_zoom,6,8,CASE  WHEN "symbolrank" >= 12 THEN (10)  WHEN "symbolrank" >= 9 THEN (12) ELSE (14) END,CASE  WHEN "symbolrank" >= 15 THEN (10)  WHEN "symbolrank" >= 12 THEN (12)  WHEN "symbolrank" >= 9 THEN (14) ELSE (16) END,0.2,0,0.9,1)) * 2 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 13 THEN (scale_cubic_bezier(@vector_tile_zoom,8,13,CASE  WHEN "symbolrank" >= 15 THEN (10)  WHEN "symbolrank" >= 12 THEN (12)  WHEN "symbolrank" >= 9 THEN (14) ELSE (16) END,CASE  WHEN "symbolrank" >= 15 THEN (14)  WHEN "symbolrank" >= 12 THEN (16)  WHEN "symbolrank" >= 9 THEN (20) ELSE (22) END,0.2,0,0.9,1)) * 2 WHEN @vector_tile_zoom > 13 THEN ( ( CASE  WHEN "symbolrank" >= 15 THEN (14)  WHEN "symbolrank" >= 12 THEN (16)  WHEN "symbolrank" >= 9 THEN (20) ELSE (22) END ) * 2 ) END"""
+            ),
+        )
+
     def testParseExpression(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(
@@ -914,6 +954,30 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 False,
             ),
             "((10 + 10) * (1 + 2))",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["sqrt", ["get", "sizerank"]],
+                conversion_context,
+            ),
+            """sqrt("sizerank")""",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["pitch"],
+                conversion_context,
+            ),
+            """0""",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["coalesce", ["get", "name_en"], ["get", "name"]],
+                conversion_context,
+            ),
+            """coalesce("name_en", "name")""",
         )
 
     def testConvertLabels(self):
@@ -1750,7 +1814,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry
         )
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
-        self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [6.0, 3.0])
+        self.assertEqual(
+            rendererStyle.symbol()[0].customDashVector(), [1.5, 3.0, 4.5, 0.0]
+        )
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(
             dd_properties.property(
@@ -1771,7 +1837,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 QgsSymbolLayer.Property.PropertyCustomDash
             ).asExpression(),
             (
-                "array_to_string(array_foreach(array(4,2),@element * ("
+                "array_to_string(array_foreach(array(1,2,3,0),@element * ("
                 "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) "
                 "WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) "
                 "WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) "
@@ -1779,6 +1845,45 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 "WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) "
                 "WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) "
                 "WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')"
+            ),
+        )
+
+    def testParseLineDashArrayStepOddNumber(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "water line (intermittent)/river",
+            "type": "line",
+            "source": "esri",
+            "source-layer": "water line (intermittent)",
+            "filter": ["==", "_symbol", 3],
+            "minzoom": 10,
+            "layout": {"line-join": "round"},
+            "paint": {
+                "line-color": "#aad3df",
+                "line-dasharray": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [1]],
+                    2,
+                    ["literal", [1, 1, 3]],
+                ],
+                "line-width": 1.2,
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(
+            style, conversion_context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry
+        )
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(
+            dd_properties.property(
+                QgsSymbolLayer.Property.PropertyCustomDash
+            ).asExpression(),
+            (
+                "array_to_string(CASE  WHEN @vector_tile_zoom >= 2 THEN (array(1,1,3,0)) ELSE (array(1,0)) END, ';')"
             ),
         )
 
@@ -2956,6 +3061,94 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
+
+    def testSymbolSpacingNumeric(self):
+        """Test symbol-spacing with a simple numeric value"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": 250,
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_labeling)
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
+        self.assertTrue(prop.isActive())
+        self.assertEqual(prop.asExpression(), "250")
+
+    def testSymbolSpacingList(self):
+        """Test symbol-spacing with interpolate stops"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": ["step", ["zoom"], 300, 10, 600, 14, 800],
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_labeling)
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
+        self.assertTrue(prop.isActive())
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE  WHEN @vector_tile_zoom >= 14 THEN (800)  WHEN @vector_tile_zoom >= 10 THEN (600) ELSE (300) END",
+        )
+
+    def testSymbolSpacingMap(self):
+        """Test symbol-spacing with a QVariantMap stops definition"""
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name}",
+                "text-size": 12,
+                "symbol-spacing": {"stops": [[2, 0.2], [6, 0]]},
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+            },
+            "source-layer": "poi_label",
+        }
+
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+
+        ls = labeling.labelSettings()
+        dd = ls.dataDefinedProperties()
+        prop = dd.property(QgsPalLayerSettings.Property.RemoveDuplicateLabelDistance)
+
+        self.assertTrue(prop.isActive())
+        self.assertEqual(
+            prop.asExpression(),
+            "scale_linear(@vector_tile_zoom,2,6,0.2,0)",
+        )
 
 
 if __name__ == "__main__":

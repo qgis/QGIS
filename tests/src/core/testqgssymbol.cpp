@@ -98,11 +98,6 @@ void TestQgsSymbol::initTestCase()
   // output test environment
   QgsApplication::showSettings();
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
-
   // initialize with a clean style
   QFile styleFile( QgsApplication::userStylePath() );
   if ( styleFile.exists() )

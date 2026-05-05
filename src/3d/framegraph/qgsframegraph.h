@@ -18,7 +18,11 @@
 
 #include <map>
 
+#include "qgis_3d.h"
+#include "qgsabstractrenderview.h"
+
 #include <QWindow>
+#include <Qt3DRender/QBlitFramebuffer>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
@@ -31,6 +35,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QRenderTarget>
@@ -41,7 +46,6 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsAbstractRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 class QgsCameraController;
@@ -68,7 +72,7 @@ class QgsShadowSettings;
  *
  * \since QGIS 3.16
  */
-class QgsFrameGraph : public Qt3DCore::QEntity
+class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
@@ -94,6 +98,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the render capture object used to take an image of the depth buffer of the scene
     Qt3DRender::QRenderCapture *depthRenderCapture();
 
+    //! Adds additional global \a parameters to the graph
+    void addGlobalParameters( const QList<Qt3DRender::QParameter *> &parameters );
+
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
 
@@ -114,6 +121,18 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.26
      */
     void setDebugOverlayEnabled( bool enabled );
+
+    /**
+     * Sets whether multisample anti-aliasing (MSAA) is enabled
+     * \since QGIS 4.2
+     */
+    void setMsaaEnabled( bool enabled );
+
+    /**
+     * Returns whether multisample anti-aliasing (MSAA) is enabled
+     * \since QGIS 4.2
+     */
+    bool msaaEnabled() const { return mMsaaEnabled; }
 
     //! Dumps frame graph as string
     QString dumpFrameGraph() const;
@@ -252,6 +271,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
+    // Storage for global parameters
+    // QRenderPassFilter has dual usage -- one for storage of filtering keys,
+    // the other for storage of parameters for use in shaders. Here we are
+    // using it for storage of parameters only, not for filtering!
+    Qt3DRender::QRenderPassFilter *mGlobalParamsStorage = nullptr;
+
     // Post processing pass branch nodes:
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
@@ -290,11 +315,16 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
     Qt3DRender::QFrameGraphNode *constructRubberBandsPass();
+    void constructMsaaBlitNodes();
 
     Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing();
     Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
 
     bool mRenderCaptureEnabled = false;
+    bool mMsaaEnabled = false;
+    bool mMsaaBlitConfigured = false;
+    Qt3DRender::QBlitFramebuffer *mMsaaBlitNode = nullptr;
+    Qt3DRender::QBlitFramebuffer *mMsaaDepthBlitNode = nullptr;
 
     // holds renderviews according to their name
     std::map<QString, std::unique_ptr<QgsAbstractRenderView>> mRenderViewMap;

@@ -17,6 +17,7 @@
 
 #include "qgscopcpointcloudindex.h"
 
+#include <algorithm>
 #include <fstream>
 #include <memory>
 
@@ -137,7 +138,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -186,7 +187,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   return block;
 }
 
-QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( QgsPointCloudNodeId n, const QgsPointCloudRequest &request )
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
     return nullptr; // TODO
@@ -335,7 +336,7 @@ bool QgsCopcPointCloudIndex::isValid() const
   return mIsValid;
 }
 
-bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const
+bool QgsCopcPointCloudIndex::fetchNodeHierarchy( QgsPointCloudNodeId n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
 
@@ -404,12 +405,12 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
   }
 }
 
-bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsCopcPointCloudIndex::hasNode( QgsPointCloudNodeId n ) const
 {
   return fetchNodeHierarchy( n );
 }
 
-QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsCopcPointCloudIndex::getNode( QgsPointCloudNodeId id ) const
 {
   bool nodeFound = fetchNodeHierarchy( id );
   Q_ASSERT( nodeFound );
@@ -420,24 +421,20 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
     pointCount = mHierarchy.value( id, -1 );
   }
 
-  QList<QgsPointCloudNodeId> children;
-  children.reserve( 8 );
-  const int d = id.d() + 1;
-  const int x = id.x() * 2;
-  const int y = id.y() * 2;
-  const int z = id.z() * 2;
-
-  for ( int i = 0; i < 8; ++i )
-  {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-    bool found = fetchNodeHierarchy( n2 );
-    {
-      QMutexLocker locker( &mHierarchyMutex );
-      if ( found && mHierarchy[id] >= 0 )
-        children.append( n2 );
-    }
-  }
+  QList<QgsPointCloudNodeId> children = id.childrenNodes();
+  children.erase(
+    std::remove_if(
+      children.begin(),
+      children.end(),
+      [this]( const QgsPointCloudNodeId &c ) {
+        const bool found = fetchNodeHierarchy( c );
+        QMutexLocker locker( &mHierarchyMutex );
+        const bool shouldRemove = !found || mHierarchy[c] < 0;
+        return shouldRemove;
+      }
+    ),
+    children.end()
+  );
 
   QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
@@ -544,6 +541,45 @@ QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
   return {
     { u"CopcGpsTimeFlag"_s, mLazInfo.get()->header().global_encoding & 1 },
   };
+}
+
+bool QgsCopcPointCloudIndex::needsHierarchyFetching( const QgsPointCloudNodeId &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+
+  auto hierarchyIt = mHierarchy.constFind( n );
+  if ( hierarchyIt == mHierarchy.constEnd() )
+    return false;
+  const int pointsCount = *hierarchyIt;
+  if ( pointsCount < 0 )
+    return true;
+
+  const QVector<QgsPointCloudNodeId> children = n.childrenNodes();
+  for ( const QgsPointCloudNodeId &ch : children )
+  {
+    auto hierarchyIt = mHierarchy.constFind( ch );
+    if ( hierarchyIt == mHierarchy.constEnd() )
+      continue;
+    const int pointsCount = *hierarchyIt;
+    if ( pointsCount < 0 )
+      return true;
+  }
+
+  for ( const QgsPointCloudNodeId &ch : children )
+  {
+    const QVector<QgsPointCloudNodeId> grandChildren = ch.childrenNodes();
+    for ( const QgsPointCloudNodeId &gch : grandChildren )
+    {
+      auto hierarchyIt = mHierarchy.constFind( gch );
+      if ( hierarchyIt == mHierarchy.constEnd() )
+        continue;
+      const int pointsCount = *hierarchyIt;
+      if ( pointsCount < 0 )
+        return true;
+    }
+  }
+
+  return false;
 }
 
 ///@endcond

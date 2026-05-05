@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 
 #include <QColor>
+#include <QSettings>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -72,6 +73,36 @@ class CORE_EXPORT QgsSettingsEntryBase
 #endif
 
   public:
+
+    /**
+     * Configures QSettings to use IniFormat at the given \a profilePath
+     * so that each thread's QSettings instance is recreated on next access
+     * with the correct format and path.
+     *
+     * This is a convenience wrapper around QSettings::setDefaultFormat()
+     * and QSettings::setPath().
+     *
+     * It should be called once at application startup,
+     * before QgsApplication initialization,
+     * and only from the main thread.
+     *
+     * If called a second time, it will have no effect.
+     *
+     * \since QGIS 4.2
+     */
+    static void setupUserSettings( const QString &profilePath ) SIP_SKIP;
+
+    /**
+     * Returns a reference to the thread-local QSettings instance used
+     * internally by all QgsSettingsEntry operations.
+     *
+     * \note This is intended for internal use by the settings framework
+     * (e.g. QgsSettingsTreeNamedListNode). Prefer using QgsSettingsEntry
+     * accessors instead.
+     *
+     * \since QGIS 4.2
+     */
+    static QSettings &userSettings() SIP_SKIP;
 
     /**
      * Transforms a dynamic key part string to list

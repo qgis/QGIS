@@ -110,17 +110,13 @@ class CORE_EXPORT QWebPage : public QObject
 
     explicit QWebPage( QObject *parent = nullptr )
       : QObject( parent )
-      , mSettings( new QWebSettings() )
-      , mFrame( new QWebFrame() )
+      , mSettings( std::make_unique<QWebSettings>() )
+      , mFrame( std::make_unique<QWebFrame>() )
     {
-      connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
+      connect( mFrame.get(), &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
-    ~QWebPage() override
-    {
-      delete mFrame;
-      delete mSettings;
-    }
+    ~QWebPage() override {}
 
     QPalette palette() const { return QPalette(); }
 
@@ -142,9 +138,9 @@ class CORE_EXPORT QWebPage : public QObject
 
     void setNetworkAccessManager( QNetworkAccessManager *networkAccessManager ) { Q_UNUSED( networkAccessManager ) }
 
-    QWebFrame *mainFrame() const { return mFrame; }
+    QWebFrame *mainFrame() const { return mFrame.get(); }
 
-    QWebSettings *settings() const { return mSettings; }
+    QWebSettings *settings() const { return mSettings.get(); }
 
     QSize viewportSize() const { return QSize(); }
 
@@ -164,8 +160,8 @@ class CORE_EXPORT QWebPage : public QObject
     virtual void javaScriptConsoleMessage( const QString &, int, const QString & ) {}
 
   private:
-    QWebSettings *mSettings = nullptr;
-    QWebFrame *mFrame = nullptr;
+    std::unique_ptr<QWebSettings> mSettings;
+    std::unique_ptr<QWebFrame> mFrame;
     /// @endcond
 };
 

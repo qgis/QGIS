@@ -576,6 +576,11 @@ void QgsDataItem::setCapabilities( int capabilities )
   setCapabilities( static_cast< Qgis::BrowserItemCapabilities >( capabilities ) );
 }
 
+Qgis::BrowserItemFilterFlags QgsDataItem::filterFlags() const
+{
+  return Qgis::BrowserItemFilterFlags();
+}
+
 Qgis::BrowserItemState QgsDataItem::state() const
 {
   return mState;

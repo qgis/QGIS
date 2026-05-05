@@ -319,7 +319,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * changes can be discarded by calling rollBack().
      * \since QGIS 3.42
      */
-    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+    bool changeAttributeValue( QgsPointCloudNodeId n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
@@ -365,8 +365,16 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * Returns the overview point cloud index associated with the layer (only if the layer has a virtual point cloud data provider).
      *
      * \since QGIS 4.0
+     * \deprecated QGIS 4.2. Use overviews() instead.
      */
-    QgsPointCloudIndex overview() const;
+    Q_DECL_DEPRECATED QgsPointCloudIndex overview() const SIP_DEPRECATED;
+
+    /**
+     * Returns a list of all overview point cloud indexes associated with the layer (only if the layer has a virtual point cloud data provider).
+     *
+     * \since QGIS 4.2
+     */
+    QVector<QgsPointCloudIndex> overviews() const;
 
   signals:
 
@@ -396,7 +404,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int position );
+    void chunkAttributeValuesChanged( QgsPointCloudNodeId n, const int position );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );

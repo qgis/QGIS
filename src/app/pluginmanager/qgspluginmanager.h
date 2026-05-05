@@ -208,6 +208,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! vote button was clicked
     void submitVote();
 
+    //! Set search text
+    void search( const QString &searchTerm );
+
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
     void showEvent( QShowEvent *e ) override;

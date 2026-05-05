@@ -65,7 +65,9 @@ email                : sherman at mrcc.com
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrygui.h"
+#include "qgssettingstree.h"
 #include "qgsstatusbar.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
@@ -102,6 +104,8 @@ email                : sherman at mrcc.com
 #include "moc_qgsmapcanvas.cpp"
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsMapCanvas::settingsCustomCoordinateCrs = new QgsSettingsEntryString( u"custom-coordinate-crs"_s, QgsSettingsTree::sTreeMap, QString() );
 
 /**
  * \ingroup gui
@@ -284,8 +288,6 @@ QgsMapCanvas::~QgsMapCanvas()
   qDeleteAll( mScene->items() );
 
   mScene->deleteLater(); // crashes in python tests on windows
-
-  delete mCache;
 }
 
 void QgsMapCanvas::addOverlayWidget( QWidget *widget, Qt::Edge edge )
@@ -523,7 +525,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
   // try to reproject current extent to the new one
   QgsRectangle rect;
-  if ( !mSettings.visibleExtent().isEmpty() )
+  if ( !mSettings.visibleExtent().isEmpty() && crs.isSameCelestialBody( mSettings.destinationCrs() ) )
   {
     const QgsCoordinateTransform
       transform( mSettings.destinationCrs(), crs, QgsProject::instance(), Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
@@ -652,19 +654,18 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
 
   if ( enabled )
   {
-    mCache = new QgsMapRendererCache;
+    mCache = std::make_unique<QgsMapRendererCache>();
   }
   else
   {
-    delete mCache;
-    mCache = nullptr;
+    mCache.reset();
   }
   mPreviousRenderedItemResults.reset();
 }
 
 bool QgsMapCanvas::isCachingEnabled() const
 {
-  return nullptr != mCache;
+  return nullptr != mCache.get();
 }
 
 void QgsMapCanvas::clearCache()
@@ -680,7 +681,7 @@ void QgsMapCanvas::clearCache()
 
 QgsMapRendererCache *QgsMapCanvas::cache()
 {
-  return mCache;
+  return mCache.get();
 }
 
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
@@ -858,7 +859,7 @@ void QgsMapCanvas::refreshMap()
     mJob = new QgsMapRendererSequentialJob( renderSettings );
 
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
-  mJob->setCache( mCache );
+  mJob->setCache( mCache.get() );
   mJob->setLayerRenderingTimeHints( mLastLayerRenderTime );
 
   mJob->start();
@@ -1280,11 +1281,11 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), mSettings.destinationCrs() );
   QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
-  if ( mSettings.destinationCrs() != wgs84 )
+  if ( mSettings.destinationCrs() != wgs84 && mSettings.destinationCrs().isSameCelestialBody( wgs84 ) )
     addCoordinateFormat( wgs84.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), wgs84 );
 
   QgsSettings settings;
-  const QString customCrsString = settings.value( u"qgis/custom_coordinate_crs"_s ).toString();
+  const QString customCrsString = QgsMapCanvas::settingsCustomCoordinateCrs->value();
   if ( !customCrsString.isEmpty() )
   {
     QgsCoordinateReferenceSystem customCrs( customCrsString );
@@ -1300,7 +1301,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
     if ( selector.exec() )
     {
-      QgsSettings().setValue( u"qgis/custom_coordinate_crs"_s, selector.crs().authid().isEmpty() ? selector.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : selector.crs().authid() );
+      QgsMapCanvas::settingsCustomCoordinateCrs->setValue( selector.crs().authid().isEmpty() ? selector.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : selector.crs().authid() );
     }
   } );
   copyCoordinateMenu->addAction( setCustomCrsAction );
@@ -2280,9 +2281,6 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     else
     {
       rb->setStrokeColor( c );
-      QColor c = rb->secondaryStrokeColor();
-      c.setAlpha( c.alpha() );
-      rb->setSecondaryStrokeColor( c );
     }
     rb->update();
   } );

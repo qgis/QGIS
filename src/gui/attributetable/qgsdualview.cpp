@@ -23,6 +23,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturelistmodel.h"
+#include "qgsfieldcalculator.h"
 #include "qgsfieldconditionalformatwidget.h"
 #include "qgsgui.h"
 #include "qgsifeatureselectionmanager.h"
@@ -39,6 +40,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -93,6 +95,7 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   // Set preview icon
   mActionExpressionPreview->setIcon( QgsApplication::getThemeIcon( u"/mIconExpressionPreview.svg"_s ) );
+  mActionExpressionPreview->setText( tr( "Expression" ) );
 
   // Connect layer list preview signals
   connect( mActionExpressionPreview, &QAction::triggered, this, &QgsDualView::previewExpressionBuilder );
@@ -254,15 +257,20 @@ void QgsDualView::columnBoxInit()
     const QString fieldName = field.name();
     if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldName ).type() != "Hidden"_L1 )
     {
-      const QIcon icon = mLayer->fields().iconForField( fieldIndex );
-      const QString text = mLayer->attributeDisplayName( fieldIndex );
+      const QIcon fieldIcon = mLayer->fields().iconForField( fieldIndex );
+      const QString fieldDisplayName = mLayer->attributeDisplayName( fieldIndex );
 
       // Generate action for the preview popup button of the feature list
-      QAction *previewAction = new QAction( icon, text, mFeatureListPreviewButton );
+      QAction *previewAction = new QAction( fieldIcon, fieldDisplayName, mFeatureListPreviewButton );
       connect( previewAction, &QAction::triggered, this, [this, previewAction, fieldName] { previewColumnChanged( previewAction, fieldName ); } );
       mPreviewColumnsMenu->addAction( previewAction );
 
-      if ( text == displayExpression || u"COALESCE( \"%1\", '<NULL>' )"_s.arg( text ) == displayExpression || u"\"%1\""_s.arg( text ) == displayExpression )
+      if ( fieldDisplayName == displayExpression
+           || u"COALESCE( \"%1\", '<NULL>' )"_s.arg( fieldDisplayName ) == displayExpression
+           || u"\"%1\""_s.arg( fieldDisplayName ) == displayExpression
+           || fieldName == displayExpression
+           || u"COALESCE( \"%1\", '<NULL>' )"_s.arg( fieldName ) == displayExpression
+           || u"\"%1\""_s.arg( fieldName ) == displayExpression )
       {
         defaultFieldAction = previewAction;
       }
@@ -300,7 +308,7 @@ void QgsDualView::columnBoxInit()
   }
   else
   {
-    mActionExpressionPreview->setText( displayExpression );
+    mActionExpressionPreview->setToolTip( displayExpression );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
 
     mFeatureListView->setDisplayExpression( displayExpression );
@@ -499,7 +507,9 @@ void QgsDualView::restoreRecentDisplayExpressions()
   const QVariantList previewExpressions = mLayer->customProperty( u"dualview/previewExpressions"_s ).toList();
 
   for ( const QVariant &previewExpression : previewExpressions )
+  {
     insertRecentlyUsedDisplayExpression( previewExpression.toString() );
+  }
 }
 
 void QgsDualView::saveRecentDisplayExpressions() const
@@ -582,7 +592,8 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   previewAction->setProperty( "previewExpression", expression );
   connect( previewAction, &QAction::triggered, this, [expression, this]( bool ) {
     setDisplayExpression( expression );
-    mFeatureListPreviewButton->setText( expression );
+    mFeatureListPreviewButton->setText( tr( "Expression" ) );
+    mFeatureListPreviewButton->setToolTip( expression );
   } );
 
   mFeatureListPreviewButton->insertAction( mLastDisplayExpressionAction, previewAction );
@@ -772,7 +783,7 @@ void QgsDualView::previewExpressionBuilder()
   if ( dlg.exec() == QDialog::Accepted )
   {
     mFeatureListView->setDisplayExpression( dlg.expressionText() );
-    mActionExpressionPreview->setText( dlg.expressionText() );
+    mActionExpressionPreview->setToolTip( dlg.expressionText() );
 
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
     mFeatureListPreviewButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -789,7 +800,6 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
   }
   else
   {
-    mActionExpressionPreview->setText( tr( "Expression" ) );
     mFeatureListPreviewButton->setText( previewAction->text() );
     mFeatureListPreviewButton->setIcon( previewAction->icon() );
     mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
@@ -1019,6 +1029,56 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( sort, &QAction::triggered, this, [this]() { modifySort(); } );
   mHorizontalHeaderMenu->addAction( sort );
 
+  mConfig.update( mLayer->fields() );
+  // get layer field index from column name
+  int fieldIndex = -1;
+  if ( col != -1 )
+    fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
+  const Qgis::FieldOrigin fieldOrigin = mLayer->fields().fieldOrigin( fieldIndex );
+
+  mHorizontalHeaderMenu->addSeparator();
+
+  const QgsVectorLayer *vl = mFilterModel->layer();
+  const QgsVectorDataProvider *dataProvider = vl->dataProvider();
+  const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
+  const bool layerIsReadOnly { vl->readOnly() };
+  const bool canChangeAttributeValue = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+
+  bool fieldCalculatorEnabled = false;
+
+  switch ( fieldOrigin )
+  {
+    case Qgis::FieldOrigin::Provider:
+    case Qgis::FieldOrigin::Edit:
+      fieldCalculatorEnabled = canChangeAttributeValue;
+      break;
+    case Qgis::FieldOrigin::Join:
+    {
+      int srcFieldIndex;
+      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+      const QgsVectorLayer *joinedLayer = info->joinLayer();
+      const QgsVectorDataProvider *joinedDataProvider = joinedLayer->dataProvider();
+      const Qgis::VectorProviderCapabilities joinedCaps = joinedDataProvider->capabilities();
+      const bool joinedLayerIsReadOnly { joinedLayer->readOnly() };
+      const bool joinedLayerCanChangeAttributeValue = !joinedLayerIsReadOnly && ( joinedCaps & Qgis::VectorProviderCapability::ChangeAttributeValues );
+      if ( info && info->isEditable() )
+        fieldCalculatorEnabled = joinedLayerCanChangeAttributeValue;
+      break;
+    }
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Expression:
+      break;
+    default:
+      break;
+  }
+
+  QAction *fieldCalculator = new QAction( tr( "Open &Field Calculator…" ), mHorizontalHeaderMenu );
+  connect( fieldCalculator, &QAction::triggered, this, &QgsDualView::fieldCalculator );
+  fieldCalculator->setData( fieldIndex );
+  mHorizontalHeaderMenu->addAction( fieldCalculator );
+
+  fieldCalculator->setEnabled( fieldCalculatorEnabled );
+
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
 }
 
@@ -1058,6 +1118,21 @@ void QgsDualView::hideColumn()
   {
     config.setColumnHidden( sourceCol, true );
     setAttributeTableConfig( config );
+  }
+}
+
+void QgsDualView::fieldCalculator()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  const int fieldIndex = action->data().toInt();
+  mConfig.update( mLayer->fields() );
+  QgsFieldCalculator calc( mLayer, this, fieldIndex );
+  if ( calc.exec() == QDialog::Accepted )
+  {
+    int col = mMasterModel->fieldCol( calc.changedAttributeId() );
+
+    if ( col >= 0 )
+      mMasterModel->reload( mMasterModel->index( 0, col ), mMasterModel->index( mMasterModel->rowCount() - 1, col ) );
   }
 }
 

@@ -30,6 +30,7 @@ using namespace Qt::StringLiterals;
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsdirectoryitem.h"
@@ -82,14 +83,10 @@ void TestQgsDataItem::initTestCase()
   QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = dataDir + '/';
 
-  // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( u"QGIS"_s );
-  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
-  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   // save current scanItemsSetting value
   QgsSettings settings;
   settings.clear();
-  mScanItemsSetting = settings.value( u"/qgis/scanItemsInBrowser2"_s, QVariant( "" ) ).toString();
+  mScanItemsSetting = QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->value();
 
   //create a directory item that will be used in all tests...
   mDirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR );
@@ -99,7 +96,7 @@ void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
   QgsSettings settings;
-  settings.setValue( u"/qgis/scanItemsInBrowser2"_s, mScanItemsSetting );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
 
@@ -140,7 +137,7 @@ void TestQgsDataItem::testDirItemChildren()
   tmpSettings << QString() << u"contents"_s << u"extension"_s;
   for ( const QString &tmpSetting : std::as_const( tmpSettings ) )
   {
-    settings.setValue( u"/qgis/scanItemsInBrowser2"_s, tmpSetting );
+    QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( tmpSetting );
     QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 

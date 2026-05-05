@@ -826,7 +826,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   }
   else
   {
-    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( tolerance(), 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( tolerance(), 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2, nullptr, mFeedback.get() ) );
   }
 
   mProfileBufferedCurveEngine = std::make_unique<QgsGeos>( mProfileBufferedCurve.get() );
@@ -1461,7 +1461,6 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           const QgsRectangle bounds = clampedPolygon->boundingBox();
           QgsTessellator t;
           t.setBounds( bounds );
-          t.setOutputZUp( true );
           t.addPolygon( *clampedPolygon, 0 );
 
           tessellation = QgsGeometry( t.asMultiPolygon() );

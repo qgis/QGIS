@@ -230,7 +230,7 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
   }
   else
   {
-    const QgsGeometry res = QgsGeometry::unaryUnion( multiPolygon );
+    const QgsGeometry res = QgsGeometry::unaryUnion( multiPolygon, QgsGeometryParameters(), feedback );
     return res;
   }
 }

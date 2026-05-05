@@ -2,7 +2,7 @@
   "name": "-",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Subtraction of two values. If one of the values is NULL the result will be NULL.",
+  "description": "Subtraction of two values. If one of the values is NULL the result will be NULL.<br><br>When used with two colors, performs component-wise subtraction on the color components (not alpha), clamping results to [0, 1]. The alpha channel of the left color is used. HSL and HSV colors are converted to RGB for the operation, and the result is an RGB color. CMYK colors produce a CMYK result.<br><br>When used with a color and a number (in any order), subtracts one from the other per color component (excluding alpha), clamping results to [0, 1]. The alpha channel is preserved.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -19,6 +19,9 @@
   }, {
     "expression": "to_datetime('2012-05-05 12:00:00') - to_interval('1 day 2 hours')",
     "returns": "2012-05-04T10:00:00"
+  }, {
+    "expression": "color_rgbf(0.8, 0.6, 0.4) - 0.1",
+    "returns": "RGBA: 0.70,0.50,0.30,1.00"
   }],
-  "tags": ["subtraction", "null", "result", "values"]
+  "tags": ["subtraction", "null", "result", "values", "color"]
 }

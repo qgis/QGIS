@@ -25,7 +25,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QDate, QDateTime, Qt, QTime, QVariant
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -59,10 +59,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsSensorThingsProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsSensorThingsProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is

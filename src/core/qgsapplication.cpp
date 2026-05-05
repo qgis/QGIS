@@ -57,6 +57,7 @@
 #include "qgslocalizeddatapathregistry.h"
 #include "qgslocator.h"
 #include "qgslogger.h"
+#include "qgsmaterialregistry.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -130,6 +131,14 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryString *QgsApplication::settingsApplicationFullName = new QgsSettingsEntryString( u"full-name"_s, QgsSettingsTree::sTreeApp, QString() );
+
+const QgsSettingsEntryStringList *QgsApplication::settingsSkippedGdalDrivers = new QgsSettingsEntryStringList( u"skip-drivers"_s, QgsSettingsTree::sTreeGdal, QStringList() );
+
+QgsSettingsTreeNamedListNode *QgsApplication::sTreeCustomVariables = QgsSettingsTree::sTreeApp->createNamedListNode( u"variables"_s );
+const QgsSettingsEntryVariant *QgsApplication::settingsCustomVariable
+  = new QgsSettingsEntryVariant( u"value"_s, sTreeCustomVariables, QVariant(), u"User-defined custom application variable, keyed by variable name. Available as @-prefixed variables in expressions."_s );
+
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
 const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( u"overrideFlag"_s, QgsSettingsTree::sTreeLocale, false );
@@ -139,6 +148,8 @@ const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new Q
 const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( u"showGroupSeparator"_s, QgsSettingsTree::sTreeLocale, false );
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( u"searchPathsForSVG"_s, QgsSettingsTree::sTreeSvg, QStringList() );
+
+const QgsSettingsEntryString *QgsApplication::settingsNullRepresentation = new QgsSettingsEntryString( u"null-value"_s, QgsSettingsTree::sTreeQgis, u"NULL"_s );
 
 const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections
   = new QgsSettingsEntryInteger( u"connection-pool-maximum-concurrent-connections"_s, QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
@@ -179,6 +190,7 @@ struct QgsApplication::ApplicationMembers
     std::unique_ptr<QgsCoordinateReferenceSystemRegistry > mCrsRegistry;
     std::unique_ptr<Qgs3DRendererRegistry > m3DRendererRegistry;
     std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
+    std::unique_ptr<QgsMaterialRegistry > mMaterialRegistry;
     std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
     std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
     std::unique_ptr<QgsApplicationThemeRegistry > mApplicationThemeRegistry;
@@ -1495,8 +1507,11 @@ QString QgsApplication::applicationFullName()
     return *sApplicationFullName();
 
   //last resort
-  QgsSettings settings;
-  *sApplicationFullName() = settings.value( u"/qgis/application_full_name"_s, u"%1 %2"_s.arg( applicationName(), platform() ) ).toString();
+  const QString storedFullName = settingsApplicationFullName->value();
+  if ( !storedFullName.isEmpty() )
+    *sApplicationFullName() = storedFullName;
+  else
+    *sApplicationFullName() = u"%1 %2"_s.arg( applicationName(), platform() );
   return *sApplicationFullName();
 }
 
@@ -2013,32 +2028,14 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sGdalSkipList() = skippedGdalDrivers;
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
-  QgsSettings settings;
-  settings.setValue( u"gdal/skipDrivers"_s, skippedGdalDrivers.join( ','_L1 ) );
+  settingsSkippedGdalDrivers->setValue( skippedGdalDrivers );
 
   applyGdalSkippedDrivers();
 }
 
 void QgsApplication::registerGdalDriversFromSettings()
 {
-  QgsSettings settings;
-  QString joinedList, delimiter;
-  if ( settings.contains( u"gdal/skipDrivers"_s ) )
-  {
-    joinedList = settings.value( u"gdal/skipDrivers"_s, QString() ).toString();
-    delimiter = u","_s;
-  }
-  else
-  {
-    joinedList = settings.value( u"gdal/skipList"_s, QString() ).toString();
-    delimiter = u" "_s;
-  }
-  QStringList myList;
-  if ( !joinedList.isEmpty() )
-  {
-    myList = joinedList.split( delimiter );
-  }
-  *sGdalSkipList() = myList;
+  *sGdalSkipList() = settingsSkippedGdalDrivers->value();
   applyGdalSkippedDrivers();
 }
 
@@ -2098,18 +2095,12 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
 
 QVariantMap QgsApplication::customVariables()
 {
-  //read values from QgsSettings
-  QgsSettings settings;
-
   QVariantMap variables;
 
-  //check if settings contains any variables
-  settings.beginGroup( "variables" );
-  QStringList childKeys = settings.childKeys();
-  for ( QStringList::const_iterator it = childKeys.constBegin(); it != childKeys.constEnd(); ++it )
+  const QStringList names = sTreeCustomVariables->items();
+  for ( const QString &name : names )
   {
-    QString name = *it;
-    variables.insert( name, settings.value( name ) );
+    variables.insert( name, settingsCustomVariable->value( name ) );
   }
 
   return variables;
@@ -2117,14 +2108,10 @@ QVariantMap QgsApplication::customVariables()
 
 void QgsApplication::setCustomVariables( const QVariantMap &variables )
 {
-  QgsSettings settings;
-
-  QVariantMap::const_iterator it = variables.constBegin();
-  settings.beginGroup( "variables" );
-  settings.remove( "" );
-  for ( ; it != variables.constEnd(); ++it )
+  sTreeCustomVariables->deleteAllItems();
+  for ( auto it = variables.constBegin(); it != variables.constEnd(); ++it )
   {
-    settings.setValue( it.key(), it.value() );
+    settingsCustomVariable->setValue( it.value(), { it.key() } );
   }
 
   emit instance() -> customVariablesChanged();
@@ -2132,10 +2119,7 @@ void QgsApplication::setCustomVariables( const QVariantMap &variables )
 
 void QgsApplication::setCustomVariable( const QString &name, const QVariant &value )
 {
-  // save variable to settings
-  QgsSettings settings;
-
-  settings.setValue( u"variables/"_s + name, value );
+  settingsCustomVariable->setValue( value, { name } );
 
   emit instance() -> customVariablesChanged();
 }
@@ -2202,7 +2186,7 @@ QString QgsApplication::nullRepresentation()
   ApplicationMembers *appMembers = members();
   if ( appMembers->mNullRepresentation.isNull() )
   {
-    appMembers->mNullRepresentation = QgsSettings().value( u"qgis/nullValue"_s, u"NULL"_s ).toString();
+    appMembers->mNullRepresentation = settingsNullRepresentation->value();
   }
   return appMembers->mNullRepresentation;
 }
@@ -2214,7 +2198,7 @@ void QgsApplication::setNullRepresentation( const QString &nullRepresentation )
     return;
 
   appMembers->mNullRepresentation = nullRepresentation;
-  QgsSettings().setValue( u"qgis/nullValue"_s, nullRepresentation );
+  settingsNullRepresentation->setValue( nullRepresentation );
 
   QgsApplication *app = instance();
   if ( app )
@@ -2739,6 +2723,11 @@ Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
   return members()->m3DSymbolRegistry.get();
 }
 
+QgsMaterialRegistry *QgsApplication::materialRegistry()
+{
+  return members()->mMaterialRegistry.get();
+}
+
 QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 {
   return members()->mScaleBarRendererRegistry.get();
@@ -2960,6 +2949,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup 3D material registry" ) );
+    mMaterialRegistry = std::make_unique<QgsMaterialRegistry>();
+    mMaterialRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = std::make_unique<Qgs3DSymbolRegistry>();
     profiler->end();
@@ -3021,6 +3016,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mActionScopeRegistry.reset();
   m3DRendererRegistry.reset();
   m3DSymbolRegistry.reset();
+  mMaterialRegistry.reset();
   mAnnotationRegistry.reset();
   mApplicationThemeRegistry.reset();
   mColorSchemeRegistry.reset();

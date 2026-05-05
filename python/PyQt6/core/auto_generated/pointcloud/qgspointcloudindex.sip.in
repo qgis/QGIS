@@ -51,6 +51,13 @@ Returns the parent of the node
 .. versionadded:: 3.20
 %End
 
+    QVector<QgsPointCloudNodeId> childrenNodes() const;
+%Docstring
+Returns the node's 8 direct child nodes
+
+.. versionadded:: 4.2
+%End
+
     static QgsPointCloudNodeId fromString( const QString &str );
 %Docstring
 Creates node from string
@@ -81,13 +88,20 @@ Returns y
 Returns z
 %End
 
+    //! hash operator
+    Py_hash_t __hash__() const;
+%MethodCode
+    sipRes = qHash( *sipCpp );
+%End
+
 };
 
 
-uint qHash( QgsPointCloudNodeId id );
+size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 );
 %Docstring
 Hash function for indexed nodes
 %End
+
 
 
 class QgsPointCloudNode
@@ -106,7 +120,7 @@ Keeps metadata for an indexed point cloud node.
 #include "qgspointcloudindex.h"
 %End
   public:
-    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
+    QgsPointCloudNode( QgsPointCloudNodeId id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
 %Docstring
 Constructs new node object. Should only be called by
 :py:func:`QgsAbstractPointCloudIndex.getNode()`. Bounds should always be
@@ -249,14 +263,14 @@ Returns root node of the index
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.root`
 %End
 
-    bool hasNode( const QgsPointCloudNodeId &id ) const;
+    bool hasNode( QgsPointCloudNodeId id ) const;
 %Docstring
 Returns whether the octree contain given node
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.hasNode`
 %End
 
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+    QgsPointCloudNode getNode( QgsPointCloudNodeId id ) const;
 %Docstring
 Returns object for a given node
 
@@ -383,6 +397,16 @@ Returns a list of node IDs that have been modified
     QString uri() const;
 %Docstring
 Returns the uri used to load the index
+%End
+
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &node ) const;
+%Docstring
+Returns whether calling :py:func:`~QgsPointCloudIndex.getNode` for
+``node`` will trigger a hierarchy page fetch. If any of the node's
+ancestors, children and grand-children info exist in a hierarchy page
+that has not yet been loaded, it will return ``True``.
+
+.. versionadded:: 4.2
 %End
 
 };

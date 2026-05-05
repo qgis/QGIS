@@ -20,7 +20,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
@@ -36,10 +35,6 @@ class TestQgsProjectGpsSettings(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsProjectGpsSettings.com")
-        QCoreApplication.setApplicationName("TestPyQgsProjectGpsSettings")
-        QgsSettings().clear()
         start_app()
 
     def testSettings(self):

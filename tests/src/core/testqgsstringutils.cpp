@@ -142,6 +142,12 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this http://north-road.com is a link"_s, &found ), u"this <a href=\"http://north-road.com\">http://north-road.com</a> is a link"_s );
   QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this 'http://north-road.com' is a link"_s, &found ), u"this '<a href=\"http://north-road.com\">http://north-road.com</a>' is a link"_s );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this (http://north-road.com) is a link"_s, &found ), u"this (<a href=\"http://north-road.com\">http://north-road.com</a>) is a link"_s );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( u"this \"http://north-road.com\" is a link"_s, &found ), u"this \"<a href=\"http://north-road.com\">http://north-road.com</a>\" is a link"_s );
+  QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this http://north-road.com is a link, so is http://qgis.org, OK?"_s, &found ), u"this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, OK?"_s );
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"this north-road.com might not be a link"_s, &found ), u"this north-road.com might not be a link"_s );
@@ -162,6 +168,11 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( u"Load https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')"_s, &found ), u"Load <a href=\"https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')\">https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')</a>"_s );
   QVERIFY( found );
+  QCOMPARE(
+    QgsStringUtils::insertLinks( u"=LIEN_HYPERTEXTE(\"\"http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11\"\" ;\"\"01141X0025\"\")"_s, &found ),
+    u"=LIEN_HYPERTEXTE(\"\"<a href=\"http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11\">http://ficheinfoterre.brgm.fr/InfoterreFiche/ficheBss.action?id=01141X0025/THI11</a>\"\" ;\"\"01141X0025\"\")"_s
+  );
+  QVERIFY( found );
 }
 
 void TestQgsStringUtils::titleCase_data()
@@ -174,16 +185,16 @@ void TestQgsStringUtils::titleCase_data()
   QTest::newRow( "single character" ) << "a" << "A";
   QTest::newRow( "string 1" ) << "follow step-by-step instructions" << "Follow Step-by-Step Instructions";
   QTest::newRow( "originally uppercase" ) << "FOLLOW STEP-BY-STEP INSTRUCTIONS" << "Follow Step-by-Step Instructions";
-  QTest::newRow( "string 1" ) << "Follow step-by-step instructions" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "string 1 with upper" ) << "Follow step-by-step instructions" << "Follow Step-by-Step Instructions";
   QTest::newRow( "string 2" ) << "this sub-phrase is nice" << "This Sub-Phrase Is Nice";
-  QTest::newRow( "" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
+  QTest::newRow( "with colon" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
   QTest::newRow( "string 3" ) << "all words capitalized" << "All Words Capitalized";
   QTest::newRow( "string 4" ) << "small words are for by and of lowercase" << "Small Words Are for by and of Lowercase";
   QTest::newRow( "string 5" ) << "a small word starts" << "A Small Word Starts";
   QTest::newRow( "last word" ) << "a small word it ends on" << "A Small Word It Ends On";
   QTest::newRow( "last word2" ) << "Ends with small word of" << "Ends With Small Word Of";
   QTest::newRow( "string 6" ) << "Merge VRT(s)" << "Merge VRT(s)";
-  QTest::newRow( "string 6" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
+  QTest::newRow( "string 7" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
   QTest::newRow( "accented" ) << "extraer vértices" << "Extraer Vértices";
 }
 

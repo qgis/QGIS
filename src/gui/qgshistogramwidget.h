@@ -28,6 +28,7 @@
 #include <QBrush>
 #include <QPen>
 
+class QgsSettingsEntryBool;
 class QgsVectorLayer;
 class QgsGraduatedSymbolRenderer;
 class QwtPlotPicker;
@@ -61,6 +62,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
     ~QgsHistogramWidget() override;
+
+    static const QgsSettingsEntryBool *settingsHistogramShowMean SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsHistogramShowStdev SIP_SKIP;
 
     /**
      * Returns the layer currently associated with the widget.

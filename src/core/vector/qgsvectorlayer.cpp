@@ -69,7 +69,6 @@
 #include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsruntimeprofiler.h"
-#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -219,7 +218,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath, const QString &b
   connect( this, &QgsVectorLayer::readOnlyChanged, this, &QgsVectorLayer::supportsEditingChanged );
 
   // Default simplify drawing settings
-  QgsSettings settings;
   mSimplifyMethod.setSimplifyHints( QgsVectorLayer::settingsSimplifyDrawingHints->valueWithDefaultOverride( mSimplifyMethod.simplifyHints() ) );
   mSimplifyMethod.setSimplifyAlgorithm( QgsVectorLayer::settingsSimplifyAlgorithm->valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) );
   mSimplifyMethod.setThreshold( QgsVectorLayer::settingsSimplifyDrawingTol->valueWithDefaultOverride( mSimplifyMethod.threshold() ) );
@@ -516,16 +514,19 @@ void QgsVectorLayer::deselect( const QgsFeatureIds &featureIds )
   emit selectionChanged( QgsFeatureIds(), featureIds, false );
 }
 
-void QgsVectorLayer::selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior )
+void QgsVectorLayer::selectByRect( const QgsRectangle &rect, Qgis::SelectBehavior behavior )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // normalize the rectangle
-  rect.normalize();
+  QgsRectangle normalizedRect = rect;
+  normalizedRect.normalize();
 
   QgsFeatureIds newSelection;
 
-  QgsFeatureIterator features = getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect | Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
+  QgsFeatureIterator features = getFeatures(
+    QgsFeatureRequest().setFilterRect( normalizedRect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect | Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes()
+  );
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -681,14 +682,15 @@ void QgsVectorLayer::selectAll()
   selectByIds( allFeatureIds() );
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
+void QgsVectorLayer::invertSelectionInRectangle( const QgsRectangle &rect )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // normalize the rectangle
-  rect.normalize();
+  QgsRectangle normalizedRect = rect;
+  normalizedRect.normalize();
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFilterRect( rect ).setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFilterRect( normalizedRect ).setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
 
   QgsFeatureIds selectIds;
   QgsFeatureIds deselectIds;
@@ -2247,9 +2249,14 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
 
   if ( mPreloadedProvider )
+  {
+    QgsDebugMsgLevel( u"Attaching map layer %1 to preloaded data provider. Provider belongs to thread %2"_s.arg( id(), QgsThreadingUtils::threadDescription( mPreloadedProvider->thread() ) ), 2 );
     mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
+  }
   else
+  {
     mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
+  }
 
   if ( !mDataProvider )
   {
@@ -2619,6 +2626,33 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
 
+    // custom comments
+    // mAttributeCustomCommentMap is cleared, because when a custom comment is null the provider comment should be considered
+    mAttributeCustomCommentMap.clear();
+    QDomNode customCommentsNode = layerNode.namedItem( u"customComments"_s );
+    if ( !customCommentsNode.isNull() )
+    {
+      QDomElement customCommentEntryElem;
+
+      QDomNodeList customCommentNodeList = customCommentsNode.toElement().elementsByTagName( u"customComment"_s );
+      for ( int i = 0; i < customCommentNodeList.size(); ++i )
+      {
+        customCommentEntryElem = customCommentNodeList.at( i ).toElement();
+
+        const QString field = customCommentEntryElem.attribute( u"field"_s );
+
+        //empty values are important as well (to override provider comments with nothing)
+        const QString customComment = customCommentEntryElem.attribute( u"value"_s );
+
+        if ( fields().lookupField( field ) < 0 )
+        {
+          QgsDebugMsgLevel( u"Warning: Field %1 not found in layer %2 to load custom comment from setting "_s.arg( field, name() ), 2 );
+          continue;
+        }
+        mAttributeCustomCommentMap.insert( field, customComment );
+      }
+    }
+
     // IMPORTANT - we don't clear mAttributeSplitPolicy here, as it may contain policies which are coming direct
     // from the data provider. Instead we leave any existing policies and only overwrite them if the style
     // has a specific value for that field's policy
@@ -2773,7 +2807,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           {
             QList<QVariant> translatedValueList;
             const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            for ( int i = 0; i < valueList.count(); i++ )
             {
               QMap<QString, QVariant> translatedValueMap;
               QString translatedKey
@@ -3187,6 +3221,27 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       aliasElem.appendChild( aliasEntryElem );
     }
     node.appendChild( aliasElem );
+
+    //custom comments
+    QDomElement customCommentElem = doc.createElement( u"customComments"_s );
+    bool hasCustomComments = false;
+    for ( const QgsField &field : std::as_const( mFields ) )
+    {
+      //if empty ("") we store it, if null we don't store it
+      const QString customComment = field.customComment();
+      if ( customComment.isNull() )
+        continue;
+
+      hasCustomComments = true;
+      QDomElement customCommentEntryElem = doc.createElement( u"customComment"_s );
+      customCommentEntryElem.setAttribute( u"field"_s, field.name() );
+      customCommentEntryElem.setAttribute( u"value"_s, customComment );
+      customCommentElem.appendChild( customCommentEntryElem );
+    }
+    if ( hasCustomComments )
+    {
+      node.appendChild( customCommentElem );
+    }
 
     //split policies
     {
@@ -3720,6 +3775,56 @@ QString QgsVectorLayer::attributeAlias( int index ) const
     return QString();
 
   return fields().at( index ).alias();
+}
+
+void QgsVectorLayer::setFieldCustomComment( int attIndex, const QString &customCommentString )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+
+  mAttributeCustomCommentMap.insert( name, customCommentString );
+  mFields[attIndex].setCustomComment( customCommentString );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified();
+}
+
+void QgsVectorLayer::removeFieldCustomComment( int attIndex )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+  mFields[attIndex].setCustomComment( QString() );
+  if ( mAttributeCustomCommentMap.contains( name ) )
+  {
+    mAttributeCustomCommentMap.remove( name );
+    updateFields();
+    mEditFormConfig.setFields( mFields );
+    emit layerModified();
+  }
+}
+
+QString QgsVectorLayer::attributeCustomComment( int index ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return QString();
+
+  return fields().at( index ).customComment();
+}
+
+QgsStringMap QgsVectorLayer::attributeCustomComments() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mAttributeCustomCommentMap;
 }
 
 QString QgsVectorLayer::attributeDisplayName( int index ) const
@@ -4641,6 +4746,16 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[index].setAlias( aliasIt.value() );
+  }
+
+  // set custom comments
+  for ( auto customCommentIt = mAttributeCustomCommentMap.constBegin(); customCommentIt != mAttributeCustomCommentMap.constEnd(); ++customCommentIt )
+  {
+    int index = mFields.lookupField( customCommentIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[index].setCustomComment( customCommentIt.value() );
   }
 
   for ( auto splitPolicyIt = mAttributeSplitPolicy.constBegin(); splitPolicyIt != mAttributeSplitPolicy.constEnd(); ++splitPolicyIt )
@@ -6283,6 +6398,16 @@ void QgsVectorLayer::emitDataChanged()
   mDataChangedFired = false;
 }
 
+void QgsVectorLayer::onDependencyAfterCommitChanges()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mDataProvider && mDataProvider->capabilities().testFlag( Qgis::VectorProviderCapability::CacheData ) )
+    mDataProvider->reloadData();
+  else
+    emitDataChanged();
+}
+
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -6310,7 +6435,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
+      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 
@@ -6334,7 +6459,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
+      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 

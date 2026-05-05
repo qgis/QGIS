@@ -66,6 +66,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
@@ -284,16 +285,15 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
   int count = 0;
-  const QStringList hiddenPathList = settings.value( u"/browser/hiddenPaths"_s ).toStringList();
+  const QStringList hiddenPathList = QgsDirectoryItem::settingsHiddenPaths->value();
   static int MAX_HIDDEN_ENTRIES = 5;
   for ( const QString &path : hiddenPathList )
   {
     QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
     connect( action, &QAction::triggered, this, [path] {
-      QgsSettings s;
-      QStringList pathsList = s.value( u"/browser/hiddenPaths"_s ).toStringList();
+      QStringList pathsList = QgsDirectoryItem::settingsHiddenPaths->value();
       pathsList.removeAll( path );
-      s.setValue( u"/browser/hiddenPaths"_s, pathsList );
+      QgsDirectoryItem::settingsHiddenPaths->setValue( pathsList );
 
       // get parent path and refresh corresponding node
       int idx = path.lastIndexOf( '/'_L1 );
@@ -1061,10 +1061,32 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   if ( !menu->isEmpty() )
     menu->addSeparator();
 
-  const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" ) : tr( "Add Selected Layers to Project" );
-  QAction *addAction = new QAction( addText, menu );
-  connect( addAction, &QAction::triggered, this, [this, selectedItems] { addLayersFromItems( selectedItems ); } );
-  menu->addAction( addAction );
+  QList<QgsLayerItem::LayerUriWithDetails> layerUrisWithDetails;
+  if ( selectedItems.count() == 1 )
+  {
+    if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( selectedItems.at( 0 ) ) )
+    {
+      layerUrisWithDetails = layerItem->layerUrisWithDetails();
+    }
+  }
+
+  if ( !layerUrisWithDetails.isEmpty() )
+  {
+    for ( const QgsLayerItem::LayerUriWithDetails &uri : std::as_const( layerUrisWithDetails ) )
+    {
+      const QString addText = tr( "Add %1 to Project" ).arg( uri.userFriendlyDescription );
+      QAction *addAction = new QAction( addText, menu );
+      connect( addAction, &QAction::triggered, this, [uri] { QgisApp::instance()->handleDropUriList( { uri.uri } ); } );
+      menu->addAction( addAction );
+    }
+  }
+  else
+  {
+    const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" ) : tr( "Add Selected Layers to Project" );
+    QAction *addAction = new QAction( addText, menu );
+    connect( addAction, &QAction::triggered, this, [this, selectedItems] { addLayersFromItems( selectedItems ); } );
+    menu->addAction( addAction );
+  }
 
   for ( QAction *action : menu->actions() )
   {

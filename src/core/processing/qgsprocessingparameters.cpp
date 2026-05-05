@@ -2604,8 +2604,7 @@ QVariant QgsProcessingParameterDefinition::defaultGuiValueFromSetting() const
 {
   if ( mAlgorithm )
   {
-    QgsSettings s;
-    QVariant settingValue = s.value( u"/Processing/DefaultGuiParam/%1/%2"_s.arg( mAlgorithm->id() ).arg( mName ) );
+    const QVariant settingValue = QgsProcessing::settingsDefaultGuiParam->value( { mAlgorithm->id(), mName } );
     if ( settingValue.isValid() )
     {
       return settingValue;
@@ -9706,7 +9705,8 @@ QString QgsProcessingParameterAnnotationLayer::valueAsPythonString( const QVaria
   QVariantMap p;
   p.insert( name(), val );
   QgsAnnotationLayer *layer = QgsProcessingParameters::parameterAsAnnotationLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( layer == context.project()->mainAnnotationLayer() ? u"main"_s : layer->id() ) : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( context.project() && layer == context.project()->mainAnnotationLayer() ? u"main"_s : layer->id() )
+               : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
 QString QgsProcessingParameterAnnotationLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const

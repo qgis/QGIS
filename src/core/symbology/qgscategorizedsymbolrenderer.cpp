@@ -1097,9 +1097,18 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
 {
   const QVariant value = valueForFeature( feature, context );
 
+  // "all other values" category value (AKA "else" rule) is represented with an invalid QVariant
+  QString elseRuleUUID;
+
   for ( const QgsRendererCategory &cat : mCategories )
   {
     bool match = false;
+
+    if ( QgsVariantUtils::isNull( cat.value() ) )
+    {
+      elseRuleUUID = cat.uuid();
+    }
+
     if ( cat.value().userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList list = cat.value().toList();
@@ -1133,6 +1142,12 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
       else
         return QSet< QString >();
     }
+  }
+
+  // if there is an "else" rule category, then the feature will be rendered with that category symbol
+  if ( !elseRuleUUID.isEmpty() )
+  {
+    return QSet< QString >() << elseRuleUUID;
   }
 
   return QSet< QString >();

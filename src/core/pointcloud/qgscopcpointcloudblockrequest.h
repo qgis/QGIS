@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
     QgsCopcPointCloudBlockRequest(
-      const QgsPointCloudNodeId &node,
+      QgsPointCloudNodeId node,
       const QString &Uri,
       const QgsPointCloudAttributeCollection &attributes,
       const QgsPointCloudAttributeCollection &requestedAttributes,

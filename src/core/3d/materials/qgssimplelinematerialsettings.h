@@ -1,0 +1,82 @@
+/***************************************************************************
+  qgssimplelinematerialsettings.h
+  --------------------------------------
+  Date                 : August 2020
+  Copyright            : (C) 2020 by Nyall Dawson
+  Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifndef QGSSIMPLELINEMATERIALSETTINGS_H
+#define QGSSIMPLELINEMATERIALSETTINGS_H
+
+#include "qgis_core.h"
+#include "qgsabstractmaterialsettings.h"
+
+#include <QColor>
+
+class QgsMaterial;
+class QDomElement;
+
+/**
+ * \ingroup core
+ * \brief Basic shading material used for rendering simple lines as solid line components.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSettings
+{
+  public:
+    QgsSimpleLineMaterialSettings() = default;
+
+    QString type() const override;
+
+    /**
+     * Returns TRUE if the specified \a technique is supported by the material.
+     */
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+
+    /**
+     * Returns a new instance of QgsSimpleLineMaterialSettings.
+     */
+    static QgsAbstractMaterialSettings *create() SIP_FACTORY;
+
+    QgsSimpleLineMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
+
+    /**
+     * Returns the ambient color component.
+     *
+     * \see setAmbient()
+     */
+    QColor ambient() const { return mAmbient; }
+
+    /**
+     * Sets the \a ambient color component.
+     *
+     * \see ambient()
+     */
+    void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
+
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+
+    // TODO c++20 - replace with = default
+    bool operator==( const QgsSimpleLineMaterialSettings &other ) const { return mAmbient == other.mAmbient && dataDefinedProperties() == other.dataDefinedProperties(); }
+
+  private:
+    QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+};
+
+
+#endif // QGSSIMPLELINEMATERIALSETTINGS_H

@@ -37,16 +37,19 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Restore build cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /home/runner/QGIS/.ccache
           key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -54,17 +57,25 @@ jobs:
             build-ccache-ogc-master
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd  # v4.0.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Container
         id: docker-build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f  # v7.1.0
         with:
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
           file: .ci/ogc/Dockerfile
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache
+          #  Replace with ${{ github.event_name == 'push' && 'type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min' || '' }}
+          cache-to: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache,mode=min
           load: true
 
       - name: Run build
@@ -74,7 +85,7 @@ jobs:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache

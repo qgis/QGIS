@@ -18,6 +18,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsxmlutils.h"
@@ -69,14 +70,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( Qgs3DMapSettings *map
   if ( !mSymbol || !vl )
     return nullptr;
 
-  // we start with a maximal z range because we can't know this upfront. There's too many
-  // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
-  // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
-  // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
-  // height will exceed this amount!
-  constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
-  constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
-  return new QgsVectorLayerChunkedEntity( map, vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mSymbol.get() );
+  return new QgsVectorLayerChunkedEntity( map, vl, Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE, Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mSymbol.get() );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -103,4 +97,41 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
   mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );
+}
+
+std::unique_ptr<QgsVectorLayer3DRenderer> QgsVectorLayer3DRenderer::convertFromRenderer( const QgsAbstractVectorLayer3DRenderer *renderer, QgsVectorLayer * )
+{
+  std::unique_ptr< QgsVectorLayer3DRenderer > r;
+  if ( renderer->type() == "vector"_L1 )
+  {
+    r.reset( dynamic_cast<const QgsVectorLayer3DRenderer *>( renderer )->clone() );
+  }
+  else if ( renderer->type() == "rulebased"_L1 )
+  {
+    const QgsRuleBased3DRenderer *ruleBasedRenderer = dynamic_cast<const QgsRuleBased3DRenderer *>( renderer );
+    if ( !ruleBasedRenderer->rootRule()->children().isEmpty() )
+    {
+      std::unique_ptr< QgsAbstract3DSymbol > origSymbol;
+      const QList< QgsRuleBased3DRenderer::Rule * > children = ruleBasedRenderer->rootRule()->children();
+      for ( const QgsRuleBased3DRenderer::Rule *child : children )
+      {
+        if ( child->symbol() )
+        {
+          origSymbol.reset( child->symbol()->clone() );
+          break;
+        }
+      }
+      if ( origSymbol )
+      {
+        r = std::make_unique< QgsVectorLayer3DRenderer >( origSymbol.release() );
+      }
+    }
+  }
+
+  if ( r )
+  {
+    renderer->copyBaseProperties( r.get() );
+  }
+
+  return r;
 }

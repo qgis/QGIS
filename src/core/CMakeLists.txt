@@ -20,6 +20,8 @@ endif()
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/freespa/freespa.c
+
   ${CMAKE_SOURCE_DIR}/external/nanoarrow/src/nanoarrow.c
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -399,6 +401,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  tiledscene/qgscesiumimplicittiling.cpp
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
   tiledscene/qgsesrii3sdataprovider.cpp
@@ -622,6 +625,7 @@ set(QGIS_CORE_SRCS
   qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgssunpositioncalculator.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
   qgstemporalcontroller.cpp
@@ -980,7 +984,15 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
-
+  3d/materials/qgsabstractmaterialsettings.cpp
+  3d/materials/qgsgoochmaterialsettings.cpp
+  3d/materials/qgsmaterialregistry.cpp
+  3d/materials/qgsmetalroughmaterialsettings.cpp
+  3d/materials/qgsmetalroughtexturedmaterialsettings.cpp
+  3d/materials/qgsnullmaterialsettings.cpp
+  3d/materials/qgsphongmaterialsettings.cpp
+  3d/materials/qgsphongtexturedmaterialsettings.cpp
+  3d/materials/qgssimplelinematerialsettings.cpp
 
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
@@ -1106,6 +1118,10 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
+endif()
+
+if(NOT MSVC)
+  set_source_files_properties(${CMAKE_SOURCE_DIR}/external/freespa/freespa.c PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-unused-variable")
 endif()
 
 if(NOT MSVC)
@@ -1356,6 +1372,7 @@ set(QGIS_CORE_HDRS
   qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
+  qgssunpositioncalculator.h
   qgstablecell.h
   qgstaskmanager.h
   qgstemporalcontroller.h
@@ -1401,6 +1418,15 @@ set(QGIS_CORE_HDRS
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
   3d/qgsabstractpointcloud3drenderer.h
+  3d/materials/qgsabstractmaterialsettings.h
+  3d/materials/qgsgoochmaterialsettings.h
+  3d/materials/qgsmaterialregistry.h
+  3d/materials/qgsmetalroughmaterialsettings.h
+  3d/materials/qgsmetalroughtexturedmaterialsettings.h
+  3d/materials/qgsnullmaterialsettings.h
+  3d/materials/qgsphongmaterialsettings.h
+  3d/materials/qgsphongtexturedmaterialsettings.h
+  3d/materials/qgssimplelinematerialsettings.h
 
   actions/qgsaction.h
   actions/qgsactionmanager.h
@@ -2111,6 +2137,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  tiledscene/qgscesiumimplicittiling.h
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
   tiledscene/qgsesrii3sdataprovider.h
@@ -2637,6 +2664,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   3d
+  3d/materials
   actions
   annotations
   auth
@@ -2702,6 +2730,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/freespa
   ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
@@ -2776,6 +2805,11 @@ if (APPLE)
   target_link_libraries(qgis_core ${LIBTASN1_LIBRARY})
 endif()
 
+# SQLite::SQLite3 has been deprecated since CMake 4.3
+if(NOT TARGET SQLite3::SQLite3)
+  add_library(SQLite3::SQLite3 ALIAS SQLite::SQLite3)
+endif()
+
 target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Gui
@@ -2789,7 +2823,7 @@ target_link_libraries(qgis_core
   GEOS::geos_c
   GDAL::GDAL
   EXPAT::EXPAT
-  SQLite::SQLite3
+  SQLite3::SQLite3
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
@@ -2896,11 +2930,15 @@ if (FORCE_STATIC_LIBS)
 
   if (WITH_AUTH)
     target_link_libraries(qgis_core
+      authmethod_apiheader_a
+      authmethod_awss3_a
       authmethod_basic_a
       authmethod_esritoken_a
       authmethod_identcert_a
+      authmethod_maptilerhmacsha256_a
       authmethod_pkipaths_a
       authmethod_pkcs12_a
+      authmethod_planetary_computer_a
     )
     if(WITH_OAUTH2_PLUGIN)
       target_link_libraries(qgis_core authmethod_oauth2_a)

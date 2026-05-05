@@ -17,6 +17,8 @@
 
 #include "qgsimageoperation.h"
 
+#include <stack>
+
 #include "qgis.h"
 #include "qgscolorramp.h"
 #include "qgsfeedback.h"
@@ -956,6 +958,115 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
 QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center )
 {
   return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
+}
+
+inline bool colorsMatchFloodFill( QRgb c1, QRgb c2, int tolerance )
+{
+  if ( tolerance == 0 )
+  {
+    return c1 == c2;
+  }
+  return std::abs( qRed( c1 ) - qRed( c2 ) ) <= tolerance
+         && std::abs( qGreen( c1 ) - qGreen( c2 ) ) <= tolerance
+         && std::abs( qBlue( c1 ) - qBlue( c2 ) ) <= tolerance
+         && std::abs( qAlpha( c1 ) - qAlpha( c2 ) ) <= tolerance;
+}
+
+QImage QgsImageOperation::floodFill( const QImage &image, const QPoint &startPoint, const QColor &newColor, int tolerance, QgsFeedback *feedback )
+{
+  if ( image.isNull() || !image.rect().contains( startPoint ) )
+  {
+    return image;
+  }
+
+  QImage resultImage;
+  if ( image.format() != QImage::Format_ARGB32 && image.format() != QImage::Format_ARGB32_Premultiplied && image.format() != QImage::Format_RGB32 )
+  {
+    resultImage = image.convertToFormat( QImage::Format_ARGB32 );
+  }
+  else
+  {
+    resultImage = image.copy();
+  }
+
+  const QRgb targetColorRgb = resultImage.pixel( startPoint );
+  const QRgb newColorRgb = newColor.rgba();
+  if ( colorsMatchFloodFill( targetColorRgb, newColorRgb, tolerance ) )
+  {
+    return resultImage;
+  }
+
+  const int width = resultImage.width();
+  const int height = resultImage.height();
+
+  std::stack<QPoint> stack;
+  stack.push( startPoint );
+  while ( !stack.empty() )
+  {
+    if ( feedback && feedback->isCanceled() )
+    {
+      break;
+    }
+
+    const QPoint pt = stack.top();
+    stack.pop();
+    const int x = pt.x();
+    const int y = pt.y();
+    QRgb *scanline = reinterpret_cast< QRgb * >( resultImage.scanLine( y ) );
+    int x1 = x;
+    while ( x1 >= 0 && colorsMatchFloodFill( scanline[x1], targetColorRgb, tolerance ) )
+    {
+      x1--;
+    }
+    x1++;
+    int x2 = x;
+    while ( x2 < width && colorsMatchFloodFill( scanline[x2], targetColorRgb, tolerance ) )
+    {
+      scanline[x2] = newColorRgb;
+      x2++;
+    }
+    x2--;
+
+    bool spanAbove = false;
+    bool spanBelow = false;
+
+    QRgb *scanlineAbove = ( y > 0 ) ? reinterpret_cast< QRgb * >( resultImage.scanLine( y - 1 ) ) : nullptr;
+    QRgb *scanlineBelow = ( y < height - 1 ) ? reinterpret_cast< QRgb * >( resultImage.scanLine( y + 1 ) ) : nullptr;
+    for ( int currX = x1; currX <= x2; currX++ )
+    {
+      // check the row above
+      if ( scanlineAbove )
+      {
+        const bool match = colorsMatchFloodFill( scanlineAbove[currX], targetColorRgb, tolerance );
+        if ( !spanAbove && match )
+        {
+          stack.push( QPoint( currX, y - 1 ) );
+          spanAbove = true;
+        }
+        else if ( spanAbove && !match )
+        {
+          spanAbove = false;
+        }
+      }
+
+      // check the row below
+      if ( scanlineBelow )
+      {
+        const bool match = colorsMatchFloodFill( scanlineBelow[currX], targetColorRgb, tolerance );
+        if ( !spanBelow && match )
+        {
+          stack.push( QPoint( currX, y + 1 ) );
+          spanBelow = true;
+        }
+        else if ( spanBelow && !match )
+        {
+          spanBelow = false;
+        }
+      }
+    }
+  }
+
+  return resultImage;
 }
 
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine ) const

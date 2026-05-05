@@ -68,10 +68,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -248,7 +244,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -406,7 +402,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=3,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=2,3,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -510,7 +506,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=3,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -578,33 +574,6 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             "x": -68.2,
             "y": 70.8
            }
-          },
-          {
-           "attributes": {
-            "OBJECTID": 4,
-            "pk": 4,
-            "cnt": 400,
-            "name": "Honey",
-            "name2":"Honey",
-            "num_char":"4",
-            "dt": """
-                    + str(
-                        QDateTime(
-                            QDate(2021, 5, 4), QTime(13, 13, 14)
-                        ).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "date": """
-                    + str(
-                        QDateTime(QDate(2021, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()
-                    )
-                    + """,
-            "time": "13:13:14"
-           },
-           "geometry": {
-            "x": -65.32,
-            "y": 78.3
-           }
           }
          ]
         }"""
@@ -614,7 +583,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             QgisTestCase.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
             "wb",
         ) as f:
@@ -1263,7 +1232,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             self.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:
@@ -1735,7 +1704,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             self.sanitize_local_url(
                 endpoint,
-                "/query?f=json&objectIds=5,3,1,2,4&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+                "/query?f=json&objectIds=1,2,3,4,5&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
             "wb",
         ) as f:

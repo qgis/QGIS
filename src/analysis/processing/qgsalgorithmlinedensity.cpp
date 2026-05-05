@@ -232,7 +232,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
             double analysisLineLength = 0;
             try
             {
-              analysisLineLength = mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+              analysisLineLength = mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet(), nullptr, QgsGeometryParameters(), feedback ) ) );
             }
             catch ( QgsCsException & )
             {

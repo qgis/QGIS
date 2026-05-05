@@ -578,6 +578,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mPreloadedProvider.reset( preloadedProvider );
+  if ( mPreloadedProvider )
+  {
+    QGIS_CHECK_QOBJECT_THREAD_EQUALITY( mPreloadedProvider.get() );
+  }
 
   bool layerError;
   mReadFlags = flags;
@@ -2295,6 +2299,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   if ( myFile.open( QFile::ReadOnly ) )
   {
     // read file
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     QXmlStreamReader xmlReader( &myFile );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"sld"_s, u"http://www.opengis.net/sld"_s ) );
     xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"fes"_s, u"http://www.opengis.net/fes/2.0"_s ) );
@@ -2310,6 +2315,9 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
       line = result.errorLine;
       column = result.errorColumn;
     }
+#else
+    resultFlag = myDocument.setContent( &myFile, true, &myErrorMessage, &line, &column );
+#endif
     if ( !resultFlag )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
