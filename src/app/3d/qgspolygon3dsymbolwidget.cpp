@@ -42,6 +42,10 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   cboCullingMode->setItemData( 1, tr( "Only the back of the shapes is visible" ), Qt::ToolTipRole );
   cboCullingMode->setItemData( 2, tr( "Only the front of the shapes is visible" ), Qt::ToolTipRole );
 
+  mComboRenderedFacade->addItemWithCheckState( tr( "Walls" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ExtrusionFace::Walls ) );
+  mComboRenderedFacade->addItemWithCheckState( tr( "Roof" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ExtrusionFace::Roof ) );
+  mComboRenderedFacade->addItemWithCheckState( tr( "Floor" ), Qt::CheckState::Unchecked, QVariant::fromValue( Qgis::ExtrusionFace::Floor ) );
+
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
 
@@ -49,9 +53,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( mCheckFloor, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( mCheckWalls, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( mCheckRoof, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( mComboRenderedFacade, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsPolygon3DSymbolWidget::changed );
   connect( chkAddBackFaces, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( chkInvertNormals, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
@@ -83,9 +85,13 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   cboAltClamping->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeClamping() ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( polygonSymbol->altitudeBinding() ) );
   cboCullingMode->setCurrentIndex( cboCullingMode->findData( polygonSymbol->cullingMode() ) );
-  mCheckFloor->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Floor ) );
-  mCheckWalls->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Walls ) );
-  mCheckRoof->setChecked( polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Roof ) );
+
+  mComboRenderedFacade
+    ->setItemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Walls ) ), polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Walls ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mComboRenderedFacade
+    ->setItemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Roof ) ), polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Roof ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mComboRenderedFacade
+    ->setItemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Floor ) ), polygonSymbol->extrusionFaces().testFlag( Qgis::ExtrusionFace::Floor ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
 
   chkAddBackFaces->setChecked( polygonSymbol->addBackFaces() );
   chkInvertNormals->setChecked( polygonSymbol->invertNormals() );
@@ -109,9 +115,9 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentData().toInt() ) );
   Qgis::ExtrusionFaces faces;
-  faces.setFlag( Qgis::ExtrusionFace::Floor, mCheckFloor->isChecked() );
-  faces.setFlag( Qgis::ExtrusionFace::Walls, mCheckWalls->isChecked() );
-  faces.setFlag( Qgis::ExtrusionFace::Roof, mCheckRoof->isChecked() );
+  faces.setFlag( Qgis::ExtrusionFace::Walls, mComboRenderedFacade->itemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Walls ) ) ) );
+  faces.setFlag( Qgis::ExtrusionFace::Roof, mComboRenderedFacade->itemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Roof ) ) ) );
+  faces.setFlag( Qgis::ExtrusionFace::Floor, mComboRenderedFacade->itemCheckState( mComboRenderedFacade->findData( QVariant::fromValue( Qgis::ExtrusionFace::Floor ) ) ) );
   sym->setExtrusionFaces( faces );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
