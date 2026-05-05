@@ -811,6 +811,7 @@ void QgsLayerStyleWatcher::onLayersChanged()
   {
     disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsLayerStyleWatcher::onLayer3DRendererChanged );
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsLayerStyleWatcher::onLayerStyleOrFeatureChanged );
+    disconnect( layer, &QgsMapLayer::destroyed, this, &QgsLayerStyleWatcher::onLayerDestroyed );
   }
 
   mLayers.clear();
@@ -823,6 +824,7 @@ void QgsLayerStyleWatcher::onLayersChanged()
     mLayers[layer] = static_cast< bool >( layer->renderer3D() );
     connect( layer, &QgsMapLayer::renderer3DChanged, this, &QgsLayerStyleWatcher::onLayer3DRendererChanged );
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsLayerStyleWatcher::onLayerStyleOrFeatureChanged );
+    connect( layer, &QgsMapLayer::destroyed, this, &QgsLayerStyleWatcher::onLayerDestroyed );
   }
 
   emit styleChanged();
@@ -850,6 +852,13 @@ void QgsLayerStyleWatcher::onLayer3DRendererChanged()
       mLayers[layer] = static_cast< bool >( layer->renderer3D() );
       emit styleChanged();
     }
+  }
+}
+void QgsLayerStyleWatcher::onLayerDestroyed()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    mLayers.remove( layer );
   }
 }
 

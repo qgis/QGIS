@@ -182,21 +182,25 @@ class QgsLayerStyleWatcher : public QObject
   public:
     /**
      * Default constructor
-     * mapSettings 3D settings to retrieve layers
+     * \param mapSettings 3D settings to retrieve layers
      */
     QgsLayerStyleWatcher( Qgs3DMapSettings *mapSettings );
 
-    //! Default destructor
-    virtual ~QgsLayerStyleWatcher() override = default;
-
   signals:
-    //! a valid style change ahs been detected
+    /**
+     * Emitted when specific style change has been detected:
+     *
+     * - layer without a 3D renderer, when the 2D style changes
+     * - layer without a 3D renderer, when a new 3D renderer is set
+     * - layer with a 3D renderer, when the 3D renderer is removed
+     */
     void styleChanged();
 
   private slots:
     void onLayersChanged();
     void onLayer3DRendererChanged();
     void onLayerStyleOrFeatureChanged();
+    void onLayerDestroyed();
 
   protected:
     Qgs3DMapSettings *mMapSettings = nullptr;
