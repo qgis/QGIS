@@ -483,7 +483,7 @@ def _startPlugin(packageName: str) -> bool:
     # import time. The node lives at "plugins/<packageName>" in the settings
     # tree and is automatically removed in unloadPlugin().
     try:
-        package.QGIS_PLUGIN_SETTINGS_NODE = QgsSettingsTree.createPluginTreeNode(
+        package.SETTINGS_NODE = QgsSettingsTree.createPluginTreeNode(
             packageName
         )
     except Exception:
