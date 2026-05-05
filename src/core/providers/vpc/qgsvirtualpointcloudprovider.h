@@ -63,10 +63,10 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
 
     /**
-     * Returns pointer to the overview index. May be NULLPTR if it doesn't exist.
-     * \since QGIS 3.42
+     * Returns a list of all overview indexes.
+     * \since QGIS 4.2
      */
-    QgsPointCloudIndex overview() const { return mOverview; }
+    QVector<QgsPointCloudIndex> overviews() const { return mOverviews; }
 
     /**
      * Returns the calculated average width of point clouds.
@@ -95,12 +95,13 @@ class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvide
 
   private:
     void parseFile();
+    QByteArray readFileContents( const QString &path );
     void populateAttributeCollection( QSet<QString> names );
     void onFinishedLoadingSubIndex( int i );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
+    QVector<QgsPointCloudIndex> mOverviews;
     QTimer *mSubIndexLoadedRefreshTimer = nullptr; // owned and parented to this
     QSet<int> mSubLayersBeingLoaded;
 
@@ -135,6 +136,7 @@ class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+    static bool isVpcFileName( const QString &name );
 };
 
 ///@endcond

@@ -15,6 +15,7 @@
 
 #include "qgssimplelinematerial3dhandler.h"
 
+#include "qgs3dutils.h"
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
@@ -91,7 +92,7 @@ void QgsSimpleLineMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect 
   const QgsSimpleLineMaterialSettings *lineSettings = dynamic_cast< const QgsSimpleLineMaterialSettings * >( settings );
   Q_ASSERT( lineSettings );
 
-  const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : lineSettings->ambient();
+  const QColor ambient = Qgs3DUtils::srgbToLinear( materialContext.isSelected() ? materialContext.selectionColor().darker() : lineSettings->ambient() );
   Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambient );
   effect->addParameter( ambientParameter );
 }
@@ -101,7 +102,7 @@ QByteArray QgsSimpleLineMaterial3DHandler::dataDefinedVertexColorsAsByte( const 
   const QgsSimpleLineMaterialSettings *lineSettings = dynamic_cast< const QgsSimpleLineMaterialSettings * >( settings );
   Q_ASSERT( lineSettings );
 
-  const QColor ambient = lineSettings->dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, lineSettings->ambient() );
+  const QColor ambient = Qgs3DUtils::srgbToLinear( lineSettings->dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, lineSettings->ambient() ) );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 3 );

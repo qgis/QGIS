@@ -23,9 +23,12 @@
 
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsqmlwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -74,7 +77,9 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
     return;
   }
 
-  mWidget->setSource( QUrl::fromLocalFile( mQmlFile.fileName() ) );
+  QUrl sourceUrl = QUrl::fromLocalFile( mQmlFile.fileName() );
+  sourceUrl.setQuery( u"t=%1"_s.arg( QDateTime::currentSecsSinceEpoch() ) );
+  mWidget->setSource( sourceUrl );
 
   mQmlFile.close();
 }
@@ -119,7 +124,6 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 
   mQmlFile.resize( 0 );
   mQmlFile.write( mQmlCode.toUtf8() );
-
   mQmlFile.close();
 }
 

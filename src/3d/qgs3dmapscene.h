@@ -54,6 +54,7 @@ class QgsGlobeEntity;
 class QgsChunkedEntity;
 class QgsSkyboxEntity;
 class QgsSkyboxSettings;
+class QgsGradientBackgroundEntity;
 class Qgs3DMapExportSettings;
 class QgsChunkNode;
 class QgsDoubleRange;
@@ -356,9 +357,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void updateLights();
     void updateCameraLens();
     void onSkyboxSettingsChanged();
+    void onGradientBackgroundChanged();
     void onShadowSettingsChanged();
     void onAmbientOcclusionSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
+    void onMsaaEnabledChanged();
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
@@ -416,6 +419,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QList<Qt3DCore::QEntity *> mLightEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
     QgsSkyboxEntity *mSkybox = nullptr;
+    QgsGradientBackgroundEntity *mGradientBackground = nullptr;
     //! Entity that shows rotation center = useful for debugging camera issues
     Qt3DCore::QEntity *mEntityRotationCenter = nullptr;
 

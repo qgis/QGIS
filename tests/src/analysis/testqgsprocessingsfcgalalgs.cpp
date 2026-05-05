@@ -119,37 +119,81 @@ void TestQgsProcessingSfcgalAlgs::medialAxis()
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
-  QVariantMap parameters;
-  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  // do not extend to edges
+  {
+    QVariantMap parameters;
+    parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+    parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+    parameters.insert( u"EXTEND_TO_EDGES"_s, false );
+#endif
 
-  bool ok = false;
-  QgsProcessingFeedback feedback;
-  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( ok );
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
 
-  QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
-  QVERIFY( outputLayer );
-  QVERIFY( outputLayer->isValid() );
-  QCOMPARE( outputLayer->featureCount(), 10 );
+    QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+    QVERIFY( outputLayer );
+    QVERIFY( outputLayer->isValid() );
+    QCOMPARE( outputLayer->featureCount(), 10 );
 
-  // retrieve first feature
-  QgsFeatureIterator outputFeatureIterator = outputLayer->dataProvider()->getFeatures();
-  QgsFeature outputFeature;
-  QVERIFY( outputFeatureIterator.nextFeature( outputFeature ) );
+    // retrieve first feature
+    QgsFeatureIterator outputFeatureIterator = outputLayer->dataProvider()->getFeatures();
+    QgsFeature outputFeature;
+    QVERIFY( outputFeatureIterator.nextFeature( outputFeature ) );
 
-  // check attribute
-  QGSCOMPARENEAR( outputFeature.attribute( "length" ).toDouble(), 14.01481, 0.00001 );
+    // check attribute
+    QGSCOMPARENEAR( outputFeature.attribute( "length" ).toDouble(), 14.01481, 0.00001 );
 
-  // check geometry
-  const QgsGeometry outputGeom( outputFeature.geometry() );
-  QVERIFY( outputGeom.wkbType() == Qgis::WkbType::MultiLineString );
-  const QgsGeometry expectedGeom = openWktFile( "processing_medial_axis.wkt" );
-  QVERIFY( expectedGeom.wkbType() == Qgis::WkbType::MultiLineString );
+    // check geometry
+    const QgsGeometry outputGeom( outputFeature.geometry() );
+    QVERIFY( outputGeom.wkbType() == Qgis::WkbType::MultiLineString );
+    const QgsGeometry expectedGeom = openWktFile( "processing_medial_axis.wkt" );
+    QVERIFY( expectedGeom.wkbType() == Qgis::WkbType::MultiLineString );
 
-  QCOMPARE( outputGeom.asWkt( 4 ), expectedGeom.asWkt( 4 ) );
+    QCOMPARE( outputGeom.asWkt( 4 ), expectedGeom.asWkt( 4 ) );
 
-  QgsProject::instance()->removeMapLayer( outputLayer );
+    QgsProject::instance()->removeMapLayer( outputLayer );
+  }
+
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  // extend to edges
+  {
+    QVariantMap parameters;
+    parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+    parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"EXTEND_TO_EDGES"_s, true );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+    QVERIFY( outputLayer );
+    QVERIFY( outputLayer->isValid() );
+    QCOMPARE( outputLayer->featureCount(), 10 );
+
+    // retrieve first feature
+    QgsFeatureIterator outputFeatureIterator = outputLayer->dataProvider()->getFeatures();
+    QgsFeature outputFeature;
+    QVERIFY( outputFeatureIterator.nextFeature( outputFeature ) );
+
+    // check attribute
+    QGSCOMPARENEAR( outputFeature.attribute( "length" ).toDouble(), 19.4707, 0.0001 );
+
+    // check geometry
+    const QgsGeometry outputGeom( outputFeature.geometry() );
+    QVERIFY( outputGeom.wkbType() == Qgis::WkbType::MultiLineString );
+    const QgsGeometry expectedGeom = openWktFile( "processing_medial_axis_extend.wkt" );
+    QVERIFY( expectedGeom.wkbType() == Qgis::WkbType::MultiLineString );
+
+    QCOMPARE( outputGeom.asWkt( 4 ), expectedGeom.asWkt( 4 ) );
+
+    QgsProject::instance()->removeMapLayer( outputLayer );
+  }
+#endif
 }
 
 void TestQgsProcessingSfcgalAlgs::extrude()

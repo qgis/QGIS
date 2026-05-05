@@ -668,9 +668,11 @@ class CORE_EXPORT QgsSfcgalEngine
      * The output is a 2D multilinestring
      *
      * \param geom geometry to perform the operation
+     * \param extendToEdges whether to extend the medial axis endpoints to the polygon boundary (since QGIS 4.2).
+     *        This parameter has no effect when using SFCGAL versions earlier than 2.3.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges = false, QString *errorMsg = nullptr );
 
     /**
      * Converts a PolyhedralSurface geometry to a Solid geometry.

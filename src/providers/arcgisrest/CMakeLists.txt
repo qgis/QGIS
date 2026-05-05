@@ -8,6 +8,7 @@ set (AFS_SRCS
 )
 if (WITH_GUI)
   set(AFS_GUI_SRCS
+    qgsarcgisimageserversourcewidget.cpp
     qgsarcgisrestdataitemguiprovider.cpp
     qgsarcgisrestprovidergui.cpp
     qgsarcgisrestsourceselect.cpp
@@ -16,6 +17,7 @@ if (WITH_GUI)
   )
 
   set(AFS_UIS
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisimageserversourcewidgetbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsnewarcgisrestconnectionbase.ui

@@ -73,6 +73,12 @@ class CORE_EXPORT QgsPointCloudNodeId
      */
     QgsPointCloudNodeId parentNode() const;
 
+    /**
+     * Returns the node's 8 direct child nodes
+     * \since QGIS 4.2
+     */
+    QVector<QgsPointCloudNodeId> childrenNodes() const;
+
     //! Creates node from string
     static QgsPointCloudNodeId fromString( const QString &str );
 
@@ -91,8 +97,18 @@ class CORE_EXPORT QgsPointCloudNodeId
     //! Returns z
     int z() const;
 
+    // clang-format off
+#ifdef SIP_RUN
+    //! hash operator
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
+
   private:
     int mD = -1, mX = -1, mY = -1, mZ = -1;
+    // clang-format on
 };
 
 Q_DECLARE_TYPEINFO( QgsPointCloudNodeId, Q_PRIMITIVE_TYPE );
@@ -102,6 +118,7 @@ inline size_t qHash( QgsPointCloudNodeId id, size_t seed = 0 )
 {
   return qHashMulti( seed, id.d(), id.x(), id.y(), id.z() );
 }
+
 
 #ifndef SIP_RUN
 
@@ -372,6 +389,15 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * \since QGIS 4.0
      */
     QString uri() const { return mUri; }
+
+    /**
+     * Returns whether calling getNode() for \a node will trigger a hierarchy page fetch.
+     * If any of the node's ancestors, children and grand-children info exist in a hierarchy
+     * page that has not yet been loaded, it will return TRUE.
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool needsHierarchyFetching( const QgsPointCloudNodeId & ) const { return false; }
 
   protected: //TODO private
     //! Sets native attributes of the data
@@ -657,6 +683,15 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Returns the uri used to load the index
     QString uri() const;
+
+    /**
+     * Returns whether calling getNode() for \a node will trigger a hierarchy page fetch.
+     * If any of the node's ancestors, children and grand-children info exist in a hierarchy
+     * page that has not yet been loaded, it will return TRUE.
+     *
+     * \since QGIS 4.2
+     */
+    bool needsHierarchyFetching( const QgsPointCloudNodeId &node ) const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;

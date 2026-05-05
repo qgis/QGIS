@@ -525,7 +525,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
   // try to reproject current extent to the new one
   QgsRectangle rect;
-  if ( !mSettings.visibleExtent().isEmpty() )
+  if ( !mSettings.visibleExtent().isEmpty() && crs.isSameCelestialBody( mSettings.destinationCrs() ) )
   {
     const QgsCoordinateTransform
       transform( mSettings.destinationCrs(), crs, QgsProject::instance(), Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
@@ -1281,7 +1281,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 
   addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), mSettings.destinationCrs() );
   QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
-  if ( mSettings.destinationCrs() != wgs84 )
+  if ( mSettings.destinationCrs() != wgs84 && mSettings.destinationCrs().isSameCelestialBody( wgs84 ) )
     addCoordinateFormat( wgs84.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), wgs84 );
 
   QgsSettings settings;
@@ -2281,9 +2281,6 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     else
     {
       rb->setStrokeColor( c );
-      QColor c = rb->secondaryStrokeColor();
-      c.setAlpha( c.alpha() );
-      rb->setSecondaryStrokeColor( c );
     }
     rb->update();
   } );

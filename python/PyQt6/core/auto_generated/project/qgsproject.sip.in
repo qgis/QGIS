@@ -37,6 +37,7 @@ reference open within the main QGIS application.
 %End
   public:
 
+
     enum class DataDefinedServerProperty /BaseType=IntEnum/
     {
       NoProperty,

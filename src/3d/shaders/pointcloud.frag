@@ -128,17 +128,24 @@ void main(void)
   case 0: //  no rendering
     color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     break;
-  case 1: // single color
+  case 1: // single color (linear color, color has been linearised in the attribute value)
     color = vec4(u_singleColor, 1.0f);
     break;
   case 2: // color ramp
     color = colorRamp();
+    // the colors interpolated from the ramp are always SRGB colors, otherwise
+    // we get non-visually linear ramp scaling. So now we need to convert
+    // to linear for output color and light handling
+    color = vec4(pow(color.rgb, vec3(2.2)), color.a);
     break;
-  case 3: // RGB
+  case 3: // RGB (linear color, color has been linearised in the point data buffer)
     color = vec4(pointColor, 1.0f);
     break;
   case 4: // classification
     color = classification();
+    // the colors retrieved from the ramp are always SRGB colors. So now we need to convert
+    // to linear for output color and light handling
+    color = vec4(pow(color.rgb, vec3(2.2)), color.a);
     break;
   }
 

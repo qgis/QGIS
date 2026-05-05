@@ -22,6 +22,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QUrl
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -1691,6 +1692,202 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertTrue(root_tile.boundingVolume().box().isNull())
 
             self.assertTrue(layer.dataProvider().zRange().isInfinite())
+
+    def test_implicit_tiling_index(self):
+        tileset_path = unitTestDataPath() + "/3dtiles/implicit/tileset.json"
+        layer = QgsTiledSceneLayer(tileset_path, "implicit", "cesiumtiles")
+        self.assertTrue(layer.dataProvider().isValid())
+
+        index = layer.dataProvider().index()
+        self.assertTrue(index.isValid())
+
+        # Root tile (0,0,0)
+        root = index.rootTile()
+        root_id = root.id()
+        self.assertEqual(root.geometricError(), 32.0)
+        self.assertEqual(root.refinementProcess(), Qgis.TileRefinementProcess.Additive)
+        self.assertFalse(root.resources())
+        self.assertEqual(root.baseUrl(), QUrl("file://" + tileset_path))
+        self.assertEqual(index.parentTileId(root_id), -1)
+        self.assertFalse(index.childTileIds(root_id))
+        self.assertEqual(
+            index.childAvailability(root_id), Qgis.TileChildrenAvailability.NeedFetching
+        )
+        self.compare_boxes(
+            root.boundingVolume().box(),
+            QgsOrientedBox3D(
+                [1254736.0340023, -4732983.4927901, 4073485.8099799],
+                [
+                    7.2495825,
+                    1.921875,
+                    0.0,
+                    -1.2339975,
+                    4.6548075,
+                    5.749785,
+                    0.01841728125,
+                    -0.06947259375,
+                    0.06019490625,
+                ],
+            ),
+        )
+
+        # Fetch root subtree (0.0.0.subtree) - populates levels 0-2 and level-3 roots
+        self.assertTrue(index.fetchHierarchy(root_id))
+
+        # Root still has no content (contentAvailability constant=0 for root subtree)
+        self.assertFalse(index.getTile(root_id).resources())
+
+        # Level-1 children: (1,1,0) and (1,0,1)
+        level1 = index.childTileIds(root_id)
+        self.assertEqual(len(level1), 2)
+        id_1_1_0, id_1_0_1 = level1[0], level1[1]
+        self.assertEqual(index.parentTileId(id_1_1_0), root_id)
+        self.assertEqual(index.parentTileId(id_1_0_1), root_id)
+
+        tile_1_1_0 = index.getTile(id_1_1_0)
+        self.assertAlmostEqual(tile_1_1_0.geometricError(), 16.0, 5)
+        self.assertFalse(tile_1_1_0.resources())
+        self.assertEqual(tile_1_1_0.baseUrl(), QUrl("file://" + tileset_path))
+        self.compare_boxes(
+            tile_1_1_0.boundingVolume().box(),
+            QgsOrientedBox3D(
+                [1254740.2757923, -4732984.8592563, 4073482.9350874],
+                [
+                    3.62479125,
+                    0.9609375,
+                    0.0,
+                    -0.61699875,
+                    2.32740375,
+                    2.8748925,
+                    0.01841728125,
+                    -0.06947259375,
+                    0.06019490625,
+                ],
+            ),
+        )
+
+        tile_1_0_1 = index.getTile(id_1_0_1)
+        self.assertAlmostEqual(tile_1_0_1.geometricError(), 16.0, 5)
+        self.assertFalse(tile_1_0_1.resources())
+
+        # Level-2 children of (1,1,0): (2,2,0) and (2,3,1)
+        level2_of_110 = index.childTileIds(id_1_1_0)
+        self.assertEqual(len(level2_of_110), 2)
+        id_2_2_0, id_2_3_1 = level2_of_110[0], level2_of_110[1]
+        self.assertEqual(index.parentTileId(id_2_2_0), id_1_1_0)
+
+        tile_2_2_0 = index.getTile(id_2_2_0)
+        self.assertAlmostEqual(tile_2_2_0.geometricError(), 8.0, 5)
+        self.assertFalse(tile_2_2_0.resources())
+
+        tile_2_3_1 = index.getTile(id_2_3_1)
+        self.assertAlmostEqual(tile_2_3_1.geometricError(), 8.0, 5)
+        self.assertFalse(tile_2_3_1.resources())
+
+        # Level-2 children of (1,0,1): (2,0,2) and (2,1,3)
+        level2_of_101 = index.childTileIds(id_1_0_1)
+        self.assertEqual(len(level2_of_101), 2)
+        id_2_0_2 = level2_of_101[0]
+        self.assertEqual(index.parentTileId(id_2_0_2), id_1_0_1)
+        tile_2_0_2 = index.getTile(id_2_0_2)
+        self.assertAlmostEqual(tile_2_0_2.geometricError(), 8.0, 5)
+
+        # Level-3 subtree roots under (2,2,0): (3,5,0) and (3,4,1) — already populated
+        level3_of_220 = index.childTileIds(id_2_2_0)
+        self.assertEqual(len(level3_of_220), 2)
+        id_3_5_0, id_3_4_1 = level3_of_220[0], level3_of_220[1]
+        self.assertEqual(
+            index.childAvailability(id_2_2_0), Qgis.TileChildrenAvailability.Available
+        )
+
+        tile_3_5_0 = index.getTile(id_3_5_0)
+        self.assertAlmostEqual(tile_3_5_0.geometricError(), 4.0, 5)
+        self.assertFalse(tile_3_5_0.resources())
+        self.assertEqual(index.parentTileId(id_3_5_0), id_2_2_0)
+        self.assertFalse(index.childTileIds(id_3_5_0))  # level-4 not yet populated
+        self.assertEqual(
+            index.childAvailability(id_3_5_0),
+            Qgis.TileChildrenAvailability.NeedFetching,
+        )
+
+        tile_3_4_1 = index.getTile(id_3_4_1)
+        self.assertAlmostEqual(tile_3_4_1.geometricError(), 4.0, 5)
+        self.assertFalse(tile_3_4_1.resources())
+
+        # Other level-3 branches are also populated
+        self.assertEqual(len(index.childTileIds(id_2_3_1)), 2)
+        self.assertEqual(len(index.childTileIds(id_2_0_2)), 2)
+
+        # Fetch subtree for (3,5,0) (file: 3.5.0.subtree)
+        self.assertTrue(index.fetchHierarchy(id_3_5_0))
+        self.assertFalse(index.getTile(id_3_5_0).resources())
+
+        # Level-4 children: (4,10,0) and (4,11,1) — no content
+        level4 = index.childTileIds(id_3_5_0)
+        self.assertEqual(len(level4), 2)
+        id_4_10_0, id_4_11_1 = level4[0], level4[1]
+        self.assertEqual(index.parentTileId(id_4_10_0), id_3_5_0)
+        self.assertEqual(index.parentTileId(id_4_11_1), id_3_5_0)
+
+        tile_4_10_0 = index.getTile(id_4_10_0)
+        self.assertAlmostEqual(tile_4_10_0.geometricError(), 2.0, 5)
+        self.assertFalse(tile_4_10_0.resources())
+
+        tile_4_11_1 = index.getTile(id_4_11_1)
+        self.assertAlmostEqual(tile_4_11_1.geometricError(), 2.0, 5)
+        self.assertFalse(tile_4_11_1.resources())
+
+        # Level-5 children of (4,10,0): (5,21,0) and (5,20,1) — with content
+        level5_of_4_10_0 = index.childTileIds(id_4_10_0)
+        self.assertEqual(len(level5_of_4_10_0), 2)
+        id_5_21_0, id_5_20_1 = level5_of_4_10_0[0], level5_of_4_10_0[1]
+        self.assertEqual(index.parentTileId(id_5_21_0), id_4_10_0)
+
+        tile_5_21_0 = index.getTile(id_5_21_0)
+        self.assertAlmostEqual(tile_5_21_0.geometricError(), 1.0, 5)
+        self.assertIn("content_5__21_0.glb", tile_5_21_0.resources()["content"])
+        self.compare_boxes(
+            tile_5_21_0.boundingVolume().box(),
+            QgsOrientedBox3D(
+                [1254739.7214814, -4732987.3414903, 4073480.2398757],
+                [
+                    0.226549453125,
+                    0.060058593750,
+                    0.0,
+                    -0.038562421875,
+                    0.145462734375,
+                    0.17968078125,
+                    0.01841728125,
+                    -0.06947259375,
+                    0.06019490625,
+                ],
+            ),
+        )
+
+        tile_5_20_1 = index.getTile(id_5_20_1)
+        self.assertAlmostEqual(tile_5_20_1.geometricError(), 1.0, 5)
+        self.assertIn("content_5__20_1.glb", tile_5_20_1.resources()["content"])
+
+        # Level-5 children of (4,11,1): (5,23,2) and (5,22,3) — with content
+        level5_of_4_11_1 = index.childTileIds(id_4_11_1)
+        self.assertEqual(len(level5_of_4_11_1), 2)
+        id_5_23_2, id_5_22_3 = level5_of_4_11_1[0], level5_of_4_11_1[1]
+
+        tile_5_23_2 = index.getTile(id_5_23_2)
+        self.assertAlmostEqual(tile_5_23_2.geometricError(), 1.0, 5)
+        self.assertIn("content_5__23_2.glb", tile_5_23_2.resources()["content"])
+
+        tile_5_22_3 = index.getTile(id_5_22_3)
+        self.assertAlmostEqual(tile_5_22_3.geometricError(), 1.0, 5)
+        self.assertIn("content_5__22_3.glb", tile_5_22_3.resources()["content"])
+
+        # Level 5 is the deepest available level — no children
+        self.assertEqual(
+            index.childAvailability(id_5_21_0), Qgis.TileChildrenAvailability.NoChildren
+        )
+        self.assertEqual(
+            index.childAvailability(id_5_20_1), Qgis.TileChildrenAvailability.NoChildren
+        )
 
 
 if __name__ == "__main__":

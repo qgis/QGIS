@@ -450,6 +450,10 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         self.assertFalse(settings.roughnessTexturePath())
         self.assertFalse(settings.ambientOcclusionTexturePath())
         self.assertFalse(settings.normalTexturePath())
+        self.assertFalse(settings.heightTexturePath())
+        self.assertEqual(settings.parallaxScale(), 0.1)
+        self.assertFalse(settings.emissionTexturePath())
+        self.assertEqual(settings.emissionFactor(), 1)
         self.assertEqual(settings.textureScale(), 1)
         self.assertEqual(settings.textureRotation(), 0)
 
@@ -475,6 +479,18 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setNormalTexturePath("/path/to/normal_texture.png")
         self.assertEqual(settings.normalTexturePath(), "/path/to/normal_texture.png")
 
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertEqual(settings.heightTexturePath(), "/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        self.assertEqual(settings.parallaxScale(), 0.4)
+
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(
+            settings.emissionTexturePath(), "/path/to/emission_texture.png"
+        )
+
+        settings.setEmissionFactor(2.2)
+        self.assertEqual(settings.emissionFactor(), 2.2)
         settings.setTextureScale(12.1)
         self.assertEqual(settings.textureScale(), 12.1)
         settings.setTextureRotation(45)
@@ -487,9 +503,13 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
         settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
         settings.setNormalTexturePath("/path/to/normal_texture.png")
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
 
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
+        settings.setEmissionFactor(2.2)
 
         cloned = settings.clone()
         self.assertEqual(cloned.baseColorTexturePath(), "/path/to/base_texture.png")
@@ -503,6 +523,10 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
             cloned.ambientOcclusionTexturePath(), "/path/to/ao_texture.png"
         )
         self.assertEqual(cloned.normalTexturePath(), "/path/to/normal_texture.png")
+        self.assertEqual(cloned.heightTexturePath(), "/path/to/height_texture.png")
+        self.assertEqual(cloned.parallaxScale(), 0.4)
+        self.assertEqual(cloned.emissionTexturePath(), "/path/to/emission_texture.png")
+        self.assertEqual(cloned.emissionFactor(), 2.2)
         self.assertEqual(cloned.textureScale(), 12.1)
         self.assertEqual(cloned.textureRotation(), 45)
 
@@ -537,6 +561,26 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings1.setNormalTexturePath("/path/to/normal_texture.png")
         self.assertEqual(settings1, settings2)
 
+        settings2.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setHeightTexturePath("/path/to/height_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setParallaxScale(0.4)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setParallaxScale(0.4)
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionTexturePath("/path/to/emission_texture.png")
+        self.assertEqual(settings1, settings2)
+
+        settings2.setEmissionFactor(2.2)
+        self.assertNotEqual(settings1, settings2)
+        settings1.setEmissionFactor(2.2)
+        self.assertEqual(settings1, settings2)
+
         settings2.setTextureScale(9)
         self.assertNotEqual(settings1, settings2)
         settings1.setTextureScale(9)
@@ -566,7 +610,10 @@ class TestQgsMetalRoughTexturedMaterialSettings(unittest.TestCase):
         settings.setRoughnessTexturePath("/path/to/roughness_texture.png")
         settings.setAmbientOcclusionTexturePath("/path/to/ao_texture.png")
         settings.setNormalTexturePath("/path/to/normal_texture.png")
-
+        settings.setHeightTexturePath("/path/to/height_texture.png")
+        settings.setParallaxScale(0.4)
+        settings.setEmissionTexturePath("/path/to/emission_texture.png")
+        settings.setEmissionFactor(2.2)
         settings.setTextureScale(12.1)
         settings.setTextureRotation(45)
 

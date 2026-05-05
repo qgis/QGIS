@@ -37,6 +37,7 @@ class QgsLegendSettings;
 class QgsMapSettings;
 class QgsSymbol;
 class QgsRenderContext;
+class QgsSettingsEntryDouble;
 class QgsTextFormat;
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -407,6 +408,11 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
   public:
     static double MINIMUM_SIZE;
     static double MAXIMUM_SIZE;
+
+#ifndef SIP_RUN
+    static const QgsSettingsEntryDouble *settingsLegendSymbolMinimumSize SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsLegendSymbolMaximumSize SIP_SKIP;
+#endif
 
     /**
      * Constructor for QgsSymbolLegendNode.

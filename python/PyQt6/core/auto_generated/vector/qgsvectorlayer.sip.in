@@ -1919,6 +1919,42 @@ Sets an alias (a display name) for attributes to display in dialogs
 Removes an alias (a display name) for attributes to display in dialogs
 %End
 
+    void setFieldCustomComment( int index, const QString &customCommentString );
+%Docstring
+Sets the custom comment for the field.
+
+:param index: attribute index
+:param customCommentString: custom comment (can be empty as well)
+
+.. versionadded:: 4.2
+%End
+
+    void removeFieldCustomComment( int index );
+%Docstring
+Removes the custom comment for the field.
+
+:param index: attribute index
+
+.. versionadded:: 4.2
+%End
+
+    QString attributeCustomComment( int index ) const;
+%Docstring
+Returns the custom comment for the field.
+
+:param index: attribute index
+
+.. versionadded:: 4.2
+%End
+
+    QgsStringMap attributeCustomComments() const;
+%Docstring
+Returns a map of all the custom comments. Key is the attribute name and
+value the custom comment for that attribute
+
+.. versionadded:: 4.2
+%End
+
     bool renameAttribute( int index, const QString &newName );
 %Docstring
 Renames an attribute field (but does not commit it).

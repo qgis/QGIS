@@ -611,11 +611,13 @@ class CORE_EXPORT QgsSfcgalGeometry
      * It the geometry is 3D, the approximate medial axis will be calculated from its 2D projection
      * If the operation fails, a null pointer is returned.
      *
+     * \param extendToEdges whether to extend the medial axis endpoints to the polygon boundary (since QGIS 4.2).
+     *        This parameter has no effect when using SFCGAL versions earlier than 2.3.
      * \return new geometry as 2D multilinestring
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis( bool extendToEdges = false ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Converts the geometry to a Solid geometry.

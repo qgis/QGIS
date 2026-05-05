@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "23c5891f6ae43aa2dcb872509e38b5448969e2ec",
+        "baseline": "8302019ad51ba3495da18c5c35e66aeae94e80e6",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -177,6 +177,7 @@
         },
         "py-lxml",
         "py-markupsafe",
+        "py-matplotlib",
         "py-networkx",
         "py-numpy",
         "py-owslib",
