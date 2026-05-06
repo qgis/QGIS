@@ -18,7 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 
 #include <QElapsedTimer>
 
