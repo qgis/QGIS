@@ -319,7 +319,6 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   verticalLayout->insertWidget( 0, mMessageBar );
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmWidgetBase::taskTriggered );
-
 }
 
 QgsProcessingAlgorithmWidgetBase::~QgsProcessingAlgorithmWidgetBase() = default;
