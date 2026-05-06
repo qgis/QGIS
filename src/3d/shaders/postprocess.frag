@@ -1,6 +1,8 @@
 #version 330
 
 uniform sampler2D colorTexture;
+
+#ifdef ENABLE_EFFECTS
 uniform sampler2D depthTexture;
 //uniform sampler2DShadow shadowTexture;
 uniform sampler2D shadowTexture;
@@ -16,6 +18,7 @@ uniform float shadowMinX;
 uniform float shadowMaxX;
 uniform float shadowMinY;
 uniform float shadowMaxY;
+
 
 uniform vec3 lightPosition;
 uniform vec3 lightDirection;
@@ -34,6 +37,7 @@ uniform float edlStrength;
 uniform int edlDistance;
 
 uniform int ssaoEnabled;
+#endif
 
 in vec2 texCoord;
 
@@ -41,6 +45,8 @@ out vec4 fragColor;
 
 // Exposure correction
 uniform float exposure = 0.0;
+
+#ifdef ENABLE_EFFECTS
 
 vec3 WorldPosFromDepth(float depth) {
     float z = depth * 2.0 - 1.0;
@@ -115,6 +121,7 @@ float edlFactor(vec2 coords)
   }
   return factor / 4.0f;
 }
+#endif
 
 vec3 aces_approx(vec3 v)
 {
@@ -129,13 +136,15 @@ vec3 aces_approx(vec3 v)
 
 void main()
 {
+  vec3 linearColor = texture(colorTexture, texCoord).rgb;
+
+  vec3 finalColor = linearColor;
+
+#ifdef ENABLE_EFFECTS
   float depth = texture(depthTexture, texCoord).r;
   vec3 worldPosition = WorldPosFromDepth( depth );
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
-  vec3 linearColor = texture(colorTexture, texCoord).rgb;
-
-  vec3 finalColor = linearColor;
 
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if (renderShadows == 0 || depth >= 1 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.y > shadowMaxY || worldPosition.y < shadowMinY)
@@ -155,6 +164,7 @@ void main()
   {
     finalColor = finalColor.rgb * texture( ssaoTexture, texCoord ).r;
   }
+#endif
 
   // Apply exposure correction -- currently a no-op, because exposure is hardcoded to 0
   // finalColor *= exp2(exposure);

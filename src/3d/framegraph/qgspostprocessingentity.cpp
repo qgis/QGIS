@@ -114,7 +114,10 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
-  mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
+
+  const QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) );
+  const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "ENABLE_EFFECTS" } ) );
+  mShader->setFragmentShaderCode( finalFragmentShaderCode );
 }
 
 void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY )

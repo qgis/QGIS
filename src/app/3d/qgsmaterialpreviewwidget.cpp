@@ -27,20 +27,17 @@
 #include <QString>
 #include <QVBoxLayout>
 #include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QCoreAspect>
-#include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPlaneMesh>
-#include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QInputSettings>
-#include <Qt3DLogic/QFrameAction>
-#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
@@ -205,10 +202,41 @@ void QgsMaterialPreview3DWindow::setupPostProcessQuad()
   m_quadEntity = new Qt3DCore::QEntity( m_root );
   m_quadEntity->addComponent( m_quadLayer );
 
-  Qt3DExtras::QPlaneMesh *mesh = new Qt3DExtras::QPlaneMesh( m_quadEntity );
-  mesh->setWidth( 2.0f );
-  mesh->setHeight( 2.0f );
-  m_quadEntity->addComponent( mesh );
+  Qt3DRender::QGeometryRenderer *customQuad = new Qt3DRender::QGeometryRenderer( m_quadEntity );
+  Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry( customQuad );
+  Qt3DCore::QBuffer *vertexBuffer = new Qt3DCore::QBuffer( geometry );
+
+  QByteArray vertexData;
+  vertexData.resize( 4 * 3 * sizeof( float ) );
+  float *v = reinterpret_cast<float *>( vertexData.data() );
+  *v++ = -1.0f;
+  *v++ = -1.0f;
+  *v++ = 0.0f;
+  *v++ = 1.0f;
+  *v++ = -1.0f;
+  *v++ = 0.0f;
+  *v++ = -1.0f;
+  *v++ = 1.0f;
+  *v++ = 0.0f;
+  *v++ = 1.0f;
+  *v++ = 1.0f;
+  *v++ = 0.0f;
+  vertexBuffer->setData( vertexData );
+
+  Qt3DCore::QAttribute *posAttr = new Qt3DCore::QAttribute( geometry );
+  posAttr->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  posAttr->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  posAttr->setVertexSize( 3 );
+  posAttr->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  posAttr->setBuffer( vertexBuffer );
+  posAttr->setByteStride( 3 * sizeof( float ) );
+  posAttr->setCount( 4 );
+
+  geometry->addAttribute( posAttr );
+  customQuad->setGeometry( geometry );
+  customQuad->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
+
+  m_quadEntity->addComponent( customQuad );
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial( m_quadEntity );
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
@@ -230,29 +258,11 @@ void QgsMaterialPreview3DWindow::setupPostProcessQuad()
   pass->addRenderState( depthTest );
   Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( pass );
 
-  shader->setVertexShaderCode( R"GLSL(
-    #version 330 core
-    in vec3 vertexPosition;
-    in vec2 vertexTexCoord;
-    out vec2 texCoord;
-    void main() {
-      gl_Position = vec4(vertexPosition.x, vertexPosition.z, 0.0, 1.0);
-      texCoord = vertexTexCoord;
-    }
-  )GLSL" );
+  const QString vertexShaderPath = u"qrc:/shaders/postprocess.vert"_s;
+  shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
 
-  // apply gamma correction and tone mapping (clamping!) to match postprocess.frag
-  shader->setFragmentShaderCode( R"GLSL(
-    #version 330 core
-    in vec2 texCoord;
-    out vec4 fragColor;
-    uniform sampler2D colorTexture;
-    void main() {
-      vec3 color = texture(colorTexture, texCoord).rgb;
-      color = min(color, 1.0);
-      fragColor = vec4(pow(color, vec3(1.0 / 2.2)), 1.0);
-    }
-  )GLSL" );
+  const QString fragmentShaderPath = u"qrc:/shaders/postprocess.frag"_s;
+  shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
 
   pass->setShaderProgram( shader );
   technique->addRenderPass( pass );
