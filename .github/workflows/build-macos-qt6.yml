@@ -245,6 +245,17 @@ jobs:
           fi
           echo "Extracting $TARBALL to universal/"
           gtar --strip-components=5 -zxf "$TARBALL" -C universal
+          APP_PATH=$(find universal -name '*.app' -type d | head -n1)
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: extracted .app bundle not found under universal/"
+            find universal -print | head -50
+            exit 1
+          fi
+          if [ "$(dirname "$APP_PATH")" != "universal" ]; then
+            echo "Moving $APP_PATH to universal/"
+            mv "$APP_PATH" universal/
+          fi
+          ls -la universal/*.app
 
       - name: 🔐 Import Apple code signing certificate
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
