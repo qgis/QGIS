@@ -616,13 +616,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         from qgis.core import QgsProperty, QgsPropertyCollection
 
-        colorExpr = (
-            "color_rgb(\n"
-            "    color_part(@point_color, 'red') + 50,\n"
-            "    color_part(@point_color, 'green') + 50,\n"
-            "    color_part(@point_color, 'blue') + 50\n"
-            ")"
-        )
+        colorExpr = "@value + 0.2"
         props = QgsPropertyCollection()
         props.setProperty(
             QgsPointCloudRenderer.Property.Color,
