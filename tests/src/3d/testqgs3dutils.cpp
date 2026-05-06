@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgs3d.h"
-#include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgsbox3d.h"
@@ -83,13 +82,14 @@ class TestQgs3DUtils : public QgsTest
     void testRayFromScreenPoint();
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
-    void testExportToObj();
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
     void testLineSegmentToClippingPlanes();
     void testLineSegmentToCameraPose();
     void test3DSceneRay3D();
+    void testSrgbToLinear_data();
+    void testSrgbToLinear();
 
   private:
     QgsRasterLayer *mLayerRgb;
@@ -271,107 +271,6 @@ void TestQgs3DUtils::testQgsRay3D()
 
     QVERIFY( ray.isInFront( p1 ) );
     QVERIFY( !ray.isInFront( p2 ) );
-  }
-}
-
-void TestQgs3DUtils::testExportToObj()
-{
-  // all vertice positions
-  QVector<float> positionData = { -0.456616,   0.00187836,  -0.413774,   -0.4718,    0.00187836,  -0.0764642,  -0.25705,   0.00187836,  -0.230477,   -0.25705,    0.00187836,  -0.230477,  -0.4718,
-                                  0.00187836,  -0.0764642,  0.0184382,   0.00187836, 0.177332,    -0.25705,    0.00187836, -0.230477,   0.0184382,   0.00187836,  0.177332,    -0.25705,   -0.00187836,
-                                  -0.230477,   -0.25705,    -0.00187836, -0.230477,  0.0184382,   0.00187836,  0.177332,   0.0184382,   -0.00187836, 0.177332,    0.0184382,   0.00187836, 0.177332,
-                                  -0.4718,     0.00187836,  -0.0764642,  0.0184382,  -0.00187836, 0.177332,    0.0184382,  -0.00187836, 0.177332,    -0.4718,     0.00187836,  -0.0764642, -0.4718,
-                                  -0.00187836, -0.0764642,  -0.4718,     0.00187836, -0.0764642,  -0.456616,   0.00187836, -0.413774,   -0.4718,     -0.00187836, -0.0764642,  -0.4718,    -0.00187836,
-                                  -0.0764642,  -0.456616,   0.00187836,  -0.413774,  -0.456616,   -0.00187836, -0.413774,  -0.456616,   0.00187836,  -0.413774,   -0.25705,    0.00187836, -0.230477,
-                                  -0.456616,   -0.00187836, -0.413774,   -0.456616,  -0.00187836, -0.413774,   -0.25705,   0.00187836,  -0.230477,   -0.25705,    -0.00187836, -0.230477 };
-
-  // all vertice normals
-  QVector<float> normalsData = { 0,         1, 0,          0,         1, 0,          0,         1, 0,          0,         1, 0,          0,         1, 0,          0,         1, 0,
-                                 0.828644,  0, -0.559776,  0.828644,  0, -0.559776,  0.828644,  0, -0.559776,  0.828644,  0, -0.559776,  0.828644,  0, -0.559776,  0.828644,  0, -0.559776,
-                                 -0.459744, 0, 0.888052,   -0.459744, 0, 0.888052,   -0.459744, 0, 0.888052,   -0.459744, 0, 0.888052,   -0.459744, 0, 0.888052,   -0.459744, 0, 0.888052,
-                                 -0.998988, 0, -0.0449705, -0.998988, 0, -0.0449705, -0.998988, 0, -0.0449705, -0.998988, 0, -0.0449705, -0.998988, 0, -0.0449705, -0.998988, 0, -0.0449705,
-                                 0.676449,  0, -0.736489,  0.676449,  0, -0.736489,  0.676449,  0, -0.736489,  0.676449,  0, -0.736489,  0.676449,  0, -0.736489,  0.676449,  0, -0.736489 };
-
-  const QString myTmpDir = QDir::tempPath() + '/';
-
-  // case where all vertices are used
-  {
-    Qgs3DExportObject object( "all_faces" );
-
-    // exported vertice indexes
-    QVector<uint> indexData = {
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    };
-
-    object.setupTriangle( positionData, indexData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
-
-    QCOMPARE( object.indexes().size(), indexData.size() );
-
-    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
-    QCOMPARE( object.normals().size(), normalsData.size() );
-
-
-    QFile file( myTmpDir + "all_faces.obj" );
-    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
-    QTextStream out( &file );
-
-    out << "o " << object.name() << "\n";
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
-
-    out.flush();
-    out.seek( 0 );
-
-    QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "all_faces.obj", actual.toUtf8() );
-  }
-
-  // case where only a subset of vertices are used
-  {
-    // exported vertice indexes
-    QVector<uint> indexData = {
-      // 0, 1, 2,
-      // 3, 4, 5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      // 18, 19, 20,
-      21,
-      22,
-      23,
-      // 24, 25, 26,
-      // 27, 28, 29,
-    };
-
-    Qgs3DExportObject object( "sparse_faces" );
-    object.setupTriangle( positionData, indexData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
-
-    QCOMPARE( object.indexes().size(), indexData.size() );
-
-    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
-    QCOMPARE( object.normals().size(), normalsData.size() );
-
-    QFile file( myTmpDir + "sparse_faces.obj" );
-    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
-    QTextStream out( &file );
-    out << "o " << object.name() << "\n";
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
-
-    out.flush();
-    out.seek( 0 );
-
-    QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
   }
 }
 
@@ -620,6 +519,65 @@ void TestQgs3DUtils::test3DSceneRay3D()
   QGSCOMPARENEAR( terrainDistance2, 45.59, 1.0 );
 
   delete scene;
+}
+
+void TestQgs3DUtils::testSrgbToLinear_data()
+{
+  QTest::addColumn<QColor>( "srgb" );
+  QTest::addColumn<float>( "red" );
+  QTest::addColumn<float>( "green" );
+  QTest::addColumn<float>( "blue" );
+  QTest::addColumn<float>( "alpha" );
+
+  // values from https://github.com/imazen/linear-srgb/blob/0fe3fddf0a30b7634e23851146fe5933d5cf8b0f/src/const_luts.rs
+  QTest::newRow( "black opaque" ) << QColor( 0, 0, 0, 255 ) << 0.0f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "black transparent" ) << QColor( 0, 0, 0, 0 ) << 0.0f << 0.0f << 0.0f << 0.0f;
+  QTest::newRow( "black semi-transparent" ) << QColor( 0, 0, 0, 125 ) << 0.0f << 0.0f << 0.0f << 0.4901960790f;
+  QTest::newRow( "dark red 1" ) << QColor( 10, 0, 0, 255 ) << 0.00303527f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "dark red 2" ) << QColor( 50, 0, 0, 255 ) << 0.031898525f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "dark red 3" ) << QColor( 100, 0, 0, 255 ) << 0.1274419f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "mid red 1" ) << QColor( 150, 0, 0, 255 ) << 0.30499208f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "light red 1" ) << QColor( 200, 0, 0, 255 ) << 0.5775841f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "light red 2" ) << QColor( 225, 0, 0, 255 ) << 0.75294451f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "light red 3" ) << QColor( 240, 0, 0, 255 ) << 0.87136835f << 0.0f << 0.0f << 1.0f;
+  QTest::newRow( "red" ) << QColor( 255, 0, 0, 255 ) << 1.0f << 0.0f << 0.0f << 1.0f;
+
+  QTest::newRow( "dark green 1" ) << QColor( 0, 10, 0, 255 ) << 0.0f << 0.00303527f << 0.0f << 1.0f;
+  QTest::newRow( "dark green 2" ) << QColor( 0, 50, 0, 255 ) << 0.0f << 0.031898525f << 0.0f << 1.0f;
+  QTest::newRow( "dark green 3" ) << QColor( 0, 100, 0, 255 ) << 0.0f << 0.1274419f << 0.0f << 1.0f;
+  QTest::newRow( "mid green 1" ) << QColor( 0, 150, 0, 255 ) << 0.0f << 0.30499208f << 0.0f << 1.0f;
+  QTest::newRow( "light green 1" ) << QColor( 0, 200, 0, 255 ) << 0.0f << 0.5775841f << 0.0f << 1.0f;
+  QTest::newRow( "light green 2" ) << QColor( 0, 225, 0, 255 ) << 0.0f << 0.75294451f << 0.0f << 1.0f;
+  QTest::newRow( "light green 3" ) << QColor( 0, 240, 0, 255 ) << 0.0f << 0.87136835f << 0.0f << 1.0f;
+  QTest::newRow( "green" ) << QColor( 0, 255, 0, 255 ) << 0.0f << 1.0f << 0.0f << 1.0f;
+
+  QTest::newRow( "dark blue 1" ) << QColor( 0, 0, 10, 255 ) << 0.0f << 0.0f << 0.00303527f << 1.0f;
+  QTest::newRow( "dark blue 2" ) << QColor( 0, 0, 50, 255 ) << 0.0f << 0.0f << 0.031898525f << 1.0f;
+  QTest::newRow( "dark blue 3" ) << QColor( 0, 0, 100, 255 ) << 0.0f << 0.0f << 0.1274419f << 1.0f;
+  QTest::newRow( "mid blue 1" ) << QColor( 0, 0, 150, 255 ) << 0.0f << 0.0f << 0.30499208f << 1.0f;
+  QTest::newRow( "light blue 1" ) << QColor( 0, 0, 200, 255 ) << 0.0f << 0.0f << 0.5775841f << 1.0f;
+  QTest::newRow( "light blue 2" ) << QColor( 0, 0, 225, 255 ) << 0.0f << 0.0f << 0.75294451f << 1.0f;
+  QTest::newRow( "light blue 3" ) << QColor( 0, 0, 240, 255 ) << 0.0f << 0.0f << 0.87136835f << 1.0f;
+  QTest::newRow( "blue" ) << QColor( 0, 0, 255, 255 ) << 0.0f << 0.0f << 1.0f << 1.0f;
+
+  QTest::newRow( "mixed" ) << QColor( 100, 200, 225, 255 ) << 0.1274419f << 0.5775841f << 0.75294451f << 1.0f;
+
+  QTest::newRow( "white" ) << QColor( 255, 255, 255, 255 ) << 1.0f << 1.0f << 1.0f << 1.0f;
+}
+
+void TestQgs3DUtils::testSrgbToLinear()
+{
+  QFETCH( QColor, srgb );
+  QFETCH( float, red );
+  QFETCH( float, green );
+  QFETCH( float, blue );
+  QFETCH( float, alpha );
+
+  const QColor linear = Qgs3DUtils::srgbToLinear( srgb );
+  QGSCOMPARENEAR( linear.redF(), red, 0.0001 );
+  QGSCOMPARENEAR( linear.greenF(), green, 0.0001 );
+  QGSCOMPARENEAR( linear.blueF(), blue, 0.0001 );
+  QGSCOMPARENEAR( linear.alphaF(), alpha, 0.0001 );
 }
 
 

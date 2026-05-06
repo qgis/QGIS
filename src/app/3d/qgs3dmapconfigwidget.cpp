@@ -16,6 +16,7 @@
 #include "qgs3dmapconfigwidget.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"

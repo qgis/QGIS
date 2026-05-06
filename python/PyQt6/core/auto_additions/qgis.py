@@ -4661,6 +4661,23 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 # --
 Qgis.CrsWktVariant.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UnknownLayerCrsBehavior.NoAction.__doc__ = "Take no action and leave as unknown CRS"
+Qgis.UnknownLayerCrsBehavior.PromptUserForCrs.__doc__ = "User is prompted for a CRS choice"
+Qgis.UnknownLayerCrsBehavior.UseProjectCrs.__doc__ = "Copy the current project's CRS"
+Qgis.UnknownLayerCrsBehavior.UseDefaultCrs.__doc__ = "Use the default layer CRS set via QGIS options"
+Qgis.UnknownLayerCrsBehavior.__doc__ = """Behavior to use when encountering a layer with an unknown (invalid) CRS.
+
+.. versionadded:: 4.2
+
+* ``NoAction``: Take no action and leave as unknown CRS
+* ``PromptUserForCrs``: User is prompted for a CRS choice
+* ``UseProjectCrs``: Copy the current project's CRS
+* ``UseDefaultCrs``: Use the default layer CRS set via QGIS options
+
+"""
+# --
+Qgis.UnknownLayerCrsBehavior.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Axis.X.__doc__ = "X-axis"
 Qgis.Axis.Y.__doc__ = "Y-axis"
 Qgis.Axis.Z.__doc__ = "Z-axis"
@@ -7865,6 +7882,19 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
+Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
+Qgis.Export3DSceneFormat.__doc__ = """The file format used when exporting a 3D scene.
+
+.. versionadded:: 4.2
+
+* ``Obj``: Wavefront OBJ format.
+* ``StlAscii``: STL ascii format.
+
+"""
+# --
+Qgis.Export3DSceneFormat.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"

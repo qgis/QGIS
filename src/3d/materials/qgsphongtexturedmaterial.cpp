@@ -31,14 +31,16 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
+  , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QVariant() ) )
   , mDiffuseTextureParameter( new Qt3DRender::QParameter( u"diffuseTexture"_s, QVariant() ) )
   , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f ) )
   , mDiffuseTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f ) )
-  , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) ) )
+  , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QVariant() ) )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 150.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
 {
+  setAmbient( QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
+  setSpecular( QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   init();
 }
 
@@ -47,13 +49,6 @@ QgsPhongTexturedMaterial::~QgsPhongTexturedMaterial() = default;
 
 void QgsPhongTexturedMaterial::init()
 {
-  connect( mAmbientParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleAmbientChanged );
-  connect( mDiffuseTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleDiffuseTextureChanged );
-  connect( mDiffuseTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleDiffuseTextureScaleChanged );
-  connect( mSpecularParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleSpecularChanged );
-  connect( mShininessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleShininessChanged );
-  connect( mOpacityParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleOpacityChanged );
-
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
   effect->addParameter( mAmbientParameter );
   effect->addParameter( mDiffuseTextureParameter );
@@ -93,7 +88,7 @@ void QgsPhongTexturedMaterial::init()
 
 void QgsPhongTexturedMaterial::setAmbient( const QColor &ambient )
 {
-  mAmbientParameter->setValue( ambient );
+  mAmbientParameter->setValue( Qgs3DUtils::srgbToLinear( ambient ) );
 }
 
 void QgsPhongTexturedMaterial::setDiffuseTexture( Qt3DRender::QAbstractTexture *diffuseTexture )
@@ -113,7 +108,7 @@ void QgsPhongTexturedMaterial::setDiffuseTextureRotation( float textureRotation 
 
 void QgsPhongTexturedMaterial::setSpecular( const QColor &specular )
 {
-  mSpecularParameter->setValue( specular );
+  mSpecularParameter->setValue( Qgs3DUtils::srgbToLinear( specular ) );
 }
 
 void QgsPhongTexturedMaterial::setShininess( float shininess )
@@ -124,66 +119,6 @@ void QgsPhongTexturedMaterial::setShininess( float shininess )
 void QgsPhongTexturedMaterial::setOpacity( float opacity )
 {
   mOpacityParameter->setValue( opacity );
-}
-
-QColor QgsPhongTexturedMaterial::ambient() const
-{
-  return mAmbientParameter->value().value<QColor>();
-}
-
-Qt3DRender::QAbstractTexture *QgsPhongTexturedMaterial::diffuseTexture() const
-{
-  return mDiffuseTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
-}
-
-float QgsPhongTexturedMaterial::diffuseTextureScale() const
-{
-  return mDiffuseTextureScaleParameter->value().toFloat();
-}
-
-QColor QgsPhongTexturedMaterial::specular() const
-{
-  return mSpecularParameter->value().value<QColor>();
-}
-
-float QgsPhongTexturedMaterial::shininess() const
-{
-  return mShininessParameter->value().toFloat();
-}
-
-float QgsPhongTexturedMaterial::opacity() const
-{
-  return mOpacityParameter->value().toFloat();
-}
-
-void QgsPhongTexturedMaterial::handleAmbientChanged( const QVariant &var )
-{
-  emit ambientChanged( var.value<QColor>() );
-}
-
-void QgsPhongTexturedMaterial::handleDiffuseTextureChanged( const QVariant &var )
-{
-  emit diffuseTextureChanged( var.value<Qt3DRender::QAbstractTexture *>() );
-}
-
-void QgsPhongTexturedMaterial::handleDiffuseTextureScaleChanged( const QVariant &var )
-{
-  emit diffuseTextureScaleChanged( var.toFloat() );
-}
-
-void QgsPhongTexturedMaterial::handleSpecularChanged( const QVariant &var )
-{
-  emit specularChanged( var.value<QColor>() );
-}
-
-void QgsPhongTexturedMaterial::handleShininessChanged( const QVariant &var )
-{
-  emit shininessChanged( var.toFloat() );
-}
-
-void QgsPhongTexturedMaterial::handleOpacityChanged( const QVariant &var )
-{
-  emit opacityChanged( var.toFloat() );
 }
 
 ///@endcond PRIVATE

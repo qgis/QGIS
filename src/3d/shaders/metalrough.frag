@@ -36,7 +36,15 @@ uniform sampler2D ambientOcclusionMap;
 
 #ifdef NORMAL_MAP
 uniform sampler2D normalMap;
+#endif
+
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
 in vec4 worldTangent;
+#endif
+
+#ifdef HEIGHT_MAP
+uniform sampler2D heightMap;
+uniform float parallaxScale = 0.1;
 #endif
 
 #ifdef EMISSION_MAP
@@ -44,35 +52,32 @@ uniform sampler2D emissionMap;
 uniform float emissiveFactor = 1;
 #endif
 
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP)|| defined(HEIGHT_MAP) || defined(EMISSION_MAP)
 in vec2 texCoord;
 #endif
-
-// Exposure correction
-uniform float exposure = 0.0;
-// Gamma correction
-uniform float gamma = 2.2;
 
 const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
 
-#ifdef NORMAL_MAP
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
 mat3 calcTangentToWorldSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
+    vec3 N = normalize(wNormal);
+
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
     // This allows building the tangentMatrix below by simply transposing the
     // tangent -> eyespace matrix (which would now be orthogonal)
-    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, wNormal) * wNormal);
+    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, N) * N);
 
     // Calculate binormal vector. No "real" need to renormalize it,
     // as built by crossing two normal vectors.
     // To orient the binormal correctly, use the fourth coordinate of the tangent,
     // which is +1 for a right hand system, and -1 for a left hand system.
-    vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
+    vec3 wBinormal = cross(N, wFixedTangent.xyz) * wTangent.w;
 
     // Construct matrix to transform from tangent space to world space
-    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
+    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, N);
     return tangentToWorldMatrix;
 }
 
@@ -85,9 +90,79 @@ mat3 calcTangentSpace(const in vec3 wNormal, const in vec3 wPosition, const in v
 
     vec3 N = normalize(wNormal);
     vec3 T = normalize(Q1*st2.t - Q2*st1.t);
+    T = normalize(T - dot(T, N) * N);
     vec3 B = -normalize(cross(N, T));
 
     return mat3(T, B, N);
+}
+#endif
+
+#ifdef HEIGHT_MAP
+// https://www.artstation.com/blogs/andreariccardi/3VPo/a-new-approach-for-parallax-mapping-presenting-the-contact-refinement-parallax-mapping-technique
+// adapted from https://github.com/panthuncia/webgl_test/blob/main/index.html
+vec3 applyContactRefinementParallaxCoordsAndHeight(const in vec2 uv, const in vec3 viewDirTangent)
+{
+    float maxHeight = parallaxScale;
+    float minHeight = maxHeight * 0.5;
+
+    int numSteps = 15;
+
+    float viewCorrection = (-viewDirTangent.z) + 2.0;
+    float stepSize = 1.0 / (float(numSteps) + 1.0);
+
+    vec2 tsOffset = viewDirTangent.xy * vec2(1.0, -1.0)* viewCorrection;
+
+    vec2 stepOffset = tsOffset * vec2(maxHeight, maxHeight) * stepSize;
+    vec2 lastOffset = tsOffset * vec2(minHeight, minHeight) + uv;
+
+    float lastRayDepth = 1.0;
+    float lastHeight = 1.0;
+    vec2 p1;
+    vec2 p2;
+    bool refine = false;
+
+    while (numSteps > 0)
+    {
+        vec2 candidateOffset = lastOffset - stepOffset;
+        float currentRayDepth = lastRayDepth - stepSize;
+
+        float currentHeight = texture(heightMap, candidateOffset).r;
+
+        if (currentHeight > currentRayDepth)
+        {
+            p1 = vec2(currentRayDepth, currentHeight);
+            p2 = vec2(lastRayDepth, lastHeight);
+
+            if (refine)
+            {
+                lastHeight = currentHeight;
+                break;
+            } else {
+                refine = true;
+                lastRayDepth = p2.x;
+                stepSize /= float(numSteps);
+                stepOffset /= float(numSteps);
+                continue;
+            }
+        }
+        lastOffset = candidateOffset;
+        lastRayDepth = currentRayDepth;
+        lastHeight = currentHeight;
+        numSteps -= 1;
+    }
+
+    float diff1 = p1.x - p1.y;
+    float diff2 = p2.x - p2.y;
+    float denominator = diff2 - diff1;
+
+    float parallaxAmount = 0.0;
+    if(denominator != 0.0)
+    {
+        parallaxAmount = (p1.x * diff2 - p2.x * diff1) / denominator;
+    }
+
+    float offsetDepth = ((1.0 - parallaxAmount) * -maxHeight) + minHeight;
+    return vec3(tsOffset * offsetDepth + uv, lastHeight);
 }
 #endif
 
@@ -134,28 +209,72 @@ float alphaToMipLevel(float alpha)
 
 float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
 {
-    // Blinn-Phong approximation - see
-    // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
-    float specPower = 2.0 / (alpha * alpha) - 2.0;
-    return (specPower + 2.0) / (2.0 * PI) * pow(max(dot(n, h), 0.0), specPower);
+    // Trowbridge-Reitz GGX
+    // see https://google.github.io/filament/Filament.md.html, "Normal distribution function (specular D)"
+    // https://learnopengl.com/PBR/Theory, "Normal distribution function"
+    float alpha2 = alpha * alpha;
+    float nDotH = max(dot(n, h), 0.0);
+    float nDotH2 = nDotH * nDotH;
+
+    float denom = (nDotH2 * (alpha2 - 1.0) + 1.0);
+
+    // our alpha is already clamped by remapRoughness, so denom won't perfectly hit 0
+    return alpha2 / (PI * denom * denom);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
 {
     // Calculate the Fresnel effect value
     vec3 f = color;
-    vec3 F = f + (1.0 - f) * pow(1.0 - cosineFactor, 5.0);
+    vec3 F = f + (1.0 - f) * pow(clamp(1.0 - cosineFactor, 0.0, 1.0), 5.0);
     return clamp(F, f, vec3(1.0));
+}
+
+// A modified Fresnel function that respects surface roughness
+// It explicitly injects the roughness value into the Fresnel equation to forcefully clamp
+// the maximum reflectivity at grazing angles based on how rough the material is.
+// ** Only applicable for image based lighting **
+vec3 fresnelSchlickRoughness(const in vec3 F0, const in float cosTheta, const in float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+float geometrySchlickGGX(const in float nDotV, const in float k)
+{
+    // see https://learnopengl.com/PBR/Theory, "Geometry function"
+    float nom = nDotV;
+    float denom = nDotV * (1.0 - k) + k;
+    return nom / denom;
 }
 
 float geometricModel(const in float lDotN,
                      const in float vDotN,
-                     const in vec3 h)
+                     const in float roughness,
+                     const in bool isIBL)
 {
-    // Implicit geometric model (equal to denominator in specular model).
-    // This currently assumes that there is no attenuation by geometric shadowing or
-    // masking according to the microfacet theory.
-    return lDotN * vDotN;
+    // see https://learnopengl.com/PBR/Theory, "Geometry function"
+
+    float k;
+    if ( isIBL)
+    {
+        // for image based lighting we do NOT apply the Epic hotness fix
+        k = roughness * roughness / 2.0;
+    }
+    else
+    {
+        // calculate k for direct lighting
+        // uses Epic Unreal Engine 4 fix of k = (roughness + 1)^2 / 8.
+        // see https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
+        // "Specular G"
+        k = ((roughness + 1) * (roughness + 1)) / 8.0;
+    }
+
+    // note that geometrySchlickGGX uses "nDotV", but dot product is commutative, so
+    // that's not an issue
+    float ggx1 = geometrySchlickGGX(vDotN, k);
+    float ggx2 = geometrySchlickGGX(lDotN, k);
+
+    return ggx1 * ggx2;
 }
 
 vec3 specularModel(const in vec3 F0,
@@ -163,7 +282,9 @@ vec3 specularModel(const in vec3 F0,
                    const in float sDotN,
                    const in float vDotN,
                    const in vec3 n,
-                   const in vec3 h)
+                   const in vec3 h,
+                   const in float roughness,
+                   const in bool isIBL)
 {
     // Clamp sDotN and vDotN to small positive value to prevent the
     // denominator in the reflection equation going to infinity. Balance this
@@ -172,8 +293,8 @@ vec3 specularModel(const in vec3 F0,
     float sDotNPrime = max(sDotN, 0.001);
     float vDotNPrime = max(vDotN, 0.001);
 
-    vec3 F = fresnelFactor(F0, sDotH);
-    float G = geometricModel(sDotNPrime, vDotNPrime, h);
+    vec3 F = isIBL ? fresnelSchlickRoughness(F0, sDotH, roughness) : fresnelFactor(F0, sDotH);
+    float G = geometricModel(sDotNPrime, vDotNPrime, roughness, isIBL);
 
     vec3 cSpec = F * G / (4.0 * sDotNPrime * vDotNPrime);
     return clamp(cSpec, vec3(0.0), vec3(1.0));
@@ -185,6 +306,7 @@ vec3 pbrModel(const in int lightIndex,
               const in vec3 wView,
               const in vec3 baseColor,
               const in float metalness,
+              const in float roughness,
               const in float alpha,
               const in float ambientOcclusion)
 {
@@ -242,14 +364,16 @@ vec3 pbrModel(const in int lightIndex,
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = vec3(0.0);
     if (sDotN > 0.0) {
-        specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h);
+        specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h, roughness, false);
         specularFactor *= normalDistribution(n, h, alpha);
     }
     vec3 specularColor = lights[lightIndex].color;
-    vec3 specular = specularColor * specularFactor;
+    vec3 specular = specularColor * specularFactor * max(sDotN, 0.0);
 
-    // Blend between diffuse and specular to conserver energy
-    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
+    // Blend between diffuse and specular to conserve energy
+    // see https://learnopengl.com/PBR/Theory, "Energy conservation"
+    vec3 kS = fresnelFactor(F0, sDotH);
+    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -261,6 +385,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
                  const in float metalness,
+                 const in float roughness,
                  const in float alpha,
                  const in float ambientOcclusion)
 {
@@ -284,7 +409,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
-    vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
+    vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h, roughness, true);
 
     float lod = alphaToMipLevel(alpha);
 //#define DEBUG_SPECULAR_LODS
@@ -310,22 +435,14 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
-    vec3 color = specular + diffuse * (vec3(1.0) - specularFactor);
+    // see https://learnopengl.com/PBR/Theory, "Energy conservation"
+    vec3 kS = fresnelSchlickRoughness(F0, max(vDotN, 0.0), roughness);
+    vec3 color = specular + diffuse * (vec3(1.0) - kS);
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
 
     return color;
-}
-
-vec3 toneMap(const in vec3 c)
-{
-    return c / (c + vec3(1.0));
-}
-
-vec3 gammaCorrect(const in vec3 color)
-{
-    return pow(color, vec3(1.0 / gamma));
 }
 
 vec4 metalRoughFunction(const in vec4 baseColor,
@@ -347,6 +464,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                                worldView,
                                baseColor.rgb,
                                metalness,
+                               roughness,
                                alpha,
                                ambientOcclusion);
     }
@@ -358,6 +476,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
                             worldView,
                             baseColor.rgb,
                             metalness,
+                            roughness,
                             alpha,
                             ambientOcclusion);
     }
@@ -366,17 +485,7 @@ vec4 metalRoughFunction(const in vec4 baseColor,
     vec3 emission = texture(emissionMap, activeTexCoord).rgb * emissiveFactor;
     cLinear += emission;
 #endif
-
-    // Apply exposure correction
-    cLinear *= pow(2.0, exposure);
-
-    // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]
-    vec3 cToneMapped = toneMap(cLinear);
-
-    // Apply gamma correction prior to display
-    vec3 cGamma = gammaCorrect(cToneMapped);
-
-    return vec4(cGamma, 1.0);
+    return vec4(cLinear, 1.0);
 }
 
 
@@ -384,7 +493,7 @@ out vec4 fragColor;
 
 void main()
 {
-#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(EMISSION_MAP)
+#if defined(BASE_COLOR_MAP) || defined(METALNESS_MAP) || defined(ROUGHNESS_MAP) || defined(AMBIENT_OCCLUSION_MAP) || defined(NORMAL_MAP) || defined(HEIGHT_MAP) || defined(EMISSION_MAP)
     vec2 activeTexCoord = texCoord;
 #else
     // unused
@@ -392,6 +501,28 @@ void main()
 #endif
 
     vec3 worldView = normalize(eyePosition - worldPosition);
+
+#if defined(NORMAL_MAP) || defined(HEIGHT_MAP)
+    mat3 tangentToWorld;
+    if (length(worldTangent.xyz) > 0.001)
+    {
+        // use model tangents if they exist
+        tangentToWorld = calcTangentToWorldSpaceMatrix(worldNormal, worldTangent);
+    }
+    else
+    {
+        // fall back to derivative tangents if we don't have model tangents (worse quality)
+        tangentToWorld = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
+    }
+#endif
+
+#ifdef HEIGHT_MAP
+    // need the view vector in tangent space
+    mat3 worldToTangent = transpose(tangentToWorld);
+    vec3 tangentView = normalize(worldToTangent * worldView);
+    // apply parallax and then use adjusted coordinates from here
+    activeTexCoord = applyContactRefinementParallaxCoordsAndHeight(texCoord, tangentView).xy;
+#endif
 
 #ifdef BASE_COLOR_MAP
     vec4 c = texture(baseColorMap, activeTexCoord);
@@ -418,27 +549,15 @@ void main()
 #endif
 
 #ifdef NORMAL_MAP
-    vec3 n;
     vec3 mapN = texture(normalMap, activeTexCoord).rgb * 2.0 - 1.0;
-    if (length(worldTangent.xyz) > 0.001)
-    {
-        // use model tangents if they exist
-        n = normalize(calcTangentToWorldSpaceMatrix(worldNormal, worldTangent) * mapN);
-    }
-    else
-    {
-        // fall back to derivative tangents if we don't have model tangents (worse quality)
-        mat3 transposedTBN = calcTangentSpace(worldNormal, worldPosition, activeTexCoord);
-        n = normalize(transposedTBN * mapN);
-    }
+    vec3 n = normalize(tangentToWorld * mapN);
 #else
-
 #ifdef FLAT_SHADING
  vec3 fdx = dFdx(worldPosition);
  vec3 fdy = dFdy(worldPosition);
  vec3 n = normalize(cross(fdx, fdy));
 #else
-    vec3 n = normalize(worldNormal);
+ vec3 n = normalize(worldNormal);
 #endif
 #endif
 

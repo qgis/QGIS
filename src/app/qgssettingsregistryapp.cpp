@@ -18,14 +18,17 @@
 #include "qgssettingsregistryapp.h"
 
 #include "qgisapp.h"
+#include "qgsattributetabledialog.h"
 #include "qgsgui.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgspluginmanager.h"
+#include "qgssettings.h"
 #include "qgssettingseditorwidgetregistry.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgssettingsproxy.h"
 
 #include <QString>
 
@@ -73,6 +76,20 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   QgsPluginManager::settingsSeenPlugins->copyValueFromKey( u"app/plugin_installer/seen_plugins"_s, true );
   QgsPluginManager::settingsLastZipDirectory->copyValueFromKey( u"app/plugin_installer/lastZipDirectory"_s, true );
   QgsPluginManager::settingsShowInstallFromZipWarning->copyValueFromKey( u"app/plugin_installer/showInstallFromZipWarning"_s, true );
+
+  // attribute-table default add feature method
+  // old key stored a string "attributeForm" / "attributeTable", new key stores the enum name ("Form" / "Table")
+  {
+    auto settings = QgsSettings::get();
+    const QString oldKey = u"/qgis/attributeTableLastAddFeatureMethod"_s;
+    if ( settings->contains( oldKey ) )
+    {
+      const QString lastMethod = settings->value( oldKey ).toString();
+      const QgsAttributeTableConfig::AddFeatureMethod method = ( lastMethod == "attributeForm"_L1 ) ? QgsAttributeTableConfig::AddFeatureMethod::Form : QgsAttributeTableConfig::AddFeatureMethod::Table;
+      QgsAttributeTableDialog::settingsDefaultAddFeatureMethod->setValue( method );
+      settings->remove( oldKey );
+    }
+  }
 }
 
 QgsSettingsRegistryApp::~QgsSettingsRegistryApp()

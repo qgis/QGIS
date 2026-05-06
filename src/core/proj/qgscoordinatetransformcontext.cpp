@@ -19,11 +19,19 @@
 
 #include "qgscoordinatetransformcontext_p.h"
 #include "qgsprojutils.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+QgsSettingsTreeNamedListNode *QgsCoordinateTransformContext::sTreeCoordinateOperationsSource = QgsSettingsTree::sTreeCrs->createChildNode( u"coordinate-operations"_s )->createNamedListNode( u"source"_s );
+QgsSettingsTreeNamedListNode *QgsCoordinateTransformContext::sTreeCoordinateOperationsDestination = sTreeCoordinateOperationsSource->createNamedListNode( u"destination"_s );
+const QgsSettingsEntryString *QgsCoordinateTransformContext::settingsCoordinateOperation
+  = new QgsSettingsEntryString( u"operation"_s, sTreeCoordinateOperationsDestination, QString(), u"PROJ coordinate operation string used when transforming between the source and destination CRS pair."_s );
+const QgsSettingsEntryBool *QgsCoordinateTransformContext::settingsAllowFallback
+  = new QgsSettingsEntryBool( u"allow-fallback"_s, sTreeCoordinateOperationsDestination, true, u"If true, transformations between the source and destination CRS pair are allowed to fall back to a less accurate operation when the preferred coordinate operation fails."_s );
 
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {
@@ -322,36 +330,16 @@ void QgsCoordinateTransformContext::readSettings()
 
   d->mSourceDestDatumTransforms.clear();
 
-  QgsSettings settings;
-  settings.beginGroup( u"/Projections"_s );
-  const QStringList projectionKeys = settings.allKeys();
-
-  //collect src and dest entries that belong together
-  QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, QgsCoordinateTransformContextPrivate::OperationDetails > transforms;
-  QStringList::const_iterator pkeyIt = projectionKeys.constBegin();
-  for ( ; pkeyIt != projectionKeys.constEnd(); ++pkeyIt )
+  QMap<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>, QgsCoordinateTransformContextPrivate::OperationDetails> transforms;
+  const QStringList srcAuthIds = sTreeCoordinateOperationsSource->items();
+  for ( const QString &srcAuthId : srcAuthIds )
   {
-    if ( pkeyIt->contains( "coordinateOp"_L1 ) )
+    const QStringList destAuthIds = sTreeCoordinateOperationsDestination->items( { srcAuthId } );
+    for ( const QString &destAuthId : destAuthIds )
     {
-      const QStringList split = pkeyIt->split( '/' );
-      QString srcAuthId, destAuthId;
-      if ( !split.isEmpty() )
-      {
-        srcAuthId = split.at( 0 );
-      }
-      if ( split.size() > 1 )
-      {
-        destAuthId = split.at( 1 ).split( '_' ).at( 0 );
-      }
-
-      if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
-        continue;
-
-      const QString proj = settings.value( *pkeyIt ).toString();
-      const bool allowFallback = settings.value( u"%1//%2_allowFallback"_s.arg( srcAuthId, destAuthId ) ).toBool();
       QgsCoordinateTransformContextPrivate::OperationDetails deets;
-      deets.operation = proj;
-      deets.allowFallback = allowFallback;
+      deets.operation = settingsCoordinateOperation->value( { srcAuthId, destAuthId } );
+      deets.allowFallback = settingsAllowFallback->value( { srcAuthId, destAuthId } );
       transforms[qMakePair( QgsCoordinateReferenceSystem( srcAuthId ), QgsCoordinateReferenceSystem( destAuthId ) )] = deets;
     }
   }
@@ -364,22 +352,11 @@ void QgsCoordinateTransformContext::readSettings()
   }
 
   d->mLock.unlock();
-  settings.endGroup();
 }
 
 void QgsCoordinateTransformContext::writeSettings()
 {
-  QgsSettings settings;
-  settings.beginGroup( u"/Projections"_s );
-  const QStringList groupKeys = settings.allKeys();
-  QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
-  for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
-  {
-    if ( groupKeyIt->contains( "srcTransform"_L1 ) || groupKeyIt->contains( "destTransform"_L1 ) || groupKeyIt->contains( "coordinateOp"_L1 ) )
-    {
-      settings.remove( *groupKeyIt );
-    }
-  }
+  sTreeCoordinateOperationsSource->deleteAllItems();
 
   for ( auto transformIt = d->mSourceDestDatumTransforms.constBegin(); transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
   {
@@ -389,11 +366,7 @@ void QgsCoordinateTransformContext::writeSettings()
     if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
       continue; // not so nice, but alternative would be to shove whole CRS wkt into the settings values...
 
-    const QString proj = transformIt.value().operation;
-    const bool allowFallback = transformIt.value().allowFallback;
-    settings.setValue( srcAuthId + "//" + destAuthId + "_coordinateOp", proj );
-    settings.setValue( srcAuthId + "//" + destAuthId + "_allowFallback", allowFallback );
+    settingsCoordinateOperation->setValue( transformIt.value().operation, { srcAuthId, destAuthId } );
+    settingsAllowFallback->setValue( transformIt.value().allowFallback, { srcAuthId, destAuthId } );
   }
-
-  settings.endGroup();
 }

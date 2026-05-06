@@ -46,8 +46,6 @@ QgsTextureMaterial::~QgsTextureMaterial() = default;
 
 void QgsTextureMaterial::init()
 {
-  connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsTextureMaterial::handleTextureChanged );
-
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
 
   effect->addParameter( mTextureParameter );
@@ -80,11 +78,6 @@ void QgsTextureMaterial::setTexture( Qt3DRender::QAbstractTexture *texture )
 Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
 {
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
-}
-
-void QgsTextureMaterial::handleTextureChanged( const QVariant &var )
-{
-  emit textureChanged( var.value<Qt3DRender::QAbstractTexture *>() );
 }
 
 ///@endcond PRIVATE

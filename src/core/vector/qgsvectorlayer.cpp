@@ -2807,7 +2807,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           {
             QList<QVariant> translatedValueList;
             const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            for ( int i = 0; i < valueList.count(); i++ )
             {
               QMap<QString, QVariant> translatedValueMap;
               QString translatedKey
@@ -3224,6 +3224,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //custom comments
     QDomElement customCommentElem = doc.createElement( u"customComments"_s );
+    bool hasCustomComments = false;
     for ( const QgsField &field : std::as_const( mFields ) )
     {
       //if empty ("") we store it, if null we don't store it
@@ -3231,12 +3232,16 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       if ( customComment.isNull() )
         continue;
 
+      hasCustomComments = true;
       QDomElement customCommentEntryElem = doc.createElement( u"customComment"_s );
       customCommentEntryElem.setAttribute( u"field"_s, field.name() );
       customCommentEntryElem.setAttribute( u"value"_s, customComment );
       customCommentElem.appendChild( customCommentEntryElem );
     }
-    node.appendChild( customCommentElem );
+    if ( hasCustomComments )
+    {
+      node.appendChild( customCommentElem );
+    }
 
     //split policies
     {

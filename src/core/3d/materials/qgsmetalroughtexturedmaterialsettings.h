@@ -81,6 +81,21 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     QString normalTexturePath() const { return mNormalTexturePath; }
 
     /**
+     * Returns the path to the height texture map.
+     *
+     * \see setHeightTexturePath()
+     */
+    QString heightTexturePath() const { return mHeightTexturePath; }
+
+    /**
+     * Returns the parallax scale, which dictates the strength of the height displacement effect.
+     *
+     * \see setParallaxScale()
+     * \see heightTexturePath()
+     */
+    double parallaxScale() const { return mParallaxScale; }
+
+    /**
      * Returns the path to the emission/luminosity texture map.
      *
      * \see emissionFactor()
@@ -152,6 +167,21 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setNormalTexturePath( const QString &path ) { mNormalTexturePath = path; }
 
     /**
+     * Sets the \a path to the height texture map.
+     *
+     * \see heightTexturePath()
+     */
+    void setHeightTexturePath( const QString &path ) { mHeightTexturePath = path; }
+
+    /**
+     * Sets the parallax \a scale, which dictates the strength of the height displacement effect.
+     *
+     * \see parallaxScale()
+     * \see setHeightTexturePath()
+     */
+    void setParallaxScale( double scale ) { mParallaxScale = scale; }
+
+    /**
      * Sets the \a path to the ambient occlusion texture map.
      *
      * \see ambientOcclusionTexturePath()
@@ -206,10 +236,12 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && mRoughnessTexturePath == other.mRoughnessTexturePath
              && mNormalTexturePath == other.mNormalTexturePath
              && mAmbientOcclusionTexturePath == other.mAmbientOcclusionTexturePath
+             && mHeightTexturePath == other.mHeightTexturePath
              && mEmissionTexturePath == other.mEmissionTexturePath
              && qgsDoubleNear( mTextureScale, other.mTextureScale )
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
+             && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
@@ -218,6 +250,9 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     QString mMetalnessTexturePath;
     QString mRoughnessTexturePath;
     QString mNormalTexturePath;
+    QString mHeightTexturePath;
+    double mParallaxScale { 0.1 };
+
     QString mAmbientOcclusionTexturePath;
 
     QString mEmissionTexturePath;

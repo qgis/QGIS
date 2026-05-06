@@ -190,6 +190,65 @@ int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) 
   return mPointCloudIndex.getNode( n ).pointCount();
 }
 
+bool QgsPointCloudLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+{
+  const QgsChunkNodeId id = node->tileId();
+  const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
+  if ( mFutureHierarchyFetches.contains( n ) || mPendingHierarchyFetches.contains( n ) )
+  {
+    return false;
+  }
+
+  if ( mPointCloudIndex.needsHierarchyFetching( n ) )
+  {
+    mFutureHierarchyFetches.insert( n );
+    return false;
+  }
+
+  return true;
+}
+
+void QgsPointCloudLayerChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
+{
+  const QgsChunkNodeId id = node->tileId();
+  const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
+  if ( mFutureHierarchyFetches.contains( n ) )
+  {
+    fetchHierarchyForNode( n, node );
+  }
+}
+
+void QgsPointCloudLayerChunkLoaderFactory::fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId, QgsChunkNode *origNode )
+{
+  Q_ASSERT( !mPendingHierarchyFetches.contains( nodeId ) );
+  mFutureHierarchyFetches.remove( nodeId );
+  mPendingHierarchyFetches.insert( nodeId );
+
+  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>( this );
+  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher] {
+    mPendingHierarchyFetches.remove( nodeId );
+    emit childrenPrepared( origNode );
+    futureWatcher->deleteLater();
+  } );
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
+    // we need to make sure that hierarchy exists for this node, children and grand children,
+    // so that createChildren() will not trigger hierarchy fetching
+    // hasNode() will trigger fetching the hierarchy for this node and any missing ancestors
+    ( void ) mPointCloudIndex.hasNode( nodeId );
+    const QVector<QgsPointCloudNodeId> children = nodeId.childrenNodes();
+    for ( const QgsPointCloudNodeId &child : children )
+    {
+      ( void ) mPointCloudIndex.hasNode( child );
+
+      const QVector<QgsPointCloudNodeId> grandchildren = child.childrenNodes();
+      for ( const QgsPointCloudNodeId &grandChild : grandchildren )
+      {
+        ( void ) mPointCloudIndex.hasNode( grandChild );
+      }
+    }
+  } ) );
+}
+
 
 static QgsBox3D nodeBoundsToBox3D( QgsBox3D nodeBounds, const QgsCoordinateTransform &coordinateTransform, double zValueOffset, double zValueScale )
 {
@@ -227,12 +286,12 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
   QVector<QgsChunkNode *> children;
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
+  const QgsPointCloudNodeId pcId( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
-  for ( int i = 0; i < 8; ++i )
+  const QVector<QgsPointCloudNodeId> childrenPcIds = pcId.childrenNodes();
+  for ( const QgsPointCloudNodeId &childPcId : childrenPcIds )
   {
-    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
-    const QgsPointCloudNodeId childPcId( childId.d, childId.x, childId.y, childId.z );
+    const QgsChunkNodeId childId( childPcId.d(), childPcId.x(), childPcId.y(), childPcId.z() );
     if ( !mPointCloudIndex.hasNode( childPcId ) )
       continue;
     const QgsPointCloudNode childNode = mPointCloudIndex.getNode( childPcId );
@@ -341,8 +400,11 @@ QgsPointCloudIndex QgsPointCloudLayerChunkedEntity::resolveIndex( const QgsPoint
     return pcl->subIndexes().at( indexPosition ).index();
   else if ( indexPosition == -1 && !pcl->isVpc() )
     return pcl->index();
-  else if ( indexPosition == -2 && pcl->isVpc() )
-    return pcl->overview();
+  else if ( indexPosition < -1 && pcl->isVpc() )
+  {
+    const int ovId = -indexPosition - 2;
+    return pcl->overviews().at( ovId );
+  }
   else
     return QgsPointCloudIndex();
 }

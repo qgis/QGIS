@@ -215,6 +215,15 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry for distance display units
     static const QgsSettingsEntryString *settingsMeasureDisplayUnits;
 
+    //! Settings entry for area display units
+    static const QgsSettingsEntryString *settingsMeasureAreaUnits;
+
+    //! Settings entry for behavior when encountering a layer with an unknown CRS (NoAction, PromptUserForCrs, UseProjectCrs, UseDefaultCrs)
+    static const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *settingsUnknownCrsBehavior;
+
+    //! Settings entry for the default CRS used for layers with unknown CRS
+    static const QgsSettingsEntryString *settingsLayerDefaultCrs;
+
     //! Settings entry for layer tree insertion method
     static const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *settingsLayerTreeInsertionMethod;
 

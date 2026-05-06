@@ -15,6 +15,7 @@
 
 #include "qgshighlightmaterial.h"
 
+#include "qgs3dutils.h"
 #include "qgssettings.h"
 
 #include <QColor>
@@ -83,7 +84,7 @@ void QgsHighlightMaterial::init( Qgis::MaterialRenderingTechnique renderingTechn
   const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
   QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
   color.setAlphaF( alpha );
-  Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( u"color"_s, color );
+  Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( u"color"_s, Qgs3DUtils::srgbToLinear( color ) );
   pass->addParameter( colorParam );
 
   technique->addRenderPass( pass );

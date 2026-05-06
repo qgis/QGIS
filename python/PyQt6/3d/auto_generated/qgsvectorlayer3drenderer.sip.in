@@ -74,6 +74,16 @@ Returns 3D symbol associated with the renderer
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
+    static std::unique_ptr< QgsVectorLayer3DRenderer > convertFromRenderer( const QgsAbstractVectorLayer3DRenderer *renderer, QgsVectorLayer *layer = 0 );
+%Docstring
+Creates a new QgsVectorLayer3DRenderer from an existing ``renderer``.
+
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
+
+.. versionadded:: 4.2
+%End
+
   private:
     QgsVectorLayer3DRenderer( const QgsVectorLayer3DRenderer & );
     QgsVectorLayer3DRenderer &operator=( const QgsVectorLayer3DRenderer & );
