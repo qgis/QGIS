@@ -25,9 +25,6 @@
 
 #define SIP_NO_FILE
 
-using namespace Qt::StringLiterals;
-
-
 class QgsReadWriteContext;
 class QDomElement;
 
@@ -47,16 +44,13 @@ class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );
 
-    QString type() const override { return u"skybox"_s; }
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
     QgsSkyboxSettings *clone() const override SIP_FACTORY;
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
-
-    //! Returns background type
-    Qgis::Map3DBackgroundType skyboxType() const { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; } // always returns distinct features, until panoramic is fixed
 
 #if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"

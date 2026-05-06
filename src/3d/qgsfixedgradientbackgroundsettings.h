@@ -22,8 +22,6 @@
 #include <QColor>
 #include <QString>
 
-using namespace Qt::StringLiterals;
-
 /**
  * \ingroup qgis_3d
  * \brief Background settings for a two-color vertical gradient rendered behind the 3D scene.
@@ -35,7 +33,7 @@ class _3D_EXPORT QgsFixedGradientBackgroundSettings : public QgsAbstract3DMapBac
   public:
     QgsFixedGradientBackgroundSettings() = default;
 
-    QString type() const override { return u"gradient"_s; }
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::FixedGradientBackground; }
 
     QgsFixedGradientBackgroundSettings *clone() const override SIP_FACTORY;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;

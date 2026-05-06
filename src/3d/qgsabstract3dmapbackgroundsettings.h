@@ -16,9 +16,8 @@
 #ifndef QGSABSTRACT3DMAPBACKGROUNDSETTINGS_H
 #define QGSABSTRACT3DMAPBACKGROUNDSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
-
-#include <QString>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -38,14 +37,12 @@ class _3D_EXPORT QgsAbstract3DMapBackgroundSettings
     virtual ~QgsAbstract3DMapBackgroundSettings() = default;
 
     /**
-     * Returns the unique type string for this background settings class.
-     *
-     * Types: "skybox", "gradient".
+     * Returns the unique type for this background settings class.
      */
-    virtual QString type() const = 0;
+    virtual Qgis::Map3DBackgroundType type() const = 0;
 
     //! Returns a deep copy of this background settings object.
-    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0;
+    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0 SIP_FACTORY;
 
     /**
      * Reads settings from a DOM \a element.

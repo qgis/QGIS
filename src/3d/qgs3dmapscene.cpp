@@ -1143,13 +1143,13 @@ void Qgs3DMapScene::onBackgroundSettingsChanged()
 
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
 
-  if ( settings->type() == "skybox"_L1 )
+  if ( settings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
   {
     const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
     const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
     mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
   }
-  else if ( settings->type() == "gradient"_L1 )
+  else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
   {
     const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
     mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );

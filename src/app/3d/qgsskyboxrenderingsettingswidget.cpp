@@ -48,7 +48,7 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 
 void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
-  skyboxTypeComboBox->setCurrentIndex( skyboxTypeComboBox->findData( QVariant::fromValue( skyboxSettings.skyboxType() ) ) );
+  skyboxTypeComboBox->setCurrentIndex( skyboxTypeComboBox->findData( QVariant::fromValue( skyboxSettings.type() ) ) );
 
 #if ENABLE_PANORAMIC_SKYBOX
   panoramicTextureImageSource->setSource( skyboxSettings.panoramicTexturePath() );
@@ -98,7 +98,7 @@ void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
       showDistinctFacesWidgets = true;
       break;
     case Qgis::Map3DBackgroundType::NoBackground:
-    case Qgis::Map3DBackgroundType::FixedBackground:
+    case Qgis::Map3DBackgroundType::FixedGradientBackground:
       break;
   }
 

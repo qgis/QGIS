@@ -2440,8 +2440,8 @@ The development version
     enum class Map3DBackgroundType /BaseType=IntEnum/
     {
       NoBackground,
-      FixedBackground,
-      DistinctTextureSkybox
+      FixedGradientBackground,
+      DistinctTextureSkybox,
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/

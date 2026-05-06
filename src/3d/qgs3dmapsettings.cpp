@@ -260,18 +260,24 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemBackground = elem.firstChildElement( u"background"_s );
   if ( !elemBackground.isNull() )
   {
-    const QString bgType = elemBackground.attribute( u"type"_s );
-    if ( bgType == "skybox"_L1 )
+    switch ( qgsEnumKeyToValue( elemBackground.attribute( u"type"_s ), Qgis::Map3DBackgroundType::NoBackground ) )
     {
-      auto skybox = std::make_unique<QgsSkyboxSettings>();
-      skybox->readXml( elemBackground, context );
-      mBackgroundSettings = std::move( skybox );
-    }
-    else if ( bgType == "gradient"_L1 )
-    {
-      auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
-      gradient->readXml( elemBackground, context );
-      mBackgroundSettings = std::move( gradient );
+      case Qgis::Map3DBackgroundType::DistinctTextureSkybox:
+      {
+        auto skybox = std::make_unique<QgsSkyboxSettings>();
+        skybox->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( skybox );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::FixedGradientBackground:
+      {
+        auto gradient = std::make_unique<QgsFixedGradientBackgroundSettings>();
+        gradient->readXml( elemBackground, context );
+        mBackgroundSettings = std::move( gradient );
+        break;
+      }
+      case Qgis::Map3DBackgroundType::NoBackground:
+        break;
     }
   }
 
@@ -413,7 +419,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   if ( mBackgroundSettings )
   {
     QDomElement elemBackground = doc.createElement( u"background"_s );
-    elemBackground.setAttribute( u"type"_s, mBackgroundSettings->type() );
+    elemBackground.setAttribute( u"type"_s, qgsEnumValueToKey( mBackgroundSettings->type() ) );
     mBackgroundSettings->writeXml( elemBackground, context );
     elem.appendChild( elemBackground );
   }
@@ -1277,7 +1283,7 @@ QgsSkyboxSettings Qgs3DMapSettings::skyboxSettings() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1 )
+  if ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
     return *dynamic_cast<const QgsSkyboxSettings *>( mBackgroundSettings.get() );
   return QgsSkyboxSettings();
 }
@@ -1323,7 +1329,7 @@ bool Qgs3DMapSettings::isSkyboxEnabled() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1;
+  return mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox;
 }
 
 void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
@@ -1331,7 +1337,7 @@ void Qgs3DMapSettings::setIsSkyboxEnabled( bool enabled )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( enabled )
-    setBackgroundSettings( ( mBackgroundSettings && mBackgroundSettings->type() == "skybox"_L1 ) ? mBackgroundSettings->clone() : new QgsSkyboxSettings() );
+    setBackgroundSettings( ( mBackgroundSettings && mBackgroundSettings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox ) ? mBackgroundSettings->clone() : new QgsSkyboxSettings() );
   else
     setBackgroundSettings( nullptr );
 }

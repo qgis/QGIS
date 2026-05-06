@@ -7786,16 +7786,16 @@ Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 # --
 Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.Map3DBackgroundType.NoBackground.__doc__ = ""
-Qgis.Map3DBackgroundType.FixedBackground.__doc__ = ""
-Qgis.Map3DBackgroundType.DistinctTextureSkybox.__doc__ = ""
+Qgis.Map3DBackgroundType.NoBackground.__doc__ = "No background"
+Qgis.Map3DBackgroundType.FixedGradientBackground.__doc__ = "Two color gradient, fixed in place"
+Qgis.Map3DBackgroundType.DistinctTextureSkybox.__doc__ = "Skybox with 6 distinct textures for different faces"
 Qgis.Map3DBackgroundType.__doc__ = """Background types for 3D map view.
 
 .. versionadded:: 4.2
 
-* ``NoBackground``: 
-* ``FixedBackground``: 
-* ``DistinctTextureSkybox``: 
+* ``NoBackground``: No background
+* ``FixedGradientBackground``: Two color gradient, fixed in place
+* ``DistinctTextureSkybox``: Skybox with 6 distinct textures for different faces
 
 """
 # --

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAbstract3DMapBackgroundSettings
 {
 %Docstring(signature="appended")
@@ -28,14 +27,12 @@ responsible for storing the configuration of different background types
   public:
     virtual ~QgsAbstract3DMapBackgroundSettings();
 
-    virtual QString type() const = 0;
+    virtual Qgis::Map3DBackgroundType type() const = 0;
 %Docstring
-Returns the unique type string for this background settings class.
-
-Types: "skybox", "gradient".
+Returns the unique type for this background settings class.
 %End
 
-    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0;
+    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0 /Factory/;
 %Docstring
 Returns a deep copy of this background settings object.
 %End

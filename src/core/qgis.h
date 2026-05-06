@@ -4355,9 +4355,9 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class Map3DBackgroundType : int
     {
-      NoBackground,
-      FixedBackground,
-      DistinctTextureSkybox
+      NoBackground,            //!< No background
+      FixedGradientBackground, //!< Two color gradient, fixed in place
+      DistinctTextureSkybox,   //!< Skybox with 6 distinct textures for different faces
     };
     Q_ENUM( Map3DBackgroundType )
 
