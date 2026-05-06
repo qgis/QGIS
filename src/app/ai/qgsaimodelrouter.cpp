@@ -711,8 +711,8 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   if ( context.provider == Provider::Claude )
     request.setRawHeader( "anthropic-version", "2023-06-01" );
 
-  QString authError;
-  if ( !applyAuthentication( context.provider, request, &authError ) )
+  QString authenticationError;
+  if ( !applyAuthentication( context.provider, request, &authenticationError ) )
     return false;
 
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
@@ -795,7 +795,7 @@ QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const Q
   if ( eventType == "response.output_text.delta"_L1 )
     return object.value( u"delta"_s ).toString();
 
-  // Fallback to old behaviour for legacy Chat Completions style chunks
+  // Fallback to old behavior for legacy Chat Completions style chunks
   const QString directDelta = object.value( u"delta"_s ).toString();
   if ( !directDelta.isEmpty() )
     return directDelta;
@@ -1010,7 +1010,7 @@ void QgsAiModelRouter::onReplyReadyRead()
   }
 }
 
-QString QgsAiModelRouter::extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const
+QString QgsAiModelRouter::extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const //#spellok
 {
   if ( body.isEmpty() )
     return QString();
@@ -1149,7 +1149,7 @@ void QgsAiModelRouter::onReplyFinished()
     return;
   }
 
-  QString errorMessage = extractErrorMessageFromBody( context->provider, responseBody );
+  QString errorMessage = extractErrorMessageFromBody( context->provider, responseBody ); //#spellok
   if ( errorMessage.isEmpty() )
     errorMessage = reply->errorString();
   if ( errorMessage.isEmpty() )

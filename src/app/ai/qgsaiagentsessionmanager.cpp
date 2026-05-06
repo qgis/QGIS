@@ -116,8 +116,8 @@ void QgsAiAgentSessionManager::cancelActiveRequest()
   mRouter->cancelRequest( mActiveRequestId );
   mActiveRequestId.clear();
   mPendingProviders.clear();
-  emit requestStateChanged( u"cancelled"_s, u"Request cancelled by user."_s );
-  emit requestRunningChanged( false );
+  emit requestStateChanged( u"cancelled"_s, u"Request cancelled by user."_s ); //#spellok
+  emit requestRunningChanged( false );                                         //#spellok
 }
 
 QStringList QgsAiAgentSessionManager::projectFileCandidates( const QString &query, int maxResults ) const

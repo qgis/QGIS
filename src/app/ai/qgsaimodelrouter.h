@@ -130,7 +130,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QString extractTextFromStreamEvent( Provider provider, const QJsonObject &object ) const;
     void extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const;
     void absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context );
-    QString extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const;
+    QString extractErrorMessageFromBody( Provider provider, const QByteArray &body ) const; //#spellok
     QString roleForProvider( Provider provider, QgsAiChatRole role ) const;
     QJsonArray buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const;
     QJsonArray buildAnthropicUserContent( const QgsAiChatMessage &message ) const;
