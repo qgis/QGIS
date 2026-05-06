@@ -297,6 +297,7 @@ jobs:
           APP_PATH=$(ls -d universal/*.app | head -n1)
           find "${APP_PATH}" -type d -name "objects-*" -print -prune -exec rm -rf {} +
           find "${APP_PATH}" -type f -name "*.o" -print -delete
+          find "${APP_PATH}" -type f -name "*.a" -print -delete
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
       - name: 🔏 Sign app
