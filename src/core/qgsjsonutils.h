@@ -219,7 +219,7 @@ class CORE_EXPORT QgsJsonExporter
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
      * \param indent number of indentation spaces for generated JSON (defaults to none)
-     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written. \since QGIS 4.2
+     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
      * \returns GeoJSON string
      * \see exportFeatures()
      * \see exportFeatureToJsonObject()
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsJsonExporter
      * \param extraProperties map of extra attributes to include in feature's properties
      * \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
      * ID is used.
-     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written. \since QGIS 4.2
+     * \param featureType optional feature type to pass, like the layer name. If omitted, it is not written (since QGIS 4.2)
      * \returns json object
      * \see exportFeatures()
      */
