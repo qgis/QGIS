@@ -422,9 +422,9 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
-  processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingalgorithmwidgetbase.cpp
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
-  processing/qgsprocessingbatchalgorithmwidgetbase.cpp
+  processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
