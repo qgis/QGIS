@@ -62,25 +62,19 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DWindow::Qgs3DWindow()
+QgsMaterialPreview3DWindow::QgsMaterialPreview3DWindow()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
-  , m_inputAspect( new Qt3DInput::QInputAspect )
-  , m_logicAspect( new Qt3DLogic::QLogicAspect )
   , m_renderSettings( new Qt3DRender::QRenderSettings )
   , m_defaultCamera( new Qt3DRender::QCamera )
-  , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
   , m_userRoot( nullptr )
   , m_initialized( false )
 {
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
   m_aspectEngine->registerAspect( m_renderAspect );
-  m_aspectEngine->registerAspect( m_inputAspect );
-  m_aspectEngine->registerAspect( m_logicAspect );
 
   m_defaultCamera->setParent( m_root );
-  m_inputSettings->setEventSource( this );
 
   setSurfaceType( QSurface::OpenGLSurface );
 
@@ -90,12 +84,12 @@ Qgs3DWindow::Qgs3DWindow()
   setSurfaceType( QSurface::OpenGLSurface );
 }
 
-Qgs3DWindow::~Qgs3DWindow()
+QgsMaterialPreview3DWindow::~QgsMaterialPreview3DWindow()
 {
   delete m_aspectEngine;
 }
 
-void Qgs3DWindow::setRootEntity( Qt3DCore::QEntity *root )
+void QgsMaterialPreview3DWindow::setRootEntity( Qt3DCore::QEntity *root )
 {
   if ( m_userRoot != root )
   {
@@ -107,22 +101,21 @@ void Qgs3DWindow::setRootEntity( Qt3DCore::QEntity *root )
   }
 }
 
-Qt3DRender::QCamera *Qgs3DWindow::camera() const
+Qt3DRender::QCamera *QgsMaterialPreview3DWindow::camera() const
 {
   return m_defaultCamera;
 }
 
-Qt3DRender::QLayer *Qgs3DWindow::sceneLayer()
+Qt3DRender::QLayer *QgsMaterialPreview3DWindow::sceneLayer()
 {
   return m_sceneLayer;
 }
 
-void Qgs3DWindow::showEvent( QShowEvent *e )
+void QgsMaterialPreview3DWindow::showEvent( QShowEvent *e )
 {
   if ( !m_initialized )
   {
     m_root->addComponent( m_renderSettings );
-    m_root->addComponent( m_inputSettings );
     m_aspectEngine->setRootEntity( Qt3DCore::QEntityPtr( m_root ) );
 
     m_initialized = true;
@@ -130,7 +123,7 @@ void Qgs3DWindow::showEvent( QShowEvent *e )
   QWindow::showEvent( e );
 }
 
-void Qgs3DWindow::resizeEvent( QResizeEvent *e )
+void QgsMaterialPreview3DWindow::resizeEvent( QResizeEvent *e )
 {
   m_defaultCamera->setAspectRatio( float( width() ) / std::max( 1.f, static_cast<float>( height() ) ) );
 
@@ -146,7 +139,7 @@ void Qgs3DWindow::resizeEvent( QResizeEvent *e )
   QWindow::resizeEvent( e );
 }
 
-void Qgs3DWindow::setupFrameGraph()
+void QgsMaterialPreview3DWindow::setupFrameGraph()
 {
   m_surfaceSelector = new Qt3DRender::QRenderSurfaceSelector( m_root );
   m_surfaceSelector->setSurface( this );
@@ -207,7 +200,7 @@ void Qgs3DWindow::setupFrameGraph()
   m_renderSettings->setActiveFrameGraph( m_surfaceSelector );
 }
 
-void Qgs3DWindow::setupPostProcessQuad()
+void QgsMaterialPreview3DWindow::setupPostProcessQuad()
 {
   m_quadEntity = new Qt3DCore::QEntity( m_root );
   m_quadEntity->addComponent( m_quadLayer );
@@ -363,7 +356,7 @@ void QgsMaterialPreviewWidget::showEvent( QShowEvent *e )
   if ( mView )
     return;
 
-  mView = new Qgs3DWindow();
+  mView = new QgsMaterialPreview3DWindow();
   mView->installEventFilter( this );
 
   QWidget *container = QWidget::createWindowContainer( mView, this );
