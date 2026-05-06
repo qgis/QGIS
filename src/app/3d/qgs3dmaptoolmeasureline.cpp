@@ -147,8 +147,11 @@ void Qgs3DMapToolMeasureLine::restart()
   mDone = false;
   mDialog->resetTable();
 
-  mRubberBand->reset();
-  mRubberBand->setHideLastMarker( true );
+  if ( mRubberBand )
+  {
+    mRubberBand->reset();
+    mRubberBand->setHideLastMarker( true );
+  }
 }
 
 void Qgs3DMapToolMeasureLine::undo()
