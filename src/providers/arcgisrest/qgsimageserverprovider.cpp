@@ -228,6 +228,18 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   if ( mLayerInfo.value( u"serviceDataType"_s ).toString().compare( "esriImageServiceDataTypeElevation"_L1, Qt::CaseInsensitive ) == 0 )
   {
     elevationProperties()->setContainsElevationData( true );
+    // set extreme Earth elevation limits for elevation data if service did not contain this information
+    if ( mCrs.isEarthCrs() )
+    {
+      for ( qsizetype i = mMinValues.count(); i < mBandCount; ++i )
+      {
+        mMinValues.append( -11500 );
+      }
+      for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
+      {
+        mMaxValues.append( 9000 );
+      }
+    }
   }
 
   QgsLayerMetadata::SpatialExtent spatialExtent;
