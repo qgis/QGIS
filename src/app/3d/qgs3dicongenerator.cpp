@@ -29,6 +29,7 @@
 #include "qgsmaterial3dhandler.h"
 #include "qgsmaterialregistry.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgsshadowrenderview.h"
 
 #include <QCryptographicHash>
@@ -194,6 +195,7 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   engine.frameGraph()->setRenderCaptureEnabled( true );
 
   QgsMaterialContext context;
+  context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
   const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings );
   if ( !handler )
     return QImage();

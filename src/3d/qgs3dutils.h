@@ -55,6 +55,7 @@ namespace Qt3DRender
 class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
+class QgsMaterialContext;
 
 /**
  * \ingroup qgis_3d
@@ -458,7 +459,7 @@ class _3D_EXPORT Qgs3DUtils
      * \note This should not be called for textures which have special filtering considerations,
      * eg look up tables, data tables, "screen space" textures, or textures where mipmapping is not appropriate.
      */
-    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture );
+    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context );
 
     // we start with a maximal z range because we can't know this upfront. There's too many
     // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...

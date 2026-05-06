@@ -20,6 +20,7 @@
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsmaterialregistry.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QActionGroup>
 #include <QMenu>
@@ -312,6 +313,7 @@ void QgsMaterialPreviewWidget::updatePreview( const QgsAbstractMaterialSettings 
     return;
 
   QgsMaterialContext context;
+  context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
   if ( !mPreviewScene )
   {
     delete mPreviewScene;

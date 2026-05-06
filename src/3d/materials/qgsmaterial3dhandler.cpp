@@ -15,6 +15,8 @@
 
 #include "qgsmaterial3dhandler.h"
 
+#include "qgs3drendercontext.h"
+
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
 #include <QString>
@@ -29,6 +31,14 @@
 
 using namespace Qt::StringLiterals;
 
+
+QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderContext &context )
+{
+  QgsMaterialContext res;
+  res.mSelectedColor = context.selectionColor();
+  res.mTextureFilterQuality = context.textureFilterQuality();
+  return res;
+}
 
 QByteArray QgsAbstractMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {

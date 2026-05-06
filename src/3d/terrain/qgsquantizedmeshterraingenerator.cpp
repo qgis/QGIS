@@ -24,6 +24,7 @@
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgslogger.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmetalroughmaterial.h"
@@ -180,11 +181,14 @@ Qt3DCore::QEntity *QgsQuantizedMeshTerrainChunkLoader::createEntity( Qt3DCore::Q
   if ( mEntity )
   {
     mEntity->setParent( parent );
-    Qt3DRender::QTexture2D *texture = createTexture( mEntity );
+    Qgs3DMapSettings *map = terrain()->mapSettings();
+
+    Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
+
+    Qt3DRender::QTexture2D *texture = createTexture( mEntity, QgsMaterialContext::fromRenderContext( context ) );
 
     // Copied from part of QgsTerrainTileLoader::createTextureComponent, since we can't use that directly on the GLTF entity.
     Qt3DRender::QMaterial *material = nullptr;
-    Qgs3DMapSettings *map = terrain()->mapSettings();
     if ( map->isTerrainShadingEnabled() )
     {
       const QgsPhongMaterialSettings &shadingMaterial = map->terrainShadingMaterial();

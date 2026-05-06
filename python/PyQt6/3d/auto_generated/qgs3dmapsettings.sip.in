@@ -950,6 +950,24 @@ Returns whether multisample anti-aliasing (MSAA) is enabled
 .. versionadded:: 4.2
 %End
 
+    Qgis::TextureFilterQuality textureFilterQuality() const;
+%Docstring
+Returns the texture filtering quality.
+
+.. seealso:: :py:func:`setTextureFilterQuality`
+
+.. versionadded:: 4.2
+%End
+
+    void setTextureFilterQuality( Qgis::TextureFilterQuality quality );
+%Docstring
+Sets the texture filtering ``quality``.
+
+.. seealso:: :py:func:`textureFilterQuality`
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void settingsChanged();

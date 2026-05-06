@@ -30,6 +30,7 @@
 #include "qgsfeedback.h"
 #include "qgsglobechunkedentity.h"
 #include "qgslinestring.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
@@ -40,7 +41,6 @@
 #include "qgspolygon.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastresult.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgsvectorlayer.h"
@@ -1234,13 +1234,13 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   return copy;
 }
 
-void Qgs3DUtils::setTextureFiltering( Qt3DRender::QAbstractTexture *texture )
+void Qgs3DUtils::setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context )
 {
   texture->setGenerateMipMaps( true );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
 
-  switch ( Qgs3D::settingTextureFilterQuality->value() )
+  switch ( context.textureFilterQuality() )
   {
     case Qgis::TextureFilterQuality::Trilinear:
       texture->setMaximumAnisotropy( 1 );

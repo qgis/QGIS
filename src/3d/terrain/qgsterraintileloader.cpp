@@ -55,9 +55,10 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context )
 {
-  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
+  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity, materialContext ) : nullptr;
 
   QgsMaterial *material = nullptr;
   if ( texture )
@@ -81,7 +82,6 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   }
   else
   {
-    QgsMaterialContext materialContext;
     materialContext.setIsSelected( false );
     material = Qgs3D::toMaterial( &shadingMaterial, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
   }
@@ -102,11 +102,11 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
   entity->addComponent( material ); // takes ownership if the component has no parent
 }
 
-Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntity *entity )
+Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context )
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  Qgs3DUtils::setTextureFiltering( texture );
+  Qgs3DUtils::setTextureFiltering( texture, context );
   texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
   texture->addTextureImage( textureImage ); //texture take the ownership of textureImage if has no parant
 

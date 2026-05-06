@@ -287,9 +287,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   }
 
   // build the default material
-  QgsMaterialContext materialContext;
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
   materialContext.setIsSelected( selected );
-  materialContext.setSelectionColor( context.selectionColor() );
   materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext, !out.scales.empty(), !out.rotations.empty() );
 
@@ -820,9 +819,8 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities(
   if ( !source.isEmpty() )
   {
     // build the default material
-    QgsMaterialContext materialContext;
+    QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
     materialContext.setIsSelected( areSelected );
-    materialContext.setSelectionColor( context.selectionColor() );
     materialContext.setIsHighlighted( areHighlighted );
 
     QgsMaterial *mat = Qgs3D::toMaterial( symbol->materialSettings(), Qgis::MaterialRenderingTechnique::Triangles, materialContext );
