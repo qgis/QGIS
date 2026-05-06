@@ -117,7 +117,7 @@ jobs:
                 -D WITH_QTWEBENGINE=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D "NUGET_USERNAME=${GITHUB_ACTOR}" \
-                -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+                -D NUGET_PUSH_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
       - name: 🌋 Build
