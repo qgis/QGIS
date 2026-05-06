@@ -15,6 +15,8 @@
 
 #include "qgsmaterial3dhandler.h"
 
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
 #include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
@@ -156,6 +158,25 @@ Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene(
   lightTransform->setTranslation( QVector3D( 3, 3, 3 ) );
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
+
+  auto *animGroup = new QSequentialAnimationGroup( lightEntity );
+  animGroup->setLoopCount( -1 );
+
+  auto *swingLeft = new QPropertyAnimation( lightTransform, "translation", animGroup );
+  swingLeft->setDuration( 8000 );
+  swingLeft->setStartValue( QVector3D( 3, 3, 3 ) );
+  swingLeft->setEndValue( QVector3D( -5, 5, 3 ) );
+  swingLeft->setEasingCurve( QEasingCurve::InOutSine );
+
+  auto *swingRight = new QPropertyAnimation( lightTransform, "translation", animGroup );
+  swingRight->setDuration( 8000 );
+  swingRight->setStartValue( QVector3D( -5, 5, 3 ) );
+  swingRight->setEndValue( QVector3D( 3, 3, 3 ) );
+  swingRight->setEasingCurve( QEasingCurve::InOutSine );
+
+  animGroup->addAnimation( swingLeft );
+  animGroup->addAnimation( swingRight );
+  animGroup->start();
 
   return root;
 }
