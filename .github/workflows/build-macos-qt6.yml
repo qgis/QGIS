@@ -232,10 +232,19 @@ jobs:
           # Arm64-only build: extract the .app bundle straight into the
           # 'universal' directory so downstream sign + create-dmg steps don't
           # need conditionals on architecture.
+          # actions/download-artifact@v8 with a single-matching pattern places
+          # the artifact contents directly under `path`, NOT in a per-artifact
+          # subdir like older versions. Use find to locate the tarball
+          # regardless of layout.
           mkdir -p universal
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release/qgis-app-${STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME}-arm64-osx-dynamic-release.tar.gz -C universal
-        env:
-          STEPS_WORKFLOW_ARTIFACT_IDS_OUTPUTS_FILENAME: ${{steps.workflow-artifact-ids.outputs.filename}}
+          ls -laR artifacts | head -30
+          TARBALL=$(find artifacts -name 'qgis-app-*-arm64-osx-dynamic-release.tar.gz' | head -n1)
+          if [ -z "$TARBALL" ]; then
+            echo "ERROR: arm64 app tarball not found under artifacts/"
+            exit 1
+          fi
+          echo "Extracting $TARBALL to universal/"
+          gtar --strip-components=5 -zxf "$TARBALL" -C universal
 
       - name: 🔐 Import Apple code signing certificate
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
