@@ -46,8 +46,6 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
   public:
     QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset );
 
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
     QVariant sortKey() const override { return u"4 %1"_s.arg( mName ); }
     void updateToolTip();

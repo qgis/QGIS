@@ -55,11 +55,6 @@ QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, co
   setState( Qgis::BrowserItemState::Populated );
 }
 
-bool QgsStacAssetItem::hasDragEnabled() const
-{
-  return mStacAsset->isCloudOptimized();
-}
-
 QgsStacController *QgsStacAssetItem::stacController() const
 {
   const QgsDataItem *item = this;
@@ -71,26 +66,6 @@ QgsStacController *QgsStacAssetItem::stacController() const
   }
   Q_ASSERT( false );
   return nullptr;
-}
-
-QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
-{
-  QgsStacController *controller = stacController();
-
-  const QString authcfg = controller ? controller->authCfg() : QString();
-
-  QgsMimeDataUtils::Uri uri;
-  QUrl url( mStacAsset->href() );
-  if ( url.isLocalFile() )
-  {
-    uri.uri = mStacAsset->href();
-  }
-  else
-  {
-    uri = mStacAsset->uri( authcfg );
-  }
-
-  return { uri };
 }
 
 bool QgsStacAssetItem::equal( const QgsDataItem * )
