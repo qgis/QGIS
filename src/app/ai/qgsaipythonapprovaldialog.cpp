@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaipythonapprovaldialog.h"
-#include "moc_qgsaipythonapprovaldialog.cpp"
 
 #include "qgscodeeditorpython.h"
 
@@ -22,6 +21,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+#include "moc_qgsaipythonapprovaldialog.cpp"
 
 QgsAiPythonApprovalDialog::QgsAiPythonApprovalDialog( const QString &description, const QString &code, QWidget *parent )
   : QDialog( parent )

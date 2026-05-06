@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaireviewpatchengine.h"
-#include "moc_qgsaireviewpatchengine.cpp"
 
 #include "qgsaifilecontextprovider.h"
 
@@ -25,6 +24,8 @@
 #include <QString>
 #include <QTextStream>
 #include <QUuid>
+
+#include "moc_qgsaireviewpatchengine.cpp"
 
 using namespace Qt::StringLiterals;
 

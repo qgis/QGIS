@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaiembeddingclient.h"
-#include "moc_qgsaiembeddingclient.cpp"
 
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -29,6 +28,8 @@
 #include <QString>
 #include <QTimer>
 #include <QUrl>
+
+#include "moc_qgsaiembeddingclient.cpp"
 
 using namespace Qt::StringLiterals;
 

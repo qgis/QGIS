@@ -24,25 +24,25 @@
 
 struct APP_EXPORT QgsAiToolResult
 {
-  bool success = false;
-  QJsonValue output;
-  QString errorMessage;
+    bool success = false;
+    QJsonValue output;
+    QString errorMessage;
 
-  static QgsAiToolResult ok( const QJsonValue &output )
-  {
-    QgsAiToolResult result;
-    result.success = true;
-    result.output = output;
-    return result;
-  }
+    static QgsAiToolResult ok( const QJsonValue &output )
+    {
+      QgsAiToolResult result;
+      result.success = true;
+      result.output = output;
+      return result;
+    }
 
-  static QgsAiToolResult error( const QString &message )
-  {
-    QgsAiToolResult result;
-    result.success = false;
-    result.errorMessage = message;
-    return result;
-  }
+    static QgsAiToolResult error( const QString &message )
+    {
+      QgsAiToolResult result;
+      result.success = false;
+      result.errorMessage = message;
+      return result;
+    }
 };
 
 class APP_EXPORT QgsAiTool

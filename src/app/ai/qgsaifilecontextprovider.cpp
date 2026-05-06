@@ -14,19 +14,23 @@
  ***************************************************************************/
 
 #include "qgsaifilecontextprovider.h"
-#include "moc_qgsaifilecontextprovider.cpp"
 
 #include <algorithm>
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
+
+#include "moc_qgsaifilecontextprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAiFileContextProvider::QgsAiFileContextProvider( const QString &workspaceRoot, QObject *parent )
   : QObject( parent )
   , mWorkspaceRoot( QDir( workspaceRoot ).absolutePath() )
-{
-}
+{}
 
 bool QgsAiFileContextProvider::isInWorkspace( const QString &absolutePath ) const
 {
@@ -34,10 +38,7 @@ bool QgsAiFileContextProvider::isInWorkspace( const QString &absolutePath ) cons
     return false;
 
   const QString relativePath = QDir( mWorkspaceRoot ).relativeFilePath( absolutePath );
-  return relativePath == QLatin1String( "." )
-         || ( !relativePath.startsWith( QStringLiteral( "../" ) )
-              && relativePath != QLatin1String( ".." )
-              && !QDir::isAbsolutePath( relativePath ) );
+  return relativePath == "."_L1 || ( !relativePath.startsWith( "../"_L1 ) && relativePath != ".."_L1 && !QDir::isAbsolutePath( relativePath ) );
 }
 
 QString QgsAiFileContextProvider::normalizePath( const QString &filePath, bool allowExternal ) const
@@ -84,12 +85,12 @@ QStringList QgsAiFileContextProvider::workspaceFileCandidates( const QString &qu
     ++visited;
 
     const QString relativePath = rootDir.relativeFilePath( absolutePath );
-    if ( relativePath.startsWith( QStringLiteral( ".git/" ) )
-         || relativePath.startsWith( QStringLiteral( "build/" ) )
-         || relativePath.startsWith( QStringLiteral( "external/" ) )
-         || relativePath.startsWith( QStringLiteral( "i18n/" ) )
-         || relativePath.startsWith( QStringLiteral( "tests/testdata/" ) )
-         || relativePath.startsWith( QStringLiteral( "vcpkg/" ) ) )
+    if ( relativePath.startsWith( ".git/"_L1 )
+         || relativePath.startsWith( "build/"_L1 )
+         || relativePath.startsWith( "external/"_L1 )
+         || relativePath.startsWith( "i18n/"_L1 )
+         || relativePath.startsWith( "tests/testdata/"_L1 )
+         || relativePath.startsWith( "vcpkg/"_L1 ) )
     {
       continue;
     }
@@ -145,7 +146,7 @@ QStringList QgsAiFileContextProvider::searchInFile( const QString &filePath, con
   {
     const QString line = lines.at( lineNumber );
     if ( line.contains( needle, Qt::CaseInsensitive ) )
-      matches << QStringLiteral( "%1:%2" ).arg( lineNumber + 1 ).arg( line.trimmed() );
+      matches << u"%1:%2"_s.arg( lineNumber + 1 ).arg( line.trimmed() );
   }
 
   return matches;
@@ -154,12 +155,12 @@ QStringList QgsAiFileContextProvider::searchInFile( const QString &filePath, con
 QString QgsAiFileContextProvider::diffPreview( const QString &beforeText, const QString &afterText ) const
 {
   if ( beforeText == afterText )
-    return QStringLiteral( "No changes." );
+    return u"No changes."_s;
 
   QString preview;
-  preview += QStringLiteral( "--- before\n" );
+  preview += "--- before\n"_L1;
   preview += beforeText.left( 2000 );
-  preview += QStringLiteral( "\n+++ after\n" );
+  preview += "\n+++ after\n"_L1;
   preview += afterText.left( 2000 );
   return preview;
 }

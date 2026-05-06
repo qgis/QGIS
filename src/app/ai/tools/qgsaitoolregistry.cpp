@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsaitoolregistry.h"
-#include "moc_qgsaitoolregistry.cpp"
 
 #include <QJsonObject>
 #include <QSet>
 #include <QString>
+
+#include "moc_qgsaitoolregistry.cpp"
 
 using namespace Qt::StringLiterals;
 

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaireviewdialog.h"
-#include "moc_qgsaireviewdialog.cpp"
 
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -27,6 +26,8 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include "moc_qgsaireviewdialog.cpp"
 
 QgsAiReviewDialog::QgsAiReviewDialog( const QgsAiPatchProposal &proposal, QWidget *parent )
   : QDialog( parent )

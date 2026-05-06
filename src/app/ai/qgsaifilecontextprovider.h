@@ -24,14 +24,14 @@
 
 struct APP_EXPORT QgsAiFileContext
 {
-  QString filePath;
-  QString selectedText;
-  QString fileSnippet;
-  qint64 fileSize = 0;
-  bool truncated = false;
-  bool binary = false;
+    QString filePath;
+    QString selectedText;
+    QString fileSnippet;
+    qint64 fileSize = 0;
+    bool truncated = false;
+    bool binary = false;
 
-  bool isValid() const { return !filePath.isEmpty() || !selectedText.isEmpty(); }
+    bool isValid() const { return !filePath.isEmpty() || !selectedText.isEmpty(); }
 };
 
 class APP_EXPORT QgsAiFileContextProvider : public QObject

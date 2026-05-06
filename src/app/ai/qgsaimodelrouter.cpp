@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaimodelrouter.h"
-#include "moc_qgsaimodelrouter.cpp"
 
 #include <algorithm>
 
@@ -38,6 +37,8 @@
 #include <QStringList>
 #include <QUrl>
 #include <QUuid>
+
+#include "moc_qgsaimodelrouter.cpp"
 
 using namespace Qt::StringLiterals;
 

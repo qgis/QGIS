@@ -36,7 +36,7 @@ class APP_EXPORT QgsAiEchoTool : public QgsAiTool
 
     QString name() const override { return u"echo"_s; }
 
-    QString description() const override { return QStringLiteral( "Returns the provided text unchanged. Use this only when the user explicitly asks to test the tool loop." ); }
+    QString description() const override { return u"Returns the provided text unchanged. Use this only when the user explicitly asks to test the tool loop."_s; }
 
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;

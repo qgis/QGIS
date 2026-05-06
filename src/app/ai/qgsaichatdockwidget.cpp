@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaichatdockwidget.h"
-#include "moc_qgsaichatdockwidget.cpp"
 
 #include <algorithm>
 #include <utility>
@@ -58,6 +57,8 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QVariant>
+
+#include "moc_qgsaichatdockwidget.cpp"
 
 using namespace Qt::StringLiterals;
 

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaiagentsessionmanager.h"
-#include "moc_qgsaiagentsessionmanager.cpp"
 
 #include "qgsaifilecontextprovider.h"
 #include "qgsaireviewpatchengine.h"
@@ -33,6 +32,8 @@
 #include <QString>
 #include <QUuid>
 #include <QVariantList>
+
+#include "moc_qgsaiagentsessionmanager.cpp"
 
 using namespace Qt::StringLiterals;
 

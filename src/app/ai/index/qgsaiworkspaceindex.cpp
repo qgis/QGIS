@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsaiworkspaceindex.h"
-#include "moc_qgsaiworkspaceindex.cpp"
 
 #include <algorithm>
 #include <cmath>
@@ -36,6 +35,8 @@
 #include <QStringList>
 #include <QUuid>
 #include <QVariant>
+
+#include "moc_qgsaiworkspaceindex.cpp"
 
 using namespace Qt::StringLiterals;
 
