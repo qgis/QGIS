@@ -38,6 +38,7 @@
 #include "tiny_gltf.h"
 
 class QgsCoordinateTransform;
+class Qgs3DRenderContext;
 
 namespace Qt3DCore
 {
@@ -84,13 +85,13 @@ class _3D_EXPORT QgsGltf3DUtils
      * what QgsGltfUtils::accessorToMapCoordinates() does, it does an extra step of converting
      * map coordinates to 3D scene coordinates: P_SCENE = flip_ZY(P_MAP - sceneOriginTargetCrs)
      */
-    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, QStringList *errors = nullptr );
+    static Qt3DCore::QEntity *gltfToEntity( const QByteArray &data, const EntityTransform &transform, const QString &baseUri, const Qgs3DRenderContext &context, QStringList *errors = nullptr );
 
     /**
      * Converts a GLTF model into a Qt 3D entity.
      * \see gltfToEntity()
      */
-    static Qt3DCore::QEntity *parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors );
+    static Qt3DCore::QEntity *parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, const Qgs3DRenderContext &context, QStringList *errors );
 };
 
 ///@endcond

@@ -123,7 +123,7 @@ void QgsTiledSceneChunkLoader::start()
         QgsQuantizedMeshTile qmTile( content );
         qmTile.removeDegenerateTriangles();
         tinygltf::Model model = qmTile.toGltf( true, 100 );
-        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, mFactory.mRenderContext, &errors );
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
@@ -141,7 +141,7 @@ void QgsTiledSceneChunkLoader::start()
         if ( tileContents[0].gltf.isEmpty() )
           return;
         entityTransform.tileTransform.translate( tileContents[0].rtcCenter );
-        mEntity = QgsGltf3DUtils::gltfToEntity( tileContents[0].gltf, entityTransform, uri, &errors );
+        mEntity = QgsGltf3DUtils::gltfToEntity( tileContents[0].gltf, entityTransform, uri, mFactory.mRenderContext, &errors );
       }
       else
       {
@@ -153,7 +153,7 @@ void QgsTiledSceneChunkLoader::start()
 
           QgsGltf3DUtils::EntityTransform innerTransform = entityTransform;
           innerTransform.tileTransform.translate( innerContent.rtcCenter );
-          Qt3DCore::QEntity *childEntity = QgsGltf3DUtils::gltfToEntity( innerContent.gltf, innerTransform, uri, &errors );
+          Qt3DCore::QEntity *childEntity = QgsGltf3DUtils::gltfToEntity( innerContent.gltf, innerTransform, uri, mFactory.mRenderContext, &errors );
           if ( childEntity )
             childEntity->setParent( mEntity );
         }
@@ -172,7 +172,7 @@ void QgsTiledSceneChunkLoader::start()
         return;
       }
 
-      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), &errors );
+      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), mFactory.mRenderContext, &errors );
     }
     else
       return; // unsupported tile content type

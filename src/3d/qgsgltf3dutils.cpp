@@ -18,10 +18,12 @@
 
 #include <memory>
 
+#include "qgs3dutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgltfutils.h"
 #include "qgslogger.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"
 #include "qgsziputils.h"
@@ -295,7 +297,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 }
 
 // Returns NULLPTR if primitive should not be rendered
-static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
+static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors, const QgsMaterialContext &context )
 {
   if ( materialIndex < 0 )
   {
@@ -355,9 +357,7 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
     Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
     texture->addTextureImage( textureImage ); // textures take the ownership of textureImage if has no parant
 
-    // let's use linear (rather than nearest) filtering by default to avoid blocky look of textures
-    texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-    texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+    Qgs3DUtils::setTextureFiltering( texture, context );
 
     texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
 
@@ -394,9 +394,17 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
 
 
 static QVector<Qt3DCore::QEntity *> parseNode(
-  tinygltf::Model &model, int nodeIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QString baseUri, QMatrix4x4 parentTransform, QStringList *errors
+  tinygltf::Model &model,
+  int nodeIndex,
+  const QgsGltf3DUtils::EntityTransform &transform,
+  const QgsVector3D &tileTranslationEcef,
+  QString baseUri,
+  QMatrix4x4 parentTransform,
+  const Qgs3DRenderContext &context,
+  QStringList *errors
 )
 {
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
   tinygltf::Node &node = model.nodes[nodeIndex];
 
   QVector<Qt3DCore::QEntity *> entities;
@@ -439,7 +447,7 @@ static QVector<Qt3DCore::QEntity *> parseNode(
         continue;
       }
 
-      QgsMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
+      QgsMaterial *material = parseMaterial( model, primitive.material, baseUri, errors, materialContext );
       if ( !material )
       {
         // primitive should be skipped, eg fully transparent material
@@ -505,14 +513,14 @@ static QVector<Qt3DCore::QEntity *> parseNode(
   // recursively add children
   for ( int childNodeIndex : node.children )
   {
-    entities << parseNode( model, childNodeIndex, transform, tileTranslationEcef, baseUri, matrix ? *matrix : QMatrix4x4(), errors );
+    entities << parseNode( model, childNodeIndex, transform, tileTranslationEcef, baseUri, matrix ? *matrix : QMatrix4x4(), context, errors );
   }
 
   return entities;
 }
 
 
-Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors )
+Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, const Qgs3DRenderContext &context, QStringList *errors )
 {
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
@@ -537,7 +545,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, c
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
   for ( const int nodeIndex : scene.nodes )
   {
-    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), errors );
+    const QVector<Qt3DCore::QEntity *> entities = parseNode( model, nodeIndex, transform, tileTranslationEcef, baseUri, QMatrix4x4(), context, errors );
     for ( Qt3DCore::QEntity *e : entities )
       e->setParent( rootEntity );
   }
@@ -545,7 +553,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::parsedGltfToEntity( tinygltf::Model &model, c
 }
 
 
-Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors )
+Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, const Qgs3DRenderContext &context, QStringList *errors )
 {
   tinygltf::Model model;
   QString gltfErrors, gltfWarnings;
@@ -568,7 +576,7 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
     return nullptr;
   }
 
-  return parsedGltfToEntity( model, transform, baseUri, errors );
+  return parsedGltfToEntity( model, transform, baseUri, context, errors );
 }
 
 // For TinyGltfTextureImage

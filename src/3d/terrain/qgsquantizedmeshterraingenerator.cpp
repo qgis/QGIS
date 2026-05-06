@@ -99,7 +99,8 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
   bool shadingEnabled = map->isTerrainShadingEnabled();
   QgsVector3D chunkOrigin = node->box3D().center();
 
-  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled]() {
+  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
+  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled, context]() {
     if ( mTileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
       // Nothing to load for imaginary root tile
@@ -140,7 +141,7 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
       tinygltf::Model model = qmTile.toGltf( true, 100, true );
 
       QStringList errors;
-      Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+      Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, context, &errors );
       if ( !errors.isEmpty() )
       {
         QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
