@@ -40,7 +40,7 @@
 #include "qgs3drendercontext.h"
 
 #include <QImage>
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class QgsMapLayer;
 class QgsGlobeMapUpdateJobFactory;
