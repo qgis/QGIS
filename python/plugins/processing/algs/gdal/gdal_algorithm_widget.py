@@ -44,7 +44,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
-from processing.gui.AlgorithmWidget import AlgorithmWidget
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ParametersPanel import ParametersPanel

@@ -57,12 +57,12 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui import TestTools
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmLocatorFilter import (
     AlgorithmLocatorFilter,
     InPlaceAlgorithmLocatorFilter,
 )
-from processing.gui.AlgorithmWidget import AlgorithmWidget
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.menus import (
