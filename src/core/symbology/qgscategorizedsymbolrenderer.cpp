@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "qgsapplication.h"
+#include "qgscategorizedsymbolutils.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
@@ -624,101 +625,7 @@ bool QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &elemen
 
 QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
 {
-  int attrNum = fields.lookupField( mAttrName );
-  bool isExpression = ( attrNum == -1 );
-
-  bool hasDefault = false;
-  bool defaultActive = false;
-  bool allActive = true;
-  bool noneActive = true;
-
-  //we need to build lists of both inactive and active values, as either list may be required
-  //depending on whether the default category is active or not
-  QString activeValues;
-  QString inactiveValues;
-
-  for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
-  {
-    if ( cat.value() == "" || QgsVariantUtils::isNull( cat.value() ) )
-    {
-      hasDefault = true;
-      defaultActive = cat.renderState();
-    }
-
-    noneActive = noneActive && !cat.renderState();
-    allActive = allActive && cat.renderState();
-
-    const bool isList = cat.value().userType() == QMetaType::Type::QVariantList;
-    QString value = QgsExpression::quotedValue( cat.value(), static_cast<QMetaType::Type>( cat.value().userType() ) );
-
-    if ( !cat.renderState() )
-    {
-      if ( value != "" )
-      {
-        if ( isList )
-        {
-          const QVariantList list = cat.value().toList();
-          for ( const QVariant &v : list )
-          {
-            if ( !inactiveValues.isEmpty() )
-              inactiveValues.append( ',' );
-
-            inactiveValues.append( QgsExpression::quotedValue( v, isExpression ? static_cast<QMetaType::Type>( v.userType() ) : fields.at( attrNum ).type() ) );
-          }
-        }
-        else
-        {
-          if ( !inactiveValues.isEmpty() )
-            inactiveValues.append( ',' );
-
-          inactiveValues.append( value );
-        }
-      }
-    }
-    else
-    {
-      if ( value != "" )
-      {
-        if ( isList )
-        {
-          const QVariantList list = cat.value().toList();
-          for ( const QVariant &v : list )
-          {
-            if ( !activeValues.isEmpty() )
-              activeValues.append( ',' );
-
-            activeValues.append( QgsExpression::quotedValue( v, isExpression ? static_cast<QMetaType::Type>( v.userType() ) : fields.at( attrNum ).type() ) );
-          }
-        }
-        else
-        {
-          if ( !activeValues.isEmpty() )
-            activeValues.append( ',' );
-
-          activeValues.append( value );
-        }
-      }
-    }
-  }
-
-  QString attr = isExpression ? mAttrName : u"\"%1\""_s.arg( mAttrName );
-
-  if ( allActive && hasDefault )
-  {
-    return QString();
-  }
-  else if ( noneActive )
-  {
-    return u"FALSE"_s;
-  }
-  else if ( defaultActive )
-  {
-    return u"(%1) NOT IN (%2) OR (%1) IS NULL"_s.arg( attr, inactiveValues );
-  }
-  else
-  {
-    return u"(%1) IN (%2)"_s.arg( attr, activeValues );
-  }
+  return QgsCategorizedSymbolUtils<QgsCategorizedSymbolRenderer>::buildCategorizedFilter( mAttrName, fields, mCategories );
 }
 
 QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context ) const

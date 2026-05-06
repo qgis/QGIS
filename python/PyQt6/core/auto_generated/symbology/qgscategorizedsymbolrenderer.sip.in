@@ -173,6 +173,7 @@ categories.
 %End
   public:
     typedef QgsRendererCategory Category;
+    typedef QgsCategoryList Categories;
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 %Docstring

@@ -182,6 +182,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
     using Category = QgsRendererCategory;
+    using Categories = QgsCategoryList;
 
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
