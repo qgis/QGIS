@@ -105,7 +105,7 @@ void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &
 //
 
 QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *parent, WidgetMode mode )
-  : QWidget( parent )
+  : QDialog( parent )
   , mMode( mode )
 {
   setupUi( this );
