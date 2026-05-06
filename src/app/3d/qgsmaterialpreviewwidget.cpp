@@ -207,7 +207,7 @@ void QgsMaterialPreview3DWindow::setupPostProcessQuad()
   Qt3DCore::QBuffer *vertexBuffer = new Qt3DCore::QBuffer( geometry );
 
   QByteArray vertexData;
-  vertexData.resize( 4 * 3 * sizeof( float ) );
+  vertexData.resize( static_cast< qsizetype >( 4 * 3 * sizeof( float ) ) );
   float *v = reinterpret_cast<float *>( vertexData.data() );
   *v++ = -1.0f;
   *v++ = -1.0f;
