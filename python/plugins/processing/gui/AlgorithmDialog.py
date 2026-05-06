@@ -42,9 +42,9 @@ from qgis.PyQt.QtGui import QColor, QPalette
 from qgis.PyQt.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import execute, execute_in_place, executeIterating
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ParametersPanel import ParametersPanel
@@ -126,7 +126,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 
-    def flag_invalid_parameter_value(self, message: str, widget):
+    def flag_invalid_parameter_value(self, message: str, widget: QWidget):
         """
         Highlights a parameter with an invalid value
         """
@@ -145,7 +145,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             duration=5,
         )
 
-    def flag_invalid_output_extension(self, message: str, widget):
+    def flag_invalid_output_extension(self, message: str, widget: QWidget):
         """
         Highlights a parameter with an invalid output extension
         """
@@ -169,9 +169,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         try:
             return self.mainWidget().createProcessingParameters(flags)
-        except AlgorithmDialogBase.InvalidParameterValue as e:
+        except InvalidParameterValue as e:
             self.flag_invalid_parameter_value(e.parameter.description(), e.widget)
-        except AlgorithmDialogBase.InvalidOutputExtension as e:
+        except InvalidOutputExtension as e:
             self.flag_invalid_output_extension(e.message, e.widget)
         return {}
 
@@ -428,9 +428,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.proxy_progress.finalize(ok)
                     on_complete(ok, results)
 
-        except AlgorithmDialogBase.InvalidParameterValue as e:
+        except InvalidParameterValue as e:
             self.flag_invalid_parameter_value(e.parameter.description(), e.widget)
-        except AlgorithmDialogBase.InvalidOutputExtension as e:
+        except InvalidOutputExtension as e:
             self.flag_invalid_output_extension(e.message, e.widget)
 
     def finish(self, successful, result, context, feedback, in_place=False):

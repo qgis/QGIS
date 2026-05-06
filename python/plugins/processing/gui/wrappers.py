@@ -100,6 +100,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidParameterValue
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.CheckboxesPanel import CheckboxesPanel
@@ -122,10 +123,6 @@ DIALOG_BATCH = QgsProcessingGui.WidgetType.Batch
 DIALOG_MODELER = QgsProcessingGui.WidgetType.Modeler
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-
-
-class InvalidParameterValue(Exception):
-    pass
 
 
 dialogTypes = {
@@ -171,7 +168,7 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         if idx < 0:
             v = combobox.currentText().strip()
             if validator is not None and not validator(v):
-                raise InvalidParameterValue()
+                raise InvalidParameterValue(self.param, self.widget)
             return v
         if combobox.currentData() == self.NOT_SET_OPTION:
             return None
@@ -518,18 +515,18 @@ class ExtentWidgetWrapper(WidgetWrapper):
                     try:
                         tokens = s.split(",")
                         if len(tokens) != 4:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                         for token in tokens:
                             float(token)
                     except:
-                        raise InvalidParameterValue()
+                        raise InvalidParameterValue(self.param, self.widget)
                 elif (
                     self.parameterDefinition().flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
                     s = None
                 else:
-                    raise InvalidParameterValue()
+                    raise InvalidParameterValue(self.param, self.widget)
                 return s
             else:
                 return self.widget.currentData()
@@ -587,18 +584,18 @@ class PointWidgetWrapper(WidgetWrapper):
                     try:
                         tokens = s.split(",")
                         if len(tokens) != 2:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                         for token in tokens:
                             float(token)
                     except:
-                        raise InvalidParameterValue()
+                        raise InvalidParameterValue(self.param, self.widget)
                 elif (
                     self.parameterDefinition().flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
                     s = None
                 else:
-                    raise InvalidParameterValue()
+                    raise InvalidParameterValue(self.param, self.widget)
                 return s
             else:
                 return self.widget.currentData()
@@ -1103,7 +1100,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 and not self.parameterDefinition().flags()
                 & QgsProcessingParameterDefinition.Flag.FlagOptional
             ):
-                raise InvalidParameterValue()
+                raise InvalidParameterValue(self.param, self.widget)
             return values
 
 
@@ -1788,7 +1785,7 @@ class StringWidgetWrapper(WidgetWrapper):
                         ):
                             return None
                         else:
-                            raise InvalidParameterValue()
+                            raise InvalidParameterValue(self.param, self.widget)
                     else:
                         return value
                 else:
