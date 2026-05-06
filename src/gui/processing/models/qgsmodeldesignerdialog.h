@@ -32,7 +32,7 @@ class QUndoView;
 class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
-class QgsProcessingAlgorithmDialogBase;
+class QgsProcessingAlgorithmWidgetBase;
 class QgsModelDesignerConfigDockWidget;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     // cppcheck-suppress pureVirtualCall
     virtual bool saveModel( bool saveAs = false ) = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
+    virtual QgsProcessingAlgorithmWidgetBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
 
     /**
      * Creates a new widget context appropriate for the dialog.

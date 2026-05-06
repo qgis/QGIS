@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingBatchAlgorithmDialogBase : QgsProcessingAlgorithmDialogBase
+class QgsProcessingBatchAlgorithmDialogBase : QgsProcessingAlgorithmWidgetBase
 {
 %Docstring(signature="appended")
 Base class for processing batch algorithm dialogs.
@@ -28,7 +28,7 @@ Base class for processing batch algorithm dialogs.
 #include "qgsprocessingbatchalgorithmdialogbase.h"
 %End
   public:
-    QgsProcessingBatchAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingBatchAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingBatchAlgorithmDialogBase.
 %End

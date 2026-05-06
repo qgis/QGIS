@@ -1112,14 +1112,14 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     }
   }
 
-  std::unique_ptr<QgsProcessingAlgorithmDialogBase> dialog( createExecutionDialog() );
+  std::unique_ptr<QgsProcessingAlgorithmWidgetBase> dialog( createExecutionDialog() );
   if ( !dialog )
     return;
 
   dialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
   dialog->setParameters( mModel->designerParameterValues() );
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, &childAlgorithmSubset]( QgsProcessingContext *context ) {
+  connect( dialog.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, &childAlgorithmSubset]( QgsProcessingContext *context ) {
     if ( !childAlgorithmSubset.empty() )
     {
       // start from previous state
@@ -1145,7 +1145,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     }
   } );
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
+  connect( dialog.get(), &QgsProcessingAlgorithmWidgetBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
     QgsProcessingContext *context = dialog->processingContext();
     // take child output layers
     mLayerStore.temporaryLayerStore()->removeAllMapLayers();

@@ -33,7 +33,7 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsGui,
-    QgsProcessingAlgorithmDialogBase,
+    QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParametersGenerator,
 )
@@ -52,9 +52,9 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
-class AlgorithmWidget(QgsProcessingAlgorithmDialogBase):
+class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
     """
-    QgsProcessingAlgorithmDialogBase with python specific logic
+    QgsProcessingAlgorithmWidgetBase with python specific logic
     """
 
     def __init__(self, alg, in_place=False, parent=None):

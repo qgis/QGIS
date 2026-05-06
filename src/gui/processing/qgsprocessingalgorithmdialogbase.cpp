@@ -101,11 +101,11 @@ void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &
 }
 
 //
-// QgsProcessingAlgorithmDialogBase
+// QgsProcessingAlgorithmWidgetBase
 //
 
-QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags, DialogMode mode )
-  : QDialog( parent, flags )
+QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *parent, WidgetMode mode )
+  : QWidget( parent )
   , mMode( mode )
 {
   setupUi( this );
@@ -128,7 +128,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   QgsGui::enableAutoGeometryRestore( this );
 
   txtLog->setOpenLinks( false );
-  connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
+  connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmWidgetBase::urlClicked );
 
   const QgsSettings settings;
   splitter->restoreState( settings.value( u"/Processing/dialogBaseSplitter"_s, QByteArray() ).toByteArray() );
@@ -148,7 +148,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   switch ( mMode )
   {
-    case DialogMode::Single:
+    case QgsProcessingAlgorithmWidgetBase::WidgetMode::Single:
     {
       mAdvancedButton = new QPushButton( tr( "Advanced" ) );
       mAdvancedMenu = new QMenu( this );
@@ -289,7 +289,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       break;
     }
 
-    case DialogMode::Batch:
+    case QgsProcessingAlgorithmWidgetBase::WidgetMode::Batch:
       break;
   }
 
@@ -301,32 +301,33 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
     } );
   }
 
-  connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
-  connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingAlgorithmDialogBase::openHelp );
-  connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
-  connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
+  connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::runAlgorithm );
+  connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::showParameters );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmWidgetBase::closeClicked );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingAlgorithmWidgetBase::openHelp );
+  connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::toggleCollapsed );
+  connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmWidgetBase::splitterChanged );
 
-  connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::saveLog );
-  connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::copyLogToClipboard );
-  connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::clearLog );
+  connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::saveLog );
+  connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::copyLogToClipboard );
+  connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::clearLog );
 
-  connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged );
+  connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0, mMessageBar );
 
-  connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmDialogBase::taskTriggered );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmWidgetBase::taskTriggered );
+
 }
 
-QgsProcessingAlgorithmDialogBase::~QgsProcessingAlgorithmDialogBase() = default;
+QgsProcessingAlgorithmWidgetBase::~QgsProcessingAlgorithmWidgetBase() = default;
 
-void QgsProcessingAlgorithmDialogBase::setParameters( const QVariantMap & )
+void QgsProcessingAlgorithmWidgetBase::setParameters( const QVariantMap & )
 {}
 
-void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
+void QgsProcessingAlgorithmWidgetBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm.reset( algorithm );
   QString title;
@@ -357,7 +358,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
       "dl dd { margin - bottom: 5px; }"
     ) );
     textShortHelp->setHtml( algHelp );
-    connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
+    connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmWidgetBase::linkClicked );
     textShortHelp->show();
   }
 
@@ -373,12 +374,12 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   }
 }
 
-QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
+QgsProcessingAlgorithm *QgsProcessingAlgorithmWidgetBase::algorithm()
 {
   return mAlgorithm.get();
 }
 
-void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
+void QgsProcessingAlgorithmWidgetBase::setMainWidget( QgsPanelWidget *widget )
 {
   if ( mMainWidget )
   {
@@ -392,12 +393,12 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
   connect( mMainWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 }
 
-QgsPanelWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
+QgsPanelWidget *QgsProcessingAlgorithmWidgetBase::mainWidget()
 {
   return mMainWidget;
 }
 
-void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const LogFormat format )
+void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const LogFormat format )
 {
   QFile logFile( path );
   if ( !logFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
@@ -408,91 +409,91 @@ void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const
 
   switch ( format )
   {
-    case FormatPlainText:
+    case QgsProcessingAlgorithmWidgetBase::LogFormat::FormatPlainText:
       fout << txtLog->toPlainText();
       break;
 
-    case FormatHtml:
+    case QgsProcessingAlgorithmWidgetBase::LogFormat::FormatHtml:
       fout << txtLog->toHtml();
       break;
   }
 }
 
-QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
+QgsProcessingFeedback *QgsProcessingAlgorithmWidgetBase::createFeedback()
 {
   auto feedback = std::make_unique<QgsProcessingAlgorithmDialogFeedback>();
-  connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmDialogBase::setPercentage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushCommandInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushDebugInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmDialogBase::reportError );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmDialogBase::pushWarning );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmDialogBase::pushInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmDialogBase::pushFormattedMessage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmDialogBase::setProgressText );
+  connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmWidgetBase::setPercentage );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushDebugInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmWidgetBase::reportError );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmWidgetBase::pushWarning );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
   connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
 }
 
-QDialogButtonBox *QgsProcessingAlgorithmDialogBase::buttonBox()
+QDialogButtonBox *QgsProcessingAlgorithmWidgetBase::buttonBox()
 {
   return mButtonBox;
 }
 
-QTabWidget *QgsProcessingAlgorithmDialogBase::tabWidget()
+QTabWidget *QgsProcessingAlgorithmWidgetBase::tabWidget()
 {
   return mTabWidget;
 }
 
-void QgsProcessingAlgorithmDialogBase::showLog()
+void QgsProcessingAlgorithmWidgetBase::showLog()
 {
   mTabWidget->setCurrentIndex( 1 );
 }
 
-void QgsProcessingAlgorithmDialogBase::showParameters()
+void QgsProcessingAlgorithmWidgetBase::showParameters()
 {
   mTabWidget->setCurrentIndex( 0 );
 }
 
-QPushButton *QgsProcessingAlgorithmDialogBase::runButton()
+QPushButton *QgsProcessingAlgorithmWidgetBase::runButton()
 {
   return mButtonRun;
 }
 
-QPushButton *QgsProcessingAlgorithmDialogBase::cancelButton()
+QPushButton *QgsProcessingAlgorithmWidgetBase::cancelButton()
 {
   return buttonCancel;
 }
 
-QPushButton *QgsProcessingAlgorithmDialogBase::changeParametersButton()
+QPushButton *QgsProcessingAlgorithmWidgetBase::changeParametersButton()
 {
   return mButtonChangeParameters;
 }
 
-void QgsProcessingAlgorithmDialogBase::clearProgress()
+void QgsProcessingAlgorithmWidgetBase::clearProgress()
 {
   progressBar->setMaximum( 0 );
 }
 
-void QgsProcessingAlgorithmDialogBase::setExecuted( bool executed )
+void QgsProcessingAlgorithmWidgetBase::setExecuted( bool executed )
 {
   mExecuted = executed;
 }
 
-void QgsProcessingAlgorithmDialogBase::setExecutedAnyResult( bool executedAnyResult )
+void QgsProcessingAlgorithmWidgetBase::setExecutedAnyResult( bool executedAnyResult )
 {
   mExecutedAnyResult = executedAnyResult;
 }
 
-void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
+void QgsProcessingAlgorithmWidgetBase::setResults( const QVariantMap &results )
 {
   mResults = results;
 }
 
-void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
+void QgsProcessingAlgorithmWidgetBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {}
 
-void QgsProcessingAlgorithmDialogBase::openHelp()
+void QgsProcessingAlgorithmWidgetBase::openHelp()
 {
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() && mAlgorithm->provider() )
@@ -506,7 +507,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
     QDesktopServices::openUrl( algHelp );
 }
 
-void QgsProcessingAlgorithmDialogBase::toggleCollapsed()
+void QgsProcessingAlgorithmWidgetBase::toggleCollapsed()
 {
   if ( mHelpCollapsed )
   {
@@ -522,7 +523,7 @@ void QgsProcessingAlgorithmDialogBase::toggleCollapsed()
   mHelpCollapsed = !mHelpCollapsed;
 }
 
-void QgsProcessingAlgorithmDialogBase::splitterChanged( int, int )
+void QgsProcessingAlgorithmWidgetBase::splitterChanged( int, int )
 {
   if ( splitter->sizes().at( 1 ) == 0 )
   {
@@ -536,17 +537,17 @@ void QgsProcessingAlgorithmDialogBase::splitterChanged( int, int )
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged( int )
+void QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged( int )
 {
   updateRunButtonVisibility();
 }
 
-void QgsProcessingAlgorithmDialogBase::linkClicked( const QUrl &url )
+void QgsProcessingAlgorithmWidgetBase::linkClicked( const QUrl &url )
 {
   QDesktopServices::openUrl( url.toString() );
 }
 
-void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVariantMap & )
+void QgsProcessingAlgorithmWidgetBase::algExecuted( bool successful, const QVariantMap & )
 {
   mAlgorithmTask = nullptr;
 
@@ -574,7 +575,7 @@ void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVari
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::taskTriggered( QgsTask *task )
+void QgsProcessingAlgorithmWidgetBase::taskTriggered( QgsTask *task )
 {
   if ( task == mAlgorithmTask )
   {
@@ -586,13 +587,13 @@ void QgsProcessingAlgorithmDialogBase::taskTriggered( QgsTask *task )
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::closeClicked()
+void QgsProcessingAlgorithmWidgetBase::closeClicked()
 {
   reject();
   close();
 }
 
-void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
+void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
 {
   const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
@@ -601,17 +602,17 @@ void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
     QDesktopServices::openUrl( url );
 }
 
-Qgis::ProcessingLogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingAlgorithmWidgetBase::logLevel() const
 {
   return mLogLevel;
 }
 
-void QgsProcessingAlgorithmDialogBase::setLogLevel( Qgis::ProcessingLogLevel level )
+void QgsProcessingAlgorithmWidgetBase::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   mLogLevel = level;
 }
 
-void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool fatalError )
+void QgsProcessingAlgorithmWidgetBase::reportError( const QString &error, bool fatalError )
 {
   setInfo( error, true );
   if ( fatalError )
@@ -620,46 +621,46 @@ void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool f
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushWarning( const QString &warning )
+void QgsProcessingAlgorithmWidgetBase::pushWarning( const QString &warning )
 {
   setInfo( warning, false, true, true );
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
+void QgsProcessingAlgorithmWidgetBase::pushInfo( const QString &info )
 {
   setInfo( info );
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushFormattedMessage( const QString &html )
+void QgsProcessingAlgorithmWidgetBase::pushFormattedMessage( const QString &html )
 {
   setInfo( html, false, false );
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
+void QgsProcessingAlgorithmWidgetBase::pushCommandInfo( const QString &command )
 {
   txtLog->append( u"<code>%1<code>"_s.arg( formatStringForLog( command.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
+void QgsProcessingAlgorithmWidgetBase::pushDebugInfo( const QString &message )
 {
   txtLog->append( u"<span style=\"color:#777\">%1</span>"_s.arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
+void QgsProcessingAlgorithmWidgetBase::pushConsoleInfo( const QString &info )
 {
   txtLog->append( u"<code style=\"color:#777\">%1</code>"_s.arg( formatStringForLog( info.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
-QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
+QDialog *QgsProcessingAlgorithmWidgetBase::createProgressDialog()
 {
   QgsProcessingAlgorithmProgressDialog *dialog = new QgsProcessingAlgorithmProgressDialog( this );
   dialog->setWindowModality( Qt::ApplicationModal );
@@ -676,12 +677,12 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
   return dialog;
 }
 
-void QgsProcessingAlgorithmDialogBase::clearLog()
+void QgsProcessingAlgorithmWidgetBase::clearLog()
 {
   txtLog->clear();
 }
 
-void QgsProcessingAlgorithmDialogBase::saveLog()
+void QgsProcessingAlgorithmWidgetBase::saveLog()
 {
   QgsSettings settings;
   const QString lastUsedDir = settings.value( u"/Processing/lastUsedLogDirectory"_s, QDir::homePath() ).toString();
@@ -701,15 +702,15 @@ void QgsProcessingAlgorithmDialogBase::saveLog()
 
   settings.setValue( u"/Processing/lastUsedLogDirectory"_s, QFileInfo( path ).path() );
 
-  LogFormat format = FormatPlainText;
+  LogFormat format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatPlainText;
   if ( filter == htmlExt )
   {
-    format = FormatHtml;
+    format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatHtml;
   }
   saveLogToFile( path, format );
 }
 
-void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
+void QgsProcessingAlgorithmWidgetBase::copyLogToClipboard()
 {
   QMimeData *m = new QMimeData();
   m->setText( txtLog->toPlainText() );
@@ -722,7 +723,7 @@ void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
   cb->setMimeData( m, QClipboard::Clipboard );
 }
 
-void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
+void QgsProcessingAlgorithmWidgetBase::closeEvent( QCloseEvent *e )
 {
   if ( !mHelpCollapsed )
   {
@@ -741,10 +742,10 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::runAlgorithm()
+void QgsProcessingAlgorithmWidgetBase::runAlgorithm()
 {}
 
-void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
+void QgsProcessingAlgorithmWidgetBase::setPercentage( double percent )
 {
   // delay setting maximum progress value until we know algorithm reports progress
   if ( progressBar->maximum() == 0 )
@@ -753,7 +754,7 @@ void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::setProgressText( const QString &text )
+void QgsProcessingAlgorithmWidgetBase::setProgressText( const QString &text )
 {
   lblProgress->setText( text );
   setInfo( text, false );
@@ -761,7 +762,7 @@ void QgsProcessingAlgorithmDialogBase::setProgressText( const QString &text )
   processEvents();
 }
 
-QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *algorithm )
+QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *algorithm )
 {
   QString result;
   const QString text = algorithm->shortHelpString();
@@ -804,7 +805,7 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
   return result;
 }
 
-void QgsProcessingAlgorithmDialogBase::processEvents()
+void QgsProcessingAlgorithmWidgetBase::processEvents()
 {
   if ( mAlgorithmTask )
   {
@@ -829,13 +830,13 @@ void QgsProcessingAlgorithmDialogBase::processEvents()
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::scrollToBottomOfLog()
+void QgsProcessingAlgorithmWidgetBase::scrollToBottomOfLog()
 {
   QScrollBar *sb = txtLog->verticalScrollBar();
   sb->setValue( sb->maximum() );
 }
 
-void QgsProcessingAlgorithmDialogBase::resetGui()
+void QgsProcessingAlgorithmWidgetBase::resetGui()
 {
   lblProgress->clear();
   progressBar->setMaximum( 100 );
@@ -851,7 +852,7 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
   resetAdditionalGui();
 }
 
-void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
+void QgsProcessingAlgorithmWidgetBase::updateRunButtonVisibility()
 {
   // Activate run button if current tab is Parameters
   const bool runButtonVisible = mTabWidget->currentIndex() == 0;
@@ -861,10 +862,10 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
   mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult && mButtonChangeParameters->isEnabled() );
 }
 
-void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
+void QgsProcessingAlgorithmWidgetBase::resetAdditionalGui()
 {}
 
-void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
+void QgsProcessingAlgorithmWidgetBase::blockControlsWhileRunning()
 {
   mButtonRun->setEnabled( false );
   mButtonChangeParameters->setEnabled( false );
@@ -875,39 +876,39 @@ void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
   blockAdditionalControlsWhileRunning();
 }
 
-void QgsProcessingAlgorithmDialogBase::blockAdditionalControlsWhileRunning()
+void QgsProcessingAlgorithmWidgetBase::blockAdditionalControlsWhileRunning()
 {}
 
-QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()
+QgsMessageBar *QgsProcessingAlgorithmWidgetBase::messageBar()
 {
   return mMessageBar;
 }
 
-void QgsProcessingAlgorithmDialogBase::hideShortHelp()
+void QgsProcessingAlgorithmWidgetBase::hideShortHelp()
 {
   textShortHelp->setVisible( false );
 }
 
-void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTask *task )
+void QgsProcessingAlgorithmWidgetBase::setCurrentTask( QgsProcessingAlgRunnerTask *task )
 {
   mAlgorithmTask = task;
-  connect( mAlgorithmTask, &QgsProcessingAlgRunnerTask::executed, this, &QgsProcessingAlgorithmDialogBase::algExecuted );
+  connect( mAlgorithmTask, &QgsProcessingAlgRunnerTask::executed, this, &QgsProcessingAlgorithmWidgetBase::algExecuted );
   QgsApplication::taskManager()->addTask( mAlgorithmTask );
 }
 
-QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
+QString QgsProcessingAlgorithmWidgetBase::formatStringForLog( const QString &string )
 {
   QString s = string;
   s.replace( '\n', "<br>"_L1 );
   return s;
 }
 
-bool QgsProcessingAlgorithmDialogBase::isFinalized()
+bool QgsProcessingAlgorithmWidgetBase::isFinalized()
 {
   return true;
 }
 
-void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingContext *context )
+void QgsProcessingAlgorithmWidgetBase::applyContextOverrides( QgsProcessingContext *context )
 {
   if ( !context )
     return;
@@ -924,7 +925,7 @@ void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingConte
   }
 }
 
-void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
+void QgsProcessingAlgorithmWidgetBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
   // Avoid logging too many messages, which might blow memory.
@@ -946,7 +947,7 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
   processEvents();
 }
 
-void QgsProcessingAlgorithmDialogBase::reject()
+void QgsProcessingAlgorithmWidgetBase::reject()
 {
   if ( !mAlgorithmTask && isFinalized() )
   {
