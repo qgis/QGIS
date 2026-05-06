@@ -39,7 +39,7 @@ from qgis.gui import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor, QPalette
-from qgis.PyQt.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton, QWidget
 from qgis.utils import iface
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
