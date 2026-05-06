@@ -319,6 +319,9 @@ application message bar.
 .. seealso:: :py:func:`messageDiscarded`
 %End
 
+
+
+
     void messageDiscarded();
 %Docstring
 Emitted when the previous message from the tool should be cleared from

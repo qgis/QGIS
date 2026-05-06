@@ -1123,6 +1123,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /**
+    * Push a message (usually to be displayed in a message bar)
+    *
+    * \see messageEmitted();
+    *
+    * \since QGIS 4.2
+    */
+    void pushMessage( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
