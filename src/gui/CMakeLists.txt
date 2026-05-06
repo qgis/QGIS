@@ -424,7 +424,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
-  processing/qgsprocessingbatchalgorithmdialogbase.cpp
+  processing/qgsprocessingbatchalgorithmwidgetbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
@@ -1445,7 +1445,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
   processing/qgsprocessingalgorithmconfigurationwidget.h
-  processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingdxflayerswidgetwrapper.h

@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/processing/qgsprocessingalgorithmdialogbase.h
+# The following has been generated automatically from src/gui/processing/qgsprocessingalgorithmwidgetbase.h
 # monkey patching scoped based enum
 QgsProcessingAlgorithmWidgetBase.LogFormat.FormatPlainText.__doc__ = "Plain text file (.txt)"
 QgsProcessingAlgorithmWidgetBase.LogFormat.FormatHtml.__doc__ = "HTML file (.html)"

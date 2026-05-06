@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingalgorithmdialogbase.h                *
+ * src/gui/processing/qgsprocessingalgorithmwidgetbase.h                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -25,7 +25,7 @@ algorithms.
 %End
 
 %TypeHeaderCode
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 %End
   public:
     enum class LogFormat /BaseType=IntEnum/
@@ -414,7 +414,7 @@ Called when an algorithm task has completed.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingalgorithmdialogbase.h                *
+ * src/gui/processing/qgsprocessingalgorithmwidgetbase.h                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsprocessingalgorithmdialogbase.h
+                             qgsprocessingalgorithmwidgetbase.h
                              ----------------------------------
     Date                 : November 2017
     Copyright            : (C) 2017 Nyall Dawson
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPROCESSINGALGORITHMDIALOGBASE_H
-#define QGSPROCESSINGALGORITHMDIALOGBASE_H
+#ifndef QGSPROCESSINGALGORITHMWIDGETBASE_H
+#define QGSPROCESSINGALGORITHMWIDGETBASE_H
 
 #include "ui_qgsprocessingalgorithmdialogbase.h"
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
@@ -600,4 +600,4 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
 
 ///@endcond
 
-#endif // QGSPROCESSINGALGORITHMDIALOGBASE_H
+#endif // QGSPROCESSINGALGORITHMWIDGETBASE_H

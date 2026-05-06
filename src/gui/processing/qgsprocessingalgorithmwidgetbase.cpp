@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 
 #include <nlohmann/json.hpp>
 
@@ -42,7 +42,7 @@
 #include <QString>
 #include <QToolButton>
 
-#include "moc_qgsprocessingalgorithmdialogbase.cpp"
+#include "moc_qgsprocessingalgorithmwidgetbase.cpp"
 
 using namespace Qt::StringLiterals;
 
