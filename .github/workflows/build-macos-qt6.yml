@@ -289,6 +289,15 @@ jobs:
           done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 \( -type f -o -type l \) -print0)
           echo "Relocated ${MOVED} non-Mach-O file(s) to Contents/Resources/python/" #spellok
 
+      - name: 🧹 Remove build object files from app bundle
+        if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
+        run: |
+          # Qt plugin builds can leave intermediate objects under Contents/PlugIns.
+          # They are not runtime files and make codesign reject the bundle seal.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          find "${APP_PATH}" -type d -name "objects-*" -print -prune -exec rm -rf {} +
+          find "${APP_PATH}" -type f -name "*.o" -print -delete
+
       - name: 🔏 Sign app
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
         run: |
