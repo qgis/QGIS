@@ -56,7 +56,7 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
@@ -116,8 +116,8 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.registerProcessingContextGenerator(self.context_generator)
 
     def createExecutionDialog(self):
-        dlg = AlgorithmDialog(self.model().create(), parent=self)
-        return dlg
+        widget = AlgorithmWidget(self.model().create(), parent=self)
+        return widget
 
     def saveInProject(self):
         if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveInProject):

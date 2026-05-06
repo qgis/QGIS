@@ -33,7 +33,7 @@ from qgis.core import (
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 
@@ -175,28 +175,28 @@ def createAlgorithmDialog(algOrName, parameters={}):
     if alg is None:
         return None
 
-    dlg = alg.createCustomParametersWidget(iface.mainWindow())
+    widget = alg.createCustomParametersWidget(iface.mainWindow())
 
-    if not dlg:
-        dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
+    if not widget:
+        widget = AlgorithmWidget(alg, parent=iface.mainWindow())
 
-    dlg.setParameters(parameters)
+    widget.setParameters(parameters)
 
-    return dlg
+    return widget
 
 
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
 def execAlgorithmDialog(algOrName, parameters={}):
-    dlg = createAlgorithmDialog(algOrName, parameters)
-    if dlg is None:
+    widget = createAlgorithmDialog(algOrName, parameters)
+    if widget is None:
         return {}
 
     canvas = iface.mapCanvas()
     prevMapTool = canvas.mapTool()
-    dlg.show()
-    dlg.exec()
+    widget.show()
+    widget.exec()
     if canvas.mapTool() != prevMapTool:
         try:
             canvas.mapTool().reset()
@@ -204,7 +204,7 @@ def execAlgorithmDialog(algOrName, parameters={}):
             pass
         canvas.setMapTool(prevMapTool)
 
-    results = dlg.results()
+    results = widget.results()
     # make sure the dialog is destroyed and not only hidden on pressing Esc
-    dlg.close()
+    widget.close()
     return results

@@ -52,7 +52,11 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
-class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
+class AlgorithmWidget(QgsProcessingAlgorithmDialogBase):
+    """
+    QgsProcessingAlgorithmDialogBase with python specific logic
+    """
+
     def __init__(self, alg, in_place=False, parent=None):
         super().__init__(parent)
 

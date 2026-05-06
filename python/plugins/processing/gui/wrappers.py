@@ -126,7 +126,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 dialogTypes = {
-    "AlgorithmDialog": DIALOG_STANDARD,
+    "AlgorithmWidget": DIALOG_STANDARD,
     "ModelerParametersDialog": DIALOG_MODELER,
     "BatchAlgorithmDialog": DIALOG_BATCH,
 }

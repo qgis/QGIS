@@ -35,7 +35,7 @@ from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
@@ -384,13 +384,13 @@ def _executeAlgorithm(alg_id):
         return
 
     if (alg.countVisibleParameters()) > 0:
-        dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
-        if not dlg:
-            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
+        widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
+        if not widget:
+            widget = AlgorithmWidget(alg, parent=iface.mainWindow())
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
-        dlg.show()
-        dlg.exec()
+        widget.show()
+        widget.exec()
         if canvas.mapTool() != prevMapTool:
             try:
                 canvas.mapTool().reset()

@@ -26,7 +26,6 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsMessageBar,
-    QgsProcessingAlgorithmDialogBase,
     QgsProcessingLayerOutputDestinationWidget,
     QgsProjectionSelectionWidget,
 )
@@ -45,7 +44,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
-from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.AlgorithmWidget import AlgorithmWidget
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ParametersPanel import ParametersPanel
@@ -53,7 +52,11 @@ from processing.gui.wrappers import WidgetWrapper
 from processing.tools.dataobjects import createContext
 
 
-class GdalAlgorithmDialog(AlgorithmDialog):
+class GdalAlgorithmWidget(AlgorithmWidget):
+    """
+    Custom algorithm widget for showing GDAL command line arguments
+    """
+
     def __init__(self, alg, parent=None):
         super().__init__(alg, parent=parent)
         self.mainWidget().parametersHaveChanged()
