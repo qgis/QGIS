@@ -108,6 +108,91 @@ void QgsStacAssetItem::updateToolTip()
   mToolTip = u"STAC Asset:\n%1\n%2"_s.arg( title, mStacAsset->href() );
 }
 
+
+//
+// QgsStacAssetLayerItem
+//
+
+QgsStacAssetLayerItem *QgsStacAssetLayerItem::createItemForAsset( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset, const QString &authcfg )
+{
+  QgsMimeDataUtils::Uri uri;
+  QUrl url( asset->href() );
+  if ( url.isLocalFile() )
+  {
+    uri.uri = asset->href();
+  }
+  else
+  {
+    uri = asset->uri( authcfg );
+  }
+
+  Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::NoType;
+  if ( uri.layerType == "vector"_L1 )
+  {
+    layerType = Qgis::BrowserLayerType::Vector;
+  }
+  else if ( uri.layerType == "raster"_L1 )
+  {
+    layerType = Qgis::BrowserLayerType::Raster;
+  }
+  else if ( uri.layerType == "pointcloud"_L1 )
+  {
+    layerType = Qgis::BrowserLayerType::PointCloud;
+  }
+
+  return new QgsStacAssetLayerItem( parent, name, asset, uri, layerType, uri.providerKey );
+}
+
+QgsStacAssetLayerItem::QgsStacAssetLayerItem(
+  QgsDataItem *parent, const QString &name, const QgsStacAsset *asset, const QgsMimeDataUtils::Uri &uri, Qgis::BrowserLayerType layerType, const QString &providerKey
+)
+  : QgsLayerItem( parent, name, QString( "%1/%2" ).arg( parent->path(), name ), uri.uri, layerType, providerKey )
+  , mStacAsset( asset )
+  , mUri( uri )
+  , mName( name )
+{
+  updateToolTip();
+  setState( Qgis::BrowserItemState::Populated );
+}
+
+bool QgsStacAssetLayerItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsStacController *QgsStacAssetLayerItem::stacController() const
+{
+  const QgsDataItem *item = this;
+  while ( item )
+  {
+    if ( const QgsStacConnectionItem *ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
+      return ci->controller();
+    item = item->parent();
+  }
+  Q_ASSERT( false );
+  return nullptr;
+}
+
+QgsMimeDataUtils::UriList QgsStacAssetLayerItem::mimeUris() const
+{
+  return { mUri };
+}
+
+bool QgsStacAssetLayerItem::equal( const QgsDataItem * )
+{
+  return false;
+}
+
+void QgsStacAssetLayerItem::updateToolTip()
+{
+  QString title = mStacAsset->title();
+  if ( title.isNull() || title.isEmpty() )
+  {
+    title = mName;
+  }
+  mToolTip = u"STAC Asset:\n%1\n%2"_s.arg( title, mStacAsset->href() );
+}
+
 //
 // QgsStacFetchMoreItem
 //
@@ -146,6 +231,7 @@ QgsStacItemItem::QgsStacItemItem( QgsDataItem *parent, const QString &name, cons
 QVector<QgsDataItem *> QgsStacItemItem::createChildren()
 {
   QgsStacController *controller = stacController();
+  const QString authcfg = controller->authCfg();
   QString error;
   setStacItem( controller->fetchStacObject<QgsStacItem>( mPath, &error ) );
 
@@ -158,8 +244,17 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
-    contents.append( assetItem );
+    if ( it.value().uri( authcfg ).isValid() && it.value().isCloudOptimized() )
+    {
+      // asset can be treated as a map layer
+      QgsStacAssetLayerItem *assetItem = QgsStacAssetLayerItem::createItemForAsset( this, it.key(), &it.value(), authcfg );
+      contents.append( assetItem );
+    }
+    else
+    {
+      QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+      contents.append( assetItem );
+    }
   }
   return contents;
 }
@@ -367,6 +462,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   QgsStacController *controller = stacController();
   QString error;
   setStacCatalog( controller->fetchStacObject< QgsStacCatalog >( mPath, &error ) );
+  const QString authcfg = controller->authCfg();
 
   if ( !mStacCatalog )
     return { new QgsErrorItem( this, error, path() + u"/error"_s ) };
@@ -467,8 +563,17 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     const QMap<QString, QgsStacAsset> assets = collection->assets();
     for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
     {
-      QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
-      contents.append( assetItem );
+      if ( it.value().uri( authcfg ).isValid() && it.value().isCloudOptimized() )
+      {
+        // asset can be treated as a map layer
+        QgsStacAssetLayerItem *assetItem = QgsStacAssetLayerItem::createItemForAsset( this, it.key(), &it.value(), authcfg );
+        contents.append( assetItem );
+      }
+      else
+      {
+        QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+        contents.append( assetItem );
+      }
     }
   }
 
