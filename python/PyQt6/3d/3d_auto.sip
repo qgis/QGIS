@@ -1,7 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/processing/qgs3dalgorithms.sip
 %Include auto_generated/qgs3d.sip
-%Include auto_generated/qgsabstract3dmapbackgroundsettings.sip
 %Include auto_generated/qgs3dmapscene.sip
 %Include auto_generated/qgs3dmapsettings.sip
 %Include auto_generated/qgs3dmaptool.sip
@@ -20,6 +19,8 @@
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgstiledscenelayer3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
+%Include auto_generated/qgsabstract3dmapbackgroundsettings.sip
+%Include auto_generated/qgsfixedgradientbackgroundsettings.sip
 %Include auto_generated/qgspointcloudlayer3drenderer.sip
 %Include auto_generated/qgstextureatlasgenerator.sip
 %Include auto_generated/lights/qgsdirectionallightsettings.sip
