@@ -137,7 +137,7 @@ void QgsTiledSceneChunkLoader::start()
       if ( tileContents.isEmpty() )
         return;
 
-      QVector<Qt3DCore::QEntity*> childEntities;
+      QVector<Qt3DCore::QEntity *> childEntities;
 
       for ( const QgsCesiumUtils::TileContents &innerContent : tileContents )
       {
@@ -150,14 +150,14 @@ void QgsTiledSceneChunkLoader::start()
         // Check for instancing (i3dm or EXT_mesh_gpu_instancing)
         tinygltf::Model model;
         QString gltfErrors, gltfWarnings;
-        if ( !QgsGltfUtils::loadGltfModel( tileContent.gltf, model, &gltfErrors, &gltfWarnings ) )
+        if ( !QgsGltfUtils::loadGltfModel( innerContent.gltf, model, &gltfErrors, &gltfWarnings ) )
         {
           errors.append( u"GLTF load error: "_s + gltfErrors );
           continue;
         }
 
         const QgsMatrix4x4 rawTileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-        const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, tileContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, tileContent.rtcCenter );
+        const auto instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, innerContent.instancing, innerTransform.gltfUpAxis, rawTileTransform, innerContent.rtcCenter );
 
         if ( instancedPrimitives.isEmpty() )
         {
@@ -171,7 +171,7 @@ void QgsTiledSceneChunkLoader::start()
           // the instanced case (i3dm or glTF tile with EXT_mesh_gpu_instancing)
           childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, &errors );
 
-          if ( !tileContent.instancing.has_value() )
+          if ( !innerContent.instancing.has_value() )
           {
             // for glTF tiles with EXT_mesh_gpu_instancing, the model can have a mixture of instanced
             // and non-instanced nodes. Handle the non-instanced nodes here (if any).

@@ -646,11 +646,14 @@ static QgsCesiumUtils::TileContents extractGltfFromI3dm( const QByteArray &tileC
 {
   struct i3dmHeader
   {
-    quint32 featureTableJsonByteLength;
-    quint32 featureTableBinaryByteLength;
-    quint32 batchTableJsonByteLength;
-    quint32 batchTableBinaryByteLength;
-    quint32 gltfFormat;
+      unsigned char magic[4];
+      quint32 version;
+      quint32 byteLength;
+      quint32 featureTableJsonByteLength;
+      quint32 featureTableBinaryByteLength;
+      quint32 batchTableJsonByteLength;
+      quint32 batchTableBinaryByteLength;
+      quint32 gltfFormat;
   };
 
   QgsCesiumUtils::TileContents res;

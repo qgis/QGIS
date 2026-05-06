@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgscesiumutils.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgstiledsceneboundingvolume.h"
@@ -84,7 +85,9 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer : public QgsMapLayerRenderer
      */
     bool renderTileContent( const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context );
 
-    void renderModel( tinygltf::Model &model, const QgsVector3D &centerOffset, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context );
+    void renderModel(
+      tinygltf::Model &model, const QgsVector3D &centerOffset, const std::optional<QgsCesiumUtils::TileI3dmData> &tileInstancing, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context
+    );
 
     void renderPrimitive(
       const tinygltf::Model &model,

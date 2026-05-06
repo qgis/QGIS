@@ -399,7 +399,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       QgsQuantizedMeshTile qmTile( tileContent );
       qmTile.removeDegenerateTriangles();
       tinygltf::Model model = qmTile.toGltf();
-      renderModel( model, QgsVector3D(), tile, context );
+      renderModel( model, QgsVector3D(), std::nullopt, tile, context );
       return true;
     }
     catch ( QgsQuantizedMeshParsingException &ex )
@@ -462,24 +462,27 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
       return false;
     }
 
-    renderModel( model, QgsVector3D(), tile, context );
+    renderModel( model, QgsVector3D(), std::nullopt, tile, context );
     return true;
   }
 
   return false;
 }
 
-// TODO: add std::optional<QgsCesiumUtils::QgsGltfInstancingData> tileInstancing
-void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsVector3D &centerOffset, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context )
+
+void QgsTiledSceneLayerRenderer::renderModel(
+  tinygltf::Model &model, const QgsVector3D &centerOffset, const std::optional<QgsCesiumUtils::TileI3dmData> &tileInstancing, const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context
+)
 {
   const QString contentUri = tile.resources().value( u"content"_s ).toString();
+  const Qgis::Axis gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
   const QgsVector3D tileTranslationEcef = centerOffset + QgsGltfUtils::extractTileTranslation( model, gltfUpAxis );
 
   // Try to resolve instancing (i3dm or EXT_mesh_gpu_instancing)
   const QgsMatrix4x4 tileTransform = tile.transform() ? *tile.transform() : QgsMatrix4x4();
-  const QVector<QgsGltfUtils::QgsGltfInstancedPrimitive> instancedPrimitives = QgsGltfUtils::resolveInstancing( model, tileInstancing, gltfUpAxis, tileTransform, centerOffset );
-  bool wholeTileUsesInstancing = instancing.has_value(); // when using i3dm tile from 3D Tiles 1.0
+  const QVector<QgsGltfUtils::InstancedPrimitive> instancedPrimitives = QgsCesiumUtils::resolveInstancing( model, tileInstancing, gltfUpAxis, tileTransform, centerOffset );
+  bool wholeTileUsesInstancing = tileInstancing.has_value(); // when using i3dm tile from 3D Tiles 1.0
 
   bool sceneOk = false;
   const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
@@ -488,7 +491,7 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
     const QString error = QObject::tr( "No scenes found in model" );
     mErrors.append( error );
     QgsDebugError( u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
-    return false;
+    return;
   }
 
   // Render non-instanced primitives (the most common rendering path):
@@ -566,8 +569,6 @@ void QgsTiledSceneLayerRenderer::renderModel( tinygltf::Model &model, const QgsV
       renderPrimitive( model, primitive, tile, tileTranslationEcef, &instanceMatrix, Qgis::Axis::Z, contentUri, context );
     }
   }
-
-  return true;
 }
 
 void QgsTiledSceneLayerRenderer::renderPrimitive(

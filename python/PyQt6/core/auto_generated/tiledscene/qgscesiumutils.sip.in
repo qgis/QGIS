@@ -85,7 +85,7 @@ Parses tile content. Returns empty byte array on error.
    : use :py:func:`~QgsCesiumUtils.extractTileContent` which can handle composite tiles as well.
 %End
 
-    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent, const QString &baseUri );
+    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent, const QString &baseUri = QString() );
 %Docstring
 Parses tile content and returns a list of TileContents.
 
