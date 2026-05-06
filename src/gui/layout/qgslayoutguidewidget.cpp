@@ -43,11 +43,16 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   mHozGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mVertGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
-  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mHozGuidesTableView ) );
+  QgsLayoutGuidePositionDelegate *hozPosDelegate = new QgsLayoutGuidePositionDelegate( mHozGuidesTableView );
+  mHozGuidesTableView->setItemDelegateForColumn( 0, hozPosDelegate );
   mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mHozGuidesTableView ) );
 
-  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mVertGuidesTableView ) );
+  QgsLayoutGuidePositionDelegate *vertPosDelegate = new QgsLayoutGuidePositionDelegate( mVertGuidesTableView );
+  mVertGuidesTableView->setItemDelegateForColumn( 0, vertPosDelegate );
   mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mVertGuidesTableView ) );
+
+  connect( hozPosDelegate, &QAbstractItemDelegate::closeEditor, mHozProxyModel, [this]( QWidget *, QAbstractItemDelegate::EndEditHint ) { mHozProxyModel->invalidate(); } );
+  connect( vertPosDelegate, &QAbstractItemDelegate::closeEditor, mVertProxyModel, [this]( QWidget *, QAbstractItemDelegate::EndEditHint ) { mVertProxyModel->invalidate(); } );
 
   connect( mAddHozGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addHorizontalGuide );
   connect( mAddVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addVerticalGuide );
