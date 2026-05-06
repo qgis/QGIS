@@ -44,9 +44,7 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setObjectName( u"metalRoughMaterial"_s );
-      material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
-      material->setMetalness( static_cast< float >( std::clamp( metalRoughSettings->metalness(), 0.0, 1.0 ) ) );
-      material->setRoughness( static_cast< float >( std::clamp( metalRoughSettings->roughness(), 0.0, 1.0 ) ) );
+      applySettingsToMaterial( metalRoughSettings, material, context );
       return material;
     }
 
@@ -68,7 +66,7 @@ QMap<QString, QString> QgsMetalRoughMaterial3DHandler::toExportParameters( const
 void QgsMetalRoughMaterial3DHandler::addParametersToEffect( Qt3DRender::QEffect *, const QgsAbstractMaterialSettings *, const QgsMaterialContext & ) const
 {}
 
-bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext & ) const
+bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
 {
   const QgsMetalRoughMaterialSettings *metalRoughSettings = qgis::down_cast< const QgsMetalRoughMaterialSettings * >( settings );
 
@@ -76,8 +74,14 @@ bool QgsMetalRoughMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
   if ( material->objectName() != "metalRoughMaterial"_L1 )
     return false;
 
-  material->setBaseColor( metalRoughSettings->baseColor() );
+  applySettingsToMaterial( metalRoughSettings, material, context );
+  return true;
+}
+
+void QgsMetalRoughMaterial3DHandler::applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context )
+{
+  material->setBaseColor( context.isSelected() ? context.selectionColor() : metalRoughSettings->baseColor() );
   material->setMetalness( static_cast< float >( metalRoughSettings->metalness() ) );
   material->setRoughness( static_cast< float >( metalRoughSettings->roughness() ) );
-  return true;
+  material->setOpacity( static_cast< float >( metalRoughSettings->opacity() ) );
 }

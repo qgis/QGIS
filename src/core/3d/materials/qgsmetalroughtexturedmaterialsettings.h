@@ -139,6 +139,14 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     double textureRotation() const { return mTextureRotation; }
 
     /**
+     * Returns the opacity of the surface
+     *
+     * \see setOpacity()
+     * \since QGIS 4.2
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
      * Sets the \a path to the base color texture map.
      *
      * \see baseColorTexturePath()
@@ -224,6 +232,14 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
+    /**
+     * Sets the \a opacity of the surface.
+     *
+     * \see opacity()
+     * \since QGIS 4.2
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
     bool requiresTextureCoordinates() const override;
     bool requiresTangents() const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -242,6 +258,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
              && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
              && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
+             && qgsDoubleNear( mOpacity, other.mOpacity )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
@@ -260,6 +277,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     double mTextureScale { 1.0 };
     double mTextureRotation { 0.0 };
+    double mOpacity { 1.0 };
 };
 
 

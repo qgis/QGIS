@@ -47,6 +47,7 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mEmissionFactorParameter( new Qt3DRender::QParameter( u"emissiveFactor"_s, 1.0f, this ) )
   , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mTextureRotationParameter( new Qt3DRender::QParameter( u"texCoordRotation"_s, 0.0f, this ) )
+  , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
   , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
   , mMetalRoughGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
@@ -288,6 +289,7 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughEffect->addParameter( mEmissionFactorParameter );
   mMetalRoughEffect->addParameter( mTextureScaleParameter );
   mMetalRoughEffect->addParameter( mTextureRotationParameter );
+  mMetalRoughEffect->addParameter( mOpacityParameter );
 
   setEffect( mMetalRoughEffect );
 }
@@ -326,6 +328,11 @@ void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )
     mFlatShading = enabled;
     updateFragmentShader();
   }
+}
+
+void QgsMetalRoughMaterial::setOpacity( float opacity )
+{
+  mOpacityParameter->setValue( opacity );
 }
 
 ///@endcond PRIVATE

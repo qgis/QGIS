@@ -141,6 +141,15 @@ Returns the texture rotation, in degrees.
 .. seealso:: :py:func:`setTextureRotation`
 %End
 
+    double opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. seealso:: :py:func:`setOpacity`
+
+.. versionadded:: 4.2
+%End
+
     void setBaseColorTexturePath( const QString &path );
 %Docstring
 Sets the ``path`` to the base color texture map.
@@ -231,6 +240,15 @@ stretched.
 Sets the texture ``rotation``, in degrees.
 
 .. seealso:: :py:func:`textureRotation`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` of the surface.
+
+.. seealso:: :py:func:`opacity`
+
+.. versionadded:: 4.2
 %End
 
     virtual bool requiresTextureCoordinates() const;

@@ -69,6 +69,15 @@ Returns the material's roughness, as a value between 0 and 1.
 .. seealso:: :py:func:`setRoughness`
 %End
 
+    double opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. seealso:: :py:func:`setOpacity`
+
+.. versionadded:: 4.2
+%End
+
     void setBaseColor( const QColor &color );
 %Docstring
 Sets the base material ``color``.
@@ -88,6 +97,15 @@ Sets the material's ``metalness``, as a value between 0 and 1.
 Sets the material's ``roughness``, as a value between 0 and 1.
 
 .. seealso:: :py:func:`roughness`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` of the surface.
+
+.. seealso:: :py:func:`opacity`
+
+.. versionadded:: 4.2
 %End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

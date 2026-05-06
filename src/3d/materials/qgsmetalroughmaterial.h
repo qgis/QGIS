@@ -103,6 +103,8 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     void setTextureRotation( float textureRotation );
     void setFlatShadingEnabled( bool enabled );
 
+    void setOpacity( float opacity );
+
   private:
     void init();
 
@@ -122,6 +124,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     Qt3DRender::QParameter *mEmissionFactorParameter = nullptr;
     Qt3DRender::QParameter *mTextureScaleParameter = nullptr;
     Qt3DRender::QParameter *mTextureRotationParameter = nullptr;
+    Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QEffect *mMetalRoughEffect = nullptr;
     Qt3DRender::QTechnique *mMetalRoughGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mMetalRoughGL3RenderPass = nullptr;

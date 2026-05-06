@@ -49,6 +49,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsmetalroughmaterial.h"
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"

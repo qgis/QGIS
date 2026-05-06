@@ -69,6 +69,7 @@ void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsR
   mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"base"_s, u"125,125,125"_s ) );
   mMetalness = elem.attribute( u"metalness"_s, u"0.0"_s ).toDouble();
   mRoughness = elem.attribute( u"roughness"_s, u"0.5"_s ).toDouble();
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -78,6 +79,10 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   elem.setAttribute( u"base"_s, QgsSymbolLayerUtils::encodeColor( mBaseColor ) );
   elem.setAttribute( u"metalness"_s, mMetalness );
   elem.setAttribute( u"roughness"_s, mRoughness );
+  if ( !qgsDoubleNear( mOpacity, 1 ) )
+  {
+    elem.setAttribute( u"opacity"_s, mOpacity );
+  }
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }

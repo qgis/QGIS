@@ -201,4 +201,5 @@ void QgsMetalRoughTexturedMaterial3DHandler::applySettingsToMaterial( const QgsM
   }
 
   material->setEmissionFactor( texturedSettings->emissionFactor() );
+  material->setOpacity( static_cast< float >( texturedSettings->opacity() ) );
 };

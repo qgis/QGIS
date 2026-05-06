@@ -56,6 +56,8 @@ uniform float emissiveFactor = 1;
 in vec2 texCoord;
 #endif
 
+uniform float opacity;
+
 const float PI = 3.14159265359;
 
 #pragma include light.inc.frag
@@ -561,8 +563,8 @@ void main()
 #endif
 #endif
 
-    fragColor = metalRoughFunction(c, m, r, ao,
+    fragColor = vec4(metalRoughFunction(c, m, r, ao,
                                    worldPosition,
                                    worldView,
-                                   n, activeTexCoord);
+                                   n, activeTexCoord).rgb, opacity);
 }

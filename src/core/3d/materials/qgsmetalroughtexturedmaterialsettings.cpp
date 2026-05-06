@@ -87,6 +87,7 @@ void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, co
   mParallaxScale = elem.attribute( u"parallax_scale"_s, QString( "0.1" ) ).toDouble();
   mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
   mTextureRotation = elem.attribute( u"texture_rotation"_s, QString( "0.0" ) ).toDouble();
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -105,6 +106,8 @@ void QgsMetalRoughTexturedMaterialSettings::writeXml( QDomElement &elem, const Q
     elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
   elem.setAttribute( u"texture_scale"_s, mTextureScale );
   elem.setAttribute( u"texture_rotation"_s, mTextureRotation );
+  if ( !qgsDoubleNear( mOpacity, 1 ) )
+    elem.setAttribute( u"opacity"_s, mOpacity );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }

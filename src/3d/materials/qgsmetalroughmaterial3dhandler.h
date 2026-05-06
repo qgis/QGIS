@@ -21,6 +21,10 @@
 
 #define SIP_NO_FILE
 
+class QgsMetalRoughMaterialSettings;
+class QgsMetalRoughMaterial;
+
+
 /**
  * \ingroup qgis_3d
  * \brief 3D handler for the PBR metal rough material.
@@ -38,6 +42,9 @@ class _3D_EXPORT QgsMetalRoughMaterial3DHandler : public QgsAbstractMaterial3DHa
     QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
+
+  private:
+    static void applySettingsToMaterial( const QgsMetalRoughMaterialSettings *metalRoughSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context );
 };
 
 
