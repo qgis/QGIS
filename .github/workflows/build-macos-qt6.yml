@@ -267,18 +267,40 @@ jobs:
       - name: 🔏 Sign app
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
         run: |
-          # Sign the .app with our Developer ID certificate. --options runtime
-          # enables the hardened runtime which is required for notarization.
+          # Sign inside-out: every Mach-O binary, then nested bundles
+          # (.framework, sub-.app), then the outer .app last. We avoid
+          # `codesign --deep` because it recurses into directories that aren't
+          # real bundles (e.g. Contents/Frameworks/lib/python3.12, the Python
+          # stdlib) and rejects them with "bundle format unrecognized".
+          # --options runtime enables the hardened runtime required for notarization.
           APP_PATH=$(ls -d universal/*.app | head -n1)
           echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
-          codesign --deep --force \
-            --options runtime \
-            --timestamp \
-            --sign "${MACOS_DEVELOPER_ID}" \
-            "${APP_PATH}"
+
+          sign_one() {
+            codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "$1"
+          }
+
+          # 1. Sign every Mach-O file inside (libs, .so, executables).
+          find "${APP_PATH}" -type f -print0 | while IFS= read -r -d '' f; do
+            if file -b "$f" | grep -qE 'Mach-O'; then
+              sign_one "$f"
+            fi
+          done
+
+          # 2. Sign each nested bundle wrapper (frameworks, sub-apps).
+          find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
+            -type d -not -path "${APP_PATH}" | while read -r b; do
+            sign_one "$b"
+          done
+
+          # 3. Sign the top-level .app last.
+          sign_one "${APP_PATH}"
+
           echo "Verifying signature..."
           codesign -dvv "${APP_PATH}" 2>&1 | head -10
-          codesign --verify --deep --strict --verbose=2 "${APP_PATH}"
+          # No --deep: it would retrigger the python3.12 bundle-format error.
+          codesign --verify --strict --verbose=2 "${APP_PATH}"
         env:
           MACOS_DEVELOPER_ID: ${{ secrets.MACOS_DEVELOPER_ID }}
 
