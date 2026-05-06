@@ -52,7 +52,7 @@
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
 #include "qgsprintlayout.h"
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingenummodelerwidget.h"
 #include "qgsprocessingmaplayercombobox.h"

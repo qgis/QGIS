@@ -34,7 +34,7 @@
 #include "qgsmodelviewtoolselect.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsprocessingalgorithmdialogbase.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmultipleselectiondialog.h"
