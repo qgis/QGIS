@@ -115,7 +115,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.context_generator = ContextGenerator(self.processing_context)
         self.registerProcessingContextGenerator(self.context_generator)
 
-    def createExecutionDialog(self):
+    def createExecutionWidget(self):
         widget = AlgorithmWidget(self.model().create(), parent=self)
         return widget
 

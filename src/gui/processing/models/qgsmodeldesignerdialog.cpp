@@ -1112,7 +1112,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     }
   }
 
-  std::unique_ptr<QgsProcessingAlgorithmWidgetBase> dialog( createExecutionDialog() );
+  std::unique_ptr<QgsProcessingAlgorithmWidgetBase> dialog( createExecutionWidget() );
   if ( !dialog )
     return;
 

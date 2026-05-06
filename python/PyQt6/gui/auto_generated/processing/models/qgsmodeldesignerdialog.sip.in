@@ -113,7 +113,7 @@ Raise, unminimize and activate this window.
 
     virtual bool saveModel( bool saveAs = false ) = 0;
 
-    virtual QgsProcessingAlgorithmWidgetBase *createExecutionDialog() = 0 /TransferBack/;
+    virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 /TransferBack/;
 
     virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
 %Docstring
