@@ -47,6 +47,7 @@ class QgsCoordinateTransform;
 class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
+class QgsLayerStyleWatcher;
 
 /**
  * \ingroup qgis_3d

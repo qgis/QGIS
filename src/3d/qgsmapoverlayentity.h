@@ -43,7 +43,7 @@ class QgsOverlayTextureRenderView;
 class QgsMapLayer;
 class QgsMapOverlayTextureGenerator;
 class QgsWindow3DEngine;
-
+class QgsLayerStyleWatcher;
 
 /**
  * \ingroup qgis_3d

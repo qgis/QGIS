@@ -16,6 +16,7 @@
 #include "qgsmapoverlayentity.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgslayerstylewatcher.h"
 #include "qgsmapoverlaytexturegenerator_p.h"
 #include "qgsoverlaytextureentity.h"
 #include "qgsoverlaytexturerenderview.h"

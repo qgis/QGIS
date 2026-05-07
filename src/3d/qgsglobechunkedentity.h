@@ -33,18 +33,19 @@
 
 
 #include "qgschunkedentity.h"
-
 #include "qgschunkloader.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgs3drendercontext.h"
+#include "qgslayerstylewatcher.h"
+#include "qobjectuniqueptr.h"
 
 #include <QImage>
-#include "qobjectuniqueptr.h"
 
 class QgsMapLayer;
 class QgsGlobeMapUpdateJobFactory;
 class QgsTerrainTextureGenerator;
+class QgsLayerStyleWatcher;
 
 class QgsGlobeChunkLoader : public QgsChunkLoader
 {

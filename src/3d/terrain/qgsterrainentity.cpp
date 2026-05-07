@@ -25,6 +25,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgslayerstylewatcher.h"
 #include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
