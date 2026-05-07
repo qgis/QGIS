@@ -1018,30 +1018,33 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
 {
-  const double *primTransformData = mPrimTransform.constData();
-  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
-  mPrimTransform.translate( prevTrans + translation );
+  QgsMatrix4x4 mat;
+  mat.translate( translation );
+  mPrimTransform = mat * mPrimTransform;
 }
 
 void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
 {
-  QgsVector3D qCenter( center.x(), center.y(), center.z() );
-  const double *primTransformData = mPrimTransform.constData();
-  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
-  mPrimTransform.translate( prevTrans - qCenter );
-  mPrimTransform.scale( scaleFactor );
-  mPrimTransform.translate( prevTrans + qCenter );
+  const QgsVector3D qCenter = QgsVector3D(center.x(), center.y(), center.z());
+
+  QgsMatrix4x4 mat;
+  mat.translate( qCenter );
+  mat.scale( scaleFactor );
+  mat.translate( -qCenter );
+
+  mPrimTransform = mat * mPrimTransform;
 }
 
 void QgsSfcgalGeometry::setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center )
 {
-  QgsVector3D qCenter( center.x(), center.y(), center.z() );
-  const double *primTransformData = mPrimTransform.constData();
-  QgsVector3D prevTrans( primTransformData[12], primTransformData[13], primTransformData[14] );
-  mPrimTransform.translate( prevTrans - qCenter );
-  // TODO: need to merge previous rotation values with the new ones
-  mPrimTransform.rotate( angle * 180.0 / M_PI, axisVector );
-  mPrimTransform.translate( prevTrans + qCenter );
+  const QgsVector3D qCenter = QgsVector3D(center.x(), center.y(), center.z());
+
+  QgsMatrix4x4 mat;
+  mat.translate( qCenter );
+  mat.rotate( angle * 180.0 / M_PI, axisVector );
+  mat.translate( -qCenter );
+
+  mPrimTransform = mat * mPrimTransform;
 }
 
 #endif
