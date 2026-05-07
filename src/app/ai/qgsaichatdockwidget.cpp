@@ -32,6 +32,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QCheckBox>
+#include <QColor>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -60,6 +61,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTextCursor>
+#include <QTextDocument>
 #include <QTextEdit>
 #include <QToolButton>
 #include <QUrlQuery>
@@ -133,6 +135,12 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mTranscript = new QTextEdit( container );
   mTranscript->setReadOnly( true );
   mTranscript->setFrameShape( QFrame::NoFrame );
+  const QColor codeBg = mTranscript->palette().alternateBase().color();
+  mTranscript->document()->setDefaultStyleSheet( QStringLiteral(
+    "pre { background-color: %1; padding: 6px; font-family: monospace; white-space: pre-wrap; }"
+    "code { background-color: %1; font-family: monospace; padding: 1px 3px; }"
+    "h1, h2, h3 { margin-top: 8px; margin-bottom: 4px; }"
+  ).arg( codeBg.name() ) );
   layout->addWidget( mTranscript, 1 );
 
   mFileContextChipRow = new QWidget( container );
@@ -266,7 +274,7 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
         return;
       }
       closeStreamingAssistantMessage();
-      appendTranscriptLine( u"[%1] %2"_s.arg( qgsAiChatRoleToString( message.role ), message.content ) );
+      appendTranscriptMessage( qgsAiChatRoleToString( message.role ), message.content );
     } );
     connect( mSessionManager, &QgsAiAgentSessionManager::proposalCreated, this, [this]( const QString & ) { refreshProposalList(); } );
     connect( mSessionManager, &QgsAiAgentSessionManager::responseChunkReceived, this, &QgsAiChatDockWidget::appendStreamChunk );
@@ -435,9 +443,18 @@ void QgsAiChatDockWidget::applyPillStyling()
   ) );
 }
 
-void QgsAiChatDockWidget::appendTranscriptLine( const QString &line )
+QString QgsAiChatDockWidget::renderMarkdown( const QString &md )
 {
-  mTranscript->append( line );
+  QTextDocument doc;
+  doc.setMarkdown( md, QTextDocument::MarkdownDialectGitHub );
+  return doc.toHtml();
+}
+
+void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QString &content )
+{
+  const QString html = QStringLiteral( "<p><b>[%1]</b></p>" ).arg( role.toHtmlEscaped() )
+                       + renderMarkdown( content );
+  mTranscript->append( html );
 }
 
 void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
@@ -447,7 +464,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
 
   if ( !mStreamingInProgress )
   {
-    mTranscript->append( u"[assistant] "_s );
+    mTranscript->append( QStringLiteral( "<p><b>[assistant]</b></p>" ) );
     QTextCursor cursor = mTranscript->textCursor();
     cursor.movePosition( QTextCursor::End );
     mStreamingContentStartPosition = cursor.position();
@@ -475,7 +492,8 @@ void QgsAiChatDockWidget::finalizeStreamingAssistantMessage( const QString &fina
     QTextCursor cursor( mTranscript->document() );
     cursor.setPosition( mStreamingContentStartPosition );
     cursor.movePosition( QTextCursor::End, QTextCursor::KeepAnchor );
-    cursor.insertText( finalText );
+    cursor.removeSelectedText();
+    cursor.insertHtml( renderMarkdown( finalText ) );
     mTranscript->setTextCursor( cursor );
   }
 
