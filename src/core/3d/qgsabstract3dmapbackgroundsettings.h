@@ -17,14 +17,14 @@
 #define QGSABSTRACT3DMAPBACKGROUNDSETTINGS_H
 
 #include "qgis.h"
-#include "qgis_3d.h"
+#include "qgis_core.h"
 #include "qgsabstract3dasset.h"
 
 class QDomElement;
 class QgsReadWriteContext;
 
 /**
- * \ingroup qgis_3d
+ * \ingroup core
  * \brief Base class for all background settings classes used in a 3D map view.
  *
  * QgsAbstract3DMapBackgroundSettings subclasses are responsible for storing
@@ -32,7 +32,7 @@ class QgsReadWriteContext;
  *
  * \since QGIS 4.2
  */
-class _3D_EXPORT QgsAbstract3DMapBackgroundSettings : public QgsAbstract3DAsset
+class CORE_EXPORT QgsAbstract3DMapBackgroundSettings : public QgsAbstract3DAsset
 {
   public:
     Qgis::Asset3DType assetType() const override { return Qgis::Asset3DType::BackgroundSettings; }

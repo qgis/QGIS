@@ -16,19 +16,19 @@
 #ifndef QGSFIXEDGRADIENTBACKGROUNDSETTINGS_H
 #define QGSFIXEDGRADIENTBACKGROUNDSETTINGS_H
 
-#include "qgis_3d.h"
+#include "qgis_core.h"
 #include "qgsabstract3dmapbackgroundsettings.h"
 
 #include <QColor>
 #include <QString>
 
 /**
- * \ingroup qgis_3d
+ * \ingroup core
  * \brief Background settings for a two-color vertical gradient rendered behind the 3D scene.
  *
  * \since QGIS 4.2
  */
-class _3D_EXPORT QgsFixedGradientBackgroundSettings : public QgsAbstract3DMapBackgroundSettings
+class CORE_EXPORT QgsFixedGradientBackgroundSettings : public QgsAbstract3DMapBackgroundSettings
 {
   public:
     QgsFixedGradientBackgroundSettings() = default;

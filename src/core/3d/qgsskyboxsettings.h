@@ -16,9 +16,8 @@
 #ifndef QGSSKYBOXSETTINGS_H
 #define QGSSKYBOXSETTINGS_H
 
-#include "qgis_3d.h"
+#include "qgis_core.h"
 #include "qgsabstract3dmapbackgroundsettings.h"
-#include "qgsskyboxentity.h"
 
 #include <QMap>
 #include <QString>
@@ -34,10 +33,10 @@ class QDomElement;
 /**
  * \brief Contains the configuration of a skybox entity.
  *
- * \ingroup qgis_3d
+ * \ingroup core
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
+class CORE_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
 {
   public:
     QgsSkyboxSettings() = default;

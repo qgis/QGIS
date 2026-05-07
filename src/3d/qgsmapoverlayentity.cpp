@@ -25,6 +25,7 @@
 #include <QWindow>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureDataUpdate>
 
 #include "moc_qgsmapoverlayentity.cpp"

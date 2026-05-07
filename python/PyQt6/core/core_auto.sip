@@ -229,9 +229,11 @@
 %Include auto_generated/./3d/qgs3drendererregistry.sip
 %Include auto_generated/./3d/qgs3dsymbolregistry.sip
 %Include auto_generated/./3d/qgsabstract3dasset.sip
+%Include auto_generated/./3d/qgsabstract3dmapbackgroundsettings.sip
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
+%Include auto_generated/./3d/qgsfixedgradientbackgroundsettings.sip
 %Include auto_generated/./3d/materials/qgsabstractmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsmaterialregistry.sip
