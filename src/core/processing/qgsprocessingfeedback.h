@@ -52,6 +52,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".
      * \see setProgress()
+     * \see progressTextChanged()
      */
     virtual void setProgressText( const QString &text );
 
@@ -59,6 +60,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Reports that the algorithm encountered an \a error while executing.
      *
      * If \a fatalError is TRUE then the error prevented the algorithm from executing.
+     *
+     * \see errorReported()
      */
     virtual void reportError( const QString &error, bool fatalError = false );
 
@@ -66,6 +69,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Pushes a warning informational message from the algorithm. This
      * should only be used sparsely as to maintain the importance of visual
      * queues associated to this type of message.
+     *
+     * \see warningPushed()
      * \see pushInfo()
      * \see pushCommandInfo()
      * \see pushDebugInfo()
@@ -79,6 +84,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * be used to report feedback which is neither a status report or an
      * error, such as "Found 47 matching features".
      *
+     * \see infoPushed()
      * \see pushFormattedMessage()
      * \see pushWarning()
      * \see pushCommandInfo()
@@ -93,6 +99,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * This can be used to push formatted HTML messages to the feedback object.
      * A plain \a text version of the message must also be specified.
      *
+     * \see formattedMessagePushed()
      * \see pushInfo()
      * \see pushWarning()
      * \see pushCommandInfo()
@@ -107,6 +114,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * Pushes an informational message containing a command from the algorithm.
      * This is usually used to report commands which are executed in an external
      * application or as subprocesses.
+     *
+     * \see commandInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushDebugInfo()
@@ -117,6 +126,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Pushes an informational message containing debugging helpers from
      * the algorithm.
+     *
+     * \see debugInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushCommandInfo()
@@ -127,6 +138,8 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Pushes a console feedback message from the algorithm. This is used to
      * report the output from executing an external command or subprocess.
+     *
+     * \see consoleInfoPushed()
      * \see pushWarning()
      * \see pushInfo()
      * \see pushDebugInfo()
@@ -162,6 +175,72 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \since QGIS 3.14
      */
     virtual QString textLog() const;
+
+  signals:
+
+    /**
+     * Raised when the progress \a text is changed.
+     *
+     * \see setProgressText()
+     * \since QGIS 4.2
+     */
+    void progressTextChanged( const QString &text );
+
+    /**
+     * Raised when an error is reported.
+     *
+     * \see reportError()
+     * \since QGIS 4.2
+     */
+    void errorReported( const QString &text, bool fatalError );
+
+    /**
+     * Raised when an warning is pushed.
+     *
+     * \see pushWarning()
+     * \since QGIS 4.2
+     */
+    void warningPushed( const QString &text );
+
+    /**
+     * Raised when information \a text is pushed.
+     *
+     * \see pushInfo()
+     * \since QGIS 4.2
+     */
+    void infoPushed( const QString &text );
+
+    /**
+     * Raised when command information \a text is pushed.
+     *
+     * \see pushCommandInfo()
+     * \since QGIS 4.2
+     */
+    void commandInfoPushed( const QString &text );
+
+    /**
+     * Raised when debug information \a text is pushed.
+     *
+     * \see pushDebugInfo()
+     * \since QGIS 4.2
+     */
+    void debugInfoPushed( const QString &text );
+
+    /**
+     * Raised when console information \a text is pushed.
+     *
+     * \see pushConsoleInfo()
+     * \since QGIS 4.2
+     */
+    void consoleInfoPushed( const QString &text );
+
+    /**
+     * Raised when a formatted \a html message is pushed.
+     *
+     * \see pushFormattedMessage()
+     * \since QGIS 4.2
+     */
+    void formattedMessagePushed( const QString &html );
 
   private:
     void log( const QString &htmlMessage, const QString &textMessage );

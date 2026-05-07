@@ -51,6 +51,8 @@ void QgsProcessingFeedback::setProgressText( const QString &text )
 {
   mHtmlLog.append( text.toHtmlEscaped().replace( '\n', "<br>"_L1 ) + u"<br/>"_s );
   mTextLog.append( text + '\n' );
+
+  emit progressTextChanged( text );
 }
 
 void QgsProcessingFeedback::log( const QString &htmlMessage, const QString &textMessage )
@@ -72,13 +74,14 @@ void QgsProcessingFeedback::log( const QString &htmlMessage, const QString &text
   }
 }
 
-
-void QgsProcessingFeedback::reportError( const QString &error, bool )
+void QgsProcessingFeedback::reportError( const QString &error, bool fatalError )
 {
   if ( mLogFeedback )
     QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::MessageLevel::Critical );
 
   log( u"<span style=\"color:red\">%1</span><br/>"_s.arg( error.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ), error + '\n' );
+
+  emit errorReported( error, fatalError );
 }
 
 void QgsProcessingFeedback::pushWarning( const QString &warning )
@@ -87,6 +90,8 @@ void QgsProcessingFeedback::pushWarning( const QString &warning )
     QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::MessageLevel::Warning );
 
   log( u"<span style=\"color:#b85a20;\">%1</span><br/>"_s.arg( warning.toHtmlEscaped() ).replace( '\n', "<br>"_L1 ) + u"<br/>"_s, warning + '\n' );
+
+  emit warningPushed( warning );
 }
 
 void QgsProcessingFeedback::pushInfo( const QString &info )
@@ -96,6 +101,8 @@ void QgsProcessingFeedback::pushInfo( const QString &info )
 
   mHtmlLog.append( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) + u"<br/>"_s );
   mTextLog.append( info + '\n' );
+
+  emit infoPushed( info );
 }
 
 void QgsProcessingFeedback::pushFormattedMessage( const QString &html, const QString &text )
@@ -105,6 +112,8 @@ void QgsProcessingFeedback::pushFormattedMessage( const QString &html, const QSt
 
   mHtmlLog.append( html + u"<br/>"_s );
   mTextLog.append( text + '\n' );
+
+  emit formattedMessagePushed( html );
 }
 
 void QgsProcessingFeedback::pushCommandInfo( const QString &info )
@@ -113,6 +122,8 @@ void QgsProcessingFeedback::pushCommandInfo( const QString &info )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   log( u"<code>%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
+
+  emit commandInfoPushed( info );
 }
 
 void QgsProcessingFeedback::pushDebugInfo( const QString &info )
@@ -121,6 +132,8 @@ void QgsProcessingFeedback::pushDebugInfo( const QString &info )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   log( u"<span style=\"color:#777\">%1</span><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
+
+  emit debugInfoPushed( info );
 }
 
 void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
@@ -129,6 +142,8 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   log( u"<code style=\"color:#777\">%1</code><br/>"_s.arg( info.toHtmlEscaped().replace( '\n', "<br>"_L1 ) ), info + '\n' );
+
+  emit consoleInfoPushed( info );
 }
 
 void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )

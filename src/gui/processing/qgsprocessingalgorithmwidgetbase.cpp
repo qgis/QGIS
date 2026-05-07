@@ -48,58 +48,6 @@ using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
-QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
-  : QgsProcessingFeedback( false )
-{}
-
-void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text )
-{
-  QgsProcessingFeedback::setProgressText( text );
-  emit progressTextChanged( text );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bool fatalError )
-{
-  QgsProcessingFeedback::reportError( error, fatalError );
-  emit errorReported( error, fatalError );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushWarning( const QString &warning )
-{
-  QgsProcessingFeedback::pushWarning( warning );
-  emit warningPushed( warning );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushInfo( info );
-  emit infoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushCommandInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushCommandInfo( info );
-  emit commandInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushDebugInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushDebugInfo( info );
-  emit debugInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info )
-{
-  QgsProcessingFeedback::pushConsoleInfo( info );
-  emit consoleInfoPushed( info );
-}
-
-void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &html, const QString &text )
-{
-  QgsProcessingFeedback::pushFormattedMessage( html, text );
-  emit formattedMessagePushed( html );
-}
-
 //
 // QgsProcessingAlgorithmWidgetBase
 //
@@ -312,8 +260,6 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::copyLogToClipboard );
   connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::clearLog );
 
-  connect( buttonCancel, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
-
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
@@ -422,16 +368,16 @@ void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const
 
 QgsProcessingFeedback *QgsProcessingAlgorithmWidgetBase::createFeedback()
 {
-  auto feedback = std::make_unique<QgsProcessingAlgorithmDialogFeedback>();
+  auto feedback = std::make_unique<QgsProcessingFeedback>();
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmWidgetBase::setPercentage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushDebugInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmWidgetBase::reportError );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmWidgetBase::pushWarning );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
-  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
+  connect( feedback.get(), &QgsProcessingFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushDebugInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::errorReported, this, &QgsProcessingAlgorithmWidgetBase::reportError );
+  connect( feedback.get(), &QgsProcessingFeedback::warningPushed, this, &QgsProcessingAlgorithmWidgetBase::pushWarning );
+  connect( feedback.get(), &QgsProcessingFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
+  connect( feedback.get(), &QgsProcessingFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
   connect( this, &QgsProcessingAlgorithmWidgetBase::cancelRequested, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
 }
@@ -604,7 +550,6 @@ void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
   else
     QDesktopServices::openUrl( url );
 }
-
 
 Qgis::ProcessingLogLevel QgsProcessingAlgorithmWidgetBase::logLevel() const
 {
