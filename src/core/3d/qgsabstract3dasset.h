@@ -30,6 +30,8 @@ using namespace Qt::StringLiterals;
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 4.2
  */
 class CORE_EXPORT QgsAbstract3DAsset SIP_ABSTRACT
 {
