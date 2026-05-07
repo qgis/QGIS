@@ -343,7 +343,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QElapsedTimer totalTime;
   totalTime.start();
 
-  QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
+  QgsProcessingMultiStepFeedback childAlgorithmFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
   QVariantMap &childInputs = context.modelResult().rawChildInputs();
@@ -477,15 +477,15 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       QThread *modelThread = QThread::currentThread();
 
-      auto prepareOnMainThread = [modelThread, &ok, &childAlg, &childParams, &context, &modelFeedback] {
+      auto prepareOnMainThread = [modelThread, &ok, &childAlg, &childParams, &context, &childAlgorithmFeedback] {
         Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->prepare() must be run on the main thread" );
-        ok = childAlg->prepare( childParams, context, &modelFeedback );
+        ok = childAlg->prepare( childParams, context, &childAlgorithmFeedback );
         context.pushToThread( modelThread );
       };
 
       // Make sure we only run prepare steps on the main thread!
       if ( modelThread == qApp->thread() )
-        ok = childAlg->prepare( childParams, context, &modelFeedback );
+        ok = childAlg->prepare( childParams, context, &childAlgorithmFeedback );
       else
       {
         context.pushToThread( qApp->thread() );
@@ -511,9 +511,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
-          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams] {
+          auto runOnMainThread = [modelThread, &context, &childAlgorithmFeedback, &results, &childAlg, &childParams] {
             Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
-            results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
             context.pushToThread( modelThread );
           };
 
@@ -529,7 +529,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         else
         {
           // safe to run on model thread
-          results = childAlg->runPrepared( childParams, context, &modelFeedback );
+          results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
         }
         runResult = true;
         childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
@@ -543,15 +543,15 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       Q_ASSERT_X( QThread::currentThread() == context.thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "context was not transferred back to model thread" );
 
       QVariantMap ppRes;
-      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &modelFeedback, runResult] {
+      auto postProcessOnMainThread = [modelThread, &ppRes, &childAlg, &context, &childAlgorithmFeedback, runResult] {
         Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->postProcess() must be run on the main thread" );
-        ppRes = childAlg->postProcess( context, &modelFeedback, runResult );
+        ppRes = childAlg->postProcess( context, &childAlgorithmFeedback, runResult );
         context.pushToThread( modelThread );
       };
 
       // Make sure we only run postProcess steps on the main thread!
       if ( modelThread == qApp->thread() )
-        ppRes = childAlg->postProcess( context, &modelFeedback, runResult );
+        ppRes = childAlg->postProcess( context, &childAlgorithmFeedback, runResult );
       else
       {
         context.pushToThread( qApp->thread() );
@@ -688,7 +688,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
         childAlg.reset( nullptr );
         countExecuted++;
-        modelFeedback.setCurrentStep( countExecuted );
+        childAlgorithmFeedback.setCurrentStep( countExecuted );
         if ( feedback && !skipGenericLogging )
         {
           feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%n output(s)).", nullptr, results.count() ).arg( childTime.elapsed() / 1000.0 ) );
