@@ -301,6 +301,26 @@ class TestQgsMatrix4x4(QgisTestCase):
         mat.scale(QgsVector3D(2.0, 3.0, 4.0))
         self.assertAlmostEqual(mat.determinant(), 24.0)
 
+    def test_mapVector(self):
+        mat = QgsMatrix4x4()
+
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+
+        vector = QgsVector3D(1.0, 2.0, 3.0)
+
+        # map() includes translation
+        mapped = mat.map(vector)
+        self.assertEqual(mapped.x(), 12.0)
+        self.assertEqual(mapped.y(), 26.0)
+        self.assertEqual(mapped.z(), 42.0)
+
+        # mapVector() ignores translation
+        mapped_vector = mat.mapVector(vector)
+        self.assertEqual(mapped_vector.x(), 2.0)
+        self.assertEqual(mapped_vector.y(), 6.0)
+        self.assertEqual(mapped_vector.z(), 12.0)
+
 
 if __name__ == "__main__":
     unittest.main()

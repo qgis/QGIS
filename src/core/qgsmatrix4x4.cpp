@@ -93,6 +93,19 @@ QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector )
     return QgsVector3D( x / w, y / w, z / w );
 }
 
+// Simplified from Qt's QMatrix4x4::mapVector implementation.
+// Copyright (C) The Qt Company Ltd.
+QgsVector3D QgsMatrix4x4::mapVector( const QgsVector3D &vector ) const
+{
+  return QgsVector3D(
+    vector.x() * m[0][0] + vector.y() * m[1][0] + vector.z() * m[2][0],
+
+    vector.x() * m[0][1] + vector.y() * m[1][1] + vector.z() * m[2][1],
+
+    vector.x() * m[0][2] + vector.y() * m[1][2] + vector.z() * m[2][2]
+  );
+}
+
 bool QgsMatrix4x4::isIdentity() const
 {
   if ( m[0][0] != 1.0 || m[0][1] != 0.0 || m[0][2] != 0.0 )

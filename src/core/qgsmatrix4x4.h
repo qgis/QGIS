@@ -80,11 +80,32 @@ class CORE_EXPORT QgsMatrix4x4
      */
     void translate( const QgsVector3D &vector );
 
-    //! Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+    /**
+     * Matrix-vector multiplication (vector is converted to homogeneous coordinates [X,Y,Z,1] and back)
+     *
+     * \see mapVector()
+     *
+     * \note This function is not the same as mapVector().
+*             For points, always use map(). mapVector() is suitable for vectors (directions) only.
+     */
     QgsVector3D map( const QgsVector3D &vector ) const SIP_HOLDGIL
     {
       return *this * vector;
     }
+
+    /**
+     * Maps vector by multiplying the top 3x3 portion of this matrix by \a vector.
+     * The translation and projection components of this matrix are ignored.
+     * The matrix is applied pre-vector.
+     *
+     * \param vector input vector to transform
+     *
+     * \see map()
+     *
+     * \since QGIS 4.2
+     */
+    QgsVector3D mapVector( const QgsVector3D &vector ) const SIP_HOLDGIL;
+
 
     //! Returns whether this matrix is an identity matrix
     bool isIdentity() const SIP_HOLDGIL;

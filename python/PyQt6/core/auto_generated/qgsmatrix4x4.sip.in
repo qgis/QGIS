@@ -75,7 +75,28 @@ components of a ``vector``.
 %Docstring
 Matrix-vector multiplication (vector is converted to homogeneous
 coordinates [X,Y,Z,1] and back)
+
+.. seealso:: :py:func:`mapVector`
+
+.. note::
+
+   This function is not the same as :py:func:`~QgsMatrix4x4.mapVector`.
+   For points, always use :py:func:`~QgsMatrix4x4.map`. :py:func:`~QgsMatrix4x4.mapVector` is suitable for vectors (directions) only.
 %End
+
+    QgsVector3D mapVector( const QgsVector3D &vector ) const /HoldGIL/;
+%Docstring
+Maps vector by multiplying the top 3x3 portion of this matrix by
+``vector``. The translation and projection components of this matrix are
+ignored. The matrix is applied pre-vector.
+
+:param vector: input vector to transform
+
+.. seealso:: :py:func:`map`
+
+.. versionadded:: 4.2
+%End
+
 
     bool isIdentity() const /HoldGIL/;
 %Docstring
