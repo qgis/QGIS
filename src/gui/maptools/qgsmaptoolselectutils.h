@@ -39,7 +39,10 @@ class QMenu;
 class QgsHighlight;
 
 /**
- * Namespace containing methods which are useful for the select maptool widgets
+ * \ingroup gui
+ * \namespace QgsMapToolSelectUtils
+ * \brief The QgsMapToolSelectUtils namespace containing methods which are useful for the select maptool widgets
+ * \note not available in Python bindings, was previously in app
  */
 namespace QgsMapToolSelectUtils
 {
@@ -120,7 +123,8 @@ namespace QgsMapToolSelectUtils
   void GUI_EXPORT setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
 
   /**
-   * Class that handles actions which can be displayed in a context menu related to feature selection.
+   * Handles actions which can be displayed in a context menu related to feature selection.
+   * \ingroup gui
    * \since QGIS 3.18
    */
   class QgsMapToolSelectMenuActions : public QObject

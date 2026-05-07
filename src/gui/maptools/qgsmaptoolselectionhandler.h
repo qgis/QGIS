@@ -134,6 +134,7 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
     //! Handles escape press event - returns true if the even has been processed
     bool keyReleaseEvent( QKeyEvent *e );
 
+    //! Sets the geometry selected
     void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   signals:

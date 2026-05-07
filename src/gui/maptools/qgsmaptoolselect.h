@@ -37,6 +37,7 @@ class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:
+    //! Define selection modes used by the different combinations of modifiers.
     enum Mode
     {
       GeometryIntersectsSetSelection,
@@ -51,6 +52,7 @@ class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 
     QgsMapToolSelect( QgsMapCanvas *canvas );
 
+    //! Sets the current selection mode
     void setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode );
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
@@ -64,7 +66,7 @@ class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   signals:
-
+    //! Emitted when the selection mode changes, usually when qt modifiers are changed
     void modeChanged( QgsMapToolSelect::Mode mode );
 
   private slots:
