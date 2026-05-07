@@ -40,6 +40,7 @@
 #include <QEvent>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFont>
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
@@ -971,8 +972,65 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "Plan session token" ), planToken );
   layout->addLayout( form );
 
+  // ----------------------------------------------------------------------
+  // Agent behavior: rules, skills, and the master switch for custom actions.
+  // Mirrors the Cursor "Rules / Skills / Allow tool use" surface and is wired
+  // to QgsAiAgentSessionManager::setAgentBehaviorSettings on accept.
+  // ----------------------------------------------------------------------
+  const QgsAiAgentBehaviorSettings currentBehavior = mSessionManager ? mSessionManager->agentBehaviorSettings() : QgsAiAgentBehaviorSettings();
+
+  QFrame *behaviorSeparator = new QFrame( &dialog );
+  behaviorSeparator->setFrameShape( QFrame::HLine );
+  behaviorSeparator->setFrameShadow( QFrame::Sunken );
+  layout->addWidget( behaviorSeparator );
+
+  QLabel *behaviorTitle = new QLabel( tr( "Agent behavior" ), &dialog );
+  QFont behaviorTitleFont = behaviorTitle->font();
+  behaviorTitleFont.setBold( true );
+  behaviorTitle->setFont( behaviorTitleFont );
+  layout->addWidget( behaviorTitle );
+
+  QFormLayout *behaviorForm = new QFormLayout();
+
+  QCheckBox *allowCustomActions = new QCheckBox( tr( "Allow custom agent actions (tool use)" ), &dialog );
+  allowCustomActions->setChecked( currentBehavior.allowCustomActions );
+  allowCustomActions->setToolTip( tr( "When enabled, the agent can call tools like read_file, propose_edit, run_python. Destructive tools still require confirmation in their dedicated review dialogs." ) );
+  behaviorForm->addRow( QString(), allowCustomActions );
+
+  QTextEdit *rulesEdit = new QTextEdit( &dialog );
+  rulesEdit->setAcceptRichText( false );
+  rulesEdit->setPlaceholderText( tr( "Custom rules the agent must follow (e.g. 'Always answer in English', 'Prefer GeoPandas over osmnx', …)." ) );
+  rulesEdit->setPlainText( currentBehavior.rulesText );
+  rulesEdit->setFixedHeight( 90 );
+  behaviorForm->addRow( tr( "Agent rules" ), rulesEdit );
+
+  QTextEdit *skillsEdit = new QTextEdit( &dialog );
+  skillsEdit->setAcceptRichText( false );
+  skillsEdit->setPlaceholderText( tr( "Reusable skills/instructions the agent can leverage when relevant." ) );
+  skillsEdit->setPlainText( currentBehavior.skillsText );
+  skillsEdit->setFixedHeight( 90 );
+  behaviorForm->addRow( tr( "Agent skills" ), skillsEdit );
+
+  QCheckBox *loadWorkspaceRules = new QCheckBox( tr( "Also load rule files from workspace folder" ), &dialog );
+  loadWorkspaceRules->setChecked( currentBehavior.loadWorkspaceRules );
+  behaviorForm->addRow( QString(), loadWorkspaceRules );
+
+  QLineEdit *rulesPathEdit = new QLineEdit( currentBehavior.rulesPath, &dialog );
+  rulesPathEdit->setPlaceholderText( u".qgis_ai/rules"_s );
+  behaviorForm->addRow( tr( "Rules folder (relative)" ), rulesPathEdit );
+
+  QCheckBox *loadWorkspaceSkills = new QCheckBox( tr( "Also load skill files from workspace folder" ), &dialog );
+  loadWorkspaceSkills->setChecked( currentBehavior.loadWorkspaceSkills );
+  behaviorForm->addRow( QString(), loadWorkspaceSkills );
+
+  QLineEdit *skillsPathEdit = new QLineEdit( currentBehavior.skillsPath, &dialog );
+  skillsPathEdit->setPlaceholderText( u".qgis_ai/skills"_s );
+  behaviorForm->addRow( tr( "Skills folder (relative)" ), skillsPathEdit );
+
+  layout->addLayout( behaviorForm );
+
   QLabel *helpLabel
-    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep the current saved value." ), &dialog );
+    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep the current saved value.\n\nAgent rules and skills are stored locally in QGIS settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the prompt. Custom actions remain subject to the existing review/approval dialogs." ), &dialog );
   helpLabel->setWordWrap( true );
   layout->addWidget( helpLabel );
 
@@ -1136,6 +1194,19 @@ void QgsAiChatDockWidget::openProviderSettings()
     errorMessages += error + '\n';
   if ( !planToken->text().trimmed().isEmpty() && !mModelRouter->setPlanSessionToken( planToken->text().trimmed(), &error ) )
     errorMessages += error + '\n';
+
+  if ( mSessionManager )
+  {
+    QgsAiAgentBehaviorSettings behaviorSettings = mSessionManager->agentBehaviorSettings();
+    behaviorSettings.allowCustomActions = allowCustomActions->isChecked();
+    behaviorSettings.rulesText = rulesEdit->toPlainText();
+    behaviorSettings.skillsText = skillsEdit->toPlainText();
+    behaviorSettings.loadWorkspaceRules = loadWorkspaceRules->isChecked();
+    behaviorSettings.loadWorkspaceSkills = loadWorkspaceSkills->isChecked();
+    behaviorSettings.rulesPath = rulesPathEdit->text().trimmed();
+    behaviorSettings.skillsPath = skillsPathEdit->text().trimmed();
+    mSessionManager->setAgentBehaviorSettings( behaviorSettings );
+  }
 
   if ( !errorMessages.isEmpty() )
     QMessageBox::warning( this, tr( "Provider configuration warnings" ), errorMessages.trimmed() );

@@ -6,6 +6,8 @@
 
 #include "ai/qgsaicodexoauthclient.h"
 #include "ai/qgsaimodelrouter.h"
+#include "ai/tools/qgsaiechotool.h"
+#include "ai/tools/qgsaitoolregistry.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
@@ -13,6 +15,7 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkAccessManager>
@@ -21,6 +24,7 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QTimer>
+#include <memory>
 
 using namespace Qt::StringLiterals;
 
@@ -88,6 +92,10 @@ class TestQgsAiModelRouter : public QObject
     void extractChatGptAccountIdFromIdToken();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
+    void toolUseDisabledOmitsToolsFromOpenAiPayload();
+    void toolUseEnabledIncludesToolsForOpenAi();
+    void toolUseDisabledOmitsToolsFromClaudePayload();
+    void toolUseEnabledIncludesToolsForClaude();
     void liveOpenAiRequest();
     void liveClaudeRequest();
 };
@@ -193,6 +201,82 @@ void TestQgsAiModelRouter::storeApiKeyPersistsInSettings()
   QVERIFY( reloadedRouter.providerSettings( QgsAiModelRouter::Provider::OpenAi ).enabled );
 
   settings.remove( u"ai/provider/openai"_s );
+}
+
+void TestQgsAiModelRouter::toolUseDisabledOmitsToolsFromOpenAiPayload()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( false );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( !object.contains( u"tools"_s ) );
+  QVERIFY( !object.contains( u"tool_choice"_s ) );
+}
+
+void TestQgsAiModelRouter::toolUseEnabledIncludesToolsForOpenAi()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, false ) ).object();
+  QVERIFY( object.contains( u"tools"_s ) );
+  QCOMPARE( object.value( u"tool_choice"_s ).toString(), u"auto"_s );
+  const QJsonArray tools = object.value( u"tools"_s ).toArray();
+  QVERIFY( !tools.isEmpty() );
+  QCOMPARE( tools.at( 0 ).toObject().value( u"name"_s ).toString(), u"echo"_s );
+}
+
+void TestQgsAiModelRouter::toolUseDisabledOmitsToolsFromClaudePayload()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( false );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Claude, { message }, false ) ).object();
+  QVERIFY( !object.contains( u"tools"_s ) );
+}
+
+void TestQgsAiModelRouter::toolUseEnabledIncludesToolsForClaude()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setToolUseEnabled( true );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = u"hello"_s;
+
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Claude, { message }, false ) ).object();
+  QVERIFY( object.contains( u"tools"_s ) );
+  const QJsonArray tools = object.value( u"tools"_s ).toArray();
+  QVERIFY( !tools.isEmpty() );
+  QCOMPARE( tools.at( 0 ).toObject().value( u"name"_s ).toString(), u"echo"_s );
 }
 
 void TestQgsAiModelRouter::liveOpenAiRequest()

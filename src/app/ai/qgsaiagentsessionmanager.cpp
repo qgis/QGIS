@@ -23,9 +23,12 @@
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 
 #include <QDateTime>
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRegularExpression>
@@ -43,6 +46,10 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
   , mContextProvider( contextProvider )
   , mReviewEngine( reviewEngine )
 {
+  loadPersistedBehaviorSettings();
+  if ( mRouter )
+    mRouter->setToolUseEnabled( mBehaviorSettings.allowCustomActions );
+
   if ( mRouter )
   {
     connect( mRouter, &QgsAiModelRouter::toolCallsRequested, this, &QgsAiAgentSessionManager::onToolCallsRequested );
@@ -362,6 +369,117 @@ void QgsAiAgentSessionManager::setToolRegistry( QgsAiToolRegistry *registry )
     mRouter->setToolRegistry( registry );
 }
 
+void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehaviorSettings &settings )
+{
+  mBehaviorSettings = settings;
+  // Normalize the relative paths so saving an empty value falls back to the default folders.
+  if ( mBehaviorSettings.rulesPath.trimmed().isEmpty() )
+    mBehaviorSettings.rulesPath = u".qgis_ai/rules"_s;
+  if ( mBehaviorSettings.skillsPath.trimmed().isEmpty() )
+    mBehaviorSettings.skillsPath = u".qgis_ai/skills"_s;
+
+  persistBehaviorSettings();
+  if ( mRouter )
+    mRouter->setToolUseEnabled( mBehaviorSettings.allowCustomActions );
+}
+
+void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
+{
+  QgsSettings settings;
+  mBehaviorSettings.allowCustomActions = settings.value( u"qgis_ai/agent/allow_custom_actions"_s, false ).toBool();
+  mBehaviorSettings.rulesText = settings.value( u"qgis_ai/agent/rules_text"_s, QString() ).toString();
+  mBehaviorSettings.skillsText = settings.value( u"qgis_ai/agent/skills_text"_s, QString() ).toString();
+  mBehaviorSettings.loadWorkspaceRules = settings.value( u"qgis_ai/agent/load_workspace_rules"_s, true ).toBool();
+  mBehaviorSettings.loadWorkspaceSkills = settings.value( u"qgis_ai/agent/load_workspace_skills"_s, true ).toBool();
+  mBehaviorSettings.rulesPath = settings.value( u"qgis_ai/agent/rules_path"_s, u".qgis_ai/rules"_s ).toString();
+  mBehaviorSettings.skillsPath = settings.value( u"qgis_ai/agent/skills_path"_s, u".qgis_ai/skills"_s ).toString();
+}
+
+void QgsAiAgentSessionManager::persistBehaviorSettings() const
+{
+  QgsSettings settings;
+  settings.setValue( u"qgis_ai/agent/allow_custom_actions"_s, mBehaviorSettings.allowCustomActions );
+  settings.setValue( u"qgis_ai/agent/rules_text"_s, mBehaviorSettings.rulesText );
+  settings.setValue( u"qgis_ai/agent/skills_text"_s, mBehaviorSettings.skillsText );
+  settings.setValue( u"qgis_ai/agent/load_workspace_rules"_s, mBehaviorSettings.loadWorkspaceRules );
+  settings.setValue( u"qgis_ai/agent/load_workspace_skills"_s, mBehaviorSettings.loadWorkspaceSkills );
+  settings.setValue( u"qgis_ai/agent/rules_path"_s, mBehaviorSettings.rulesPath );
+  settings.setValue( u"qgis_ai/agent/skills_path"_s, mBehaviorSettings.skillsPath );
+}
+
+QString QgsAiAgentSessionManager::readWorkspaceTextFiles( const QString &relativeDir ) const
+{
+  if ( !mContextProvider || relativeDir.trimmed().isEmpty() )
+    return QString();
+
+  const QString root = mContextProvider->workspaceRoot();
+  if ( root.isEmpty() )
+    return QString();
+
+  QDir baseDir( root );
+  const QString absolutePath = QDir::cleanPath( baseDir.filePath( relativeDir ) );
+  // Reject paths that escape the workspace root (e.g. "../../etc").
+  if ( !mContextProvider->isInWorkspace( absolutePath ) )
+    return QString();
+
+  const QFileInfo info( absolutePath );
+  if ( !info.exists() || !info.isDir() )
+    return QString();
+
+  QDir dir( absolutePath );
+  const QStringList filters = { u"*.md"_s, u"*.markdown"_s, u"*.txt"_s };
+  const QFileInfoList entries = dir.entryInfoList( filters, QDir::Files | QDir::Readable, QDir::Name );
+
+  QStringList sections;
+  // Cap the per-file budget so a runaway rule file cannot drown the prompt.
+  static constexpr qint64 MAX_BYTES_PER_FILE = 16384;
+  for ( const QFileInfo &entry : entries )
+  {
+    QFile file( entry.absoluteFilePath() );
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      continue;
+    const QByteArray raw = file.read( MAX_BYTES_PER_FILE );
+    QString content = QString::fromUtf8( raw ).trimmed();
+    if ( content.isEmpty() )
+      continue;
+    if ( file.size() > MAX_BYTES_PER_FILE )
+      content += u"\n…[truncated]"_s;
+    const QString relativeFile = QDir( root ).relativeFilePath( entry.absoluteFilePath() );
+    sections << u"# %1\n%2"_s.arg( relativeFile, content );
+  }
+  return sections.join( "\n\n"_L1 );
+}
+
+QString QgsAiAgentSessionManager::collectRulesContent() const
+{
+  QStringList parts;
+  const QString inline_ = mBehaviorSettings.rulesText.trimmed();
+  if ( !inline_.isEmpty() )
+    parts << inline_;
+  if ( mBehaviorSettings.loadWorkspaceRules )
+  {
+    const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.rulesPath );
+    if ( !workspace.isEmpty() )
+      parts << workspace;
+  }
+  return parts.join( "\n\n"_L1 );
+}
+
+QString QgsAiAgentSessionManager::collectSkillsContent() const
+{
+  QStringList parts;
+  const QString inline_ = mBehaviorSettings.skillsText.trimmed();
+  if ( !inline_.isEmpty() )
+    parts << inline_;
+  if ( mBehaviorSettings.loadWorkspaceSkills )
+  {
+    const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.skillsPath );
+    if ( !workspace.isEmpty() )
+      parts << workspace;
+  }
+  return parts.join( "\n\n"_L1 );
+}
+
 QString QgsAiAgentSessionManager::buildSystemPrompt() const
 {
   // Cursor-like file-acting agent for QGIS. Tells the model it has tools and must use them
@@ -398,8 +516,10 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
       prompt += u"  …%1 more (use list_project_layers for the full list).\n"_s.arg( layers.size() - 10 );
   }
 
-  // Tool list is injected so the model has discoverable names alongside the JSON schema.
-  if ( mToolRegistry )
+  // Tool list is injected so the model has discoverable names alongside the JSON schema,
+  // but only when the user actually allows custom actions. Otherwise we hide the catalogue
+  // entirely so the model does not even attempt tool use.
+  if ( mToolRegistry && mBehaviorSettings.allowCustomActions )
   {
     const QStringList toolNames = mToolRegistry->toolNames();
     if ( !toolNames.isEmpty() )
@@ -410,13 +530,44 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
     }
   }
 
+  // User-provided rules and skills (inline + workspace files) live on top of the built-in
+  // guardrails so the user can layer their own policies and helpers on top.
+  const QString rulesContent = collectRulesContent();
+  if ( !rulesContent.isEmpty() )
+  {
+    prompt += "\n== User rules ==\n"_L1;
+    prompt += rulesContent;
+    prompt += '\n';
+  }
+
+  const QString skillsContent = collectSkillsContent();
+  if ( !skillsContent.isEmpty() )
+  {
+    prompt += "\n== User skills ==\n"_L1;
+    prompt += skillsContent;
+    prompt += '\n';
+  }
+
   prompt += "\n== How to act ==\n"_L1;
+  if ( !mBehaviorSettings.allowCustomActions )
+  {
+    prompt += "- Custom agent actions are DISABLED by the user. Do not attempt to call any tool. "
+              "Answer in plain text only and tell the user to enable 'Allow custom agent actions' in AI settings if a tool is needed.\n"_L1;
+    return prompt;
+  }
   prompt += "- Use tools instead of writing code in chat for the user to copy.\n"_L1;
   prompt += "- To inspect files: read_file, search_files, list_files. To inspect project state: list_project_layers, get_active_canvas_extent.\n"_L1;
   prompt += "- To modify files: ALWAYS go through propose_edit / propose_create_file / propose_delete_file (when available). The user will review and accept your diff.\n"_L1;
   prompt += "- Never call propose_edit blind: read the file first to capture the exact original text.\n"_L1;
   prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;
   prompt += "- Do not invent file paths; resolve them via search_files or list_files.\n"_L1;
+  prompt += "- External libraries and remote data are AVAILABLE. Do NOT refuse with phrases like 'I cannot run external libraries in this environment.' You can.\n"_L1;
+  prompt += "  - To fetch remote files (GeoJSON, Shapefile, Overpass/Nominatim/GADM responses): PREFER download_file(url, dest_path). One approval, stays inside the workspace, no extra packages.\n"_L1;
+  prompt += "  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, …):\n"_L1;
+  prompt += "      1) Briefly state the plan in chat.\n"_L1;
+  prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
+  prompt += "      3) Then call run_python to use them.\n"_L1;
+  prompt += "  - Concrete example — 'boundary of Pomponesco, Italy': prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via add_layer_from_file or run_python. Use osmnx only when a true graph/network API is needed.\n"_L1;
   prompt += QStringLiteral(
               "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do NOT just run it via run_python — also save it as a Processing script. "
               "The Processing scripts folder for this profile is: %1 . "

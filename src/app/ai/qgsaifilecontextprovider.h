@@ -48,9 +48,21 @@ class APP_EXPORT QgsAiFileContextProvider : public QObject
     QString diffPreview( const QString &beforeText, const QString &afterText ) const;
     QString workspaceRoot() const { return mWorkspaceRoot; }
 
-  private:
+    /**
+     * Returns the absolute, cleaned path for \a filePath. If \a allowExternal is false (default)
+     * and the resolved path is not inside the workspace root, returns an empty string.
+     * Public so tools that write/download into the workspace (e.g. download_file) can validate
+     * destination paths against the same boundary used by read tools.
+     */
     QString normalizePath( const QString &filePath, bool allowExternal = false ) const;
+
+    /**
+     * Returns true iff \a absolutePath is inside the workspace root (or equal to it).
+     * Public for the same reason as normalizePath.
+     */
     bool isInWorkspace( const QString &absolutePath ) const;
+
+  private:
     QString mWorkspaceRoot;
 };
 

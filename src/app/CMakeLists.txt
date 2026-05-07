@@ -318,12 +318,15 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaifilecontextprovider.cpp
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp
+    ai/qgsaipipinstallapprovaldialog.cpp
     ai/qgsaipythonapprovaldialog.cpp
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
+    ai/tools/qgsaidownloadfiletool.cpp
     ai/tools/qgsaiechotool.cpp
     ai/tools/qgsaiedittools.cpp
     ai/tools/qgsaiindextools.cpp
+    ai/tools/qgsaiinstallpackagetool.cpp
     ai/tools/qgsailayertools.cpp
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp

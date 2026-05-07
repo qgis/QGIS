@@ -90,6 +90,14 @@ class APP_EXPORT QgsAiModelRouter : public QObject
      */
     void setToolRegistry( QgsAiToolRegistry *registry ) { mToolRegistry = registry; }
 
+    /**
+     * Master switch for advertising tools to the model. When false, the request payload
+     * will not include the `tools`/`tool_choice` fields, so the model cannot request a
+     * tool call even if the registry has tools available.
+     */
+    void setToolUseEnabled( bool enabled ) { mToolUseEnabled = enabled; }
+    bool toolUseEnabled() const { return mToolUseEnabled; }
+
   signals:
     void requestProgress( const QString &requestId, const QString &chunk );
     void requestFinished(
@@ -169,6 +177,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QMap<Provider, ProviderSettings> mProviderSettings;
     QMap<QString, RequestContext> mRequests;
     QgsAiToolRegistry *mToolRegistry = nullptr;
+    bool mToolUseEnabled = false;
 };
 
 #endif // QGSAIMODELROUTER_H

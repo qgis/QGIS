@@ -99,9 +99,11 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/tools/qgsaidownloadfiletool.h"
 #include "ai/tools/qgsaiechotool.h"
 #include "ai/tools/qgsaiedittools.h"
 #include "ai/tools/qgsaiindextools.h"
+#include "ai/tools/qgsaiinstallpackagetool.h"
 #include "ai/tools/qgsailayertools.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
@@ -1401,6 +1403,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeDeleteFileTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeMultiEditTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiInstallPythonPackageTool>( this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiDownloadFileTool>( mAiFileContextProvider.get(), this ) );
   mAiEmbeddingClient = std::make_unique<QgsAiEmbeddingClient>( this );
   mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingClient.get(), this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );

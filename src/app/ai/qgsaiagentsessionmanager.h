@@ -38,6 +38,29 @@ struct APP_EXPORT QgsAiChatContextFile
     bool allowExternal = false;
 };
 
+/**
+ * User-configurable behaviour for the agent: rules, skills and a master toggle that
+ * gates whether the agent is allowed to perform custom actions (tool use). The
+ * settings are persisted in QgsSettings and loaded once at construction time.
+ */
+struct APP_EXPORT QgsAiAgentBehaviorSettings
+{
+    //! Master toggle. When false the agent must not use any custom tool/action.
+    bool allowCustomActions = false;
+    //! Inline rules text injected into the system prompt.
+    QString rulesText;
+    //! Inline skills text injected into the system prompt.
+    QString skillsText;
+    //! When true, also load .md/.txt files from rulesPath inside the workspace.
+    bool loadWorkspaceRules = true;
+    //! When true, also load .md/.txt files from skillsPath inside the workspace.
+    bool loadWorkspaceSkills = true;
+    //! Workspace-relative directory for rules files. Defaults to ".qgis_ai/rules".
+    QString rulesPath = u".qgis_ai/rules"_s;
+    //! Workspace-relative directory for skills files. Defaults to ".qgis_ai/skills".
+    QString skillsPath = u".qgis_ai/skills"_s;
+};
+
 class APP_EXPORT QgsAiAgentSessionManager : public QObject
 {
     Q_OBJECT
@@ -62,6 +85,23 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     void setToolRegistry( QgsAiToolRegistry *registry );
     QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
+
+    /**
+     * Returns the current agent behaviour settings (rules, skills, custom actions toggle).
+     * The values are kept in sync with QgsSettings.
+     */
+    QgsAiAgentBehaviorSettings agentBehaviorSettings() const { return mBehaviorSettings; }
+
+    /**
+     * Persists \a settings in QgsSettings and propagates the master toggle to the
+     * model router so subsequent requests reflect the new tool-use policy.
+     */
+    void setAgentBehaviorSettings( const QgsAiAgentBehaviorSettings &settings );
+
+    //! Returns the rules text combined from inline settings and workspace files.
+    QString collectRulesContent() const;
+    //! Returns the skills text combined from inline settings and workspace files.
+    QString collectSkillsContent() const;
 
     //! Maximum tool-use rounds the agent will run before bailing out for a single user turn.
     static constexpr int MAX_TOOL_ITERATIONS_PER_TURN = 8;
@@ -91,6 +131,10 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QList<QgsAiChatMessage> buildOutgoingMessages() const;
     void onToolCallsRequested( const QString &requestId, const QString &providerName, const QString &assistantText, const QList<QgsAiToolCall> &calls );
 
+    void loadPersistedBehaviorSettings();
+    void persistBehaviorSettings() const;
+    QString readWorkspaceTextFiles( const QString &relativeDir ) const;
+
     QgsAiModelRouter *mRouter = nullptr;
     QgsAiFileContextProvider *mContextProvider = nullptr;
     QgsAiReviewPatchEngine *mReviewEngine = nullptr;
@@ -104,6 +148,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QList<QgsAiChatContextFile> mCurrentContextFiles;
     QString mStreamedText;
     int mToolIterations = 0;
+    QgsAiAgentBehaviorSettings mBehaviorSettings;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H

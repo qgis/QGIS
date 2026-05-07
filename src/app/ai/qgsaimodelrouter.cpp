@@ -309,7 +309,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       appendOpenAiInputItems( message, input );
     payload.insert( u"input"_s, input );
 
-    if ( mToolRegistry && mToolRegistry->count() > 0 )
+    if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
     {
       const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
       if ( !toolSchemas.isEmpty() )
@@ -348,7 +348,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
     payload.insert( u"messages"_s, claudeMessages );
     payload.insert( u"max_tokens"_s, 4096 );
 
-    if ( mToolRegistry && mToolRegistry->count() > 0 )
+    if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
     {
       const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::AnthropicTools );
       if ( !toolSchemas.isEmpty() )
