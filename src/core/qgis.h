@@ -4310,6 +4310,18 @@ int QgisEvent = QEvent::User + 1;
 
 
     /**
+     * 3D asset types.
+     *
+     * \since QGIS 4.2
+     */
+    enum class Asset3DType : int
+    {
+      MaterialSettings,   //!< Material settings
+      BackgroundSettings, //!< Background/skybox settings
+    };
+    Q_ENUM( Asset3DType )
+
+    /**
      * 3D point shape types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape

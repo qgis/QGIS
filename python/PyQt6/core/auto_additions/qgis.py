@@ -7729,6 +7729,19 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Asset3DType.MaterialSettings.__doc__ = "Material settings"
+Qgis.Asset3DType.BackgroundSettings.__doc__ = "Background/skybox settings"
+Qgis.Asset3DType.__doc__ = """3D asset types.
+
+.. versionadded:: 4.2
+
+* ``MaterialSettings``: Material settings
+* ``BackgroundSettings``: Background/skybox settings
+
+"""
+# --
+Qgis.Asset3DType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"

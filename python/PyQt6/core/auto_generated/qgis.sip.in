@@ -2414,6 +2414,12 @@ The development version
 
 
 
+    enum class Asset3DType /BaseType=IntEnum/
+    {
+      MaterialSettings,
+      BackgroundSettings,
+    };
+
     enum class Point3DShape /BaseType=IntEnum/
     {
       Cylinder,
