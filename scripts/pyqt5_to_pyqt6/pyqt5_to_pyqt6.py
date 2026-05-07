@@ -191,6 +191,15 @@ import_warnings = {
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
+# Submodules exposed by the qgis.PyQt compatibility shim.
+# Keep in sync with python/PyQt/qgis/PyQt/__init__.py in the QGIS repo.
+QGIS_PYQT_MODULES = {
+    "Qsci", "QtCore", "QtGui", "QtMultimedia", "QtNetwork",
+    "QtPrintSupport", "QtQuick", "QtQuickWidgets", "QtSerialPort",
+    "QtSql", "QtSvg", "QtTest", "QtWebChannel", "QtWebEngineCore",
+    "QtWebEngineQuick", "QtWebEngineWidgets", "QtWidgets", "QtXml",
+    "sip", "uic",
+}
 
 def get_enum_name(_class: str, enum_name: str, value: str):
     """
@@ -488,13 +497,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tree = ast.parse(contents, filename=filename)
 
-    QGIS_PYQT_MODULES = {
-        "Qsci", "QtCore", "QtGui", "QtMultimedia", "QtNetwork",
-        "QtPrintSupport", "QtQuick", "QtQuickWidgets", "QtSerialPort",
-        "QtSql", "QtSvg", "QtTest", "QtWebChannel", "QtWebEngineCore",
-        "QtWebEngineQuick", "QtWebEngineWidgets", "QtWidgets", "QtXml",
-        "sip", "uic",
-    }
 
     for parent in ast.walk(tree):
         for node in ast.iter_child_nodes(parent):
