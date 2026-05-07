@@ -31,6 +31,11 @@
 
 #include "moc_qgsmaptoolselect.cpp"
 
+/**
+ * \ingroup gui
+ * \brief A map tool for selecting features on a map \a canvas.
+ * \see QgsMapTool
+ */
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {

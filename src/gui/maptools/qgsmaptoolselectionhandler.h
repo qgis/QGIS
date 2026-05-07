@@ -23,6 +23,8 @@
 #include <QTimer>
 #include <QWidget>
 
+#define SIP_NO_FILE
+
 class QHBoxLayout;
 class QKeyEvent;
 

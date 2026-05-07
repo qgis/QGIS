@@ -1205,6 +1205,15 @@ Sets the ``range`` of z-values which will be visible in the map.
 .. versionadded:: 3.18
 %End
 
+    void pushMessage( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Push a message (usually to be displayed in a message bar)
+
+.. seealso:: :py:func:`messageEmitted` ;
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void xyCoordinates( const QgsPointXY &p );

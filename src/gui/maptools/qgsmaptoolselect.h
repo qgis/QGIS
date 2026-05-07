@@ -19,11 +19,20 @@
 #include "qgsmaptool.h"
 #include "qgsmaptoolselectionhandler.h"
 
+#define SIP_NO_FILE
+
+// no bindings for now, not stable yet. Previously lived in src/app
+
 class QgsMapCanvas;
 class QgsHighlight;
 
 class QMouseEvent;
 
+/**
+ * \ingroup gui
+ * \brief A map tool for selecting features on a map canvas.
+ * \see QgsMapTool
+ */
 class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT

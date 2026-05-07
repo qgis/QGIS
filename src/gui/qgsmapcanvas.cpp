@@ -2034,7 +2034,7 @@ void QgsMapCanvas::setZRange( const QgsDoubleRange &range )
 
 void QgsMapCanvas::pushMessage( const QString &title, const QString &message, Qgis::MessageLevel level )
 {
-  emit messageEmitted(title, message, level);
+  emit messageEmitted( title, message, level );
 }
 
 void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
