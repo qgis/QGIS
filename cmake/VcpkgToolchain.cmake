@@ -1,6 +1,8 @@
 set(NUGET_SOURCE "https://nuget.pkg.github.com/qgis/index.json" CACHE STRING "Nuget source used for restoring packages")
 set(NUGET_PUSH_SOURCE "${NUGET_SOURCE}" CACHE STRING "Nuget source used for publishing packages")
 set(NUGET_USERNAME "qgis" CACHE STRING "Nuget user")
+set(NUGET_BINARY_SOURCE_MODE "readwrite" CACHE STRING "Nuget binary source mode")
+set_property(CACHE NUGET_BINARY_SOURCE_MODE PROPERTY STRINGS "read" "readwrite")
 
 # Setup features (dependencies) based on cmake configuration
 if(WITH_3D)
@@ -84,7 +86,7 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND (CMAKE_HOST_WIN32 OR EXISTS "${_VCPKG_MO
   endif()
 
   file(TO_NATIVE_PATH "${_CONFIG_PATH}" _CONFIG_PATH_NATIVE)
-  set(ENV{VCPKG_BINARY_SOURCES} "$ENV{VCPKG_BINARY_SOURCES};nugetconfig,${_CONFIG_PATH_NATIVE},readwrite")
+  set(ENV{VCPKG_BINARY_SOURCES} "$ENV{VCPKG_BINARY_SOURCES};nugetconfig,${_CONFIG_PATH_NATIVE},${NUGET_BINARY_SOURCE_MODE}")
 endif()
 
 set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
