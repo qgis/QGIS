@@ -33,6 +33,7 @@ class QgsModelChildAlgorithmGraphicItem;
 class QgsProcessingModelGroupBox;
 class QgsMessageBar;
 class QgsModelArrowItem;
+class QgsProcessingModelFeedback;
 
 ///@cond NOT_STABLE
 
@@ -200,6 +201,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * \since QGIS 4.0
      */
     void updateBounds();
+
+    /**
+     * Connects to signals from a \a feedback object, so the progress of the model can be represented
+     * visually in the scene.
+     *
+     * \since QGIS 4.2
+     */
+    void setupFeedbackConnections( QgsProcessingModelFeedback *feedback );
 
   signals:
 

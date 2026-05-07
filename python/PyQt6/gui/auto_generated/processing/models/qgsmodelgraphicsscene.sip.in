@@ -197,6 +197,14 @@ the model, with an additional margin arounds items.
 .. versionadded:: 4.0
 %End
 
+    void setupFeedbackConnections( QgsProcessingModelFeedback *feedback );
+%Docstring
+Connects to signals from a ``feedback`` object, so the progress of the
+model can be represented visually in the scene.
+
+.. versionadded:: 4.2
+%End
+
   signals:
 
     void rebuildRequired();

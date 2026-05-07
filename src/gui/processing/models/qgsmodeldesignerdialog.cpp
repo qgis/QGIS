@@ -546,7 +546,7 @@ QgsModelGraphicsScene *QgsModelDesignerDialog::modelScene()
 QgsProcessingFeedback *QgsModelDesignerDialog::createFeedback()
 {
   auto result = std::make_unique< QgsProcessingModelFeedback >();
-
+  mScene->setupFeedbackConnections( result.get() );
   return result.release();
 }
 
