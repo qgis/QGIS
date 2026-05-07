@@ -42,14 +42,16 @@ Funziona su Ubuntu 22.04+, Fedora 38+, Debian 12+, Arch e qualsiasi distro con `
 1. Apri QGIS_AI.
 2. Menu **Visualizza → Pannelli → AI Assistant**.
 3. Click sull'icona **⚙ impostazioni** in alto a destra del pannello.
-4. Incolla la tua **API key** OpenAI o Anthropic (o entrambe).
+4. Incolla la tua **API key** OpenAI/Anthropic oppure usa il login **Codex/ChatGPT** o **Claude OAuth**.
 5. Chiudi il dialog e prova a scrivere un messaggio nella chat.
 
 Da dove ottenere le chiavi:
 - **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 - **Anthropic**: [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+- **Codex/ChatGPT**: dal dialog impostazioni scegli “Get Codex device code”, apri la pagina mostrata e completa il login. Il modello Codex usa `gpt-5.5`.
+- **Claude OAuth**: dal dialog impostazioni scegli “Login with Claude” e incolla il codice di autorizzazione quando richiesto.
 
-Le chiavi sono salvate **solo localmente** nelle impostazioni QGIS della tua macchina. Non vengono inviate a nessun server diverso dal provider che hai scelto.
+Le chiavi sono salvate **solo localmente** nelle impostazioni QGIS della tua macchina. I login OAuth salvano solo il refresh token nell'auth store cifrato di QGIS. Le credenziali non vengono inviate a nessun server diverso dal provider che hai scelto.
 
 ---
 

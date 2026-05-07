@@ -313,6 +313,8 @@ if (ENABLE_AI_ASSISTANT)
     ai/index/qgsaiworkspaceindex.cpp
     ai/qgsaiagentsessionmanager.cpp
     ai/qgsaichatdockwidget.cpp
+    ai/qgsaiclaudeoauthclient.cpp
+    ai/qgsaicodexoauthclient.cpp
     ai/qgsaifilecontextprovider.cpp
     ai/qgsaimodelrouter.cpp
     ai/qgsaimodels.cpp

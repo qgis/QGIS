@@ -38,16 +38,25 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     enum class Provider
     {
       OpenAi,
+      Codex,
       Claude,
       Plan
     };
     Q_ENUM( Provider )
+
+    enum class CredentialMode
+    {
+      ApiKey,
+      OAuth
+    };
+    Q_ENUM( CredentialMode )
 
     struct ProviderSettings
     {
         QString endpoint;
         QString model;
         QString authConfigId;
+        CredentialMode credentialMode = CredentialMode::ApiKey;
         bool enabled = false;
     };
 
@@ -61,6 +70,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     bool hasActiveRequest( const QString &requestId ) const;
 
     bool storeApiKey( Provider provider, const QString &apiKey, QString *errorMessage = nullptr );
+    bool setCredentialMode( Provider provider, CredentialMode mode, QString *errorMessage = nullptr );
     bool setPlanSessionToken( const QString &token, QString *errorMessage = nullptr );
     void setPlanAuthConfigId( const QString &authConfigId );
 
@@ -72,6 +82,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QByteArray buildRequestPayload( Provider provider, const QList<QgsAiChatMessage> &messages, bool stream ) const;
     QString sanitizeErrorText( const QString &errorText ) const;
     bool hasStoredApiKey( Provider provider ) const;
+    bool hasStoredOAuthRefreshToken( Provider provider ) const;
 
     /**
      * Sets the tool registry used to advertise tools to the LLM. Pointer is borrowed,
@@ -144,11 +155,13 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QString endpointSettingKey( Provider provider ) const;
     QString modelSettingKey( Provider provider ) const;
     QString enabledSettingKey( Provider provider ) const;
+    QString credentialModeSettingKey( Provider provider ) const;
     QString apiKeySettingKey( Provider provider ) const;
     QString planAuthConfigIdSettingKey() const;
     QString planSessionTokenSettingKey() const;
     QString storedApiKey( Provider provider ) const;
     bool hasConfiguredCredential( Provider provider ) const;
+    QString normalizedModelForProvider( Provider provider, const QString &model ) const;
     void loadPersistedProviderSettings();
     void persistProviderSettings( Provider provider, const ProviderSettings &settings ) const;
     RequestContext *contextFromReply( QNetworkReply *reply );

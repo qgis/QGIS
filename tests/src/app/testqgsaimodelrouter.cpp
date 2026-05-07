@@ -5,6 +5,7 @@
 ***************************************************************************/
 
 #include "ai/qgsaimodelrouter.h"
+#include "ai/qgsaicodexoauthclient.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
@@ -79,6 +80,9 @@ class TestQgsAiModelRouter : public QObject
   private slots:
     void initTestCase();
     void buildPayloadForOpenAi();
+    void buildPayloadForCodexUsesGpt55();
+    void codexModelFallback();
+    void extractChatGptAccountIdFromIdToken();
     void sanitizeSecrets();
     void storeApiKeyPersistsInSettings();
     void liveOpenAiRequest();
@@ -104,6 +108,65 @@ void TestQgsAiModelRouter::buildPayloadForOpenAi()
   QCOMPARE( object.value( QStringLiteral( "stream" ) ).toBool(), true );
   QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-4.1-mini" ) );
   QVERIFY( object.contains( QStringLiteral( "input" ) ) );
+}
+
+void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt55()
+{
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+
+  QgsAiModelRouter router;
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = QStringLiteral( "hello" );
+
+  const QByteArray payload = router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, {message}, true );
+  const QJsonDocument doc = QJsonDocument::fromJson( payload );
+  QVERIFY( doc.isObject() );
+  const QJsonObject object = doc.object();
+  QCOMPARE( object.value( QStringLiteral( "stream" ) ).toBool(), true );
+  QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-5.5" ) );
+  QVERIFY( object.contains( QStringLiteral( "input" ) ) );
+}
+
+void TestQgsAiModelRouter::codexModelFallback()
+{
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+
+  QgsAiModelRouter router;
+  QgsAiModelRouter::ProviderSettings codexSettings = router.providerSettings( QgsAiModelRouter::Provider::Codex );
+  codexSettings.model = QStringLiteral( "gpt-5" );
+  router.setProviderSettings( QgsAiModelRouter::Provider::Codex, codexSettings );
+
+  QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::Codex ).model, QStringLiteral( "gpt-5.5" ) );
+
+  QgsAiChatMessage message;
+  message.role = QgsAiChatRole::User;
+  message.content = QStringLiteral( "hello" );
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, {message}, false ) ).object();
+  QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-5.5" ) );
+
+  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+}
+
+void TestQgsAiModelRouter::extractChatGptAccountIdFromIdToken()
+{
+  const auto encode = []( const QJsonObject &object ) {
+    return QJsonDocument( object ).toJson( QJsonDocument::Compact ).toBase64( QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
+  };
+
+  QJsonObject authClaims;
+  authClaims.insert( QStringLiteral( "chatgpt_account_id" ), QStringLiteral( "account-test-123" ) );
+  QJsonObject payload;
+  payload.insert( QStringLiteral( "https://api.openai.com/auth" ), authClaims );
+
+  const QString idToken = QString::fromLatin1( encode( QJsonObject( { { QStringLiteral( "alg" ), QStringLiteral( "none" ) } } ) ) )
+                          + QLatin1Char( '.' )
+                          + QString::fromLatin1( encode( payload ) )
+                          + QStringLiteral( ".signature" );
+
+  QCOMPARE( QgsAiCodexOAuthClient::extractChatGptAccountId( idToken ), QStringLiteral( "account-test-123" ) );
 }
 
 void TestQgsAiModelRouter::sanitizeSecrets()

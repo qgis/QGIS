@@ -20,6 +20,8 @@
 
 #include "qgisapp.h"
 #include "qgsaiagentsessionmanager.h"
+#include "qgsaiclaudeoauthclient.h"
+#include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsapplication.h"
@@ -29,6 +31,8 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QCheckBox>
+#include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>
@@ -51,10 +55,14 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QSet>
+#include <QHostAddress>
 #include <QString>
+#include <QTcpServer>
+#include <QTcpSocket>
 #include <QTextCursor>
 #include <QTextEdit>
 #include <QToolButton>
+#include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QVariant>
 
@@ -76,6 +84,7 @@ namespace
     return {
       { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
       { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
+      { u"Codex GPT-5.5"_s, u"gpt-5.5"_s, QgsAiModelRouter::Provider::Codex },
       { u"Claude Sonnet 4"_s, u"claude-sonnet-4-20250514"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Sonnet 3.7"_s, u"claude-3-7-sonnet-20250219"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
@@ -361,6 +370,9 @@ void QgsAiChatDockWidget::initModelMenu()
         case QgsAiModelRouter::Provider::OpenAi:
           header = tr( "OpenAI" );
           break;
+        case QgsAiModelRouter::Provider::Codex:
+          header = tr( "Codex / ChatGPT" );
+          break;
         case QgsAiModelRouter::Provider::Claude:
           header = tr( "Anthropic" );
           break;
@@ -520,7 +532,7 @@ void QgsAiChatDockWidget::onModelSelected( QAction *action )
   if ( entry.displayName.isEmpty() )
     return;
 
-  const QList<QgsAiModelRouter::Provider> providers = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
+  const QList<QgsAiModelRouter::Provider> providers = { QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::Claude, QgsAiModelRouter::Provider::Plan };
   for ( QgsAiModelRouter::Provider provider : providers )
   {
     QgsAiModelRouter::ProviderSettings settings = mModelRouter->providerSettings( provider );
@@ -886,11 +898,36 @@ void QgsAiChatDockWidget::openProviderSettings()
   openAiKey->setEchoMode( QLineEdit::Password );
   openAiKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "sk-..." ) );
 
+  QgsAiCodexOAuthClient::DeviceCode codexDeviceCode;
+  QLineEdit *codexEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).endpoint, &dialog );
+  QLineEdit *codexModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).model, &dialog );
+  codexModel->setPlaceholderText( u"gpt-5.5"_s );
+  QLabel *codexStatus = new QLabel( mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex ) ? tr( "Signed in" ) : tr( "Not signed in" ), &dialog );
+  QPushButton *codexRequestCodeButton = new QPushButton( tr( "Get Codex device code" ), &dialog );
+  QPushButton *codexCompleteLoginButton = new QPushButton( tr( "Complete Codex login" ), &dialog );
+  QPushButton *codexLogoutButton = new QPushButton( tr( "Logout Codex" ), &dialog );
+  QWidget *codexButtons = new QWidget( &dialog );
+  QHBoxLayout *codexButtonsLayout = new QHBoxLayout( codexButtons );
+  codexButtonsLayout->setContentsMargins( 0, 0, 0, 0 );
+  codexButtonsLayout->addWidget( codexRequestCodeButton );
+  codexButtonsLayout->addWidget( codexCompleteLoginButton );
+  codexButtonsLayout->addWidget( codexLogoutButton );
+
   QLineEdit *claudeEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).endpoint, &dialog );
   QLineEdit *claudeModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).model, &dialog );
   QLineEdit *claudeKey = new QLineEdit( &dialog );
   claudeKey->setEchoMode( QLineEdit::Password );
   claudeKey->setPlaceholderText( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude ) ? tr( "Saved locally — enter a new key only to replace it" ) : tr( "anthropic key..." ) );
+  QCheckBox *claudeUseOAuth = new QCheckBox( tr( "Use Claude OAuth login instead of API key" ), &dialog );
+  claudeUseOAuth->setChecked( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude ).credentialMode == QgsAiModelRouter::CredentialMode::OAuth );
+  QLabel *claudeOAuthStatus = new QLabel( mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude ) ? tr( "Signed in" ) : tr( "Not signed in" ), &dialog );
+  QPushButton *claudeLoginButton = new QPushButton( tr( "Login with Claude" ), &dialog );
+  QPushButton *claudeLogoutButton = new QPushButton( tr( "Logout Claude" ), &dialog );
+  QWidget *claudeOAuthButtons = new QWidget( &dialog );
+  QHBoxLayout *claudeOAuthButtonsLayout = new QHBoxLayout( claudeOAuthButtons );
+  claudeOAuthButtonsLayout->setContentsMargins( 0, 0, 0, 0 );
+  claudeOAuthButtonsLayout->addWidget( claudeLoginButton );
+  claudeOAuthButtonsLayout->addWidget( claudeLogoutButton );
 
   QLineEdit *planEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).endpoint, &dialog );
   QLineEdit *planAuthCfg = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan ).authConfigId, &dialog );
@@ -901,18 +938,140 @@ void QgsAiChatDockWidget::openProviderSettings()
   form->addRow( tr( "OpenAI endpoint" ), openAiEndpoint );
   form->addRow( tr( "OpenAI model" ), openAiModel );
   form->addRow( tr( "OpenAI API key" ), openAiKey );
+  form->addRow( tr( "Codex endpoint" ), codexEndpoint );
+  form->addRow( tr( "Codex model" ), codexModel );
+  form->addRow( tr( "Codex OAuth status" ), codexStatus );
+  form->addRow( tr( "Codex login" ), codexButtons );
   form->addRow( tr( "Claude endpoint" ), claudeEndpoint );
   form->addRow( tr( "Claude model" ), claudeModel );
   form->addRow( tr( "Claude API key" ), claudeKey );
+  form->addRow( QString(), claudeUseOAuth );
+  form->addRow( tr( "Claude OAuth status" ), claudeOAuthStatus );
+  form->addRow( tr( "Claude OAuth" ), claudeOAuthButtons );
   form->addRow( tr( "Plan backend endpoint" ), planEndpoint );
   form->addRow( tr( "Plan OAuth authcfg ID" ), planAuthCfg );
   form->addRow( tr( "Plan session token" ), planToken );
   layout->addLayout( form );
 
   QLabel *helpLabel
-    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings and do not require the QGIS master authentication password. Leave API key fields empty to keep the current saved value." ), &dialog );
+    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep the current saved value." ), &dialog );
   helpLabel->setWordWrap( true );
   layout->addWidget( helpLabel );
+
+  connect( codexRequestCodeButton, &QPushButton::clicked, &dialog, [&dialog, &codexDeviceCode, codexStatus]() {
+    QString error;
+    if ( !QgsAiCodexOAuthClient::requestDeviceCode( codexDeviceCode, &error ) )
+    {
+      QMessageBox::warning( &dialog, QObject::tr( "Codex login failed" ), error );
+      return;
+    }
+
+    codexStatus->setText( QObject::tr( "Open %1 and enter code %2" ).arg( codexDeviceCode.verificationUrl, codexDeviceCode.userCode ) );
+    QDesktopServices::openUrl( QUrl( codexDeviceCode.verificationUrl ) );
+    QMessageBox::information( &dialog, QObject::tr( "Codex device code" ), QObject::tr( "Open %1 and enter this code:\n\n%2\n\nThen click Complete Codex login." ).arg( codexDeviceCode.verificationUrl, codexDeviceCode.userCode ) );
+  } );
+
+  connect( codexCompleteLoginButton, &QPushButton::clicked, &dialog, [&dialog, &codexDeviceCode, codexStatus]() {
+    if ( codexDeviceCode.deviceAuthId.isEmpty() )
+    {
+      QMessageBox::information( &dialog, QObject::tr( "Codex login" ), QObject::tr( "Request a Codex device code first." ) );
+      return;
+    }
+
+    QString error;
+    if ( !QgsAiCodexOAuthClient::completeDeviceCodeLogin( codexDeviceCode, &error ) )
+    {
+      QMessageBox::warning( &dialog, QObject::tr( "Codex login failed" ), error );
+      return;
+    }
+    codexStatus->setText( QObject::tr( "Signed in" ) );
+  } );
+
+  connect( codexLogoutButton, &QPushButton::clicked, &dialog, [&dialog, codexStatus]() {
+    QString error;
+    if ( !QgsAiCodexOAuthClient::clearRefreshToken( &error ) )
+    {
+      QMessageBox::warning( &dialog, QObject::tr( "Codex logout failed" ), error );
+      return;
+    }
+    codexStatus->setText( QObject::tr( "Not signed in" ) );
+  } );
+
+  connect( claudeLoginButton, &QPushButton::clicked, &dialog, [&dialog, claudeOAuthStatus, claudeUseOAuth]() {
+    QString callbackCode;
+    QTcpServer callbackServer;
+    const bool hasLocalCallback = callbackServer.listen( QHostAddress::LocalHost, 0 );
+    const QString redirectUri = hasLocalCallback ? u"http://127.0.0.1:%1/callback"_s.arg( callbackServer.serverPort() ) : QString();
+    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = hasLocalCallback ? QgsAiClaudeOAuthClient::buildAuthorizationRequest( redirectUri ) : QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+
+    if ( hasLocalCallback )
+    {
+      QEventLoop callbackLoop;
+      QTimer timeout;
+      timeout.setSingleShot( true );
+      QObject::connect( &timeout, &QTimer::timeout, &callbackLoop, &QEventLoop::quit );
+      QObject::connect( &callbackServer, &QTcpServer::newConnection, &dialog, [&callbackServer, &callbackLoop, &callbackCode]() {
+        QTcpSocket *socket = callbackServer.nextPendingConnection();
+        if ( !socket )
+          return;
+        if ( !socket->waitForReadyRead( 3000 ) )
+        {
+          socket->deleteLater();
+          return;
+        }
+
+        const QByteArray requestLine = socket->readLine();
+        const QList<QByteArray> parts = requestLine.split( ' ' );
+        if ( parts.size() >= 2 )
+        {
+          const QUrl callbackUrl( QString::fromLatin1( parts.at( 1 ) ) );
+          callbackCode = QUrlQuery( callbackUrl ).queryItemValue( u"code"_s ).trimmed();
+        }
+
+        const QByteArray body = "<html><body><h3>Claude login completed.</h3>You can return to QGIS_AI.</body></html>";
+        socket->write( "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\nContent-Length: " + QByteArray::number( body.size() ) + "\r\n\r\n" + body );
+        socket->disconnectFromHost();
+        socket->deleteLater();
+        callbackLoop.quit();
+      } );
+      timeout.start( 120000 );
+      QDesktopServices::openUrl( authRequest.authorizationUrl );
+      callbackLoop.exec();
+      callbackServer.close();
+    }
+    else
+    {
+      QDesktopServices::openUrl( authRequest.authorizationUrl );
+    }
+
+    QString code = callbackCode;
+    if ( code.isEmpty() )
+    {
+      bool ok = false;
+      code = QInputDialog::getText( &dialog, QObject::tr( "Claude OAuth" ), QObject::tr( "After approving Claude, paste the authorization code or callback URL:" ), QLineEdit::Normal, QString(), &ok ).trimmed();
+      if ( !ok || code.isEmpty() )
+        return;
+    }
+
+    QString error;
+    if ( !QgsAiClaudeOAuthClient::exchangeAuthorizationCode( code, authRequest.codeVerifier, authRequest.redirectUri, &error ) )
+    {
+      QMessageBox::warning( &dialog, QObject::tr( "Claude login failed" ), error );
+      return;
+    }
+    claudeUseOAuth->setChecked( true );
+    claudeOAuthStatus->setText( QObject::tr( "Signed in" ) );
+  } );
+
+  connect( claudeLogoutButton, &QPushButton::clicked, &dialog, [&dialog, claudeOAuthStatus]() {
+    QString error;
+    if ( !QgsAiClaudeOAuthClient::clearRefreshToken( &error ) )
+    {
+      QMessageBox::warning( &dialog, QObject::tr( "Claude logout failed" ), error );
+      return;
+    }
+    claudeOAuthStatus->setText( QObject::tr( "Not signed in" ) );
+  } );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog );
   connect( buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
@@ -927,9 +1086,19 @@ void QgsAiChatDockWidget::openProviderSettings()
   openAiSettings.model = openAiModel->text().trimmed();
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::OpenAi, openAiSettings );
 
+  QgsAiModelRouter::ProviderSettings codexSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex );
+  codexSettings.endpoint = codexEndpoint->text().trimmed();
+  codexSettings.model = codexModel->text().trimmed();
+  codexSettings.credentialMode = QgsAiModelRouter::CredentialMode::OAuth;
+  codexSettings.enabled = QgsAiCodexOAuthClient::hasRefreshToken() || codexSettings.enabled;
+  mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Codex, codexSettings );
+
   QgsAiModelRouter::ProviderSettings claudeSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Claude );
   claudeSettings.endpoint = claudeEndpoint->text().trimmed();
   claudeSettings.model = claudeModel->text().trimmed();
+  claudeSettings.credentialMode = claudeUseOAuth->isChecked() ? QgsAiModelRouter::CredentialMode::OAuth : QgsAiModelRouter::CredentialMode::ApiKey;
+  if ( claudeSettings.credentialMode == QgsAiModelRouter::CredentialMode::OAuth )
+    claudeSettings.enabled = QgsAiClaudeOAuthClient::hasRefreshToken() || claudeSettings.enabled;
   mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Claude, claudeSettings );
 
   QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
@@ -969,7 +1138,9 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
   // If the user already has a key for any of the standard providers, don't
   // bother them — just remember we've seen it and move on.
   if ( mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::OpenAi )
+       || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Claude )
+       || mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Claude )
        || mModelRouter->hasStoredApiKey( QgsAiModelRouter::Provider::Plan ) )
   {
     settings.setValue( u"qgis_ai/welcome_seen"_s, true );
@@ -982,7 +1153,7 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
 
   QPushButton *settingsButton = new QPushButton( tr( "Open AI settings" ) );
   QgsMessageBarItem *item
-    = new QgsMessageBarItem( tr( "AI Assistant" ), tr( "Configure an OpenAI or Anthropic API key to start using the AI assistant." ), settingsButton, Qgis::MessageLevel::Info, 0, messageBar );
+    = new QgsMessageBarItem( tr( "AI Assistant" ), tr( "Configure an API key or login with Codex/Claude to start using the AI assistant." ), settingsButton, Qgis::MessageLevel::Info, 0, messageBar );
 
   connect( settingsButton, &QPushButton::clicked, this, [this, messageBar, item]() {
     openProviderSettings();

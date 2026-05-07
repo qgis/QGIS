@@ -140,7 +140,7 @@ QList<QgsAiModelRouter::Provider> QgsAiAgentSessionManager::providerFallbackOrde
   QList<QgsAiModelRouter::Provider> order;
   const QgsAiModelRouter::Provider preferred = mRouter ? mRouter->resolveProvider() : QgsAiModelRouter::Provider::OpenAi;
   order << preferred;
-  for ( QgsAiModelRouter::Provider provider : { QgsAiModelRouter::Provider::Plan, QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Claude } )
+  for ( QgsAiModelRouter::Provider provider : { QgsAiModelRouter::Provider::Plan, QgsAiModelRouter::Provider::Codex, QgsAiModelRouter::Provider::OpenAi, QgsAiModelRouter::Provider::Claude } )
   {
     if ( !order.contains( provider ) )
       order << provider;
@@ -235,7 +235,7 @@ QString QgsAiAgentSessionManager::actionableError( const QString &providerName, 
   {
     if ( providerName == "Plan Account"_L1 )
       return u"%1 authentication failed. Check session token or authcfg in Provider Settings."_s.arg( providerName );
-    return u"%1 authentication failed. Check the API key in Provider Settings."_s.arg( providerName );
+    return u"%1 authentication failed. Check the API key or OAuth login in Provider Settings."_s.arg( providerName );
   }
   if ( httpStatus == 404 )
     return u"%1 endpoint not found. Verify provider endpoint in settings."_s.arg( providerName );

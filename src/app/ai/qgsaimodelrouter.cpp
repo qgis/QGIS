@@ -17,6 +17,8 @@
 
 #include <algorithm>
 
+#include "qgsaiclaudeoauthclient.h"
+#include "qgsaicodexoauthclient.h"
 #include "qgsaitoolregistry.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
@@ -97,11 +99,19 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
   ProviderSettings openAi;
   openAi.endpoint = u"https://api.openai.com/v1/responses"_s;
   openAi.model = u"gpt-4.1-mini"_s;
+  openAi.credentialMode = CredentialMode::ApiKey;
   mProviderSettings.insert( Provider::OpenAi, openAi );
+
+  ProviderSettings codex;
+  codex.endpoint = u"https://chatgpt.com/backend-api/codex/responses"_s;
+  codex.model = u"gpt-5.5"_s;
+  codex.credentialMode = CredentialMode::OAuth;
+  mProviderSettings.insert( Provider::Codex, codex );
 
   ProviderSettings claude;
   claude.endpoint = u"https://api.anthropic.com/v1/messages"_s;
   claude.model = u"claude-sonnet-4-20250514"_s;
+  claude.credentialMode = CredentialMode::ApiKey;
   mProviderSettings.insert( Provider::Claude, claude );
 
   ProviderSettings plan;
@@ -119,8 +129,12 @@ QgsAiModelRouter::ProviderSettings QgsAiModelRouter::providerSettings( Provider 
 
 void QgsAiModelRouter::setProviderSettings( Provider provider, const ProviderSettings &settings )
 {
-  mProviderSettings.insert( provider, settings );
-  persistProviderSettings( provider, settings );
+  ProviderSettings normalizedSettings = settings;
+  normalizedSettings.model = normalizedModelForProvider( provider, normalizedSettings.model );
+  if ( provider == Provider::Codex )
+    normalizedSettings.credentialMode = CredentialMode::OAuth;
+  mProviderSettings.insert( provider, normalizedSettings );
+  persistProviderSettings( provider, normalizedSettings );
 }
 
 QString QgsAiModelRouter::generateRequestId()
@@ -151,12 +165,27 @@ QString QgsAiModelRouter::providerDisplayName( Provider provider ) const
   {
     case Provider::OpenAi:
       return u"OpenAI"_s;
+    case Provider::Codex:
+      return u"Codex"_s;
     case Provider::Claude:
       return u"Claude"_s;
     case Provider::Plan:
       return u"Plan Account"_s;
   }
   return u"Unknown"_s;
+}
+
+QString QgsAiModelRouter::normalizedModelForProvider( Provider provider, const QString &model ) const
+{
+  const QString trimmed = model.trimmed();
+  if ( provider != Provider::Codex )
+    return trimmed;
+
+  const QStringList allowedCodexModels = { u"gpt-5.5"_s };
+  if ( allowedCodexModels.contains( trimmed ) )
+    return trimmed;
+
+  return u"gpt-5.5"_s;
 }
 
 QJsonArray QgsAiModelRouter::buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const
@@ -270,10 +299,10 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
 {
   QJsonObject payload;
   const ProviderSettings settings = providerSettings( provider );
-  payload.insert( u"model"_s, settings.model );
+  payload.insert( u"model"_s, normalizedModelForProvider( provider, settings.model ) );
   payload.insert( u"stream"_s, stream );
 
-  if ( provider == Provider::OpenAi )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex )
   {
     QJsonArray input;
     for ( const QgsAiChatMessage &message : messages )
@@ -357,6 +386,7 @@ QString QgsAiModelRouter::authHeaderName( Provider provider ) const
   {
     case Provider::Claude:
       return u"x-api-key"_s;
+    case Provider::Codex:
     case Provider::OpenAi:
     case Provider::Plan:
       return u"Authorization"_s;
@@ -366,7 +396,7 @@ QString QgsAiModelRouter::authHeaderName( Provider provider ) const
 
 QString QgsAiModelRouter::authHeaderValue( Provider provider, const QString &secret ) const
 {
-  if ( provider == Provider::OpenAi || provider == Provider::Plan )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex || provider == Provider::Plan )
     return u"Bearer %1"_s.arg( secret );
   return secret;
 }
@@ -377,6 +407,8 @@ QString QgsAiModelRouter::authConfigSettingKey( Provider provider ) const
   {
     case Provider::OpenAi:
       return u"ai/provider/openai/authcfg"_s;
+    case Provider::Codex:
+      return u"ai/provider/codex/authcfg"_s;
     case Provider::Claude:
       return u"ai/provider/claude/authcfg"_s;
     case Provider::Plan:
@@ -391,6 +423,8 @@ QString QgsAiModelRouter::providerSettingPrefix( Provider provider ) const
   {
     case Provider::OpenAi:
       return u"ai/provider/openai"_s;
+    case Provider::Codex:
+      return u"ai/provider/codex"_s;
     case Provider::Claude:
       return u"ai/provider/claude"_s;
     case Provider::Plan:
@@ -412,6 +446,11 @@ QString QgsAiModelRouter::modelSettingKey( Provider provider ) const
 QString QgsAiModelRouter::enabledSettingKey( Provider provider ) const
 {
   return providerSettingPrefix( provider ) + u"/enabled"_s;
+}
+
+QString QgsAiModelRouter::credentialModeSettingKey( Provider provider ) const
+{
+  return providerSettingPrefix( provider ) + u"/credentialMode"_s;
 }
 
 QString QgsAiModelRouter::apiKeySettingKey( Provider provider ) const
@@ -445,6 +484,8 @@ QString QgsAiModelRouter::storedApiKey( Provider provider ) const
         return envValue;
       break;
     }
+    case Provider::Codex:
+      return QString();
     case Provider::Claude:
     {
       const QString claudeValue = qEnvironmentVariable( "CLAUDE_API_KEY" ).trimmed();
@@ -463,15 +504,27 @@ QString QgsAiModelRouter::storedApiKey( Provider provider ) const
 
 bool QgsAiModelRouter::hasStoredApiKey( Provider provider ) const
 {
-  if ( provider == Provider::Plan )
+  if ( provider == Provider::Plan || provider == Provider::Codex )
     return false;
 
   QgsSettings settings;
   return !settings.value( apiKeySettingKey( provider ) ).toString().trimmed().isEmpty();
 }
 
+bool QgsAiModelRouter::hasStoredOAuthRefreshToken( Provider provider ) const
+{
+  if ( provider == Provider::Codex )
+    return QgsAiCodexOAuthClient::hasRefreshToken();
+  if ( provider == Provider::Claude )
+    return QgsAiClaudeOAuthClient::hasRefreshToken();
+  return false;
+}
+
 bool QgsAiModelRouter::hasConfiguredCredential( Provider provider ) const
 {
+  if ( provider == Provider::Codex )
+    return QgsAiCodexOAuthClient::hasRefreshToken();
+
   if ( provider == Provider::Plan )
   {
     const ProviderSettings settings = mProviderSettings.value( provider );
@@ -485,6 +538,10 @@ bool QgsAiModelRouter::hasConfiguredCredential( Provider provider ) const
     return !authManager->authSetting( planSessionTokenSettingKey(), QVariant(), true ).toString().trimmed().isEmpty();
   }
 
+  const ProviderSettings settings = mProviderSettings.value( provider );
+  if ( provider == Provider::Claude && settings.credentialMode == CredentialMode::OAuth )
+    return QgsAiClaudeOAuthClient::hasRefreshToken();
+
   return !storedApiKey( provider ).isEmpty();
 }
 
@@ -492,7 +549,7 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
 {
   QgsSettings settings;
 
-  const QList<Provider> providers = { Provider::OpenAi, Provider::Claude, Provider::Plan };
+  const QList<Provider> providers = { Provider::OpenAi, Provider::Codex, Provider::Claude, Provider::Plan };
   for ( Provider provider : providers )
   {
     ProviderSettings providerSettings = mProviderSettings.value( provider );
@@ -503,17 +560,31 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
 
     const QString model = settings.value( modelSettingKey( provider ), providerSettings.model ).toString().trimmed();
     if ( !model.isEmpty() )
-      providerSettings.model = model;
+      providerSettings.model = normalizedModelForProvider( provider, model );
+
+    const QString credentialMode = settings.value( credentialModeSettingKey( provider ), providerSettings.credentialMode == CredentialMode::OAuth ? u"oauth"_s : u"apiKey"_s ).toString().trimmed();
+    providerSettings.credentialMode = credentialMode.compare( u"oauth"_s, Qt::CaseInsensitive ) == 0 ? CredentialMode::OAuth : CredentialMode::ApiKey;
+    if ( provider == Provider::Codex )
+      providerSettings.credentialMode = CredentialMode::OAuth;
 
     if ( provider == Provider::Plan )
     {
       providerSettings.authConfigId = settings.value( planAuthConfigIdSettingKey(), providerSettings.authConfigId ).toString().trimmed();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), !providerSettings.authConfigId.isEmpty() ).toBool();
     }
-    else
+    else if ( provider == Provider::OpenAi )
     {
       providerSettings.authConfigId.clear();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), !storedApiKey( provider ).isEmpty() ).toBool();
+    }
+    else
+    {
+      providerSettings.authConfigId.clear();
+      const bool hasCredential = provider == Provider::Codex ? QgsAiCodexOAuthClient::hasRefreshToken()
+                              : providerSettings.credentialMode == CredentialMode::OAuth
+                                ? QgsAiClaudeOAuthClient::hasRefreshToken()
+                                : !storedApiKey( provider ).isEmpty();
+      providerSettings.enabled = settings.value( enabledSettingKey( provider ), hasCredential ).toBool();
     }
 
     mProviderSettings.insert( provider, providerSettings );
@@ -524,8 +595,9 @@ void QgsAiModelRouter::persistProviderSettings( Provider provider, const Provide
 {
   QgsSettings appSettings;
   appSettings.setValue( endpointSettingKey( provider ), settings.endpoint.trimmed() );
-  appSettings.setValue( modelSettingKey( provider ), settings.model.trimmed() );
+  appSettings.setValue( modelSettingKey( provider ), normalizedModelForProvider( provider, settings.model ).trimmed() );
   appSettings.setValue( enabledSettingKey( provider ), settings.enabled );
+  appSettings.setValue( credentialModeSettingKey( provider ), settings.credentialMode == CredentialMode::OAuth ? u"oauth"_s : u"apiKey"_s );
 
   if ( provider == Provider::Plan )
     appSettings.setValue( planAuthConfigIdSettingKey(), settings.authConfigId.trimmed() );
@@ -574,6 +646,12 @@ bool QgsAiModelRouter::storeApiKey( Provider provider, const QString &apiKey, QS
       *errorMessage = u"Use setPlanSessionToken for plan authentication."_s;
     return false;
   }
+  if ( provider == Provider::Codex )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Use Codex login for Codex authentication."_s;
+    return false;
+  }
 
   if ( apiKey.trimmed().isEmpty() )
   {
@@ -586,7 +664,31 @@ bool QgsAiModelRouter::storeApiKey( Provider provider, const QString &apiKey, QS
   QgsSettings appSettings;
   appSettings.setValue( apiKeySettingKey( provider ), apiKey.trimmed() );
   settings.authConfigId.clear();
+  settings.credentialMode = CredentialMode::ApiKey;
   settings.enabled = true;
+  setProviderSettings( provider, settings );
+  return true;
+}
+
+bool QgsAiModelRouter::setCredentialMode( Provider provider, CredentialMode mode, QString *errorMessage )
+{
+  if ( provider == Provider::Plan )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Plan authentication mode is configured through its authcfg or session token."_s;
+    return false;
+  }
+  if ( provider == Provider::Codex && mode != CredentialMode::OAuth )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Codex only supports OAuth login."_s;
+    return false;
+  }
+
+  ProviderSettings settings = mProviderSettings.value( provider );
+  settings.credentialMode = mode;
+  const bool hasCredential = mode == CredentialMode::OAuth ? hasStoredOAuthRefreshToken( provider ) : !storedApiKey( provider ).isEmpty();
+  settings.enabled = hasCredential || settings.enabled;
   setProviderSettings( provider, settings );
   return true;
 }
@@ -666,6 +768,30 @@ bool QgsAiModelRouter::applyAuthentication( Provider provider, QNetworkRequest &
     return true;
   }
 
+  if ( provider == Provider::Codex )
+  {
+    QgsAiCodexOAuthClient::TokenSet tokens;
+    if ( !QgsAiCodexOAuthClient::refreshAccessToken( tokens, errorMessage ) )
+      return false;
+
+    request.setRawHeader( "Authorization", authHeaderValue( Provider::Codex, tokens.accessToken ).toUtf8() );
+    request.setRawHeader( "ChatGPT-Account-ID", tokens.chatGptAccountId.toUtf8() );
+    request.setRawHeader( "Accept", "text/event-stream" );
+    request.setRawHeader( "originator", "codex_cli_rs" );
+    request.setRawHeader( "version", "0.128.0" );
+    return true;
+  }
+
+  if ( provider == Provider::Claude && settings.credentialMode == CredentialMode::OAuth )
+  {
+    QgsAiClaudeOAuthClient::TokenSet tokens;
+    if ( !QgsAiClaudeOAuthClient::refreshAccessToken( tokens, errorMessage ) )
+      return false;
+
+    request.setRawHeader( "Authorization", authHeaderValue( Provider::OpenAi, tokens.accessToken ).toUtf8() );
+    return true;
+  }
+
   const QString apiKey = storedApiKey( provider );
   if ( apiKey.isEmpty() )
   {
@@ -709,7 +835,11 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
   request.setTransferTimeout( configuredTimeoutSeconds * 1000 );
 
   if ( context.provider == Provider::Claude )
+  {
     request.setRawHeader( "anthropic-version", "2023-06-01" );
+    if ( settings.credentialMode == CredentialMode::OAuth )
+      request.setRawHeader( "anthropic-beta", "oauth-2025-04-20" );
+  }
 
   QString authenticationError;
   if ( !applyAuthentication( context.provider, request, &authenticationError ) )
@@ -829,7 +959,7 @@ void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJ
     return;
   }
 
-  if ( provider == Provider::OpenAi )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex )
   {
     // Top-level "status" or per-output items don't carry stop_reason explicitly here;
     // we infer tool_use by the presence of function_call items.
@@ -913,7 +1043,7 @@ void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &
     return;
   }
 
-  if ( provider == Provider::OpenAi )
+  if ( provider == Provider::OpenAi || provider == Provider::Codex )
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
@@ -1174,6 +1304,10 @@ QgsAiModelRouter::Provider QgsAiModelRouter::resolveProvider() const
   const ProviderSettings plan = mProviderSettings.value( Provider::Plan );
   if ( plan.enabled && isUsablePlanEndpoint( plan.endpoint ) && hasConfiguredCredential( Provider::Plan ) )
     return Provider::Plan;
+
+  const ProviderSettings codex = mProviderSettings.value( Provider::Codex );
+  if ( codex.enabled && hasConfiguredCredential( Provider::Codex ) )
+    return Provider::Codex;
 
   const ProviderSettings openAi = mProviderSettings.value( Provider::OpenAi );
   if ( openAi.enabled && hasConfiguredCredential( Provider::OpenAi ) )
