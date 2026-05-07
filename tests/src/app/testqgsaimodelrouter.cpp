@@ -4,8 +4,8 @@
   begin                : April 2026
 ***************************************************************************/
 
-#include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaicodexoauthclient.h"
+#include "ai/qgsaimodelrouter.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 
@@ -19,7 +19,10 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRegularExpression>
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 namespace
 {
@@ -28,7 +31,7 @@ namespace
     QDir dir( QDir::currentPath() );
     while ( true )
     {
-      const QString candidate = dir.filePath( QStringLiteral( ".env.test" ) );
+      const QString candidate = dir.filePath( u".env.test"_s );
       if ( QFile::exists( candidate ) )
       {
         QFile file( candidate );
@@ -71,7 +74,7 @@ namespace
     reply->abort();
     return false;
   }
-}
+} //namespace
 
 class TestQgsAiModelRouter : public QObject
 {
@@ -99,102 +102,97 @@ void TestQgsAiModelRouter::buildPayloadForOpenAi()
   QgsAiModelRouter router;
   QgsAiChatMessage message;
   message.role = QgsAiChatRole::User;
-  message.content = QStringLiteral( "hello" );
+  message.content = u"hello"_s;
 
-  const QByteArray payload = router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, {message}, true );
+  const QByteArray payload = router.buildRequestPayload( QgsAiModelRouter::Provider::OpenAi, { message }, true );
   const QJsonDocument doc = QJsonDocument::fromJson( payload );
   QVERIFY( doc.isObject() );
   const QJsonObject object = doc.object();
-  QCOMPARE( object.value( QStringLiteral( "stream" ) ).toBool(), true );
-  QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-4.1-mini" ) );
-  QVERIFY( object.contains( QStringLiteral( "input" ) ) );
+  QCOMPARE( object.value( u"stream"_s ).toBool(), true );
+  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-4.1-mini"_s );
+  QVERIFY( object.contains( u"input"_s ) );
 }
 
 void TestQgsAiModelRouter::buildPayloadForCodexUsesGpt55()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+  settings.remove( u"ai/provider/codex"_s );
 
   QgsAiModelRouter router;
   QgsAiChatMessage message;
   message.role = QgsAiChatRole::User;
-  message.content = QStringLiteral( "hello" );
+  message.content = u"hello"_s;
 
-  const QByteArray payload = router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, {message}, true );
+  const QByteArray payload = router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { message }, true );
   const QJsonDocument doc = QJsonDocument::fromJson( payload );
   QVERIFY( doc.isObject() );
   const QJsonObject object = doc.object();
-  QCOMPARE( object.value( QStringLiteral( "stream" ) ).toBool(), true );
-  QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-5.5" ) );
-  QVERIFY( object.contains( QStringLiteral( "input" ) ) );
+  QCOMPARE( object.value( u"stream"_s ).toBool(), true );
+  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.5"_s );
+  QVERIFY( object.contains( u"input"_s ) );
 }
 
 void TestQgsAiModelRouter::codexModelFallback()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+  settings.remove( u"ai/provider/codex"_s );
 
   QgsAiModelRouter router;
   QgsAiModelRouter::ProviderSettings codexSettings = router.providerSettings( QgsAiModelRouter::Provider::Codex );
-  codexSettings.model = QStringLiteral( "gpt-5" );
+  codexSettings.model = u"gpt-5"_s;
   router.setProviderSettings( QgsAiModelRouter::Provider::Codex, codexSettings );
 
-  QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::Codex ).model, QStringLiteral( "gpt-5.5" ) );
+  QCOMPARE( router.providerSettings( QgsAiModelRouter::Provider::Codex ).model, u"gpt-5.5"_s );
 
   QgsAiChatMessage message;
   message.role = QgsAiChatRole::User;
-  message.content = QStringLiteral( "hello" );
-  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, {message}, false ) ).object();
-  QCOMPARE( object.value( QStringLiteral( "model" ) ).toString(), QStringLiteral( "gpt-5.5" ) );
+  message.content = u"hello"_s;
+  const QJsonObject object = QJsonDocument::fromJson( router.buildRequestPayload( QgsAiModelRouter::Provider::Codex, { message }, false ) ).object();
+  QCOMPARE( object.value( u"model"_s ).toString(), u"gpt-5.5"_s );
 
-  settings.remove( QStringLiteral( "ai/provider/codex" ) );
+  settings.remove( u"ai/provider/codex"_s );
 }
 
 void TestQgsAiModelRouter::extractChatGptAccountIdFromIdToken()
 {
-  const auto encode = []( const QJsonObject &object ) {
-    return QJsonDocument( object ).toJson( QJsonDocument::Compact ).toBase64( QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
-  };
+  const auto encode = []( const QJsonObject &object ) { return QJsonDocument( object ).toJson( QJsonDocument::Compact ).toBase64( QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals ); };
 
   QJsonObject authClaims;
-  authClaims.insert( QStringLiteral( "chatgpt_account_id" ), QStringLiteral( "account-test-123" ) );
+  authClaims.insert( u"chatgpt_account_id"_s, u"account-test-123"_s );
   QJsonObject payload;
-  payload.insert( QStringLiteral( "https://api.openai.com/auth" ), authClaims );
+  payload.insert( u"https://api.openai.com/auth"_s, authClaims );
 
-  const QString idToken = QString::fromLatin1( encode( QJsonObject( { { QStringLiteral( "alg" ), QStringLiteral( "none" ) } } ) ) )
-                          + QLatin1Char( '.' )
-                          + QString::fromLatin1( encode( payload ) )
-                          + QStringLiteral( ".signature" );
+  const QString idToken = QString::fromLatin1( encode( QJsonObject( { { u"alg"_s, u"none"_s } } ) ) ) + '.'_L1 + QString::fromLatin1( encode( payload ) ) + u".signature"_s;
 
-  QCOMPARE( QgsAiCodexOAuthClient::extractChatGptAccountId( idToken ), QStringLiteral( "account-test-123" ) );
+  QCOMPARE( QgsAiCodexOAuthClient::extractChatGptAccountId( idToken ), u"account-test-123"_s );
 }
 
 void TestQgsAiModelRouter::sanitizeSecrets()
 {
   QgsAiModelRouter router;
-  const QString raw = QStringLiteral( "Authorization: Bearer sk-verysecrettoken and x-api-key: abc123" );
+  const QString raw = u"Authorization: Bearer sk-verysecrettoken and x-api-key: abc123"_s;
   const QString sanitized = router.sanitizeErrorText( raw );
-  QVERIFY( !sanitized.contains( QStringLiteral( "verysecrettoken" ) ) );
-  QVERIFY( !sanitized.contains( QStringLiteral( "abc123" ) ) );
-  QVERIFY( sanitized.contains( QStringLiteral( "REDACTED" ) ) );
+  QVERIFY( !sanitized.contains( u"verysecrettoken"_s ) );
+  QVERIFY( !sanitized.contains( u"abc123"_s ) );
+  QVERIFY( sanitized.contains( u"REDACTED"_s ) );
 }
 
 void TestQgsAiModelRouter::storeApiKeyPersistsInSettings()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "ai/provider/openai" ) );
+  settings.remove( u"ai/provider/openai"_s );
 
   QgsAiModelRouter router;
   QString error;
-  QVERIFY2( router.storeApiKey( QgsAiModelRouter::Provider::OpenAi, QStringLiteral( "sk-test-local-storage" ), &error ), qPrintable( error ) );
+  QVERIFY2( router.storeApiKey( QgsAiModelRouter::Provider::OpenAi, u"sk-test-local-storage"_s, &error ), qPrintable( error ) );
 
   QgsAiModelRouter reloadedRouter;
-  QNetworkRequest request( QUrl( QStringLiteral( "https://api.openai.com/v1/responses" ) ) );
+  QNetworkRequest request( QUrl( u"https://api.openai.com/v1/responses"_s ) );
   QVERIFY2( reloadedRouter.applyAuthentication( QgsAiModelRouter::Provider::OpenAi, request, &error ), qPrintable( error ) );
   QCOMPARE( request.rawHeader( "Authorization" ), QByteArray( "Bearer sk-test-local-storage" ) );
   QVERIFY( reloadedRouter.providerSettings( QgsAiModelRouter::Provider::OpenAi ).enabled );
 
-  settings.remove( QStringLiteral( "ai/provider/openai" ) );
+  settings.remove( u"ai/provider/openai"_s );
 }
 
 void TestQgsAiModelRouter::liveOpenAiRequest()
@@ -203,8 +201,8 @@ void TestQgsAiModelRouter::liveOpenAiRequest()
   if ( apiKey.trimmed().isEmpty() )
     QSKIP( "OPENAI_API_KEY non disponibile: test live OpenAI skippato." );
 
-  QNetworkRequest request( QUrl( QStringLiteral( "https://api.openai.com/v1/responses" ) ) );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
+  QNetworkRequest request( QUrl( u"https://api.openai.com/v1/responses"_s ) );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
   request.setRawHeader( "Authorization", QByteArray( "Bearer " ) + apiKey.toUtf8() );
   request.setTransferTimeout( 30000 );
 
@@ -217,33 +215,27 @@ void TestQgsAiModelRouter::liveOpenAiRequest()
   const QByteArray body = reply->readAll();
   reply->deleteLater();
 
-  QVERIFY2( status >= 200 && status < 300, qPrintable( QStringLiteral( "OpenAI HTTP status: %1" ).arg( status ) ) );
+  QVERIFY2( status >= 200 && status < 300, qPrintable( u"OpenAI HTTP status: %1"_s.arg( status ) ) );
   const QJsonDocument doc = QJsonDocument::fromJson( body );
   QVERIFY( doc.isObject() );
 }
 
 void TestQgsAiModelRouter::liveClaudeRequest()
 {
-  const QString apiKey = !qEnvironmentVariable( "CLAUDE_API_KEY" ).trimmed().isEmpty()
-                           ? qEnvironmentVariable( "CLAUDE_API_KEY" )
-                           : qEnvironmentVariable( "ANTHROPIC_API_KEY" );
+  const QString apiKey = !qEnvironmentVariable( "CLAUDE_API_KEY" ).trimmed().isEmpty() ? qEnvironmentVariable( "CLAUDE_API_KEY" ) : qEnvironmentVariable( "ANTHROPIC_API_KEY" );
   if ( apiKey.trimmed().isEmpty() )
     QSKIP( "CLAUDE_API_KEY non disponibile: test live Claude skippato." );
 
   QgsAiModelRouter router;
-  const QString model = !qEnvironmentVariable( "CLAUDE_MODEL" ).trimmed().isEmpty()
-                          ? qEnvironmentVariable( "CLAUDE_MODEL" )
-                          : router.providerSettings( QgsAiModelRouter::Provider::Claude ).model;
+  const QString model = !qEnvironmentVariable( "CLAUDE_MODEL" ).trimmed().isEmpty() ? qEnvironmentVariable( "CLAUDE_MODEL" ) : router.providerSettings( QgsAiModelRouter::Provider::Claude ).model;
 
-  QNetworkRequest request( QUrl( QStringLiteral( "https://api.anthropic.com/v1/messages" ) ) );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
+  QNetworkRequest request( QUrl( u"https://api.anthropic.com/v1/messages"_s ) );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
   request.setRawHeader( "x-api-key", apiKey.toUtf8() );
   request.setRawHeader( "anthropic-version", "2023-06-01" );
   request.setTransferTimeout( 30000 );
 
-  const QByteArray payload = QStringLiteral( R"({"model":"%1","max_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"reply with OK"}]}]})" )
-                               .arg( model )
-                               .toUtf8();
+  const QByteArray payload = QStringLiteral( R"({"model":"%1","max_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"reply with OK"}]}]})" ).arg( model ).toUtf8();
   QNetworkAccessManager nam;
   QNetworkReply *reply = nam.post( request, payload );
   QVERIFY2( waitForReply( reply, 35000 ), "Timeout durante test live Claude" );
@@ -252,7 +244,7 @@ void TestQgsAiModelRouter::liveClaudeRequest()
   const QByteArray body = reply->readAll();
   reply->deleteLater();
 
-  QVERIFY2( status >= 200 && status < 300, qPrintable( QStringLiteral( "Claude HTTP status: %1" ).arg( status ) ) );
+  QVERIFY2( status >= 200 && status < 300, qPrintable( u"Claude HTTP status: %1"_s.arg( status ) ) );
   const QJsonDocument doc = QJsonDocument::fromJson( body );
   QVERIFY( doc.isObject() );
 }

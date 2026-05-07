@@ -26,6 +26,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRandomGenerator>
+#include <QString>
 #include <QTimer>
 #include <QUrlQuery>
 #include <QVariant>
@@ -61,19 +62,19 @@ namespace
     if ( !nam )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Network manager is not available." );
+        *errorMessage = u"Network manager is not available."_s;
       return QJsonObject();
     }
 
     QNetworkRequest request( QUrl( QString::fromUtf8( CLAUDE_TOKEN_URL ) ) );
-    request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
+    request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
     request.setTransferTimeout( timeoutMs );
 
     QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );
     if ( !reply )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Unable to start Claude OAuth request." );
+        *errorMessage = u"Unable to start Claude OAuth request."_s;
       return QJsonObject();
     }
 
@@ -108,7 +109,7 @@ namespace
           detail = object.value( u"error"_s ).toString();
         if ( detail.isEmpty() )
           detail = QString::fromUtf8( body.left( 500 ) );
-        *errorMessage = QStringLiteral( "Claude OAuth request failed (HTTP %1): %2" ).arg( httpStatus ).arg( detail );
+        *errorMessage = u"Claude OAuth request failed (HTTP %1): %2"_s.arg( httpStatus ).arg( detail );
       }
       return QJsonObject();
     }
@@ -122,13 +123,13 @@ namespace
     if ( !authManager )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Authentication manager is unavailable." );
+        *errorMessage = u"Authentication manager is unavailable."_s;
       return false;
     }
     if ( !authManager->storeAuthSetting( QgsAiClaudeOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed(), true ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Unable to store Claude refresh token securely." );
+        *errorMessage = u"Unable to store Claude refresh token securely."_s;
       return false;
     }
     return true;
@@ -141,7 +142,7 @@ namespace
       return QString();
     return authManager->authSetting( QgsAiClaudeOAuthClient::refreshTokenSettingKey(), QVariant(), true ).toString().trimmed();
   }
-}
+} //namespace
 
 QgsAiClaudeOAuthClient::AuthorizationRequest QgsAiClaudeOAuthClient::buildAuthorizationRequest()
 {
@@ -183,7 +184,7 @@ bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authoriza
   if ( code.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Authorization code is empty." );
+      *errorMessage = u"Authorization code is empty."_s;
     return false;
   }
 
@@ -200,7 +201,7 @@ bool QgsAiClaudeOAuthClient::exchangeAuthorizationCode( const QString &authoriza
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Claude OAuth response did not include a refresh token." );
+      *errorMessage = u"Claude OAuth response did not include a refresh token."_s;
     return false;
   }
   return storeRefreshToken( refreshToken, errorMessage );
@@ -212,7 +213,7 @@ bool QgsAiClaudeOAuthClient::refreshAccessToken( TokenSet &tokens, QString *erro
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Missing Claude refresh token. Please sign in with Claude first." );
+      *errorMessage = u"Missing Claude refresh token. Please sign in with Claude first."_s;
     return false;
   }
 
@@ -231,7 +232,7 @@ bool QgsAiClaudeOAuthClient::refreshAccessToken( TokenSet &tokens, QString *erro
   if ( tokens.accessToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Claude refresh response is missing access token." );
+      *errorMessage = u"Claude refresh response is missing access token."_s;
     return false;
   }
 
@@ -252,7 +253,7 @@ bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
   if ( !authManager )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Authentication manager is unavailable." );
+      *errorMessage = u"Authentication manager is unavailable."_s;
     return false;
   }
   if ( !hasRefreshToken() )
@@ -262,5 +263,5 @@ bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
 
 QString QgsAiClaudeOAuthClient::refreshTokenSettingKey()
 {
-  return QStringLiteral( "ai/provider/claude/oauth/refreshToken" );
+  return u"ai/provider/claude/oauth/refreshToken"_s;
 }

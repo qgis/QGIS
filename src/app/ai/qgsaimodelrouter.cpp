@@ -580,10 +580,9 @@ void QgsAiModelRouter::loadPersistedProviderSettings()
     else
     {
       providerSettings.authConfigId.clear();
-      const bool hasCredential = provider == Provider::Codex ? QgsAiCodexOAuthClient::hasRefreshToken()
-                              : providerSettings.credentialMode == CredentialMode::OAuth
-                                ? QgsAiClaudeOAuthClient::hasRefreshToken()
-                                : !storedApiKey( provider ).isEmpty();
+      const bool hasCredential = provider == Provider::Codex                                ? QgsAiCodexOAuthClient::hasRefreshToken()
+                                 : providerSettings.credentialMode == CredentialMode::OAuth ? QgsAiClaudeOAuthClient::hasRefreshToken()
+                                                                                            : !storedApiKey( provider ).isEmpty();
       providerSettings.enabled = settings.value( enabledSettingKey( provider ), hasCredential ).toBool();
     }
 

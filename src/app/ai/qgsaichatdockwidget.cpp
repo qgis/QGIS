@@ -42,6 +42,7 @@
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QHostAddress>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
@@ -55,7 +56,6 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QSet>
-#include <QHostAddress>
 #include <QString>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -968,7 +968,9 @@ void QgsAiChatDockWidget::openProviderSettings()
 
     codexStatus->setText( QObject::tr( "Open %1 and enter code %2" ).arg( codexDeviceCode.verificationUrl, codexDeviceCode.userCode ) );
     QDesktopServices::openUrl( QUrl( codexDeviceCode.verificationUrl ) );
-    QMessageBox::information( &dialog, QObject::tr( "Codex device code" ), QObject::tr( "Open %1 and enter this code:\n\n%2\n\nThen click Complete Codex login." ).arg( codexDeviceCode.verificationUrl, codexDeviceCode.userCode ) );
+    QMessageBox::information(
+      &dialog, QObject::tr( "Codex device code" ), QObject::tr( "Open %1 and enter this code:\n\n%2\n\nThen click Complete Codex login." ).arg( codexDeviceCode.verificationUrl, codexDeviceCode.userCode )
+    );
   } );
 
   connect( codexCompleteLoginButton, &QPushButton::clicked, &dialog, [&dialog, &codexDeviceCode, codexStatus]() {
@@ -1002,7 +1004,8 @@ void QgsAiChatDockWidget::openProviderSettings()
     QTcpServer callbackServer;
     const bool hasLocalCallback = callbackServer.listen( QHostAddress::LocalHost, 0 );
     const QString redirectUri = hasLocalCallback ? u"http://127.0.0.1:%1/callback"_s.arg( callbackServer.serverPort() ) : QString();
-    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = hasLocalCallback ? QgsAiClaudeOAuthClient::buildAuthorizationRequest( redirectUri ) : QgsAiClaudeOAuthClient::buildAuthorizationRequest();
+    const QgsAiClaudeOAuthClient::AuthorizationRequest authRequest = hasLocalCallback ? QgsAiClaudeOAuthClient::buildAuthorizationRequest( redirectUri )
+                                                                                      : QgsAiClaudeOAuthClient::buildAuthorizationRequest();
 
     if ( hasLocalCallback )
     {

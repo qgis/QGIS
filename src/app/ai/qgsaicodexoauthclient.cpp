@@ -15,11 +15,12 @@
 
 #include "qgsaicodexoauthclient.h"
 
+#include <algorithm>
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkaccessmanager.h"
 
-#include <algorithm>
 #include <QByteArray>
 #include <QElapsedTimer>
 #include <QEventLoop>
@@ -27,6 +28,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
@@ -56,19 +58,19 @@ namespace
     if ( !nam )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Network manager is not available." );
+        *errorMessage = u"Network manager is not available."_s;
       return QJsonObject();
     }
 
     QNetworkRequest request( url );
-    request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/json" ) );
+    request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
     request.setTransferTimeout( timeoutMs );
 
     QNetworkReply *reply = nam->post( request, QJsonDocument( payload ).toJson( QJsonDocument::Compact ) );
     if ( !reply )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Unable to start OAuth request." );
+        *errorMessage = u"Unable to start OAuth request."_s;
       return QJsonObject();
     }
 
@@ -104,8 +106,8 @@ namespace
         if ( detail.isEmpty() )
           detail = QString::fromUtf8( body.left( 500 ) );
         if ( detail.isEmpty() )
-          detail = QStringLiteral( "OAuth request failed." );
-        *errorMessage = QStringLiteral( "OAuth request failed (HTTP %1): %2" ).arg( httpStatus ).arg( detail );
+          detail = u"OAuth request failed."_s;
+        *errorMessage = u"OAuth request failed (HTTP %1): %2"_s.arg( httpStatus ).arg( detail );
       }
       return QJsonObject();
     }
@@ -120,19 +122,19 @@ namespace
     if ( !nam )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Network manager is not available." );
+        *errorMessage = u"Network manager is not available."_s;
       return QJsonObject();
     }
 
     QNetworkRequest request( url );
-    request.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
+    request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/x-www-form-urlencoded"_s );
     request.setTransferTimeout( timeoutMs );
 
     QNetworkReply *reply = nam->post( request, form.toString( QUrl::FullyEncoded ).toUtf8() );
     if ( !reply )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Unable to start OAuth token exchange." );
+        *errorMessage = u"Unable to start OAuth token exchange."_s;
       return QJsonObject();
     }
 
@@ -165,7 +167,7 @@ namespace
           detail = object.value( u"error"_s ).toString();
         if ( detail.isEmpty() )
           detail = QString::fromUtf8( body.left( 500 ) );
-        *errorMessage = QStringLiteral( "OAuth token exchange failed (HTTP %1): %2" ).arg( httpStatus ).arg( detail );
+        *errorMessage = u"OAuth token exchange failed (HTTP %1): %2"_s.arg( httpStatus ).arg( detail );
       }
       return QJsonObject();
     }
@@ -179,13 +181,13 @@ namespace
     if ( !authManager )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Authentication manager is unavailable." );
+        *errorMessage = u"Authentication manager is unavailable."_s;
       return false;
     }
     if ( !authManager->storeAuthSetting( QgsAiCodexOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed(), true ) )
     {
       if ( errorMessage )
-        *errorMessage = QStringLiteral( "Unable to store Codex refresh token securely." );
+        *errorMessage = u"Unable to store Codex refresh token securely."_s;
       return false;
     }
     return true;
@@ -205,7 +207,7 @@ namespace
     QTimer::singleShot( std::max( 1, seconds ) * 1000, &loop, &QEventLoop::quit );
     loop.exec();
   }
-}
+} //namespace
 
 bool QgsAiCodexOAuthClient::requestDeviceCode( DeviceCode &deviceCode, QString *errorMessage )
 {
@@ -227,7 +229,7 @@ bool QgsAiCodexOAuthClient::requestDeviceCode( DeviceCode &deviceCode, QString *
   if ( deviceCode.userCode.isEmpty() || deviceCode.deviceAuthId.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Device authorization response is missing required fields." );
+      *errorMessage = u"Device authorization response is missing required fields."_s;
     return false;
   }
 
@@ -263,7 +265,7 @@ bool QgsAiCodexOAuthClient::completeDeviceCodeLogin( const DeviceCode &deviceCod
   if ( codeObject.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Device authorization timed out." );
+      *errorMessage = u"Device authorization timed out."_s;
     return false;
   }
 
@@ -280,7 +282,7 @@ bool QgsAiCodexOAuthClient::completeDeviceCodeLogin( const DeviceCode &deviceCod
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Codex token response did not include a refresh token." );
+      *errorMessage = u"Codex token response did not include a refresh token."_s;
     return false;
   }
 
@@ -293,7 +295,7 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Missing Codex refresh token. Please sign in with Codex first." );
+      *errorMessage = u"Missing Codex refresh token. Please sign in with Codex first."_s;
     return false;
   }
 
@@ -315,7 +317,7 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
   if ( tokens.accessToken.isEmpty() || tokens.chatGptAccountId.isEmpty() )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Codex refresh response is missing access token or ChatGPT account id." );
+      *errorMessage = u"Codex refresh response is missing access token or ChatGPT account id."_s;
     return false;
   }
 
@@ -336,7 +338,7 @@ bool QgsAiCodexOAuthClient::clearRefreshToken( QString *errorMessage )
   if ( !authManager )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Authentication manager is unavailable." );
+      *errorMessage = u"Authentication manager is unavailable."_s;
     return false;
   }
   if ( !hasRefreshToken() )
@@ -361,5 +363,5 @@ QString QgsAiCodexOAuthClient::extractChatGptAccountId( const QString &idToken )
 
 QString QgsAiCodexOAuthClient::refreshTokenSettingKey()
 {
-  return QStringLiteral( "ai/provider/codex/oauth/refreshToken" );
+  return u"ai/provider/codex/oauth/refreshToken"_s;
 }
