@@ -23,6 +23,7 @@
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsgltfutils.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
@@ -169,7 +170,8 @@ void QgsTiledSceneChunkLoader::start()
         else
         {
           // the instanced case (i3dm or glTF tile with EXT_mesh_gpu_instancing)
-          childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, &errors );
+          QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mFactory.mRenderContext );
+          childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, materialContext, &errors );
 
           if ( !innerContent.instancing.has_value() )
           {

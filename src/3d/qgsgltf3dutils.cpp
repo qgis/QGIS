@@ -809,7 +809,12 @@ static Qt3DCore::QAttribute *rawPositions( tinygltf::Model &model, int accessorI
 
 
 QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
-  tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const QgsGltf3DUtils::EntityTransform &transform, const QString &baseUri, QStringList *errors
+  tinygltf::Model &model,
+  const QVector<QgsGltfUtils::InstancedPrimitive> &primitives,
+  const QgsGltf3DUtils::EntityTransform &transform,
+  const QString &baseUri,
+  const QgsMaterialContext &context,
+  QStringList *errors
 )
 {
   QVector<Qt3DCore::QEntity *> entities;
@@ -838,7 +843,7 @@ QVector<Qt3DCore::QEntity *> QgsGltf3DUtils::createInstancedEntities(
     int positionAccessorIndex = posIt->second;
 
     // Parse material
-    std::unique_ptr<QgsMaterial> material = parseMaterial( model, entry.materialIndex, baseUri, errors );
+    std::unique_ptr<QgsMaterial> material = parseMaterial( model, entry.materialIndex, baseUri, errors, context );
     if ( !material )
       continue;
 

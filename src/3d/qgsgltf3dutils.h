@@ -43,6 +43,7 @@
 
 class QgsCoordinateTransform;
 class Qgs3DRenderContext;
+class QgsMaterialContext;
 
 namespace Qt3DCore
 {
@@ -140,7 +141,7 @@ class _3D_EXPORT QgsGltf3DUtils
      * \since QGIS 4.2
      */
     static QVector<Qt3DCore::QEntity *> createInstancedEntities(
-      tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const EntityTransform &transform, const QString &baseUri, QStringList *errors
+      tinygltf::Model &model, const QVector<QgsGltfUtils::InstancedPrimitive> &primitives, const EntityTransform &transform, const QString &baseUri, const QgsMaterialContext &context, QStringList *errors
     );
 };
 
