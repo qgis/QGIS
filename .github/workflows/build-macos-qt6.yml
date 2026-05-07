@@ -23,13 +23,13 @@ permissions:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
-          # macos-15-intel runners now consistently exceed the 6h job timeout
-          # on this build (verified across qgisai-v0.1.2 and v0.1.3). Until
-          # GitHub restores reliable Intel macOS runners we ship Apple Silicon
-          # only. Intel users can run the AppImage in a Linux VM, build from
-          # source, or use Rosetta-translated upstream QGIS for now.
+          - os: macos-15-intel
+            triplet: x64-osx-dynamic-release
+            deployment-target: "10.15"
+            osx-architecture: "x86_64"
           - os: macos-15
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
@@ -227,27 +227,40 @@ jobs:
           path: |
             artifacts
 
-      - name: Extract arm64 app
+      - name: Create universal app
         run: |
-          # Arm64-only build: extract the .app bundle straight into the
-          # 'universal' directory so downstream sign + create-dmg steps don't
-          # need conditionals on architecture.
           # actions/download-artifact@v8 with a single-matching pattern places
           # the artifact contents directly under `path`, NOT in a per-artifact
-          # subdir like older versions. Use find to locate the tarball
+          # subdir like older versions. Use find to locate both tarballs
           # regardless of layout.
-          mkdir -p universal
-          ls -laR artifacts | head -30
-          TARBALL=$(find artifacts -name 'qgis-app-*-arm64-osx-dynamic-release.tar.gz' | head -n1)
-          if [ -z "$TARBALL" ]; then
+          set -euo pipefail
+
+          mkdir -p x64 arm64 universal
+          ls -laR artifacts | head -80 || true
+
+          X64_TARBALL=$(find artifacts -name 'qgis-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
+          ARM64_TARBALL=$(find artifacts -name 'qgis-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
+
+          if [ -z "$X64_TARBALL" ]; then
+            echo "ERROR: x64 app tarball not found under artifacts/"
+            exit 1
+          fi
+          if [ -z "$ARM64_TARBALL" ]; then
             echo "ERROR: arm64 app tarball not found under artifacts/"
             exit 1
           fi
-          echo "Extracting $TARBALL to universal/"
-          gtar --strip-components=5 -zxf "$TARBALL" -C universal
-          APP_PATH=$(find universal -name '*.app' -type d | head -n1)
+
+          echo "Extracting $X64_TARBALL to x64/"
+          gtar --strip-components=5 -zxf "$X64_TARBALL" -C x64
+          echo "Extracting $ARM64_TARBALL to arm64/"
+          gtar --strip-components=5 -zxf "$ARM64_TARBALL" -C arm64
+
+          pip install lipomerge
+          lipomerge ./x64 ./arm64 universal
+
+          APP_PATH=$(find universal -name '*.app' -type d -print -quit)
           if [ -z "$APP_PATH" ]; then
-            echo "ERROR: extracted .app bundle not found under universal/"
+            echo "ERROR: universal .app bundle not found under universal/"
             find universal -print | head -50
             exit 1
           fi
@@ -255,6 +268,7 @@ jobs:
             echo "Moving $APP_PATH to universal/"
             mv "$APP_PATH" universal/
           fi
+          find universal -mindepth 1 -maxdepth 1 ! -name '*.app' -exec rm -rf {} +
           ls -la universal/*.app
 
       - name: 🔐 Import Apple code signing certificate
