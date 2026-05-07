@@ -78,6 +78,13 @@ algorithm parameters.
 .. seealso:: :py:func:`setMainWidget`
 %End
 
+    void showWidget();
+%Docstring
+Shows and raises the widget
+
+.. versionadded:: 4.2
+%End
+
     void showLog();
 %Docstring
 Switches the widget to the log page.
@@ -142,6 +149,11 @@ widget.
 Sets the parameter ``values`` to show in the widget.
 
 .. versionadded:: 3.24
+%End
+
+    QPushButton *cancelButton();
+%Docstring
+Returns the widget's cancel button.
 %End
 
   public slots:
@@ -232,6 +244,37 @@ Copies the current log contents to the clipboard.
 Switches the widget to the parameters page.
 %End
 
+    void resetGui();
+%Docstring
+Resets the widget's GUI, ready for another algorithm execution.
+%End
+
+    virtual bool isRunning();
+%Docstring
+Returns ``True`` if the widget is currently running an algorithm.
+
+If the algorithm has not yet started or has finished executing then
+``False`` will be returned.
+
+.. note::
+
+   Unlike the :py:func:`~QgsProcessingAlgorithmWidgetBase.isFinalized` method, :py:func:`~QgsProcessingAlgorithmWidgetBase.isRunning` only provides
+   information about the state of widget and is not tied to the
+   deletion mechanisms of the widget.
+
+.. seealso:: :py:func:`isFinalized`
+
+.. versionadded:: 4.2
+%End
+
+    void forceClose();
+%Docstring
+Forces the widget to close by detaching any running task from the widget
+THEN closing the widget.
+
+.. versionadded:: 4.2
+%End
+
     virtual void reject();
 
 
@@ -242,11 +285,6 @@ Switches the widget to the parameters page.
     QPushButton *runButton();
 %Docstring
 Returns the widget's run button.
-%End
-
-    QPushButton *cancelButton();
-%Docstring
-Returns the widget's cancel button.
 %End
 
     QPushButton *changeParametersButton();
@@ -296,11 +334,6 @@ Sets the algorithm results.
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
 %Docstring
 Displays an info ``message`` in the widget's log.
-%End
-
-    void resetGui();
-%Docstring
-Resets the widget's gui, ready for another algorithm execution.
 %End
 
     virtual void resetAdditionalGui();

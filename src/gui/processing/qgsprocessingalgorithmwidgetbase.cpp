@@ -603,6 +603,7 @@ void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
     QDesktopServices::openUrl( url );
 }
 
+
 Qgis::ProcessingLogLevel QgsProcessingAlgorithmWidgetBase::logLevel() const
 {
   return mLogLevel;
@@ -897,6 +898,15 @@ void QgsProcessingAlgorithmWidgetBase::setCurrentTask( QgsProcessingAlgRunnerTas
   QgsApplication::taskManager()->addTask( mAlgorithmTask );
 }
 
+void QgsProcessingAlgorithmWidgetBase::disconnectCurrentTask()
+{
+  if ( mAlgorithmTask )
+  {
+    disconnect( mAlgorithmTask, &QgsProcessingAlgRunnerTask::executed, this, &QgsProcessingAlgorithmWidgetBase::algExecuted );
+    mAlgorithmTask = nullptr;
+  }
+}
+
 QString QgsProcessingAlgorithmWidgetBase::formatStringForLog( const QString &string )
 {
   QString s = string;
@@ -964,7 +974,7 @@ void QgsProcessingAlgorithmWidgetBase::reject()
 
 void QgsProcessingAlgorithmWidgetBase::forceClose()
 {
-  mAlgorithmTask = nullptr;
+  disconnectCurrentTask();
   close();
 }
 

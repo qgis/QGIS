@@ -487,6 +487,14 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     void urlClicked( const QUrl &url );
 
   private:
+    /**
+     * Disconnects from the current task running in the widget.
+     *
+     * The task will continue to execute in the task manager, but the widget
+     * will no longer respond to it.
+     */
+    void disconnectCurrentTask();
+
     WidgetMode mMode = WidgetMode::Single;
 
     QPushButton *mButtonRun = nullptr;
