@@ -769,12 +769,13 @@ class CORE_EXPORT QgsSfcgalEngine
      * Computes the volume of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the volume is computed
      * using the real discretization with radial segments. If false, the volume is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Returns the list of available parameter description for this primitive.

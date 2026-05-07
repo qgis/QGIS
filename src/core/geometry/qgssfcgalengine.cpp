@@ -1106,14 +1106,15 @@ double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withD
   return out;
 }
 
-double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform, bool withDiscretization, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  double out = sfcgal_primitive_volume( prim, withDiscretization );
+  const double baseVolume = sfcgal_primitive_volume( prim, withDiscretization );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-  return out;
+
+  return primTransform.isIdentity() ? baseVolume : baseVolume * std::abs( primTransform.determinant() );
 }
 
 void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )

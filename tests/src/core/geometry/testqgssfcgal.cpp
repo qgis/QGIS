@@ -1226,8 +1226,17 @@ void TestQgsSfcgal::primitiveCube()
     "((0 -2 -6,0 -2 9,0 8 9,0 8 -6,0 -2 -6)))"_s
   );
 
+  std::unique_ptr<QgsSfcgalGeometry> cubeRescaled = cube->scale( QgsVector3D( 2.0, 2.0, 2.0 ) );
+  std::unique_ptr<QgsSfcgalGeometry> cubeRotated = cube->rotate3D( M_PI / 4.0, QgsVector3D( 1.0, 0.0, 0.0 ) );
+  std::unique_ptr<QgsSfcgalGeometry> cubeRescaledAndTranslated = cubeRescaled->translate( QgsVector3D( 100.0, 20.0, -10.0 ) );
+  std::unique_ptr<QgsSfcgalGeometry> cubeRescaledNonUniform = cube->scale( QgsVector3D( 2.0, 3.0, 4.0 ) );
+
   // check volume
   QCOMPARE( cube->volume(), 125.0 );
+  QCOMPARE( cubeRotated->volume(), 125.0 );
+  QCOMPARE( cubeRescaled->volume(), 125.0 * 8.0 );
+  QCOMPARE( cubeRescaledAndTranslated->volume(), 125.0 * 8.0 );
+  QCOMPARE( cubeRescaledNonUniform->volume(), 125.0 * 24.0 );
   // check area
   QCOMPARE( cube->area(), 150.0 );
 

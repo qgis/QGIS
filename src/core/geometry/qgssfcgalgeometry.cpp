@@ -645,7 +645,7 @@ double QgsSfcgalGeometry::volume( bool withDiscretization ) const
 
   double result;
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-  result = QgsSfcgalEngine::primitiveVolume( mSfcgalPrim.get(), withDiscretization, &errorMsg );
+  result = QgsSfcgalEngine::primitiveVolume( mSfcgalPrim.get(), mPrimTransform, withDiscretization, &errorMsg );
 #else
   ( void ) withDiscretization;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
