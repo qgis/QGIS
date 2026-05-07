@@ -911,7 +911,7 @@ bool QgsProcessingAlgorithmWidgetBase::isFinalized()
 
 bool QgsProcessingAlgorithmWidgetBase::isRunning()
 {
-  return true;
+  return false;
 }
 
 void QgsProcessingAlgorithmWidgetBase::applyContextOverrides( QgsProcessingContext *context )
