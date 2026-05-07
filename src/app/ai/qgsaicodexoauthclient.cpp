@@ -175,7 +175,7 @@ namespace
     return object;
   }
 
-  bool storeRefreshToken( const QString &refreshToken, QString *errorMessage )
+  bool storeCodexRefreshToken( const QString &refreshToken, QString *errorMessage )
   {
     QgsAuthManager *authManager = QgsApplication::authManager();
     if ( !authManager )
@@ -193,7 +193,7 @@ namespace
     return true;
   }
 
-  QString storedRefreshToken()
+  QString storedCodexRefreshToken()
   {
     QgsAuthManager *authManager = QgsApplication::authManager();
     if ( !authManager )
@@ -286,12 +286,12 @@ bool QgsAiCodexOAuthClient::completeDeviceCodeLogin( const DeviceCode &deviceCod
     return false;
   }
 
-  return storeRefreshToken( refreshToken, errorMessage );
+  return storeCodexRefreshToken( refreshToken, errorMessage );
 }
 
 bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *errorMessage )
 {
-  const QString refreshToken = storedRefreshToken();
+  const QString refreshToken = storedCodexRefreshToken();
   if ( refreshToken.isEmpty() )
   {
     if ( errorMessage )
@@ -322,14 +322,14 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
   }
 
   if ( !tokens.refreshToken.isEmpty() && tokens.refreshToken != refreshToken )
-    return storeRefreshToken( tokens.refreshToken, errorMessage );
+    return storeCodexRefreshToken( tokens.refreshToken, errorMessage );
 
   return true;
 }
 
 bool QgsAiCodexOAuthClient::hasRefreshToken()
 {
-  return !storedRefreshToken().isEmpty();
+  return !storedCodexRefreshToken().isEmpty();
 }
 
 bool QgsAiCodexOAuthClient::clearRefreshToken( QString *errorMessage )

@@ -81,7 +81,7 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
    * quotes, escapes embedded backslashes and single-quotes. Same idea as the
    * helper in qgsairunpythontool.cpp.
    */
-  QString escapePath( const QString &path )
+  QString escapePipPath( const QString &path )
   {
     QString escaped = path;
     escaped.replace( '\\', "\\\\"_L1 );
@@ -89,7 +89,7 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
     return u"'%1'"_s.arg( escaped );
   }
 
-  QString truncate( const QString &text, int maxBytes )
+  QString truncatePipOutput( const QString &text, int maxBytes )
   {
     const QByteArray utf8 = text.toUtf8();
     if ( utf8.size() <= maxBytes )
@@ -209,7 +209,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.join( ", "_L1 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
 
   constexpr int TIMEOUT_SECONDS = 300;
-  const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePath( outPath ), escapePath( argsPath ), QString::number( TIMEOUT_SECONDS ) );
+  const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePipPath( outPath ), escapePipPath( argsPath ), QString::number( TIMEOUT_SECONDS ) );
 
   const bool ranOk = QgsPythonRunner::run( wrapper );
 
@@ -259,10 +259,10 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   QJsonObject output;
   output.insert( u"status"_s, success ? u"ok"_s : u"error"_s );
   output.insert( u"exit_code"_s, returncode );
-  output.insert( u"stdout"_s, truncate( stdoutText, MAX_CAPTURE_BYTES ) );
-  output.insert( u"stderr"_s, truncate( stderrText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"stdout"_s, truncatePipOutput( stdoutText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"stderr"_s, truncatePipOutput( stderrText, MAX_CAPTURE_BYTES ) );
   output.insert( u"installed"_s, installed );
   if ( !innerError.isEmpty() )
-    output.insert( u"error"_s, truncate( innerError, MAX_CAPTURE_BYTES ) );
+    output.insert( u"error"_s, truncatePipOutput( innerError, MAX_CAPTURE_BYTES ) );
   return QgsAiToolResult::ok( output );
 }

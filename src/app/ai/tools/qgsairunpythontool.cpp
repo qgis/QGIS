@@ -79,7 +79,7 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
    * where the path contains backslashes that would otherwise be interpreted
    * as escape sequences inside the embedded Python.
    */
-  QString escapePath( const QString &path )
+  QString escapeRunPythonPath( const QString &path )
   {
     QString escaped = path;
     escaped.replace( '\\', "\\\\"_L1 );
@@ -87,7 +87,7 @@ with open(__qgsai_out_path, "w", encoding="utf-8") as __qgsai_f:
     return u"'%1'"_s.arg( escaped );
   }
 
-  QString truncate( const QString &text, int maxBytes )
+  QString truncateRunPythonOutput( const QString &text, int maxBytes )
   {
     const QByteArray utf8 = text.toUtf8();
     if ( utf8.size() <= maxBytes )
@@ -161,7 +161,7 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
   QgsMessageLog::logMessage( u"run_python: executing approved code (codeChars=%1, codePath=%2)"_s.arg( code.size() ).arg( codePath ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
 
   // Build the wrapper with safely-quoted paths.
-  const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapePath( codePath ), escapePath( outPath ) );
+  const QString wrapper = QString::fromUtf8( PY_WRAPPER_TEMPLATE ).arg( escapeRunPythonPath( codePath ), escapeRunPythonPath( outPath ) );
 
   const bool ranOk = QgsPythonRunner::run( wrapper );
 
@@ -201,9 +201,9 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
 
   QJsonObject output;
   output.insert( u"status"_s, hadException ? u"error"_s : u"ok"_s );
-  output.insert( u"stdout"_s, truncate( stdoutText, MAX_CAPTURE_BYTES ) );
-  output.insert( u"stderr"_s, truncate( stderrText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"stdout"_s, truncateRunPythonOutput( stdoutText, MAX_CAPTURE_BYTES ) );
+  output.insert( u"stderr"_s, truncateRunPythonOutput( stderrText, MAX_CAPTURE_BYTES ) );
   if ( hadException )
-    output.insert( u"traceback"_s, truncate( tracebackText, MAX_CAPTURE_BYTES ) );
+    output.insert( u"traceback"_s, truncateRunPythonOutput( tracebackText, MAX_CAPTURE_BYTES ) );
   return QgsAiToolResult::ok( output );
 }
