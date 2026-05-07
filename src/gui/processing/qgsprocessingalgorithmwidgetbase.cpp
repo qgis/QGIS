@@ -552,8 +552,8 @@ void QgsProcessingAlgorithmWidgetBase::algExecuted( bool successful, const QVari
 
   if ( !successful )
   {
-    // show dialog to display errors
-    showDialog();
+    // show widget to display errors
+    showWidget();
     showLog();
   }
   else
@@ -563,7 +563,7 @@ void QgsProcessingAlgorithmWidgetBase::algExecuted( bool successful, const QVari
       progressBar->setFormat( tr( "Complete" ) );
     }
 
-    // delete dialog if closed
+    // delete widget if closed
     if ( isFinalized() && !isVisible() )
     {
       deleteLater();
@@ -575,12 +575,12 @@ void QgsProcessingAlgorithmWidgetBase::taskTriggered( QgsTask *task )
 {
   if ( task == mAlgorithmTask )
   {
-    showDialog();
+    showWidget();
     showLog();
   }
 }
 
-void QgsProcessingAlgorithmWidgetBase::showDialog()
+void QgsProcessingAlgorithmWidgetBase::showWidget()
 {
   show();
   raise();
@@ -962,7 +962,7 @@ void QgsProcessingAlgorithmWidgetBase::reject()
   QDialog::reject();
 }
 
-void QgsProcessingAlgorithmDialogBase::forceClose()
+void QgsProcessingAlgorithmWidgetBase::forceClose()
 {
   mAlgorithmTask = nullptr;
   close();
