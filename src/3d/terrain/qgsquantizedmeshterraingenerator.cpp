@@ -49,6 +49,7 @@
 #include <QString>
 #include <QTextureMaterial>
 #include <QThreadPool>
+#include <Qt3DRender/QTexture>
 #include <QtGlobal>
 
 #include "moc_qgsquantizedmeshterraingenerator.cpp"

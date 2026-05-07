@@ -52,6 +52,7 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QTexture>
 #include <QtMath>
 
 using namespace Qt::StringLiterals;
