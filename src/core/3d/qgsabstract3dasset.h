@@ -22,7 +22,6 @@
 class QDomElement;
 class QgsReadWriteContext;
 
-using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
