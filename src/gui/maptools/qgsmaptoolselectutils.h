@@ -104,7 +104,7 @@ namespace QgsMapToolSelectUtils
 
   /**
    * Expands a point to a rectangle with minimum size for selection based on the \a layer
-   * \param point The point to expand the rectangle around (in map coordinates)
+   * \param mapPoint The point to expand the rectangle around (in map coordinates)
    * \param canvas The map canvas used to transform between canvas and map units
    * \param layer The target layer
    * \returns Expanded rectangle in map units
