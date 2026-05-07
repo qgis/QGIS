@@ -23,6 +23,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
@@ -319,6 +320,10 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
 
 QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  // warning -- may be nullptr! QgsProcessingModelFeedback is only used when
+  // executing the model directly through the model designer dialog
+  QgsProcessingModelFeedback *modelFeedback = qobject_cast< QgsProcessingModelFeedback * >( feedback );
+
   QSet< QString > toExecute;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   QSet< QString > broken;
@@ -336,9 +341,15 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   if ( !broken.empty() )
+  {
+    if ( modelFeedback )
+    {
+      modelFeedback->reportBrokenChildAlgorithms( broken );
+    }
     throw QgsProcessingException(
       QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( qgsSetJoin( broken, ", "_L1 ) )
     );
+  }
 
   QElapsedTimer totalTime;
   totalTime.start();
@@ -425,7 +436,13 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       if ( feedback && !skipGenericLogging )
+      {
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
+      }
+      if ( modelFeedback )
+      {
+        modelFeedback->reportPreparingChild( childId );
+      }
 
       QgsExpressionContext expContext = baseContext;
       expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context ) << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
@@ -434,7 +451,13 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QString error;
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext, error, &context );
       if ( !error.isEmpty() )
+      {
+        if ( modelFeedback )
+        {
+          modelFeedback->reportChildPreparationFailure( childId, error );
+        }
         throw QgsProcessingException( error );
+      }
 
       if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
@@ -500,7 +523,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !ok )
       {
         const QString error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        if ( modelFeedback )
+        {
+          modelFeedback->reportChildPreparationFailure( childId, error );
+        }
         throw QgsProcessingException( error );
+      }
+
+      if ( modelFeedback )
+      {
+        modelFeedback->reportChildStarted( childId, childParams );
       }
 
       QVariantMap results;
@@ -577,6 +609,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childResults.insert( childId, results );
       childResult.setOutputs( results );
 
+      if ( modelFeedback )
+      {
+        if ( childResult.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed )
+          modelFeedback->reportChildExecutionFailure( childId, error );
+        else if ( childResult.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success )
+          modelFeedback->reportChildExecutionSuccess( childId, results );
+      }
+
       if ( runResult )
       {
         if ( feedback && !skipGenericLogging )
@@ -632,6 +672,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
               continue;
 
             executed.insert( targetId );
+            if ( modelFeedback )
+            {
+              modelFeedback->reportChildPruned( targetId );
+            }
             pruneAlgorithmBranchRecursive( targetId, branch );
           }
         };
@@ -674,6 +718,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                     pruned = true;
                     // skip the dependent alg..
                     executed.insert( candidateId );
+                    if ( modelFeedback )
+                    {
+                      modelFeedback->reportChildPruned( candidateId );
+                    }
                     //... and everything which depends on it
                     pruneAlgorithmBranchRecursive( candidateId, QString() );
                     break;

@@ -18,12 +18,14 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
 #include "qgsxmlutils.h"
 
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -1708,7 +1710,16 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   algr4.setModelOutputs( outputsr4 );
   model1.addChildAlgorithm( algr4 );
 
-  QgsProcessingFeedback feedback;
+  QgsProcessingModelFeedback feedback;
+
+  QSignalSpy brokenSpy( &feedback, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy( &feedback, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy( &feedback, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy( &feedback, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy( &feedback, &QgsProcessingModelFeedback::childPruned );
+
   QVariantMap params;
   // vector input
   params.insert( u"LAYER"_s, u"v1"_s );
@@ -1727,10 +1738,34 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   QVERIFY( !results.contains( u"fill3:RASTER_OUTPUT2"_s ) );
   QVERIFY( !results.contains( u"fill4:RASTER_OUTPUT3"_s ) );
 
+  QCOMPARE( brokenSpy.size(), 0 );
+  QCOMPARE( preparingSpy.size(), 4 );
+  QSet< QString > expectedPrepared = { "buffer", "buffer3", "filter", "buffer2" };
+  QCOMPARE( feedback.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy.size(), 0 );
+  QCOMPARE( childStartedSpy.size(), 4 );
+  QCOMPARE( feedback.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy.size(), 0 );
+  QCOMPARE( childExecutedSpy.size(), 4 );
+  QCOMPARE( feedback.successfulChildren(), expectedPrepared );
+  QCOMPARE( prunedSpy.size(), 3 );
+  QSet< QString > expectedPruned = { "fill4", "fill2", "fill3" };
+  QCOMPARE( feedback.prunedChildren(), expectedPruned );
+
+  QgsProcessingModelFeedback feedback2;
+
+  QSignalSpy brokenSpy2( &feedback2, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy2( &feedback2, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy2( &feedback2, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy2( &feedback2, &QgsProcessingModelFeedback::childPruned );
+
   // raster input
   params.insert( u"LAYER"_s, u"R1"_s );
   context.modelResult().clear();
-  results = model1.run( params, context, &feedback );
+  results = model1.run( params, context, &feedback2 );
   // we should get the raster branch outputs only
   QVERIFY( !results.value( u"fill2:RASTER_OUTPUT"_s ).toString().isEmpty() );
   QVERIFY( !results.value( u"fill3:RASTER_OUTPUT2"_s ).toString().isEmpty() );
@@ -1738,6 +1773,20 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruning()
   QVERIFY( !results.contains( u"buffer:BUFFER_OUTPUT"_s ) );
   QVERIFY( !results.contains( u"buffer2:BUFFER2_OUTPUT"_s ) );
   QVERIFY( !results.contains( u"buffer3:BUFFER3_OUTPUT"_s ) );
+
+  QCOMPARE( brokenSpy2.size(), 0 );
+  QCOMPARE( preparingSpy2.size(), 4 );
+  expectedPrepared = { "fill4", "filter", "fill3", "fill2" };
+  QCOMPARE( feedback2.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy2.size(), 0 );
+  QCOMPARE( childStartedSpy2.size(), 4 );
+  QCOMPARE( feedback2.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy2.size(), 0 );
+  QCOMPARE( childExecutedSpy2.size(), 4 );
+  QCOMPARE( feedback2.successfulChildren(), expectedPrepared );
+  QCOMPARE( prunedSpy2.size(), 3 );
+  expectedPruned = { "buffer", "buffer3", "buffer2" };
+  QCOMPARE( feedback2.prunedChildren(), expectedPruned );
 }
 
 void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
@@ -1777,24 +1826,75 @@ void TestQgsProcessingModelAlgorithm::modelBranchPruningConditional()
   model1.addChildAlgorithm( algc2 );
 
   QgsProcessingModelChildAlgorithm algc3;
-  algc2.setChildId( "exception" );
+  algc2.setChildId( "warning" );
   algc3.setAlgorithmId( "native:raisewarning" );
   algc3.setDependencies( QList<QgsProcessingModelChildDependency>() << QgsProcessingModelChildDependency( u"branch"_s, u"name2"_s ) );
   model1.addChildAlgorithm( algc3 );
 
-  QgsProcessingFeedback feedback;
+  QgsProcessingModelFeedback feedback;
+
+  QSignalSpy brokenSpy( &feedback, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy( &feedback, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy( &feedback, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy( &feedback, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy( &feedback, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy( &feedback, &QgsProcessingModelFeedback::childPruned );
+
   const QVariantMap params;
   bool ok = false;
   QVariantMap results = model1.run( params, context, &feedback, &ok );
   QVERIFY( !ok ); // the branch with the exception should be hit
 
+  QCOMPARE( brokenSpy.size(), 0 );
+  QCOMPARE( preparingSpy.size(), 2 );
+  QSet< QString > expectedPrepared = { "exception", "branch" };
+  QCOMPARE( feedback.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy.size(), 0 );
+  QCOMPARE( childStartedSpy.size(), 2 );
+  QCOMPARE( feedback.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy.size(), 1 );
+  QSet< QString > expectedFailed = { "exception" };
+  QCOMPARE( feedback.failedChildren(), expectedFailed );
+  QCOMPARE( childExecutedSpy.size(), 1 );
+  QSet< QString > expectedSuccess = { "branch" };
+  QCOMPARE( feedback.successfulChildren(), expectedSuccess );
+  QCOMPARE( prunedSpy.size(), 1 );
+  QSet< QString > expectedPruned = { "native:raisewarning_1" };
+  QCOMPARE( feedback.prunedChildren(), expectedPruned );
+
   // flip the condition results
   context.expressionContext().scope( 0 )->setVariable( u"var1"_s, 0 );
   context.expressionContext().scope( 0 )->setVariable( u"var2"_s, 1 );
 
+  QgsProcessingModelFeedback feedback2;
+
+  QSignalSpy brokenSpy2( &feedback2, &QgsProcessingModelFeedback::childAlgorithmsBroken );
+  QSignalSpy preparingSpy2( &feedback2, &QgsProcessingModelFeedback::preparingChild );
+  QSignalSpy preparationFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childPreparationFailed );
+  QSignalSpy childStartedSpy2( &feedback2, &QgsProcessingModelFeedback::childStarted );
+  QSignalSpy childFailedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionFailed );
+  QSignalSpy childExecutedSpy2( &feedback2, &QgsProcessingModelFeedback::childExecutionSucceeded );
+  QSignalSpy prunedSpy2( &feedback2, &QgsProcessingModelFeedback::childPruned );
+
   context.modelResult().clear();
-  results = model1.run( params, context, &feedback, &ok );
+  results = model1.run( params, context, &feedback2, &ok );
   QVERIFY( ok ); // the branch with the exception should NOT be hit
+
+  QCOMPARE( brokenSpy2.size(), 0 );
+  QCOMPARE( preparingSpy2.size(), 2 );
+  expectedPrepared = { "native:raisewarning_1", "branch" };
+  QCOMPARE( feedback2.preparedChildren(), expectedPrepared );
+  QCOMPARE( preparationFailedSpy2.size(), 0 );
+  QCOMPARE( childStartedSpy2.size(), 2 );
+  QCOMPARE( feedback2.startedChildren(), expectedPrepared );
+  QCOMPARE( childFailedSpy2.size(), 0 );
+  QCOMPARE( childExecutedSpy2.size(), 2 );
+  expectedSuccess = { "native:raisewarning_1", "branch" };
+  QCOMPARE( feedback2.successfulChildren(), expectedSuccess );
+  QCOMPARE( prunedSpy2.size(), 1 );
+  expectedPruned = { "exception" };
+  QCOMPARE( feedback2.prunedChildren(), expectedPruned );
 }
 
 void TestQgsProcessingModelAlgorithm::modelWithProviderWithLimitedTypes()
