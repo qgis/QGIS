@@ -467,6 +467,22 @@ void TestQgsSfcgal::isEqual()
   // should be accepted
   QVERIFY2( geomA.fuzzyEqual( *( geomB.get() ), 0.05 ), "Should be equals" );
 #endif
+
+// primitives
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> cube = QgsSfcgalGeometry::createCube( 5 );
+  QVERIFY2( geomA != *cube.get(), "primitive and geoms should not be equals" );
+
+  std::unique_ptr<QgsSfcgalGeometry> cube2 = cube->clone();
+  QVERIFY2( *cube2.get() == *cube.get(), "cubes should be equals" );
+
+  std::unique_ptr<QgsSfcgalGeometry> cubeTranslate = cube->translate( QgsVector3D( 1, 0, 0 ) );
+  QVERIFY2( *cubeTranslate.get() != *cube.get(), "cubes should not be equals" );
+
+  std::unique_ptr<QgsSfcgalGeometry> cubeSmallTranslate = cube->translate( QgsVector3D( 0.01, 0.01, 0.01 ) );
+  QVERIFY2( *cubeSmallTranslate.get() != *cube.get(), "cubes should not be equals" );
+  QVERIFY2( cubeSmallTranslate->fuzzyEqual( *( cube.get() ), 0.01 ), "Cubes Should be fuzzy equals" );
+#endif
 }
 
 void TestQgsSfcgal::boundary()

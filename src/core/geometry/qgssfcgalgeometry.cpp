@@ -254,6 +254,7 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
   bool out;
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
@@ -262,6 +263,10 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 
   if ( mIsPrimitive )
   {
+    if ( mPrimTransform != other.mPrimTransform )
+    {
+      return false;
+    }
     out = QgsSfcgalEngine::primitiveIsEqual( mSfcgalPrim.get(), other.mSfcgalPrim.get(), -1.0, &errorMsg );
   }
   else
@@ -292,6 +297,10 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsil
 
   if ( mIsPrimitive )
   {
+    if ( !mPrimTransform.fuzzyEqual( other.mPrimTransform ) )
+    {
+      return false;
+    }
     out = QgsSfcgalEngine::primitiveIsEqual( mSfcgalPrim.get(), other.mSfcgalPrim.get(), epsilon, &errorMsg );
   }
   else
