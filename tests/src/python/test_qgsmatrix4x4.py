@@ -279,6 +279,28 @@ class TestQgsMatrix4x4(QgisTestCase):
         for value, expected in zip(mat.data(), expected_result):
             self.assertAlmostEqual(value, expected)
 
+    def test_determinant(self):
+        mat = QgsMatrix4x4()
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(10.0, 20.0, 30.0))
+        self.assertEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.rotate(45.0, QgsVector3D(0.0, 0.0, 1.0))
+        self.assertAlmostEqual(mat.determinant(), 1.0)
+
+        mat = QgsMatrix4x4()
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertEqual(mat.determinant(), 24.0)
+
+        mat = QgsMatrix4x4()
+        mat.translate(QgsVector3D(5.0, 5.0, 5.0))
+        mat.rotate(30.0, QgsVector3D(1, 0, 0))
+        mat.scale(QgsVector3D(2.0, 3.0, 4.0))
+        self.assertAlmostEqual(mat.determinant(), 24.0)
+
 
 if __name__ == "__main__":
     unittest.main()

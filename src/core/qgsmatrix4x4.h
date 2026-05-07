@@ -114,6 +114,13 @@ class CORE_EXPORT QgsMatrix4x4
      */
     void rotate( double angle, const QgsVector3D &vector );
 
+    /**
+     * Returns the determinant of this matrix.
+     *
+     * \since QGIS 4.2
+     */
+    double determinant() const;
+
 #ifdef SIP_RUN
 // clang-format off
     SIP_PYOBJECT __repr__();

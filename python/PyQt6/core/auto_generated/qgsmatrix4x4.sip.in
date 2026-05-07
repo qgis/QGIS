@@ -110,6 +110,13 @@ Multiples this matrix by another that rotates coordinates through
 .. versionadded:: 4.2
 %End
 
+    double determinant() const;
+%Docstring
+Returns the determinant of this matrix.
+
+.. versionadded:: 4.2
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>" )
