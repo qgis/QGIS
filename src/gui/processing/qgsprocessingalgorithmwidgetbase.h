@@ -296,11 +296,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     void showParameters();
 
     /**
-     * Resets the widget's GUI, ready for another algorithm execution.
-     */
-    void resetGui();
-
-    /**
      * Returns TRUE if the widget is currently running an algorithm.
      *
      * If the algorithm has not yet started or has finished executing then FALSE will be returned.
@@ -375,6 +370,11 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * Displays an info \a message in the widget's log.
      */
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
+
+    /**
+     * Resets the widget's GUI, ready for another algorithm execution.
+     */
+    void resetGui();
 
     /**
      * For subclasses to register their own GUI controls to be reset, ready
