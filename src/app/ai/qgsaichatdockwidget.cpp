@@ -137,10 +137,11 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   mTranscript->setFrameShape( QFrame::NoFrame );
   const QColor codeBg = mTranscript->palette().alternateBase().color();
   mTranscript->document()->setDefaultStyleSheet( QStringLiteral(
-    "pre { background-color: %1; padding: 6px; font-family: monospace; white-space: pre-wrap; }"
-    "code { background-color: %1; font-family: monospace; padding: 1px 3px; }"
-    "h1, h2, h3 { margin-top: 8px; margin-bottom: 4px; }"
-  ).arg( codeBg.name() ) );
+                                                   "pre { background-color: %1; padding: 6px; font-family: monospace; white-space: pre-wrap; }"
+                                                   "code { background-color: %1; font-family: monospace; padding: 1px 3px; }"
+                                                   "h1, h2, h3 { margin-top: 8px; margin-bottom: 4px; }"
+  )
+                                                   .arg( codeBg.name() ) );
   layout->addWidget( mTranscript, 1 );
 
   mFileContextChipRow = new QWidget( container );
@@ -452,8 +453,7 @@ QString QgsAiChatDockWidget::renderMarkdown( const QString &md )
 
 void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QString &content )
 {
-  const QString html = QStringLiteral( "<p><b>[%1]</b></p>" ).arg( role.toHtmlEscaped() )
-                       + renderMarkdown( content );
+  const QString html = u"<p><b>[%1]</b></p>"_s.arg( role.toHtmlEscaped() ) + renderMarkdown( content );
   mTranscript->append( html );
 }
 
@@ -464,7 +464,7 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
 
   if ( !mStreamingInProgress )
   {
-    mTranscript->append( QStringLiteral( "<p><b>[assistant]</b></p>" ) );
+    mTranscript->append( u"<p><b>[assistant]</b></p>"_s );
     QTextCursor cursor = mTranscript->textCursor();
     cursor.movePosition( QTextCursor::End );
     mStreamingContentStartPosition = cursor.position();
