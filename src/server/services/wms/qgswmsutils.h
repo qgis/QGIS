@@ -72,19 +72,13 @@ namespace QgsWms
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr, int imageQuality = -1 );
 
   /**
-   * Collects the \a parent's name and all the parents' parents' names recursively.
-   * \returns opaqueParentNames a list for opaque parents.
-   * \returns nonOpaqueParentNames a list for the non opaque parents.
-   * \since QGIS 4.2
-   */
-  void collectParentNames( QgsLayerTreeGroup *parent, QStringList &opaqueParentNames, QStringList &nonOpaqueParentNames );
-
-  /**
-   * Returns true when the \a layerName represents an opaque child only (without a same-named layer or group that is not opaque).
-   * Needs the \a project for parsing and the \a nicknameLayers map to find the layers accordingt to the layer names.
-   * \since QGIS 4.2
-   */
-  bool isAnOpaqueChildOnly( const QgsProject &project, const QMultiMap<QString, QgsMapLayer *> &nicknameLayers, const QString &layerName );
+   * Collects the \a acceptableLayersAndRequestNames, a hash of all the layers that can be rendered and for each a list of the layer names requesting it.
+   * It needs the \a project and the \a group to analyse the current layer tree and the \a layerParameters passed as layers. If no layerParameters are passed, you will receive back all the layers except the ones hidden in an opaque group.
+   * When an opaque group is in the layerParameters, the children of this opaque group are passed back as well. The \a requestedParentNames are used for the recursive collecting of the list of requested layers and groups. Means when group is passed.
+  */
+  void collectAcceptableLayersAndRequestNames(
+    QHash<QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QgsLayerTreeGroup *group, const QStringList &layerParameters, QStringList requestedParentNames
+  );
 
 
 } // namespace QgsWms

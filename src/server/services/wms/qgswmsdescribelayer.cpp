@@ -76,28 +76,17 @@ namespace QgsWms
       throw QgsServiceException( u"InvalidParameterValue"_s, u"Layers is empty"_s, 400 );
     }
 
-    //collect the layers per nickname
-    QMultiMap<QString, QgsMapLayer *> nicknameLayers;
-    for ( QgsMapLayer *layer : project->mapLayers() )
-    {
-      QString name = layer->serverProperties()->shortName();
-      if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
-      {
-        name = layer->id();
-      }
-      else if ( name.isEmpty() )
-      {
-        name = layer->name();
-      }
-      nicknameLayers.insert( name, layer );
-    }
-
-    // Throw a LayerNotDefined when one of the requested layers or groups is an opaque child only (without a same-named other layer)
-    auto firstPureOpaqueChildInNickname = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layername ) { return isAnOpaqueChildOnly( *project, nicknameLayers, layername ); } );
-    if ( firstPureOpaqueChildInNickname != layersList.cend() )
+    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
+    QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+    collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, project->layerTreeRoot(), layersList, QStringList() );
+    auto firstFoundInacceptableLayer = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layerName ) {
+      //return when the requested layer has not been found as a acceptable layer
+      return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) { return requestedNames.contains( layerName ); } );
+    } );
+    if ( firstFoundInacceptableLayer != layersList.cend() )
     {
       QgsWmsParameter param( QgsWmsParameter::LAYER );
-      param.mValue = *firstPureOpaqueChildInNickname;
+      param.mValue = *firstFoundInacceptableLayer;
       throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
     }
 

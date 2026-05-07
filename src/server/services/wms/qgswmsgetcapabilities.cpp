@@ -1618,6 +1618,9 @@ namespace QgsWms
 
       QStringList layerList;
 
+      QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+      collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, project->layerTreeRoot(), QStringList(), QStringList() );
+
       const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
       QList<QgsMapLayer *> projectLayerOrder = projectLayerTreeRoot->layerOrder();
       for ( int i = 0; i < projectLayerOrder.size(); ++i )
@@ -1630,11 +1633,7 @@ namespace QgsWms
         }
 
         //Continue when the layer is an opaque layer child
-        QStringList opaqueParentNamesOfLayer;
-        QStringList nonOpaqueParentNamesOfLayer; //unused
-        QgsLayerTreeLayer *layernode = projectLayerTreeRoot->findLayer( l );
-        collectParentNames( QgsLayerTree::toGroup( layernode->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
-        if ( !opaqueParentNamesOfLayer.isEmpty() )
+        if ( !acceptableLayersAndRequestNames.contains( l ) )
         {
           continue;
         }

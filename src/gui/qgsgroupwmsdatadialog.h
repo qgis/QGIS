@@ -117,8 +117,12 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * Returns whether the group should be treated as an opaque layer.
      * If TRUE, the layer group will behave like a single layer, rather
      * than a collection of individual layers.
+     * Its child layers won't be displayed in GetCapabilities request.
+     * GetMap, GetFeatureInfo etc. requests on child layers will return an error.
+     * But child layers will be rendered when sending a GetMap request on the group.
      *
      * \see setIsOpaque()
+     * \see QgsLayerTreeGroup::setIsWmsOpaque
      * \since QGIS 4.2
      */
     bool isOpaque() const;
@@ -129,6 +133,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * If FALSE, it behaves as a standard group.
      *
      * \see isOpaque()
+     * \see QgsLayerTreeGroup::setIsOpaque
      * \since QGIS 4.2
      */
     void setIsOpaque( bool isOpaque );

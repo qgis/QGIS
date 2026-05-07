@@ -48,63 +48,10 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
 
   initRestrictedLayers();
   initNicknameLayers();
-
-  // Throw a LayerNotDefined when one of the requested layers or groups is an opaque child only (without a same-named other layer)
-  const QStringList layersList = mParameters.queryLayersNickname() + mParameters.allLayersNickname();
-  auto firstPureOpaqueChildInNickname = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layername ) { return isAnOpaqueChildOnly( *mProject, mNicknameLayers, layername ); } );
-  if ( firstPureOpaqueChildInNickname != layersList.cend() )
-  {
-    QgsWmsParameter param( QgsWmsParameter::LAYER );
-    param.mValue = *firstPureOpaqueChildInNickname;
-    throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
-  }
-
   searchLayersToRender();
   removeUnwantedLayers();
 
   std::reverse( mLayersToRender.begin(), mLayersToRender.end() );
-}
-
-bool QgsWmsRenderContext::ignoreSameNamedLayerOnOpaque( QgsMapLayer *layer, const QString nickName, const QStringList parameterLayerNames )
-{
-  // If the project itself is passed as a layer parameter or the current layer is an external layer, then we return immediately because it should not be ignored
-  if ( isExternalLayer( nickName ) || parameterLayerNames.contains( QgsServerProjectUtils::wmsRootName( *mProject ) ) || parameterLayerNames.contains( mProject->title() ) )
-    return false;
-
-  QgsLayerTreeLayer *layernode = mProject->layerTreeRoot()->findLayer( layer );
-  if ( !layernode )
-    return false;
-
-  QStringList opaqueParentNamesOfLayer;
-  QStringList nonOpaqueParentNamesOfLayer;
-  collectParentNames( QgsLayerTree::toGroup( layernode->parent() ), opaqueParentNamesOfLayer, nonOpaqueParentNamesOfLayer );
-  // If the layer is not part of an opaque group the layer needs to be requested to render (or a group it belongs)
-  if ( opaqueParentNamesOfLayer.isEmpty() )
-  {
-    bool parentInParameters = std::any_of( nonOpaqueParentNamesOfLayer.begin(), nonOpaqueParentNamesOfLayer.end(), [&]( const QString &str ) { return parameterLayerNames.contains( str ); } );
-    if ( parameterLayerNames.contains( nickName ) || parentInParameters )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
-  }
-  else
-  // If the layer is part of an opaque group the opaque group needs to be requeseted to render
-  {
-    bool opaqueParentInParameters = std::any_of( opaqueParentNamesOfLayer.begin(), opaqueParentNamesOfLayer.end(), [&]( const QString &str ) { return parameterLayerNames.contains( str ); } );
-
-    if ( opaqueParentInParameters )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
-  }
 }
 
 bool QgsWmsRenderContext::addLayerToRender( QgsMapLayer *layer )
@@ -507,6 +454,8 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
+    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
+    QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
     const QStringList queryLayerNames = flattenedQueryLayers( mParameters.queryLayersNickname() );
     for ( const QString &layerName : queryLayerNames )
     {
@@ -516,7 +465,7 @@ void QgsWmsRenderContext::searchLayersToRender()
       {
         if ( !mLayersToRender.contains( lyr ) )
         {
-          if ( ignoreSameNamedLayerOnOpaque( lyr, layerName, mParameters.queryLayersNickname() ) )
+          if ( !acceptableLayersForRender.contains( lyr ) )
           {
             continue;
           }
@@ -531,6 +480,8 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddAllLayers )
   {
+    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
+    QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
     const QStringList queryLayerNames = flattenedQueryLayers( mParameters.allLayersNickname() );
     for ( const QString &layerName : queryLayerNames )
     {
@@ -539,7 +490,7 @@ void QgsWmsRenderContext::searchLayersToRender()
       {
         if ( !mLayersToRender.contains( lyr ) )
         {
-          if ( ignoreSameNamedLayerOnOpaque( lyr, layerName, mParameters.allLayersNickname() ) )
+          if ( !acceptableLayersForRender.contains( lyr ) )
           {
             continue;
           }
@@ -582,6 +533,9 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
     requestedSldLayerNames.append( named.item( i ).firstChildElement( u"Name"_s ).text() );
   }
 
+  // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
+  QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.queryLayersNickname() );
+
   for ( int i = 0; i < named.size(); ++i )
   {
     QDomNodeList names = named.item( i ).toElement().elementsByTagName( "Name" );
@@ -593,7 +547,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         mSlds[lname] = namedElem;
         for ( const auto layer : mNicknameLayers.values( lname ) )
         {
-          if ( ignoreSameNamedLayerOnOpaque( layer, lname, requestedSldLayerNames ) )
+          if ( !acceptableLayersForRender.contains( layer ) )
           {
             continue;
           }
@@ -615,7 +569,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         bool layerAdded = false;
         for ( QgsMapLayer *layer : mLayerGroups[lname] )
         {
-          if ( ignoreSameNamedLayerOnOpaque( layer, lname, requestedSldLayerNames ) )
+          if ( !acceptableLayersForRender.contains( layer ) )
           {
             continue;
           }
@@ -649,6 +603,9 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
 
 void QgsWmsRenderContext::searchLayersToRenderStyle()
 {
+  // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
+  QHash<QgsMapLayer *, QStringList> acceptableLayersForRender = acceptableLayers( mParameters.allLayersNickname() );
+
   for ( const QgsWmsParametersLayer &param : mParameters.layersParameters() )
   {
     const QString nickname = param.mNickname;
@@ -678,7 +635,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto layer : mNicknameLayers.values( nickname ) )
       {
-        if ( ignoreSameNamedLayerOnOpaque( layer, nickname, mParameters.queryLayersNickname() + mParameters.allLayersNickname() ) )
+        if ( !acceptableLayersForRender.contains( layer ) )
         {
           continue;
         }
@@ -713,7 +670,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
       {
         for ( const auto layer : mNicknameLayers.values( name ) )
         {
-          if ( ignoreSameNamedLayerOnOpaque( layer, name, mParameters.queryLayersNickname() + mParameters.allLayersNickname() ) )
+          if ( !acceptableLayersForRender.contains( layer ) )
           {
             continue;
           }
@@ -986,6 +943,31 @@ void QgsWmsRenderContext::removeUnwantedLayers()
   }
 
   mLayersToRender = layers;
+}
+
+QHash<QgsMapLayer *, QStringList> QgsWmsRenderContext::acceptableLayers( const QStringList &requestedLayerNames ) const
+{
+  // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
+  QHash<QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+  collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *mProject, mProject->layerTreeRoot(), requestedLayerNames, QStringList() );
+  bool projectIsRequested = ( requestedLayerNames.contains( QgsServerProjectUtils::wmsRootName( *mProject ) ) || requestedLayerNames.contains( mProject->title() ) );
+
+  if ( !projectIsRequested )
+  {
+    auto firstFoundInacceptableLayer = std::find_if( requestedLayerNames.cbegin(), requestedLayerNames.cend(), [&]( const QString &layerName ) {
+      //return when the requested layer has not been found as a acceptable layer
+      return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) {
+        return requestedNames.contains( layerName ) || isExternalLayer( layerName );
+      } );
+    } );
+    if ( firstFoundInacceptableLayer != requestedLayerNames.cend() )
+    {
+      QgsWmsParameter param( QgsWmsParameter::LAYER );
+      param.mValue = *firstFoundInacceptableLayer;
+      throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
+    }
+  }
+  return acceptableLayersAndRequestNames;
 }
 
 bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const

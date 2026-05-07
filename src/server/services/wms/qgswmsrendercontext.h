@@ -288,18 +288,13 @@ namespace QgsWms
       void searchLayersToRenderSld();
       void searchLayersToRenderStyle();
       void removeUnwantedLayers();
+      QHash<QgsMapLayer *, QStringList> acceptableLayers( const QStringList &requestedLayerNames ) const;
 
       /**
        * Adds the layer to the list of layers to be rendered if the layer is readable
        * Returns true if the layer is readable, false otherwise
        */
       bool addLayerToRender( QgsMapLayer *layer );
-
-      /**
-       * Checks if the layer is in an opaque group and, if so, whether the opaque group is requested.
-       * If the layer is not in an opaque group, checks whether the layer is requested.
-       */
-      bool ignoreSameNamedLayerOnOpaque( QgsMapLayer *layer, const QString nickName, const QStringList parameterLayerNames );
 
       /**
        * Check layer read permissions
