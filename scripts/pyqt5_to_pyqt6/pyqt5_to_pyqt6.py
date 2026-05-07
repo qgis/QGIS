@@ -62,19 +62,12 @@ from PyQt6 import (
     Qsci,
     QtCore,
     QtGui,
-    QtMultimedia,
     QtNetwork,
     QtPrintSupport,
-    QtQuick,
     QtQuickWidgets,
-    QtSerialPort,
     QtSql,
     QtSvg,
     QtTest,
-    QtWebChannel,
-    QtWebEngineCore,
-    QtWebEngineQuick,
-    QtWebEngineWidgets,
     QtWidgets,
     QtXml,
 )
@@ -113,19 +106,12 @@ target_modules = [
     QtGui,
     QtWidgets,
     QtTest,
-    QtSerialPort,
     QtSql,
     QtSvg,
     QtXml,
-    QtMultimedia,
     QtNetwork,
     QtPrintSupport,
-    QtQuick,
     QtQuickWidgets,
-    QtWebChannel,
-    QtWebEngineCore,
-    QtWebEngineQuick,
-    QtWebEngineWidgets,
     Qsci,
 ]
 if qgis_core is not None:
@@ -502,7 +488,13 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tree = ast.parse(contents, filename=filename)
 
-    QGIS_PYQT_MODULES = {m.__name__.split(".")[-1] for m in target_modules}
+    QGIS_PYQT_MODULES = {
+        "Qsci", "QtCore", "QtGui", "QtMultimedia", "QtNetwork",
+        "QtPrintSupport", "QtQuick", "QtQuickWidgets", "QtSerialPort",
+        "QtSql", "QtSvg", "QtTest", "QtWebChannel", "QtWebEngineCore",
+        "QtWebEngineQuick", "QtWebEngineWidgets", "QtWidgets", "QtXml",
+        "sip", "uic",
+    }
 
     for parent in ast.walk(tree):
         for node in ast.iter_child_nodes(parent):
@@ -598,14 +590,14 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 if submodule in QGIS_PYQT_MODULES:
                     fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+                elif qgis3_compat:
+                    logging.warning(
+                        f"Import of {submodule} couldn't be adjusted automatically without breaking compatibility with QGIS 3*."
+                    )
+                    has_unfixed_errors = True
                 else:
-                    if qgis3_compat:
-                        fix_pyqt6_import.append(Offset(node.lineno, node.col_offset))
-                    else:
-                        logging.warning(
-                            f"Import of {submodule} couldn't be adjusted automatically without breaking compatibility with QGIS 3*."
-                        )
-                        has_unfixed_errors = True
+                    fix_pyqt6_import.append(Offset(node.lineno, node.col_offset))
+
 
     for module, classes in extra_imports.items():
         if module not in imported_modules:

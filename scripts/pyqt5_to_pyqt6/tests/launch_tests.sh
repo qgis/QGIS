@@ -21,6 +21,9 @@ do
     echo "Test '$TESTNAME' failed: There are differences between actual and expected file"
     cat $TESTDIR/diff.log
     RES=1
+elif [ "$TESTNAME" = "imports" ] && ! grep -q "QtBluetooth couldn't be adjusted" $TESTDIR/output.log; then
+    echo "Test '$TESTNAME' failed: expected warning not found"
+    RES=1
   fi
 done
 
