@@ -1025,7 +1025,15 @@ void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
 
 void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
 {
-  const QgsVector3D qCenter = QgsVector3D(center.x(), center.y(), center.z());
+  QgsVector3D qCenter;
+  if ( center.isEmpty() )
+  {
+    qCenter = QgsVector3D( 0.0, 0.0, 0.0 );
+  }
+  else
+  {
+    qCenter = QgsVector3D( center.x(), center.y(), center.z() );
+  }
 
   QgsMatrix4x4 mat;
   mat.translate( qCenter );
@@ -1037,7 +1045,15 @@ void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const
 
 void QgsSfcgalGeometry::setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center )
 {
-  const QgsVector3D qCenter = QgsVector3D(center.x(), center.y(), center.z());
+  QgsVector3D qCenter;
+  if ( center.isEmpty() )
+  {
+    qCenter = QgsVector3D( 0.0, 0.0, 0.0 );
+  }
+  else
+  {
+    qCenter = QgsVector3D( center.x(), center.y(), center.z() );
+  }
 
   QgsMatrix4x4 mat;
   mat.translate( qCenter );
