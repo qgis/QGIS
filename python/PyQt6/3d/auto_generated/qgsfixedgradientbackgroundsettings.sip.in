@@ -32,6 +32,8 @@ the 3D scene.
 
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
+    virtual bool equals( const QgsAbstract3DAsset *other ) const;
+
 
     QColor topColor() const;
 %Docstring

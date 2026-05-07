@@ -56,7 +56,7 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
   return new QgsPhongMaterialSettings( *this );
 }
 
-bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsPhongMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsPhongMaterialSettings *otherPhong = dynamic_cast<const QgsPhongMaterialSettings *>( other );
   if ( !otherPhong )

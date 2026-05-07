@@ -46,7 +46,7 @@ Gooch material.
 
     virtual QgsGoochMaterialSettings *clone() const /Factory/;
 
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+    virtual bool equals( const QgsAbstract3DAsset *other ) const;
 
 
     QColor warm() const;

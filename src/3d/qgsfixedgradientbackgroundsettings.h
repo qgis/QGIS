@@ -38,6 +38,7 @@ class _3D_EXPORT QgsFixedGradientBackgroundSettings : public QgsAbstract3DMapBac
     QgsFixedGradientBackgroundSettings *clone() const override SIP_FACTORY;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 
     /**
      * Returns the color at the top of the gradient.

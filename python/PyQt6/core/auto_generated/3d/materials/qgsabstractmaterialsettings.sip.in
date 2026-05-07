@@ -11,7 +11,7 @@
 
 
 
-class QgsAbstractMaterialSettings /Abstract/
+class QgsAbstractMaterialSettings : QgsAbstract3DAsset
 {
 %Docstring(signature="appended")
 Abstract base class for material settings.
@@ -25,70 +25,13 @@ Abstract base class for material settings.
 %TypeHeaderCode
 #include "qgsabstractmaterialsettings.h"
 %End
-%ConvertToSubClassCode
-    if ( sipCpp->type() == QLatin1String( "gooch" ) )
-    {
-      sipType = sipType_QgsGoochMaterialSettings;
-    }
-    else if ( sipCpp->type() == QLatin1String( "phong" ) )
-    {
-      sipType = sipType_QgsPhongMaterialSettings;
-    }
-    else if ( sipCpp->type() == "phongtextured" )
-    {
-      sipType = sipType_QgsPhongTexturedMaterialSettings;
-    }
-    else if ( sipCpp->type() == "simpleline" )
-    {
-      sipType = sipType_QgsSimpleLineMaterialSettings;
-    }
-    else if ( sipCpp->type() == "null" )
-    {
-      sipType = sipType_QgsNullMaterialSettings;
-    }
-    else if ( sipCpp->type() == "metalrough" )
-    {
-      sipType = sipType_QgsMetalRoughMaterialSettings;
-    }
-    else if ( sipCpp->type() == "metalroughtextured" )
-    {
-      sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
-    }
-    else
-    {
-      sipType = 0;
-    }
-%End
   public:
-    virtual ~QgsAbstractMaterialSettings();
+    virtual Qgis::Asset3DType assetType() const;
+
 
     virtual QString type() const = 0;
 %Docstring
 Returns the unique type name for the material.
-%End
-
-    virtual QgsAbstractMaterialSettings *clone() const = 0 /Factory/;
-%Docstring
-Clones the material settings.
-
-Caller takes ownership of the returned object.
-%End
-
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
-%Docstring
-Reads settings from a DOM ``element``
-%End
-
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
-%Docstring
-Writes settings to a DOM ``element``
-%End
-
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
-%Docstring
-Returns ``True`` if this settings exactly matches an ``other`` settings.
-
-.. versionadded:: 3.42
 %End
 
     virtual bool requiresTextureCoordinates() const;
@@ -138,6 +81,12 @@ defined overrides.
 
 .. versionadded:: 4.2
 %End
+    virtual QgsAbstractMaterialSettings *clone() const = 0 /Factory/;
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+
 
 };
 

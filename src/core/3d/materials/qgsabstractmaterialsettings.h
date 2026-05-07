@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstract3dasset.h"
 #include "qgspropertycollection.h"
 
 #include <QColor>
@@ -38,72 +39,15 @@ class QgsExpressionContext;
  * exposed to the Python bindings as a tech preview only.
  *
  */
-class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
+class CORE_EXPORT QgsAbstractMaterialSettings : public QgsAbstract3DAsset
 {
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "gooch"_L1 )
-    {
-      sipType = sipType_QgsGoochMaterialSettings;
-    }
-    else if ( sipCpp->type() == "phong"_L1 )
-    {
-      sipType = sipType_QgsPhongMaterialSettings;
-    }
-    else if ( sipCpp->type() == "phongtextured" )
-    {
-      sipType = sipType_QgsPhongTexturedMaterialSettings;
-    }
-    else if ( sipCpp->type() == "simpleline" )
-    {
-      sipType = sipType_QgsSimpleLineMaterialSettings;
-    }
-    else if ( sipCpp->type() == "null" )
-    {
-      sipType = sipType_QgsNullMaterialSettings;
-    }
-    else if ( sipCpp->type() == "metalrough" )
-    {
-      sipType = sipType_QgsMetalRoughMaterialSettings;
-    }
-    else if ( sipCpp->type() == "metalroughtextured" )
-    {
-      sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
-    }
-    else
-    {
-      sipType = 0;
-    }
-  SIP_END
-#endif
-
   public:
-    virtual ~QgsAbstractMaterialSettings() = default;
+    Qgis::Asset3DType assetType() const override;
 
     /**
      * Returns the unique type name for the material.
      */
     virtual QString type() const = 0;
-
-    /**
-     * Clones the material settings.
-     *
-     * Caller takes ownership of the returned object.
-     */
-    virtual QgsAbstractMaterialSettings *clone() const = 0 SIP_FACTORY;
-
-    //! Reads settings from a DOM \a element
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
-
-    //! Writes settings to a DOM \a element
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
-
-    /**
-     * Returns TRUE if this settings exactly matches an \a other settings.
-     *
-     * \since QGIS 3.42
-     */
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
 
     /**
      * Returns TRUE if the material requires texture coordinates to be generated
@@ -150,6 +94,10 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     * \since QGIS 4.2
     */
     const QgsPropertiesDefinition &propertyDefinitions() const;
+    virtual QgsAbstractMaterialSettings *clone() const override = 0 SIP_FACTORY;
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
 
   private:
     QgsPropertyCollection mDataDefinedProperties;

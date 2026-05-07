@@ -51,7 +51,7 @@ class CORE_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsNullMaterialSettings *clone() const override SIP_FACTORY;
-    bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 };
 
 

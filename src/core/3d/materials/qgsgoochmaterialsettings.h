@@ -52,7 +52,7 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
 
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
-    bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 
     //! Returns warm color component
     QColor warm() const { return mWarm; }

@@ -54,7 +54,7 @@ QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const
   return new QgsNullMaterialSettings( *this );
 }
 
-bool QgsNullMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsNullMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsNullMaterialSettings *otherNull = dynamic_cast<const QgsNullMaterialSettings *>( other );
   if ( !otherNull )

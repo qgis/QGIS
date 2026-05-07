@@ -47,10 +47,9 @@ class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
     Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
     QgsSkyboxSettings *clone() const override SIP_FACTORY;
 
-    //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-    //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 
 #if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"

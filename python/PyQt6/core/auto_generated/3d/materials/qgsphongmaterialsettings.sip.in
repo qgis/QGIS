@@ -44,7 +44,7 @@ Returns a new instance of QgsPhongMaterialSettings.
 
     virtual QgsPhongMaterialSettings *clone() const /Factory/;
 
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+    virtual bool equals( const QgsAbstract3DAsset *other ) const;
 
 
     QColor ambient() const;

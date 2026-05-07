@@ -2413,7 +2413,6 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
-
     enum class Asset3DType /BaseType=IntEnum/
     {
       MaterialSettings,

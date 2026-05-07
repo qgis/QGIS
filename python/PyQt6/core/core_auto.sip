@@ -228,6 +228,7 @@
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
 %Include auto_generated/./3d/qgs3dsymbolregistry.sip
+%Include auto_generated/./3d/qgsabstract3dasset.sip
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip

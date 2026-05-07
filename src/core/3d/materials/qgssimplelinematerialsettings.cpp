@@ -56,7 +56,7 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
   return new QgsSimpleLineMaterialSettings( *this );
 }
 
-bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsSimpleLineMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsSimpleLineMaterialSettings *otherLine = dynamic_cast<const QgsSimpleLineMaterialSettings *>( other );
   if ( !otherLine )

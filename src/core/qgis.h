@@ -4308,7 +4308,6 @@ int QgisEvent = QEvent::User + 1;
     Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
     Q_FLAG( PlotToolFlags )
 
-
     /**
      * 3D asset types.
      *

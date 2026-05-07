@@ -46,7 +46,7 @@ Returns a new instance of QgsMetalRoughTexturedMaterialSettings.
 
     virtual QgsMetalRoughTexturedMaterialSettings *clone() const /Factory/;
 
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+    virtual bool equals( const QgsAbstract3DAsset *other ) const;
 
 
     QString baseColorTexturePath() const;

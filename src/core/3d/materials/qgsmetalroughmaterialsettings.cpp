@@ -55,7 +55,7 @@ QgsMetalRoughMaterialSettings *QgsMetalRoughMaterialSettings::clone() const
   return new QgsMetalRoughMaterialSettings( *this );
 }
 
-bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsMetalRoughMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsMetalRoughMaterialSettings *otherMetal = dynamic_cast<const QgsMetalRoughMaterialSettings *>( other );
   if ( !otherMetal )

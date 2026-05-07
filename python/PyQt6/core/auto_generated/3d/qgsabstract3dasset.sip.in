@@ -1,0 +1,112 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgsabstract3dasset.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstract3DAsset /Abstract/
+{
+%Docstring(signature="appended")
+Abstract base class for 3D assets.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+%End
+
+%TypeHeaderCode
+#include "qgsabstract3dasset.h"
+#include "qgsabstractmaterialsettings.h"
+#include "qgsgoochmaterialsettings.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
+#include "qgsnullmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
+#include "qgssimplelinematerialsettings.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsGoochMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsGoochMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsPhongMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsPhongMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsPhongTexturedMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsPhongTexturedMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsSimpleLineMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsNullMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsMetalRoughMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsMetalRoughMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsMetalRoughTexturedMaterialSettings * >( sipCpp ) )
+    {
+      sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
+    }
+    else if ( dynamic_cast< QgsAbstractMaterialSettings * >( sipCpp ) )
+    {
+      // must be last material settings type here!
+      sipType = sipType_QgsAbstractMaterialSettings;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+    virtual ~QgsAbstract3DAsset();
+
+    virtual Qgis::Asset3DType assetType() const = 0;
+%Docstring
+Returns the type of 3D asset.
+%End
+
+    virtual QgsAbstract3DAsset *clone() const = 0 /Factory/;
+%Docstring
+Clones the asset.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads asset properties from a DOM ``element``
+%End
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes asset properties to a DOM ``element``
+%End
+
+    virtual bool equals( const QgsAbstract3DAsset *other ) const = 0;
+%Docstring
+Returns ``True`` if this asset exactly matches an ``other`` asset.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgsabstract3dasset.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

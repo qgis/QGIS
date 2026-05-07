@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsMetalRoughMaterialSettings *clone() const override SIP_FACTORY;
-    bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 
     /**
      * Returns the base material color.

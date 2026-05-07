@@ -84,6 +84,15 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   element.setAttribute( u"mapping"_s, qgsEnumValueToKey( mCubeMapping ) );
 }
 
+bool QgsSkyboxSettings::equals( const QgsAbstract3DAsset *other ) const
+{
+  const QgsSkyboxSettings *otherSkyBox = dynamic_cast<const QgsSkyboxSettings *>( other );
+  if ( !otherSkyBox )
+    return false;
+
+  return mCubeMapping == otherSkyBox->mCubeMapping && mCubeMapFacesPaths == otherSkyBox->mCubeMapFacesPaths;
+}
+
 Qgis::SkyboxCubeMapping QgsSkyboxSettings::cubeMapping() const
 {
   return mCubeMapping;

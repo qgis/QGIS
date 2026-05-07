@@ -21,6 +21,11 @@ using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 
+Qgis::Asset3DType QgsAbstractMaterialSettings::assetType() const
+{
+  return Qgis::Asset3DType::MaterialSettings;
+}
+
 void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   const QDomElement elemDataDefinedProperties = element.firstChildElement( u"data-defined-properties"_s );

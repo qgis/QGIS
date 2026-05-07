@@ -55,7 +55,7 @@ QgsMetalRoughTexturedMaterialSettings *QgsMetalRoughTexturedMaterialSettings::cl
   return new QgsMetalRoughTexturedMaterialSettings( *this );
 }
 
-bool QgsMetalRoughTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsMetalRoughTexturedMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsMetalRoughTexturedMaterialSettings *otherMetal = dynamic_cast<const QgsMetalRoughTexturedMaterialSettings *>( other );
   if ( !otherMetal )

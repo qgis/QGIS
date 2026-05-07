@@ -56,7 +56,7 @@ QgsGoochMaterialSettings *QgsGoochMaterialSettings::clone() const
   return new QgsGoochMaterialSettings( *this );
 }
 
-bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+bool QgsGoochMaterialSettings::equals( const QgsAbstract3DAsset *other ) const
 {
   const QgsGoochMaterialSettings *otherGooch = dynamic_cast<const QgsGoochMaterialSettings *>( other );
   if ( !otherGooch )

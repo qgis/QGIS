@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
+#include "qgsabstract3dasset.h"
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -31,10 +32,10 @@ class QgsReadWriteContext;
  *
  * \since QGIS 4.2
  */
-class _3D_EXPORT QgsAbstract3DMapBackgroundSettings
+class _3D_EXPORT QgsAbstract3DMapBackgroundSettings : public QgsAbstract3DAsset
 {
   public:
-    virtual ~QgsAbstract3DMapBackgroundSettings() = default;
+    Qgis::Asset3DType assetType() const override { return Qgis::Asset3DType::BackgroundSettings; }
 
     /**
      * Returns the unique type for this background settings class.
@@ -42,21 +43,7 @@ class _3D_EXPORT QgsAbstract3DMapBackgroundSettings
     virtual Qgis::Map3DBackgroundType type() const = 0;
 
     //! Returns a deep copy of this background settings object.
-    virtual QgsAbstract3DMapBackgroundSettings *clone() const = 0 SIP_FACTORY;
-
-    /**
-     * Reads settings from a DOM \a element.
-     *
-     * \see writeXml()
-     */
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
-
-    /**
-     * Writes settings to a DOM \a element.
-     *
-     * \see readXml()
-     */
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+    virtual QgsAbstract3DMapBackgroundSettings *clone() const override = 0 SIP_FACTORY;
 };
 
 #endif // QGSABSTRACT3DMAPBACKGROUNDSETTINGS_H

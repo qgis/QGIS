@@ -28,7 +28,6 @@ QgsFixedGradientBackgroundSettings *QgsFixedGradientBackgroundSettings::clone() 
   return new QgsFixedGradientBackgroundSettings( *this );
 }
 
-
 void QgsFixedGradientBackgroundSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   mTopColor = QgsColorUtils::colorFromString( element.attribute( u"top-color"_s ) );
@@ -39,4 +38,13 @@ void QgsFixedGradientBackgroundSettings::writeXml( QDomElement &element, const Q
 {
   element.setAttribute( u"top-color"_s, QgsColorUtils::colorToString( mTopColor ) );
   element.setAttribute( u"bottom-color"_s, QgsColorUtils::colorToString( mBottomColor ) );
+}
+
+bool QgsFixedGradientBackgroundSettings::equals( const QgsAbstract3DAsset *other ) const
+{
+  const QgsFixedGradientBackgroundSettings *otherBg = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( other );
+  if ( !otherBg )
+    return false;
+
+  return mTopColor == otherBg->mTopColor && mBottomColor == otherBg->mBottomColor;
 }

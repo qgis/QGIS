@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsMetalRoughTexturedMaterialSettings *clone() const override SIP_FACTORY;
-    bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    bool equals( const QgsAbstract3DAsset *other ) const override;
 
     /**
      * Returns the path to the base color texture map.

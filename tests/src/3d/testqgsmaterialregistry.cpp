@@ -37,7 +37,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     static bool supportsTechnique( Qgis::MaterialRenderingTechnique ) { return true; }
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
     void writeXml( QDomElement &, const QgsReadWriteContext & ) const override {}
-    bool equals( const QgsAbstractMaterialSettings * ) const override { return true; }
+    bool equals( const QgsAbstract3DAsset * ) const override { return true; }
 };
 
 class TestQgsMaterialRegistry : public QgsTest
