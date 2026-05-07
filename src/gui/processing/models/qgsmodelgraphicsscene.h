@@ -206,9 +206,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Connects to signals from a \a feedback object, so the progress of the model can be represented
      * visually in the scene.
      *
+     * \note Not available in Python bindings
+     *
      * \since QGIS 4.2
      */
-    void setupFeedbackConnections( QgsProcessingModelFeedback *feedback );
+    void setupFeedbackConnections( QgsProcessingModelFeedback *feedback ) SIP_SKIP;
 
   signals:
 
