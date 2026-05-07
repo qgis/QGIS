@@ -1245,6 +1245,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
   mMapCanvas->setStatusBar( mStatusBar );
+  mMapCanvas->setMessageBar( mInfoBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -2113,6 +2114,8 @@ QgisApp::QgisApp()
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
+  mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
   // More tests may need more members to be initialized
@@ -4743,6 +4746,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
   mapCanvas->setStatusBar( mStatusBar );
+  mapCanvas->setMessageBar( mInfoBar );
 
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );

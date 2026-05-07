@@ -977,6 +977,28 @@ Sets the associated status ``bar``.
 .. versionadded:: 4.0
 %End
 
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets a message ``bar`` to use alongside the map canvas. Setting this
+allows items to utilize the message bar to provide non-blocking feedback
+to users, e.g. success or failure of actions.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 4.2
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the dock.
+
+May be ``None`` if not set.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 4.2
+%End
+
 
   public slots:
 

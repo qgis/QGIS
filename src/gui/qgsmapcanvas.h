@@ -66,6 +66,7 @@ class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
+class QgsMessageBar;
 class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
@@ -936,6 +937,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setStatusBar( QgsStatusBar *bar );
 
+    /**
+     * Sets a message \a bar to use alongside the map canvas. Setting this allows items
+     * to utilize the message bar to provide non-blocking feedback to users, e.g.
+     * success or failure of actions.
+     *
+     * \see messageBar()
+     * \since QGIS 4.2
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the dock.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setMessageBar()
+     * \since QGIS 4.2
+     */
+    QgsMessageBar *messageBar();
+
     static const QgsSettingsEntryString *settingsCustomCoordinateCrs SIP_SKIP;
 
   public slots:
@@ -1527,6 +1548,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QPointer<QgsAbstract2DMapController> mMapController;
 
     QPointer< QgsStatusBar > mStatusBar;
+
+    QPointer< QgsMessageBar > mMessageBar;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

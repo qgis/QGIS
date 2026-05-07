@@ -52,6 +52,7 @@ email                : sherman at mrcc.com
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptopixel.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
@@ -1062,6 +1063,16 @@ QgsStatusBar *QgsMapCanvas::statusBar()
 void QgsMapCanvas::setStatusBar( QgsStatusBar *bar )
 {
   mStatusBar = bar;
+}
+
+void QgsMapCanvas::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsMapCanvas::messageBar()
+{
+  return mMessageBar.data();
 }
 
 bool QgsMapCanvas::previewJobsEnabled() const
