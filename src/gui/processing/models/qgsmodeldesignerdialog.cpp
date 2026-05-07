@@ -1132,10 +1132,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       case QMessageBox::StandardButton::Cancel:
         return;
       case QMessageBox::StandardButton::RestoreDefaults:
-        // Simulate a cancel and close
-        mAlgorithmWidget->show();
-        mAlgorithmWidget->cancelButton()->click();
-
+        mAlgorithmWidget->cancel();
         mAlgorithmWidget->forceClose();
 
         //Stop tracking change to the previous dialog in the QPointer

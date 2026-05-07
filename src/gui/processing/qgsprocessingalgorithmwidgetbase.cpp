@@ -312,6 +312,8 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::copyLogToClipboard );
   connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::clearLog );
 
+  connect( buttonCancel, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
+
   connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
@@ -430,7 +432,7 @@ QgsProcessingFeedback *QgsProcessingAlgorithmWidgetBase::createFeedback()
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmWidgetBase::pushFormattedMessage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmWidgetBase::setProgressText );
-  connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
+  connect( this, &QgsProcessingAlgorithmWidgetBase::cancelRequested, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
 }
 
@@ -669,7 +671,7 @@ QDialog *QgsProcessingAlgorithmWidgetBase::createProgressDialog()
   dialog->setWindowTitle( windowTitle() );
   dialog->setGeometry( geometry() ); // match size/position to this dialog
   connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
-  connect( dialog->cancelButton(), &QPushButton::clicked, buttonCancel, &QPushButton::click );
+  connect( dialog->cancelButton(), &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
   dialog->logTextEdit()->setHtml( txtLog->toHtml() );
   connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]() {
     dialog->logTextEdit()->setHtml( txtLog->toHtml() );
@@ -922,6 +924,11 @@ bool QgsProcessingAlgorithmWidgetBase::isFinalized()
 bool QgsProcessingAlgorithmWidgetBase::isRunning()
 {
   return false;
+}
+
+void QgsProcessingAlgorithmWidgetBase::cancel()
+{
+  emit cancelRequested();
 }
 
 void QgsProcessingAlgorithmWidgetBase::applyContextOverrides( QgsProcessingContext *context )

@@ -207,11 +207,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      */
     virtual void setParameters( const QVariantMap &values );
 
-    /**
-     * Returns the widget's cancel button.
-     */
-    QPushButton *cancelButton();
-
   public slots:
 
     /**
@@ -311,6 +306,17 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     virtual bool isRunning();
 
     /**
+     * Cancels any algorithm currently running through the widget.
+     *
+     * \note The cancellation is non-blocking, and may take some time to complete. Some algorithms
+     * ignore cancellation requests entirely. This method returns immediately after requesting
+     * the cancellation, but the algorithm may still be running after return.
+     *
+     * \since QGIS 4.2
+     */
+    void cancel();
+
+    /**
      * Forces the widget to close by detaching any running task from the widget THEN closing the widget.
      *
      * \since QGIS 4.2
@@ -326,6 +332,11 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * Returns the widget's run button.
      */
     QPushButton *runButton();
+
+    /**
+     * Returns the widget's cancel button.
+     */
+    QPushButton *cancelButton();
 
     /**
      * Returns the widget's change parameters button.
@@ -454,6 +465,14 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * \since QGIS 3.14
      */
     void algorithmFinished( bool successful, const QVariantMap &result );
+
+    /**
+     * Emitted when the widget requests that the algorithm is canceled.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.2
+     */
+    SIP_SKIP void cancelRequested();
 
   protected slots:
 

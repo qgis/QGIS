@@ -151,11 +151,6 @@ Sets the parameter ``values`` to show in the widget.
 .. versionadded:: 3.24
 %End
 
-    QPushButton *cancelButton();
-%Docstring
-Returns the widget's cancel button.
-%End
-
   public slots:
 
     void reportError( const QString &error, bool fatalError );
@@ -262,6 +257,19 @@ If the algorithm has not yet started or has finished executing then
 .. versionadded:: 4.2
 %End
 
+    void cancel();
+%Docstring
+Cancels any algorithm currently running through the widget.
+
+.. note::
+
+   The cancellation is non-blocking, and may take some time to complete. Some algorithms
+   ignore cancellation requests entirely. This method returns immediately after requesting
+   the cancellation, but the algorithm may still be running after return.
+
+.. versionadded:: 4.2
+%End
+
     void forceClose();
 %Docstring
 Forces the widget to close by detaching any running task from the widget
@@ -280,6 +288,11 @@ THEN closing the widget.
     QPushButton *runButton();
 %Docstring
 Returns the widget's run button.
+%End
+
+    QPushButton *cancelButton();
+%Docstring
+Returns the widget's cancel button.
 %End
 
     QPushButton *changeParametersButton();
@@ -419,6 +432,7 @@ Emitted whenever an algorithm has finished executing in the widget.
 
 .. versionadded:: 3.14
 %End
+
 
   protected slots:
 
