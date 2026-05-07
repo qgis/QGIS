@@ -982,7 +982,7 @@ void QgsProcessingAlgorithmWidgetBase::reject()
 void QgsProcessingAlgorithmWidgetBase::forceClose()
 {
   disconnectCurrentTask();
-  close();
+  reject();
 }
 
 //
