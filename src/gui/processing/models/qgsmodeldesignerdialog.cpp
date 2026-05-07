@@ -1157,15 +1157,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmWidget.clear();
   }
 
-
   if ( !mAlgorithmWidget )
   {
     mAlgorithmWidget = createExecutionWidget();
 
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
-
-    setWindowModality( Qt::WindowModality::NonModal );
 
     Qt::WindowFlags flags = Qt::Window;
     mAlgorithmWidget->setWindowFlags( flags );
