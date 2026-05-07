@@ -37,6 +37,7 @@
 #include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
@@ -540,6 +541,13 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 QgsModelGraphicsScene *QgsModelDesignerDialog::modelScene()
 {
   return mScene;
+}
+
+QgsProcessingFeedback *QgsModelDesignerDialog::createFeedback()
+{
+  auto result = std::make_unique< QgsProcessingModelFeedback >();
+
+  return result.release();
 }
 
 void QgsModelDesignerDialog::activate()

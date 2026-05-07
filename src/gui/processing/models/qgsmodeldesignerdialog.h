@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsmodelundocommand.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingmodelchilddependency.h"
 #include "qgsprocessingtoolboxmodel.h"
 #include "qobjectuniqueptr.h"
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
  * \warning Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsModelDesignerDialogBase
+class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessingFeedbackFactory, public Ui::QgsModelDesignerDialogBase
 {
     Q_OBJECT
   public:
@@ -114,6 +115,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      * \since QGIS 4.0
      */
     QgsModelGraphicsScene *modelScene();
+
+    QgsProcessingFeedback *createFeedback() override SIP_FACTORY;
 
     /**
      * Save action.

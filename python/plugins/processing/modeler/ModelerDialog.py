@@ -117,6 +117,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
     def createExecutionWidget(self):
         widget = AlgorithmWidget(self.model().create(), parent=self)
+        widget.registerProcessingFeedbackFactory(self)
         return widget
 
     def saveInProject(self):

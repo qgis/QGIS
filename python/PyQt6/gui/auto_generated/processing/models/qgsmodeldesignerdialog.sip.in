@@ -12,7 +12,7 @@
 
 
 
-class QgsModelDesignerDialog : QMainWindow
+class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackFactory
 {
 %Docstring(signature="appended")
 Model designer dialog base class.
@@ -86,6 +86,9 @@ Returns the related model scene.
 
 .. versionadded:: 4.0
 %End
+
+    virtual QgsProcessingFeedback *createFeedback() /Factory/;
+
 
     enum class SaveAction
     {
