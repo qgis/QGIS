@@ -145,7 +145,7 @@ Sets whether the group should be treated as an opaque layer.
 
 .. seealso:: :py:func:`isOpaque`
 
-.. seealso:: :py:func:`QgsLayerTreeGroup.setIsOpaque`
+.. seealso:: :py:func:`QgsLayerTreeGroup.isWmsOpaque`
 
 .. versionadded:: 4.2
 %End

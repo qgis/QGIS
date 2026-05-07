@@ -133,7 +133,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * If FALSE, it behaves as a standard group.
      *
      * \see isOpaque()
-     * \see QgsLayerTreeGroup::setIsOpaque
+     * \see QgsLayerTreeGroup::isWmsOpaque
      * \since QGIS 4.2
      */
     void setIsOpaque( bool isOpaque );
