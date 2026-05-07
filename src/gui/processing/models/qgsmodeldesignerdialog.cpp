@@ -1115,7 +1115,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( mAlgorithmWidget && mAlgorithmWidget->isRunning() )
   {
     QMessageBox messageBox;
-    messageBox.setWindowTitle( tr( "The Model Is Already Running" ) );
+    messageBox.setWindowTitle( tr( "Run Model" ) );
     messageBox.setText( tr( "This model is already running." ) );
     messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
 
