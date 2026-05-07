@@ -183,7 +183,7 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   const int dialogResult = dialog.exec();
   if ( dialogResult != QDialog::Accepted )
   {
-    QgsMessageLog::logMessage( u"install_python_package rejected by user (packages=%1)"_s.arg( packages.join( u", "_s ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
+    QgsMessageLog::logMessage( u"install_python_package rejected by user (packages=%1)"_s.arg( packages.join( ", "_L1 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
     QJsonObject output;
     output.insert( u"status"_s, u"user_rejected"_s );
     return QgsAiToolResult::ok( output );
@@ -206,11 +206,10 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
     argsFile.write( QJsonDocument( jsonPackages ).toJson( QJsonDocument::Compact ) );
   }
 
-  QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.join( u", "_s ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::logMessage( u"install_python_package: executing approved install (packages=%1)"_s.arg( packages.join( ", "_L1 ) ), u"AI/Pip"_s, Qgis::MessageLevel::Info, false );
 
   constexpr int TIMEOUT_SECONDS = 300;
-  const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE )
-                            .arg( escapePath( outPath ), escapePath( argsPath ), QString::number( TIMEOUT_SECONDS ) );
+  const QString wrapper = QString::fromUtf8( PIP_WRAPPER_TEMPLATE ).arg( escapePath( outPath ), escapePath( argsPath ), QString::number( TIMEOUT_SECONDS ) );
 
   const bool ranOk = QgsPythonRunner::run( wrapper );
 
@@ -247,7 +246,8 @@ QgsAiToolResult QgsAiInstallPythonPackageTool::execute( const QJsonObject &args 
   }
 
   const bool success = innerError.isEmpty() && returncode == 0;
-  QgsMessageLog::logMessage( u"install_python_package: completed (returncode=%1, error=%2)"_s.arg( returncode ).arg( innerError.isEmpty() ? u"none"_s : u"yes"_s ), u"AI/Pip"_s, success ? Qgis::MessageLevel::Info : Qgis::MessageLevel::Warning, false );
+  QgsMessageLog::
+    logMessage( u"install_python_package: completed (returncode=%1, error=%2)"_s.arg( returncode ).arg( innerError.isEmpty() ? u"none"_s : u"yes"_s ), u"AI/Pip"_s, success ? Qgis::MessageLevel::Info : Qgis::MessageLevel::Warning, false );
 
   QJsonArray installed;
   if ( success )

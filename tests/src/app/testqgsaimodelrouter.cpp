@@ -4,6 +4,8 @@
   begin                : April 2026
 ***************************************************************************/
 
+#include <memory>
+
 #include "ai/qgsaicodexoauthclient.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/tools/qgsaiechotool.h"
@@ -24,7 +26,6 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QTimer>
-#include <memory>
 
 using namespace Qt::StringLiterals;
 

@@ -97,7 +97,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
   if ( !url.isValid() )
     return QgsAiToolResult::error( u"URL is not valid: '%1'."_s.arg( urlString ) );
   const QString scheme = url.scheme().toLower();
-  if ( scheme != u"http"_s && scheme != u"https"_s )
+  if ( scheme != "http"_L1 && scheme != "https"_L1 )
     return QgsAiToolResult::error( u"Only http and https URLs are allowed (got '%1')."_s.arg( scheme ) );
 
   const QString destRequest = args.value( u"dest_path"_s ).toString().trimmed();
@@ -135,13 +135,7 @@ QgsAiToolResult QgsAiDownloadFileTool::execute( const QJsonObject &args )
                                "Allow the download?"
     )
                                .arg( url.toString( QUrl::FullyEncoded ), destPath, humanBytes( maxBytes ) );
-    QMessageBox::StandardButton answer = QMessageBox::question(
-      mDialogParent,
-      QObject::tr( "AI: confirm file download" ),
-      question,
-      QMessageBox::Yes | QMessageBox::No,
-      QMessageBox::No
-    );
+    QMessageBox::StandardButton answer = QMessageBox::question( mDialogParent, QObject::tr( "AI: confirm file download" ), question, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( answer != QMessageBox::Yes )
     {
       QgsMessageLog::logMessage( u"download_file rejected by user (url=%1)"_s.arg( url.toString() ), u"AI/Download"_s, Qgis::MessageLevel::Info, false );

@@ -4,6 +4,8 @@
   begin                : April 2026
 ***************************************************************************/
 
+#include <memory>
+
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
@@ -16,9 +18,10 @@
 #include <QDir>
 #include <QFile>
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryDir>
 
-#include <memory>
+using namespace Qt::StringLiterals;
 
 class TestQgsAiAgentSessionManager : public QObject
 {
@@ -48,7 +51,7 @@ void TestQgsAiAgentSessionManager::createsPatchProposalFromCommand()
   QSignalSpy proposalSpy( &manager, &QgsAiAgentSessionManager::proposalCreated );
   QSignalSpy messageSpy( &manager, &QgsAiAgentSessionManager::messageAdded );
 
-  manager.sendUserMessage( QStringLiteral( "/patch path=%1\n<<<<\nold\n====\nnew\n>>>>" ).arg( tempDir.filePath( QStringLiteral( "a.txt" ) ) ) );
+  manager.sendUserMessage( u"/patch path=%1\n<<<<\nold\n====\nnew\n>>>>"_s.arg( tempDir.filePath( u"a.txt"_s ) ) );
   QCOMPARE( proposalSpy.count(), 1 );
   QVERIFY( messageSpy.count() >= 2 );
 }
@@ -63,11 +66,11 @@ void TestQgsAiAgentSessionManager::blocksContextOutsideWorkspace()
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
 
   QSignalSpy stateSpy( &manager, &QgsAiAgentSessionManager::requestStateChanged );
-  manager.sendUserMessage( QStringLiteral( "hello" ), QStringLiteral( "/etc/passwd" ) );
+  manager.sendUserMessage( u"hello"_s, u"/etc/passwd"_s );
   QVERIFY( stateSpy.count() >= 1 );
   const QList<QVariant> args = stateSpy.takeLast();
-  QCOMPARE( args.at( 0 ).toString(), QStringLiteral( "error" ) );
-  QVERIFY( args.at( 1 ).toString().contains( QStringLiteral( "blocked" ), Qt::CaseInsensitive ) );
+  QCOMPARE( args.at( 0 ).toString(), u"error"_s );
+  QVERIFY( args.at( 1 ).toString().contains( u"blocked"_s, Qt::CaseInsensitive ) );
 }
 
 void TestQgsAiAgentSessionManager::findsWorkspaceFilesForMentions()
@@ -75,16 +78,16 @@ void TestQgsAiAgentSessionManager::findsWorkspaceFilesForMentions()
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-  QVERIFY( QDir( tempDir.path() ).mkpath( QStringLiteral( "src/app" ) ) );
-  QFile file( tempDir.filePath( QStringLiteral( "src/app/main.cpp" ) ) );
+  QVERIFY( QDir( tempDir.path() ).mkpath( u"src/app"_s ) );
+  QFile file( tempDir.filePath( u"src/app/main.cpp"_s ) );
   QVERIFY( file.open( QIODevice::WriteOnly | QIODevice::Text ) );
   file.write( "int main() { return 0; }\n" );
   file.close();
 
   QgsAiFileContextProvider contextProvider( tempDir.path() );
-  const QStringList candidates = contextProvider.workspaceFileCandidates( QStringLiteral( "main" ), 5 );
-  QVERIFY( candidates.contains( QStringLiteral( "src/app/main.cpp" ) ) );
-  QCOMPARE( contextProvider.resolveWorkspaceFile( QStringLiteral( "src/app/main.cpp" ) ), QDir::cleanPath( file.fileName() ) );
+  const QStringList candidates = contextProvider.workspaceFileCandidates( u"main"_s, 5 );
+  QVERIFY( candidates.contains( u"src/app/main.cpp"_s ) );
+  QCOMPARE( contextProvider.resolveWorkspaceFile( u"src/app/main.cpp"_s ), QDir::cleanPath( file.fileName() ) );
 }
 
 void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
@@ -94,7 +97,7 @@ void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
   QTemporaryDir externalDir;
   QVERIFY( externalDir.isValid() );
 
-  QFile externalFile( externalDir.filePath( QStringLiteral( "data.txt" ) ) );
+  QFile externalFile( externalDir.filePath( u"data.txt"_s ) );
   QVERIFY( externalFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   externalFile.write( "external data\n" );
   externalFile.close();
@@ -109,17 +112,17 @@ void TestQgsAiAgentSessionManager::allowsExplicitExternalAttachmentContext()
 
   QSignalSpy stateSpy( &manager, &QgsAiAgentSessionManager::requestStateChanged );
   QSignalSpy messageSpy( &manager, &QgsAiAgentSessionManager::messageAdded );
-  manager.sendUserMessage( QStringLiteral( "hello" ), QList<QgsAiChatContextFile>() << contextFile );
+  manager.sendUserMessage( u"hello"_s, QList<QgsAiChatContextFile>() << contextFile );
 
   QVERIFY( stateSpy.isEmpty() );
   QVERIFY( messageSpy.count() >= 2 );
-  QVERIFY( manager.history().last().content.contains( QStringLiteral( "No provider" ), Qt::CaseInsensitive ) );
+  QVERIFY( manager.history().last().content.contains( u"No provider"_s, Qt::CaseInsensitive ) );
 }
 
 void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -132,38 +135,38 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     QCOMPARE( defaults.allowCustomActions, false );
     QVERIFY( defaults.rulesText.isEmpty() );
     QVERIFY( defaults.skillsText.isEmpty() );
-    QCOMPARE( defaults.rulesPath, QStringLiteral( ".qgis_ai/rules" ) );
+    QCOMPARE( defaults.rulesPath, u".qgis_ai/rules"_s );
 
     QgsAiAgentBehaviorSettings updated = defaults;
     updated.allowCustomActions = true;
-    updated.rulesText = QStringLiteral( "Always answer in English." );
-    updated.skillsText = QStringLiteral( "Prefer GeoPandas." );
-    updated.rulesPath = QStringLiteral( "ai/rules" );
+    updated.rulesText = u"Always answer in English."_s;
+    updated.skillsText = u"Prefer GeoPandas."_s;
+    updated.rulesPath = u"ai/rules"_s;
     updated.skillsPath = QString();
     manager.setAgentBehaviorSettings( updated );
 
     const QgsAiAgentBehaviorSettings reread = manager.agentBehaviorSettings();
     QCOMPARE( reread.allowCustomActions, true );
-    QCOMPARE( reread.rulesText, QStringLiteral( "Always answer in English." ) );
-    QCOMPARE( reread.skillsText, QStringLiteral( "Prefer GeoPandas." ) );
-    QCOMPARE( reread.rulesPath, QStringLiteral( "ai/rules" ) );
+    QCOMPARE( reread.rulesText, u"Always answer in English."_s );
+    QCOMPARE( reread.skillsText, u"Prefer GeoPandas."_s );
+    QCOMPARE( reread.rulesPath, u"ai/rules"_s );
     // Empty skill path must fall back to the default folder so the file loader stays predictable.
-    QCOMPARE( reread.skillsPath, QStringLiteral( ".qgis_ai/skills" ) );
+    QCOMPARE( reread.skillsPath, u".qgis_ai/skills"_s );
   }
 
   QgsAiAgentSessionManager reloaded( nullptr, &contextProvider, &reviewEngine );
   const QgsAiAgentBehaviorSettings restored = reloaded.agentBehaviorSettings();
   QCOMPARE( restored.allowCustomActions, true );
-  QCOMPARE( restored.rulesText, QStringLiteral( "Always answer in English." ) );
-  QCOMPARE( restored.skillsText, QStringLiteral( "Prefer GeoPandas." ) );
+  QCOMPARE( restored.rulesText, u"Always answer in English."_s );
+  QCOMPARE( restored.skillsText, u"Prefer GeoPandas."_s );
 
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 }
 
 void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -190,13 +193,13 @@ void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()
   manager.setAgentBehaviorSettings( updated );
   QCOMPARE( router.toolUseEnabled(), false );
 
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 }
 
 void TestQgsAiAgentSessionManager::collectsInlineRulesAndSkills()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -206,28 +209,28 @@ void TestQgsAiAgentSessionManager::collectsInlineRulesAndSkills()
   QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
 
   QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
-  updated.rulesText = QStringLiteral( "  Be concise.  " );
-  updated.skillsText = QStringLiteral( "Use OSMnx for graphs." );
+  updated.rulesText = u"  Be concise.  "_s;
+  updated.skillsText = u"Use OSMnx for graphs."_s;
   updated.loadWorkspaceRules = false;
   updated.loadWorkspaceSkills = false;
   manager.setAgentBehaviorSettings( updated );
 
-  QCOMPARE( manager.collectRulesContent(), QStringLiteral( "Be concise." ) );
-  QCOMPARE( manager.collectSkillsContent(), QStringLiteral( "Use OSMnx for graphs." ) );
+  QCOMPARE( manager.collectRulesContent(), u"Be concise."_s );
+  QCOMPARE( manager.collectSkillsContent(), u"Use OSMnx for graphs."_s );
 
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 }
 
 void TestQgsAiAgentSessionManager::collectsWorkspaceRulesFiles()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
 
-  QVERIFY( QDir( tempDir.path() ).mkpath( QStringLiteral( ".qgis_ai/rules" ) ) );
-  QFile rulesFile( tempDir.filePath( QStringLiteral( ".qgis_ai/rules/coding.md" ) ) );
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".qgis_ai/rules"_s ) );
+  QFile rulesFile( tempDir.filePath( u".qgis_ai/rules/coding.md"_s ) );
   QVERIFY( rulesFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   rulesFile.write( "- Always run linters.\n" );
   rulesFile.close();
@@ -242,16 +245,16 @@ void TestQgsAiAgentSessionManager::collectsWorkspaceRulesFiles()
   manager.setAgentBehaviorSettings( updated );
 
   const QString rules = manager.collectRulesContent();
-  QVERIFY( rules.contains( QStringLiteral( "Always run linters." ) ) );
-  QVERIFY( rules.contains( QStringLiteral( ".qgis_ai/rules/coding.md" ) ) );
+  QVERIFY( rules.contains( u"Always run linters."_s ) );
+  QVERIFY( rules.contains( u".qgis_ai/rules/coding.md"_s ) );
 
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 }
 
 void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 
   QTemporaryDir tempDir;
   QVERIFY( tempDir.isValid() );
@@ -264,12 +267,12 @@ void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
   updated.rulesText.clear();
   updated.loadWorkspaceRules = true;
   // Path that escapes the workspace must be rejected silently rather than reading anything.
-  updated.rulesPath = QStringLiteral( "../../etc" );
+  updated.rulesPath = u"../../etc"_s;
   manager.setAgentBehaviorSettings( updated );
 
   QVERIFY( manager.collectRulesContent().isEmpty() );
 
-  settings.remove( QStringLiteral( "qgis_ai/agent" ) );
+  settings.remove( u"qgis_ai/agent"_s );
 }
 
 QGSTEST_MAIN( TestQgsAiAgentSessionManager )

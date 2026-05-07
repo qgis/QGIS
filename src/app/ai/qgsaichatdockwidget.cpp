@@ -1029,8 +1029,14 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   layout->addLayout( behaviorForm );
 
-  QLabel *helpLabel
-    = new QLabel( tr( "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep the current saved value.\n\nAgent rules and skills are stored locally in QGIS settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the prompt. Custom actions remain subject to the existing review/approval dialogs." ), &dialog );
+  QLabel *helpLabel = new QLabel(
+    tr(
+      "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep "
+      "the current saved value.\n\nAgent rules and skills are stored locally in QGIS settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the "
+      "prompt. Custom actions remain subject to the existing review/approval dialogs."
+    ),
+    &dialog
+  );
   helpLabel->setWordWrap( true );
   layout->addWidget( helpLabel );
 

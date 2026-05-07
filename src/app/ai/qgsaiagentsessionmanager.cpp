@@ -563,11 +563,11 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   prompt += "- Do not invent file paths; resolve them via search_files or list_files.\n"_L1;
   prompt += "- External libraries and remote data are AVAILABLE. Do NOT refuse with phrases like 'I cannot run external libraries in this environment.' You can.\n"_L1;
   prompt += "  - To fetch remote files (GeoJSON, Shapefile, Overpass/Nominatim/GADM responses): PREFER download_file(url, dest_path). One approval, stays inside the workspace, no extra packages.\n"_L1;
-  prompt += "  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, …):\n"_L1;
+  prompt += u"  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, …):\n"_s;
   prompt += "      1) Briefly state the plan in chat.\n"_L1;
   prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
   prompt += "      3) Then call run_python to use them.\n"_L1;
-  prompt += "  - Concrete example — 'boundary of Pomponesco, Italy': prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via add_layer_from_file or run_python. Use osmnx only when a true graph/network API is needed.\n"_L1;
+  prompt += u"  - Concrete example — 'boundary of Pomponesco, Italy': prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via add_layer_from_file or run_python. Use osmnx only when a true graph/network API is needed.\n"_s;
   prompt += QStringLiteral(
               "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do NOT just run it via run_python — also save it as a Processing script. "
               "The Processing scripts folder for this profile is: %1 . "

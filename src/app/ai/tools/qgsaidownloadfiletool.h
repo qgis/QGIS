@@ -53,7 +53,7 @@ class QgsAiFileContextProvider;
 class APP_EXPORT QgsAiDownloadFileTool : public QgsAiTool
 {
   public:
-    static constexpr qint64 DEFAULT_MAX_BYTES = 100LL * 1024 * 1024; // 100 MiB
+    static constexpr qint64 DEFAULT_MAX_BYTES = 100LL * 1024 * 1024;       // 100 MiB
     static constexpr qint64 ABSOLUTE_MAX_BYTES = 2LL * 1024 * 1024 * 1024; // 2 GiB hard ceiling
     static constexpr int TRANSFER_TIMEOUT_MS = 60'000;
     static constexpr int OVERALL_TIMEOUT_MS = 600'000;
