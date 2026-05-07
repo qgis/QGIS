@@ -1073,6 +1073,11 @@ set(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
+set_source_files_properties(
+  project/qgsprojectstoredobjectmanagermodel.cpp
+  PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+)
+
 if(WITH_QTPOSITIONING)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp)
