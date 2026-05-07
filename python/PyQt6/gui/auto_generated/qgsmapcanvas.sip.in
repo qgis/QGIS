@@ -1100,9 +1100,7 @@ Zoom to the combined extent of the selected features of all provided
 
     void zoomToLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Zoom to the combined extent of the ``layers``
-
-:param layers: A list of layers
+Zoom to the combined extent of a set of ``layers``.
 
 .. versionadded:: 4.2
 %End
