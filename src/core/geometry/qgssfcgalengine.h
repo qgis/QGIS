@@ -758,12 +758,13 @@ class CORE_EXPORT QgsSfcgalEngine
      * Computes the area of \a prim.
      *
      * \param prim primitive to perform the operation
+     * \param primTransform a transformation matrix
      * \param withDiscretization If true, the area is computed
      * using the real discretization with radial segments. If false, the area is
      * computed for a perfect primitive. Defaults to false.
      * \param errorMsg Error message returned by SFGCAL
      */
-    static double primitiveArea( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+    static double primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform = QgsMatrix4x4(), bool withDiscretization = false, QString *errorMsg = nullptr );
 
     /**
      * Computes the volume of \a prim.

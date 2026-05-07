@@ -608,7 +608,7 @@ double QgsSfcgalGeometry::area( bool withDiscretization ) const
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
-    result = QgsSfcgalEngine::primitiveArea( mSfcgalPrim.get(), withDiscretization, &errorMsg );
+    result = QgsSfcgalEngine::primitiveArea( mSfcgalPrim.get(), mPrimTransform, withDiscretization, &errorMsg );
   }
   else
 #endif

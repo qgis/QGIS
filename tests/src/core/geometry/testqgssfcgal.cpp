@@ -1239,6 +1239,10 @@ void TestQgsSfcgal::primitiveCube()
   QCOMPARE( cubeRescaledNonUniform->volume(), 125.0 * 24.0 );
   // check area
   QCOMPARE( cube->area(), 150.0 );
+  QCOMPARE( cubeRotated->area(), 150.0 );
+  QCOMPARE( cubeRescaled->area(), 150.0 * 4.0 );
+  QCOMPARE( cubeRescaledAndTranslated->area(), 150.0 * 4.0 );
+  QCOMPARE( cubeRescaledNonUniform->area(), 1300.0 );
 
   // check parameters
   QList<std::pair<QString, QString>> params = cube->primitiveParameters();

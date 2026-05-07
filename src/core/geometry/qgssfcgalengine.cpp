@@ -1096,14 +1096,44 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveClone( const sfcgal::primitive *pr
   return sfcgal::make_shared_prim( result );
 }
 
-double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform, bool withDiscretization, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  double out = sfcgal_primitive_area( prim, withDiscretization );
+  // simple case - no scale
+  if ( primTransform.isIdentity() )
+  {
+    const double area = sfcgal_primitive_area( prim, withDiscretization );
+    CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+    return area;
+  }
+
+  double baseArea = 0.0;
+  double scale = 1.0;
+
+  const double scaleX = primTransform.mapVector( QgsVector3D( 1, 0, 0 ) ).x();
+  const double scaleY = primTransform.mapVector( QgsVector3D( 0, 1, 0 ) ).y();
+  const double scaleZ = primTransform.mapVector( QgsVector3D( 0, 0, 1 ) ).z();
+
+  if ( !qgsDoubleNear( scaleX, scaleY ) || !qgsDoubleNear( scaleY, scaleZ ) )
+  {
+    // scale is not uniform - exact computation is not possible
+    // use a polyhedralsurface approximation
+    QgsDebugMsgLevel( u"The primitive has a non-uniform scale. Falling back to polyhedral surface approximation for computation."_s, 2 );
+    sfcgal::shared_geom phs = primitiveAsPolyhedral( prim, primTransform );
+    CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+    baseArea = area( phs.get() );
+  }
+  else
+  {
+    // uniform scale - no approximation is needed
+    scale = std::cbrt( std::abs( primTransform.determinant() ) );
+    baseArea = sfcgal_primitive_area( prim, withDiscretization );
+  }
+
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-  return out;
+  return baseArea * scale * scale;
 }
 
 double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, const QgsMatrix4x4 &primTransform, bool withDiscretization, QString *errorMsg )
