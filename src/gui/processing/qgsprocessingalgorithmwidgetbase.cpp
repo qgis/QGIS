@@ -49,6 +49,13 @@ using namespace Qt::StringLiterals;
 ///@cond NOT_STABLE
 
 //
+// QgsProcessingFeedbackFactory
+//
+
+QgsProcessingFeedbackFactory::~QgsProcessingFeedbackFactory()
+{}
+
+//
 // QgsProcessingAlgorithmWidgetBase
 //
 
@@ -366,9 +373,22 @@ void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const
   }
 }
 
+void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory )
+{
+  mFeedbackFactory = factory;
+}
+
 QgsProcessingFeedback *QgsProcessingAlgorithmWidgetBase::createFeedback()
 {
-  auto feedback = std::make_unique<QgsProcessingFeedback>();
+  std::unique_ptr< QgsProcessingFeedback > feedback;
+  if ( mFeedbackFactory )
+  {
+    feedback.reset( mFeedbackFactory->createFeedback() );
+  }
+  if ( !feedback )
+  {
+    feedback = std::make_unique< QgsProcessingFeedback >();
+  }
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmWidgetBase::setPercentage );
   connect( feedback.get(), &QgsProcessingFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushCommandInfo );
   connect( feedback.get(), &QgsProcessingFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmWidgetBase::pushConsoleInfo );

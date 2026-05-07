@@ -12,6 +12,31 @@
 
 
 
+class QgsProcessingFeedbackFactory
+{
+%Docstring(signature="appended")
+Factory for creating :py:class:`QgsProcessingFeedback` objects.
+
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingalgorithmwidgetbase.h"
+%End
+  public:
+    virtual ~QgsProcessingFeedbackFactory();
+
+    virtual QgsProcessingFeedback *createFeedback() = 0 /Factory/;
+%Docstring
+Creates a new :py:class:`QgsProcessingFeedback` object, and transfers
+ownership to the caller.
+%End
+};
+
 
 class QgsProcessingAlgorithmWidgetBase : QDialog, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
@@ -108,10 +133,28 @@ Returns the results returned by the algorithm executed.
 .. seealso:: :py:func:`setResults`
 %End
 
+    void registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory );
+%Docstring
+Registers a ``factory`` for creating :py:class:`QgsProcessingFeedback`
+objects for use in the widget.
+
+Ownership of ``factory`` is not transferred, the caller is responsible
+for ensuring that it exists for the lifetime of the widget.
+
+If no factory is registered then a default
+:py:class:`QgsProcessingFeedback` object will be created.
+
+.. seealso:: :py:func:`createFeedback`
+
+.. versionadded:: 4.2
+%End
+
     QgsProcessingFeedback *createFeedback() /Factory/;
 %Docstring
 Creates a new processing feedback object, automatically connected to the
 appropriate slots in this widget.
+
+.. seealso:: :py:func:`registerProcessingFeedbackFactory`
 %End
 
     void saveLogToFile( const QString &path, QgsProcessingAlgorithmWidgetBase::LogFormat format = QgsProcessingAlgorithmWidgetBase::LogFormat::FormatPlainText );

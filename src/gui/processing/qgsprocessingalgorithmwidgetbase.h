@@ -37,6 +37,23 @@ class QgsMessageBar;
 class QgsProcessingAlgRunnerTask;
 class QgsTask;
 
+/**
+ * \ingroup gui
+ * \brief Factory for creating QgsProcessingFeedback objects.
+ * \note This is not considered stable API and may change in future QGIS versions.
+ * \since QGIS 4.2
+ */
+class GUI_EXPORT QgsProcessingFeedbackFactory
+{
+  public:
+    virtual ~QgsProcessingFeedbackFactory();
+
+    /**
+   * Creates a new QgsProcessingFeedback object, and transfers ownership to the caller.
+   */
+    virtual QgsProcessingFeedback *createFeedback() = 0 SIP_FACTORY;
+};
+
 
 /**
  * \ingroup gui
@@ -131,8 +148,25 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     QVariantMap results() const { return mResults; }
 
     /**
+     * Registers a \a factory for creating QgsProcessingFeedback objects for use
+     * in the widget.
+     *
+     * Ownership of \a factory is not transferred, the caller is responsible for
+     * ensuring that it exists for the lifetime of the widget.
+     *
+     * If no factory is registered then a default QgsProcessingFeedback object will be
+     * created.
+     *
+     * \see createFeedback()
+     * \since QGIS 4.2
+     */
+    void registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory );
+
+    /**
      * Creates a new processing feedback object, automatically connected to the appropriate
      * slots in this widget.
+     *
+     * \see registerProcessingFeedbackFactory()
      */
     QgsProcessingFeedback *createFeedback() SIP_FACTORY;
 
@@ -492,6 +526,7 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     bool mExecutedAnyResult = false;
     QVariantMap mResults;
     QgsPanelWidget *mMainWidget = nullptr;
+    QgsProcessingFeedbackFactory *mFeedbackFactory = nullptr;
     std::unique_ptr<QgsProcessingAlgorithm> mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 
