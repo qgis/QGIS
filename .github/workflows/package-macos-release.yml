@@ -1,0 +1,186 @@
+---
+name: Package macOS release from artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Run ID containing qgis-app-* macOS artifacts'
+        required: true
+        type: string
+      release_tag:
+        description: 'Release tag to upload the DMG to, e.g. qgisai-v0.1.17'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  package:
+    name: Create and upload macOS DMG
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Prepare build env
+        run: |
+          brew install create-dmg
+
+      - name: Download macOS app artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: qgis-app-${{ inputs.release_tag }}-*
+          path: artifacts
+
+      - name: Create universal app
+        run: |
+          set -euo pipefail
+
+          mkdir -p x64 arm64
+          rm -rf universal
+          ls -laR artifacts | head -80 || true
+
+          X64_TARBALL=$(find artifacts -name 'qgis-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
+          ARM64_TARBALL=$(find artifacts -name 'qgis-app-*-arm64-osx-dynamic-release.tar.gz' -print -quit)
+
+          if [ -z "$X64_TARBALL" ]; then
+            echo "ERROR: x64 app tarball not found under artifacts/"
+            exit 1
+          fi
+          if [ -z "$ARM64_TARBALL" ]; then
+            echo "ERROR: arm64 app tarball not found under artifacts/"
+            exit 1
+          fi
+
+          echo "Extracting $X64_TARBALL to x64/"
+          gtar --strip-components=5 -zxf "$X64_TARBALL" -C x64
+          echo "Extracting $ARM64_TARBALL to arm64/"
+          gtar --strip-components=5 -zxf "$ARM64_TARBALL" -C arm64
+
+          pip install lipomerge
+          lipomerge ./x64 ./arm64 universal
+
+          APP_PATH=$(find universal -name '*.app' -type d -print -quit)
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: universal .app bundle not found under universal/"
+            find universal -print | head -50
+            exit 1
+          fi
+          if [ "$(dirname "$APP_PATH")" != "universal" ]; then
+            echo "Moving $APP_PATH to universal/"
+            mv "$APP_PATH" universal/
+          fi
+          find universal -mindepth 1 -maxdepth 1 ! -name '*.app' -exec rm -rf {} +
+          ls -la universal/*.app
+
+      - name: Import Apple code signing certificate
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
+
+      - name: Relocate non-Mach-O files out of Contents/MacOS
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          DEST="${APP_PATH}/Contents/Resources/python"
+          mkdir -p "${DEST}"
+          MOVED=0
+          while IFS= read -r -d '' f; do
+            if file -bL "$f" | grep -qE 'Mach-O'; then
+              continue
+            fi
+            mv "$f" "${DEST}/"
+            MOVED=$((MOVED + 1))
+          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 \( -type f -o -type l \) -print0)
+          echo "Relocated ${MOVED} non-Mach-O file(s) to Contents/Resources/python/"
+
+      - name: Remove build metadata from app bundle
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          find "${APP_PATH}" -type d -name "objects-*" -print -prune -exec rm -rf {} +
+          find "${APP_PATH}" -type f -name "*.o" -print -delete
+          find "${APP_PATH}" -type f -name "*.a" -print -delete
+          find "${APP_PATH}" -type f -name "*.prl" -print -delete
+
+      - name: Sign app
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
+
+          sign_one() {
+            codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "$1"
+          }
+
+          find "${APP_PATH}" -type f -print0 | while IFS= read -r -d '' f; do
+            if file -b "$f" | grep -qE 'Mach-O'; then
+              sign_one "$f"
+            fi
+          done
+
+          find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
+            -type d -not -path "${APP_PATH}" | while read -r b; do
+            sign_one "$b"
+          done
+
+          sign_one "${APP_PATH}"
+
+          codesign -dvv "${APP_PATH}" 2>&1 | head -10
+          codesign --verify --strict --verbose=2 "${APP_PATH}"
+        env:
+          MACOS_DEVELOPER_ID: ${{ secrets.MACOS_DEVELOPER_ID }}
+
+      - name: Create dmg
+        run: |
+          QGIS_APP_NAME="QGIS_AI"
+          create-dmg --volname "${QGIS_APP_NAME} Installer" \
+            --hide-extension ${QGIS_APP_NAME}.app \
+            --volicon "$(pwd)/images/icons/mac/qgis.icns" \
+            --background "$(pwd)/platform/macos/installer_background.png" \
+            --window-pos 200 120 \
+            --window-size 512 320 \
+            --icon-size 100 \
+            --icon "${QGIS_APP_NAME}.app" 130 160 \
+            --app-drop-link 400 155 \
+            ${QGIS_APP_NAME}-Installer.dmg \
+            universal/*.app
+
+      - name: Notarize and staple DMG
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          DMG_FILE=$(ls *.dmg | head -n1)
+          echo "Notarizing ${DMG_FILE}..."
+          xcrun notarytool submit "${DMG_FILE}" \
+            --apple-id "${{ secrets.MACOS_APPLE_ID }}" \
+            --team-id "${{ secrets.MACOS_APPLE_TEAM_ID }}" \
+            --password "${{ secrets.MACOS_APPLE_APP_PASSWORD }}" \
+            --wait
+          for attempt in 1 2 3 4 5; do
+            if xcrun stapler staple "${DMG_FILE}"; then
+              echo "Stapled on attempt ${attempt}"
+              break
+            fi
+            if [ "${attempt}" -eq 5 ]; then
+              echo "WARN: stapler failed after 5 attempts. DMG is signed and notarized but ticket is not stapled."
+              exit 0
+            fi
+            sleep 30
+          done
+          xcrun stapler validate "${DMG_FILE}" || echo "WARN: stapler validate failed but ticket should still be online"
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          files: '*.dmg'

@@ -235,7 +235,8 @@ jobs:
           # regardless of layout.
           set -euo pipefail
 
-          mkdir -p x64 arm64 universal
+          mkdir -p x64 arm64
+          rm -rf universal
           ls -laR artifacts | head -80 || true
 
           X64_TARBALL=$(find artifacts -name 'qgis-app-*-x64-osx-dynamic-release.tar.gz' -print -quit)
