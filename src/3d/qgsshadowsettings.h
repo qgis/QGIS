@@ -108,12 +108,31 @@ class _3D_EXPORT QgsShadowSettings
      */
     static int qualityToMapResolution( Qgis::ShadowQuality quality );
 
+    /**
+     * Returns TRUE if the cascading shadow splits should be tinted in the view.
+     *
+     * For debugging and testing purposes only.
+     *
+     * \see setShowCascadeSplits()
+     */
+    bool showCascadeSplits() const;
+
+    /**
+     * Sets whether the cascading shadow splits should be tinted in the view.
+     *
+     * For debugging and testing purposes only.
+     *
+     * \see showCascadeSplits()
+     */
+    void setShowCascadeSplits( bool show );
+
   private:
     bool mRenderShadows = false;
     int mSelectedDirectionalLight = 0;
     double mMaximumShadowRenderingDistance = 1500.0;
     double mShadowBias = 0.00001;
     Qgis::ShadowQuality mShadowQuality = Qgis::ShadowQuality::High;
+    bool mShowCascadeSplits = false;
 };
 
 #endif // QGSSKYBOXSETTINGS_H

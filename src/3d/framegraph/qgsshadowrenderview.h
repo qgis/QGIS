@@ -16,6 +16,7 @@
 #ifndef QGSSHADOWRENDERVIEW_H
 #define QGSSHADOWRENDERVIEW_H
 
+#include "qgs3d.h"
 #include "qgsabstractrenderview.h"
 
 #define SIP_NO_FILE
@@ -45,6 +46,7 @@ namespace Qt3DRender
   class QRenderStateSet;
   class QRenderTarget;
   class QRenderTargetOutput;
+  class QTexture2DArray;
 } // namespace Qt3DRender
 
 namespace Qt3DExtras
@@ -69,16 +71,16 @@ class QgsShadowRenderView : public QgsAbstractRenderView
 {
   public:
     //! Default constructor
-    QgsShadowRenderView( const QString &viewName );
+    QgsShadowRenderView( const QString &viewName, Qt3DCore::QEntity *rootEntity );
 
     //! Enable or disable via \a enable the renderview sub tree
     void setEnabled( bool enable ) override;
 
-    //! Returns the light camera
-    Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
+    //! Returns the light camera with the specified \a index.
+    Qt3DRender::QCamera *lightCamera( int index );
 
-    //! Returns shadow depth texture
-    Qt3DRender::QTexture2D *mapTexture() const;
+    //! Returns the shadow depth texture array
+    Qt3DRender::QTexture2DArray *mapTextureArray() const;
 
     //! Returns the layer to be used by entities to be included in this renderview
     Qt3DRender::QLayer *entityCastingShadowsLayer() const;
@@ -88,14 +90,14 @@ class QgsShadowRenderView : public QgsAbstractRenderView
 
   private:
     static constexpr int mDefaultMapResolution = 2048;
+    Qt3DCore::QEntity *mRootEntity = nullptr;
 
     // Shadow rendering pass branch nodes:
     Qt3DRender::QLayer *mEntityCastingShadowsLayer = nullptr;
-    Qt3DRender::QLayerFilter *mLayerFilter = nullptr;
-    Qt3DRender::QCamera *mLightCamera = nullptr;
-    Qt3DRender::QTexture2D *mMapTexture = nullptr;
+    Qt3DRender::QLayerFilter *mLayerFilters[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
+    Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
+    Qt3DRender::QTexture2DArray *mMapTextureArray = nullptr;
 
-    Qt3DRender::QRenderTarget *buildTextures();
     void buildRenderPass();
 };
 

@@ -130,6 +130,10 @@ class _3D_EXPORT Qgs3D
      */
     static const QgsAbstractMaterial3DHandler *handlerForMaterialSettings( const QgsAbstractMaterialSettings *settings );
 
+    // if you change this, also update the corresponding constant in shadows.inc.frag!
+    //! Number of shadow map cascades
+    static constexpr int NUM_SHADOW_CASCADES = 4;
+
 #endif
 
   private:

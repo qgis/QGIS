@@ -29,6 +29,7 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
   , mShadowBias( other.mShadowBias )
   , mShadowQuality( other.mShadowQuality )
+  , mShowCascadeSplits( other.mShowCascadeSplits )
 {}
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
@@ -41,6 +42,7 @@ QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;
   this->mShadowBias = rhs.mShadowBias;
   this->mShadowQuality = rhs.mShadowQuality;
+  this->mShowCascadeSplits = rhs.mShowCascadeSplits;
   return *this;
 }
 
@@ -78,4 +80,14 @@ int QgsShadowSettings::qualityToMapResolution( Qgis::ShadowQuality quality )
       return 8192;
   }
   BUILTIN_UNREACHABLE
+}
+
+bool QgsShadowSettings::showCascadeSplits() const
+{
+  return mShowCascadeSplits;
+}
+
+void QgsShadowSettings::setShowCascadeSplits( bool newShowCascadeSplits )
+{
+  mShowCascadeSplits = newShowCascadeSplits;
 }
