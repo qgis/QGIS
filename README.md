@@ -69,7 +69,13 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 
 For more maps created with QGIS, visit the following pages:
 - [Amazing maps created using QGIS](https://qgis.org/project/overview/maps/)
+  
+![Amazing maps created using QGIS](images/README-md/qgis_org_map_gallery.webp "Amazing maps created using QGIS")
+
 - [Map Gallery on QGIS Hub](https://maps.qgis.org/)
+
+![Map Gallery on QGIS Hub](images/README-md/maps_qgis_org_map_gallery.webp "Map Gallery on QGIS Hub")
+
 - [QGIS Map Showcase Flickr Group](https://www.flickr.com/groups/2244553@N22/pool/with/50355460063/).
 
 ![QGIS Map Showcase](images/README-md/qgis_map_showcase.png "QGIS Map Showcase")
