@@ -45,8 +45,11 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
   public:
     /**
      * Constructor for QgsPhongMaterial, with the specified \a parent node.
+     * Set \a instanced to TRUE when the material will be used with instanced point rendering.
+     * \a hasDDScale and \a hasDDRotation enable per-instance scale and rotation support,
+     * and are only meaningful when \a instanced is TRUE.
      */
-    explicit QgsPhongMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsPhongMaterial( bool instanced = false, bool hasDDScale = false, bool hasDDRotation = false, Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongMaterial() override;
 
   public slots:
@@ -77,6 +80,9 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     Qt3DRender::QParameter *mOpacityParameter = nullptr;
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mDataDefinedEnabled = false;
+    bool mInstanced = false;
+    bool mHasDDScale = false;
+    bool mHasDDRotation = false;
 };
 
 ///@endcond PRIVATE

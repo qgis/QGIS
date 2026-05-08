@@ -32,7 +32,7 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-QgsGoochMaterial::QgsGoochMaterial( QNode *parent )
+QgsGoochMaterial::QgsGoochMaterial( bool instanced, bool hasDDScale, bool hasDDRotation, QNode *parent )
   : QgsMaterial( parent )
   , mDiffuseParameter( new Qt3DRender::QParameter( u"kd"_s, QVariant() ) )
   , mSpecularParameter( new Qt3DRender::QParameter( u"ks"_s, QVariant() ) )
@@ -41,6 +41,9 @@ QgsGoochMaterial::QgsGoochMaterial( QNode *parent )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 100.0f ) )
   , mAlphaParameter( new Qt3DRender::QParameter( u"alpha"_s, 0.25f ) )
   , mBetaParameter( new Qt3DRender::QParameter( u"beta"_s, 0.5f ) )
+  , mInstanced( instanced )
+  , mHasDDScale( hasDDScale )
+  , mHasDDRotation( hasDDRotation )
 {
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
   setSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) );
@@ -89,7 +92,18 @@ void QgsGoochMaterial::updateShaders()
 {
   const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/gooch.frag"_s ) );
 
-  if ( mDataDefinedEnabled )
+  if ( mInstanced )
+  {
+    QStringList defines;
+    if ( mHasDDScale )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mHasDDRotation )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+    mShaderProgram->setFragmentShaderCode( fragCode );
+  }
+  else if ( mDataDefinedEnabled )
   {
     mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/goochDataDefined.vert"_s ) ) );
     mShaderProgram->setFragmentShaderCode( Qgs3DUtils::addDefinesToShaderCode( fragCode, QStringList( { u"DATA_DEFINED"_s } ) ) );

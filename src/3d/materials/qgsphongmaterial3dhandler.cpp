@@ -37,8 +37,13 @@ QgsMaterial *QgsPhongMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
 {
   switch ( technique )
   {
-    case Qgis::MaterialRenderingTechnique::Triangles:
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    {
+      if ( context.isHighlighted() )
+        return new QgsHighlightMaterial( technique );
+      return toInstancedMaterial( settings, context, false, false );
+    }
+    case Qgis::MaterialRenderingTechnique::Triangles:
     case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
@@ -239,26 +244,27 @@ bool QgsPhongMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const
+{
+  return buildMaterial( settings, context, true, hasDDScale, hasDDRotation );
+}
+
+QgsMaterial *QgsPhongMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool instanced, bool hasDDScale, bool hasDDRotation ) const
 {
   const QgsPhongMaterialSettings *phongSettings = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
   Q_ASSERT( phongSettings );
 
-  QgsPhongMaterial *material = new QgsPhongMaterial;
+  QgsPhongMaterial *material = new QgsPhongMaterial( instanced, hasDDScale, hasDDRotation );
   material->setObjectName( u"phongMaterial"_s );
 
-  material->setDataDefinedEnabled( phongSettings->dataDefinedProperties().hasActiveProperties() );
+  const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
+  const QColor diffuse = context.isSelected() ? context.selectionColor() : phongSettings->diffuse();
+  material->setAmbient( ambient, static_cast<float>( phongSettings->ambientCoefficient() ) );
+  material->setDiffuse( diffuse, static_cast<float>( phongSettings->diffuseCoefficient() ) );
+  material->setSpecular( phongSettings->specular(), static_cast<float>( phongSettings->specularCoefficient() ) );
 
-  if ( !phongSettings->dataDefinedProperties().hasActiveProperties() )
-  {
-    const QColor ambient = context.isSelected() ? context.selectionColor().darker() : phongSettings->ambient();
-    const QColor diffuse = context.isSelected() ? context.selectionColor() : phongSettings->diffuse();
-    const QColor specular = phongSettings->specular();
-
-    material->setAmbient( ambient, static_cast<float>( phongSettings->ambientCoefficient() ) );
-    material->setDiffuse( diffuse, static_cast<float>( phongSettings->diffuseCoefficient() ) );
-    material->setSpecular( specular, static_cast<float>( phongSettings->specularCoefficient() ) );
-  }
+  if ( !instanced )
+    material->setDataDefinedEnabled( phongSettings->dataDefinedProperties().hasActiveProperties() );
 
   material->setShininess( static_cast<float>( phongSettings->shininess() ) );
   material->setOpacity( static_cast<float>( phongSettings->opacity() ) );

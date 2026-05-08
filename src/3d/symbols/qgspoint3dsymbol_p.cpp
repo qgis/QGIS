@@ -291,6 +291,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   materialContext.setIsSelected( selected );
   materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext, !out.scales.empty(), !out.rotations.empty() );
+  if ( !mat )
+    return;
 
   mat->addParameter( new Qt3DRender::QParameter( "symbolScale", mSymbolScale, mat ) );
   mat->addParameter( new Qt3DRender::QParameter( "symbolRotation", mSymbolRotation.toVector4D(), mat ) );
@@ -313,52 +315,14 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
 QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext, bool hasDataDefinedScale, bool hasDataDefinedRotation )
 {
-  std::unique_ptr<QgsMaterial> material;
-
   if ( materialContext.isHighlighted() )
-  {
-    material = std::make_unique<QgsHighlightMaterial>( Qgis::MaterialRenderingTechnique::InstancedPoints );
-  }
-  else
-  {
-    Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-    filterKey->setName( u"renderingStyle"_s );
-    filterKey->setValue( "forward" );
+    return new QgsHighlightMaterial( Qgis::MaterialRenderingTechnique::InstancedPoints );
 
-    Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
+  const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
+  if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
+    return handler->toInstancedMaterial( settings, materialContext, hasDataDefinedScale, hasDataDefinedRotation );
 
-    const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
-    QStringList defines;
-    if ( hasDataDefinedScale )
-      defines << u"USE_INSTANCE_SCALE"_s;
-    if ( hasDataDefinedRotation )
-      defines << u"USE_INSTANCE_ROTATION"_s;
-
-    const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, defines );
-    shaderProgram->setVertexShaderCode( finalVertexShaderCode );
-    shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
-
-    Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
-    renderPass->setShaderProgram( shaderProgram );
-
-    Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
-    technique->addFilterKey( filterKey );
-    technique->addRenderPass( renderPass );
-    technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-    technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-    technique->graphicsApiFilter()->setMajorVersion( 3 );
-    technique->graphicsApiFilter()->setMinorVersion( 2 );
-
-    Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
-    effect->addTechnique( technique );
-
-    Qgs3D::addMaterialParametersToEffect( effect, symbol->materialSettings(), materialContext );
-
-    material = std::make_unique<QgsMaterial>();
-    material->setEffect( effect );
-  }
-
-  return material.release();
+  return nullptr;
 }
 
 Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer(
