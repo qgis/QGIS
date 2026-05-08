@@ -112,6 +112,22 @@ jobs:
           find "${APP_PATH}" -type f -name "*.a" -print -delete
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
+      - name: Materialize symlinked Mach-O executables
+        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          while IFS= read -r -d '' f; do
+            if ! file -bL "$f" | grep -qE 'Mach-O'; then
+              continue
+            fi
+            tmp="${f}.codesign"
+            cp -pL "$f" "$tmp"
+            rm "$f"
+            mv "$tmp" "$f"
+            chmod +x "$f"
+            echo "Materialized $(basename "$f")"
+          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type l -print0)
+
       - name: Sign app
         if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
