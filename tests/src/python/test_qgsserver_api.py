@@ -223,7 +223,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
     """QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regeregenerate_api_reference = False
+    regenerate_api_reference = True
 
     def assertEqualBrackets(self, actual, expected):
         """Also counts parenthesis"""
@@ -312,7 +312,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 result = result.replace(k, v)
 
         path = os.path.join(self.temporary_path, "qgis_server", subdir, reference_file)
-        if self.regeregenerate_api_reference:
+        if self.regenerate_api_reference:
             overwrite_path = os.path.join(
                 unitTestDataPath("qgis_server"), subdir, reference_file
             )
@@ -995,6 +995,78 @@ class QgsServerAPITest(QgsServerAPITestBase):
             project,
             "test_wfs3_collections_items_as-areas-short-name_3857.json",
         )
+
+    def test_wfs3_collection_items_flatgeobuf(self):
+        """Test WFS3 API items"""
+        project = QgsProject()
+        project.read(
+            os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
+        )
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?limit=1"
+        )
+        server = QgsServer()
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body()
+
+        # Check headers
+        headers = response.fullHeaders()
+        self.assertEqual(headers["Content-Type"][0], "application/flatgeobuf")
+        self.assertEqual(headers["OGC-NumberReturned"][0], "1")
+        self.assertEqual(
+            headers["Content-Disposition"][0], 'inline; filename="testlayer èé.fgb"'
+        )
+        self.assertEqual(headers["OGC-NumberReturned"][0], "1")
+        self.assertEqual(
+            headers["Link"],
+            [
+                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?limit=1>; rel="alternate"; title="This document as GEOJSON"; type="application/geo+json"; profile="json"',
+                '<http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?limit=1>; rel="alternate"; title="This document as HTML"; type="text/html"',
+                '<http://server.qgis.org/wfs3/collections/testlayer èé/items.fgb?offset=1&limit=1>; rel="next"; title="Next page"; type="application/flatgeobuf"',
+            ],
+        )
+
+        def _get_layer():
+            # Save to temporary file .fgb
+            path = os.path.join(
+                self.temporary_path, "qgis_server", "api", "testlayer.fgb"
+            )
+            with open(path, "wb") as f:
+                f.write(bytes(response.body()))
+            # Open file with QgsVectorLayer and check features
+            layer = QgsVectorLayer(path, "testlayer", "ogr")
+            self.assertTrue(layer.isValid())
+            return layer
+
+        layer = _get_layer()
+        self.assertEqual(layer.getFeature(0).attributes(), ["0", 1, "one", "one èé"])
+        geom = layer.getFeature(0).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20349, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
+
+        # Request 2 features from next page
+        request = QgsBufferServerRequest(
+            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items.fgb?offset=1&limit=2"
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        # Check headers
+        headers = response.fullHeaders()
+        self.assertEqual(headers["OGC-NumberReturned"][0], "2")
+
+        layer = _get_layer()
+        self.assertEqual(layer.getFeature(0).attributes(), ["1", 2, "two", "two àò"])
+        geom = layer.getFeature(0).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20354, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90148, 4)
+
+        self.assertEqual(
+            layer.getFeature(1).attributes(), ["2", 3, "three", "three èé↓"]
+        )
+        geom = layer.getFeature(1).geometry()
+        self.assertAlmostEqual(geom.asPoint().x(), 8.20345, 4)
+        self.assertAlmostEqual(geom.asPoint().y(), 44.90139, 4)
 
     def test_invalid_args(self):
         """Test wrong args"""

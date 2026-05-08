@@ -87,10 +87,12 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     //! JSON profile
     enum class Profile
     {
-      NONE,       //!< No profile
-      RFC7946,    //!< GeoJSON profile according to RFC7946
-      JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      NONE,    //!< No profile
+      RFC7946, //!< GeoJSON profile according to RFC7946
+      // This not supported yet but I am leaving it here because
+      // I am very optimistic that it will be supported soon!
+      //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
     };
     Q_ENUM( Profile )
 

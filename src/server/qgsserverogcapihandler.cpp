@@ -492,12 +492,18 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     else
     {
       // Hardcoded aliases
+#if 0
+    // This not supported yet but I am leaving it here because
+    // I am very optimistic that it will be supported soon!
+
       if ( ( extension.compare( u"JSONFG"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) || ( extension.compare( u"JSONFG-PLUS"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) )
       {
         result = QgsServerOgcApi::ContentType::JSON;
         found = true;
       }
-      else if ( extension.compare( u"FGB"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      else
+#endif
+      if ( extension.compare( u"FGB"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
       {
         result = QgsServerOgcApi::ContentType::FLATGEOBUF;
         found = true;

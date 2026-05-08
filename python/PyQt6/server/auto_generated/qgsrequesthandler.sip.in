@@ -59,7 +59,23 @@ Retrieve response header value
 
     QMap<QString, QString> responseHeaders() const;
 %Docstring
-Returns the response headers
+Returns the response headers: note that if multiple values are set for
+the same header, only the first one is returned
+%End
+
+    QList<QString> fullResponseHeader( const QString &name ) const;
+%Docstring
+Returns the list of response headers for a given header ``name``
+
+.. versionadded:: 4.2
+%End
+
+    QMap<QString, QList<QString>> fullResponseHeaders() const;
+%Docstring
+Returns the response headers as a map of header name to list of values
+(to support multiple values for the same header)
+
+.. versionadded:: 4.2
 %End
 
     void setRequestHeader( const QString &name, const QString &value );
@@ -74,7 +90,8 @@ Remove an HTTP request header
 
     QString requestHeader( const QString &name ) const;
 %Docstring
-Retrieve request header value
+Retrieve request header value: note that if multiple values are set for
+the same header, only the first one is returned
 %End
 
     QMap<QString, QString> requestHeaders() const;

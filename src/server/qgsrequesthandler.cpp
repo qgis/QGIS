@@ -72,6 +72,16 @@ QMap<QString, QString> QgsRequestHandler::responseHeaders() const
   return mResponse.headers();
 }
 
+QList<QString> QgsRequestHandler::fullResponseHeader( const QString &name ) const
+{
+  return mResponse.fullHeader( name );
+}
+
+QMap<QString, QList<QString> > QgsRequestHandler::fullResponseHeaders() const
+{
+  return mResponse.fullHeaders();
+}
+
 void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
 {
   mRequest.setHeader( name, value );

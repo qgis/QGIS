@@ -1272,18 +1272,22 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
   QDateTime time { QDateTime::currentDateTime() };
   time.setTimeSpec( Qt::TimeSpec::UTC );
-  apiContext.response()->setHeader( u"date"_s, time.toString( Qt::DateFormat::ISODate ) );
-  apiContext.response()->setHeader( u"content-Type"_s, u"application/flatgeobuf"_s );
-  apiContext.response()->setHeader( u"content-disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
-  apiContext.response()->setHeader( u"content-crs"_s, featureRequest.destinationCrs().toOgcUri() );
-  apiContext.response()->setHeader( u"ogc-numberreturned"_s, QString::number( featureList.count() ) );
+  apiContext.response()->setHeader( u"Date"_s, time.toString( Qt::DateFormat::ISODate ) );
+  apiContext.response()->setHeader( u"Content-Type"_s, u"application/flatgeobuf"_s );
+  apiContext.response()->setHeader( u"Content-Disposition"_s, u"inline; filename=\"%1.fgb\""_s.arg( mapLayer->name() ) );
+  apiContext.response()->setHeader( u"Content-Crs"_s, featureRequest.destinationCrs().toOgcUri() );
+  apiContext.response()->setHeader( u"OGC-NumberReturned"_s, QString::number( featureList.count() ) );
 
   // Add alternate links
-  apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::RFC7946, u"This document as GEOJSON"_s ) );
-  apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::NONE, u"This document as HTML"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::RFC7946, u"This document as GEOJSON"_s ) );
+  apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::NONE, u"This document as HTML"_s ) );
+#if 0
+    // This not supported yet but I am leaving it here because
+    // I am very optimistic that it will be supported soon!
   apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG, u"This document as JSONFG"_s ) );
   apiContext.response()
     ->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG_PLUS, u"This document as JSONFG-PLUS"_s ) );
+#endif
 
   // Add next link
   if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
@@ -1309,7 +1313,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
       cleanedUrlAsString += '&';
     }
     const QString nextHref = cleanedUrlAsString + u"offset=%1&limit=%2"_s.arg( std::min<long>( matchedFeaturesCount, exportContext.limit + exportContext.offset ) ).arg( exportContext.limit );
-    apiContext.response()->setHeader( u"link"_s, u"<%1>; rel=\"next\"; title=\"Next page\"; type=\"application/flatgeobuf\""_s.arg( nextHref ) );
+    apiContext.response()->addHeader( u"Link"_s, u"<%1>; rel=\"next\"; title=\"Next page\"; type=\"application/flatgeobuf\""_s.arg( nextHref ) );
   }
 
   // Retrieve data from the buffer and send it

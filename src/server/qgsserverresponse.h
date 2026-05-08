@@ -45,11 +45,19 @@ class SERVER_EXPORT QgsServerResponse
     virtual ~QgsServerResponse() = default;
 
     /**
-     *  Set Header entry
+     *  Set a single header \a value replacing any existing value for the same \a key
      *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after data have been sent through the wire
+     *  \note that it is usually an error to set Header after data have been sent through the wire
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
+
+    /**
+     *  Add a header \a value for the given \a key, without replacing any existing value for the same \a key
+     *  Add Header entry to the response
+     *  \note that it is usually an error to set Header after data have been sent through the wire
+     *  \since QGIS 4.2
+     */
+    virtual void addHeader( const QString &key, const QString &value ) = 0;
 
     /**
      * Clear header
@@ -59,19 +67,31 @@ class SERVER_EXPORT QgsServerResponse
 
     /**
      * Returns the header value
+     * \note if multiple values are set for the same key, the last one is returned
      */
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Returns the header value
+     * Returns the header values for the given \a key
+     * \since QGIS 4.2
+     */
+    virtual QList<QString> fullHeader( const QString &key ) const = 0;
+
+    /**
+     * Returns the header values as a map: only the last value is returned if multiple values are set for the same header
      */
     virtual QMap<QString, QString> headers() const = 0;
+
+    /**
+     * Returns the header values
+     * \since QGIS 4.2
+     */
+    virtual QMap<QString, QList<QString>> fullHeaders() const = 0;
 
     /**
      * Returns TRUE if the headers have already been sent
      */
     virtual bool headersSent() const = 0;
-
 
     /**
      * Set the http status code

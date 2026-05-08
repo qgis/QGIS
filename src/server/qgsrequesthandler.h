@@ -65,8 +65,20 @@ class SERVER_EXPORT QgsRequestHandler
     //! Retrieve response header value
     QString responseHeader( const QString &name ) const;
 
-    //! Returns the response headers
+    //! Returns the response headers: note that if multiple values are set for the same header, only the first one is returned
     QMap<QString, QString> responseHeaders() const;
+
+    /**
+     * Returns the list of response headers for a given header \a name
+     * \since QGIS 4.2
+     */
+    QList<QString> fullResponseHeader( const QString &name ) const;
+
+    /**
+     * Returns the response headers as a map of header name to list of values (to support multiple values for the same header)
+     * \since QGIS 4.2
+     */
+    QMap<QString, QList<QString>> fullResponseHeaders() const;
 
     //! Sets an HTTP request header
     void setRequestHeader( const QString &name, const QString &value );
@@ -74,7 +86,7 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove an HTTP request header
     void removeRequestHeader( const QString &name );
 
-    //! Retrieve request header value
+    //! Retrieve request header value: note that if multiple values are set for the same header, only the first one is returned
     QString requestHeader( const QString &name ) const;
 
     //! Returns the Request headers

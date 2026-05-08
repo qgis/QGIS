@@ -47,6 +47,14 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     void setHeader( const QString &key, const QString &value ) override;
 
     /**
+     *  Add a header \a value for the given \a key, without replacing any existing value for the same \a key
+     *  Add Header entry to the response
+     *  \note that it is usually an error to set Header after data have been sent through the wire
+     *  \since QGIS 4.2
+     */
+    void addHeader( const QString &key, const QString &value ) override;
+
+    /**
      * Clear header
      * Undo a previous 'setHeader' call
      */
@@ -60,7 +68,17 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     /**
      * Returns all the headers
      */
-    QMap<QString, QString> headers() const override { return mHeaders; }
+    QMap<QString, QList<QString>> fullHeaders() const override { return mHeaders; }
+
+    /**
+     * Returns all the values for a header \a key
+     */
+    virtual QList<QString> fullHeader( const QString &key ) const override;
+
+    /**
+     * Returns all the headers as a map: only the first value is returned if multiple values are set for the same header
+     */
+    QMap<QString, QString> headers() const override;
 
     /**
      * Returns TRUE if the headers have already been sent
@@ -141,7 +159,7 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     QgsBufferServerResponse( const QgsBufferServerResponse & ) SIP_FORCE;
 #endif
 
-    QMap<QString, QString> mHeaders;
+    QMap<QString, QList<QString>> mHeaders;
     QBuffer mBuffer;
     QByteArray mBody;
     bool mFinished = false;
