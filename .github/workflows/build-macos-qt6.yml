@@ -310,31 +310,6 @@ jobs:
           done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type l -print0)
           echo "Materialized ${MATERIALIZED} symlink(s); removed ${REMOVED} broken symlink(s)."
 
-      - name: 🧹 Relocate non-Mach-O files out of Contents/MacOS #spellok
-        if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
-        run: |
-          # macOS bundles require Contents/MacOS/ to contain only Mach-O #spellok
-          # binaries. pymacdeployqt copies GDAL Python utilities (gdal_calc.py,
-          # gdal_polygonize, gdal_proximity.py, ...) into MacOS/, including
-          # scripts without .py suffix. These make codesign abort with
-          # "code object is not signed at all" when sealing the bundle.
-          # Move them to Contents/Resources/python/ where codesign treats them
-          # as resources. QGIS calls GDAL via C++ bindings, not these scripts,
-          # so functionality is unaffected; advanced users invoking the CLI
-          # utilities can still run them by full path under Resources/python/.
-          APP_PATH=$(ls -d universal/*.app | head -n1)
-          DEST="${APP_PATH}/Contents/Resources/python"
-          mkdir -p "${DEST}"
-          MOVED=0
-          while IFS= read -r -d '' f; do
-            if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then #spellok
-              continue
-            fi
-            mv "$f" "${DEST}/"
-            MOVED=$((MOVED + 1))
-          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0)
-          echo "Relocated ${MOVED} non-Mach-O file(s) to Contents/Resources/python/" #spellok
-
       - name: 🧹 Remove build metadata from app bundle
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
         run: |
@@ -346,6 +321,28 @@ jobs:
           find "${APP_PATH}" -type f -name "*.a" -print -delete
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
+      - name: 🚚 Move Frameworks/lib out of Frameworks #spellok
+        if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
+        run: |
+          # codesign treats every sub-directory of Contents/Frameworks/ as a
+          # potential nested bundle. lib/python3.12/ does NOT have a valid
+          # framework layout, so the bundle seal aborts with
+          # "bundle format unrecognized". We move lib/ under Resources/ and
+          # leave a relative symlink at Contents/Frameworks/lib so all
+          # runtime paths (rpath, PYTHONHOME, dlopen) keep resolving.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          LIB_DIR="${APP_PATH}/Contents/Frameworks/lib"
+          RES_DIR="${APP_PATH}/Contents/Resources/python_runtime"
+          if [ -d "${LIB_DIR}" ] && [ ! -L "${LIB_DIR}" ]; then
+            mkdir -p "${RES_DIR}"
+            mv "${LIB_DIR}" "${RES_DIR}/lib"
+            ln -s "../Resources/python_runtime/lib" "${LIB_DIR}"
+            echo "Moved Frameworks/lib -> Resources/python_runtime/lib (symlinked back)"
+            ls -la "${APP_PATH}/Contents/Frameworks/lib"
+          else
+            echo "Frameworks/lib not present or already a symlink, skipping."
+          fi
+
       - name: 🔏 Sign app
         if: ${{ startsWith(github.ref, 'refs/tags/qgisai-v') }}
         run: |
@@ -355,45 +352,83 @@ jobs:
           # real bundles (e.g. Contents/Frameworks/lib/python3.12, the Python
           # stdlib) and rejects them with "bundle format unrecognized".
           # --options runtime enables the hardened runtime required for notarization.
+          set -uo pipefail
           APP_PATH=$(ls -d universal/*.app | head -n1)
-          echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
+          APP_NAME=$(basename "${APP_PATH}" .app)
+          MAIN_EXEC="${APP_PATH}/Contents/MacOS/${APP_NAME}"
+          DEST="${APP_PATH}/Contents/Resources/python"
+          mkdir -p "${DEST}"
+          echo "Signing ${APP_PATH} (main executable: ${MAIN_EXEC})..."
 
-          sign_one() {
-            codesign --force --options runtime --timestamp \
-              --sign "${MACOS_DEVELOPER_ID}" "$1"
+          # Try to sign $1; if codesign refuses because the file is not a
+          # signable Mach-O / bundle (script, data, ...), relocate it under #spellok
+          # Resources/python/ so it does not break the outer bundle seal.
+          sign_or_move() {
+            local f="$1"
+            local err
+            err=$(codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "$f" 2>&1)
+            local rc=$?
+            if [ "$rc" -eq 0 ]; then
+              return 0
+            fi
+            if echo "$err" | grep -qE 'is not (a|recognized as) (Mach-O|bundle|signable|valid)|unsupported format|file not in any of the requested architectures|invalid Info.plist|cannot find executable|bundle format unrecognized|the file is empty'; then #spellok
+              echo "Not signable, moving out of MacOS/: $f"
+              echo "  reason: $err"
+              mv "$f" "${DEST}/" || rm -f "$f"
+              return 0
+            fi
+            echo "ERROR signing $f: $err" >&2
+            return "$rc"
           }
 
-          # 1. Sign every regular file under Contents/MacOS/ unconditionally. #spellok
-          #    The Relocate step has already moved non-binaries elsewhere, so
-          #    everything left here must be signed. We do NOT filter on
-          #    `file -bL Mach-O` because it occasionally misclassifies
-          #    universal binaries produced by lipomerge (e.g. gdal_translate),
-          #    which then break the bundle seal with
-          #    "code object is not signed at all".
-          find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0 \
-            | while IFS= read -r -d '' f; do
-              sign_one "$f"
-            done
+          # 1. Sign-or-move every regular file directly under Contents/MacOS/,
+          #    EXCEPT the main executable. codesign on the main executable
+          #    would try to seal the whole .app and demand that every other
+          #    component is already signed, which we have not done yet.
+          declare -a MACOS_ENTRIES=()
+          while IFS= read -r -d '' f; do
+            if [ "$f" = "$MAIN_EXEC" ]; then
+              continue
+            fi
+            MACOS_ENTRIES+=("$f")
+          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0)
+          for f in "${MACOS_ENTRIES[@]}"; do
+            sign_or_move "$f" || exit 1
+          done
 
           # 2. Sign every Mach-O file elsewhere in the bundle #spellok
           #    (libs, plugins, .so).
-          find "${APP_PATH}" -path "${APP_PATH}/Contents/MacOS" -prune -o \
-            \( -type f -o -type l \) -print0 \
-            | while IFS= read -r -d '' f; do
-              [ -z "$f" ] && continue
-              if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then #spellok
-                sign_one "$f"
-              fi
-            done
-
-          # 3. Sign each nested bundle wrapper (frameworks, sub-apps).
-          find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
-            -type d -not -path "${APP_PATH}" | while read -r b; do
-            sign_one "$b"
+          declare -a OTHER_ENTRIES=()
+          while IFS= read -r -d '' f; do
+            OTHER_ENTRIES+=("$f")
+          done < <(find "${APP_PATH}" -path "${APP_PATH}/Contents/MacOS" -prune -o \
+                   \( -type f -o -type l \) -print0)
+          for f in "${OTHER_ENTRIES[@]}"; do
+            [ -z "$f" ] && continue
+            if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then #spellok
+              codesign --force --options runtime --timestamp \
+                --sign "${MACOS_DEVELOPER_ID}" "$f" || exit 1
+            fi
           done
 
-          # 4. Sign the top-level .app last.
-          sign_one "${APP_PATH}"
+          # 3. Sign each nested bundle wrapper (frameworks, sub-apps).
+          while IFS= read -r b; do
+            codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "$b" || exit 1
+          done < <(find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
+                   -type d -not -path "${APP_PATH}")
+
+          # 4. Sign the main executable now that all sibling components in
+          #    Contents/MacOS/ are already signed or relocated.
+          if [ -f "${MAIN_EXEC}" ]; then
+            codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "${MAIN_EXEC}"
+          fi
+
+          # 5. Seal the top-level .app.
+          codesign --force --options runtime --timestamp \
+            --sign "${MACOS_DEVELOPER_ID}" "${APP_PATH}"
 
           echo "Verifying signature..."
           codesign -dvv "${APP_PATH}" 2>&1 | head -10
