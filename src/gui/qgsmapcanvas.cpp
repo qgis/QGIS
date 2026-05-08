@@ -74,6 +74,7 @@ email                : sherman at mrcc.com
 #include "qgssymbollayerutils.h"
 #include "qgstemporalcontroller.h"
 #include "qgstemporalnavigationobject.h"
+#include "qgsuserinputwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
@@ -1073,6 +1074,16 @@ void QgsMapCanvas::setMessageBar( QgsMessageBar *bar )
 QgsMessageBar *QgsMapCanvas::messageBar()
 {
   return mMessageBar.data();
+}
+
+void QgsMapCanvas::setUserInputWidget( QgsUserInputWidget *userInputWidget )
+{
+  mUserInputWidget = userInputWidget;
+}
+
+QgsUserInputWidget *QgsMapCanvas::userInputWidget()
+{
+  return mUserInputWidget.data();
 }
 
 bool QgsMapCanvas::previewJobsEnabled() const

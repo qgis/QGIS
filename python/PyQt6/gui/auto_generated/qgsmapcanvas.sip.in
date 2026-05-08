@@ -999,6 +999,30 @@ May be ``None`` if not set.
 .. versionadded:: 4.2
 %End
 
+    void setUserInputWidget( QgsUserInputWidget *userInputWidget );
+%Docstring
+Sets a ``userInputWidget``, a floating widget that can be used to
+display additional widgets for user inputs. Setting this allows items
+associated with a map canvas to add widgets to it, e.g. in a
+:py:class:`QgsMapTool`.
+
+.. seealso:: :py:func:`userInputWidget`
+
+.. versionadded:: 4.2
+%End
+
+
+    QgsUserInputWidget *userInputWidget();
+%Docstring
+Returns the user input widget associated with the map canvas.
+
+May be ``None`` if not set.
+
+.. seealso:: :py:func:`setUserInputWidget`
+
+.. versionadded:: 4.2
+%End
+
 
   public slots:
 

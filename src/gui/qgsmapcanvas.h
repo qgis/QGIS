@@ -75,6 +75,7 @@ class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
 class QgsOverlayWidgetLayout;
 class QgsStatusBar;
+class QgsUserInputWidget;
 
 class QgsTemporalController;
 class QgsScreenHelper;
@@ -957,6 +958,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     QgsMessageBar *messageBar();
 
+    /**
+     * Sets a \a userInputWidget, a floating widget that can be used to display additional widgets for user inputs.
+     * Setting this allows items associated with a map canvas to add widgets to it, e.g. in a QgsMapTool.
+     *
+     * \see userInputWidget()
+     * \since QGIS 4.2
+     */
+    void setUserInputWidget( QgsUserInputWidget *userInputWidget );
+
+
+    /**
+     * Returns the user input widget associated with the map canvas.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setUserInputWidget()
+     * \since QGIS 4.2
+     */
+    QgsUserInputWidget *userInputWidget();
+
     static const QgsSettingsEntryString *settingsCustomCoordinateCrs SIP_SKIP;
 
   public slots:
@@ -1550,6 +1571,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QPointer< QgsStatusBar > mStatusBar;
 
     QPointer< QgsMessageBar > mMessageBar;
+
+    QPointer< QgsUserInputWidget > mUserInputWidget;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

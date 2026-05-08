@@ -1139,6 +1139,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mUserInputDockWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
   mUserInputDockWidget->setAnchorPoint( QgsFloatingWidget::TopRight );
 
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
+
   endProfile();
 
   //set the focus to the map canvas
@@ -2115,6 +2117,7 @@ QgisApp::QgisApp()
   mVectorLayerTools = new QgsGuiVectorLayerTools();
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
   mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
