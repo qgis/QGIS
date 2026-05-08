@@ -333,8 +333,8 @@ jobs:
           }
 
           # 1. Sign every Mach-O file inside (libs, .so, executables). #spellok
-          find "${APP_PATH}" -type f -print0 | while IFS= read -r -d '' f; do
-            if file -b "$f" | grep -qE 'Mach-O'; then #spellok
+          find "${APP_PATH}" \( -type f -o -type l \) -print0 | while IFS= read -r -d '' f; do
+            if file -bL "$f" | grep -qE 'Mach-O'; then #spellok
               sign_one "$f"
             fi
           done

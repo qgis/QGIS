@@ -123,8 +123,8 @@ jobs:
               --sign "${MACOS_DEVELOPER_ID}" "$1"
           }
 
-          find "${APP_PATH}" -type f -print0 | while IFS= read -r -d '' f; do
-            if file -b "$f" | grep -qE 'Mach-O'; then
+          find "${APP_PATH}" \( -type f -o -type l \) -print0 | while IFS= read -r -d '' f; do
+            if file -bL "$f" | grep -qE 'Mach-O'; then
               sign_one "$f"
             fi
           done
