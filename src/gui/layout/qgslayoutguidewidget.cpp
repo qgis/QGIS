@@ -73,14 +73,32 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
+  const int newSourceRow = mLayout->guides().rowCount( QModelIndex() );
   auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
+
+  const QModelIndex sourceIndex = mLayout->guides().index( newSourceRow, 0 );
+  const QModelIndex proxyIndex = mHozProxyModel->mapFromSource( sourceIndex );
+  if ( proxyIndex.isValid() )
+  {
+    mHozGuidesTableView->selectionModel()->select( proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    mHozGuidesTableView->edit( proxyIndex );
+  }
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
+  const int newSourceRow = mLayout->guides().rowCount( QModelIndex() );
   auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
+
+  const QModelIndex sourceIndex = mLayout->guides().index( newSourceRow, 0 );
+  const QModelIndex proxyIndex = mVertProxyModel->mapFromSource( sourceIndex );
+  if ( proxyIndex.isValid() )
+  {
+    mVertGuidesTableView->selectionModel()->select( proxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    mVertGuidesTableView->edit( proxyIndex );
+  }
 }
 
 void QgsLayoutGuideWidget::deleteHorizontalGuide()
