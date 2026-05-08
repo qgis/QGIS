@@ -143,10 +143,14 @@ jobs:
         run: |
           set -uo pipefail
           APP_PATH=$(ls -d universal/*.app | head -n1)
+          APP_NAME=$(basename "${APP_PATH}" .app)
+          MAIN_EXEC="${APP_PATH}/Contents/MacOS/${APP_NAME}"
           DEST="${APP_PATH}/Contents/Resources/python"
           mkdir -p "${DEST}"
-          echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
+          echo "Signing ${APP_PATH} (main executable: ${MAIN_EXEC})..."
 
+          # Try to sign $1; if codesign refuses because the file is not a
+          # signable Mach-O / bundle, relocate it under Resources/python/.
           sign_or_move() {
             local f="$1"
             local err
@@ -156,10 +160,7 @@ jobs:
             if [ "$rc" -eq 0 ]; then
               return 0
             fi
-            # Heuristic: if codesign refused because the file is not a
-            # Mach-O / bundle (script, data, etc.), relocate it under
-            # Resources/python/ so it does not break the outer bundle seal.
-            if echo "$err" | grep -qE 'is not (a|recognized as) (Mach-O|bundle|signable|valid)|unsupported format|file not in any of the requested architectures|invalid Info.plist|cannot find executable|bundle format unrecognized'; then
+            if echo "$err" | grep -qE 'is not (a|recognized as) (Mach-O|bundle|signable|valid)|unsupported format|file not in any of the requested architectures|invalid Info.plist|cannot find executable|bundle format unrecognized|the file is empty'; then
               echo "Not signable, moving out of MacOS/: $f"
               echo "  reason: $err"
               mv "$f" "${DEST}/" || rm -f "$f"
@@ -169,10 +170,15 @@ jobs:
             return "$rc"
           }
 
-          # 1. Sign-or-move every regular file directly under Contents/MacOS/.
-          #    This replaces the brittle `file -bL` heuristic.
+          # 1. Sign-or-move every file directly under Contents/MacOS/, EXCEPT
+          #    the main executable. codesign on the main executable would try
+          #    to seal the whole .app and demand that every other component
+          #    is already signed, which we have not done yet — so we defer it.
           declare -a MACOS_ENTRIES=()
           while IFS= read -r -d '' f; do
+            if [ "$f" = "$MAIN_EXEC" ]; then
+              continue
+            fi
             MACOS_ENTRIES+=("$f")
           done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0)
           for f in "${MACOS_ENTRIES[@]}"; do
@@ -200,7 +206,14 @@ jobs:
           done < <(find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
                    -type d -not -path "${APP_PATH}")
 
-          # 4. Sign the top-level .app last.
+          # 4. Sign the main executable now that all sibling components in
+          #    Contents/MacOS/ are already signed or relocated.
+          if [ -f "${MAIN_EXEC}" ]; then
+            codesign --force --options runtime --timestamp \
+              --sign "${MACOS_DEVELOPER_ID}" "${MAIN_EXEC}"
+          fi
+
+          # 5. Seal the top-level .app.
           codesign --force --options runtime --timestamp \
             --sign "${MACOS_DEVELOPER_ID}" "${APP_PATH}"
 
