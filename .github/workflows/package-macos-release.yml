@@ -92,6 +92,37 @@ jobs:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
+      - name: Materialize symlinks in Contents/MacOS
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          # Replace ALL symlinks under Contents/MacOS/ with real copies of
+          # their targets, regardless of file type. Broken symlinks are
+          # removed. We do this BEFORE Relocate/Sign so subsequent steps
+          # only see regular files. Skipping non-Mach-O symlinks here was
+          # the previous bug: e.g. gdal_translate is a symlink to a wrapper
+          # that `file -bL` does not classify as Mach-O, so it stayed as a
+          # symlink, then bypassed Relocate and Sign and left the bundle
+          # with an unsigned subcomponent.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          MATERIALIZED=0
+          REMOVED=0
+          while IFS= read -r -d '' f; do
+            if [ ! -e "$f" ]; then
+              echo "Removing broken symlink $f"
+              rm -f "$f"
+              REMOVED=$((REMOVED + 1))
+              continue
+            fi
+            tmp="${f}.codesign"
+            cp -pL "$f" "$tmp"
+            rm "$f"
+            mv "$tmp" "$f"
+            chmod +x "$f" 2>/dev/null || true
+            MATERIALIZED=$((MATERIALIZED + 1))
+            echo "Materialized $(basename "$f")"
+          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type l -print0)
+          echo "Materialized ${MATERIALIZED} symlink(s); removed ${REMOVED} broken symlink(s)."
+
       - name: Relocate non-Mach-O files out of Contents/MacOS
         if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
@@ -100,12 +131,12 @@ jobs:
           mkdir -p "${DEST}"
           MOVED=0
           while IFS= read -r -d '' f; do
-            if file -bL "$f" | grep -qE 'Mach-O'; then
+            if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then
               continue
             fi
             mv "$f" "${DEST}/"
             MOVED=$((MOVED + 1))
-          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 \( -type f -o -type l \) -print0)
+          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0)
           echo "Relocated ${MOVED} non-Mach-O file(s) to Contents/Resources/python/"
 
       - name: Remove build metadata from app bundle
@@ -116,22 +147,6 @@ jobs:
           find "${APP_PATH}" -type f -name "*.o" -print -delete
           find "${APP_PATH}" -type f -name "*.a" -print -delete
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
-
-      - name: Materialize symlinked Mach-O executables
-        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
-        run: |
-          APP_PATH=$(ls -d universal/*.app | head -n1)
-          while IFS= read -r -d '' f; do
-            if ! file -bL "$f" | grep -qE 'Mach-O'; then
-              continue
-            fi
-            tmp="${f}.codesign"
-            cp -pL "$f" "$tmp"
-            rm "$f"
-            mv "$tmp" "$f"
-            chmod +x "$f"
-            echo "Materialized $(basename "$f")"
-          done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type l -print0)
 
       - name: Sign app
         if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
