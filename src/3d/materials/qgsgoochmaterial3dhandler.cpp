@@ -37,7 +37,15 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
 {
   switch ( technique )
   {
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
+    {
+      if ( context.isHighlighted() )
+        return new QgsHighlightMaterial( technique );
+      return toInstancedMaterial( settings, context, false, false );
+    }
+
     case Qgis::MaterialRenderingTechnique::Triangles:
+    case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
@@ -51,8 +59,6 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
     }
 
     case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::Billboards:
       return nullptr;
   }
@@ -164,19 +170,25 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const
+{
+  return buildMaterial( settings, context, true, hasDDScale, hasDDRotation );
+}
+
+QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool instanced, bool hasDDScale, bool hasDDRotation ) const
 {
   const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
   Q_ASSERT( goochSettings );
   const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
 
-  QgsGoochMaterial *material = new QgsGoochMaterial;
+  QgsGoochMaterial *material = new QgsGoochMaterial( instanced, hasDDScale, hasDDRotation );
   material->setObjectName( u"goochMaterial"_s );
 
   applySettingsToMaterial( goochSettings, material );
   if ( context.isSelected() )
     material->setDiffuse( context.selectionColor() );
-  material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
+  if ( !instanced )
+    material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
 
   return material;
 }

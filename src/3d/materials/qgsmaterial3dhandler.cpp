@@ -40,6 +40,13 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
   return res;
 }
 
+QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const
+{
+  Q_UNUSED( hasDDScale )
+  Q_UNUSED( hasDDRotation )
+  return toMaterial( settings, Qgis::MaterialRenderingTechnique::InstancedPoints, context );
+}
+
 QByteArray QgsAbstractMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
   Q_UNUSED( settings )

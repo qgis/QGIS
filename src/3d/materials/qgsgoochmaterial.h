@@ -44,8 +44,11 @@ class _3D_EXPORT QgsGoochMaterial : public QgsMaterial
   public:
     /**
      * Constructor for QgsGoochMaterial, with the specified \a parent node.
+     * Set \a instanced to TRUE when the material will be used with instanced point rendering.
+     * \a hasDDScale and \a hasDDRotation enable per-instance scale and rotation support,
+     * and only take effect when \a instanced is TRUE.
      */
-    explicit QgsGoochMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsGoochMaterial( bool instanced = false, bool hasDDScale = false, bool hasDDRotation = false, Qt3DCore::QNode *parent = nullptr );
     ~QgsGoochMaterial() override;
 
   public slots:
@@ -81,6 +84,9 @@ class _3D_EXPORT QgsGoochMaterial : public QgsMaterial
     Qt3DRender::QParameter *mBetaParameter = nullptr;
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mDataDefinedEnabled = false;
+    bool mInstanced = false;
+    bool mHasDDScale = false;
+    bool mHasDDRotation = false;
 };
 
 ///@endcond PRIVATE

@@ -32,13 +32,16 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-QgsPhongMaterial::QgsPhongMaterial( QNode *parent )
+QgsPhongMaterial::QgsPhongMaterial( bool instanced, bool hasDDScale, bool hasDDRotation, QNode *parent )
   : QgsMaterial( parent )
   , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QVariant() ) )
   , mDiffuseParameter( new Qt3DRender::QParameter( u"diffuseColor"_s, QVariant() ) )
   , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QVariant() ) )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 0.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
+  , mInstanced( instanced )
+  , mHasDDScale( hasDDScale )
+  , mHasDDRotation( hasDDRotation )
 {
   setAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) );
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
@@ -84,7 +87,18 @@ void QgsPhongMaterial::updateShaders()
 {
   const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) );
 
-  if ( mDataDefinedEnabled )
+  if ( mInstanced )
+  {
+    QStringList defines;
+    if ( mHasDDScale )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mHasDDRotation )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+    mShaderProgram->setFragmentShaderCode( fragCode );
+  }
+  else if ( mDataDefinedEnabled )
   {
     mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phongDataDefined.vert"_s ) ) );
     mShaderProgram->setFragmentShaderCode( Qgs3DUtils::addDefinesToShaderCode( fragCode, QStringList( { u"DATA_DEFINED"_s } ) ) );
