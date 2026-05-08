@@ -126,17 +126,36 @@ jobs:
           find "${APP_PATH}" -type f -name "*.a" -print -delete
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
+      - name: Move Frameworks/lib out of Frameworks
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
+        run: |
+          # codesign treats every sub-directory of Contents/Frameworks/ as a
+          # potential nested bundle. lib/python3.12/ does NOT have a valid
+          # framework layout, so the bundle seal aborts with
+          # "bundle format unrecognized". We move lib/ under Resources/ and
+          # leave a relative symlink at Contents/Frameworks/lib so all
+          # runtime paths (rpath, PYTHONHOME, dlopen) keep resolving.
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          LIB_DIR="${APP_PATH}/Contents/Frameworks/lib"
+          RES_DIR="${APP_PATH}/Contents/Resources/python_runtime"
+          if [ -d "${LIB_DIR}" ] && [ ! -L "${LIB_DIR}" ]; then
+            mkdir -p "${RES_DIR}"
+            mv "${LIB_DIR}" "${RES_DIR}/lib"
+            ln -s "../Resources/python_runtime/lib" "${LIB_DIR}"
+            echo "Moved Frameworks/lib -> Resources/python_runtime/lib (symlinked back)"
+            ls -la "${APP_PATH}/Contents/Frameworks/lib"
+          else
+            echo "Frameworks/lib not present or already a symlink, skipping."
+          fi
+
       - name: Inventory Contents/MacOS (debug)
         if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           echo "=== ls -lah Contents/MacOS ==="
           ls -lah "${APP_PATH}/Contents/MacOS" || true
-          echo "=== file -bL each entry ==="
-          for f in "${APP_PATH}/Contents/MacOS"/*; do
-            [ -e "$f" ] || continue
-            printf '%-40s -> %s\n' "$(basename "$f")" "$(file -bL "$f" 2>&1)"
-          done
+          echo "=== ls -lah Contents/Frameworks (top-level only) ==="
+          ls -lah "${APP_PATH}/Contents/Frameworks" || true
 
       - name: Sign app
         if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
