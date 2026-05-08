@@ -1,4 +1,4 @@
-ARG DISTRO_VERSION=43
+ARG DISTRO_VERSION=44
 
 FROM fedora:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Matthias Kuhn <matthias@opengis.ch>"
