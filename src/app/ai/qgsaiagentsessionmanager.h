@@ -30,6 +30,9 @@ using namespace Qt::StringLiterals;
 class QgsAiFileContextProvider;
 class QgsAiReviewPatchEngine;
 class QgsAiToolRegistry;
+class QgsMapLayer;
+class QgsVectorLayer;
+class QgsRasterLayer;
 
 struct APP_EXPORT QgsAiChatContextFile
 {
@@ -125,6 +128,9 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const;
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
     QString buildSystemPrompt() const;
+    QString buildLayerDataDump() const;
+    QString dumpVectorLayer( QgsVectorLayer *layer ) const;
+    QString dumpRasterLayer( QgsRasterLayer *layer ) const;
     //! Per-profile folder where Processing Toolbox picks up user scripts.
     static QString processingScriptsFolder();
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;

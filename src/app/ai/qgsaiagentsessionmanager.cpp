@@ -20,10 +20,21 @@
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
 #include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -504,16 +515,15 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
 
     const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
     prompt += u"Loaded layers: %1\n"_s.arg( layers.size() );
-    int shown = 0;
-    for ( auto it = layers.constBegin(); it != layers.constEnd() && shown < 10; ++it, ++shown )
+    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
     {
       QgsMapLayer *layer = it.value();
       if ( !layer )
         continue;
       prompt += u"  - %1 (id=%2, crs=%3)\n"_s.arg( layer->name(), layer->id(), layer->crs().authid() );
     }
-    if ( layers.size() > 10 )
-      prompt += u"  …%1 more (use list_project_layers for the full list).\n"_s.arg( layers.size() - 10 );
+    prompt += '\n';
+    prompt += buildLayerDataDump();
   }
 
   // Tool list is injected so the model has discoverable names alongside the JSON schema,
@@ -577,6 +587,118 @@ QString QgsAiAgentSessionManager::buildSystemPrompt() const
   )
               .arg( processingScriptsFolder() );
   return prompt;
+}
+
+QString QgsAiAgentSessionManager::buildLayerDataDump() const
+{
+  QgsProject *project = QgsProject::instance();
+  if ( !project )
+    return QString();
+
+  QString out;
+  out += "== Layer data dump ==\n"_L1;
+  out += "Full snapshot of every layer (attributes + WKT geometries for vectors, "
+         "extended metadata + pixel samples for rasters). No truncation.\n\n"_L1;
+
+  const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    QgsMapLayer *layer = it.value();
+    if ( !layer )
+      continue;
+
+    out += u"--- Layer: %1 (id=%2) ---\n"_s.arg( layer->name(), layer->id() );
+
+    if ( QgsVectorLayer *v = qobject_cast<QgsVectorLayer *>( layer ) )
+      out += dumpVectorLayer( v );
+    else if ( QgsRasterLayer *r = qobject_cast<QgsRasterLayer *>( layer ) )
+      out += dumpRasterLayer( r );
+    else
+      out += "(unsupported layer type, only metadata above)\n"_L1;
+
+    out += '\n';
+  }
+  return out;
+}
+
+QString QgsAiAgentSessionManager::dumpVectorLayer( QgsVectorLayer *layer ) const
+{
+  QString out;
+  out += u"type: vector, geometry: %1, crs: %2, features: %3\n"_s
+           .arg( QgsWkbTypes::geometryDisplayString( layer->geometryType() ), layer->crs().authid() )
+           .arg( static_cast<qint64>( layer->featureCount() ) );
+
+  const QgsFields fields = layer->fields();
+  QStringList fieldNames;
+  for ( const QgsField &f : fields )
+    fieldNames << u"%1:%2"_s.arg( f.name(), f.typeName() );
+  out += u"fields: %1\n"_s.arg( fieldNames.join( ", "_L1 ) );
+  out += "data (one feature per line: id | attr1=val1; attr2=val2; ... | WKT):\n"_L1;
+
+  QgsFeatureIterator it = layer->getFeatures();
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
+  {
+    QStringList kv;
+    for ( const QgsField &f : fields )
+    {
+      const QVariant val = feature.attribute( f.name() );
+      kv << u"%1=%2"_s.arg( f.name(), val.toString() );
+    }
+    const QgsGeometry geom = feature.geometry();
+    const QString wkt = geom.isNull() ? u"NULL"_s : geom.asWkt();
+    out += u"  %1 | %2 | %3\n"_s.arg( feature.id() ).arg( kv.join( "; "_L1 ), wkt );
+  }
+  return out;
+}
+
+QString QgsAiAgentSessionManager::dumpRasterLayer( QgsRasterLayer *layer ) const
+{
+  QString out;
+  out += u"type: raster, crs: %1, size: %2x%3, bands: %4\n"_s
+           .arg( layer->crs().authid() )
+           .arg( layer->width() )
+           .arg( layer->height() )
+           .arg( layer->bandCount() );
+
+  const QgsRectangle ext = layer->extent();
+  out += u"extent: xmin=%1 ymin=%2 xmax=%3 ymax=%4\n"_s
+           .arg( ext.xMinimum() )
+           .arg( ext.yMinimum() )
+           .arg( ext.xMaximum() )
+           .arg( ext.yMaximum() );
+
+  QgsRasterDataProvider *dp = layer->dataProvider();
+  if ( !dp )
+    return out + "(no data provider)\n"_L1;
+
+  for ( int b = 1; b <= layer->bandCount(); ++b )
+  {
+    const QgsRasterBandStats stats = dp->bandStatistics( b );
+    out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s
+             .arg( b )
+             .arg( stats.minimumValue )
+             .arg( stats.maximumValue )
+             .arg( stats.mean )
+             .arg( stats.stdDev );
+
+    out += u"  samples (16x16 grid over extent):\n"_s;
+    constexpr int N = 16;
+    for ( int iy = 0; iy < N; ++iy )
+    {
+      QStringList row;
+      for ( int ix = 0; ix < N; ++ix )
+      {
+        const double x = ext.xMinimum() + ( ix + 0.5 ) * ext.width() / N;
+        const double y = ext.yMaximum() - ( iy + 0.5 ) * ext.height() / N;
+        bool ok = false;
+        const double v = dp->sample( QgsPointXY( x, y ), b, &ok );
+        row << ( ok ? QString::number( v ) : u"NaN"_s );
+      }
+      out += u"    %1\n"_s.arg( row.join( ", "_L1 ) );
+    }
+  }
+  return out;
 }
 
 QString QgsAiAgentSessionManager::processingScriptsFolder()
