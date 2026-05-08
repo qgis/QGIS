@@ -12,6 +12,11 @@ on:
         description: 'Release tag to upload the DMG to, e.g. qgisai-v0.1.17'
         required: true
         type: string
+      sign_and_notarize:
+        description: 'Sign and notarize the DMG'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -81,14 +86,14 @@ jobs:
           ls -la universal/*.app
 
       - name: Import Apple code signing certificate
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         uses: apple-actions/import-codesign-certs@8f3fb608891dd2244cdab3d69cd68c0d37a7fe93 # v5.0.2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.MACOS_CERT_P12_PASSWORD }}
 
       - name: Relocate non-Mach-O files out of Contents/MacOS
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           DEST="${APP_PATH}/Contents/Resources/python"
@@ -104,7 +109,7 @@ jobs:
           echo "Relocated ${MOVED} non-Mach-O file(s) to Contents/Resources/python/"
 
       - name: Remove build metadata from app bundle
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           find "${APP_PATH}" -type d -name "objects-*" -print -prune -exec rm -rf {} +
@@ -113,7 +118,7 @@ jobs:
           find "${APP_PATH}" -type f -name "*.prl" -print -delete
 
       - name: Materialize symlinked Mach-O executables
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           while IFS= read -r -d '' f; do
@@ -129,7 +134,7 @@ jobs:
           done < <(find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type l -print0)
 
       - name: Sign app
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           APP_PATH=$(ls -d universal/*.app | head -n1)
           echo "Signing ${APP_PATH} with ${MACOS_DEVELOPER_ID}..."
@@ -139,11 +144,26 @@ jobs:
               --sign "${MACOS_DEVELOPER_ID}" "$1"
           }
 
-          find "${APP_PATH}" \( -type f -o -type l \) -print0 | while IFS= read -r -d '' f; do
-            if file -bL "$f" | grep -qE 'Mach-O'; then
+          # Sign every regular file under Contents/MacOS/ unconditionally.
+          # The previous `file -bL ... | grep Mach-O` filter occasionally
+          # misclassifies universal binaries produced by lipomerge (e.g.
+          # gdal_translate), leaving them unsigned and breaking the bundle
+          # seal with "code object is not signed at all". After the
+          # Relocate step, Contents/MacOS/ should only hold binaries.
+          find "${APP_PATH}/Contents/MacOS" -maxdepth 1 -type f -print0 \
+            | while IFS= read -r -d '' f; do
               sign_one "$f"
-            fi
-          done
+            done
+
+          # Sign Mach-O files elsewhere in the bundle (libs, plugins, .so).
+          find "${APP_PATH}" -path "${APP_PATH}/Contents/MacOS" -prune -o \
+            \( -type f -o -type l \) -print0 \
+            | while IFS= read -r -d '' f; do
+              [ -z "$f" ] && continue
+              if file -bL "$f" 2>/dev/null | grep -qE 'Mach-O'; then
+                sign_one "$f"
+              fi
+            done
 
           find "${APP_PATH}" \( -name "*.framework" -o -name "*.app" \) \
             -type d -not -path "${APP_PATH}" | while read -r b; do
@@ -173,7 +193,7 @@ jobs:
             universal/*.app
 
       - name: Notarize and staple DMG
-        if: ${{ startsWith(inputs.release_tag, 'qgisai-v') }}
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'qgisai-v') }}
         run: |
           DMG_FILE=$(ls *.dmg | head -n1)
           echo "Notarizing ${DMG_FILE}..."
