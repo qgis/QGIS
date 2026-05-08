@@ -7809,6 +7809,25 @@ Qgis.TextureFilterQuality.__doc__ = """Texture filtering qualities.
 # --
 Qgis.TextureFilterQuality.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ShadowQuality.Low.__doc__ = "Low quality"
+Qgis.ShadowQuality.Medium.__doc__ = "Medium quality"
+Qgis.ShadowQuality.High.__doc__ = "High quality"
+Qgis.ShadowQuality.VeryHigh.__doc__ = "Very high quality"
+Qgis.ShadowQuality.Extreme.__doc__ = "Extremely high quality"
+Qgis.ShadowQuality.__doc__ = """Shadow texture quality.
+
+.. versionadded:: 4.2
+
+* ``Low``: Low quality
+* ``Medium``: Medium quality
+* ``High``: High quality
+* ``VeryHigh``: Very high quality
+* ``Extreme``: Extremely high quality
+
+"""
+# --
+Qgis.ShadowQuality.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.

@@ -28,7 +28,7 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   , mSelectedDirectionalLight( other.mSelectedDirectionalLight )
   , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
   , mShadowBias( other.mShadowBias )
-  , mShadowMapResolution( other.mShadowMapResolution )
+  , mShadowQuality( other.mShadowQuality )
 {}
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
@@ -40,7 +40,7 @@ QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
   this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;
   this->mShadowBias = rhs.mShadowBias;
-  this->mShadowMapResolution = rhs.mShadowMapResolution;
+  this->mShadowQuality = rhs.mShadowQuality;
   return *this;
 }
 
@@ -51,7 +51,6 @@ void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteC
   mSelectedDirectionalLight = element.attribute( u"selected-directional-light"_s, u"-1"_s ).toInt();
   mMaximumShadowRenderingDistance = element.attribute( u"max-shadow-rendering-distance"_s, u"1500"_s ).toInt();
   mShadowBias = element.attribute( u"shadow-bias"_s, u"0.00001"_s ).toFloat();
-  mShadowMapResolution = element.attribute( u"shadow-map-resolution"_s, u"2048"_s ).toInt();
 }
 
 void QgsShadowSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -61,5 +60,22 @@ void QgsShadowSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   element.setAttribute( u"selected-directional-light"_s, mSelectedDirectionalLight );
   element.setAttribute( u"max-shadow-rendering-distance"_s, mMaximumShadowRenderingDistance );
   element.setAttribute( u"shadow-bias"_s, mShadowBias );
-  element.setAttribute( u"shadow-map-resolution"_s, mShadowMapResolution );
+}
+
+int QgsShadowSettings::qualityToMapResolution( Qgis::ShadowQuality quality )
+{
+  switch ( quality )
+  {
+    case Qgis::ShadowQuality::Low:
+      return 512;
+    case Qgis::ShadowQuality::Medium:
+      return 1024;
+    case Qgis::ShadowQuality::High:
+      return 2048;
+    case Qgis::ShadowQuality::VeryHigh:
+      return 4096;
+    case Qgis::ShadowQuality::Extreme:
+      return 8192;
+  }
+  BUILTIN_UNREACHABLE
 }

@@ -2961,6 +2961,7 @@ void TestQgs3DRendering::testDebugMap()
   shadowSettings.setRenderShadows( true );
   shadowSettings.setSelectedDirectionalLight( 0 );
   shadowSettings.setMaximumShadowRenderingDistance( 2500 );
+  shadowSettings.setShadowQuality( Qgis::ShadowQuality::High );
   mapSettings.setShadowSettings( shadowSettings );
 
   // =========== creating Qgs3DMapScene

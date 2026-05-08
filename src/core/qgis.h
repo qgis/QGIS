@@ -4367,6 +4367,21 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( TextureFilterQuality )
 
     /**
+     * Shadow texture quality.
+     *
+     * \since QGIS 4.2
+     */
+    enum class ShadowQuality : int
+    {
+      Low,      //!< Low quality
+      Medium,   //!< Medium quality
+      High,     //!< High quality
+      VeryHigh, //!< Very high quality
+      Extreme,  //!< Extremely high quality
+    };
+    Q_ENUM( ShadowQuality )
+
+    /**
      * Light source types for 3D scenes.
      *
      * \since QGIS 3.26

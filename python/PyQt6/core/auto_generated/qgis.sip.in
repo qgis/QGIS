@@ -2448,6 +2448,15 @@ The development version
       Anisotropic16x,
     };
 
+    enum class ShadowQuality /BaseType=IntEnum/
+    {
+      Low,
+      Medium,
+      High,
+      VeryHigh,
+      Extreme,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,

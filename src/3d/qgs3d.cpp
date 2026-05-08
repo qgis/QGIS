@@ -53,6 +53,8 @@ using namespace Qt::StringLiterals;
 const QgsSettingsEntryBool *Qgs3D::settingMsaaEnabled = new QgsSettingsEntryBool( u"msaa-enabled"_s, QgsSettingsTree::sTree3DMap, false, u"Whether MSAA is enabled for 3D map rendering"_s );
 const QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality> *Qgs3D::settingTextureFilterQuality
   = new QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality>( u"texture-filter"_s, QgsSettingsTree::sTree3DMap, Qgis::TextureFilterQuality::Anisotropic16x, u"Texture filter quality"_s );
+const QgsSettingsEntryEnumFlag<Qgis::ShadowQuality> *Qgs3D::settingShadowQuality
+  = new QgsSettingsEntryEnumFlag<Qgis::ShadowQuality>( u"shadow-quality"_s, QgsSettingsTree::sTree3DMap, Qgis::ShadowQuality::High, u"Shadow rendering quality"_s );
 
 Qgs3D *Qgs3D::instance()
 {

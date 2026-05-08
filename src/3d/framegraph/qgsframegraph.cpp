@@ -394,7 +394,8 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 
     if ( light )
     {
-      shadowRenderView().setMapSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+      const int size = shadowSettings.qualityToMapResolution( shadowSettings.shadowQuality() );
+      shadowRenderView().setMapSize( size, size );
       shadowRenderView().setEnabled( true );
       mPostprocessingEntity->setShadowRenderingEnabled( true );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );

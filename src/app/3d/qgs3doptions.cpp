@@ -55,6 +55,12 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mTextureFilterQualityCombo->addItem( tr( "8×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic8x ) );
   mTextureFilterQualityCombo->addItem( tr( "16×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic16x ) );
 
+  mShadowQualityCombo->addItem( tr( "Low" ), QVariant::fromValue( Qgis::ShadowQuality::Low ) );
+  mShadowQualityCombo->addItem( tr( "Medium" ), QVariant::fromValue( Qgis::ShadowQuality::Medium ) );
+  mShadowQualityCombo->addItem( tr( "High" ), QVariant::fromValue( Qgis::ShadowQuality::High ) );
+  mShadowQualityCombo->addItem( tr( "Very High" ), QVariant::fromValue( Qgis::ShadowQuality::VeryHigh ) );
+  mShadowQualityCombo->addItem( tr( "Extreme" ), QVariant::fromValue( Qgis::ShadowQuality::Extreme ) );
+
   mCameraMovementSpeed->setClearValue( 4 );
   spinCameraFieldOfView->setClearValue( 45.0 );
 
@@ -77,6 +83,7 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mMSAA->setChecked( Qgs3D::settingMsaaEnabled->value() );
 
   mTextureFilterQualityCombo->setCurrentIndex( mTextureFilterQualityCombo->findData( QVariant::fromValue( Qgs3D::settingTextureFilterQuality->value() ) ) );
+  mShadowQualityCombo->setCurrentIndex( mShadowQualityCombo->findData( QVariant::fromValue( Qgs3D::settingShadowQuality->value() ) ) );
 }
 
 QString Qgs3DOptionsWidget::helpKey() const
@@ -98,6 +105,7 @@ void Qgs3DOptionsWidget::apply()
 
   Qgs3D::settingMsaaEnabled->setValue( mMSAA->isChecked() );
   Qgs3D::settingTextureFilterQuality->setValue( mTextureFilterQualityCombo->currentData().value< Qgis::TextureFilterQuality >() );
+  Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
 }
 
 
