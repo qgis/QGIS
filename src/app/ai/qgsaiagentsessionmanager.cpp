@@ -624,9 +624,7 @@ QString QgsAiAgentSessionManager::buildLayerDataDump() const
 QString QgsAiAgentSessionManager::dumpVectorLayer( QgsVectorLayer *layer ) const
 {
   QString out;
-  out += u"type: vector, geometry: %1, crs: %2, features: %3\n"_s
-           .arg( QgsWkbTypes::geometryDisplayString( layer->geometryType() ), layer->crs().authid() )
-           .arg( static_cast<qint64>( layer->featureCount() ) );
+  out += u"type: vector, geometry: %1, crs: %2, features: %3\n"_s.arg( QgsWkbTypes::geometryDisplayString( layer->geometryType() ), layer->crs().authid() ).arg( static_cast<qint64>( layer->featureCount() ) );
 
   const QgsFields fields = layer->fields();
   QStringList fieldNames;
@@ -655,18 +653,10 @@ QString QgsAiAgentSessionManager::dumpVectorLayer( QgsVectorLayer *layer ) const
 QString QgsAiAgentSessionManager::dumpRasterLayer( QgsRasterLayer *layer ) const
 {
   QString out;
-  out += u"type: raster, crs: %1, size: %2x%3, bands: %4\n"_s
-           .arg( layer->crs().authid() )
-           .arg( layer->width() )
-           .arg( layer->height() )
-           .arg( layer->bandCount() );
+  out += u"type: raster, crs: %1, size: %2x%3, bands: %4\n"_s.arg( layer->crs().authid() ).arg( layer->width() ).arg( layer->height() ).arg( layer->bandCount() );
 
   const QgsRectangle ext = layer->extent();
-  out += u"extent: xmin=%1 ymin=%2 xmax=%3 ymax=%4\n"_s
-           .arg( ext.xMinimum() )
-           .arg( ext.yMinimum() )
-           .arg( ext.xMaximum() )
-           .arg( ext.yMaximum() );
+  out += u"extent: xmin=%1 ymin=%2 xmax=%3 ymax=%4\n"_s.arg( ext.xMinimum() ).arg( ext.yMinimum() ).arg( ext.xMaximum() ).arg( ext.yMaximum() );
 
   QgsRasterDataProvider *dp = layer->dataProvider();
   if ( !dp )
@@ -675,14 +665,9 @@ QString QgsAiAgentSessionManager::dumpRasterLayer( QgsRasterLayer *layer ) const
   for ( int b = 1; b <= layer->bandCount(); ++b )
   {
     const QgsRasterBandStats stats = dp->bandStatistics( b );
-    out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s
-             .arg( b )
-             .arg( stats.minimumValue )
-             .arg( stats.maximumValue )
-             .arg( stats.mean )
-             .arg( stats.stdDev );
+    out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s.arg( b ).arg( stats.minimumValue ).arg( stats.maximumValue ).arg( stats.mean ).arg( stats.stdDev );
 
-    out += u"  samples (16x16 grid over extent):\n"_s;
+    out += "  samples (16x16 grid over extent):\n"_L1;
     constexpr int N = 16;
     for ( int iy = 0; iy < N; ++iy )
     {
