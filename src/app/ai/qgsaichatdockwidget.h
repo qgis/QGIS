@@ -34,6 +34,7 @@ class QShowEvent;
 class QTextEdit;
 class QToolButton;
 
+class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
 
@@ -43,6 +44,18 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
 
   public:
     QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManager, QgsAiModelRouter *modelRouter, QgsAiReviewPatchEngine *reviewEngine, QWidget *parent = nullptr );
+
+    void setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator );
+
+    /**
+     * Returns true when the user has not yet consented to layer indexing
+     * (i.e. attributes + bounding boxes leaving the machine for OpenAI embeddings).
+     * Callers must surface a confirmation dialog before flipping the toggle on.
+     */
+    static bool requiresLayerIndexingConsent();
+
+    //! Persists the user's explicit acceptance so the consent dialog never re-appears.
+    static void recordLayerIndexingConsent();
 
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
@@ -94,6 +107,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QPointer<QgsAiAgentSessionManager> mSessionManager;
     QPointer<QgsAiModelRouter> mModelRouter;
     QPointer<QgsAiReviewPatchEngine> mReviewEngine;
+    QPointer<QgsAiLayerIndexCoordinator> mLayerIndexCoordinator;
 
     QTextEdit *mTranscript = nullptr;
     QTextEdit *mInputTextEdit = nullptr;

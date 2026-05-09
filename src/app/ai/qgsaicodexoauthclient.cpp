@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QByteArray>
 #include <QElapsedTimer>
@@ -175,6 +176,15 @@ namespace
     return object;
   }
 
+  QString codexRefreshTokenPresenceFlagKey()
+  {
+    // Non-secret flag mirroring whether a refresh token exists in the encrypted
+    // auth manager vault. Reading the flag does not unlock the vault, so UI
+    // surfaces (e.g. "Signed in / Not signed in" labels) can be rendered
+    // without prompting for the QGIS master password.
+    return u"ai/provider/codex/oauth/has_refresh_token"_s;
+  }
+
   bool storeCodexRefreshToken( const QString &refreshToken, QString *errorMessage )
   {
     QgsAuthManager *authManager = QgsApplication::authManager();
@@ -190,6 +200,7 @@ namespace
         *errorMessage = u"Unable to store Codex refresh token securely."_s;
       return false;
     }
+    QgsSettings().setValue( codexRefreshTokenPresenceFlagKey(), true );
     return true;
   }
 
@@ -269,15 +280,27 @@ bool QgsAiCodexOAuthClient::completeDeviceCodeLogin( const DeviceCode &deviceCod
     return false;
   }
 
+  const QString authorizationCode = codeObject.value( u"authorization_code"_s ).toString();
+  const QString codeVerifier = codeObject.value( u"code_verifier"_s ).toString();
+  if ( authorizationCode.isEmpty() || codeVerifier.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Codex device authorization response is missing the authorization code or PKCE verifier."_s;
+    return false;
+  }
+
   QUrlQuery form;
   form.addQueryItem( u"grant_type"_s, u"authorization_code"_s );
-  form.addQueryItem( u"code"_s, codeObject.value( u"authorization_code"_s ).toString() );
+  form.addQueryItem( u"code"_s, authorizationCode );
   form.addQueryItem( u"redirect_uri"_s, QString::fromUtf8( CODEX_REDIRECT_URI ) );
   form.addQueryItem( u"client_id"_s, QString::fromUtf8( CODEX_CLIENT_ID ) );
-  form.addQueryItem( u"code_verifier"_s, codeObject.value( u"code_verifier"_s ).toString() );
+  form.addQueryItem( u"code_verifier"_s, codeVerifier );
 
   int httpStatus = 0;
   const QJsonObject tokenObject = postFormBlocking( QUrl( QString::fromUtf8( CODEX_AUTH_ISSUER ) + u"/oauth/token"_s ), form, 30000, httpStatus, errorMessage );
+  if ( tokenObject.isEmpty() )
+    return false;
+
   const QString refreshToken = tokenObject.value( u"refresh_token"_s ).toString();
   if ( refreshToken.isEmpty() )
   {
@@ -329,7 +352,7 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
 
 bool QgsAiCodexOAuthClient::hasRefreshToken()
 {
-  return !storedCodexRefreshToken().isEmpty();
+  return QgsSettings().value( codexRefreshTokenPresenceFlagKey(), false ).toBool();
 }
 
 bool QgsAiCodexOAuthClient::clearRefreshToken( QString *errorMessage )
@@ -343,7 +366,10 @@ bool QgsAiCodexOAuthClient::clearRefreshToken( QString *errorMessage )
   }
   if ( !hasRefreshToken() )
     return true;
-  return authManager->removeAuthSetting( refreshTokenSettingKey() );
+  if ( !authManager->removeAuthSetting( refreshTokenSettingKey() ) )
+    return false;
+  QgsSettings().remove( codexRefreshTokenPresenceFlagKey() );
+  return true;
 }
 
 QString QgsAiCodexOAuthClient::extractChatGptAccountId( const QString &idToken )

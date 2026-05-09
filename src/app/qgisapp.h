@@ -172,6 +172,7 @@ class QgsAiAgentSessionManager;
 class QgsAiChatDockWidget;
 class QgsAiEmbeddingClient;
 class QgsAiFileContextProvider;
+class QgsAiLayerIndexCoordinator;
 class QgsAiModelRouter;
 class QgsAiReviewPatchEngine;
 class QgsAiToolRegistry;
@@ -2785,6 +2786,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsAiReviewPatchEngine> mAiReviewPatchEngine;
     std::unique_ptr<QgsAiEmbeddingClient> mAiEmbeddingClient;
     std::unique_ptr<QgsAiWorkspaceIndex> mAiWorkspaceIndex;
+    std::unique_ptr<QgsAiLayerIndexCoordinator> mAiLayerIndexCoordinator;
     std::unique_ptr<QgsAiToolRegistry> mAiToolRegistry;
     std::unique_ptr<QgsAiAgentSessionManager> mAiSessionManager;
 #endif

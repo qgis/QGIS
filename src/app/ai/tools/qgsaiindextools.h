@@ -83,4 +83,24 @@ class APP_EXPORT QgsAiReindexWorkspaceTool : public QgsAiTool
     QgsAiWorkspaceIndex *mIndex = nullptr;
 };
 
+/**
+ * reindex_layers: triggers a full rebuild of the *layer* portion of the index
+ * (every QgsVectorLayer + QgsRasterLayer in the active QgsProject). File chunks
+ * are preserved. Sends layer attributes + bounding boxes to OpenAI embeddings,
+ * so the user must opt in by setting `confirm: true`.
+ */
+class APP_EXPORT QgsAiReindexLayersTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiReindexLayersTool( QgsAiWorkspaceIndex *index );
+
+    QString name() const override { return u"reindex_layers"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+
+  private:
+    QgsAiWorkspaceIndex *mIndex = nullptr;
+};
+
 #endif // QGSAIINDEXTOOLS_H

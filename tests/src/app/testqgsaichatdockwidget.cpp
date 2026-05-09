@@ -9,10 +9,12 @@
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "qgssettings.h"
 #include "qgstest.h"
 
 #include <QLabel>
 #include <QPushButton>
+#include <QSettings>
 #include <QTemporaryDir>
 #include <QTextEdit>
 
@@ -23,6 +25,7 @@ class TestQgsAiChatDockWidget : public QObject
   private slots:
     void hasRuntimeWidgets();
     void doesNotDuplicateStreamedAssistantResponse();
+    void layerIndexingConsentPolicy();
 };
 
 void TestQgsAiChatDockWidget::hasRuntimeWidgets()
@@ -77,6 +80,26 @@ void TestQgsAiChatDockWidget::doesNotDuplicateStreamedAssistantResponse()
 
   manager.messageAdded( assistantMessage );
   QCOMPARE( transcript->toPlainText(), QStringLiteral( "[assistant] Ciao! Come posso aiutarti con QGIS oggi?" ) );
+}
+
+void TestQgsAiChatDockWidget::layerIndexingConsentPolicy()
+{
+  // Round-trip the single key in the user's QSettings without redirecting the
+  // global path (which would break sibling tests that read other AI settings).
+  QSettings settings;
+  const QString key = u"qgis_ai/index/layer_indexing_consented"_s;
+  const QVariant savedValue = settings.value( key );
+
+  settings.remove( key );
+  QVERIFY( QgsAiChatDockWidget::requiresLayerIndexingConsent() );
+
+  QgsAiChatDockWidget::recordLayerIndexingConsent();
+  QVERIFY( !QgsAiChatDockWidget::requiresLayerIndexingConsent() );
+
+  if ( savedValue.isValid() )
+    settings.setValue( key, savedValue );
+  else
+    settings.remove( key );
 }
 
 QGSTEST_MAIN( TestQgsAiChatDockWidget )

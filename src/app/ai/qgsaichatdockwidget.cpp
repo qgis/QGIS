@@ -20,6 +20,8 @@
 
 #include "qgisapp.h"
 #include "qgsaiagentsessionmanager.h"
+#include "ai/index/qgsailayerindexcoordinator.h"
+#include "ai/index/qgsaiworkspaceindex.h"
 #include "qgsaiclaudeoauthclient.h"
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
@@ -454,8 +456,16 @@ QString QgsAiChatDockWidget::renderMarkdown( const QString &md )
 
 void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QString &content )
 {
-  const QString html = u"<p><b>[%1]</b></p>"_s.arg( role.toHtmlEscaped() ) + renderMarkdown( content );
-  mTranscript->append( html );
+  // Each message lives in its own block, but the role label and the body sit
+  // inline in the same block so toPlainText() yields "[role] body" with a
+  // single space between them (not a newline).
+  QTextCursor cursor = mTranscript->textCursor();
+  cursor.movePosition( QTextCursor::End );
+  if ( !mTranscript->document()->isEmpty() )
+    cursor.insertBlock();
+  cursor.insertHtml( u"<b>[%1]</b> "_s.arg( role.toHtmlEscaped() ) );
+  cursor.insertHtml( renderMarkdown( content ) );
+  mTranscript->setTextCursor( cursor );
 }
 
 void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
@@ -465,9 +475,11 @@ void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )
 
   if ( !mStreamingInProgress )
   {
-    mTranscript->append( u"<p><b>[assistant]</b></p>"_s );
     QTextCursor cursor = mTranscript->textCursor();
     cursor.movePosition( QTextCursor::End );
+    if ( !mTranscript->document()->isEmpty() )
+      cursor.insertBlock();
+    cursor.insertHtml( u"<b>[assistant]</b> "_s );
     mStreamingContentStartPosition = cursor.position();
     mStreamingInProgress = true;
   }
@@ -1029,6 +1041,71 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   layout->addLayout( behaviorForm );
 
+  // ----------------------------------------------------------------------
+  // Workspace indexing (RAG): file + layer chunks → OpenAI embeddings.
+  // ----------------------------------------------------------------------
+  QFrame *indexingSeparator = new QFrame( &dialog );
+  indexingSeparator->setFrameShape( QFrame::HLine );
+  indexingSeparator->setFrameShadow( QFrame::Sunken );
+  layout->addWidget( indexingSeparator );
+
+  QLabel *indexingTitle = new QLabel( tr( "Workspace indexing (RAG)" ), &dialog );
+  QFont indexingTitleFont = indexingTitle->font();
+  indexingTitleFont.setBold( true );
+  indexingTitle->setFont( indexingTitleFont );
+  layout->addWidget( indexingTitle );
+
+  QFormLayout *indexingForm = new QFormLayout();
+
+  QSettings indexSettings;
+  const bool layerIndexingEnabled = indexSettings.value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool();
+
+  QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
+  enableLayerIndexing->setChecked( layerIndexingEnabled );
+  enableLayerIndexing->setToolTip( tr( "When enabled, layer attributes and bounding boxes are sent to the OpenAI embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." ) );
+  indexingForm->addRow( QString(), enableLayerIndexing );
+
+  QLabel *indexStatusLabel = new QLabel( &dialog );
+  if ( mSessionManager && mSessionManager->workspaceIndex() )
+  {
+    const auto status = mSessionManager->workspaceIndex()->status();
+    indexStatusLabel->setText( tr( "Indexed: %1 file chunks, %2 layer chunks (last sync: %3)" )
+                                 .arg( status.fileChunkCount )
+                                 .arg( status.layerChunkCount )
+                                 .arg( status.lastSync.isValid() ? status.lastSync.toLocalTime().toString( Qt::ISODate ) : tr( "never" ) ) );
+  }
+  else
+  {
+    indexStatusLabel->setText( tr( "Indexed: (workspace index unavailable)" ) );
+  }
+  indexingForm->addRow( QString(), indexStatusLabel );
+
+  QPushButton *rebuildLayerIndexButton = new QPushButton( tr( "Rebuild layer index now" ), &dialog );
+  rebuildLayerIndexButton->setEnabled( mSessionManager && mSessionManager->workspaceIndex() );
+  indexingForm->addRow( QString(), rebuildLayerIndexButton );
+
+  connect( rebuildLayerIndexButton, &QPushButton::clicked, &dialog, [this, &dialog, indexStatusLabel]() {
+    if ( !mSessionManager || !mSessionManager->workspaceIndex() )
+      return;
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QString err;
+    const bool ok = mSessionManager->workspaceIndex()->reindexLayers( &err );
+    QApplication::restoreOverrideCursor();
+    if ( !ok )
+    {
+      QMessageBox::warning( &dialog, tr( "Layer reindex failed" ), err.isEmpty() ? tr( "Unknown error." ) : err );
+      return;
+    }
+    const auto status = mSessionManager->workspaceIndex()->status();
+    indexStatusLabel->setText( tr( "Indexed: %1 file chunks, %2 layer chunks (last sync: %3)" )
+                                 .arg( status.fileChunkCount )
+                                 .arg( status.layerChunkCount )
+                                 .arg( status.lastSync.isValid() ? status.lastSync.toLocalTime().toString( Qt::ISODate ) : tr( "never" ) ) );
+    QMessageBox::information( &dialog, tr( "Layer reindex" ), tr( "Done — %1 layer chunks indexed." ).arg( status.layerChunkCount ) );
+  } );
+
+  layout->addLayout( indexingForm );
+
   QLabel *helpLabel = new QLabel(
     tr(
       "OpenAI and Claude API keys are stored locally in QGIS settings. Codex and Claude OAuth refresh tokens are stored in the encrypted QGIS authentication store. Leave API key fields empty to keep "
@@ -1212,6 +1289,34 @@ void QgsAiChatDockWidget::openProviderSettings()
     behaviorSettings.rulesPath = rulesPathEdit->text().trimmed();
     behaviorSettings.skillsPath = skillsPathEdit->text().trimmed();
     mSessionManager->setAgentBehaviorSettings( behaviorSettings );
+
+    bool layerIndexingChoice = enableLayerIndexing->isChecked();
+
+    // Privacy gate: the first time the user enables layer indexing we must
+    // surface what data leaves the machine and ask for explicit consent.
+    if ( layerIndexingChoice && requiresLayerIndexingConsent() )
+    {
+      const auto choice = QMessageBox::question(
+        &dialog,
+        tr( "Enable layer indexing" ),
+        tr( "Enabling layer indexing means QGIS_AI will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?" ),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::No
+      );
+      if ( choice != QMessageBox::Yes )
+      {
+        layerIndexingChoice = false;
+        enableLayerIndexing->setChecked( false );
+      }
+      else
+      {
+        recordLayerIndexingConsent();
+      }
+    }
+
+    QSettings().setValue( u"qgis_ai/index/enable_layer_indexing"_s, layerIndexingChoice );
+    if ( mLayerIndexCoordinator )
+      mLayerIndexCoordinator->setEnabled( layerIndexingChoice );
   }
 
   if ( !errorMessages.isEmpty() )
@@ -1260,4 +1365,19 @@ void QgsAiChatDockWidget::maybeShowWelcomeBanner()
 
   messageBar->pushItem( item );
   settings.setValue( u"qgis_ai/welcome_seen"_s, true );
+}
+
+void QgsAiChatDockWidget::setLayerIndexCoordinator( QgsAiLayerIndexCoordinator *coordinator )
+{
+  mLayerIndexCoordinator = coordinator;
+}
+
+bool QgsAiChatDockWidget::requiresLayerIndexingConsent()
+{
+  return !QSettings().value( u"qgis_ai/index/layer_indexing_consented"_s, false ).toBool();
+}
+
+void QgsAiChatDockWidget::recordLayerIndexingConsent()
+{
+  QSettings().setValue( u"qgis_ai/index/layer_indexing_consented"_s, true );
 }

@@ -20,8 +20,13 @@
 
 #include "qgsaiembeddingclient.h"
 #include "qgsaifilecontextprovider.h"
+#include "qgsailayerchunker.h"
 #include "qgsapplication.h"
+#include "qgsmaplayer.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
 
 #include <QByteArray>
 #include <QCryptographicHash>
@@ -181,13 +186,47 @@ QgsAiWorkspaceIndex::Status QgsAiWorkspaceIndex::status() const
   QStringList uniqueFiles;
   for ( const CachedChunk &c : mCache )
   {
-    if ( !uniqueFiles.contains( c.chunk.relativePath ) )
-      uniqueFiles.append( c.chunk.relativePath );
+    if ( c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) )
+      ++s.layerChunkCount;
+    else
+    {
+      ++s.fileChunkCount;
+      if ( !uniqueFiles.contains( c.chunk.relativePath ) )
+        uniqueFiles.append( c.chunk.relativePath );
+    }
   }
   s.fileCount = uniqueFiles.size();
   s.lastSync = mLastSync;
   s.indexed = !mCache.isEmpty();
   return s;
+}
+
+QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::chunks( ReplaceScope scope, const QString &layerId ) const
+{
+  QList<Chunk> out;
+  for ( const CachedChunk &c : mCache )
+  {
+    const bool isLayer = c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER );
+    switch ( scope )
+    {
+      case ReplaceScope::All:
+        out.append( c.chunk );
+        break;
+      case ReplaceScope::AllFiles:
+        if ( !isLayer )
+          out.append( c.chunk );
+        break;
+      case ReplaceScope::AllLayers:
+        if ( isLayer )
+          out.append( c.chunk );
+        break;
+      case ReplaceScope::SingleLayer:
+        if ( isLayer && c.chunk.layerId == layerId )
+          out.append( c.chunk );
+        break;
+    }
+  }
+  return out;
 }
 
 bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
@@ -206,8 +245,25 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
     return false;
   }
 
+  // Schema migration: read PRAGMA user_version. If older than SCHEMA_VERSION,
+  // drop the chunks table — callers will rebuild it on the next reindex.
+  {
+    QSqlQuery v( db );
+    int currentVersion = 0;
+    if ( v.exec( u"PRAGMA user_version"_s ) && v.next() )
+      currentVersion = v.value( 0 ).toInt();
+    if ( currentVersion < SCHEMA_VERSION )
+    {
+      QgsMessageLog::logMessage( u"Workspace index schema upgrade: %1 → %2 (dropping old chunks)"_s.arg( currentVersion ).arg( SCHEMA_VERSION ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+      QSqlQuery drop( db );
+      drop.exec( u"DROP TABLE IF EXISTS chunks"_s );
+      drop.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
+      return true; // Empty — caller will reindex.
+    }
+  }
+
   QSqlQuery q( db );
-  if ( !q.exec( u"SELECT relative_path, chunk_index, text, embedding, last_sync FROM chunks ORDER BY id"_s ) )
+  if ( !q.exec( u"SELECT source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync FROM chunks ORDER BY id"_s ) )
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
@@ -217,11 +273,18 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
   while ( q.next() )
   {
     CachedChunk c;
-    c.chunk.relativePath = q.value( 0 ).toString();
-    c.chunk.chunkIndex = q.value( 1 ).toInt();
-    c.chunk.text = q.value( 2 ).toString();
-    c.embedding = bytesToVector( q.value( 3 ).toByteArray() );
-    const qint64 syncMs = q.value( 4 ).toLongLong();
+    c.chunk.sourceType = q.value( 0 ).toString();
+    if ( c.chunk.sourceType.isEmpty() )
+      c.chunk.sourceType = QString::fromLatin1( SOURCE_TYPE_FILE );
+    c.chunk.relativePath = q.value( 1 ).toString();
+    c.chunk.layerId = q.value( 2 ).toString();
+    c.chunk.firstFeatureId = q.value( 3 ).isNull() ? -1 : q.value( 3 ).toLongLong();
+    c.chunk.lastFeatureId = q.value( 4 ).isNull() ? -1 : q.value( 4 ).toLongLong();
+    c.chunk.chunkIndex = q.value( 5 ).toInt();
+    c.chunk.text = q.value( 6 ).toString();
+    c.chunk.wktBlob = q.value( 7 ).toByteArray();
+    c.embedding = bytesToVector( q.value( 8 ).toByteArray() );
+    const qint64 syncMs = q.value( 9 ).toLongLong();
     if ( syncMs > maxSync )
       maxSync = syncMs;
     if ( !c.embedding.isEmpty() )
@@ -233,7 +296,7 @@ bool QgsAiWorkspaceIndex::loadAll( QString *errorMessage )
   return true;
 }
 
-bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString *errorMessage )
+bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage )
 {
   const QString path = dbPath();
   if ( path.isEmpty() )
@@ -256,14 +319,42 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString 
   q.exec( QStringLiteral(
     "CREATE TABLE IF NOT EXISTS chunks ("
     "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+    "source_type TEXT NOT NULL DEFAULT 'file', "
     "relative_path TEXT NOT NULL, "
+    "layer_id TEXT, "
+    "feature_id_min INTEGER, "
+    "feature_id_max INTEGER, "
     "chunk_index INTEGER NOT NULL, "
     "text TEXT NOT NULL, "
+    "wkt_blob BLOB, "
     "embedding BLOB NOT NULL, "
     "last_sync INTEGER NOT NULL"
     ")"
   ) );
-  q.exec( u"DELETE FROM chunks"_s );
+  q.exec( u"CREATE INDEX IF NOT EXISTS idx_chunks_layer ON chunks(layer_id) WHERE layer_id IS NOT NULL"_s );
+  q.exec( u"PRAGMA user_version = %1"_s.arg( SCHEMA_VERSION ) );
+
+  // Replace only the rows in scope.
+  switch ( scope )
+  {
+    case ReplaceScope::All:
+      q.exec( u"DELETE FROM chunks"_s );
+      break;
+    case ReplaceScope::AllFiles:
+      q.exec( u"DELETE FROM chunks WHERE source_type = 'file'"_s );
+      break;
+    case ReplaceScope::AllLayers:
+      q.exec( u"DELETE FROM chunks WHERE source_type = 'layer'"_s );
+      break;
+    case ReplaceScope::SingleLayer:
+    {
+      QSqlQuery del( db );
+      del.prepare( u"DELETE FROM chunks WHERE source_type = 'layer' AND layer_id = ?"_s );
+      del.addBindValue( scopedLayerId );
+      del.exec();
+      break;
+    }
+  }
 
   if ( !db.transaction() )
   {
@@ -273,12 +364,17 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString 
   }
 
   const qint64 nowMs = QDateTime::currentMSecsSinceEpoch();
-  q.prepare( u"INSERT INTO chunks (relative_path, chunk_index, text, embedding, last_sync) VALUES (?, ?, ?, ?, ?)"_s );
+  q.prepare( u"INSERT INTO chunks (source_type, relative_path, layer_id, feature_id_min, feature_id_max, chunk_index, text, wkt_blob, embedding, last_sync) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"_s );
   for ( const CachedChunk &c : chunks )
   {
+    q.addBindValue( c.chunk.sourceType.isEmpty() ? QString::fromLatin1( SOURCE_TYPE_FILE ) : c.chunk.sourceType );
     q.addBindValue( c.chunk.relativePath );
+    q.addBindValue( c.chunk.layerId.isEmpty() ? QVariant( QMetaType::fromType<QString>() ) : QVariant( c.chunk.layerId ) );
+    q.addBindValue( c.chunk.firstFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.firstFeatureId ) );
+    q.addBindValue( c.chunk.lastFeatureId < 0 ? QVariant( QMetaType::fromType<qint64>() ) : QVariant( c.chunk.lastFeatureId ) );
     q.addBindValue( c.chunk.chunkIndex );
     q.addBindValue( c.chunk.text );
+    q.addBindValue( c.chunk.wktBlob.isEmpty() ? QVariant( QMetaType::fromType<QByteArray>() ) : QVariant( c.chunk.wktBlob ) );
     q.addBindValue( vectorToBytes( c.embedding ) );
     q.addBindValue( nowMs );
     if ( !q.exec() )
@@ -295,6 +391,88 @@ bool QgsAiWorkspaceIndex::persistAll( const QList<CachedChunk> &chunks, QString 
       *errorMessage = db.lastError().text();
     return false;
   }
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::persistChunks( const QList<Chunk> &chunks, const QList<QVector<float>> &embeddings, ReplaceScope scope, const QString &scopedLayerId, QString *errorMessage )
+{
+  if ( chunks.size() != embeddings.size() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"persistChunks: chunks/embeddings size mismatch (%1 vs %2)"_s.arg( chunks.size() ).arg( embeddings.size() );
+    return false;
+  }
+
+  ensureLoaded();
+
+  QList<CachedChunk> built;
+  built.reserve( chunks.size() );
+  for ( int i = 0; i < chunks.size(); ++i )
+  {
+    CachedChunk cc;
+    cc.chunk = chunks.at( i );
+    if ( cc.chunk.sourceType.isEmpty() )
+      cc.chunk.sourceType = QString::fromLatin1( SOURCE_TYPE_FILE );
+    cc.embedding = embeddings.at( i );
+    built.append( cc );
+  }
+
+  if ( !persistAll( built, scope, scopedLayerId, errorMessage ) )
+    return false;
+
+  // Reflect the change in the in-memory cache without re-reading the DB.
+  switch ( scope )
+  {
+    case ReplaceScope::All:
+      mCache.clear();
+      break;
+    case ReplaceScope::AllFiles:
+      mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ); } ), mCache.end() );
+      break;
+    case ReplaceScope::AllLayers:
+      mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ); } ), mCache.end() );
+      break;
+    case ReplaceScope::SingleLayer:
+      mCache.erase( std::remove_if( mCache.begin(), mCache.end(), [&scopedLayerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == scopedLayerId; } ), mCache.end() );
+      break;
+  }
+  mCache.append( built );
+  mLastSync = QDateTime::currentDateTimeUtc();
+  mLoaded = true;
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::removeLayer( const QString &layerId, QString *errorMessage )
+{
+  if ( layerId.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"removeLayer: empty layerId."_s;
+    return false;
+  }
+
+  ensureLoaded();
+
+  const QString path = dbPath();
+  if ( !path.isEmpty() && QFileInfo::exists( path ) )
+  {
+    QSqlDatabase db = QSqlDatabase::contains( connectionName() ) ? QSqlDatabase::database( connectionName() ) : QSqlDatabase::addDatabase( u"QSQLITE"_s, connectionName() );
+    db.setDatabaseName( path );
+    if ( db.open() )
+    {
+      QSqlQuery del( db );
+      del.prepare( u"DELETE FROM chunks WHERE source_type = 'layer' AND layer_id = ?"_s );
+      del.addBindValue( layerId );
+      if ( !del.exec() )
+      {
+        if ( errorMessage )
+          *errorMessage = del.lastError().text();
+        return false;
+      }
+    }
+  }
+
+  mCache.erase( std::remove_if( mCache.begin(), mCache.end(), [&layerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == layerId; } ), mCache.end() );
   return true;
 }
 
@@ -334,10 +512,11 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
 
   if ( eligible.isEmpty() )
   {
-    mCache.clear();
+    // Clear file chunks from cache; preserve any existing layer chunks.
+    mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
-    persistAll( {}, &err );
+    persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
     return true;
   }
 
@@ -370,10 +549,10 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
 
   if ( textsToEmbed.isEmpty() )
   {
-    mCache.clear();
+    mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
-    persistAll( {}, &err );
+    persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
     return true;
   }
 
@@ -390,10 +569,12 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   for ( int i = 0; i < vectors.size(); ++i )
     built[backRefIndex.at( i )].embedding = vectors.at( i );
 
-  if ( !persistAll( built, errorMessage ) )
+  if ( !persistAll( built, ReplaceScope::AllFiles, QString(), errorMessage ) )
     return false;
 
-  mCache = built;
+  // Replace only file chunks in the cache; preserve any existing layer chunks.
+  mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
+  mCache.append( built );
   mLastSync = QDateTime::currentDateTimeUtc();
   mLoaded = true;
   QgsMessageLog::logMessage( u"Workspace index built: files=%1 chunks=%2"_s.arg( eligible.size() ).arg( built.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
@@ -446,6 +627,123 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiWorkspaceIndex::search( const QString &qu
     results.append( c );
   }
   return results;
+}
+
+namespace
+{
+  QList<QgsAiWorkspaceIndex::Chunk> chunksForLayer( QgsMapLayer *layer )
+  {
+    if ( !layer )
+      return {};
+    if ( QgsVectorLayer *v = qobject_cast<QgsVectorLayer *>( layer ) )
+      return QgsAiLayerChunker::chunkVector( v );
+    if ( QgsRasterLayer *r = qobject_cast<QgsRasterLayer *>( layer ) )
+      return QgsAiLayerChunker::chunkRaster( r );
+    return {};
+  }
+} // namespace
+
+bool QgsAiWorkspaceIndex::reindexLayers( QString *errorMessage )
+{
+  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"OpenAI API key is required for embeddings; configure it in AI Provider Settings."_s;
+    return false;
+  }
+
+  ensureLoaded();
+
+  QgsProject *project = QgsProject::instance();
+  if ( !project )
+  {
+    if ( errorMessage )
+      *errorMessage = u"No active QgsProject available."_s;
+    return false;
+  }
+
+  QList<Chunk> allChunks;
+  const QMap<QString, QgsMapLayer *> layers = project->mapLayers();
+  int processed = 0;
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    emit progress( ++processed, layers.size(), it.value() ? it.value()->name() : QString() );
+    allChunks.append( chunksForLayer( it.value() ) );
+  }
+
+  if ( allChunks.isEmpty() )
+  {
+    // Nothing to embed — drop existing layer chunks and we're done.
+    return persistChunks( {}, {}, ReplaceScope::AllLayers, QString(), errorMessage );
+  }
+
+  QStringList textsToEmbed;
+  textsToEmbed.reserve( allChunks.size() );
+  for ( const Chunk &c : allChunks )
+    textsToEmbed.append( c.text );
+
+  QList<QVector<float>> vectors;
+  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+    return false;
+  if ( vectors.size() != allChunks.size() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Embedding count mismatch: expected %1 got %2"_s.arg( allChunks.size() ).arg( vectors.size() );
+    return false;
+  }
+
+  if ( !persistChunks( allChunks, vectors, ReplaceScope::AllLayers, QString(), errorMessage ) )
+    return false;
+
+  QgsMessageLog::logMessage( u"Workspace index: layer reindex done — layers=%1 chunks=%2"_s.arg( layers.size() ).arg( allChunks.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+  return true;
+}
+
+bool QgsAiWorkspaceIndex::reindexLayer( const QString &layerId, QString *errorMessage )
+{
+  if ( layerId.isEmpty() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"reindexLayer: empty layerId."_s;
+    return false;
+  }
+  if ( !mEmbeddingClient || !mEmbeddingClient->hasApiKey() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"OpenAI API key is required for embeddings."_s;
+    return false;
+  }
+
+  ensureLoaded();
+
+  QgsProject *project = QgsProject::instance();
+  QgsMapLayer *layer = project ? project->mapLayer( layerId ) : nullptr;
+  if ( !layer )
+  {
+    // Layer no longer exists — treat as removal so the index stays consistent.
+    return removeLayer( layerId, errorMessage );
+  }
+
+  const QList<Chunk> chunks = chunksForLayer( layer );
+  if ( chunks.isEmpty() )
+    return persistChunks( {}, {}, ReplaceScope::SingleLayer, layerId, errorMessage );
+
+  QStringList textsToEmbed;
+  textsToEmbed.reserve( chunks.size() );
+  for ( const Chunk &c : chunks )
+    textsToEmbed.append( c.text );
+
+  QList<QVector<float>> vectors;
+  if ( !mEmbeddingClient->embed( textsToEmbed, vectors, errorMessage, EMBEDDING_BATCH ) )
+    return false;
+  if ( vectors.size() != chunks.size() )
+  {
+    if ( errorMessage )
+      *errorMessage = u"Embedding count mismatch: expected %1 got %2"_s.arg( chunks.size() ).arg( vectors.size() );
+    return false;
+  }
+
+  return persistChunks( chunks, vectors, ReplaceScope::SingleLayer, layerId, errorMessage );
 }
 
 void QgsAiWorkspaceIndex::clear()

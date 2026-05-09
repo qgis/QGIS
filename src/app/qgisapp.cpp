@@ -93,6 +93,7 @@ using namespace Qt::StringLiterals;
 #include "qgsdevtoolspanelwidget.h"
 #ifdef HAVE_AI_ASSISTANT
 #include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaichatdockwidget.h"
@@ -1410,10 +1411,15 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiSearchWorkspaceTool>( mAiWorkspaceIndex.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexWorkspaceTool>( mAiWorkspaceIndex.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
+  mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
+  mAiLayerIndexCoordinator->setEnabled( QgsSettings().value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
+  mAiSessionManager->setWorkspaceIndex( mAiWorkspaceIndex.get() );
 
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
+  mAiChatDock->setLayerIndexCoordinator( mAiLayerIndexCoordinator.get() );
   mAiChatDock->setWindowTitle( tr( "AI Assistant" ) );
   mAiChatDock->setObjectName( u"AiAssistant"_s );
   addDockWidget( Qt::RightDockWidgetArea, mAiChatDock );

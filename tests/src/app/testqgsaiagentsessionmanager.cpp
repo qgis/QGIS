@@ -6,6 +6,8 @@
 
 #include <memory>
 
+#include "ai/index/qgsaiembeddingclient.h"
+#include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
@@ -15,11 +17,13 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QByteArray>
 #include <QDir>
 #include <QFile>
 #include <QSignalSpy>
 #include <QString>
 #include <QTemporaryDir>
+#include <QVector>
 
 using namespace Qt::StringLiterals;
 
@@ -37,6 +41,9 @@ class TestQgsAiAgentSessionManager : public QObject
     void collectsInlineRulesAndSkills();
     void collectsWorkspaceRulesFiles();
     void rejectsRulesFolderOutsideWorkspace();
+    void formatRetrievedContextRendersFileAndLayerHeaders();
+    void formatRetrievedContextTruncatesOverBudget();
+    void retrievalSkippedWithoutWorkspaceIndex();
 };
 
 void TestQgsAiAgentSessionManager::createsPatchProposalFromCommand()
@@ -273,6 +280,85 @@ void TestQgsAiAgentSessionManager::rejectsRulesFolderOutsideWorkspace()
   QVERIFY( manager.collectRulesContent().isEmpty() );
 
   settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::formatRetrievedContextRendersFileAndLayerHeaders()
+{
+  QList<QgsAiWorkspaceIndex::Chunk> chunks;
+
+  QgsAiWorkspaceIndex::Chunk fileChunk;
+  fileChunk.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_FILE );
+  fileChunk.relativePath = u"src/foo.cpp"_s;
+  fileChunk.chunkIndex = 2;
+  fileChunk.text = u"some file body"_s;
+  fileChunk.score = 0.91f;
+  chunks << fileChunk;
+
+  QgsAiWorkspaceIndex::Chunk layerChunk;
+  layerChunk.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER );
+  layerChunk.relativePath = u"Comuni"_s;
+  layerChunk.layerId = u"layer-xyz"_s;
+  layerChunk.firstFeatureId = 12;
+  layerChunk.lastFeatureId = 50;
+  layerChunk.text = u"comune attribute body"_s;
+  layerChunk.wktBlob = qCompress( QByteArray( "POINT(1 2)" ) );
+  layerChunk.score = 0.83f;
+  chunks << layerChunk;
+
+  const QString out = QgsAiAgentSessionManager::formatRetrievedContext( chunks );
+  QVERIFY( out.contains( u"== Retrieved context =="_s ) );
+  QVERIFY( out.contains( u"[file:src/foo.cpp chunk=2 score=0.910]"_s ) );
+  QVERIFY( out.contains( u"some file body"_s ) );
+  QVERIFY( out.contains( u"[layer:Comuni id=layer-xyz fid=12-50 score=0.830]"_s ) );
+  QVERIFY( out.contains( u"comune attribute body"_s ) );
+  QVERIFY( out.contains( u"WKT:"_s ) );
+  QVERIFY( out.contains( u"POINT(1 2)"_s ) );
+}
+
+void TestQgsAiAgentSessionManager::formatRetrievedContextTruncatesOverBudget()
+{
+  QList<QgsAiWorkspaceIndex::Chunk> chunks;
+  for ( int i = 0; i < 100; ++i )
+  {
+    QgsAiWorkspaceIndex::Chunk c;
+    c.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_FILE );
+    c.relativePath = u"f.txt"_s;
+    c.chunkIndex = i;
+    c.text = QString( 200, QLatin1Char( 'X' ) );
+    c.score = 0.5f;
+    chunks << c;
+  }
+
+  // Cap = ~600 bytes: only the first couple of chunks fit, the rest must be truncated.
+  const int cap = 600;
+  const QString out = QgsAiAgentSessionManager::formatRetrievedContext( chunks, cap );
+  QVERIFY( out.contains( u"…[retrieved context truncated at %1 bytes]"_s.arg( cap ) ) );
+  QVERIFY( out.size() < cap + 200 );
+}
+
+void TestQgsAiAgentSessionManager::retrievalSkippedWithoutWorkspaceIndex()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+
+  // No workspace index attached: even after a user message arrives, no
+  // retrieval helper string is produced (no embedding call is made).
+  manager.sendUserMessage( u"hello"_s );
+  QCOMPARE( manager.workspaceIndex(), static_cast<QgsAiWorkspaceIndex *>( nullptr ) );
+
+  // Attach an empty index: same outcome — retrieval must short-circuit on
+  // status().chunkCount == 0 instead of calling the embedding client.
+  QgsAiEmbeddingClient client;
+  QgsAiWorkspaceIndex emptyIndex( &contextProvider, &client );
+  manager.setWorkspaceIndex( &emptyIndex );
+  QCOMPARE( emptyIndex.status().chunkCount, 0 );
+  // Re-send: no crash, no error. We rely on the lack of API key in QgsSettings —
+  // if retrieval were attempted, it would log "API key required"; but since the
+  // index is empty, retrieveContextForLastUserMessage() returns "" beforehand.
+  manager.sendUserMessage( u"second"_s );
 }
 
 QGSTEST_MAIN( TestQgsAiAgentSessionManager )

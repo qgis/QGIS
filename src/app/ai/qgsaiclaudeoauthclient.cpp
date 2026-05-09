@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QCryptographicHash>
 #include <QEventLoop>
@@ -117,6 +118,15 @@ namespace
     return object;
   }
 
+  QString refreshTokenPresenceFlagKey()
+  {
+    // Non-secret flag mirroring whether a refresh token exists in the encrypted
+    // auth manager vault. Reading the flag does not unlock the vault, so UI
+    // surfaces (e.g. "Signed in / Not signed in" labels) can be rendered
+    // without prompting for the QGIS master password.
+    return u"ai/provider/claude/oauth/has_refresh_token"_s;
+  }
+
   bool storeRefreshToken( const QString &refreshToken, QString *errorMessage )
   {
     QgsAuthManager *authManager = QgsApplication::authManager();
@@ -132,6 +142,7 @@ namespace
         *errorMessage = u"Unable to store Claude refresh token securely."_s;
       return false;
     }
+    QgsSettings().setValue( refreshTokenPresenceFlagKey(), true );
     return true;
   }
 
@@ -244,7 +255,7 @@ bool QgsAiClaudeOAuthClient::refreshAccessToken( TokenSet &tokens, QString *erro
 
 bool QgsAiClaudeOAuthClient::hasRefreshToken()
 {
-  return !storedRefreshToken().isEmpty();
+  return QgsSettings().value( refreshTokenPresenceFlagKey(), false ).toBool();
 }
 
 bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
@@ -258,7 +269,10 @@ bool QgsAiClaudeOAuthClient::clearRefreshToken( QString *errorMessage )
   }
   if ( !hasRefreshToken() )
     return true;
-  return authManager->removeAuthSetting( refreshTokenSettingKey() );
+  if ( !authManager->removeAuthSetting( refreshTokenSettingKey() ) )
+    return false;
+  QgsSettings().remove( refreshTokenPresenceFlagKey() );
+  return true;
 }
 
 QString QgsAiClaudeOAuthClient::refreshTokenSettingKey()

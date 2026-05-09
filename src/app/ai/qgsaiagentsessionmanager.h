@@ -20,6 +20,7 @@
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"
 #include "qgsaitool.h"
+#include "ai/index/qgsaiworkspaceindex.h"
 
 #include <QList>
 #include <QObject>
@@ -30,9 +31,6 @@ using namespace Qt::StringLiterals;
 class QgsAiFileContextProvider;
 class QgsAiReviewPatchEngine;
 class QgsAiToolRegistry;
-class QgsMapLayer;
-class QgsVectorLayer;
-class QgsRasterLayer;
 
 struct APP_EXPORT QgsAiChatContextFile
 {
@@ -90,6 +88,25 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
 
     /**
+     * Sets the workspace RAG index used to retrieve relevant chunks for each
+     * user message before contacting the model. Pass nullptr to disable retrieval.
+     */
+    void setWorkspaceIndex( QgsAiWorkspaceIndex *index ) { mWorkspaceIndex = index; }
+    QgsAiWorkspaceIndex *workspaceIndex() const { return mWorkspaceIndex; }
+
+    //! Maximum number of chunks injected into the system prompt for a single turn.
+    static constexpr int RETRIEVAL_TOP_K = 8;
+    //! Hard byte cap for the "Retrieved context" block appended to the system prompt.
+    static constexpr int RETRIEVAL_BYTE_CAP = 64 * 1024;
+
+    /**
+     * Renders \a chunks as a textual block ready to be appended to the system prompt.
+     * Truncates with a marker if the total size exceeds \a byteCap. Public for
+     * unit-testing the formatting in isolation.
+     */
+    static QString formatRetrievedContext( const QList<QgsAiWorkspaceIndex::Chunk> &chunks, int byteCap = RETRIEVAL_BYTE_CAP );
+
+    /**
      * Returns the current agent behaviour settings (rules, skills, custom actions toggle).
      * The values are kept in sync with QgsSettings.
      */
@@ -127,10 +144,8 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QgsAiChatMessage buildToolResultMessage( const QgsAiToolCall &call, const QgsAiToolResult &result ) const;
     QString buildContextSummary( const QList<QgsAiChatContextFile> &contextFiles, bool &contextBlocked ) const;
     bool tryBuildPatchProposal( const QString &text, QgsAiPatchProposal &proposal ) const;
-    QString buildSystemPrompt() const;
-    QString buildLayerDataDump() const;
-    QString dumpVectorLayer( QgsVectorLayer *layer ) const;
-    QString dumpRasterLayer( QgsRasterLayer *layer ) const;
+    QString buildSystemPrompt( const QString &extraContext = QString() ) const;
+    QString retrieveContextForLastUserMessage() const;
     //! Per-profile folder where Processing Toolbox picks up user scripts.
     static QString processingScriptsFolder();
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;
@@ -155,6 +170,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString mStreamedText;
     int mToolIterations = 0;
     QgsAiAgentBehaviorSettings mBehaviorSettings;
+    QgsAiWorkspaceIndex *mWorkspaceIndex = nullptr;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H
