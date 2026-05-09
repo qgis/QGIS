@@ -159,7 +159,7 @@ class CORE_EXPORT QgsGltfUtils
      * and stores the result in the given \a model. Returns true on success.
      * May set \a errors and/or \a warnings if they are not null pointers.
      */
-    static bool loadGltfModel( const QByteArray &data, tinygltf::Model &model, QString *errors, QString *warnings );
+    static bool loadGltfModel( const QByteArray &data, tinygltf::Model &model, QString *errors, QString *warnings, const QString &baseDir = QString() );
 
     /**
      * Returns the index for the scene to load from a \a model.
