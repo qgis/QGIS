@@ -15,8 +15,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSettings>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTextEdit>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsAiChatDockWidget : public QObject
 {
@@ -39,12 +42,12 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
   QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
 
-  QLabel *runtimeLabel = dock.findChild<QLabel *>( QStringLiteral( "aiRuntimeStatusLabel" ) );
-  QPushButton *cancelButton = dock.findChild<QPushButton *>( QStringLiteral( "aiCancelRequestButton" ) );
+  QLabel *runtimeLabel = dock.findChild<QLabel *>( u"aiRuntimeStatusLabel"_s );
+  QPushButton *cancelButton = dock.findChild<QPushButton *>( u"aiCancelRequestButton"_s );
   QVERIFY( runtimeLabel );
   QVERIFY( cancelButton );
   QVERIFY( !cancelButton->isEnabled() );
-  QVERIFY( runtimeLabel->text().contains( QStringLiteral( "idle" ), Qt::CaseInsensitive ) );
+  QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
 }
 
 void TestQgsAiChatDockWidget::doesNotDuplicateStreamedAssistantResponse()
@@ -72,14 +75,14 @@ void TestQgsAiChatDockWidget::doesNotDuplicateStreamedAssistantResponse()
 
   QgsAiChatMessage assistantMessage;
   assistantMessage.role = QgsAiChatRole::Assistant;
-  assistantMessage.content = QStringLiteral( "Ciao! Come posso aiutarti con QGIS oggi?" );
+  assistantMessage.content = u"Ciao! Come posso aiutarti con QGIS oggi?"_s;
 
-  manager.responseChunkReceived( QStringLiteral( "Ciao! Come posso " ) );
-  manager.responseChunkReceived( QStringLiteral( "aiutarti con QGIS oggi?" ) );
-  QCOMPARE( transcript->toPlainText(), QStringLiteral( "[assistant] Ciao! Come posso aiutarti con QGIS oggi?" ) );
+  manager.responseChunkReceived( u"Ciao! Come posso "_s );
+  manager.responseChunkReceived( u"aiutarti con QGIS oggi?"_s );
+  QCOMPARE( transcript->toPlainText(), u"[assistant] Ciao! Come posso aiutarti con QGIS oggi?"_s );
 
   manager.messageAdded( assistantMessage );
-  QCOMPARE( transcript->toPlainText(), QStringLiteral( "[assistant] Ciao! Come posso aiutarti con QGIS oggi?" ) );
+  QCOMPARE( transcript->toPlainText(), u"[assistant] Ciao! Come posso aiutarti con QGIS oggi?"_s );
 }
 
 void TestQgsAiChatDockWidget::layerIndexingConsentPolicy()

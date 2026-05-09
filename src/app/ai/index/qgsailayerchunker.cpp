@@ -28,6 +28,7 @@
 #include "qgswkbtypes.h"
 
 #include <QByteArray>
+#include <QString>
 #include <QStringList>
 
 using namespace Qt::StringLiterals;
@@ -50,11 +51,7 @@ namespace
     if ( !geom.isNull() )
     {
       const QgsRectangle r = geom.boundingBox();
-      bbox = u"(%1,%2,%3,%4)"_s
-               .arg( r.xMinimum() )
-               .arg( r.yMinimum() )
-               .arg( r.xMaximum() )
-               .arg( r.yMaximum() );
+      bbox = u"(%1,%2,%3,%4)"_s.arg( r.xMinimum() ).arg( r.yMinimum() ).arg( r.xMaximum() ).arg( r.yMaximum() );
     }
 
     return u"[%1] %2; bbox=%3; type=%4"_s.arg( feature.id() ).arg( kv.join( "; "_L1 ), bbox, geometryType );
@@ -76,12 +73,7 @@ namespace
     for ( int b = 1; b <= layer->bandCount(); ++b )
     {
       const QgsRasterBandStats stats = dp->bandStatistics( b );
-      out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s
-               .arg( b )
-               .arg( stats.minimumValue )
-               .arg( stats.maximumValue )
-               .arg( stats.mean )
-               .arg( stats.stdDev );
+      out += u"band %1: min=%2 max=%3 mean=%4 stddev=%5\n"_s.arg( b ).arg( stats.minimumValue ).arg( stats.maximumValue ).arg( stats.mean ).arg( stats.stdDev );
     }
     return out;
   }
@@ -95,9 +87,7 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
 
   const QgsFields fields = layer->fields();
   const QString geometryType = QgsWkbTypes::geometryDisplayString( layer->geometryType() );
-  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4, fields=%5)\n"_s
-                           .arg( layer->name(), layer->id(), layer->crs().authid(), geometryType )
-                           .arg( fields.size() );
+  const QString header = u"Vector layer '%1' (id=%2, crs=%3, geometry=%4, fields=%5)\n"_s.arg( layer->name(), layer->id(), layer->crs().authid(), geometryType ).arg( fields.size() );
 
   QString currentText = header;
   QByteArray currentWkts;

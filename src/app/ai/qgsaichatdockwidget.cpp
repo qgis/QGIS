@@ -18,10 +18,10 @@
 #include <algorithm>
 #include <utility>
 
-#include "qgisapp.h"
-#include "qgsaiagentsessionmanager.h"
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
+#include "qgisapp.h"
+#include "qgsaiagentsessionmanager.h"
 #include "qgsaiclaudeoauthclient.h"
 #include "qgsaicodexoauthclient.h"
 #include "qgsaimodelrouter.h"
@@ -1062,7 +1062,9 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QCheckBox *enableLayerIndexing = new QCheckBox( tr( "Enable layer indexing (auto reindex on layer add/remove/edit)" ), &dialog );
   enableLayerIndexing->setChecked( layerIndexingEnabled );
-  enableLayerIndexing->setToolTip( tr( "When enabled, layer attributes and bounding boxes are sent to the OpenAI embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." ) );
+  enableLayerIndexing->setToolTip(
+    tr( "When enabled, layer attributes and bounding boxes are sent to the OpenAI embeddings endpoint and indexed locally so the assistant can ground its answers on actual layer data." )
+  );
   indexingForm->addRow( QString(), enableLayerIndexing );
 
   QLabel *indexStatusLabel = new QLabel( &dialog );
@@ -1108,7 +1110,8 @@ void QgsAiChatDockWidget::openProviderSettings()
 
   QLabel *helpLabel = new QLabel(
     tr(
-      "OpenAI and Claude API keys are stored locally in QGIS settings. The Codex OAuth refresh token is stored locally in QGIS settings; the Claude OAuth refresh token is stored in the encrypted QGIS authentication store. Leave API key fields empty to keep "
+      "OpenAI and Claude API keys are stored locally in QGIS settings. The Codex OAuth refresh token is stored locally in QGIS settings; the Claude OAuth refresh token is stored in the encrypted "
+      "QGIS authentication store. Leave API key fields empty to keep "
       "the current saved value.\n\nAgent rules and skills are stored locally in QGIS settings. When the workspace toggle is enabled, .md/.txt files inside the configured folder are appended to the "
       "prompt. Custom actions remain subject to the existing review/approval dialogs."
     ),
@@ -1299,7 +1302,10 @@ void QgsAiChatDockWidget::openProviderSettings()
       const auto choice = QMessageBox::question(
         &dialog,
         tr( "Enable layer indexing" ),
-        tr( "Enabling layer indexing means QGIS_AI will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?" ),
+        tr(
+          "Enabling layer indexing means QGIS_AI will send the attributes and bounding boxes of every layer in your project to the OpenAI embeddings endpoint, using your configured API key. The "
+          "embeddings are stored locally; the data leaves your machine only during indexing.\n\nProceed?"
+        ),
         QMessageBox::Yes | QMessageBox::No,
         QMessageBox::No
       );

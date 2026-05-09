@@ -16,11 +16,11 @@
 #ifndef QGSAIAGENTSESSIONMANAGER_H
 #define QGSAIAGENTSESSIONMANAGER_H
 
+#include "ai/index/qgsaiworkspaceindex.h"
 #include "qgis_app.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"
 #include "qgsaitool.h"
-#include "ai/index/qgsaiworkspaceindex.h"
 
 #include <QList>
 #include <QObject>

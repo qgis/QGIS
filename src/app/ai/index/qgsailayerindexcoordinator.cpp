@@ -21,6 +21,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsailayerindexcoordinator.cpp"
 
 using namespace Qt::StringLiterals;

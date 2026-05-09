@@ -324,7 +324,7 @@ void TestQgsAiAgentSessionManager::formatRetrievedContextTruncatesOverBudget()
     c.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_FILE );
     c.relativePath = u"f.txt"_s;
     c.chunkIndex = i;
-    c.text = QString( 200, QLatin1Char( 'X' ) );
+    c.text = QString( 200, 'X'_L1 );
     c.score = 0.5f;
     chunks << c;
   }

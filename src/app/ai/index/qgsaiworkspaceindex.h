@@ -62,6 +62,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     /**
      * Scope of a persistChunks() call. Determines which existing rows are replaced.
+     *
      * - All: drop everything and write the new chunks.
      * - AllFiles: replace every chunk with source_type='file' (layer chunks preserved).
      * - AllLayers: replace every chunk with source_type='layer' (file chunks preserved).
@@ -159,6 +160,7 @@ class APP_EXPORT QgsAiWorkspaceIndex : public QObject
 
     /**
      * Returns the cached chunks (without embeddings), optionally filtered.
+     *
      * - scope=All: every chunk regardless of source.
      * - scope=AllFiles: only source_type='file'.
      * - scope=AllLayers: only source_type='layer'.

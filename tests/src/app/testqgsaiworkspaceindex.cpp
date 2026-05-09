@@ -15,7 +15,6 @@
 #include "qgsvectorlayer.h"
 
 #include <QJsonObject>
-
 #include <QString>
 #include <QTemporaryDir>
 #include <QVector>

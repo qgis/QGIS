@@ -37,8 +37,10 @@ class TestQgsAiLayerIndexCoordinator : public QObject
     void disabledCoordinatorIgnoresProjectSignals();
 
   private:
-    //! Copies the test points.shp (+ sidecars) into \a destDir so editingStopped
-    //! exercises a writable copy and never mutates the in-tree fixture.
+    /**
+     * Copies the test points.shp (+ sidecars) into \a destDir so editingStopped
+     * exercises a writable copy and never mutates the in-tree fixture.
+     */
     static QString copyPointsShapefile( const QString &destDir );
 };
 

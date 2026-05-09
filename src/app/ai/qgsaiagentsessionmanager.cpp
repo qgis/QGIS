@@ -600,18 +600,11 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
     QString header;
     if ( c.sourceType == QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER ) )
     {
-      header = u"[layer:%1 id=%2 fid=%3-%4 score=%5]"_s
-                 .arg( c.relativePath, c.layerId )
-                 .arg( c.firstFeatureId )
-                 .arg( c.lastFeatureId )
-                 .arg( c.score, 0, 'f', 3 );
+      header = u"[layer:%1 id=%2 fid=%3-%4 score=%5]"_s.arg( c.relativePath, c.layerId ).arg( c.firstFeatureId ).arg( c.lastFeatureId ).arg( c.score, 0, 'f', 3 );
     }
     else
     {
-      header = u"[file:%1 chunk=%2 score=%3]"_s
-                 .arg( c.relativePath )
-                 .arg( c.chunkIndex )
-                 .arg( c.score, 0, 'f', 3 );
+      header = u"[file:%1 chunk=%2 score=%3]"_s.arg( c.relativePath ).arg( c.chunkIndex ).arg( c.score, 0, 'f', 3 );
     }
 
     QString block = header + '\n' + c.text;
@@ -667,7 +660,8 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
   }
 
   const auto status = mWorkspaceIndex->status();
-  QgsMessageLog::logMessage( u"Retrieval: query='%1' indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.left( 80 ) ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+  QgsMessageLog::
+    logMessage( u"Retrieval: query='%1' indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.left( 80 ) ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
 
   if ( status.chunkCount == 0 )
     return QString();

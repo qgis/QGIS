@@ -433,7 +433,12 @@ bool QgsAiWorkspaceIndex::persistChunks( const QList<Chunk> &chunks, const QList
       mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ); } ), mCache.end() );
       break;
     case ReplaceScope::SingleLayer:
-      mCache.erase( std::remove_if( mCache.begin(), mCache.end(), [&scopedLayerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == scopedLayerId; } ), mCache.end() );
+      mCache.erase(
+        std::remove_if(
+          mCache.begin(), mCache.end(), [&scopedLayerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == scopedLayerId; }
+        ),
+        mCache.end()
+      );
       break;
   }
   mCache.append( built );
@@ -472,7 +477,10 @@ bool QgsAiWorkspaceIndex::removeLayer( const QString &layerId, QString *errorMes
     }
   }
 
-  mCache.erase( std::remove_if( mCache.begin(), mCache.end(), [&layerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == layerId; } ), mCache.end() );
+  mCache.erase(
+    std::remove_if( mCache.begin(), mCache.end(), [&layerId]( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_LAYER ) && c.chunk.layerId == layerId; } ),
+    mCache.end()
+  );
   return true;
 }
 
@@ -513,7 +521,9 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
   if ( eligible.isEmpty() )
   {
     // Clear file chunks from cache; preserve any existing layer chunks.
-    mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
+    mCache.erase(
+      std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end()
+    );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
     persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
@@ -549,7 +559,9 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
 
   if ( textsToEmbed.isEmpty() )
   {
-    mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
+    mCache.erase(
+      std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end()
+    );
     mLastSync = QDateTime::currentDateTimeUtc();
     QString err;
     persistAll( {}, ReplaceScope::AllFiles, QString(), &err );
@@ -573,7 +585,8 @@ bool QgsAiWorkspaceIndex::reindex( int maxFiles, QString *errorMessage )
     return false;
 
   // Replace only file chunks in the cache; preserve any existing layer chunks.
-  mCache.erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
+  mCache
+    .erase( std::remove_if( mCache.begin(), mCache.end(), []( const CachedChunk &c ) { return c.chunk.sourceType == QString::fromLatin1( SOURCE_TYPE_FILE ) || c.chunk.sourceType.isEmpty(); } ), mCache.end() );
   mCache.append( built );
   mLastSync = QDateTime::currentDateTimeUtc();
   mLoaded = true;
