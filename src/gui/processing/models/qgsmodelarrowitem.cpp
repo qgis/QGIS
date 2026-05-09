@@ -327,14 +327,14 @@ void QgsModelArrowItem::updatePath()
 
   if ( mStartIndex != -1 )
   {
-    startPt = mStartItem->linkPoint( mStartEdge, mStartIndex, !mStartIsOutgoing );
+    startPt = mStartItem->linkPoint( mStartEdge, mStartIndex );
     hasStartPt = true;
   }
   QPointF endPt;
   bool hasEndPt = false;
   if ( mEndIndex != -1 )
   {
-    endPt = mEndItem->linkPoint( mEndEdge, mEndIndex, mEndIsIncoming );
+    endPt = mEndItem->linkPoint( mEndEdge, mEndIndex );
     hasEndPt = true;
   }
 
