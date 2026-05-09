@@ -309,14 +309,25 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       appendOpenAiInputItems( message, input );
     payload.insert( u"input"_s, input );
 
+    QJsonArray toolSchemas;
     if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
+      toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
+
+    if ( provider == Provider::Codex )
     {
-      const QJsonArray toolSchemas = mToolRegistry->schemasJsonForFormat( QgsAiToolRegistry::WireFormat::OpenAiResponses );
-      if ( !toolSchemas.isEmpty() )
-      {
-        payload.insert( u"tools"_s, toolSchemas );
-        payload.insert( u"tool_choice"_s, u"auto"_s );
-      }
+      // The chatgpt.com Codex backend rejects requests that omit these fields
+      // (it mirrors the schema codex_cli_rs sends). Supply matching defaults.
+      payload.insert( u"tools"_s, toolSchemas );
+      payload.insert( u"tool_choice"_s, u"auto"_s );
+      payload.insert( u"parallel_tool_calls"_s, false );
+      payload.insert( u"reasoning"_s, QJsonValue() );
+      payload.insert( u"store"_s, false );
+      payload.insert( u"include"_s, QJsonArray() );
+    }
+    else if ( !toolSchemas.isEmpty() )
+    {
+      payload.insert( u"tools"_s, toolSchemas );
+      payload.insert( u"tool_choice"_s, u"auto"_s );
     }
   }
   else if ( provider == Provider::Claude )

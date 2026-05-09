@@ -17,8 +17,6 @@
 
 #include <algorithm>
 
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 
@@ -176,40 +174,15 @@ namespace
     return object;
   }
 
-  QString codexRefreshTokenPresenceFlagKey()
+  bool storeCodexRefreshToken( const QString &refreshToken, QString * )
   {
-    // Non-secret flag mirroring whether a refresh token exists in the encrypted
-    // auth manager vault. Reading the flag does not unlock the vault, so UI
-    // surfaces (e.g. "Signed in / Not signed in" labels) can be rendered
-    // without prompting for the QGIS master password.
-    return u"ai/provider/codex/oauth/has_refresh_token"_s;
-  }
-
-  bool storeCodexRefreshToken( const QString &refreshToken, QString *errorMessage )
-  {
-    QgsAuthManager *authManager = QgsApplication::authManager();
-    if ( !authManager )
-    {
-      if ( errorMessage )
-        *errorMessage = u"Authentication manager is unavailable."_s;
-      return false;
-    }
-    if ( !authManager->storeAuthSetting( QgsAiCodexOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed(), true ) )
-    {
-      if ( errorMessage )
-        *errorMessage = u"Unable to store Codex refresh token securely."_s;
-      return false;
-    }
-    QgsSettings().setValue( codexRefreshTokenPresenceFlagKey(), true );
+    QgsSettings().setValue( QgsAiCodexOAuthClient::refreshTokenSettingKey(), refreshToken.trimmed() );
     return true;
   }
 
   QString storedCodexRefreshToken()
   {
-    QgsAuthManager *authManager = QgsApplication::authManager();
-    if ( !authManager )
-      return QString();
-    return authManager->authSetting( QgsAiCodexOAuthClient::refreshTokenSettingKey(), QVariant(), true ).toString().trimmed();
+    return QgsSettings().value( QgsAiCodexOAuthClient::refreshTokenSettingKey() ).toString().trimmed();
   }
 
   void sleepWithEvents( int seconds )
@@ -352,23 +325,12 @@ bool QgsAiCodexOAuthClient::refreshAccessToken( TokenSet &tokens, QString *error
 
 bool QgsAiCodexOAuthClient::hasRefreshToken()
 {
-  return QgsSettings().value( codexRefreshTokenPresenceFlagKey(), false ).toBool();
+  return !QgsSettings().value( refreshTokenSettingKey() ).toString().isEmpty();
 }
 
-bool QgsAiCodexOAuthClient::clearRefreshToken( QString *errorMessage )
+bool QgsAiCodexOAuthClient::clearRefreshToken( QString * )
 {
-  QgsAuthManager *authManager = QgsApplication::authManager();
-  if ( !authManager )
-  {
-    if ( errorMessage )
-      *errorMessage = u"Authentication manager is unavailable."_s;
-    return false;
-  }
-  if ( !hasRefreshToken() )
-    return true;
-  if ( !authManager->removeAuthSetting( refreshTokenSettingKey() ) )
-    return false;
-  QgsSettings().remove( codexRefreshTokenPresenceFlagKey() );
+  QgsSettings().remove( refreshTokenSettingKey() );
   return true;
 }
 

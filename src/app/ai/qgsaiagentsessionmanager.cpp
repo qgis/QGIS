@@ -640,9 +640,15 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
 QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
 {
   if ( !mWorkspaceIndex )
+  {
+    QgsMessageLog::logMessage( u"Retrieval: mWorkspaceIndex is null — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
     return QString();
+  }
   if ( mHistory.isEmpty() )
+  {
+    QgsMessageLog::logMessage( u"Retrieval: history is empty — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
     return QString();
+  }
 
   // Find the most recent user message — the one we are about to answer.
   QString query;
@@ -655,23 +661,27 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
     }
   }
   if ( query.trimmed().isEmpty() )
+  {
+    QgsMessageLog::logMessage( u"Retrieval: no user message found in history — skipping."_s, u"AI/Index"_s, Qgis::MessageLevel::Info, false );
     return QString();
+  }
 
-  // Skip retrieval entirely if the index is empty: avoid paying for the query
-  // embedding when there is nothing to retrieve.
-  if ( mWorkspaceIndex->status().chunkCount == 0 )
+  const auto status = mWorkspaceIndex->status();
+  QgsMessageLog::logMessage( u"Retrieval: query='%1' indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.left( 80 ) ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+
+  if ( status.chunkCount == 0 )
     return QString();
 
   QString err;
   const QList<QgsAiWorkspaceIndex::Chunk> hits = mWorkspaceIndex->search( query, RETRIEVAL_TOP_K, &err );
-  if ( hits.isEmpty() )
-  {
-    if ( !err.isEmpty() )
-      QgsMessageLog::logMessage( u"Retrieval skipped: %1"_s.arg( err ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
-    return QString();
-  }
+  QgsMessageLog::logMessage( u"Retrieval: hits=%1 err=%2"_s.arg( hits.size() ).arg( err.isEmpty() ? u"(none)"_s : err ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
 
-  return formatRetrievedContext( hits, RETRIEVAL_BYTE_CAP );
+  if ( hits.isEmpty() )
+    return QString();
+
+  const QString formatted = formatRetrievedContext( hits, RETRIEVAL_BYTE_CAP );
+  QgsMessageLog::logMessage( u"Retrieval: injected %1 bytes of context"_s.arg( formatted.size() ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
+  return formatted;
 }
 
 QString QgsAiAgentSessionManager::processingScriptsFolder()
