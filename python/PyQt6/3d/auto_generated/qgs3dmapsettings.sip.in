@@ -594,7 +594,7 @@ Returns whether the scene updates on camera movement
 .. versionadded:: 3.42
 %End
 
-    void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
+ void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size ) /Deprecated="Since 4.2. Shadow debugging is no longer supported."/;
 %Docstring
 Sets the debugging settings of the shadow map
 
@@ -604,19 +604,36 @@ Sets the debugging settings of the shadow map
 
 .. seealso:: :py:func:`debugShadowMapSize`
 
-.. versionadded:: 3.18
+.. deprecated:: 4.2
+
+   Shadow debugging is no longer supported.
 %End
-    bool debugShadowMapEnabled() const;
+
+ bool debugShadowMapEnabled() const /Deprecated="Since 4.2. Shadow debugging is no longer supported."/;
 %Docstring
-Returns whether the shadow map debugging is enabled
+Returns whether the shadow map debugging is enabled.
+
+.. deprecated:: 4.2
+
+   Shadow debugging is no longer supported.
 %End
-    Qt::Corner debugShadowMapCorner() const;
+
+ Qt::Corner debugShadowMapCorner() const /Deprecated="Since 4.2. Shadow debugging is no longer supported."/;
 %Docstring
 Returns the corner where the shadow map preview is displayed
+
+.. deprecated:: 4.2
+
+   Shadow debugging is no longer supported.
 %End
-    double debugShadowMapSize() const;
+
+ double debugShadowMapSize() const /Deprecated="Since 4.2. Shadow debugging is no longer supported."/;
 %Docstring
-Returns the size of the shadow map preview
+Returns the size of the shadow map preview.
+
+.. deprecated:: 4.2
+
+   Shadow debugging is no longer supported.
 %End
 
     void setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size );
@@ -1118,11 +1135,13 @@ Emitted when the MSAA enabled flag has changed
 .. versionadded:: 4.2
 %End
 
-    void debugShadowMapSettingsChanged();
+ void debugShadowMapSettingsChanged() /Deprecated="Since 4.2. Shadow debugging is no longer supported."/;
 %Docstring
 Emitted when shadow map debugging has changed
 
-.. versionadded:: 3.18
+.. deprecated:: 4.2
+
+   Shadow debugging is no longer supported.
 %End
 
     void debugDepthMapSettingsChanged();

@@ -522,15 +522,27 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see debugShadowMapEnabled()
      * \see debugShadowMapCorner()
      * \see debugShadowMapSize()
-     * \since QGIS 3.18
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
      */
-    void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
-    //! Returns whether the shadow map debugging is enabled
-    bool debugShadowMapEnabled() const;
-    //! Returns the corner where the shadow map preview is displayed
-    Qt::Corner debugShadowMapCorner() const;
-    //! Returns the size of the shadow map preview
-    double debugShadowMapSize() const;
+    Q_DECL_DEPRECATED void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size ) SIP_DEPRECATED;
+
+    /**
+     * Returns whether the shadow map debugging is enabled.
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED bool debugShadowMapEnabled() const SIP_DEPRECATED;
+
+    /**
+     * Returns the corner where the shadow map preview is displayed
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED Qt::Corner debugShadowMapCorner() const SIP_DEPRECATED;
+
+    /**
+     * Returns the size of the shadow map preview.
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
+     */
+    Q_DECL_DEPRECATED double debugShadowMapSize() const SIP_DEPRECATED;
 
     /**
      * Sets the debugging settings of the depth map
@@ -995,9 +1007,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Emitted when shadow map debugging has changed
-     * \since QGIS 3.18
+     * \deprecated QGIS 4.2. Shadow debugging is no longer supported.
      */
-    void debugShadowMapSettingsChanged();
+    Q_DECL_DEPRECATED void debugShadowMapSettingsChanged() SIP_DEPRECATED;
 
     /**
      * Emitted when depth map debugging has changed
@@ -1187,10 +1199,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     Qgis::ViewSyncModeFlags mViewSyncMode;
     bool mVisualizeViewFrustum = false;
-
-    bool mDebugShadowMapEnabled = false;
-    Qt::Corner mDebugShadowMapCorner = Qt::Corner::TopLeftCorner;
-    double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
     Qt::Corner mDebugDepthMapCorner = Qt::Corner::BottomLeftCorner;

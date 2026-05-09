@@ -361,7 +361,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onAmbientOcclusionSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onMsaaEnabledChanged();
-    void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();

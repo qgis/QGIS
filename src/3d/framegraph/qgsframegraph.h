@@ -233,12 +233,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
 
     /**
-     * Updates settings for shadows debug map
-     * \since QGIS 3.44
-     */
-    void updateDebugShadowMapSettings( const Qgs3DMapSettings &settings );
-
-    /**
      * Updates settings for depth debug map
      * \since QGIS 3.44
      */
@@ -302,8 +296,6 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
-    //! shadow texture debugging
-    QgsOverlayTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
     QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 

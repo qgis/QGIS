@@ -409,33 +409,6 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
   }
 }
 
-void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
-{
-  QgsOverlayTextureRenderView *debugRenderView = dynamic_cast<QgsOverlayTextureRenderView *>( mRenderViewMap[OVERLAY_RENDERVIEW].get() );
-  if ( !debugRenderView )
-    return;
-
-  if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
-  {
-    Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
-    mShadowTextureDebugging = new QgsOverlayTextureEntity( shadowDepthTexture, debugRenderView->overlayLayer(), this );
-  }
-
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
-
-  if ( mShadowTextureDebugging )
-  {
-    mShadowTextureDebugging->setEnabled( settings.debugShadowMapEnabled() );
-    if ( settings.debugShadowMapEnabled() )
-      mShadowTextureDebugging->setPosition( settings.debugShadowMapCorner(), settings.debugShadowMapSize() );
-    else
-    {
-      delete mShadowTextureDebugging;
-      mShadowTextureDebugging = nullptr;
-    }
-  }
-}
-
 void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &settings )
 {
   QgsOverlayTextureRenderView *debugRenderView = dynamic_cast<QgsOverlayTextureRenderView *>( mRenderViewMap[OVERLAY_RENDERVIEW].get() );
@@ -448,7 +421,7 @@ void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &setting
     mDepthTextureDebugging = new QgsOverlayTextureEntity( forwardDepthTexture, debugRenderView->overlayLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
+  debugRenderView->setEnabled( settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
 
   if ( mDepthTextureDebugging )
   {
