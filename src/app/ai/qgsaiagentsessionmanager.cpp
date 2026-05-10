@@ -659,6 +659,10 @@ QString QgsAiAgentSessionManager::retrieveContextForLastUserMessage() const
     return QString();
   }
 
+  // Force the on-disk SQLite store into mCache before trusting status().
+  // On a fresh QGIS session the cache is empty until ensureLoaded() runs,
+  // and we'd skip retrieval silently while the index has thousands of chunks.
+  mWorkspaceIndex->ensureLoaded();
   const auto status = mWorkspaceIndex->status();
   QgsMessageLog::
     logMessage( u"Retrieval: query='%1' indexChunks=%2 (file=%3 layer=%4)"_s.arg( query.left( 80 ) ).arg( status.chunkCount ).arg( status.fileChunkCount ).arg( status.layerChunkCount ), u"AI/Index"_s, Qgis::MessageLevel::Info, false );
