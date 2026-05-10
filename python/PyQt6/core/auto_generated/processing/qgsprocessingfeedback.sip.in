@@ -339,6 +339,7 @@ If this is not called, all steps are assumed to have equal weight.
 
     virtual QString textLog() const;
 
+
 };
 
 /************************************************************************

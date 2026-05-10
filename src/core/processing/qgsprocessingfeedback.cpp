@@ -254,6 +254,7 @@ void QgsProcessingMultiStepFeedback::setCurrentStep( int step )
     mCurrentStepBaseProgress += mStepWeights.at( i ) * 100.0;
   }
 
+  emit progressChanged( 0 );
   if ( mFeedback )
     mFeedback->setProgress( mCurrentStepBaseProgress );
 }

@@ -307,6 +307,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
 
     QString htmlLog() const override;
     QString textLog() const override;
+
   private slots:
 
     void updateOverallProgress( double progress );
