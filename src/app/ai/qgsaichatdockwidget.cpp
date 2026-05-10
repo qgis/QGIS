@@ -89,7 +89,8 @@ namespace
     return {
       { u"GPT-4o"_s, u"gpt-4o"_s, QgsAiModelRouter::Provider::OpenAi },
       { u"GPT-4.1 mini"_s, u"gpt-4.1-mini"_s, QgsAiModelRouter::Provider::OpenAi },
-      { u"Codex GPT-5.5"_s, u"gpt-5.5"_s, QgsAiModelRouter::Provider::Codex },
+      { u"Codex GPT-5.4"_s, u"gpt-5.4"_s, QgsAiModelRouter::Provider::Codex },
+      { u"Codex GPT-5.3 (codex)"_s, u"gpt-5.3-codex"_s, QgsAiModelRouter::Provider::Codex },
       { u"Claude Sonnet 4"_s, u"claude-sonnet-4-20250514"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Sonnet 3.7"_s, u"claude-3-7-sonnet-20250219"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
@@ -932,7 +933,7 @@ void QgsAiChatDockWidget::openProviderSettings()
   QgsAiCodexOAuthClient::DeviceCode codexDeviceCode;
   QLineEdit *codexEndpoint = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).endpoint, &dialog );
   QLineEdit *codexModel = new QLineEdit( mModelRouter->providerSettings( QgsAiModelRouter::Provider::Codex ).model, &dialog );
-  codexModel->setPlaceholderText( u"gpt-5.5"_s );
+  codexModel->setPlaceholderText( u"gpt-5.4"_s );
   QLabel *codexStatus = new QLabel( mModelRouter->hasStoredOAuthRefreshToken( QgsAiModelRouter::Provider::Codex ) ? tr( "Signed in" ) : tr( "Not signed in" ), &dialog );
   QPushButton *codexRequestCodeButton = new QPushButton( tr( "Get Codex device code" ), &dialog );
   QPushButton *codexCompleteLoginButton = new QPushButton( tr( "Complete Codex login" ), &dialog );

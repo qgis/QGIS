@@ -104,7 +104,7 @@ QgsAiModelRouter::QgsAiModelRouter( QObject *parent )
 
   ProviderSettings codex;
   codex.endpoint = u"https://chatgpt.com/backend-api/codex/responses"_s;
-  codex.model = u"gpt-5.5"_s;
+  codex.model = u"gpt-5.4"_s;
   codex.credentialMode = CredentialMode::OAuth;
   mProviderSettings.insert( Provider::Codex, codex );
 
@@ -181,11 +181,13 @@ QString QgsAiModelRouter::normalizedModelForProvider( Provider provider, const Q
   if ( provider != Provider::Codex )
     return trimmed;
 
-  const QStringList allowedCodexModels = { u"gpt-5.5"_s };
+  // Slugs the chatgpt.com Codex backend currently accepts for ChatGPT-auth users.
+  // The backend rejects unknown slugs (e.g. gpt-5.5) with HTTP 400.
+  const QStringList allowedCodexModels = { u"gpt-5.4"_s, u"gpt-5.4-mini"_s, u"gpt-5.3-codex"_s, u"gpt-5.2"_s, u"gpt-5-codex"_s };
   if ( allowedCodexModels.contains( trimmed ) )
     return trimmed;
 
-  return u"gpt-5.5"_s;
+  return u"gpt-5.4"_s;
 }
 
 QJsonArray QgsAiModelRouter::buildAnthropicAssistantContent( const QgsAiChatMessage &message ) const
@@ -305,8 +307,20 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
   if ( provider == Provider::OpenAi || provider == Provider::Codex )
   {
     QJsonArray input;
+    QString codexInstructions;
     for ( const QgsAiChatMessage &message : messages )
+    {
+      // The Codex backend expects system prompts in a top-level `instructions`
+      // field — system items inside `input` are rejected.
+      if ( provider == Provider::Codex && message.role == QgsAiChatRole::System )
+      {
+        if ( !codexInstructions.isEmpty() )
+          codexInstructions += '\n';
+        codexInstructions += message.content;
+        continue;
+      }
       appendOpenAiInputItems( message, input );
+    }
     payload.insert( u"input"_s, input );
 
     QJsonArray toolSchemas;
@@ -315,14 +329,19 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
 
     if ( provider == Provider::Codex )
     {
-      // The chatgpt.com Codex backend rejects requests that omit these fields
-      // (it mirrors the schema codex_cli_rs sends). Supply matching defaults.
+      // The chatgpt.com Codex backend mirrors the schema codex_cli_rs sends and
+      // rejects requests that omit these fields.
+      if ( !codexInstructions.isEmpty() )
+        payload.insert( u"instructions"_s, codexInstructions );
       payload.insert( u"tools"_s, toolSchemas );
       payload.insert( u"tool_choice"_s, u"auto"_s );
       payload.insert( u"parallel_tool_calls"_s, false );
       payload.insert( u"reasoning"_s, QJsonValue() );
       payload.insert( u"store"_s, false );
       payload.insert( u"include"_s, QJsonArray() );
+      if ( mCodexPromptCacheKey.isEmpty() )
+        mCodexPromptCacheKey = QUuid::createUuid().toString( QUuid::WithoutBraces );
+      payload.insert( u"prompt_cache_key"_s, mCodexPromptCacheKey );
     }
     else if ( !toolSchemas.isEmpty() )
     {
@@ -626,7 +645,9 @@ QString QgsAiModelRouter::startChatRequest( Provider provider, const QList<QgsAi
   RequestContext &storedContext = mRequests[context.requestId];
   if ( !dispatchRequest( storedContext ) )
   {
-    emit requestFinished( storedContext.requestId, false, providerDisplayName( provider ), QString(), u"Unable to start network request."_s, 0, 0, false, 0 );
+    const QString fallbackError = u"Unable to start network request."_s;
+    const QString error = !storedContext.preDispatchError.isEmpty() ? storedContext.preDispatchError : fallbackError;
+    emit requestFinished( storedContext.requestId, false, providerDisplayName( provider ), QString(), error, 0, 0, false, 0 );
     mRequests.remove( storedContext.requestId );
   }
 
@@ -853,7 +874,14 @@ bool QgsAiModelRouter::dispatchRequest( RequestContext &context )
 
   QString authenticationError;
   if ( !applyAuthentication( context.provider, request, &authenticationError ) )
+  {
+    if ( !authenticationError.isEmpty() )
+    {
+      QgsMessageLog::logMessage( u"Authentication failed for %1: %2"_s.arg( providerDisplayName( context.provider ), authenticationError ), u"AI"_s, Qgis::MessageLevel::Warning, false );
+      context.preDispatchError = authenticationError;
+    }
     return false;
+  }
 
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
   if ( !networkManager )
@@ -1217,7 +1245,12 @@ void QgsAiModelRouter::onReplyFinished()
   const qint64 latencyMs = std::max<qint64>( 0, QDateTime::currentMSecsSinceEpoch() - context->startedAtMs );
 
   // Read body once: may contain success text or structured error.
-  const QByteArray responseBody = reply->readAll();
+  // For streamed error responses the server may deliver the JSON error in a
+  // single chunk that readyRead already drained into streamingBuffer; fall
+  // back to it so we don't lose the error message.
+  QByteArray responseBody = reply->readAll();
+  if ( responseBody.isEmpty() && !context->streamingBuffer.isEmpty() )
+    responseBody = context->streamingBuffer.toUtf8();
   QString responseText = context->aggregatedText;
   if ( responseText.isEmpty() && !responseBody.isEmpty() )
   {

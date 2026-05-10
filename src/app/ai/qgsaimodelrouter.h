@@ -141,6 +141,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
         QList<PendingToolCall> toolCalls;         // collected during streaming/parse
         QMap<int, int> streamItemIndexToToolCall; // Claude content_block index OR OpenAI output_index → toolCalls index
         QNetworkReply *reply = nullptr;
+        QString preDispatchError;
     };
 
     bool dispatchRequest( RequestContext &context );
@@ -178,6 +179,7 @@ class APP_EXPORT QgsAiModelRouter : public QObject
     QMap<QString, RequestContext> mRequests;
     QgsAiToolRegistry *mToolRegistry = nullptr;
     bool mToolUseEnabled = false;
+    mutable QString mCodexPromptCacheKey;
 };
 
 #endif // QGSAIMODELROUTER_H
