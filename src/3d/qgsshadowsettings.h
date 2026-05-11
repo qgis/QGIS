@@ -16,6 +16,7 @@
 #ifndef QGSSHADOWSETTINGS_H
 #define QGSSHADOWSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 
 #include <QMap>
