@@ -373,7 +373,7 @@ void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const
   }
 }
 
-void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackFactory( QgsProcessingFeedbackGenerator *factory )
+void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackGenerator( QgsProcessingFeedbackGenerator *factory )
 {
   mFeedbackFactory = factory;
 }
