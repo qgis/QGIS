@@ -1065,6 +1065,7 @@
         <file>themes/default/mIconRenderOnTerrain.svg</file>
         <file>themes/default/mIconFloaterCartesian.svg</file>
         <file>themes/default/mIconFloaterEllipsoid.svg</file>
+        <file>themes/default/mIndicatorFieldComment.svg</file>
         <file>themes/default/interpolation/OutSine.svg</file>
         <file>themes/default/interpolation/OutQuint.svg</file>
         <file>themes/default/interpolation/OutQuart.svg</file>

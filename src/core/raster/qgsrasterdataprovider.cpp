@@ -806,7 +806,7 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
+QString QgsRasterDataProvider::colorName( Qgis::RasterColorInterpretation colorInterpretation )
 {
   // Modified copy from GDAL
   switch ( colorInterpretation )

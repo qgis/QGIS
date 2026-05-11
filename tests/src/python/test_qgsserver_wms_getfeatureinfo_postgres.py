@@ -167,12 +167,14 @@ class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):
             {
                 "features": [
                     {
+                        "featureType": "someData",
                         "geometry": None,
                         "id": "someData.1@@1",
                         "properties": {"name": "1-1", "pk1": 1, "pk2": 1},
                         "type": "Feature",
                     },
                     {
+                        "featureType": "someData",
                         "geometry": None,
                         "id": "someData.1@@2",
                         "properties": {"name": "1-2", "pk1": 1, "pk2": 2},

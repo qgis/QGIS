@@ -39,5 +39,7 @@
         <file>shaders/texture.vert</file>
         <file>shaders/globe.frag</file>
         <file>shaders/singlecolor.frag</file>
+        <file>shaders/gradient_static.vert</file>
+        <file>shaders/gradient_background.frag</file>
     </qresource>
 </RCC>

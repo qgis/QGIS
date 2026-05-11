@@ -37,6 +37,8 @@
 #include "qgschunkloader.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
+#include "qgs3drendercontext.h"
+
 #include <QImage>
 
 class QgsMapLayer;
@@ -47,12 +49,13 @@ class QgsGlobeChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
+    QgsGlobeChunkLoader( QgsChunkNode *node, const Qgs3DRenderContext &context, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
     void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
+    Qgs3DRenderContext mRenderContext;
     QgsTerrainTextureGenerator *mTextureGenerator;
     QgsCoordinateTransform mGlobeCrsToLatLon;
     int mJobId = -1;

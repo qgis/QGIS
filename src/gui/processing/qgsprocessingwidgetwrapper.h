@@ -463,11 +463,11 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QgsExpressionContext createExpressionContext() const override;
 
     /**
-     * Sets the parent \a dialog in which the wrapper is shown.
+     * Sets the parent \a dialog (or widget) in which the wrapper is shown.
      *
      * \since QGIS 3.8
      */
-    virtual void setDialog( QDialog *dialog );
+    virtual void setDialog( QWidget *dialog );
 
   signals:
 

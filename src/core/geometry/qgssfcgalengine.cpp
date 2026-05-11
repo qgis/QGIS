@@ -633,6 +633,65 @@ bool QgsSfcgalEngine::isSimple( const sfcgal::geometry *geom, QString *errorMsg 
 #endif
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::geometryN( const sfcgal::geometry *geom, unsigned int index, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal_geometry_type_t type = sfcgal_geometry_type_id( geom );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  const sfcgal::geometry *out = nullptr;
+
+  switch ( type )
+  {
+    case SFCGAL_TYPE_GEOMETRYCOLLECTION:
+    case SFCGAL_TYPE_MULTILINESTRING:
+    case SFCGAL_TYPE_MULTIPOINT:
+    case SFCGAL_TYPE_MULTIPOLYGON:
+    case SFCGAL_TYPE_MULTISOLID:
+    {
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+      // Prior to version 2.1, index < nrGeoms is not checked
+      // by sfcgal_geometry_collection_geometry_n
+      const unsigned int nrGeoms = sfcgal_geometry_collection_num_geometries( geom );
+      if ( index < nrGeoms )
+      {
+        out = sfcgal_geometry_collection_geometry_n( geom, index );
+      }
+      else
+      {
+        sfcgal::errorHandler()->addText( u"Cannot access geometry at position %s. GeometryCollection has only %d geometries."_s.arg( index ).arg( nrGeoms ) );
+      }
+#else
+      out = sfcgal_geometry_collection_geometry_n( geom, index );
+#endif
+      break;
+    }
+    case SFCGAL_TYPE_LINESTRING:
+    case SFCGAL_TYPE_POINT:
+    case SFCGAL_TYPE_POLYGON:
+    case SFCGAL_TYPE_POLYHEDRALSURFACE:
+    case SFCGAL_TYPE_SOLID:
+    case SFCGAL_TYPE_TRIANGLE:
+    case SFCGAL_TYPE_TRIANGULATEDSURFACE:
+      if ( index == 0 )
+      {
+        out = geom;
+      }
+      break;
+    default:
+      out = nullptr;
+  }
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal::shared_geom result = cloneGeometry( out, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return result;
+}
+
 sfcgal::shared_geom QgsSfcgalEngine::boundary( const sfcgal::geometry *geom, QString *errorMsg )
 {
 #if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
@@ -951,12 +1010,25 @@ sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, dou
 #endif
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  sfcgal::geometry *result = nullptr;
+  if ( extendToEdges )
+  {
+    result = sfcgal_geometry_projected_medial_axis( geom );
+  }
+  else
+  {
+    result = sfcgal_geometry_approximate_medial_axis( geom );
+  }
+#else
+  Q_UNUSED( extendToEdges )
   sfcgal::geometry *result = sfcgal_geometry_approximate_medial_axis( geom );
+#endif
   CHECK_SUCCESS( errorMsg, nullptr );
 
   return sfcgal::make_shared_geom( result );
@@ -1015,6 +1087,17 @@ sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, co
 
   sfcgal::geometry *result;
   result = sfcgal_geometry_transform( geom, mat.constData() );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_split_3d( geom, planePoint.x(), planePoint.y(), planePoint.z(), planeNormal.x(), planeNormal.y(), planeNormal.z(), closeGeometries );
 
   CHECK_SUCCESS( errorMsg, nullptr );
   return sfcgal::make_shared_geom( result );

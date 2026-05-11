@@ -47,9 +47,15 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+namespace Qt3DRender
+{
+  class QAbstractTexture;
+}
+
 class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
+class QgsMaterialContext;
 
 /**
  * \ingroup qgis_3d
@@ -158,6 +164,19 @@ class _3D_EXPORT Qgs3DUtils
     static QString matrix4x4toString( const QMatrix4x4 &m );
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
+
+    /**
+     * Converts a SRGB color to a linear color.
+     *
+     * Color alpha is retained without change.
+     *
+     * \warning This method is designed for conversion of single colors only, for passing
+     * static colors to shaders. It is not appropriate for use for bulk conversion operations, e.g.
+     * converting an image from sRGB to linear colors.
+     *
+     * \since QGIS 4.2
+     */
+    static QColor srgbToLinear( const QColor &color );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
     static void extractPointPositions(
@@ -433,6 +452,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
+
+    /**
+     * Sets the default filtering options for a \a texture.
+     *
+     * \note This should not be called for textures which have special filtering considerations,
+     * eg look up tables, data tables, "screen space" textures, or textures where mipmapping is not appropriate.
+     */
+    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context );
 
     // we start with a maximal z range because we can't know this upfront. There's too many
     // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...

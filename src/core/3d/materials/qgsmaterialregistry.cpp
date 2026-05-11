@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
 #include "qgsnullmaterialsettings.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
@@ -48,7 +49,7 @@ bool QgsMaterialRegistry::populate()
     new QgsMaterialSettingsMetadata( u"phong"_s, QObject::tr( "Realistic (Phong)" ), QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
-    new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Realistic Textured (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
+    new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Realistic with Textures (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
     new QgsMaterialSettingsMetadata( u"simpleline"_s, QObject::tr( "Single Color (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconSimpleLineMaterial.svg"_s ) )
@@ -57,8 +58,16 @@ bool QgsMaterialRegistry::populate()
     new QgsMaterialSettingsMetadata( u"gooch"_s, QObject::tr( "CAD (Gooch)" ), QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
-    new QgsMaterialSettingsMetadata( u"metalrough"_s, QObject::tr( "Metal Roughness" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
+    new QgsMaterialSettingsMetadata( u"metalrough"_s, QObject::tr( "Physically Based" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) )
   );
+  addMaterialSettingsType( new QgsMaterialSettingsMetadata(
+    u"metalroughtextured"_s,
+    QObject::tr( "Physically Based with Textures" ),
+    QgsMetalRoughTexturedMaterialSettings::create,
+    QgsMetalRoughTexturedMaterialSettings::supportsTechnique,
+    nullptr,
+    QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s )
+  ) );
   return true;
 }
 

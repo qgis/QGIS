@@ -29,6 +29,7 @@
 #include "qgsmaterial3dhandler.h"
 #include "qgsmaterialregistry.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgsshadowrenderview.h"
 
 #include <QCryptographicHash>
@@ -80,7 +81,10 @@ void Qgs3DIconGenerator::generateIcon( QgsStyle *style, QgsStyle::StyleEntity ty
 
     case QgsStyle::MaterialSettingsEntity:
     {
-      generateThumbnailForMaterial( style, name );
+      // capturing 3d thumbnails involves event looping -- we don't want to trigger an event loop immediately here,
+      // as this method may have been called while painting a widget (eg a list widget showing the style model), and
+      // processing the event loop while drawing a widget is a VERY BAD THING
+      QMetaObject::invokeMethod( this, &Qgs3DIconGenerator::generateThumbnailForMaterial, Qt::QueuedConnection, style, name );
       break;
     }
   }
@@ -160,7 +164,7 @@ void Qgs3DIconGenerator::generateThumbnailForMaterial( QgsStyle *style, const QS
   if ( thumbnail.isNull() )
   {
     thumbnail = renderMaterial( settings.get() );
-    thumbnail.save( targetFileName, "WEBP" );
+    thumbnail.save( targetFileName, "WEBP", 97 );
   }
 
   const QList<QSize> sizes = iconSizes();
@@ -185,12 +189,13 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   const QSize size( 600, 600 );
   engine.setSize( size );
 
-  // clear color -- will be replaced with transparent color
-  constexpr QColor CLEAR_COLOR = QColor( 255, 0, 255 );
+  // clear color -- use black
+  constexpr QColor CLEAR_COLOR = QColor( 0, 0, 0 );
   engine.setClearColor( CLEAR_COLOR );
   engine.frameGraph()->setRenderCaptureEnabled( true );
 
   QgsMaterialContext context;
+  context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
   const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings );
   if ( !handler )
     return QImage();
@@ -246,14 +251,41 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
     captureLoop.exec();
   }
 
-  // replace background color with transparent
-  thumbnail = QgsImageOperation::floodFill( thumbnail, QPoint( 0, 0 ), QColor( 0, 0, 0, 0 ), 1 );
-  // another bit of a hack to get nice previews for simple lines -- the flood fill doesn't work well for those, because
-  // the center of the preview image is supposed to be transparent but it's surrounded by color:
-  if ( thumbnail.pixelColor( 300, 300 ) == CLEAR_COLOR )
+  QImage depthThumbnail;
   {
-    thumbnail = QgsImageOperation::floodFill( thumbnail, QPoint( 300, 300 ), QColor( 0, 0, 0, 0 ), 1 );
+    QEventLoop captureLoop;
+    QObject::connect( &engine, &QgsAbstract3DEngine::depthBufferCaptured, &captureLoop, [&depthThumbnail, &captureLoop]( const QImage &img ) {
+      depthThumbnail = img;
+      captureLoop.quit();
+    } );
+
+    engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+    engine.requestDepthBufferCapture();
+    captureLoop.exec();
   }
 
+  setMaximumDepthAsTransparent( depthThumbnail, thumbnail );
   return thumbnail;
+}
+
+void Qgs3DIconGenerator::setMaximumDepthAsTransparent( const QImage &depthImage, QImage &renderImage )
+{
+  const int width = renderImage.width();
+  const int height = renderImage.height();
+
+  constexpr QRgb maxDepthColor = qRgb( 0, 0, 255 );
+  constexpr QRgb transparentPixel = qRgba( 0, 0, 0, 0 );
+
+  for ( int y = 0; y < height; ++y )
+  {
+    const QRgb *maskPixels = reinterpret_cast<const QRgb *>( depthImage.constScanLine( y ) );
+    QRgb *renderPixels = reinterpret_cast<QRgb *>( renderImage.scanLine( y ) );
+    for ( int x = 0; x < width; ++x )
+    {
+      if ( maskPixels[x] == maxDepthColor )
+      {
+        renderPixels[x] = transparentPixel;
+      }
+    }
+  }
 }

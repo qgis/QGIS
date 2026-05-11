@@ -123,7 +123,7 @@ void QgsTiledSceneChunkLoader::start()
         QgsQuantizedMeshTile qmTile( content );
         qmTile.removeDegenerateTriangles();
         tinygltf::Model model = qmTile.toGltf( true, 100 );
-        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, &errors );
+        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, mFactory.mRenderContext, &errors );
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
@@ -132,11 +132,32 @@ void QgsTiledSceneChunkLoader::start()
     }
     else if ( format == "cesiumtiles"_L1 )
     {
-      const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
-      if ( tileContent.gltf.isEmpty() )
+      const QVector<QgsCesiumUtils::TileContents> tileContents = QgsCesiumUtils::extractTileContent( content );
+      if ( tileContents.isEmpty() )
         return;
-      entityTransform.tileTransform.translate( tileContent.rtcCenter );
-      mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+
+      if ( tileContents.size() == 1 )
+      {
+        if ( tileContents[0].gltf.isEmpty() )
+          return;
+        entityTransform.tileTransform.translate( tileContents[0].rtcCenter );
+        mEntity = QgsGltf3DUtils::gltfToEntity( tileContents[0].gltf, entityTransform, uri, mFactory.mRenderContext, &errors );
+      }
+      else
+      {
+        mEntity = new Qt3DCore::QEntity;
+        for ( const QgsCesiumUtils::TileContents &innerContent : tileContents )
+        {
+          if ( innerContent.gltf.isEmpty() )
+            continue;
+
+          QgsGltf3DUtils::EntityTransform innerTransform = entityTransform;
+          innerTransform.tileTransform.translate( innerContent.rtcCenter );
+          Qt3DCore::QEntity *childEntity = QgsGltf3DUtils::gltfToEntity( innerContent.gltf, innerTransform, uri, mFactory.mRenderContext, &errors );
+          if ( childEntity )
+            childEntity->setParent( mEntity );
+        }
+      }
     }
     else if ( format == "draco"_L1 )
     {
@@ -151,7 +172,7 @@ void QgsTiledSceneChunkLoader::start()
         return;
       }
 
-      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), &errors );
+      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), mFactory.mRenderContext, &errors );
     }
     else
       return; // unsupported tile content type

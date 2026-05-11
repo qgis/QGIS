@@ -37,7 +37,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QCoreApplication, QDir, QVariant
+from qgis.PyQt.QtCore import QDir, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app
 
@@ -65,9 +65,6 @@ class TestPyQgsProviderConnectionBase:
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
 
     def setUp(self):

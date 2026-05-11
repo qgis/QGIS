@@ -15,7 +15,7 @@ import unittest
 
 from qgis.core import QgsApplication, QgsSettings, QgsSettingsTree
 from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
-from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
+from qgis.PyQt.QtCore import QT_VERSION_STR
 from qgis.PyQt.QtGui import QColor, QFontDatabase
 from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
@@ -28,10 +28,6 @@ class TestQgsCodeEditor(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QgsSettings().clear()
         start_app()
 
     def testDefaultColors(self):

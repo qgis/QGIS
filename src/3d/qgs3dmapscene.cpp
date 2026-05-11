@@ -34,10 +34,12 @@
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsfixedgradientbackgroundsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgsgradientbackgroundentity.h"
 #include "qgshighlightsrenderview.h"
 #include "qgslightsource.h"
 #include "qgslinematerial_p.h"
@@ -48,6 +50,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsmetalroughmaterial.h"
 #include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -147,12 +150,12 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
-  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
   connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::msaaEnabledChanged, this, &Qgs3DMapScene::onMsaaEnabledChanged );
   connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
@@ -207,7 +210,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DMapScene::onCameraChanged );
   connect( mEngine, &QgsAbstract3DEngine::sizeChanged, this, &Qgs3DMapScene::onCameraChanged );
 
-  onSkyboxSettingsChanged();
+  connect( &map, &Qgs3DMapSettings::backgroundSettingsChanged, this, &Qgs3DMapScene::onBackgroundSettingsChanged );
+  onBackgroundSettingsChanged();
 
   // force initial update of chunked entities
   onCameraChanged();
@@ -218,6 +222,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
+  // force initial update of MSAA setting
+  onMsaaEnabledChanged();
 
   // timer used to refresh the map overlay every 250 ms while the camera is moving.
   // schedule2DMapOverlayUpdate() is called to schedule the update.
@@ -1126,31 +1132,35 @@ void Qgs3DMapScene::updateSceneState()
   setSceneState( Ready );
 }
 
-void Qgs3DMapScene::onSkyboxSettingsChanged()
+void Qgs3DMapScene::onBackgroundSettingsChanged()
 {
-  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
-  if ( mSkybox )
+  const QgsAbstract3DMapBackgroundSettings *settings = mMap.backgroundSettings();
+  if ( !settings )
   {
-    mSkybox->deleteLater();
-    mSkybox = nullptr;
-  }
-
-  mEngine->setFrustumCullingEnabled( !mMap.isSkyboxEnabled() );
-
-  if ( mMap.isSkyboxEnabled() )
-  {
-    QMap<QString, QString> faces;
-    switch ( skyboxSettings.skyboxType() )
+    if ( mBackgroundEntity )
     {
-      case QgsSkyboxEntity::DistinctTexturesSkybox:
-        faces = skyboxSettings.cubeMapFacesPaths();
-        mSkybox = new QgsCubeFacesSkyboxEntity( faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
-        break;
-      case QgsSkyboxEntity::PanoramicSkybox:
-        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
-        break;
+      mBackgroundEntity->deleteLater();
+      mBackgroundEntity = nullptr;
     }
+    return;
   }
+
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  if ( settings->type() == Qgis::Map3DBackgroundType::DistinctTextureSkybox )
+  {
+    const QgsSkyboxSettings *skyboxSettings = dynamic_cast<const QgsSkyboxSettings *>( settings );
+    const QMap<QString, QString> faces = skyboxSettings->cubeMapFacesPaths();
+    mBackgroundEntity = new QgsCubeFacesSkyboxEntity( skyboxSettings->cubeMapping(), faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s], faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s], this );
+  }
+  else if ( settings->type() == Qgis::Map3DBackgroundType::FixedGradientBackground )
+  {
+    const QgsFixedGradientBackgroundSettings *gradientSettings = dynamic_cast<const QgsFixedGradientBackgroundSettings *>( settings );
+    mBackgroundEntity = new QgsGradientBackgroundEntity( gradientSettings->topColor(), gradientSettings->bottomColor(), this );
+  }
+
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().backgroundLayer() );
+  mBackgroundEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
 }
 
 void Qgs3DMapScene::onShadowSettingsChanged()
@@ -1182,6 +1192,11 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   mEngine->frameGraph()->updateEyeDomeSettings( mMap );
+}
+
+void Qgs3DMapScene::onMsaaEnabledChanged()
+{
+  mEngine->frameGraph()->setMsaaEnabled( mMap.isMsaaEnabled() );
 }
 
 void Qgs3DMapScene::onShowMapOverlayChanged()
@@ -1240,7 +1255,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   if ( mTerrain )
     exporter.parseTerrain( mTerrain, "Terrain" );
 
-  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath(), exportSettings.exportFormat() );
   if ( !sceneSaved )
   {
     return false;

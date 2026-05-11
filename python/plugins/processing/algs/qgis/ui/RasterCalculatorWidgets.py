@@ -46,11 +46,11 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidParameterValue
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.wrappers import (
     DIALOG_BATCH,
     DIALOG_STANDARD,
-    InvalidParameterValue,
     WidgetWrapper,
 )
 from processing.tools import dataobjects
@@ -349,5 +349,5 @@ class LayersListWidgetWrapper(WidgetWrapper):
                 and not self.parameterDefinition().flags()
                 & QgsProcessingParameterDefinition.Flag.FlagOptional
             ):
-                raise InvalidParameterValue()
+                raise InvalidParameterValue(self.parameterDefinition(), self.widget)
             return values

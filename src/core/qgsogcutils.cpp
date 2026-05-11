@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsogcutils.h"
 
+#include <functional>
 #include <memory>
 #include <ogr_api.h>
 
@@ -2239,11 +2240,45 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
 
 QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
+  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
+
+  // Special handling for concatenation operator (||)
+  if ( op == QgsExpressionNodeBinaryOperator::boConcat )
+  {
+    QDomElement funcElem = mDoc.createElement( mFilterPrefix + u":Function"_s );
+    funcElem.setAttribute( u"name"_s, u"Concatenate"_s );
+
+    std::function<bool( const QgsExpressionNode * )> appendParts = [&]( const QgsExpressionNode *n ) -> bool {
+      if ( n->nodeType() == QgsExpressionNode::ntBinaryOperator )
+      {
+        const auto *binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( n );
+        if ( binNode->op() == QgsExpressionNodeBinaryOperator::boConcat )
+        {
+          return appendParts( binNode->opLeft() ) && appendParts( binNode->opRight() );
+        }
+      }
+
+      // Try to convert the expression node to an OGC filter element
+      QDomElement subElem = expressionNodeToOgcFilter( n, expression, context );
+
+      if ( subElem.isNull() )
+      {
+        return false;
+      }
+      funcElem.appendChild( subElem );
+      return true;
+    };
+
+    if ( !appendParts( node ) )
+    {
+      return QDomElement(); // Return empty element if any part of the concatenation could not be converted
+    }
+    return funcElem;
+  }
+  // Handle other binary operators
   const QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
-
-  QgsExpressionNodeBinaryOperator::BinaryOperator op = node->op();
 
   // before right operator is parsed: to allow NULL handling
   if ( op == QgsExpressionNodeBinaryOperator::boIs || op == QgsExpressionNodeBinaryOperator::boIsNot )
@@ -3913,11 +3948,24 @@ QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, 
     return CRSFlavor::HTTP_EPSG_DOT_XML;
   }
 
-  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
-  if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
+  // urn with AUTHORITY:CODE - this skips version and does not even have empty space for it
+  const thread_local QRegularExpression re_ogc_urn_without_version( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+):([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_ogc_urn_without_version.match( crsName ); match.hasMatch() )
   {
     authority = match.captured( 1 );
     code = match.captured( 2 );
+    return CRSFlavor::OGC_URN;
+  }
+
+  // urn with AUTHORITY:[VERSION]:CODE
+  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( u"urn:ogc:def:crs:([^:]+):([^:]*):([^:]+)"_s ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    const QString version = match.captured( 2 );
+    code = match.captured( 3 );
+    if ( authority.compare( u"IAU"_s, Qt::CaseInsensitive ) == 0 && !version.isEmpty() )
+      authority = u"%1_%2"_s.arg( authority, version );
     return CRSFlavor::OGC_URN;
   }
 

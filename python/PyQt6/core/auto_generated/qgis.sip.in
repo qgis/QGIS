@@ -368,6 +368,7 @@ The development version
       CreateLabeling,
       ReloadData,
       FeatureSymbology,
+      CacheData,
       EditingCapabilities,
     };
 
@@ -1503,6 +1504,14 @@ The development version
       PreferredGdal,
     };
 
+    enum class UnknownLayerCrsBehavior /BaseType=IntEnum/
+    {
+      NoAction,
+      PromptUserForCrs,
+      UseProjectCrs,
+      UseDefaultCrs,
+    };
+
     enum class Axis /BaseType=IntEnum/
     {
       X,
@@ -2430,10 +2439,35 @@ The development version
       Billboards,
     };
 
+    enum class TextureFilterQuality /BaseType=IntEnum/
+    {
+      Trilinear,
+      Anisotropic2x,
+      Anisotropic4x,
+      Anisotropic8x,
+      Anisotropic16x,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
+    };
+
+    enum class Map3DBackgroundType /BaseType=IntEnum/
+    {
+      NoBackground,
+      FixedGradientBackground,
+      DistinctTextureSkybox,
+    };
+
+    enum class SkyboxCubeMapping /BaseType=IntEnum/
+    {
+      NativeZUp,
+      OpenGLYUp,
+      GodotYUp,
+      UnrealEngineZUp,
+      LeftHandedYUpMirrored,
     };
 
     enum class NavigationMode /BaseType=IntEnum/
@@ -2454,6 +2488,12 @@ The development version
       Never,
       WhenDragging,
       Always,
+    };
+
+    enum class Export3DSceneFormat /BaseType=IntEnum/
+    {
+      Obj,
+      StlAscii
     };
 
     enum class ProfileSurfaceSymbology /BaseType=IntEnum/
@@ -2570,6 +2610,8 @@ The development version
       Update,
       Delete,
       Create,
+      Image,
+      TilesOnly,
     };
 
     typedef QFlags<Qgis::ArcGisRestServiceCapability> ArcGisRestServiceCapabilities;

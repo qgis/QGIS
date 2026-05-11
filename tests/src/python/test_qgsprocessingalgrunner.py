@@ -146,10 +146,6 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingInPlace.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingInPlace")
-        QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()

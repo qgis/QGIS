@@ -50,6 +50,8 @@ set(QGIS_3D_SRCS
   qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
+  qgsfixedgradientbackgroundsettings.cpp
+  qgsgradientbackgroundentity.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
   qgsshadowsettings.cpp
@@ -74,13 +76,16 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsglobematerial.cpp
+  materials/qgsgoochmaterial.cpp
   materials/qgsgoochmaterial3dhandler.cpp
   materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.cpp
   materials/qgsmetalroughmaterial3dhandler.cpp
+  materials/qgsmetalroughtexturedmaterial3dhandler.cpp
   materials/qgsnullmaterial3dhandler.cpp
+  materials/qgsphongmaterial.cpp
   materials/qgsphongmaterial3dhandler.cpp
   materials/qgsphongtexturedmaterial.cpp
   materials/qgsphongtexturedmaterial3dhandler.cpp
@@ -193,6 +198,9 @@ set(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
+  qgsabstract3dmapbackgroundsettings.h
+  qgsfixedgradientbackgroundsettings.h
+  qgsgradientbackgroundentity.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
   qgsshadowsettings.h
@@ -205,13 +213,16 @@ set(QGIS_3D_HDRS
   lights/qgspointlightsettings.h
 
   materials/qgsglobematerial.h
+  materials/qgsgoochmaterial.h
   materials/qgsgoochmaterial3dhandler.h
   materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
   materials/qgsmaterial3dhandler.cpp
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterial3dhandler.h
+  materials/qgsmetalroughtexturedmaterial3dhandler.h
   materials/qgsnullmaterial3dhandler.h
+  materials/qgsphongmaterial.h
   materials/qgsphongmaterial3dhandler.h
   materials/qgsphongtexturedmaterial.h
   materials/qgsphongtexturedmaterial3dhandler.h

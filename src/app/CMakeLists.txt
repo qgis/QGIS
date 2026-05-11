@@ -357,6 +357,7 @@ if (WITH_3D)
     3d/qgs3dapputils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
+    3d/qgs3dmapexportwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
@@ -373,6 +374,7 @@ if (WITH_3D)
     3d/qgsmaterialpreviewwidget.cpp
     3d/qgsmesh3dsymbolwidget.cpp
     3d/qgsmetalroughmaterialwidget.cpp
+    3d/qgsmetalroughtexturedmaterialwidget.cpp
     3d/qgsnullmaterialwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
@@ -385,7 +387,6 @@ if (WITH_3D)
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
-    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
@@ -505,6 +506,29 @@ if(QGISPOSTFIX)
   )
 endif()
 
+# NO_GENERATE_EXTRA_QMLDIRS was added in Qt 6.9.0
+if(Qt6Core_VERSION_MINOR LESS 9)
+qt_add_qml_module(qgis_app
+    URI org.qgis.app
+    VERSION 1.0
+    QML_FILES
+        qml/WelcomeScreen.qml
+        qml/components/CustomScrollBar.qml
+        qml/components/NewsCard.qml
+        qml/components/ProjectCard.qml
+        qml/components/UpdateNotificationBar.qml
+        qml/components/FooterBar.qml
+    OUTPUT_DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}/qml/org/qgis/app
+    RESOURCE_PREFIX
+        /qt/qml/
+    RESOURCES
+        qml/images/basemap.jpg
+        qml/images/close.svg
+        qml/images/love.svg
+        qml/images/qgis.svg
+)
+else()
 qt_add_qml_module(qgis_app
     URI org.qgis.app
     VERSION 1.0
@@ -526,6 +550,7 @@ qt_add_qml_module(qgis_app
         qml/images/qgis.svg
     NO_GENERATE_EXTRA_QMLDIRS
 )
+endif()
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")

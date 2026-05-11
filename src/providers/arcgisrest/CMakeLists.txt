@@ -131,3 +131,90 @@ else()
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
   )
 endif()
+
+
+###############################################################################
+
+set (IMS_SRCS
+  qgsimageserverprovider.cpp
+)
+if (WITH_GUI)
+  set(IMS_GUI_SRCS
+    qgsimageserverprovidergui.cpp
+    qgsarcgisimageserversourcewidget.cpp
+  )
+
+  set(IMS_UIS
+    ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisimageserversourcewidgetbase.ui
+  )
+endif()
+
+add_library (provider_arcgisimageserver_a STATIC ${IMS_SRCS})
+
+target_include_directories(provider_arcgisimageserver_a PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
+)
+
+# We use private headers from core that need this
+target_compile_definitions(provider_arcgisimageserver_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
+target_link_libraries (provider_arcgisimageserver_a
+  qgis_core
+  ${QCA_LIBRARY}
+)
+
+set_target_properties(provider_arcgisimageserver_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+if (WITH_GUI)
+  qt_wrap_ui(IMS_UIS_H ${IMS_UIS})
+
+  add_library(provider_arcgisimageserver_gui_a STATIC ${IMS_GUI_SRCS} ${IMS_UIS_H})
+
+  set_target_properties(provider_arcgisimageserver_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+  target_link_libraries(provider_arcgisimageserver_a
+    qgis_gui
+  )
+  target_link_libraries(provider_arcgisimageserver_gui_a
+    qgis_gui
+  )
+
+  include_directories(SYSTEM
+    ${CMAKE_BINARY_DIR}/src/ui
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+
+  add_dependencies(provider_arcgisimageserver_gui_a ui)
+endif()
+
+if (FORCE_STATIC_LIBS)
+  # for (external) mobile apps to be able to pick up provider for linking
+  install (TARGETS provider_arcgisimageserver_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  if (WITH_GUI)
+    install (TARGETS provider_arcgisimageserver_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  endif()
+else()
+  add_library(provider_arcgisimageserver MODULE ${IMS_SRCS} ${IMS_GUI_SRCS} ${IMS_UIS_H})
+
+  # We use private headers from core that need this
+  target_compile_definitions(provider_arcgisimageserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+
+  set_target_properties(provider_arcgisimageserver PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+  target_link_libraries(provider_arcgisimageserver
+    qgis_core
+    ${QCA_LIBRARY}
+  )
+
+  if (WITH_GUI)
+    target_link_libraries(provider_arcgisimageserver
+      qgis_gui
+    )
+    add_dependencies(provider_arcgisimageserver ui)
+  endif()
+
+  install (TARGETS provider_arcgisimageserver
+    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
+  )
+endif()

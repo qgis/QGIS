@@ -246,6 +246,11 @@ inline bool ends_with(std::string const & value, std::string const & ending)
     return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
+inline bool isVpcFilename(const std::string& filename)
+{
+    return ends_with(filename, ".vpc") || ends_with(filename, ".vpz");
+}
+
 
 inline std::string join_strings(const std::vector<std::string>& list, char delimiter)
 {

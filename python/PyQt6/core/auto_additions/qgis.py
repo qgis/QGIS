@@ -1024,6 +1024,9 @@ QgsVectorDataProvider.ReloadData.__doc__ = "Provider is able to force reload dat
 QgsVectorDataProvider.FeatureSymbology = Qgis.VectorProviderCapability.FeatureSymbology
 QgsVectorDataProvider.FeatureSymbology.is_monkey_patched = True
 QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features \n.. versionadded:: 3.20"
+QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
+QgsVectorDataProvider.CacheData.is_monkey_patched = True
+QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1071,6 +1074,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 * ``FeatureSymbology``: Provider is able retrieve embedded symbology associated with individual features
 
   .. versionadded:: 3.20
+
+* ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 4.2
 
 * ``EditingCapabilities``: Bitmask of all editing capabilities
 
@@ -4654,6 +4661,23 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 # --
 Qgis.CrsWktVariant.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UnknownLayerCrsBehavior.NoAction.__doc__ = "Take no action and leave as unknown CRS"
+Qgis.UnknownLayerCrsBehavior.PromptUserForCrs.__doc__ = "User is prompted for a CRS choice"
+Qgis.UnknownLayerCrsBehavior.UseProjectCrs.__doc__ = "Copy the current project's CRS"
+Qgis.UnknownLayerCrsBehavior.UseDefaultCrs.__doc__ = "Use the default layer CRS set via QGIS options"
+Qgis.UnknownLayerCrsBehavior.__doc__ = """Behavior to use when encountering a layer with an unknown (invalid) CRS.
+
+.. versionadded:: 4.2
+
+* ``NoAction``: Take no action and leave as unknown CRS
+* ``PromptUserForCrs``: User is prompted for a CRS choice
+* ``UseProjectCrs``: Copy the current project's CRS
+* ``UseDefaultCrs``: Use the default layer CRS set via QGIS options
+
+"""
+# --
+Qgis.UnknownLayerCrsBehavior.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Axis.X.__doc__ = "X-axis"
 Qgis.Axis.Y.__doc__ = "Y-axis"
 Qgis.Axis.Z.__doc__ = "Z-axis"
@@ -7766,6 +7790,25 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
+Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
+Qgis.TextureFilterQuality.Anisotropic4x.__doc__ = "Anisotropic filtering (4x)"
+Qgis.TextureFilterQuality.Anisotropic8x.__doc__ = "Anisotropic filtering (8x)"
+Qgis.TextureFilterQuality.Anisotropic16x.__doc__ = "Anisotropic filtering (16x)"
+Qgis.TextureFilterQuality.__doc__ = """Texture filtering qualities.
+
+.. versionadded:: 4.2
+
+* ``Trilinear``: Trilinear (LinearMipmapLinear)
+* ``Anisotropic2x``: Anisotropic filtering (2x)
+* ``Anisotropic4x``: Anisotropic filtering (4x)
+* ``Anisotropic8x``: Anisotropic filtering (8x)
+* ``Anisotropic16x``: Anisotropic filtering (16x)
+
+"""
+# --
+Qgis.TextureFilterQuality.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
@@ -7778,6 +7821,40 @@ Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 """
 # --
 Qgis.LightSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.Map3DBackgroundType.NoBackground.__doc__ = "No background"
+Qgis.Map3DBackgroundType.FixedGradientBackground.__doc__ = "Two color gradient, fixed in place"
+Qgis.Map3DBackgroundType.DistinctTextureSkybox.__doc__ = "Skybox with 6 distinct textures for different faces"
+Qgis.Map3DBackgroundType.__doc__ = """Background types for 3D map view.
+
+.. versionadded:: 4.2
+
+* ``NoBackground``: No background
+* ``FixedGradientBackground``: Two color gradient, fixed in place
+* ``DistinctTextureSkybox``: Skybox with 6 distinct textures for different faces
+
+"""
+# --
+Qgis.Map3DBackgroundType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SkyboxCubeMapping.NativeZUp.__doc__ = "Textures exported for Z-up (+X Right, +Y Forward, +Z Up)"
+Qgis.SkyboxCubeMapping.OpenGLYUp.__doc__ = "Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)"
+Qgis.SkyboxCubeMapping.GodotYUp.__doc__ = "Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)"
+Qgis.SkyboxCubeMapping.UnrealEngineZUp.__doc__ = "Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)"
+Qgis.SkyboxCubeMapping.LeftHandedYUpMirrored.__doc__ = "Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)"
+Qgis.SkyboxCubeMapping.__doc__ = """Skybox texture cube mapping for distinct texture skyboxes.
+
+.. versionadded:: 4.2
+
+* ``NativeZUp``: Textures exported for Z-up (+X Right, +Y Forward, +Z Up)
+* ``OpenGLYUp``: Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)
+* ``GodotYUp``: Godot standard (+X Right, +Y Top, -Z Forward, with vertical flip)
+* ``UnrealEngineZUp``: Unreal engine standard (+X Forward, +Y Right, +Z Up, Left-handed)
+* ``LeftHandedYUpMirrored``: Left-Handed, Y-Up coordinate systems (e.g., Unity convention +X Right, +Y Top, +Z Forward, with horizontal mirror)
+
+"""
+# --
+Qgis.SkyboxCubeMapping.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
@@ -7824,6 +7901,19 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
+Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
+Qgis.Export3DSceneFormat.__doc__ = """The file format used when exporting a 3D scene.
+
+.. versionadded:: 4.2
+
+* ``Obj``: Wavefront OBJ format.
+* ``StlAscii``: STL ascii format.
+
+"""
+# --
+Qgis.Export3DSceneFormat.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
@@ -8172,6 +8262,8 @@ Qgis.ArcGisRestServiceCapability.Query.__doc__ = "Query features"
 Qgis.ArcGisRestServiceCapability.Update.__doc__ = "Update features"
 Qgis.ArcGisRestServiceCapability.Delete.__doc__ = "Delete features"
 Qgis.ArcGisRestServiceCapability.Create.__doc__ = "Create features"
+Qgis.ArcGisRestServiceCapability.Image.__doc__ = "Image capabilities"
+Qgis.ArcGisRestServiceCapability.TilesOnly.__doc__ = "Service supports tiled image requests only"
 Qgis.ArcGisRestServiceCapability.__doc__ = """Available ArcGIS REST service capabilities.
 
 This enum contains a subset of the capabilities returned by ArcGIS REST services. May be
@@ -8184,6 +8276,8 @@ extended in future with additional capabilities when required.
 * ``Update``: Update features
 * ``Delete``: Delete features
 * ``Create``: Create features
+* ``Image``: Image capabilities
+* ``TilesOnly``: Service supports tiled image requests only
 
 """
 # --

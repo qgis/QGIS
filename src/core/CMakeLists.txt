@@ -20,6 +20,8 @@ endif()
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/freespa/freespa.c
+
   ${CMAKE_SOURCE_DIR}/external/nanoarrow/src/nanoarrow.c
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -399,6 +401,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  tiledscene/qgscesiumimplicittiling.cpp
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
   tiledscene/qgsesrii3sdataprovider.cpp
@@ -622,6 +625,7 @@ set(QGIS_CORE_SRCS
   qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgssunpositioncalculator.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
   qgstemporalcontroller.cpp
@@ -984,6 +988,7 @@ set(QGIS_CORE_SRCS
   3d/materials/qgsgoochmaterialsettings.cpp
   3d/materials/qgsmaterialregistry.cpp
   3d/materials/qgsmetalroughmaterialsettings.cpp
+  3d/materials/qgsmetalroughtexturedmaterialsettings.cpp
   3d/materials/qgsnullmaterialsettings.cpp
   3d/materials/qgsphongmaterialsettings.cpp
   3d/materials/qgsphongtexturedmaterialsettings.cpp
@@ -1068,6 +1073,11 @@ set(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
+set_source_files_properties(
+  project/qgsprojectstoredobjectmanagermodel.cpp
+  PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+)
+
 if(WITH_QTPOSITIONING)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp)
@@ -1113,6 +1123,10 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
+endif()
+
+if(NOT MSVC)
+  set_source_files_properties(${CMAKE_SOURCE_DIR}/external/freespa/freespa.c PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter -Wno-unused-variable")
 endif()
 
 if(NOT MSVC)
@@ -1363,6 +1377,7 @@ set(QGIS_CORE_HDRS
   qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
+  qgssunpositioncalculator.h
   qgstablecell.h
   qgstaskmanager.h
   qgstemporalcontroller.h
@@ -1412,6 +1427,7 @@ set(QGIS_CORE_HDRS
   3d/materials/qgsgoochmaterialsettings.h
   3d/materials/qgsmaterialregistry.h
   3d/materials/qgsmetalroughmaterialsettings.h
+  3d/materials/qgsmetalroughtexturedmaterialsettings.h
   3d/materials/qgsnullmaterialsettings.h
   3d/materials/qgsphongmaterialsettings.h
   3d/materials/qgsphongtexturedmaterialsettings.h
@@ -2126,6 +2142,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  tiledscene/qgscesiumimplicittiling.h
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
   tiledscene/qgsesrii3sdataprovider.h
@@ -2391,6 +2408,7 @@ if (WITH_COPC)
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/copc/qgscopcprovider.cpp
+      providers/vpc/qgspointcloudsubindexloader.cpp
       providers/vpc/qgsvirtualpointcloudprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
@@ -2398,6 +2416,7 @@ if (WITH_COPC)
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
+      providers/vpc/qgspointcloudsubindexloader.h
       providers/vpc/qgsvirtualpointcloudprovider.h
       pointcloud/qgscopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
@@ -2718,6 +2737,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/freespa
   ${CMAKE_SOURCE_DIR}/external/earcut
 )
 

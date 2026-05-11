@@ -16,6 +16,7 @@
 #include "qgsflatterraingenerator.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgschunknode.h"
 #include "qgsgeotransform.h"
 #include "qgsterrainentity.h"
@@ -87,7 +88,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
   transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
 
-  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
+  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), Qgs3DRenderContext::fromMapSettings( map ) );
 
   entity->setParent( parent );
   return entity;

@@ -17,6 +17,7 @@
 #define QGSSKYBOXSETTINGS_H
 
 #include "qgis_3d.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsskyboxentity.h"
 
 #include <QMap>
@@ -27,6 +28,8 @@
 class QgsReadWriteContext;
 class QDomElement;
 
+// this is broken for z-up coordinate system
+#define ENABLE_PANORAMIC_SKYBOX 0
 
 /**
  * \brief Contains the configuration of a skybox entity.
@@ -34,27 +37,27 @@ class QDomElement;
  * \ingroup qgis_3d
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsSkyboxSettings
+class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
 {
   public:
     QgsSkyboxSettings() = default;
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );
 
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
+    QgsSkyboxSettings *clone() const override SIP_FACTORY;
+
     //! Reads settings from a DOM \a element
-    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     //! Writes settings to a DOM \a element
-    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
 
-    //! Returns the type of the skybox
-    QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
-    //! Sets the type of the skybox
-    void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
-
+#if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
     QString panoramicTexturePath() const { return mPanoramicTexturePath; }
     //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
     void setPanoramicTexturePath( const QString &texturePath ) { mPanoramicTexturePath = texturePath; }
+#endif
 
     /**
      * Returns a map containing the path of each texture specified by the user.
@@ -68,11 +71,28 @@ class _3D_EXPORT QgsSkyboxSettings
      */
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
+    /**
+     * Returns the cube face mapping scheme.
+     *
+     * \see setCubeMapping()
+     * \since QGIS 4.2
+     */
+    Qgis::SkyboxCubeMapping cubeMapping() const;
+
+    /**
+     * Sets the cube face \a mapping scheme.
+     *
+     * \see cubeMapping()
+     * \since QGIS 4.2
+     */
+    void setCubeMapping( Qgis::SkyboxCubeMapping mapping );
+
   private:
-    QgsSkyboxEntity::SkyboxType mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
-    //
+#if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;
-    //
+#endif
+
+    Qgis::SkyboxCubeMapping mCubeMapping = Qgis::SkyboxCubeMapping::NativeZUp;
     QMap<QString, QString> mCubeMapFacesPaths;
 };
 

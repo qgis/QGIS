@@ -78,6 +78,7 @@ message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
@@ -575,7 +576,7 @@ if(WITH_CORE)
   # search for Qt
 
   set(QT_VERSION_MAJOR 6)
-  set(QT_MIN_VERSION 6.6.0)
+  set(QT_MIN_VERSION 6.4.0)
   set(QT_VERSION_BASE "Qt6")
   set(QT_VERSION_BASE_LOWER "qt6")
 

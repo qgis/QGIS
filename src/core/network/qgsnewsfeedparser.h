@@ -53,6 +53,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   public:
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( u"news-feed"_s );
+    static const QgsSettingsEntryBool *settingsFeedDisabled;
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     static const QgsSettingsEntryString *settingsFeedLanguage;
     static const QgsSettingsEntryDouble *settingsFeedLatitude;
@@ -64,6 +65,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     static const QgsSettingsEntryString *settingsFeedEntryContent;
     static const QgsSettingsEntryString *settingsFeedEntryLink;
     static const QgsSettingsEntryBool *settingsFeedEntrySticky;
+    static const QgsSettingsEntryVariant *settingsFeedEntryPublished;
     static const QgsSettingsEntryVariant *settingsFeedEntryExpiry;
 #endif
 
@@ -95,6 +97,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
         //! TRUE if entry is "sticky" and should always be shown at the top
         bool sticky = false;
+
+        //! Entry publication date
+        QDateTime published;
 
         //! Optional auto-expiry time for entry
         QDateTime expiry;

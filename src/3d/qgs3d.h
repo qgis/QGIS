@@ -31,6 +31,9 @@ class QgsAbstractMaterialSettings;
 class QgsMaterial;
 class QgsMaterialContext;
 class QgsExpressionContext;
+class QgsSettingsEntryBool;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 #ifndef SIP_RUN
 namespace Qt3DCore
 {
@@ -52,6 +55,9 @@ namespace Qt3DRender
 class _3D_EXPORT Qgs3D
 {
   public:
+    static const QgsSettingsEntryBool *settingMsaaEnabled SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::TextureFilterQuality> *settingTextureFilterQuality SIP_SKIP;
+
     Qgs3D( const Qgs3D &other ) = delete;
     Qgs3D &operator=( const Qgs3D &other ) = delete;
 
@@ -141,6 +147,7 @@ class _3D_EXPORT Qgs3D
     std::unique_ptr< QgsAbstractMaterial3DHandler > mSimpleLineMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mGoochMaterialHandler;
     std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughMaterialHandler;
+    std::unique_ptr< QgsAbstractMaterial3DHandler > mMetalRoughTexturedMaterialHandler;
 };
 
 #endif // QGS3D_H

@@ -25,9 +25,11 @@
 #include "qgsmatrix4x4.h"
 #include "qgsorientedbox3d.h"
 #include "qgssphere.h"
+#include "qgstiledsceneboundingvolume.h"
 
 #include <QIODevice>
 #include <QString>
+#include <QUrlQuery>
 #include <QtCore/QBuffer>
 
 using namespace Qt::StringLiterals;
@@ -192,6 +194,69 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
   return res;
 }
 
+static QVector<QgsCesiumUtils::TileContents> extractGltfFromCmpt( const QByteArray &tileContent, int depth = 0 )
+{
+  struct cmptHeader
+  {
+      unsigned char magic[4];
+      quint32 version;
+      quint32 byteLength;
+      quint32 tilesLength;
+  };
+
+  QVector<QgsCesiumUtils::TileContents> result;
+
+  if ( depth > 10 )
+  {
+    // avoid infinite recursion with badly formed tiles
+    QgsDebugError( u"cmpt recursion depth exceeded"_s );
+    return result;
+  }
+
+  if ( tileContent.size() < static_cast<int>( sizeof( cmptHeader ) ) )
+    return result;
+
+  cmptHeader hdr;
+  memcpy( &hdr, tileContent.constData(), sizeof( cmptHeader ) );
+
+  if ( hdr.version != 1 )
+  {
+    QgsDebugError( u"Unsupported cmpt version %1"_s.arg( hdr.version ) );
+    return result;
+  }
+
+  if ( static_cast<quint32>( tileContent.size() ) < hdr.byteLength )
+    return result;
+
+  int offset = static_cast<int>( sizeof( cmptHeader ) );
+  for ( quint32 i = 0; i < hdr.tilesLength; ++i )
+  {
+    // all inner tiles have the following header: magic (4 bytes), version (uint32), byteLength (uint32)
+    const quint32 innerByteLength = *reinterpret_cast<const quint32 *>( tileContent.constData() + offset + 8 );
+
+    if ( innerByteLength < 12 || offset + static_cast<int>( innerByteLength ) > static_cast<int>( hdr.byteLength ) )
+    {
+      QgsDebugError( u"cmpt with bad inner tile (at index %1)"_s.arg( i ) );
+      break;
+    }
+
+    const QByteArray innerTile = tileContent.mid( offset, innerByteLength );
+
+    if ( innerTile.startsWith( QByteArray( "cmpt" ) ) )
+    {
+      result.append( extractGltfFromCmpt( innerTile, depth + 1 ) );
+    }
+    else
+    {
+      result.append( QgsCesiumUtils::extractTileContent( innerTile ) );
+    }
+
+    offset += static_cast<int>( innerByteLength );
+  }
+
+  return result;
+}
+
 QgsCesiumUtils::TileContents QgsCesiumUtils::extractGltfFromTileContent( const QByteArray &tileContent )
 {
   TileContents res;
@@ -210,7 +275,95 @@ QgsCesiumUtils::TileContents QgsCesiumUtils::extractGltfFromTileContent( const Q
   else
   {
     // unsupported tile content type
-    // TODO: we could extract "b3dm" data from a composite tile ("cmpt")
     return res;
   }
+}
+
+QVector<QgsCesiumUtils::TileContents> QgsCesiumUtils::extractTileContent( const QByteArray &tileContent )
+{
+  QVector<TileContents> result;
+  if ( tileContent.startsWith( QByteArray( "b3dm" ) ) )
+  {
+    const B3DMContents b3dmContents = QgsCesiumUtils::extractGltfFromB3dm( tileContent );
+    TileContents contents;
+    contents.gltf = b3dmContents.gltf;
+    contents.rtcCenter = b3dmContents.rtcCenter;
+    result.append( contents );
+  }
+  else if ( tileContent.startsWith( QByteArray( "glTF" ) ) )
+  {
+    TileContents contents;
+    contents.gltf = tileContent;
+    result.append( contents );
+  }
+  else if ( tileContent.startsWith( QByteArray( "cmpt" ) ) )
+  {
+    result = extractGltfFromCmpt( tileContent );
+  }
+  else
+  {
+    QgsDebugError( u"extractGltfFromTileContent: unknown tile format, size=%1, magic=%2"_s.arg( tileContent.size() ).arg( QString::fromLatin1( tileContent.left( 4 ) ) ) );
+  }
+  return result;
+}
+
+QgsTiledSceneBoundingVolume QgsCesiumUtils::boundingVolumeFromRegion( const QgsBox3D &region, const QgsCoordinateTransformContext &transformContext )
+{
+  if ( region.width() > 20 || region.height() > 20 )
+  {
+    // treat very large regions as global -- these will not transform correctly to EPSG:4978
+    return QgsTiledSceneBoundingVolume();
+  }
+
+  // Transform the 8 corners of the region from EPSG:4979 to EPSG:4978
+  QVector< QgsVector3D > corners = region.corners();
+  QVector< double > x;
+  x.reserve( 8 );
+  QVector< double > y;
+  y.reserve( 8 );
+  QVector< double > z;
+  z.reserve( 8 );
+  for ( int i = 0; i < 8; ++i )
+  {
+    const QgsVector3D &corner = corners[i];
+    x.append( corner.x() );
+    y.append( corner.y() );
+    z.append( corner.z() );
+  }
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ), QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), transformContext );
+  ct.setBallparkTransformsAreAppropriate( true );
+  try
+  {
+    ct.transformInPlace( x, y, z );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( u"Cannot transform region bounding volume"_s );
+  }
+
+  const auto minMaxX = std::minmax_element( x.constBegin(), x.constEnd() );
+  const auto minMaxY = std::minmax_element( y.constBegin(), y.constEnd() );
+  const auto minMaxZ = std::minmax_element( z.constBegin(), z.constEnd() );
+  // note that matrix transforms are NOT applied to region bounding volumes!
+  return QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( QgsBox3D( *minMaxX.first, *minMaxY.first, *minMaxZ.first, *minMaxX.second, *minMaxY.second, *minMaxZ.second ) ) );
+}
+
+QString QgsCesiumUtils::appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl )
+{
+  // This is to support a case seen with Google's tiles. Root URL is something like this:
+  // https://tile.googleapis.com/.../root.json?key=123
+  // The returned JSON contains relative links with "session" (e.g. "/.../abc.json?session=456")
+  // When fetching such abc.json, we have to include also "key" from the original URL!
+  // Then the content of abc.json contains relative links (e.g. "/.../xyz.glb") and we
+  // need to add both "key" and "session" (otherwise requests fail).
+
+  QUrlQuery contentQuery( QUrl( contentUri ).query() );
+  const QList<QPair<QString, QString>> baseUrlQueryItems = QUrlQuery( baseUrl.query() ).queryItems();
+  for ( const QPair<QString, QString> &kv : baseUrlQueryItems )
+  {
+    contentQuery.addQueryItem( kv.first, kv.second );
+  }
+  QUrl newContentUrl( contentUri );
+  newContentUrl.setQuery( contentQuery );
+  return newContentUrl.toString();
 }

@@ -1332,6 +1332,7 @@ namespace QgsWms
 
     // compute scale denominator
     QgsScaleCalculator scaleCalc( ( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
+    scaleCalc.setEllipsoid( mapSettings.ellipsoid() );
     const double scaleDenominator = scaleCalc.calculate( mWmsParameters.bboxAsRectangle(), outputImage->width() );
 
     // configure layers
@@ -3156,7 +3157,7 @@ namespace QgsWms
           {
             extraProperties.insert( u"display_name"_s, fidDisplayNameMap.value( feature.id() ) );
           }
-          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id ) );
+          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id, layerName ) );
         }
       }
       else // raster layer
@@ -3177,7 +3178,7 @@ namespace QgsWms
           properties[name.toStdString()] = value.toStdString();
         }
 
-        json["features"].push_back( { { "type", "Feature" }, { "id", layerName.toStdString() }, { "properties", properties } } );
+        json["features"].push_back( { { "type", "Feature" }, { "featureType", layerName.toStdString() }, { "id", layerName.toStdString() }, { "properties", properties } } );
       }
     }
 #ifdef QGISDEBUG

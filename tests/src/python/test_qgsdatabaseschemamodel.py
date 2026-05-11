@@ -15,7 +15,7 @@ import os
 import unittest
 
 from qgis.core import QgsDatabaseSchemaModel, QgsProviderRegistry
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.testing import QgisTestCase, start_app
 
 
@@ -30,9 +30,6 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain(cls.__name__)
-        QCoreApplication.setApplicationName(cls.__name__)
         start_app()
         cls.postgres_conn = "service='qgis_test'"
         if "QGIS_PGTEST_DB" in os.environ:

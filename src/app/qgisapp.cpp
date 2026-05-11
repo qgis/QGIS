@@ -654,18 +654,18 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       return;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
       // can't take any action immediately for these -- we may be in a background thread
       break;
   }
@@ -911,21 +911,21 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString sAuthId = QString();
 
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::MessageLevel::Warning );
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
     {
       // \note this class is not a descendent of QWidget so we can't pass
       // it in the ctor of the layer projection selector
@@ -965,7 +965,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
     {
       // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
       srs = QgsProject::instance()->crs();
@@ -12804,6 +12804,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
     {
       canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->mapCanvas3D()->mapSettings()->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+      canvas3D->mapCanvas3D()->mapSettings()->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
     }
 #endif
 
@@ -13558,6 +13560,8 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
+    map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+    map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
@@ -16562,6 +16566,8 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+  map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+  map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
 
   QgsVector3D savedOrigin = map->origin();
 

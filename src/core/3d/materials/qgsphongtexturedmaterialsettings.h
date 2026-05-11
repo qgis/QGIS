@@ -74,11 +74,7 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
      */
     double textureScale() const { return mTextureScale; }
 
-    /**
-     * Returns TRUE if the material requires texture coordinates to be generated
-     * during triangulation.quiresTextureCoordinates
-     */
-    bool requiresTextureCoordinates() const { return !mDiffuseTexturePath.isEmpty(); }
+    bool requiresTextureCoordinates() const override;
 
     /**
      * Returns the texture rotation, in degrees.

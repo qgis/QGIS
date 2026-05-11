@@ -410,51 +410,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
 
   if ( !layers.empty() )
   {
-    for ( int i = 0; i < layers.size(); ++i )
-    {
-      QgsMapLayer *layer = layers.at( i );
-      QgsRectangle layerExtent = layer->extent();
-
-      QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( vLayer )
-      {
-        if ( vLayer->geometryType() == Qgis::GeometryType::Null )
-          continue;
-
-        if ( layerExtent.isEmpty() )
-        {
-          vLayer->updateExtents();
-          layerExtent = vLayer->extent();
-        }
-      }
-
-      if ( layerExtent.isNull() )
-        continue;
-
-      //transform extent
-      layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
-
-      extent.combineExtentWith( layerExtent );
-    }
+    canvas->zoomToLayers( layers );
   }
-
   // If no layer is selected, use current layer
   else if ( mView->currentLayer() )
   {
-    QgsRectangle layerExtent = mView->currentLayer()->extent();
-    layerExtent = canvas->mapSettings().layerExtentToOutputExtent( mView->currentLayer(), layerExtent );
-    extent.combineExtentWith( layerExtent );
+    const QList<QgsMapLayer *> layers { mView->currentLayer() };
+    canvas->zoomToLayers( layers );
   }
-
-  if ( extent.isNull() )
-    return;
-
-  // Increase bounding box with 5%, so that layer is a bit inside the borders
-  extent.scale( 1.05 );
-
-  //zoom to bounding box
-  canvas->setExtent( extent, true );
-  canvas->refresh();
 }
 
 

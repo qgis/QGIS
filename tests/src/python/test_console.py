@@ -10,12 +10,10 @@ __author__ = "Matthias Kuhn"
 __date__ = "15.4.2016"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-import os
 import unittest
 
 from console import console
 from qgis.core import QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -26,11 +24,6 @@ class TestConsole(QgisTestCase):
         QgsSettings().setValue("pythonConsole/contextHelpOnFirstLaunch", False)
 
     def test_show_console(self):
-        if os.name == "nt":
-            QCoreApplication.setOrganizationName("QGIS")
-            QCoreApplication.setOrganizationDomain("qgis.org")
-            QCoreApplication.setApplicationName("QGIS-TEST")
-
         my_console = console.show_console()
         my_console_widget = my_console.console
 

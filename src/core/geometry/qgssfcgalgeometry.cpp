@@ -448,6 +448,20 @@ bool QgsSfcgalGeometry::isSimple() const
   return result;
 }
 
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::geometryN( unsigned int index ) const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::geometryN( geom.get(), index );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+}
+
 QgsPoint QgsSfcgalGeometry::centroid() const
 {
   QString errorMsg;
@@ -865,13 +879,13 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::extrude( const QgsVector3D
   return resultGeom;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis( bool extendToEdges ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   sfcgal::shared_geom geom = workingGeom();
-  sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( geom.get(), &errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( geom.get(), extendToEdges, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -891,6 +905,28 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toSolid() const
   std::unique_ptr<QgsSfcgalGeometry> solidGeom = QgsSfcgalEngine::toSfcgalGeometry( solid, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return solidGeom;
+}
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::split3D( const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries ) const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  sfcgal::shared_geom geom = workingGeom();
+
+  sfcgal::shared_geom result = QgsSfcgalEngine::split3D( geom.get(), planePoint, planeNormal, closeGeometries );
+  THROW_ON_ERROR( &errorMsg );
+
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+#else
+  Q_UNUSED( planePoint )
+  Q_UNUSED( planeNormal )
+  Q_UNUSED( closeGeometries )
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
 }
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::toPolyhedralSurface() const

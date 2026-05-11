@@ -141,11 +141,21 @@ None if not yet loaded.
 .. versionadded:: 4.0
 %End
 
-    virtual void loadSubIndex( int n );
+    virtual void loadSubIndex( int n, bool emitDataChanged = false );
 %Docstring
 Triggers loading of the point cloud index for the ``n`` th sub index
 
 Only applies to providers that support multiple indexes
+
+:param n: the number of the sub index to load.
+:param emitDataChanged: whether the
+                        :py:func:`~QgsPointCloudDataProvider.dataChanged`
+                        signal should be emitted when the sub index is
+                        loaded. (since QGIS 4.2)
+
+.. note::
+
+   The :py:func:`~QgsPointCloudDataProvider.dataChanged` signal will only be emitted once when multiple sub indexes finish loading within a 1 second time window.
 
 .. versionadded:: 4.0
 %End

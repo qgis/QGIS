@@ -15,6 +15,7 @@
 
 #include "qgs3dutils.h"
 
+#include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
@@ -29,6 +30,7 @@
 #include "qgsfeedback.h"
 #include "qgsglobechunkedentity.h"
 #include "qgslinestring.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
@@ -522,6 +524,17 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
+float srgbFloatToLinear( float srgb )
+{
+  // from https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+  return srgb <= 0.04045f ? srgb / 12.92f : std::pow( ( srgb + 0.055f ) / 1.055f, 2.4f );
+}
+
+QColor Qgs3DUtils::srgbToLinear( const QColor &color )
+{
+  return QColor::fromRgbF( srgbFloatToLinear( color.redF() ), srgbFloatToLinear( color.greenF() ), srgbFloatToLinear( color.blueF() ), color.alphaF() );
+}
+
 void Qgs3DUtils::extractPointPositions(
   const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
@@ -555,7 +568,7 @@ void Qgs3DUtils::extractPointPositions(
     positions.append( QVector3D(
       static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
       static_cast<float>( pt.y() - chunkOrigin.y() + translation.y() ),
-      static_cast< float >( h + translation.z() )
+      static_cast<float>( h - chunkOrigin.z() + translation.z() )
     ) );
     // clang-format on
     QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
@@ -1219,4 +1232,30 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setAspectRatio( cam->aspectRatio() );
   copy->setFieldOfView( cam->fieldOfView() );
   return copy;
+}
+
+void Qgs3DUtils::setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context )
+{
+  texture->setGenerateMipMaps( true );
+  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
+
+  switch ( context.textureFilterQuality() )
+  {
+    case Qgis::TextureFilterQuality::Trilinear:
+      texture->setMaximumAnisotropy( 1 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic2x:
+      texture->setMaximumAnisotropy( 2 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic4x:
+      texture->setMaximumAnisotropy( 4 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic8x:
+      texture->setMaximumAnisotropy( 8 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic16x:
+      texture->setMaximumAnisotropy( 16 );
+      break;
+  }
 }

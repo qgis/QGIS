@@ -68,7 +68,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( u"culling-mode"_s, Qgs3DUtils::cullingModeToString( mCullingMode ) );
   elemDataProperties.setAttribute( u"invert-normals"_s, mInvertNormals ? u"1"_s : u"0"_s );
   elemDataProperties.setAttribute( u"add-back-faces"_s, mAddBackFaces ? u"1"_s : u"0"_s );
-  elemDataProperties.setAttribute( u"rendered-facade"_s, qgsEnumValueToKey( mExtrusionFaces ) );
+  elemDataProperties.setAttribute( u"rendered-facade"_s, qgsFlagValueToKeys( mExtrusionFaces ) );
   elem.appendChild( elemDataProperties );
 
   elem.setAttribute( u"material_type"_s, mMaterialSettings->type() );
@@ -99,7 +99,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( u"culling-mode"_s ) );
   mInvertNormals = elemDataProperties.attribute( u"invert-normals"_s ).toInt();
   mAddBackFaces = elemDataProperties.attribute( u"add-back-faces"_s ).toInt();
-  mExtrusionFaces = qgsEnumKeyToValue( elemDataProperties.attribute( u"rendered-facade"_s ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  mExtrusionFaces = qgsFlagKeysToValue( elemDataProperties.attribute( u"rendered-facade"_s ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
 
   const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
   const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );

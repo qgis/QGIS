@@ -132,6 +132,7 @@ corresponding to the grid.
 .. seealso:: :py:func:`writeXml`
 %End
 
+  public:
 };
 
 /************************************************************************

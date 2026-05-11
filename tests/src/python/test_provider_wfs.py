@@ -114,10 +114,6 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -1451,7 +1447,8 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
@@ -7352,7 +7349,8 @@ Can't recognize service requested.
             | QgsVectorDataProvider.Capability.ChangeGeometries
             | QgsVectorDataProvider.Capability.DeleteFeatures
             | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.ReloadData,
+            | QgsVectorDataProvider.Capability.ReloadData
+            | QgsVectorDataProvider.Capability.CacheData,
         )
 
         # Transaction response failure (no modifications)
@@ -8998,6 +8996,59 @@ Can't recognize service requested.
         )
         self.assertTrue(vl.isValid())
 
+        # test with geometry held in a Spatial Sampling Feature
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_WFS_complex_features_spatial_sampling_feature"
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "getcapabilities.xml",
+            ),
+            sanitize(endpoint, "?SERVICE=WFS?REQUEST=GetCapabilities&VERSION=2.0.0"),
+        )
+        shutil.copy(
+            os.path.join(
+                TEST_DATA_DIR,
+                "provider",
+                "wfs",
+                "spatial_sampling_features_complexfeatures",
+                "describefeaturetype.xml",
+            ),
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=sams:SF_SpatialSamplingFeature",
+            ),
+        )
+
+        # Test with simpleFeature featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='simpleFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert not vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Null)
+
+        # Test with complexFeatures featureMode
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='sams:SF_SpatialSamplingFeature' version='2.0.0' featureMode='complexFeatures'",
+            "test",
+            "WFS",
+        )
+        self.assertTrue(vl.isValid())
+        assert vl.isSpatial()
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.Point)
+
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     """
@@ -9459,10 +9510,6 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
 
-        QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProviderPost.com")
-        QCoreApplication.setApplicationName("TestPyQgsWFSProviderPost")
-        QgsSettings().clear()
         start_app()
 
         cls._request_preprocessor_id = QgsNetworkAccessManager.setRequestPreprocessor(
