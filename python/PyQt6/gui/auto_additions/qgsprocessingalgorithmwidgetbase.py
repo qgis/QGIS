@@ -33,7 +33,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingFeedbackFactory.__abstract_methods__ = ['createFeedback']
-    QgsProcessingFeedbackFactory.__group__ = ['processing']
+    QgsProcessingFeedbackGenerator.__abstract_methods__ = ['createFeedback']
+    QgsProcessingFeedbackGenerator.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

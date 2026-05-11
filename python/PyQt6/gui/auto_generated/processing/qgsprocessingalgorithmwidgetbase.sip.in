@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingFeedbackFactory
+class QgsProcessingFeedbackGenerator
 {
 %Docstring(signature="appended")
 Factory for creating :py:class:`QgsProcessingFeedback` objects.
@@ -28,7 +28,7 @@ Factory for creating :py:class:`QgsProcessingFeedback` objects.
 #include "qgsprocessingalgorithmwidgetbase.h"
 %End
   public:
-    virtual ~QgsProcessingFeedbackFactory();
+    virtual ~QgsProcessingFeedbackGenerator();
 
     virtual QgsProcessingFeedback *createFeedback() = 0 /Factory/;
 %Docstring
@@ -133,15 +133,15 @@ Returns the results returned by the algorithm executed.
 .. seealso:: :py:func:`setResults`
 %End
 
-    void registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory );
+    void registerProcessingFeedbackGenerator( QgsProcessingFeedbackGenerator *generator );
 %Docstring
-Registers a ``factory`` for creating :py:class:`QgsProcessingFeedback`
+Registers a ``generator`` for creating :py:class:`QgsProcessingFeedback`
 objects for use in the widget.
 
-Ownership of ``factory`` is not transferred, the caller is responsible
+Ownership of ``generator`` is not transferred, the caller is responsible
 for ensuring that it exists for the lifetime of the widget.
 
-If no factory is registered then a default
+If no generator is registered then a default
 :py:class:`QgsProcessingFeedback` object will be created.
 
 .. seealso:: :py:func:`createFeedback`

@@ -49,10 +49,10 @@ using namespace Qt::StringLiterals;
 ///@cond NOT_STABLE
 
 //
-// QgsProcessingFeedbackFactory
+// QgsProcessingFeedbackGenerator
 //
 
-QgsProcessingFeedbackFactory::~QgsProcessingFeedbackFactory()
+QgsProcessingFeedbackGenerator::~QgsProcessingFeedbackGenerator()
 {}
 
 //
@@ -373,7 +373,7 @@ void QgsProcessingAlgorithmWidgetBase::saveLogToFile( const QString &path, const
   }
 }
 
-void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory )
+void QgsProcessingAlgorithmWidgetBase::registerProcessingFeedbackFactory( QgsProcessingFeedbackGenerator *factory )
 {
   mFeedbackFactory = factory;
 }

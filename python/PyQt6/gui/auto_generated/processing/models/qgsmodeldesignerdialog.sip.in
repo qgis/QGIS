@@ -12,7 +12,7 @@
 
 
 
-class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackFactory
+class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator
 {
 %Docstring(signature="appended")
 Model designer dialog base class.

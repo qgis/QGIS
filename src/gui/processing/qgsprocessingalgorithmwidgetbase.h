@@ -43,14 +43,14 @@ class QgsTask;
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 4.2
  */
-class GUI_EXPORT QgsProcessingFeedbackFactory
+class GUI_EXPORT QgsProcessingFeedbackGenerator
 {
   public:
-    virtual ~QgsProcessingFeedbackFactory();
+    virtual ~QgsProcessingFeedbackGenerator();
 
     /**
-   * Creates a new QgsProcessingFeedback object, and transfers ownership to the caller.
-   */
+     * Creates a new QgsProcessingFeedback object, and transfers ownership to the caller.
+     */
     virtual QgsProcessingFeedback *createFeedback() = 0 SIP_FACTORY;
 };
 
@@ -148,19 +148,19 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     QVariantMap results() const { return mResults; }
 
     /**
-     * Registers a \a factory for creating QgsProcessingFeedback objects for use
+     * Registers a \a generator for creating QgsProcessingFeedback objects for use
      * in the widget.
      *
-     * Ownership of \a factory is not transferred, the caller is responsible for
+     * Ownership of \a generator is not transferred, the caller is responsible for
      * ensuring that it exists for the lifetime of the widget.
      *
-     * If no factory is registered then a default QgsProcessingFeedback object will be
+     * If no generator is registered then a default QgsProcessingFeedback object will be
      * created.
      *
      * \see createFeedback()
      * \since QGIS 4.2
      */
-    void registerProcessingFeedbackFactory( QgsProcessingFeedbackFactory *factory );
+    void registerProcessingFeedbackGenerator( QgsProcessingFeedbackGenerator *generator );
 
     /**
      * Creates a new processing feedback object, automatically connected to the appropriate
@@ -526,7 +526,7 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     bool mExecutedAnyResult = false;
     QVariantMap mResults;
     QgsPanelWidget *mMainWidget = nullptr;
-    QgsProcessingFeedbackFactory *mFeedbackFactory = nullptr;
+    QgsProcessingFeedbackGenerator *mFeedbackFactory = nullptr;
     std::unique_ptr<QgsProcessingAlgorithm> mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 
