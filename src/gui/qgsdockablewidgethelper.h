@@ -135,6 +135,13 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QString dockObjectName() const;
 
     /**
+     * Sets the setting key \a id to use for storing previous state settings for the widget.
+     *
+     * Set to an empty string to prevent any storage of the widget's state.
+     */
+    void setSettingKeyDockId( const QString &id );
+
+    /**
      * Returns TRUE if the widget is a visible dialog or a user-visible
      * dock widget.
      */
@@ -204,8 +211,9 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     // Unique identifier of dock
     QString mUuid;
 
+    QString mSettingKeyDockId;
 
-    const QString mSettingKeyDockId;
+    friend class TestQgsDockableWidgetHelper;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDockableWidgetHelper::Options )

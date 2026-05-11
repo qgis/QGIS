@@ -417,6 +417,11 @@ QString QgsDockableWidgetHelper::dockObjectName() const
   return mObjectName;
 }
 
+void QgsDockableWidgetHelper::setSettingKeyDockId( const QString &id )
+{
+  mSettingKeyDockId = id;
+}
+
 bool QgsDockableWidgetHelper::isUserVisible() const
 {
   if ( mDialog )

@@ -42,6 +42,7 @@ class TestQgsDockableWidgetHelper : public QObject
     void testActionAndToolButton();
     void testXmlSerialization();
     void testReject();
+    void testSettingKeyDockId();
 
   private:
 };
@@ -244,6 +245,7 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   QVERIFY( restoreHelperDocked.isDocked() );
   QVERIFY( restoreHelperDocked.dockWidget() );
   QCOMPARE( restoreHelperDocked.dockWidget()->geometry(), sourceHelper.dockWidget()->geometry() );
+  QCOMPARE( restoreHelperDocked.mUuid, sourceHelper.mUuid );
 
   // test round trip in dialog mode
   sourceHelper.toggleDockMode( false );
@@ -257,6 +259,7 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   QVERIFY( !restoreHelperDialog.isDocked() );
   QVERIFY( restoreHelperDialog.dialog() );
   QCOMPARE( restoreHelperDialog.dialog()->geometry(), sourceHelper.dialog()->geometry() );
+  QCOMPARE( restoreHelperDialog.mUuid, sourceHelper.mUuid );
 }
 
 void TestQgsDockableWidgetHelper::testReject()
@@ -278,6 +281,16 @@ void TestQgsDockableWidgetHelper::testReject()
   QSignalSpy spyClosed2( &helper2, &QgsDockableWidgetHelper::closed );
   helper2.reject();
   QCOMPARE( spyClosed2.count(), 1 );
+}
+
+void TestQgsDockableWidgetHelper::testSettingKeyDockId()
+{
+  QMainWindow mw;
+  QWidget w;
+
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  helper.setSettingKeyDockId( u"mySettingKey"_s );
+  QCOMPARE( helper.mSettingKeyDockId, u"mySettingKey"_s );
 }
 
 QGSTEST_MAIN( TestQgsDockableWidgetHelper )
