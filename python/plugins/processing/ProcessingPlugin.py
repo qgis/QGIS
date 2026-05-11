@@ -490,19 +490,8 @@ class ProcessingPlugin(QObject):
 
             if not widget:
                 widget = AlgorithmWidget(alg, in_place, iface.mainWindow())
-            canvas = iface.mapCanvas()
-            prevMapTool = canvas.mapTool()
             widget.show()
             widget.exec()
-            if canvas.mapTool() != prevMapTool:
-                try:
-                    canvas.mapTool().reset()
-                except Exception:
-                    pass
-                try:
-                    canvas.setMapTool(prevMapTool)
-                except RuntimeError:
-                    pass
         else:
             feedback = MessageBarProgress(algname=alg.displayName())
             context = dataobjects.createContext(feedback)

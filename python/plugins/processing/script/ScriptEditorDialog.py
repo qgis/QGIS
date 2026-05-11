@@ -304,17 +304,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         if not self.run_widget:
             self.run_widget = AlgorithmWidget(alg, parent=self)
 
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
-
         self.run_widget.show()
-
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)
 
     def _loadFile(self, filePath):
 

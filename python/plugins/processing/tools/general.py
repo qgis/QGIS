@@ -193,16 +193,8 @@ def execAlgorithmDialog(algOrName, parameters={}):
     if widget is None:
         return {}
 
-    canvas = iface.mapCanvas()
-    prevMapTool = canvas.mapTool()
     widget.show()
     widget.exec()
-    if canvas.mapTool() != prevMapTool:
-        try:
-            canvas.mapTool().reset()
-        except:
-            pass
-        canvas.setMapTool(prevMapTool)
 
     results = widget.results()
     # make sure the dialog is destroyed and not only hidden on pressing Esc

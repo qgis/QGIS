@@ -127,19 +127,8 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
             widget = AlgorithmWidget(alg, parent=iface.mainWindow())
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
         widget.show()
         widget.exec()
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            try:
-                canvas.setMapTool(prevMapTool)
-            except RuntimeError:
-                pass
 
 
 class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
@@ -236,13 +225,5 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
             widget = AlgorithmWidget(alg, True, parent=iface.mainWindow())
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
         widget.show()
         widget.exec()
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)

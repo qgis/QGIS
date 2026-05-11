@@ -387,16 +387,8 @@ def _executeAlgorithm(alg_id):
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
             widget = AlgorithmWidget(alg, parent=iface.mainWindow())
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
         widget.show()
         widget.exec()
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
         context = dataobjects.createContext(feedback)
