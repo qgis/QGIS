@@ -898,8 +898,8 @@ void TestQgsExpressionContext::layerScope()
 
 void TestQgsExpressionContext::layerScopePointCloud()
 {
-  const QString dataPath = QString( TEST_DATA_DIR ) + "/point_clouds/copc/sunshine-coast.copc.laz";
-  auto pcLayer = std::make_unique<QgsPointCloudLayer>( dataPath, u"test pc"_s, u"copc"_s );
+  const QString dataPath = QString( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json";
+  auto pcLayer = std::make_unique<QgsPointCloudLayer>( dataPath, u"test pc"_s, u"ept"_s );
   QVERIFY( pcLayer->isValid() );
 
   QgsExpressionContext context;
