@@ -464,15 +464,15 @@ void QgsFrameGraph::updateShadowSettings( const Qgs3DMapSettings &mapSettings )
 
 void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &settings )
 {
-  QgsOverlayTextureRenderView &debugRenderView = overlayTextureRenderView();
+  QgsOverlayTextureRenderView &overlayRenderView = overlayTextureRenderView();
 
   if ( !mDepthTextureDebugging && settings.debugDepthMapEnabled() )
   {
     Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
-    mDepthTextureDebugging = new QgsOverlayTextureEntity( forwardDepthTexture, debugRenderView.overlayLayer(), this );
+    mDepthTextureDebugging = new QgsOverlayTextureEntity( forwardDepthTexture, overlayRenderView.overlayLayer(), this );
   }
 
-  debugRenderView.setEnabled( settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
+  overlayRenderView.setEnabled( settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
 
   if ( mDepthTextureDebugging )
   {
