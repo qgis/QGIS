@@ -374,6 +374,18 @@ void QgsDockableWidgetHelper::setUserVisible( bool visible )
   }
 }
 
+void QgsDockableWidgetHelper::reject()
+{
+  if ( mDialog )
+  {
+    mDialog->reject();
+  }
+  else if ( mDock )
+  {
+    mDock->close();
+  }
+}
+
 void QgsDockableWidgetHelper::setWindowTitle( const QString &title )
 {
   mWindowTitle = title;

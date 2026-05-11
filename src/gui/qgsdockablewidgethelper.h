@@ -170,6 +170,16 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     void setUserVisible( bool visible );
 
+    /**
+     * Rejects the widget.
+     *
+     * If the widget is shown as a dialog, calls QDialog::reject(). If it's shown as dock widget,
+     * the widget is closed.
+     *
+     * \since QGIS 4.2
+     */
+    void reject();
+
   private:
     void setupDockWidget( const QStringList &tabSiblings = QStringList() );
 

@@ -41,6 +41,7 @@ class TestQgsDockableWidgetHelper : public QObject
     void testSignals();
     void testActionAndToolButton();
     void testXmlSerialization();
+    void testReject();
 
   private:
 };
@@ -256,6 +257,27 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   QVERIFY( !restoreHelperDialog.isDocked() );
   QVERIFY( restoreHelperDialog.dialog() );
   QCOMPARE( restoreHelperDialog.dialog()->geometry(), sourceHelper.dialog()->geometry() );
+}
+
+void TestQgsDockableWidgetHelper::testReject()
+{
+  QMainWindow mw;
+  QWidget w;
+
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+
+  QSignalSpy spyClosed( &helper, &QgsDockableWidgetHelper::closed );
+  // test reject in docked mode
+  helper.reject();
+  QCOMPARE( spyClosed.count(), 1 );
+
+  // test reject in dialog mode
+  QWidget w2;
+  QgsDockableWidgetHelper helper2( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDialog );
+  QPointer dialog( helper2.dialog() );
+  QSignalSpy spyClosed2( &helper2, &QgsDockableWidgetHelper::closed );
+  helper2.reject();
+  QCOMPARE( spyClosed2.count(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsDockableWidgetHelper )
