@@ -345,7 +345,7 @@ bool QgsGltfUtils::loadImageDataWithQImage(
   return true;
 }
 
-bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model, QString *errors, QString *warnings )
+bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model, QString *errors, QString *warnings, const QString &baseDir )
 {
   tinygltf::TinyGLTF loader;
 
@@ -357,7 +357,6 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   // (and there's a lot of non-compliant GLTF out there!)
   loader.SetParseStrictness( tinygltf::ParseStrictness::Permissive );
 
-  std::string baseDir; // TODO: may be useful to set it from baseUri
   std::string err, warn;
 
   bool res;
@@ -368,11 +367,11 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
       *errors = QObject::tr( "GLTF version 1 tiles cannot be loaded" );
       return false;
     }
-    res = loader.LoadBinaryFromMemory( &model, &err, &warn, ( const unsigned char * ) data.constData(), data.size(), baseDir );
+    res = loader.LoadBinaryFromMemory( &model, &err, &warn, ( const unsigned char * ) data.constData(), data.size(), baseDir.toStdString() );
   }
   else
   {
-    res = loader.LoadASCIIFromString( &model, &err, &warn, data.constData(), data.size(), baseDir );
+    res = loader.LoadASCIIFromString( &model, &err, &warn, data.constData(), data.size(), baseDir.toStdString() );
   }
 
   if ( errors )
