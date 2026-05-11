@@ -118,6 +118,8 @@ class TestQgsCoordinateReferenceSystem : public QObject
     void fromProj4EPSG20936();
     void projFactors();
     void toOgcUri();
+    void topocentricOrigin();
+    void allowTopocentricConversion();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -2310,6 +2312,50 @@ void TestQgsCoordinateReferenceSystem::toOgcUri()
   crs = QgsCoordinateReferenceSystem( u"OGC:CRS84"_s );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+}
+
+void TestQgsCoordinateReferenceSystem::topocentricOrigin()
+{
+  double lat = 0.0, lon = 0.0;
+
+  QVERIFY( !QgsCoordinateReferenceSystem().topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).topocentricOrigin( lat, lon ) );
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4978"_s ).topocentricOrigin( lat, lon ) );
+
+  const QgsCoordinateReferenceSystem geocentricCrs( u"EPSG:4978"_s );
+  QVERIFY( geocentricCrs.isValid() );
+  const QgsCoordinateReferenceSystem topoCrs = geocentricCrs.toTopocentricCrs( 45.0, 10.0 );
+  QVERIFY( topoCrs.isValid() );
+  QVERIFY( topoCrs.topocentricOrigin( lat, lon ) );
+  QCOMPARE( lat, 45.0 );
+  QCOMPARE( lon, 10.0 );
+
+  const QgsCoordinateReferenceSystem topoCrs2 = geocentricCrs.toTopocentricCrs( -33.5, -70.75 );
+  QVERIFY( topoCrs2.isValid() );
+  QVERIFY( topoCrs2.topocentricOrigin( lat, lon ) );
+  QCOMPARE( lat, -33.5 );
+  QCOMPARE( lon, -70.75 );
+}
+
+void TestQgsCoordinateReferenceSystem::allowTopocentricConversion()
+{
+  QVERIFY( !QgsCoordinateReferenceSystem().allowTopocentricConversion() );
+
+  // geographic
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).allowTopocentricConversion() );
+
+  // projected CRS
+  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).allowTopocentricConversion() );
+
+  // geocentric CRS
+  QVERIFY( QgsCoordinateReferenceSystem( u"EPSG:4978"_s ).allowTopocentricConversion() );
+
+  // topocentric
+  const QgsCoordinateReferenceSystem geocentricCrs( u"EPSG:4978"_s );
+  const QgsCoordinateReferenceSystem topoCrs = geocentricCrs.toTopocentricCrs( 45.0, 10.0 );
+  QVERIFY( topoCrs.isValid() );
+  QVERIFY( topoCrs.allowTopocentricConversion() );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

@@ -21,13 +21,13 @@
 #include <QTimer>
 #include <QWidget>
 
-class QDoubleSpinBox;
+class QgsDoubleSpinBox;
 class QSlider;
 
 /**
  * Widget for displaying and editing the topocentric projection origin
  */
-class APP_EXPORT QgsTopocentricWidget : public QWidget
+class QgsTopocentricWidget : public QWidget
 {
     Q_OBJECT
 
@@ -51,10 +51,10 @@ class APP_EXPORT QgsTopocentricWidget : public QWidget
     void originChanged( double latitude, double longitude );
 
   private:
-    QDoubleSpinBox *doubleSpinBoxX = nullptr;
-    QSlider *horizontalSliderX = nullptr;
-    QDoubleSpinBox *doubleSpinBoxY = nullptr;
-    QSlider *horizontalSliderY = nullptr;
+    QgsDoubleSpinBox *mDoubleSpinBoxX = nullptr;
+    QSlider *mHorizontalSliderX = nullptr;
+    QgsDoubleSpinBox *mDoubleSpinBoxY = nullptr;
+    QSlider *mHorizontalSliderY = nullptr;
     QTimer *mEditTimer = nullptr;
 };
 

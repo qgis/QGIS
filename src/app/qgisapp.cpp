@@ -14707,7 +14707,7 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionEnabled.svg"_s ) );
 
-    if ( projectCrs.isTopocentricCompatible() )
+    if ( projectCrs.allowTopocentricConversion() )
     {
       if ( !isTopocentric )
       {
@@ -14738,7 +14738,7 @@ void QgisApp::updateCrsStatusBar()
           QgsProject::instance()->setCrs( newCrs );
           mMapCanvas->setExtent( savedExtent );
           mMapCanvas->freeze( false );
-          mMapCanvas->redrawAllLayers(); // this is necessarry because the map doesn't always refresh automatically on topo crs change
+          mMapCanvas->redrawAllLayers(); // this is necessary because the map doesn't always refresh automatically on topocentric crs change
         } );
       }
 

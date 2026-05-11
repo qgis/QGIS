@@ -1114,9 +1114,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString geographicCrsAuthId() const;
 
     /**
-     * Returns TRUE if this CRS is a topocentric compatible CRS.
-     * \a latitude and \a longitude is the origin latitude and longitude in decimal degrees.
+     * Returns the topocentric origin of a topocentric compatible CRS.
      *
+     * \param latitude Latitude of topocentric origin in decimal degrees
+     * \param longitude Longitude of topocentric origin in decimal degrees
+     * \returns TRUE if this CRS is a topocentric compatible CRS and the origin was successfully retrieved
      * \since QGIS 4.2
      */
     bool topocentricOrigin( double &latitude SIP_OUT, double &longitude SIP_OUT ) const;
@@ -1128,7 +1130,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \since QGIS 4.2
      */
-    bool isTopocentricCompatible() const;
+    bool allowTopocentricConversion() const;
 
     /**
      * Constructs a topocentric CRS derived from this CRS with origin

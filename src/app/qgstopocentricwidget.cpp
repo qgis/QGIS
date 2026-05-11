@@ -15,8 +15,9 @@
 
 #include "qgstopocentricwidget.h"
 
-#include <QDoubleSpinBox>
-#include <QHBoxLayout>
+#include "qgsdoublespinbox.h"
+
+#include <QGridLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
@@ -27,84 +28,78 @@
 QgsTopocentricWidget::QgsTopocentricWidget( QWidget *parent )
   : QWidget( parent )
 {
-  doubleSpinBoxX = new QDoubleSpinBox();
-  horizontalSliderX = new QSlider( Qt::Horizontal );
-  doubleSpinBoxY = new QDoubleSpinBox();
-  horizontalSliderY = new QSlider( Qt::Horizontal );
-
-  QHBoxLayout *latLayout = new QHBoxLayout();
-  latLayout->addWidget( new QLabel( tr( "Latitude:" ) ) );
-  latLayout->addWidget( horizontalSliderX );
-  latLayout->addWidget( doubleSpinBoxX );
-
-  QHBoxLayout *lonLayout = new QHBoxLayout();
-  lonLayout->addWidget( new QLabel( tr( "Longitude:" ) ) );
-  lonLayout->addWidget( horizontalSliderY );
-  lonLayout->addWidget( doubleSpinBoxY );
+  mDoubleSpinBoxX = new QgsDoubleSpinBox();
+  mHorizontalSliderX = new QSlider( Qt::Horizontal );
+  mDoubleSpinBoxY = new QgsDoubleSpinBox();
+  mHorizontalSliderY = new QSlider( Qt::Horizontal );
 
   QLabel *titleLabel = new QLabel( tr( "Topocentric origin:" ) );
   titleLabel->setAlignment( Qt::AlignCenter );
 
+  QGridLayout *grid = new QGridLayout();
+  grid->addWidget( new QLabel( tr( "Latitude:" ) ), 0, 0 );
+  grid->addWidget( mHorizontalSliderX, 0, 1 );
+  grid->addWidget( mDoubleSpinBoxX, 0, 2 );
+  grid->addWidget( new QLabel( tr( "Longitude:" ) ), 1, 0 );
+  grid->addWidget( mHorizontalSliderY, 1, 1 );
+  grid->addWidget( mDoubleSpinBoxY, 1, 2 );
+  grid->setColumnStretch( 1, 1 );
+
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 6, 6, 6, 6 );
   layout->addWidget( titleLabel );
-  layout->addLayout( latLayout );
-  layout->addLayout( lonLayout );
+  layout->addLayout( grid );
 
-  doubleSpinBoxX->setRange( -90.0, 90.0 );
-  doubleSpinBoxX->setDecimals( 1 );
-  horizontalSliderX->setRange( -90, 90 );
+  mDoubleSpinBoxX->setRange( -90.0, 90.0 );
+  mDoubleSpinBoxX->setDecimals( 1 );
+  mHorizontalSliderX->setRange( -90, 90 );
 
-  doubleSpinBoxY->setRange( -180.0, 180.0 );
-  doubleSpinBoxY->setDecimals( 1 );
-  horizontalSliderY->setRange( -180, 180 );
+  mDoubleSpinBoxY->setRange( -180.0, 180.0 );
+  mDoubleSpinBoxY->setDecimals( 1 );
+  mHorizontalSliderY->setRange( -180, 180 );
 
   mEditTimer = new QTimer( this );
   mEditTimer->setSingleShot( true );
   mEditTimer->setInterval( 250 );
   connect( mEditTimer, &QTimer::timeout, this, [this]() { emit originChanged( latitude(), longitude() ); } );
 
-  connect( horizontalSliderX, &QSlider::valueChanged, this, [this]( int v ) {
-    QSignalBlocker blocker( doubleSpinBoxX );
-    doubleSpinBoxX->setValue( static_cast<double>( v ) );
+  connect( mHorizontalSliderX, &QSlider::valueChanged, this, [this]( int v ) {
+    whileBlocking( mDoubleSpinBoxX )->setValue( static_cast<double>( v ) );
     mEditTimer->start();
   } );
 
-  connect( doubleSpinBoxX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double v ) {
-    QSignalBlocker blocker( horizontalSliderX );
-    horizontalSliderX->setValue( static_cast<int>( v ) );
+  connect( mDoubleSpinBoxX, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
+    whileBlocking( mHorizontalSliderX )->setValue( static_cast<int>( v ) );
     emit originChanged( latitude(), longitude() );
   } );
 
-  connect( horizontalSliderY, &QSlider::valueChanged, this, [this]( int v ) {
-    QSignalBlocker blocker( doubleSpinBoxY );
-    doubleSpinBoxY->setValue( static_cast<double>( v ) );
+  connect( mHorizontalSliderY, &QSlider::valueChanged, this, [this]( int v ) {
+    whileBlocking( mDoubleSpinBoxY )->setValue( static_cast<double>( v ) );
     mEditTimer->start();
   } );
 
-  connect( doubleSpinBoxY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double v ) {
-    QSignalBlocker blocker( horizontalSliderY );
-    horizontalSliderY->setValue( static_cast<int>( v ) );
+  connect( mDoubleSpinBoxY, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double v ) {
+    whileBlocking( mHorizontalSliderY )->setValue( static_cast<int>( v ) );
     emit originChanged( latitude(), longitude() );
   } );
 }
 
 double QgsTopocentricWidget::latitude() const
 {
-  return doubleSpinBoxX->value();
+  return mDoubleSpinBoxX->value();
 }
 
 double QgsTopocentricWidget::longitude() const
 {
-  return doubleSpinBoxY->value();
+  return mDoubleSpinBoxY->value();
 }
 
 void QgsTopocentricWidget::setLatitude( double latitude )
 {
-  doubleSpinBoxX->setValue( latitude );
+  mDoubleSpinBoxX->setValue( latitude );
 }
 
 void QgsTopocentricWidget::setLongitude( double longitude )
 {
-  doubleSpinBoxY->setValue( longitude );
+  mDoubleSpinBoxY->setValue( longitude );
 }

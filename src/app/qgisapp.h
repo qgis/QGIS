@@ -167,6 +167,7 @@ class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 class QgsCustomization;
 class QgsCustomizationDialog;
+class QgsTopocentricWidget;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -2652,7 +2653,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Popup menu shown on the CRS button when the project uses a topocentric CRS
     QMenu *mTopocentricMenu = nullptr;
     //! Widget embedded in mTopocentricMenu to display the topocentric origin
-    class QgsTopocentricWidget *mTopocentricWidget = nullptr;
+    QgsTopocentricWidget *mTopocentricWidget = nullptr;
     QToolButton *mMessageButton = nullptr;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu = nullptr;

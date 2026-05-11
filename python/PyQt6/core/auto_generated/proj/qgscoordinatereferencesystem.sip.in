@@ -1314,14 +1314,19 @@ Returns auth id of related geographic CRS
 
     bool topocentricOrigin( double &latitude /Out/, double &longitude /Out/ ) const;
 %Docstring
-Returns ``True`` if this CRS is a topocentric compatible CRS.
-``latitude`` and ``longitude`` is the origin latitude and longitude in
-decimal degrees.
+Returns the topocentric origin of a topocentric compatible CRS.
+
+
+
+:return: - ``True`` if this CRS is a topocentric compatible CRS and the
+           origin was successfully retrieved
+         - latitude: Latitude of topocentric origin in decimal degrees
+         - longitude: Longitude of topocentric origin in decimal degrees
 
 .. versionadded:: 4.2
 %End
 
-    bool isTopocentricCompatible() const;
+    bool allowTopocentricConversion() const;
 %Docstring
 Returns ``True`` if this CRS can serve as a base for building a
 topocentric CRS. This is the case when the horizontal part of the CRS is
