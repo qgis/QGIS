@@ -223,7 +223,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
     """QGIS API server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    regenerate_api_reference = True
+    regenerate_api_reference = False
 
     def assertEqualBrackets(self, actual, expected):
         """Also counts parenthesis"""
