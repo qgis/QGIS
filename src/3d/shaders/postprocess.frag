@@ -103,7 +103,7 @@ void main()
   vec3 worldPosition = WorldPosFromDepth( depth );
 
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
-  if ( renderShadows != 0 || depth < 1.0 )
+  if ( renderShadows != 0 && depth < 1.0 )
   {
 #if 1
     int cascadeIndex = calcCascadeIndexMapBased(worldPosition);
