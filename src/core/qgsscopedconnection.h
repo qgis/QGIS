@@ -55,7 +55,7 @@ class QgsScopedConnection
     QgsScopedConnection( const QgsScopedConnection & ) = delete;
     QgsScopedConnection &operator=( const QgsScopedConnection & ) = delete;
 
-    // Moves permitted
+    //! Move constructor.
     QgsScopedConnection( QgsScopedConnection &&other ) noexcept
       : mConnection( std::move( other.mConnection ) )
     {
