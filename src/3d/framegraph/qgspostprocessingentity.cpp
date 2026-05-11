@@ -67,11 +67,6 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mCsmMatricesParameter = new Qt3DRender::QParameter( QString( "csmMatrices[0]" ), csmMatrices );
   mMaterial->addParameter( mCsmMatricesParameter );
 
-#if 0 // required for interval based cascades only
-  mCsmSplitsParameter = new Qt3DRender::QParameter( QString( "csmSplits[0]" ), QVariantList( Qgs3D::NUM_SHADOW_CASCADES, 0.0f ) );
-  mMaterial->addParameter( mCsmSplitsParameter );
-#endif
-
   mFarPlaneParameter = new Qt3DRender::QParameter( u"farPlane"_s, mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
   connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) { mFarPlaneParameter->setValue( farPlane ); } );
@@ -219,9 +214,6 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   }
 
   mCsmMatricesParameter->setValue( csmMatrices );
-#if 0 // required for interval based cascades only
-  mCsmSplitsParameter->setValue( csmSplits );
-#endif
 }
 
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )

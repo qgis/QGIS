@@ -105,12 +105,7 @@ void main()
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if ( renderShadows != 0 && depth < 1.0 )
   {
-#if 1
     int cascadeIndex = calcCascadeIndexMapBased(worldPosition);
-#else
-    float viewZ = linearizeDepth(depth);
-    int cascadeIndex = calcCascadeIndexIntervalBased(viewZ);
-#endif
     float visibilityFactor = calcShadowFactor(cascadeIndex, worldPosition);
 
     finalColor = finalColor * mix(0.5, 1.0, visibilityFactor);

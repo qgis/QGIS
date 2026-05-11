@@ -92,9 +92,6 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
-#if 0 // required for interval based cascades only
-    Qt3DRender::QParameter *mCsmSplitsParameter = nullptr;
-#endif
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;

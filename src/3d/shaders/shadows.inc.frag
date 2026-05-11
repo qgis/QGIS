@@ -4,8 +4,6 @@ uniform float shadowBias;
 // if you change the number of cascades, you also need to update Qgs3D::NUM_SHADOW_CASCADES
 const int NUMBER_CASCADES = 4;
 uniform mat4 csmMatrices[NUMBER_CASCADES];
-// uncomment if using interval based selection
-//uniform float csmSplits[NUMBER_CASCADES];
 
 bool isInsideCascade(mat4 lightMatrix, vec3 worldPos)
 {
@@ -32,23 +30,6 @@ int calcCascadeIndexMapBased(vec3 worldPosition)
   }
   return cascadeIndex;
 }
-
-#if 0
-int calcCascadeIndexIntervalBased(float viewZ)
-{
-  // Interval-Based Selection -- see
-  // https://learn.microsoft.com/en-us/windows/win32/dxtecharts/cascaded-shadow-maps#map-based-cascade-selection
-  int cascadeIndex = NUMBER_CASCADES-1;
-  for (int i = 0; i < NUMBER_CASCADES; ++i)
-  {
-    if (viewZ < csmSplits[i]) {
-      cascadeIndex = i;
-      break;
-    }
-  }
-  return cascadeIndex;
-}
-#endif
 
 float calcShadowFactor(int cascadeIndex, vec3 worldPosition)
 {
