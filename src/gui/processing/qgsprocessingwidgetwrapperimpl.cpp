@@ -3851,6 +3851,14 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
   mButton->setVisible( false );
 }
 
+QgsProcessingPointPanel::~QgsProcessingPointPanel()
+{
+  if ( mCanvas && mPrevTool && mCanvas->mapTool() == mTool.get() )
+  {
+    mCanvas->setMapTool( mPrevTool.get() );
+  }
+}
+
 void QgsProcessingPointPanel::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;

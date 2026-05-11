@@ -988,6 +988,7 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
 
   public:
     QgsProcessingPointPanel( QWidget *parent );
+    ~QgsProcessingPointPanel() override;
     void setMapCanvas( QgsMapCanvas *canvas );
     void setAllowNull( bool allowNull );
     void setShowPointOnCanvas( bool show );
