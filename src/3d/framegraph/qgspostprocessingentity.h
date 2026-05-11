@@ -49,7 +49,14 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
+
+    /**
+     * Sets whether the splits between cascading shadow map boundaries should be shown.
+     *
+     * \warning For testing purposes only!
+     */
     void setShowCascadingShadowSplits( bool enabled );
+
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
     //! Sets whether eye dome lighting is enabled
