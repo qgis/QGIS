@@ -15,6 +15,8 @@
 
 #include "qgsmetalroughtexturedmaterialsettings.h"
 
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
 #include "qgssymbollayerutils.h"
 
 #include <QString>
@@ -76,7 +78,8 @@ bool QgsMetalRoughTexturedMaterialSettings::requiresTangents() const
 
 QColor QgsMetalRoughTexturedMaterialSettings::textureAverageColor( const QString &texturePath ) const
 {
-  QImage texture( texturePath );
+  bool fitsInCache = false;
+  QImage texture = QgsApplication::imageCache()->pathAsImage( texturePath, QSize(), true, 1.0, fitsInCache );
   if ( texture.isNull() )
   {
     return QColor( 127, 127, 127 );
