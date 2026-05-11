@@ -174,8 +174,7 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
 
     // create the light view matrix
     QMatrix4x4 lightView;
-    constexpr float lightPosDistanceFactor = 1000.0f;
-    const QVector3D lightPos = center - lightDirection * lightPosDistanceFactor; // Pull back the camera position
+    const QVector3D lightPos = center - lightDirection;
     lightView.lookAt( lightPos, center, up );
 
     // apply to the specific light camera
