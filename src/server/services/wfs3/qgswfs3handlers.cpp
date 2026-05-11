@@ -1332,7 +1332,14 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   // Retrieve data from the buffer and send it
   vsi_l_offset pnDataLength;
   const char *dataPtr = reinterpret_cast<char *>( VSIGetMemFileBuffer( destination.toStdString().c_str(), &pnDataLength, false ) );
-  const QByteArray data { QByteArray::fromRawData( dataPtr, pnDataLength ) };
+
+  // Check that pnDataLength fits in qsizetype
+  if ( pnDataLength > std::numeric_limits<qsizetype>::max() )
+  {
+    throw QgsServerApiInternalServerError( u"Exported data is too large to be sent in the response"_s );
+  }
+
+  const QByteArray data { QByteArray::fromRawData( dataPtr, static_cast<qsizetype>( pnDataLength ) ) };
   apiContext.response()->write( data );
 }
 
