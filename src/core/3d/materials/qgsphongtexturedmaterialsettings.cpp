@@ -15,7 +15,9 @@
 
 #include "qgsphongtexturedmaterialsettings.h"
 
+#include "qgsapplication.h"
 #include "qgscolorutils.h"
+#include "qgsimagecache.h"
 #include "qgsphongmaterialsettings.h"
 
 #include <QImage>
@@ -109,7 +111,8 @@ QColor QgsPhongTexturedMaterialSettings::textureAverageColor() const
     return *mTextureAverageColor;
   }
 
-  QImage texture( mDiffuseTexturePath );
+  bool fitsInCache = false;
+  QImage texture = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
   if ( texture.isNull() )
   {
     mTextureAverageColor = QColor( 127, 127, 127 );
