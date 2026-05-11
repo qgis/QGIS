@@ -28,6 +28,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingutils.h"
+#include "qgsscopedconnection.h"
 #include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -540,6 +541,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       bool runResult = false;
       try
       {
+        QgsScopedConnection childProgressConnection;
+        if ( modelFeedback )
+        {
+          // this is a scoped connection -- we only want it to exist for the duration that we're actually running THIS
+          // particular child algorithm
+          childProgressConnection = QObject::connect( &childAlgorithmFeedback, &QgsFeedback::progressChanged, &childAlgorithmFeedback, [&modelFeedback, &childId]( double progress ) {
+            modelFeedback->reportChildProgress( childId, progress );
+          } );
+        }
+
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
@@ -614,7 +625,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( childResult.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed )
           modelFeedback->reportChildExecutionFailure( childId, error );
         else if ( childResult.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success )
+        {
+          modelFeedback->reportChildProgress( childId, 100 );
           modelFeedback->reportChildExecutionSuccess( childId, results );
+        }
       }
 
       if ( runResult )

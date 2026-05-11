@@ -19,6 +19,7 @@
 #define QGSSCOPEDCONNECTION_H
 
 #include <QMetaObject>
+#include <QObject>
 
 #define SIP_NO_FILE
 

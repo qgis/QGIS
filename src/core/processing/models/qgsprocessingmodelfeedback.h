@@ -84,6 +84,13 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     QSet< QString > startedChildren() const { return mStartedChildren; }
 
     /**
+     * Reports the \a progress of a running child algorithm.
+     *
+     * \see childProgressChanged()
+     */
+    void reportChildProgress( const QString &childId, double progress );
+
+    /**
      * Report an error which occurred while executing a child algorithm.
      *
      * \see childExecutionFailed()
@@ -148,6 +155,13 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
      * \see reportChildStarted()
      */
     void childStarted( const QString &childId, const QVariantMap &childParameters );
+
+    /**
+     * Emitted when a child algorithm changes \a progress.
+     *
+     * \see reportChildProgress()
+     */
+    void childProgressChanged( const QString &childId, double progress );
 
     /**
      * Emitted when an error occurred while executing a child algorithm.

@@ -45,6 +45,11 @@ void QgsProcessingModelFeedback::reportChildStarted( const QString &childId, con
   emit childStarted( childId, childParameters );
 }
 
+void QgsProcessingModelFeedback::reportChildProgress( const QString &childId, double progress )
+{
+  emit childProgressChanged( childId, progress );
+}
+
 void QgsProcessingModelFeedback::reportChildExecutionFailure( const QString &childId, const QString &error )
 {
   mFailedChildren.insert( childId );
