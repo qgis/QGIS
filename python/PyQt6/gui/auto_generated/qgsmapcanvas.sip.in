@@ -979,9 +979,10 @@ Sets the associated status ``bar``.
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets a message ``bar`` to use alongside the map canvas. Setting this
-allows items to utilize the message bar to provide non-blocking feedback
-to users, e.g. success or failure of actions.
+Sets a message ``bar`` to use alongside the map canvas.
+
+Setting this allows items to utilize the message bar to provide
+non-blocking feedback to users, e.g. success or failure of actions.
 
 .. seealso:: :py:func:`messageBar`
 
@@ -990,7 +991,7 @@ to users, e.g. success or failure of actions.
 
     QgsMessageBar *messageBar();
 %Docstring
-Returns the message bar associated with the dock.
+Returns the message bar associated with the map canvas.
 
 May be ``None`` if not set.
 
@@ -1002,9 +1003,10 @@ May be ``None`` if not set.
     void setUserInputWidget( QgsUserInputWidget *userInputWidget );
 %Docstring
 Sets a ``userInputWidget``, a floating widget that can be used to
-display additional widgets for user inputs. Setting this allows items
-associated with a map canvas to add widgets to it, e.g. in a
-:py:class:`QgsMapTool`.
+display additional widgets for user inputs.
+
+Setting this allows items associated with a map canvas to add widgets to
+it, e.g. in a :py:class:`QgsMapTool`.
 
 .. seealso:: :py:func:`userInputWidget`
 

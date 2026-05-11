@@ -940,7 +940,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Sets a message \a bar to use alongside the map canvas.
-     * 
+     *
      * Setting this allows items to utilize the message bar to provide non-blocking feedback to users, e.g.
      * success or failure of actions.
      *
@@ -961,7 +961,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Sets a \a userInputWidget, a floating widget that can be used to display additional widgets for user inputs.
-     * 
+     *
      * Setting this allows items associated with a map canvas to add widgets to it, e.g. in a QgsMapTool.
      *
      * \see userInputWidget()
