@@ -30,6 +30,7 @@ set(TESTS
   testqgscategorizedrendererwidget.cpp
   testqgsdatumtransformdialog.cpp
   testqgsdiagramproperties.cpp
+  testqgsdockablewidgethelper.cpp
   testqgsdoublespinbox.cpp
   testqgsdualview.cpp
   testqgsattributeform.cpp
