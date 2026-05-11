@@ -360,10 +360,12 @@ void QgsDockableWidgetHelper::setUserVisible( bool visible )
       mDialog->raise();
       mDialog->setWindowState( mDialog->windowState() & ~Qt::WindowMinimized );
       mDialog->activateWindow();
+      emit visibilityChanged( true );
     }
     else
     {
       mDialog->hide();
+      emit visibilityChanged( false );
     }
   }
   if ( mDock )
