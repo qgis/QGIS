@@ -45,6 +45,21 @@ QgsMatrix4x4::QgsMatrix4x4(
   m[3][3] = m44;
 }
 
+bool QgsMatrix4x4::fuzzyEqual( const QgsMatrix4x4 &other, double epsilon ) const
+{
+  const double *data = *m;
+  const double *otherData = *( other.m );
+  for ( int i = 0; i < 16; ++i, data++, otherData++ )
+  {
+    if ( !qgsDoubleNear( *data, *otherData, epsilon ) )
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void QgsMatrix4x4::translate( const QgsVector3D &vector )
 {
   m[3][0] += m[0][0] * vector.x() + m[1][0] * vector.y() + m[2][0] * vector.z();

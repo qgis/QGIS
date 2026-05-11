@@ -51,6 +51,15 @@ Initializes matrix by setting all values in row-major order
 
     bool operator!=( const QgsMatrix4x4 &other ) const;
 
+
+    bool fuzzyEqual( const QgsMatrix4x4 &other, double epsilon = 1e-8 ) const /HoldGIL/;
+%Docstring
+Performs fuzzy comparison between this matrix and ``other`` using an
+``epsilon``.
+
+.. versionadded:: 4.2
+%End
+
     QList< double > dataList() const /PyName=data,HoldGIL/;
 %Docstring
 Returns matrix data (in column-major order)

@@ -87,6 +87,14 @@ class TestQgsMatrix4x4(QgisTestCase):
                 ),
             )
 
+        matA = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+        matB = QgsMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16.0001)
+        self.assertNotEqual(matA, matB)
+        self.assertTrue(matA.fuzzyEqual(matB, 1e-4))
+        self.assertTrue(matB.fuzzyEqual(matA, 1e-4))
+        self.assertFalse(matA.fuzzyEqual(matB, 1e-5))
+        self.assertFalse(matB.fuzzyEqual(matA, 1e-5))
+
     def test_translate(self):
         """
         Test translating a matrix

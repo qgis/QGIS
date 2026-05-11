@@ -53,19 +53,18 @@ class CORE_EXPORT QgsMatrix4x4
     );
     // clang-format on
 
-    bool operator==( const QgsMatrix4x4 &other ) const
-    {
-      const double *data = *m;
-      const double *otherData = *( other.m );
-      for ( int i = 0; i < 16; ++i, data++, otherData++ )
-      {
-        if ( !qgsDoubleNear( *data, *otherData ) )
-          return false;
-      }
-      return true;
-    }
+    bool operator==( const QgsMatrix4x4 &other ) const { return fuzzyEqual( other, 4 * std::numeric_limits<double>::epsilon() ); }
 
     bool operator!=( const QgsMatrix4x4 &other ) const { return !( *this == other ); }
+
+
+    /**
+     * Performs fuzzy comparison between this matrix and \a other using an \a epsilon.
+     *
+     * \since QGIS 4.2
+     */
+    bool fuzzyEqual( const QgsMatrix4x4 &other, double epsilon = 1e-8 ) const
+    SIP_HOLDGIL;
 
     //! Returns pointer to the matrix data (stored in column-major order)
     const double *constData() const SIP_SKIP { return *m; }
