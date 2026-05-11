@@ -74,11 +74,7 @@ void QgsFrameGraph::constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *to
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
 {
-  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
-  cameraSelector->setObjectName( "Sub pass Postprocessing" );
-  cameraSelector->setCamera( mMainCamera );
-
-  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter();
 
   // could be the first of this branch
   new Qt3DRender::QClearBuffers( layerFilter );
@@ -88,7 +84,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
   layerFilter->addLayer( postProcessingLayer );
   mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
 
-  return cameraSelector;
+  return layerFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForRenderCapture()
