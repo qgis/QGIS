@@ -139,7 +139,10 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
   mDataDefinedProperties.prepare( context.renderContext().expressionContext() );
 
   if ( mDataDefinedProperties.hasActiveProperties() )
-    context.renderContext().expressionContext().appendScope( new QgsExpressionContextScope() );
+  {
+    mExpressionContextScope = std::make_unique<QgsExpressionContextScope>();
+    context.renderContext().expressionContext().appendScope( mExpressionContextScope.get() );
+  }
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext &context )
@@ -148,8 +151,11 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext &context )
   Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
 #endif
 
-  if ( mDataDefinedProperties.hasActiveProperties() )
-    delete context.renderContext().expressionContext().popScope();
+  if ( mExpressionContextScope )
+  {
+    context.renderContext().expressionContext().popScope();
+    mExpressionContextScope.reset();
+  }
 }
 
 bool QgsPointCloudRenderer::legendItemChecked( const QString & )
@@ -458,13 +464,12 @@ QColor QgsPointCloudRenderer::colorFromExpression( const QgsPointCloudBlock *blo
 
   QgsExpressionContext &ctx = context.renderContext().expressionContext();
 
-  QgsExpressionContextScope *scope = ctx.lastScope();
   int offset = 0;
   for ( const QgsPointCloudAttribute &att : request.attributes() )
   {
     QVariant value;
     context.getAttribute( pointData, offset, att.type(), value );
-    scope->setVariable( att.name(), value, false );
+    mExpressionContextScope->setVariable( att.name(), value, false );
     offset += att.size();
   }
 

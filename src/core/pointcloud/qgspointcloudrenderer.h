@@ -36,6 +36,7 @@ class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsPointCloudLayer;
 class QgsElevationMap;
+class QgsExpressionContextScope;
 
 /**
  * \ingroup core
@@ -927,6 +928,8 @@ class CORE_EXPORT QgsPointCloudRenderer
     static void initPropertyDefinitions();
     static QgsPropertiesDefinition sPropertyDefinitions;
     QgsPropertyCollection mDataDefinedProperties;
+
+    std::unique_ptr<QgsExpressionContextScope> mExpressionContextScope;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H
