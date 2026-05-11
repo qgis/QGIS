@@ -94,7 +94,7 @@ class QgsShadowRenderView : public QgsAbstractRenderView
 
     // Shadow rendering pass branch nodes:
     Qt3DRender::QLayer *mEntityCastingShadowsLayer = nullptr;
-    Qt3DRender::QLayerFilter *mLayerFilters[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
+    Qt3DRender::QLayerFilter *mLayerFilter = nullptr;
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QTexture2DArray *mMapTextureArray = nullptr;
 

@@ -48,11 +48,7 @@ QgsShadowRenderView::QgsShadowRenderView( const QString &viewName, Qt3DCore::QEn
 void QgsShadowRenderView::setEnabled( bool enable )
 {
   QgsAbstractRenderView::setEnabled( enable );
-  for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
-  {
-    if ( mLayerFilters[i] )
-      mLayerFilters[i]->setEnabled( enable );
-  }
+  mLayerFilter->setEnabled( enable );
 }
 
 Qt3DRender::QCamera *QgsShadowRenderView::lightCamera( int index )
@@ -74,24 +70,24 @@ void QgsShadowRenderView::buildRenderPass()
   mMapTextureArray->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mMapTextureArray->setObjectName( mViewName + "::MapTextureArray" );
 
+  mLayerFilter = new Qt3DRender::QLayerFilter( mRendererEnabler );
+  mLayerFilter->addLayer( mEntityCastingShadowsLayer );
+
+  Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( mLayerFilter );
+  clearBuffers->setBuffers( Qt3DRender::QClearBuffers::BufferType::DepthBuffer );
+
+  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( clearBuffers );
+
   for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     mLightCameras[i] = new Qt3DRender::QCamera( mRootEntity );
     mLightCameras[i]->setObjectName( mViewName + QString( "::LightCamera_%1" ).arg( i ) );
 
-    Qt3DRender::QCameraSelector *lightCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
+    Qt3DRender::QCameraSelector *lightCameraSelector = new Qt3DRender::QCameraSelector( renderStateSet );
     lightCameraSelector->setObjectName( mViewName + QString( "::CameraSelector_%1" ).arg( i ) );
     lightCameraSelector->setCamera( mLightCameras[i] );
 
-    mLayerFilters[i] = new Qt3DRender::QLayerFilter( lightCameraSelector );
-    mLayerFilters[i]->addLayer( mEntityCastingShadowsLayer );
-
-    Qt3DRender::QRenderTargetSelector *renderTargetSelector = new Qt3DRender::QRenderTargetSelector( mLayerFilters[i] );
-
-    Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( renderTargetSelector );
-    clearBuffers->setBuffers( Qt3DRender::QClearBuffers::BufferType::DepthBuffer );
-
-    Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( clearBuffers );
+    Qt3DRender::QRenderTargetSelector *renderTargetSelector = new Qt3DRender::QRenderTargetSelector( lightCameraSelector );
 
     Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
     depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
