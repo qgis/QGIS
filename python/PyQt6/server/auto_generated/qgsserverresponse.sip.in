@@ -23,12 +23,16 @@ class QgsServerResponse
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 %Docstring
-Set a single header ``value`` replacing any existing value for the same
-``key`` Add Header entry to the response
+Set a single header ``value`` replacing any existing value(s) for the
+same ``key``
 
 .. note::
 
    that it is usually an error to set Header after data have been sent through the wire
+
+.. seealso:: :py:func:`addHeader` for a method that allows setting multiple values for the same header key
+
+.. seealso:: :py:func:`removeHeader` to clear header values for a given key
 %End
 
     virtual void addHeader( const QString &key, const QString &value ) = 0;
@@ -40,17 +44,20 @@ existing value for the same ``key`` Add Header entry to the response
 
    that it is usually an error to set Header after data have been sent through the wire
 
+.. seealso:: :py:func:`setHeader` for a method that replaces any existing value(s) for the same header key
+
 .. versionadded:: 4.2
 %End
 
     virtual void removeHeader( const QString &key ) = 0;
 %Docstring
-Clear header Undo a previous 'setHeader' call
+Clear all header values for the given ``key`` Undo a previous
+'setHeader' call
 %End
 
     virtual QString header( const QString &key ) const = 0;
 %Docstring
-Returns the header value
+Returns a single header value for a given ``key``
 
 .. note::
 
@@ -59,7 +66,10 @@ Returns the header value
 
     virtual QList<QString> fullHeader( const QString &key ) const = 0;
 %Docstring
-Returns the header values for the given ``key``
+Returns a (possibly empty) list of all the header values for the given
+``key``
+
+.. seealso:: :py:func:`header` to get only the last value for a given header key
 
 .. versionadded:: 4.2
 %End
@@ -68,11 +78,15 @@ Returns the header values for the given ``key``
 %Docstring
 Returns the header values as a map: only the last value is returned if
 multiple values are set for the same header
+
+.. seealso:: :py:func:`fullHeaders` to get all the values for all the headers
 %End
 
     virtual QMap<QString, QList<QString>> fullHeaders() const = 0;
 %Docstring
-Returns the header values
+Returns all the header values
+
+.. seealso:: :py:func:`headers` to get only the last value for each header key
 
 .. versionadded:: 4.2
 %End

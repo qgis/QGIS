@@ -292,6 +292,26 @@ bool QgsWfs3AbstractItemsHandler::canUpdateFeatures( const QgsVectorLayer *mapLa
   return false;
 }
 
+QUrlQuery QgsWfs3AbstractItemsHandler::removeOffsetAndLimit( const QUrlQuery &urlQuery )
+{
+  // Since headers are stored in a case sensitive map,
+  // make sure we are clearing the correct case if any
+  QUrlQuery query( urlQuery );
+  const QList<std::pair<QString, QString>> items = query.queryItems();
+  for ( const auto &pair : std::as_const( items ) )
+  {
+    if ( pair.first.compare( "offset"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+    else if ( pair.first.compare( "limit"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      query.removeAllQueryItems( pair.first );
+    }
+  }
+  return query;
+}
+
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {}
 
@@ -992,10 +1012,7 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
 
   // Url without offset and limit
   QUrl cleanedUrl { url };
-  QUrlQuery query( cleanedUrl );
-  query.removeQueryItem( u"limit"_s );
-  query.removeQueryItem( u"offset"_s );
-  cleanedUrl.setQuery( query );
+  cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ) ) );
 
   QString cleanedUrlAsString { cleanedUrl.toString() };
 
@@ -1297,11 +1314,7 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
 
     // Url without offset and limit
     QUrl cleanedUrl { url };
-    QUrlQuery query( cleanedUrl );
-    query.removeQueryItem( u"limit"_s );
-    query.removeQueryItem( u"offset"_s );
-    cleanedUrl.setQuery( query );
-
+    cleanedUrl.setQuery( removeOffsetAndLimit( QUrlQuery( url.query() ) ) );
     QString cleanedUrlAsString { cleanedUrl.toString() };
 
     if ( !cleanedUrl.hasQuery() )

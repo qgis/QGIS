@@ -94,6 +94,12 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
     bool canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Removes the 'offset' and 'limit' query parameters from the given \a urlQuery ignoring case,
+     * and returns the modified query.
+     */
+    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery );
 };
 
 /**
