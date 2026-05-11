@@ -178,7 +178,12 @@ namespace QgsWms
   }
 
   void collectAcceptableLayersAndRequestNames(
-    QHash<QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames, const QgsProject &project, const QgsLayerTreeGroup *group, const QStringList &layerParameters, QStringList requestedParentNames
+    QHash<QgsMapLayer *, QStringList> &acceptableLayersAndRequestNames,
+    const QgsProject &project,
+    const QgsLayerTreeGroup *group,
+    const QStringList &layerParameters,
+    QStringList requestedParentNames,
+    bool groupIsAnOpaqueChild
   )
   {
     //get group nickname
@@ -189,19 +194,22 @@ namespace QgsWms
     bool projectIsRequested = ( layerParameters.contains( QgsServerProjectUtils::wmsRootName( project ) ) || layerParameters.contains( project.title() ) );
     bool groupIsRequested = layerParameters.contains( groupName );
 
-    // append the group to the list, when it's explicitely requeseted
-    if ( groupIsRequested )
+    // append the group to the list, when it's explicitly requested and it's not already a child of an opaque group
+    if ( groupIsRequested && !groupIsAnOpaqueChild )
       requestedParentNames << groupName;
 
-    // the group should not be  opaque or explicitely requested (by the groupname or by the project name)
+    // the group should not be opaque or explicitly requested (by the groupname or by the project name)
     if ( !group->isWmsOpaque() || groupIsRequested || projectIsRequested )
     {
+      // when the current group is opaque or the previous groups have been opaque it is an opaque child and should not be requestable
+      bool isOpaqueChild = group->isWmsOpaque() || groupIsAnOpaqueChild;
+
       for ( QgsLayerTreeNode *child : group->children() )
       {
         if ( QgsLayerTree::isGroup( child ) )
         {
           auto subgroup = static_cast<const QgsLayerTreeGroup *>( child );
-          collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, subgroup, layerParameters, requestedParentNames );
+          collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, subgroup, layerParameters, requestedParentNames, isOpaqueChild );
         }
         else if ( QgsLayerTree::isLayer( child ) )
         {
@@ -222,8 +230,8 @@ namespace QgsWms
           }
 
           QStringList requestedNames = requestedParentNames;
-          // when the layer is explicitely requested, then add it to the requested names
-          if ( layerParameters.contains( name ) )
+          // when the layer is explicitly requested and it's not an opaque child, then add it to the requested names
+          if ( layerParameters.contains( name ) && !isOpaqueChild )
           {
             requestedNames << name;
           }
