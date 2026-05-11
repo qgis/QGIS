@@ -125,7 +125,8 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
   // "Practical Split Scheme" for cascading shadow maps.
   // using a quite large lambda to account for typical near/far plane distances seen in
   // QGIS 3d maps (0.5 - ~2500)
-  constexpr float PRACTICAL_SPLIT_SCHEME_LAMBDA = 0.96f;
+  // We match Cesium's lambda -- see https://web.archive.org/web/20170710150304/https://cesiumjs.org/presentations/ShadowsAndCesiumImplementation.pdf (slide 38)
+  constexpr float PRACTICAL_SPLIT_SCHEME_LAMBDA = 0.9f;
   for ( int i = 0; i <= Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     const float p = static_cast<float>( i ) / static_cast<float>( Qgs3D::NUM_SHADOW_CASCADES );
