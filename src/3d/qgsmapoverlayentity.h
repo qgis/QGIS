@@ -28,11 +28,9 @@
 //
 
 
-#include "qgschunkedentity.h"
 #include "qgsmapsettings.h"
 #include "qgsoverlaytextureentity.h"
 #include "qgsrectangle.h"
-#include "qobjectuniqueptr.h"
 
 #include <Qt3DRender/QTextureImageDataPtr>
 
@@ -43,7 +41,7 @@ class QgsOverlayTextureRenderView;
 class QgsMapLayer;
 class QgsMapOverlayTextureGenerator;
 class QgsWindow3DEngine;
-class QgsLayerStyleWatcher;
+
 
 /**
  * \ingroup qgis_3d
@@ -71,10 +69,15 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     void update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum = false );
 
   private slots:
+
+    void onLayersChanged();
     void onTextureReady( const QImage &image );
     void onSizeChanged();
 
   private:
+    void invalidateMapImage();
+    void connectToLayersRepaintRequest();
+
     static int SIZE()
     {
       static int size = []() {
@@ -93,7 +96,8 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
 
     Qt3DRender::QTextureImageDataPtr mImageDataPtr;
 
-    QObjectUniquePtr<QgsLayerStyleWatcher> mLayerWatcher = nullptr;
+    //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
+    QList<QgsMapLayer *> mLayers;
 
     QgsRectangle mExtent;
     QVector<QgsPointXY> mFrustumExtent;

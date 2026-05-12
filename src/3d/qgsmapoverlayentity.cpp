@@ -16,7 +16,6 @@
 #include "qgsmapoverlayentity.h"
 
 #include "qgs3dmapsettings.h"
-#include "qgslayerstylewatcher.h"
 #include "qgsmapoverlaytexturegenerator_p.h"
 #include "qgsoverlaytextureentity.h"
 #include "qgsoverlaytexturerenderview.h"
@@ -68,8 +67,8 @@ QgsMapOverlayEntity::QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsOverlayT
 
   connect( mTextureGenerator, &QgsMapOverlayTextureGenerator::textureReady, this, &QgsMapOverlayEntity::onTextureReady );
 
-  mLayerWatcher.reset( new QgsLayerStyleWatcher( mapSettings ) );
-  connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, [this]() { this->update( mExtent, mFrustumExtent, mRotation, mShowFrustum ); } );
+  connectToLayersRepaintRequest();
+  connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsMapOverlayEntity::onLayersChanged );
 }
 
 QgsMapOverlayEntity::~QgsMapOverlayEntity()
@@ -86,6 +85,32 @@ void QgsMapOverlayEntity::update( const QgsRectangle &extent, const QVector<QgsP
     mRotation = rotationDegrees;
     mShowFrustum = showFrustum;
     mTextureGenerator->render( extent, frustumExtent, rotationDegrees, showFrustum );
+  }
+}
+
+void QgsMapOverlayEntity::invalidateMapImage()
+{
+  update( mExtent, mFrustumExtent, mRotation, mShowFrustum );
+}
+
+void QgsMapOverlayEntity::onLayersChanged()
+{
+  connectToLayersRepaintRequest();
+  invalidateMapImage();
+}
+
+void QgsMapOverlayEntity::connectToLayersRepaintRequest()
+{
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::invalidateMapImage );
+  }
+
+  mLayers = mMapSettings->layers();
+
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapOverlayEntity::invalidateMapImage );
   }
 }
 
