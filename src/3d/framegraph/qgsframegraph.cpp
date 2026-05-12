@@ -278,6 +278,10 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mGlobalParamsStorage = new Qt3DRender::QRenderPassFilter( mMainViewPort );
   mGlobalParamsStorage->setObjectName( "GlobalParametersStore" );
 
+  // shadow rendering pass -- must be constructed BEFORE the forward render pass,
+  // to ensure it always has the correct depth available.
+  constructShadowRenderPass();
+
   // Forward render
   constructForwardRenderPass();
 
@@ -296,9 +300,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaDepthBlitNode->setObjectName( "MsaaDepthBlitFramebuffer" );
   mMsaaDepthBlitNode->setEnabled( false );
-
-  // shadow rendering pass
-  constructShadowRenderPass();
 
   // depth buffer processing
   constructDepthRenderPass();
