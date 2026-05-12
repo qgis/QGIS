@@ -553,6 +553,13 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   {
     prompt += "- Custom agent actions are DISABLED by the user. Do not attempt to call any tool. "
               "Answer in plain text only and tell the user to enable 'Allow custom agent actions' in AI settings if a tool is needed.\n"_L1;
+    // Even with tool use disabled the user expects RAG-grounded answers, so the
+    // retrieved context block must still ride along (it is just static text).
+    if ( !extraContext.isEmpty() )
+    {
+      prompt += '\n';
+      prompt += extraContext;
+    }
     return prompt;
   }
   prompt += "- Use tools instead of writing code in chat for the user to copy.\n"_L1;
@@ -593,7 +600,16 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
 
   QString out;
   out += "== Retrieved context ==\n"_L1;
-  out += "Top matches from the workspace RAG index for this user message. Treat these as authoritative grounding for your answer.\n\n"_L1;
+  out += "Top RAG matches from the workspace + project layers for the user's last message. "
+         "These chunks are GROUND TRUTH for the data they cover.\n"_L1;
+  out += "Behaviour rules for this turn:\n"_L1;
+  out += "- If the user's question is answerable from the chunks below, ANSWER DIRECTLY using them. "
+         "Do NOT call describe_layer, list_project_layers, run_python, read_file or other inspection tools — "
+         "that would just re-fetch what is already in your context.\n"_L1;
+  out += "- Cite specific values from the chunks (feature ids, attribute values, file paths) so the user sees the answer is grounded.\n"_L1;
+  out += "- Only fall back to a tool call (e.g. run_python) when the question is aggregative over the WHOLE dataset "
+         "(\"count by\", \"list every distinct\", \"top N over the entire layer\") AND the chunks below clearly cover "
+         "only a subset. In that case, briefly say so before calling the tool.\n\n"_L1;
 
   for ( const QgsAiWorkspaceIndex::Chunk &c : chunks )
   {
