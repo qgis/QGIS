@@ -78,6 +78,19 @@ void QgsShadowRenderView::buildRenderPass()
 
   Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( clearBuffers );
 
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
+  renderStateSet->addRenderState( depthTest );
+
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+  cullFace->setMode( Qt3DRender::QCullFace::CullingMode::Front );
+  renderStateSet->addRenderState( cullFace );
+
+  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
+  polygonOffset->setDepthSteps( 4.0 );
+  polygonOffset->setScaleFactor( 1.1 );
+  renderStateSet->addRenderState( polygonOffset );
+
   // We are using "Cascading Shadow Maps" technique.
   // Reading/watching which was useful during development:
   // https://learnopengl.com/Guest-Articles/2021/CSM
@@ -95,19 +108,6 @@ void QgsShadowRenderView::buildRenderPass()
     lightCameraSelector->setCamera( mLightCameras[i] );
 
     Qt3DRender::QRenderTargetSelector *renderTargetSelector = new Qt3DRender::QRenderTargetSelector( lightCameraSelector );
-
-    Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-    depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
-    renderStateSet->addRenderState( depthTest );
-
-    Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-    cullFace->setMode( Qt3DRender::QCullFace::CullingMode::Front );
-    renderStateSet->addRenderState( cullFace );
-
-    Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
-    polygonOffset->setDepthSteps( 4.0 );
-    polygonOffset->setScaleFactor( 1.1 );
-    renderStateSet->addRenderState( polygonOffset );
 
     Qt3DRender::QRenderTargetOutput *output = new Qt3DRender::QRenderTargetOutput;
     output->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
