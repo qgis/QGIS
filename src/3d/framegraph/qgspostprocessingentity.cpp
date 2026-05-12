@@ -136,18 +136,18 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     const float zFar = cascadeSplits[i + 1];
 
     // calculate the 8 corners of the camera frustum slice in world space
-    QVector3D corners[8];
-    QVector3D center;
-    Qgs3DUtils::calculateFrustumSliceCorners( zNear, zFar, cameraFov, cameraAspect, invertedCameraView, corners, center );
+    QVector3D worldFrustumCorners[8];
+    QVector3D worldFrustrumCenter;
+    Qgs3DUtils::calculateFrustumSliceCorners( zNear, zFar, cameraFov, cameraAspect, invertedCameraView, worldFrustumCorners, worldFrustrumCenter );
 
     // create the light view matrix
     QMatrix4x4 lightView;
-    const QVector3D lightPos = center - lightDirection;
-    lightView.lookAt( lightPos, center, up );
+    const QVector3D lightPos = worldFrustrumCenter - lightDirection;
+    lightView.lookAt( lightPos, worldFrustrumCenter, up );
 
     // apply to the specific light camera
     mLightCameras[i]->setPosition( lightPos );
-    mLightCameras[i]->setViewCenter( center );
+    mLightCameras[i]->setViewCenter( worldFrustrumCenter );
     mLightCameras[i]->setUpVector( up );
 
     float lightCameraLeft = 0;
@@ -156,7 +156,7 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     float lightCameraTop = 0;
     float lightCameraNearPlane = 0;
     float lightCameraFarPlane = 0;
-    Qgs3DUtils::calculateViewSpaceOrthographicBounds( corners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
+    Qgs3DUtils::calculateViewSpaceOrthographicBounds( worldFrustumCorners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // Pull the near plane way back to catch shadows from behind the camera
     // If we don't do this, then we'll lose the tops of shadows which should be cast by objects
