@@ -60,7 +60,7 @@ def initMenusAndToolbars():
     )
     defaultMenuEntries.update(
         {
-            "qgis:distancematrix": analysisToolsMenu,
+            "native:distancematrix": analysisToolsMenu,
             "native:sumlinelengths": analysisToolsMenu,
             "native:countpointsinpolygon": analysisToolsMenu,
             "native:listuniquevalues": analysisToolsMenu,
