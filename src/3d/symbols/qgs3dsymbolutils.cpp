@@ -15,12 +15,28 @@
 
 #include "qgs3dsymbolutils.h"
 
+#include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsline3dsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
 
 #include <QColor>
 #include <QPainter>
@@ -28,6 +44,48 @@
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+double convert2DSizeTo3DSceneUnits( double size, Qgis::RenderUnit unit, Qgis::DistanceUnit units2D, Qgis::DistanceUnit units3D )
+{
+  if ( size <= 0 )
+  {
+    return size;
+  }
+
+  constexpr double MM_PER_INCH = 25.4;
+  constexpr double POINTS_PER_INCH = 72.0;
+  constexpr double DEFAULT_DPI = 96.0;
+  // Fixed conversion factor from millimeters to 3D scene units.
+  constexpr double MM_TO_3D_UNITS = 10.0;
+
+  double result = 0;
+  switch ( unit )
+  {
+    case Qgis::RenderUnit::MapUnits:
+      result = size * QgsUnitTypes::fromUnitToUnitFactor( units2D, units3D );
+      break;
+    case Qgis::RenderUnit::MetersInMapUnits:
+      result = size * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, units3D );
+      break;
+    case Qgis::RenderUnit::Millimeters:
+      result = size * MM_TO_3D_UNITS;
+      break;
+    case Qgis::RenderUnit::Points:
+      result = size * MM_PER_INCH / POINTS_PER_INCH * MM_TO_3D_UNITS;
+      break;
+    case Qgis::RenderUnit::Inches:
+      result = size * MM_PER_INCH * MM_TO_3D_UNITS;
+      break;
+    case Qgis::RenderUnit::Pixels:
+      result = size * 25.4 / DEFAULT_DPI * MM_TO_3D_UNITS;
+      break;
+    case Qgis::RenderUnit::Percentage:
+    case Qgis::RenderUnit::Unknown:
+      result = size;
+  }
+
+  return result;
+}
 
 QColor Qgs3DSymbolUtils::vectorSymbolAverageColor( const QgsAbstract3DSymbol *symbol )
 {
@@ -260,4 +318,115 @@ bool Qgs3DSymbolUtils::copyVectorSymbolMaterial( const QgsAbstract3DSymbol *from
   }
 
   return copied;
+}
+
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolUtils::create3DSymbolFrom2D( const QgsVectorLayer *vLayer, const QgsSymbol *symbol2D )
+{
+  if ( !symbol2D || !vLayer )
+  {
+    return nullptr;
+  }
+
+  const QgsProject *project = vLayer->project();
+  const QgsCoordinateReferenceSystem crs2D = project ? project->crs() : vLayer->crs();
+  const QgsCoordinateReferenceSystem crs3D = project ? project->crs3D() : vLayer->crs();
+  const Qgis::DistanceUnit units3D = crs3D.isGeographic() ? Qgis::DistanceUnit::Meters : crs3D.mapUnits();
+
+  std::unique_ptr<QgsAbstract3DSymbol> symbol3D = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( vLayer->geometryType() );
+  symbol3D->setDefaultPropertiesFromLayer( vLayer );
+
+  // set the main color
+  Qgs3DSymbolUtils::setVectorSymbolBaseColor( symbol3D.get(), symbol2D->color() );
+  if ( symbol3D->type() == "line"_L1 )
+  {
+    QgsLine3DSymbol *lineSymbol3D = qgis::down_cast<QgsLine3DSymbol *>( symbol3D.get() );
+    // lines geometry type - retrieve its width
+    if ( const QgsLineSymbol *lineSymbol = qgis::down_cast<const QgsLineSymbol *>( symbol2D ) )
+    {
+      if ( lineSymbol->symbolLayerCount() > 0 )
+      {
+        const QgsSymbolLayer *symbolLayer = lineSymbol->symbolLayer( 0 );
+        if ( const QgsSimpleLineSymbolLayer *simpleLineLayer = qgis::down_cast<const QgsSimpleLineSymbolLayer *>( symbolLayer ) )
+        {
+          const double lineWidthPixels = convert2DSizeTo3DSceneUnits( simpleLineLayer->width(), simpleLineLayer->widthUnit(), crs2D.mapUnits(), units3D );
+          lineSymbol3D->setWidth( static_cast<float>( lineWidthPixels ) );
+        }
+      }
+    }
+  }
+  else if ( symbol3D->type() == "point"_L1 )
+  {
+    QgsPoint3DSymbol *pointSymbol3D = qgis::down_cast<QgsPoint3DSymbol *>( symbol3D.get() );
+    if ( const QgsMarkerSymbol *markerSymbol = qgis::down_cast<const QgsMarkerSymbol *>( symbol2D ) )
+    {
+      if ( markerSymbol->symbolLayerCount() > 0 )
+      {
+        const QgsSymbolLayer *symbolLayer = markerSymbol->symbolLayer( 0 );
+        if ( const QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = qgis::down_cast<const QgsSimpleMarkerSymbolLayer *>( symbolLayer ) )
+        {
+          const double sizeMapUnits = convert2DSizeTo3DSceneUnits( markerSymbol->size(), markerSymbol->sizeUnit(), crs2D.mapUnits(), units3D );
+
+          switch ( simpleMarkerLayer->shape() )
+          {
+            case Qgis::MarkerShape::Circle:
+            {
+              pointSymbol3D->setShape( Qgis::Point3DShape::Sphere );
+              QVariantMap vmSphere;
+              vmSphere[u"radius"_s] = sizeMapUnits / 2.;
+              pointSymbol3D->setShapeProperties( vmSphere );
+              break;
+            }
+            case Qgis::MarkerShape::Square:
+            {
+              pointSymbol3D->setShape( Qgis::Point3DShape::Cube );
+              QVariantMap vmCube;
+              vmCube[u"size"_s] = sizeMapUnits;
+              pointSymbol3D->setShapeProperties( vmCube );
+              break;
+            }
+
+            case Qgis::MarkerShape::Triangle:
+            case Qgis::MarkerShape::EquilateralTriangle:
+            {
+              QVariantMap vmCone;
+              vmCone[u"length"_s] = sizeMapUnits;
+              vmCone[u"topRadius"_s] = sizeMapUnits / 10.;
+              vmCone[u"bottomRadius"_s] = sizeMapUnits / 2.;
+              pointSymbol3D->setShapeProperties( vmCone );
+              pointSymbol3D->setShape( Qgis::Point3DShape::Cone );
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }
+
+  // handle opacity
+  QgsAbstractMaterialSettings *materialSettings = symbol3D->materialSettings();
+  if ( materialSettings->type() == "phong"_L1 )
+  {
+    QgsPhongMaterialSettings *phongSettings = qgis::down_cast<QgsPhongMaterialSettings *>( materialSettings );
+    phongSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "phongtextured"_L1 )
+  {
+    QgsPhongTexturedMaterialSettings *phongTexturedSettings = qgis::down_cast<QgsPhongTexturedMaterialSettings *>( materialSettings );
+    phongTexturedSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "metalroughtextured"_L1 )
+  {
+    QgsMetalRoughTexturedMaterialSettings *metalTexturedSettings = qgis::down_cast<QgsMetalRoughTexturedMaterialSettings *>( materialSettings );
+    metalTexturedSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "metalrough"_L1 )
+  {
+    QgsMetalRoughMaterialSettings *metalSettings = qgis::down_cast<QgsMetalRoughMaterialSettings *>( materialSettings );
+    metalSettings->setOpacity( symbol2D->opacity() );
+  }
+
+  return symbol3D;
 }
