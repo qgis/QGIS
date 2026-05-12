@@ -324,6 +324,7 @@ vec3 pbrModel(const in int lightIndex,
     float sDotN = 0.0;
     float sDotH = 0.0;
     float att = 1.0;
+    float visibilityFactor = 1.0;
 
     if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
         // Point and Spot lights
@@ -354,6 +355,12 @@ vec3 pbrModel(const in int lightIndex,
         // The light direction is in world space already
         s = normalize(-lights[lightIndex].direction);
         sDotN = dot(s, n);
+
+        if (renderShadows == 1 && lightIndex == shadowLightIndex)
+        {
+            int cascadeIndex = calcCascadeIndexMapBased(wPosition);
+            visibilityFactor = calcShadowFactor(cascadeIndex, wPosition);
+        }
     }
 
     h = normalize(s + v);
@@ -377,7 +384,7 @@ vec3 pbrModel(const in int lightIndex,
     // Blend between diffuse and specular to conserve energy
     // see https://learnopengl.com/PBR/Theory, "Energy conservation"
     vec3 kS = fresnelFactor(F0, sDotH);
-    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
+    vec3 color = visibilityFactor * att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - kS));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
