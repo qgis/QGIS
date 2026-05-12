@@ -46,7 +46,7 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper(
   QMainWindow *ownerWindow,
   const QString &dockId,
   const QStringList &tabifyWith,
-  OpeningMode openingMode,
+  Qgis::DockableWidgetInitialState openingMode,
   bool defaultIsDocked,
   Qt::DockWidgetArea defaultDockArea,
   Options options
@@ -61,11 +61,19 @@ QgsDockableWidgetHelper::QgsDockableWidgetHelper(
   , mUuid( QUuid::createUuid().toString() )
   , mSettingKeyDockId( dockId )
 {
-  bool isDocked = sSettingsIsDocked->valueWithDefaultOverride( defaultIsDocked, mSettingKeyDockId );
-  if ( openingMode == OpeningMode::ForceDocked )
-    isDocked = true;
-  else if ( openingMode == OpeningMode::ForceDialog )
-    isDocked = false;
+  bool isDocked = true;
+  switch ( openingMode )
+  {
+    case Qgis::DockableWidgetInitialState::RestorePreviousState:
+      isDocked = sSettingsIsDocked->valueWithDefaultOverride( defaultIsDocked, mSettingKeyDockId );
+      break;
+    case Qgis::DockableWidgetInitialState::ForceDocked:
+      isDocked = true;
+      break;
+    case Qgis::DockableWidgetInitialState::ForceDialog:
+      isDocked = false;
+      break;
+  }
 
   mDockArea = sSettingsDockArea->valueWithDefaultOverride( defaultDockArea, mSettingKeyDockId );
   mIsDockFloating = mDockArea == Qt::DockWidgetArea::NoDockWidgetArea;

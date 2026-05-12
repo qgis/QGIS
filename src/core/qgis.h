@@ -461,10 +461,10 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class EmbeddedScriptType : int
     {
-      Macro = 0,              //! Project macros
-      ExpressionFunction = 1, //! Expression functions
-      Action = 2,             //! Map layers' action \since QGIS 4.0
-      FormInitCode = 3,       //! Attribute forms' initiation code \since QGIS 4.0
+      Macro = 0,              //!< Project macros
+      ExpressionFunction = 1, //!< Expression functions
+      Action = 2,             //!< Map layers' action \since QGIS 4.0
+      FormInitCode = 3,       //!< Attribute forms' initiation code \since QGIS 4.0
     };
     Q_ENUM( EmbeddedScriptType )
 
@@ -474,9 +474,9 @@ int QgisEvent = QEvent::User + 1;
      */
     enum class ProjectTrustStatus : int
     {
-      Undetermined = 0, //! The project trust has not yet been determined by the user
-      Trusted = 1,      //! The project has been determined by the user as trusted
-      Untrusted = 2,    //! The project has been determined by the user as untrusted
+      Undetermined = 0, //!< The project trust has not yet been determined by the user
+      Trusted = 1,      //!< The project has been determined by the user as trusted
+      Untrusted = 2,    //!< The project has been determined by the user as untrusted
     };
     Q_ENUM( ProjectTrustStatus )
 
@@ -6706,6 +6706,19 @@ int QgisEvent = QEvent::User + 1;
       Earcut = 1 << 0
     };
     Q_ENUM( TriangulationAlgorithm )
+
+    /**
+     * Dockable widget initial states.
+     *
+     * \since QGIS 4.2
+     */
+    enum class DockableWidgetInitialState : int
+    {
+      RestorePreviousState, //!< Restore the previous state of this dock
+      ForceDocked,          //!< Force the widget to be docked
+      ForceDialog,          //!< Force the widget to be shown in a dialog
+    };
+    Q_ENUM( DockableWidgetInitialState )
 
     /**
      * Identify search radius in mm

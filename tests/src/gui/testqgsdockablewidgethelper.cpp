@@ -66,7 +66,7 @@ void TestQgsDockableWidgetHelper::testBasicCreation()
 
   // test forcing docked mode
   {
-    QgsDockableWidgetHelper helperDocked( u"Test Dock"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+    QgsDockableWidgetHelper helperDocked( u"Test Dock"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
 
     QVERIFY( helperDocked.isDocked() );
     QVERIFY( helperDocked.dockWidget() );
@@ -76,7 +76,7 @@ void TestQgsDockableWidgetHelper::testBasicCreation()
 
   // test forcing dialog mode
   {
-    QgsDockableWidgetHelper helperDialog( u"Test Dialog"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDialog );
+    QgsDockableWidgetHelper helperDialog( u"Test Dialog"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDialog );
 
     QVERIFY( !helperDialog.isDocked() );
     QVERIFY( !helperDialog.dockWidget() );
@@ -90,7 +90,7 @@ void TestQgsDockableWidgetHelper::testToggleDockMode()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
   QVERIFY( helper.isDocked() );
   QVERIFY( helper.dockWidget() );
 
@@ -112,7 +112,7 @@ void TestQgsDockableWidgetHelper::testTitleAndName()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Initial Title"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Initial Title"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
 
   QCOMPARE( helper.windowTitle(), u"Initial Title"_s );
   QCOMPARE( helper.dockWidget()->windowTitle(), u"Initial Title"_s );
@@ -139,7 +139,7 @@ void TestQgsDockableWidgetHelper::testUserVisible()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
   mw.show();
 
   // set user visible in dock mode
@@ -161,7 +161,7 @@ void TestQgsDockableWidgetHelper::testSignals()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
   mw.show();
 
   QSignalSpy spyDockMode( &helper, &QgsDockableWidgetHelper::dockModeToggled );
@@ -200,7 +200,7 @@ void TestQgsDockableWidgetHelper::testActionAndToolButton()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
 
   // test action
   QAction *toggleAction = helper.createDockUndockAction( u"Toggle Dock"_s, &mw );
@@ -229,7 +229,7 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   QWidget w1;
   QWidget w2;
 
-  QgsDockableWidgetHelper sourceHelper( u"Source"_s, &w1, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper sourceHelper( u"Source"_s, &w1, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
 
   QDomDocument doc( u"test"_s );
 
@@ -240,7 +240,7 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   sourceHelper.writeXml( dockedRoot );
 
   // starting in dialog mode!
-  QgsDockableWidgetHelper restoreHelperDocked( u"RestoreDocked"_s, &w2, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper restoreHelperDocked( u"RestoreDocked"_s, &w2, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
   restoreHelperDocked.readXml( dockedRoot );
   QVERIFY( restoreHelperDocked.isDocked() );
   QVERIFY( restoreHelperDocked.dockWidget() );
@@ -253,7 +253,7 @@ void TestQgsDockableWidgetHelper::testXmlSerialization()
   QDomElement dialogRoot = doc.createElement( u"dialog_state"_s );
   sourceHelper.writeXml( dialogRoot );
 
-  QgsDockableWidgetHelper restoreHelperDialog( u"RestoreDialog"_s, &w2, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDialog );
+  QgsDockableWidgetHelper restoreHelperDialog( u"RestoreDialog"_s, &w2, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDialog );
   restoreHelperDialog.readXml( dialogRoot );
 
   QVERIFY( !restoreHelperDialog.isDocked() );
@@ -267,7 +267,7 @@ void TestQgsDockableWidgetHelper::testReject()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
 
   QSignalSpy spyClosed( &helper, &QgsDockableWidgetHelper::closed );
   // test reject in docked mode
@@ -276,7 +276,7 @@ void TestQgsDockableWidgetHelper::testReject()
 
   // test reject in dialog mode
   QWidget w2;
-  QgsDockableWidgetHelper helper2( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDialog );
+  QgsDockableWidgetHelper helper2( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDialog );
   QPointer dialog( helper2.dialog() );
   QSignalSpy spyClosed2( &helper2, &QgsDockableWidgetHelper::closed );
   helper2.reject();
@@ -288,7 +288,7 @@ void TestQgsDockableWidgetHelper::testSettingKeyDockId()
   QMainWindow mw;
   QWidget w;
 
-  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), QgsDockableWidgetHelper::OpeningMode::ForceDocked );
+  QgsDockableWidgetHelper helper( u"Test"_s, &w, &mw, QString(), QStringList(), Qgis::DockableWidgetInitialState::ForceDocked );
   helper.setSettingKeyDockId( u"mySettingKey"_s );
   QCOMPARE( helper.mSettingKeyDockId, u"mySettingKey"_s );
 }

@@ -16,6 +16,7 @@
 #ifndef QGSDOCKABLEWIDGETHELPER_H
 #define QGSDOCKABLEWIDGETHELPER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsgui.h"
 #include "qgssettingsentryenumflag.h"
@@ -66,13 +67,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     Q_OBJECT
   public:
-    enum class OpeningMode : int
-    {
-      RespectSetting, //! Respect the setting used
-      ForceDocked,    //! Force the widget to be docked, despite its settings
-      ForceDialog,    //! Force the widget to be shown in a dialog, despite its settings
-    };
-
     enum class Option : int
     {
       RaiseTab = 1 << 1,        //!< Raise Tab
@@ -96,7 +90,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
       QMainWindow *ownerWindow,
       const QString &dockId,
       const QStringList &tabifyWith = QStringList(),
-      OpeningMode openingMode = OpeningMode::RespectSetting,
+      Qgis::DockableWidgetInitialState openingMode = Qgis::DockableWidgetInitialState::RestorePreviousState,
       bool defaultIsDocked = false,
       Qt::DockWidgetArea defaultDockArea = Qt::DockWidgetArea::RightDockWidgetArea,
       Options options = Options()
