@@ -159,6 +159,8 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     Qgs3DUtils::calculateViewSpaceOrthographicBounds( corners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // Pull the near plane way back to catch shadows from behind the camera
+    // If we don't do this, then we'll lose the tops of shadows which should be cast by objects
+    // which sit behind this cascade slice's frustrum
     constexpr float NEAR_PLANE_RETREAT = 5000.0f;
     lightCameraNearPlane -= NEAR_PLANE_RETREAT;
 
