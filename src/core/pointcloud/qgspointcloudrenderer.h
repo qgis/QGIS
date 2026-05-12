@@ -345,7 +345,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Data-defined properties that can be set on the renderer.
      * \since QGIS 4.2
      */
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, Property ) : int
+    enum class Property : int
     {
       Color = 0, //!< Point color
     };
