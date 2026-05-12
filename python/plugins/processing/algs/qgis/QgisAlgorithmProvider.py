@@ -36,7 +36,6 @@ from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
-from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
@@ -85,7 +84,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
-            PointDistance(),
             PointsDisplacement(),
             PointsFromLines(),
             PolarPlot(),

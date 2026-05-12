@@ -117,6 +117,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdetectdatasetchanges.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
+  processing/qgsalgorithmdistancematrix.cpp
   processing/qgsalgorithmdistancewithin.cpp
   processing/qgsalgorithmdownloadvectortiles.cpp
   processing/qgsalgorithmdrape.cpp
