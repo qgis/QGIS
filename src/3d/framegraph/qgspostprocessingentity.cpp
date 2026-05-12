@@ -93,6 +93,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
   mRenderShadowsParameter = new Qt3DRender::QParameter( u"renderShadows"_s, QVariant::fromValue( 0 ) );
   globalShadowParams << mRenderShadowsParameter;
+  mShadowLightIndexParameter = new Qt3DRender::QParameter( u"shadowLightIndex"_s, QVariant::fromValue( 0 ) );
+  globalShadowParams << mShadowLightIndexParameter;
   mShadowBiasParameter = new Qt3DRender::QParameter( u"shadowBias"_s, QVariant::fromValue( 0.00001f ) );
   globalShadowParams << mShadowBiasParameter;
 
@@ -262,6 +264,11 @@ void QgsPostprocessingEntity::setShowCascadingShadowSplits( bool enabled )
     const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
     mShader->setFragmentShaderCode( finalFragmentShaderCode );
   }
+}
+
+void QgsPostprocessingEntity::setShadowLightIndex( int index )
+{
+  mShadowLightIndexParameter->setValue( QVariant::fromValue( index ) );
 }
 
 void QgsPostprocessingEntity::setShadowBias( float shadowBias )

@@ -57,6 +57,8 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setShowCascadingShadowSplits( bool enabled );
 
+    //! Sets the index of the directional light that is casting shadows
+    void setShadowLightIndex( int index );
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
 
@@ -108,6 +110,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
+    Qt3DRender::QParameter *mShadowLightIndexParameter = nullptr;
     Qt3DRender::QCamera *mLightCameras[Qgs3D::NUM_SHADOW_CASCADES] = { nullptr };
     Qt3DRender::QParameter *mCsmMatricesParameter = nullptr;
     Qt3DRender::QParameter *mCsmBoundsMatricesParameter = nullptr;

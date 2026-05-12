@@ -400,12 +400,16 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
   {
     int selectedLight = shadowSettings.selectedDirectionalLight();
     QgsDirectionalLightSettings *light = nullptr;
+    int globalLightIndex = 0;
     for ( int i = 0, dirLight = 0; !light && i < lightSources.size(); i++ )
     {
       if ( lightSources[i]->type() == Qgis::LightSourceType::Directional )
       {
         if ( dirLight == selectedLight )
+        {
           light = qgis::down_cast< QgsDirectionalLightSettings * >( lightSources[i] );
+          globalLightIndex = i;
+        }
         dirLight++;
       }
     }
@@ -417,6 +421,7 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
       shadowRenderView().setEnabled( true );
       mPostprocessingEntity->setShadowRenderingEnabled( true );
       mPostprocessingEntity->setShadowMapResolution( size );
+      mPostprocessingEntity->setShadowLightIndex( globalLightIndex );
       mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
       mPostprocessingEntity->updateShadowSettings( *light, static_cast<float>( shadowSettings.maximumShadowRenderingDistance() ) );
       mPostprocessingEntity->setShowCascadingShadowSplits( shadowSettings.showCascadeSplits() );
