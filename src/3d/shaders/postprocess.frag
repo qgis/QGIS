@@ -11,8 +11,6 @@ uniform mat4 invertedCameraProj;
 uniform float farPlane;
 uniform float nearPlane;
 
-uniform int renderShadows;
-
 uniform int edlEnabled;
 uniform float edlStrength;
 uniform int edlDistance;
@@ -102,21 +100,17 @@ void main()
   vec3 finalColor = linearColor;
 
 #ifdef ENABLE_EFFECTS
-  float depth = texture(depthTexture, texCoord).r;
-  vec3 worldPosition = WorldPosFromDepth( depth );
-
-  // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
-  if ( renderShadows != 0 && depth < 1.0 )
-  {
-    float visibilityFactor = calcVisibilityAfterShadowing(worldPosition);
-
-    finalColor = finalColor * mix(0.5, 1.0, visibilityFactor);
 
 #ifdef TINT_CASCADES
+  float depth = texture(depthTexture, texCoord).r;
+  if ( renderShadows != 0 && depth < 1.0 )
+  {
+    vec3 worldPosition = WorldPosFromDepth( depth );
     // for debugging: shade pixels by cascade index, to visualise cascade breaks
     finalColor = mix(finalColor, calcCascadeTint(worldPosition), 0.5);
-#endif
   }
+#endif
+  
   if (edlEnabled != 0)
   {
     float shade = exp(-edlFactor(texCoord) * edlStrength);
