@@ -75,6 +75,10 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void onModelSelected( QAction *action );
     void cancelRunningRequest();
     void onSendOrStopClicked();
+    void onNewChatClicked();
+    void rebuildHistoryMenu();
+    void onHistoryEntryTriggered( QAction *action );
+    void reloadTranscriptFromHistory();
 
   private:
     QString selectedProposalId() const;
@@ -112,6 +116,8 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QTextEdit *mTranscript = nullptr;
     QTextEdit *mInputTextEdit = nullptr;
 
+    QToolButton *mNewChatButton = nullptr;
+    QToolButton *mHistoryButton = nullptr;
     QToolButton *mModePill = nullptr;
     QToolButton *mModelPill = nullptr;
     QToolButton *mAttachButton = nullptr;

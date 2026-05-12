@@ -136,6 +136,29 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
   layout->setContentsMargins( 8, 8, 8, 8 );
   layout->setSpacing( 6 );
 
+  QHBoxLayout *topBar = new QHBoxLayout();
+  topBar->setContentsMargins( 0, 0, 0, 0 );
+  topBar->setSpacing( 4 );
+
+  mNewChatButton = new QToolButton( container );
+  mNewChatButton->setObjectName( u"aiNewChatButton"_s );
+  mNewChatButton->setText( tr( "+ New" ) );
+  mNewChatButton->setToolTip( tr( "Start a new chat" ) );
+  mNewChatButton->setAutoRaise( true );
+  topBar->addWidget( mNewChatButton );
+
+  mHistoryButton = new QToolButton( container );
+  mHistoryButton->setObjectName( u"aiHistoryButton"_s );
+  mHistoryButton->setText( tr( "History" ) + u" ▾"_s );
+  mHistoryButton->setToolTip( tr( "Past chats in this workspace" ) );
+  mHistoryButton->setAutoRaise( true );
+  mHistoryButton->setPopupMode( QToolButton::InstantPopup );
+  mHistoryButton->setMenu( new QMenu( mHistoryButton ) );
+  topBar->addWidget( mHistoryButton );
+
+  topBar->addStretch( 1 );
+  layout->addLayout( topBar );
+
   mTranscript = new QTextEdit( container );
   mTranscript->setReadOnly( true );
   mTranscript->setFrameShape( QFrame::NoFrame );
@@ -285,6 +308,8 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
     connect( mSessionManager, &QgsAiAgentSessionManager::responseChunkReceived, this, &QgsAiChatDockWidget::appendStreamChunk );
     connect( mSessionManager, &QgsAiAgentSessionManager::requestStateChanged, this, &QgsAiChatDockWidget::updateRuntimeState );
     connect( mSessionManager, &QgsAiAgentSessionManager::requestRunningChanged, this, &QgsAiChatDockWidget::setRequestRunning );
+    connect( mSessionManager, &QgsAiAgentSessionManager::historyReplaced, this, &QgsAiChatDockWidget::reloadTranscriptFromHistory );
+    connect( mSessionManager, &QgsAiAgentSessionManager::sessionListChanged, this, &QgsAiChatDockWidget::rebuildHistoryMenu );
   }
 
   if ( mReviewEngine )
@@ -294,6 +319,9 @@ QgsAiChatDockWidget::QgsAiChatDockWidget( QgsAiAgentSessionManager *sessionManag
     connect( mReviewEngine, &QgsAiReviewPatchEngine::proposalRejected, this, [this]( const QString & ) { refreshProposalList(); } );
   }
 
+  connect( mNewChatButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::onNewChatClicked );
+  connect( mHistoryButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::rebuildHistoryMenu );
+  connect( mHistoryButton->menu(), &QMenu::triggered, this, &QgsAiChatDockWidget::onHistoryEntryTriggered );
   connect( mAttachButton, &QToolButton::clicked, this, &QgsAiChatDockWidget::attachFile );
   connect( mInputTextEdit, &QTextEdit::textChanged, this, &QgsAiChatDockWidget::updateMentionPopup );
   connect( mMentionList, &QListWidget::itemActivated, this, [this]( QListWidgetItem *item ) {
@@ -467,6 +495,116 @@ void QgsAiChatDockWidget::appendTranscriptMessage( const QString &role, const QS
   cursor.insertHtml( u"<b>[%1]</b> "_s.arg( role.toHtmlEscaped() ) );
   cursor.insertHtml( renderMarkdown( content ) );
   mTranscript->setTextCursor( cursor );
+}
+
+void QgsAiChatDockWidget::onNewChatClicked()
+{
+  if ( mSessionManager )
+    mSessionManager->startNewSession();
+}
+
+void QgsAiChatDockWidget::reloadTranscriptFromHistory()
+{
+  if ( !mTranscript )
+    return;
+  closeStreamingAssistantMessage();
+  mTranscript->clear();
+  if ( !mSessionManager )
+    return;
+  const QList<QgsAiChatMessage> history = mSessionManager->history();
+  for ( const QgsAiChatMessage &m : history )
+  {
+    if ( m.role == QgsAiChatRole::System )
+      continue;
+    appendTranscriptMessage( qgsAiChatRoleToString( m.role ), m.content );
+  }
+}
+
+void QgsAiChatDockWidget::rebuildHistoryMenu()
+{
+  if ( !mHistoryButton || !mHistoryButton->menu() )
+    return;
+
+  QMenu *menu = mHistoryButton->menu();
+  menu->clear();
+
+  if ( !mSessionManager )
+  {
+    QAction *empty = menu->addAction( tr( "No session manager" ) );
+    empty->setEnabled( false );
+    return;
+  }
+
+  const QList<QgsAiChatHistoryStore::SessionInfo> sessions = mSessionManager->listSessions();
+  if ( sessions.isEmpty() )
+  {
+    QAction *empty = menu->addAction( tr( "No past chats yet" ) );
+    empty->setEnabled( false );
+    return;
+  }
+
+  const QString activeId = mSessionManager->activeSessionId();
+  for ( const QgsAiChatHistoryStore::SessionInfo &s : sessions )
+  {
+    const QString stamp = s.updatedAt.toLocalTime().toString( u"yyyy-MM-dd HH:mm"_s );
+    const QString label = u"%1 — %2"_s.arg( s.title, stamp );
+    QAction *act = menu->addAction( label );
+    act->setData( s.id );
+    if ( s.id == activeId )
+    {
+      act->setCheckable( true );
+      act->setChecked( true );
+    }
+  }
+
+  menu->addSeparator();
+
+  if ( !activeId.isEmpty() )
+  {
+    QAction *rename = menu->addAction( tr( "Rename current chat…" ) );
+    rename->setData( u"__rename__"_s );
+    QAction *del = menu->addAction( tr( "Delete current chat" ) );
+    del->setData( u"__delete__"_s );
+  }
+}
+
+void QgsAiChatDockWidget::onHistoryEntryTriggered( QAction *action )
+{
+  if ( !action || !mSessionManager )
+    return;
+
+  const QString data = action->data().toString();
+  if ( data.isEmpty() )
+    return;
+
+  if ( data == "__rename__"_L1 )
+  {
+    QString current;
+    const QString activeId = mSessionManager->activeSessionId();
+    const QList<QgsAiChatHistoryStore::SessionInfo> sessions = mSessionManager->listSessions();
+    for ( const QgsAiChatHistoryStore::SessionInfo &s : sessions )
+    {
+      if ( s.id == activeId )
+      {
+        current = s.title;
+        break;
+      }
+    }
+    bool ok = false;
+    const QString newTitle = QInputDialog::getText( this, tr( "Rename chat" ), tr( "Title:" ), QLineEdit::Normal, current, &ok );
+    if ( ok && !newTitle.trimmed().isEmpty() )
+      mSessionManager->renameActiveSession( newTitle.trimmed() );
+    return;
+  }
+  if ( data == "__delete__"_L1 )
+  {
+    const auto answer = QMessageBox::question( this, tr( "Delete chat" ), tr( "Delete the current chat permanently?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( answer == QMessageBox::Yes )
+      mSessionManager->deleteSession( mSessionManager->activeSessionId() );
+    return;
+  }
+
+  mSessionManager->loadSession( data );
 }
 
 void QgsAiChatDockWidget::appendStreamChunk( const QString &chunk )

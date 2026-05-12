@@ -96,6 +96,7 @@ using namespace Qt::StringLiterals;
 #include "ai/index/qgsailayerindexcoordinator.h"
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "ai/qgsaiagentsessionmanager.h"
+#include "ai/qgsaichathistorystore.h"
 #include "ai/qgsaichatdockwidget.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
@@ -1414,9 +1415,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReindexLayersTool>( mAiWorkspaceIndex.get() ) );
   mAiLayerIndexCoordinator = std::make_unique<QgsAiLayerIndexCoordinator>( mAiWorkspaceIndex.get(), this );
   mAiLayerIndexCoordinator->setEnabled( QgsSettings().value( u"qgis_ai/index/enable_layer_indexing"_s, false ).toBool() );
+  mAiChatHistoryStore = std::make_unique<QgsAiChatHistoryStore>( mAiFileContextProvider.get(), this );
   mAiSessionManager = std::make_unique<QgsAiAgentSessionManager>( mAiModelRouter.get(), mAiFileContextProvider.get(), mAiReviewPatchEngine.get(), this );
   mAiSessionManager->setToolRegistry( mAiToolRegistry.get() );
   mAiSessionManager->setWorkspaceIndex( mAiWorkspaceIndex.get() );
+  mAiSessionManager->setHistoryStore( mAiChatHistoryStore.get() );
 
   mAiChatDock = new QgsAiChatDockWidget( mAiSessionManager.get(), mAiModelRouter.get(), mAiReviewPatchEngine.get(), this );
   mAiChatDock->setLayerIndexCoordinator( mAiLayerIndexCoordinator.get() );

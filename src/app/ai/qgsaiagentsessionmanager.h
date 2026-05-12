@@ -18,6 +18,7 @@
 
 #include "ai/index/qgsaiworkspaceindex.h"
 #include "qgis_app.h"
+#include "qgsaichathistorystore.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaimodels.h"
 #include "qgsaitool.h"
@@ -75,6 +76,31 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     QList<QgsAiChatMessage> history() const { return mHistory; }
     void clearHistory();
+
+    /**
+     * Sets the persistent chat history store. When set, every message appended
+     * to the in-memory history is also written to SQLite (one DB per workspace,
+     * mirroring the workspace index layout). Pass nullptr to disable persistence.
+     * Ownership is not transferred.
+     */
+    void setHistoryStore( QgsAiChatHistoryStore *store ) { mHistoryStore = store; }
+    QgsAiChatHistoryStore *historyStore() const { return mHistoryStore; }
+
+    //! Returns the persisted sessions for the current workspace ordered by most recent first.
+    QList<QgsAiChatHistoryStore::SessionInfo> listSessions() const;
+    //! Returns the active session id, or an empty string if no session has been created yet.
+    QString activeSessionId() const { return mActiveSessionId; }
+    //! Loads \a sessionId from the store, replacing the in-memory history. Emits historyReplaced().
+    void loadSession( const QString &sessionId );
+    //! Closes the current session and starts a fresh empty one (the new session row
+    //! is created lazily on the first user message). Emits historyReplaced().
+    void startNewSession();
+    //! Renames the active session in the persistent store and emits sessionListChanged().
+    void renameActiveSession( const QString &title );
+    //! Renames \a sessionId in the persistent store. Emits sessionListChanged().
+    void renameSession( const QString &sessionId, const QString &title );
+    //! Removes \a sessionId from the store. If it was the active one, starts a new session.
+    void deleteSession( const QString &sessionId );
 
     void sendUserMessage( const QString &text, const QString &filePath = QString(), const QString &selectedText = QString() );
     void sendUserMessage( const QString &text, const QList<QgsAiChatContextFile> &contextFiles );
@@ -134,6 +160,12 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void responseChunkReceived( const QString &chunk );
     void requestStateChanged( const QString &state, const QString &detail );
     void requestRunningChanged( bool running );
+    //! Emitted after loadSession() / startNewSession(). The UI should clear the
+    //! transcript and re-render from history().
+    void historyReplaced();
+    //! Emitted whenever a session is created, renamed or deleted. The UI should
+    //! rebuild its history list on the next open.
+    void sessionListChanged();
 
   private:
     void startProviderAttempt( QgsAiModelRouter::Provider provider );
@@ -156,6 +188,15 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void persistBehaviorSettings() const;
     QString readWorkspaceTextFiles( const QString &relativeDir ) const;
 
+    //! Appends \a message to mHistory, persists it (if a store is configured and
+    //! a session is active), and emits messageAdded().
+    void recordHistoryMessage( const QgsAiChatMessage &message );
+    //! Ensures there is an active session id. If none, creates a new one using
+    //! \a firstUserText to derive the title.
+    void ensureActiveSession( const QString &firstUserText );
+    //! Trims the input to a 50-char single-line title for the session list.
+    static QString deriveSessionTitle( const QString &text );
+
     QgsAiModelRouter *mRouter = nullptr;
     QgsAiFileContextProvider *mContextProvider = nullptr;
     QgsAiReviewPatchEngine *mReviewEngine = nullptr;
@@ -171,6 +212,9 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     int mToolIterations = 0;
     QgsAiAgentBehaviorSettings mBehaviorSettings;
     QgsAiWorkspaceIndex *mWorkspaceIndex = nullptr;
+    QgsAiChatHistoryStore *mHistoryStore = nullptr;
+    QString mActiveSessionId;
+    int mNextMessageOrdering = 0;
 };
 
 #endif // QGSAIAGENTSESSIONMANAGER_H

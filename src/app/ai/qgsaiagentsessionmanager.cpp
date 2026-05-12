@@ -72,8 +72,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
       {
         const QString finalText = !responseText.isEmpty() ? responseText : mStreamedText;
         const QgsAiChatMessage assistant = buildAssistantMessage( finalText );
-        mHistory.push_back( assistant );
-        emit messageAdded( assistant );
+        recordHistoryMessage( assistant );
         emit requestStateChanged( u"completed"_s, u"%1 (%2 ms)"_s.arg( providerName ).arg( latencyMs ) );
         mActiveRequestId.clear();
         emit requestRunningChanged( false );
@@ -90,8 +89,7 @@ QgsAiAgentSessionManager::QgsAiAgentSessionManager( QgsAiModelRouter *router, Qg
 
       const QString finalError = actionableError( providerName, errorMessage, httpStatus );
       const QgsAiChatMessage assistant = buildAssistantMessage( finalError );
-      mHistory.push_back( assistant );
-      emit messageAdded( assistant );
+      recordHistoryMessage( assistant );
       emit requestStateChanged( u"failed"_s, finalError );
       mActiveRequestId.clear();
       emit requestRunningChanged( false );
@@ -113,6 +111,107 @@ void QgsAiAgentSessionManager::setActiveAgent( const QString &agentName )
 void QgsAiAgentSessionManager::clearHistory()
 {
   mHistory.clear();
+}
+
+void QgsAiAgentSessionManager::recordHistoryMessage( const QgsAiChatMessage &message )
+{
+  mHistory.append( message );
+  if ( mHistoryStore && !mActiveSessionId.isEmpty() )
+    mHistoryStore->appendMessage( mActiveSessionId, message, mNextMessageOrdering++ );
+  emit messageAdded( message );
+}
+
+QString QgsAiAgentSessionManager::deriveSessionTitle( const QString &text )
+{
+  QString single = text;
+  single.replace( QRegularExpression( u"\\s+"_s ), u" "_s );
+  single = single.trimmed();
+  if ( single.isEmpty() )
+    return QObject::tr( "New chat" );
+  constexpr int kMaxLen = 50;
+  if ( single.size() > kMaxLen )
+    single = single.left( kMaxLen - 1 ).trimmed() + QChar( 0x2026 );
+  return single;
+}
+
+void QgsAiAgentSessionManager::ensureActiveSession( const QString &firstUserText )
+{
+  if ( !mActiveSessionId.isEmpty() )
+    return;
+  if ( !mHistoryStore )
+    return;
+
+  mActiveSessionId = QUuid::createUuid().toString( QUuid::WithoutBraces );
+  mNextMessageOrdering = 0;
+  if ( !mHistoryStore->createSession( mActiveSessionId, deriveSessionTitle( firstUserText ), mActiveAgent ) )
+  {
+    // Persistence failed but we keep the in-memory id so the rest of the turn still works
+    QgsMessageLog::logMessage( u"Failed to create chat session in store"_s, u"AI/ChatHistory"_s, Qgis::MessageLevel::Warning, false );
+  }
+  emit sessionListChanged();
+}
+
+QList<QgsAiChatHistoryStore::SessionInfo> QgsAiAgentSessionManager::listSessions() const
+{
+  if ( !mHistoryStore )
+    return {};
+  return mHistoryStore->listSessions();
+}
+
+void QgsAiAgentSessionManager::loadSession( const QString &sessionId )
+{
+  if ( !mHistoryStore )
+    return;
+  if ( sessionId == mActiveSessionId && !mHistory.isEmpty() )
+    return;
+
+  if ( hasActiveRequest() )
+    cancelActiveRequest();
+
+  mHistory = mHistoryStore->loadMessages( sessionId );
+  mActiveSessionId = sessionId;
+  mNextMessageOrdering = mHistoryStore->lastOrdering( sessionId ) + 1;
+  emit historyReplaced();
+}
+
+void QgsAiAgentSessionManager::startNewSession()
+{
+  if ( hasActiveRequest() )
+    cancelActiveRequest();
+
+  mHistory.clear();
+  mActiveSessionId.clear();
+  mNextMessageOrdering = 0;
+  emit historyReplaced();
+  // Note: the session row is created lazily on the first user message,
+  // so an empty "+ New" with no messages does not pollute the history list.
+}
+
+void QgsAiAgentSessionManager::renameActiveSession( const QString &title )
+{
+  if ( mActiveSessionId.isEmpty() )
+    return;
+  renameSession( mActiveSessionId, title );
+}
+
+void QgsAiAgentSessionManager::renameSession( const QString &sessionId, const QString &title )
+{
+  if ( !mHistoryStore || sessionId.isEmpty() )
+    return;
+  if ( mHistoryStore->renameSession( sessionId, title ) )
+    emit sessionListChanged();
+}
+
+void QgsAiAgentSessionManager::deleteSession( const QString &sessionId )
+{
+  if ( !mHistoryStore || sessionId.isEmpty() )
+    return;
+  if ( !mHistoryStore->deleteSession( sessionId ) )
+    return;
+
+  if ( sessionId == mActiveSessionId )
+    startNewSession();
+  emit sessionListChanged();
 }
 
 void QgsAiAgentSessionManager::cancelActiveRequest()
@@ -303,27 +402,28 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   if ( hasActiveRequest() )
   {
     const QgsAiChatMessage assistant = buildAssistantMessage( u"A request is already running. Please wait or cancel it first."_s );
-    mHistory.push_back( assistant );
-    emit messageAdded( assistant );
+    recordHistoryMessage( assistant );
     return;
   }
+
+  // Create the persisted session up-front so the user message is the first row
+  // and the title derives from the unmodified prompt (no file context noise).
+  ensureActiveSession( text );
 
   QgsAiChatMessage message;
   message.id = QUuid::createUuid().toString( QUuid::WithoutBraces );
   message.role = QgsAiChatRole::User;
   message.content = text;
   message.timestamp = QDateTime::currentDateTimeUtc();
-  mHistory.push_back( message );
-  emit messageAdded( message );
 
   QgsAiPatchProposal proposal;
   if ( mReviewEngine && tryBuildPatchProposal( text, proposal ) )
   {
+    recordHistoryMessage( message );
     const QString proposalId = mReviewEngine->registerProposal( proposal );
     emit proposalCreated( proposalId );
     const QgsAiChatMessage assistant = buildAssistantMessage( u"Review proposal created (%1). Use Accept/Reject in the review panel."_s.arg( proposalId ) );
-    mHistory.push_back( assistant );
-    emit messageAdded( assistant );
+    recordHistoryMessage( assistant );
     return;
   }
 
@@ -331,9 +431,9 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   const QString contextSummary = buildContextSummary( contextFiles, contextBlocked );
   if ( contextBlocked )
   {
+    recordHistoryMessage( message );
     const QgsAiChatMessage assistant = buildAssistantMessage( contextSummary );
-    mHistory.push_back( assistant );
-    emit messageAdded( assistant );
+    recordHistoryMessage( assistant );
     emit requestStateChanged( u"error"_s, contextSummary );
     return;
   }
@@ -342,9 +442,9 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   // and not just into the very first request.
   if ( !contextSummary.isEmpty() && contextSummary != "No file context attached."_L1 )
   {
-    QgsAiChatMessage &lastUser = mHistory.last();
-    lastUser.content = lastUser.content + u"\n\nContext:\n"_s + contextSummary;
+    message.content = message.content + u"\n\nContext:\n"_s + contextSummary;
   }
+  recordHistoryMessage( message );
   mCurrentContextFiles = contextFiles;
   mToolIterations = 0;
 
@@ -352,8 +452,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
   if ( mPendingProviders.isEmpty() || !mRouter )
   {
     const QgsAiChatMessage assistant = buildAssistantMessage( u"No provider is configured."_s );
-    mHistory.push_back( assistant );
-    emit messageAdded( assistant );
+    recordHistoryMessage( assistant );
     return;
   }
 
@@ -833,8 +932,7 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
 
   // Append the assistant turn that requested the tools to history so the next round carries it.
   const QgsAiChatMessage assistantMessage = buildAssistantToolUseMessage( assistantText, calls );
-  mHistory.append( assistantMessage );
-  emit messageAdded( assistantMessage );
+  recordHistoryMessage( assistantMessage );
 
   // Surface a short status to the UI: which tools the model wants to use.
   QStringList summary;
@@ -846,8 +944,7 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   if ( !mToolRegistry )
   {
     const QgsAiChatMessage error = buildAssistantMessage( u"The model requested tool use but no tool registry is configured. Aborting turn."_s );
-    mHistory.append( error );
-    emit messageAdded( error );
+    recordHistoryMessage( error );
     mActiveRequestId.clear();
     emit requestRunningChanged( false );
     return;
@@ -857,8 +954,7 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   if ( mToolIterations > MAX_TOOL_ITERATIONS_PER_TURN )
   {
     const QgsAiChatMessage error = buildAssistantMessage( u"Stopping: the model exceeded the maximum number of tool calls (%1) for a single turn."_s.arg( MAX_TOOL_ITERATIONS_PER_TURN ) );
-    mHistory.append( error );
-    emit messageAdded( error );
+    recordHistoryMessage( error );
     mActiveRequestId.clear();
     emit requestRunningChanged( false );
     return;
@@ -874,8 +970,7 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
 
     const QgsAiToolResult result = mToolRegistry->execute( call.name, call.args );
     const QgsAiChatMessage resultMessage = buildToolResultMessage( call, result );
-    mHistory.append( resultMessage );
-    emit messageAdded( resultMessage );
+    recordHistoryMessage( resultMessage );
   }
 
   // Continue the conversation with the same provider (no fallback rotation mid-loop).

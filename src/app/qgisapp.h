@@ -169,6 +169,7 @@ class QgsCustomization;
 class QgsCustomizationDialog;
 #ifdef HAVE_AI_ASSISTANT
 class QgsAiAgentSessionManager;
+class QgsAiChatHistoryStore;
 class QgsAiChatDockWidget;
 class QgsAiEmbeddingClient;
 class QgsAiFileContextProvider;
@@ -2789,6 +2790,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsAiLayerIndexCoordinator> mAiLayerIndexCoordinator;
     std::unique_ptr<QgsAiToolRegistry> mAiToolRegistry;
     std::unique_ptr<QgsAiAgentSessionManager> mAiSessionManager;
+    std::unique_ptr<QgsAiChatHistoryStore> mAiChatHistoryStore;
 #endif
 
     //! Persistent tile scale slider
