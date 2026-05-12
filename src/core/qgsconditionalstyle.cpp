@@ -21,6 +21,7 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QPalette>
 #include <QString>
 
 #include "moc_qgsconditionalstyle.cpp"
@@ -296,9 +297,13 @@ QPixmap QgsConditionalStyle::renderPreview( const QSize &size ) const
   }
 
   if ( validTextColor() )
+  {
     painter.setPen( mTextColor );
+  }
   else
-    painter.setPen( Qt::black );
+  {
+    painter.setPen( QPalette().color( QPalette::Text ) );
+  }
 
   painter.setRenderHint( QPainter::Antialiasing );
   painter.setFont( font() );
