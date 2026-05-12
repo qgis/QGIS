@@ -111,6 +111,14 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
 void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
 {
+  // We are using "Cascading Shadow Maps" technique.
+  // Reading/watching which was useful during development:
+  // https://learnopengl.com/Guest-Articles/2021/CSM
+  // https://developer.download.nvidia.com/SDK/10.5/opengl/src/cascaded_shadow_maps/doc/cascaded_shadow_maps.pdf
+  // https://www.youtube.com/watch?v=Jhopq2lkzMQ
+  // https://www.youtube.com/watch?v=qbDrqARX07o
+  // https://web.archive.org/web/20170710150304/https://cesiumjs.org/presentations/ShadowsAndCesiumImplementation.pdf
+
   const QVector3D lightDirection = light.direction().toVector3D().normalized();
   const QVector3D up = Qgs3DUtils::calculateDirectionalLightUpVector( lightDirection );
 

@@ -18,7 +18,9 @@ bool isInsideCascade(mat4 lightMatrix, vec3 worldPos)
 
 int calcCascadeIndexMapBased(vec3 worldPosition)
 {
-  // Determine which cascade this pixel falls into
+  // Determine which cascade this pixel falls into.
+  // map based cascade selection -- see
+  // https://learn.microsoft.com/en-us/windows/win32/dxtecharts/cascaded-shadow-maps#map-based-cascade-selection
   int cascadeIndex = NUMBER_CASCADES-1;
   for (int i = 0; i < NUMBER_CASCADES; ++i)
   {
