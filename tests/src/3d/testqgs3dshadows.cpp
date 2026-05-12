@@ -26,6 +26,7 @@
 #include "qgsframegraph.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgsphongmaterialsettings.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -57,6 +58,8 @@ class TestQgs3DShadows : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testFlatTerrain_data();
     void testFlatTerrain();
+    void testShadowsPhong_data();
+    void testShadowsPhong();
 
   private:
     std::unique_ptr<QgsProject> mProject;
@@ -187,6 +190,88 @@ void TestQgs3DShadows::testFlatTerrain()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( point, distance, pitch, yaw );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( reference, reference, img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DShadows::testShadowsPhong_data()
+{
+  QTest::addColumn<QColor>( "diffuse" );
+  QTest::addColumn<QColor>( "ambient" );
+  QTest::addColumn<double>( "shininess" );
+  QTest::addColumn<QColor>( "specular" );
+  QTest::addColumn<QString>( "reference" );
+
+  QTest::newRow( "dark ambient" ) << QColor( 200, 200, 255 ) << QColor( 50, 50, 100 ) << 0.0 << QColor( 255, 255, 255 ) << "shadows_phong1";
+  // ambient light should not be impacted by shadows
+  QTest::newRow( "light ambient" ) << QColor( 100, 100, 155 ) << QColor( 200, 200, 255 ) << 0.0 << QColor( 255, 255, 255 ) << "shadows_phong2";
+  QTest::newRow( "shiny" ) << QColor( 200, 200, 255 ) << QColor( 50, 50, 100 ) << 10.0 << QColor( 255, 255, 255 ) << "shadows_phong3";
+}
+
+void TestQgs3DShadows::testShadowsPhong()
+{
+  QFETCH( QColor, diffuse );
+  QFETCH( QColor, ambient );
+  QFETCH( double, shininess );
+  QFETCH( QColor, specular );
+  QFETCH( QString, reference );
+
+  auto buildingsLayer = std::make_unique< QgsVectorLayer >( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( buildingsLayer->isValid() );
+
+  buildingsLayer->setRenderer( nullptr );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setDiffuse( diffuse );
+  materialSettings.setAmbient( ambient );
+  materialSettings.setShininess( shininess );
+  materialSettings.setSpecular( specular );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  buildingsLayer->setRenderer3D( renderer3d );
+
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << buildingsLayer.get() );
+  map->setBackgroundColor( Qt::white );
+  QgsDirectionalLightSettings defaultLight;
+
+  const float lightAltitude = 10;
+  const float lightAzimuth = 210;
+  const double horizontalVectorMagnitude = cos( lightAltitude / 180 * M_PI );
+  QgsVector3D lightDirection( -horizontalVectorMagnitude * sin( lightAzimuth / 180 * M_PI ), -horizontalVectorMagnitude * cos( lightAzimuth / 180 * M_PI ), -sin( lightAltitude / 180 * M_PI ) );
+  defaultLight.setDirection( lightDirection );
+  map->setLightSources( { defaultLight.clone() } );
+  QgsShadowSettings shadow = map->shadowSettings();
+
+  shadow.setRenderShadows( true );
+  shadow.setSelectedDirectionalLight( 0 );
+  shadow.setShadowQuality( Qgis::ShadowQuality::High );
+  map->setShadowSettings( shadow );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  const float distance = 50;
+  const float pitch = 65;
+  const float yaw = -30;
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 40, -250, 0 ), distance, pitch, yaw );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
