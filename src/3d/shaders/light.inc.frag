@@ -28,6 +28,8 @@ struct EnvironmentLight {
 uniform EnvironmentLight envLight;
 uniform int envLightCount = 0;
 
+#pragma include shadows.inc.frag
+
 void adsModelNormalMapped(const in vec3 worldPos,
                           const in vec3 tsNormal,
                           const in vec3 worldEye,
