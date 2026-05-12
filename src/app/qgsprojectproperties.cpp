@@ -227,7 +227,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     Qt::ToolTipRole
   );
 
-  projectionSelector->setShowNoProjection( true );
+  projectionSelector->setShowNoCrs( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
   connect( this, &QDialog::finished, this, [this]( int result ) {
@@ -251,7 +251,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     accept();
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [this] {
+  connect( projectionSelector, &QgsCrsSelectionWidget::crsChanged, this, [this] {
     if ( mBlockCrsUpdates || !projectionSelector->hasValidSelection() )
       return;
 

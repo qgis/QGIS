@@ -18,6 +18,7 @@
 #include "qgsprojectionselectiondialog.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemmodel.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgssettings.h"
@@ -49,6 +50,9 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
 
   mComboCrsType->addItem( tr( "Predefined CRS" ), static_cast<int>( CrsType::Predefined ) );
   mComboCrsType->addItem( tr( "Custom CRS" ), static_cast<int>( CrsType::Custom ) );
+  mComboCrsType->addItem( tr( "Topocentric CRS" ), static_cast<int>( CrsType::Topocentric ) );
+
+  mTopocentricBaseSelector->setFilters( QgsCoordinateReferenceSystemProxyModel::FilterGeocentric | QgsCoordinateReferenceSystemProxyModel::FilterGeographic3d );
 
   mStackedWidget->setCurrentWidget( mPageDatabase );
   mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
@@ -65,6 +69,9 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
           break;
         case QgsCrsSelectionWidget::CrsType::Custom:
           mStackedWidget->setCurrentWidget( mPageCustom );
+          break;
+        case QgsCrsSelectionWidget::CrsType::Topocentric:
+          mStackedWidget->setCurrentWidget( mPageTopocentric );
           break;
       }
     }
@@ -101,6 +108,24 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
       emit crsChanged();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
+  } );
+
+  connect( mTopocentricBaseSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [this]() {
+    if ( !mBlockSignals )
+    {
+      emit crsChanged();
+      emit hasValidSelectionChanged( hasValidSelection() );
+    }
+  } );
+
+  connect( mSpinBoxTopoLat, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
+    if ( !mBlockSignals )
+      emit crsChanged();
+  } );
+
+  connect( mSpinBoxTopoLon, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
+    if ( !mBlockSignals )
+      emit crsChanged();
   } );
 
   const QgsSettings settings;
@@ -181,6 +206,13 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
         return projectionSelector->hasValidSelection();
       case QgsCrsSelectionWidget::CrsType::Custom:
         return mCrsDefinitionWidget->crs().isValid();
+      case QgsCrsSelectionWidget::CrsType::Topocentric:
+      {
+        const QgsCoordinateReferenceSystem baseCrs = mTopocentricBaseSelector->crs();
+        double tmpLat = 0.0, tmpLon = 0.0;
+        return mTopocentricBaseSelector->hasValidSelection()
+               && ( baseCrs.horizontalCrs().type() == Qgis::CrsType::Geocentric || baseCrs.type() == Qgis::CrsType::Geographic3d || baseCrs.topocentricOrigin( tmpLat, tmpLon ) );
+      }
     }
     BUILTIN_UNREACHABLE
   }
@@ -208,6 +240,15 @@ QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
         return projectionSelector->crs();
       case QgsCrsSelectionWidget::CrsType::Custom:
         return mCrsDefinitionWidget->crs();
+      case QgsCrsSelectionWidget::CrsType::Topocentric:
+      {
+        const QgsCoordinateReferenceSystem base = mTopocentricBaseSelector->crs();
+        double tmpLat = 0.0, tmpLon = 0.0;
+        const bool canConvert = base.horizontalCrs().type() == Qgis::CrsType::Geocentric || base.type() == Qgis::CrsType::Geographic3d || base.topocentricOrigin( tmpLat, tmpLon );
+        if ( !base.isValid() || !canConvert )
+          return QgsCoordinateReferenceSystem(); // we shouldn't be reaching this through the GUI
+        return base.toTopocentricCrs( mSpinBoxTopoLat->value(), mSpinBoxTopoLon->value() );
+      }
     }
     BUILTIN_UNREACHABLE
   }
@@ -225,15 +266,25 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
   }
   else
   {
-    projectionSelector->setCrs( crs );
-    mCrsDefinitionWidget->setCrs( crs );
-    if ( crs.isValid() && crs.authid().isEmpty() )
+    double topoLat = 0.0, topoLon = 0.0;
+    if ( crs.topocentricOrigin( topoLat, topoLon ) )
     {
+      mSpinBoxTopoLat->setValue( topoLat );
+      mSpinBoxTopoLon->setValue( topoLon );
+      mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Topocentric ) ) );
+      mStackedWidget->setCurrentWidget( mPageTopocentric );
+    }
+    else if ( crs.authid().isEmpty() )
+    {
+      projectionSelector->setCrs( crs );
+      mCrsDefinitionWidget->setCrs( crs );
       mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Custom ) ) );
       mStackedWidget->setCurrentWidget( mPageCustom );
     }
     else
     {
+      projectionSelector->setCrs( crs );
+      mCrsDefinitionWidget->setCrs( crs );
       mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
       mStackedWidget->setCurrentWidget( mPageDatabase );
     }
@@ -247,6 +298,11 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
 void QgsCrsSelectionWidget::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
+}
+
+void QgsCrsSelectionWidget::setPreviewRect( const QgsRectangle &rect )
+{
+  projectionSelector->setPreviewRect( rect );
 }
 
 

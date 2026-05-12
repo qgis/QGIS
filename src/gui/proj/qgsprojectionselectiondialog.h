@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsguiutils.h"
+#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSet>
@@ -109,6 +110,13 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      */
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
+    /**
+     * Sets the visible area to use when showing a preview of the CRS in the widget.
+     *
+     * \since QGIS 4.2
+     */
+    void setPreviewRect( const QgsRectangle &rect );
+
   public slots:
 
     /**
@@ -154,8 +162,9 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      */
     enum class CrsType
     {
-      Predefined, //!< Predefined (from database )
-      Custom,     //!< Custom CRS
+      Predefined,  //!< Predefined (from database)
+      Custom,      //!< Custom CRS
+      Topocentric, //!< Topocentric CRS
     };
 
     QString mNotSetText;

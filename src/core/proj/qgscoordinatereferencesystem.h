@@ -1123,14 +1123,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool topocentricOrigin( double &latitude SIP_OUT, double &longitude SIP_OUT ) const;
 
-    /**
-     * Returns TRUE if this CRS can serve as a base for building a topocentric
-     * CRS. This is the case when the horizontal part of the CRS is Geocentric,
-     * or when the CRS is already topocentric.
-     *
-     * \since QGIS 4.2
-     */
-    bool allowTopocentricConversion() const;
 
     /**
      * Constructs a topocentric CRS derived from this CRS with origin

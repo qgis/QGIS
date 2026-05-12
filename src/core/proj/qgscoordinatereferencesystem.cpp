@@ -3277,25 +3277,12 @@ bool QgsCoordinateReferenceSystem::topocentricOrigin( double &latDeg, double &lo
   return hasLat && hasLon;
 }
 
-bool QgsCoordinateReferenceSystem::allowTopocentricConversion() const
-{
-  if ( !isValid() )
-    return false;
-
-  if ( horizontalCrs().type() == Qgis::CrsType::Geocentric )
-    return true;
-
-  double lat = 0.0, lon = 0.0;
-  return topocentricOrigin( lat, lon );
-}
 
 QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::toTopocentricCrs( double latitude, double longitude ) const
 {
   if ( !isValid() )
     return QgsCoordinateReferenceSystem();
 
-  if ( !allowTopocentricConversion() )
-    return QgsCoordinateReferenceSystem();
 
   PJ_CONTEXT *ctx = QgsProjContext::get();
   const PJ *pj = projObject();

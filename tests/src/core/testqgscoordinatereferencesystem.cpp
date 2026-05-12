@@ -120,7 +120,6 @@ class TestQgsCoordinateReferenceSystem : public QObject
     void toOgcUri();
     void toOgcUrn();
     void topocentricOrigin();
-    void allowTopocentricConversion();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -2363,25 +2362,6 @@ void TestQgsCoordinateReferenceSystem::topocentricOrigin()
   QCOMPARE( lon, -70.75 );
 }
 
-void TestQgsCoordinateReferenceSystem::allowTopocentricConversion()
-{
-  QVERIFY( !QgsCoordinateReferenceSystem().allowTopocentricConversion() );
-
-  // geographic
-  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:4326"_s ).allowTopocentricConversion() );
-
-  // projected CRS
-  QVERIFY( !QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).allowTopocentricConversion() );
-
-  // geocentric CRS
-  QVERIFY( QgsCoordinateReferenceSystem( u"EPSG:4978"_s ).allowTopocentricConversion() );
-
-  // topocentric
-  const QgsCoordinateReferenceSystem geocentricCrs( u"EPSG:4978"_s );
-  const QgsCoordinateReferenceSystem topoCrs = geocentricCrs.toTopocentricCrs( 45.0, 10.0 );
-  QVERIFY( topoCrs.isValid() );
-  QVERIFY( topoCrs.allowTopocentricConversion() );
-}
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"
