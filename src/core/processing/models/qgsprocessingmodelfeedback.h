@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     QSet< QString > failedChildren() const { return mFailedChildren; }
 
     /**
-     * Report an that a child algorithm successfully executed.
+     * Report that a child algorithm successfully executed.
      *
      * \see childExecutionSucceeded()
      */
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsProcessingModelFeedback : public QgsProcessingFeedback
     QSet< QString > successfulChildren() const { return mSuccessfullyExecutedChildren; }
 
     /**
-     * Report an that a child algorithm was pruned from the pending children (i.e. it does not need to execute).
+     * Report that a child algorithm was pruned from the pending children (i.e. it does not need to execute).
      *
      * \see childPruned()
      */
