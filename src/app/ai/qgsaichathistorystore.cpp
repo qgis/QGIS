@@ -27,6 +27,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 

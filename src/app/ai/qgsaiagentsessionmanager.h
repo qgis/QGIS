@@ -92,8 +92,11 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString activeSessionId() const { return mActiveSessionId; }
     //! Loads \a sessionId from the store, replacing the in-memory history. Emits historyReplaced().
     void loadSession( const QString &sessionId );
-    //! Closes the current session and starts a fresh empty one (the new session row
-    //! is created lazily on the first user message). Emits historyReplaced().
+
+    /**
+     * Closes the current session and starts a fresh empty one (the new session row
+     * is created lazily on the first user message). Emits historyReplaced().
+     */
     void startNewSession();
     //! Renames the active session in the persistent store and emits sessionListChanged().
     void renameActiveSession( const QString &title );
@@ -160,11 +163,17 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void responseChunkReceived( const QString &chunk );
     void requestStateChanged( const QString &state, const QString &detail );
     void requestRunningChanged( bool running );
-    //! Emitted after loadSession() / startNewSession(). The UI should clear the
-    //! transcript and re-render from history().
+
+    /**
+     * Emitted after loadSession() / startNewSession(). The UI should clear the
+     * transcript and re-render from history().
+     */
     void historyReplaced();
-    //! Emitted whenever a session is created, renamed or deleted. The UI should
-    //! rebuild its history list on the next open.
+
+    /**
+     * Emitted whenever a session is created, renamed or deleted. The UI should
+     * rebuild its history list on the next open.
+     */
     void sessionListChanged();
 
   private:
@@ -188,11 +197,16 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void persistBehaviorSettings() const;
     QString readWorkspaceTextFiles( const QString &relativeDir ) const;
 
-    //! Appends \a message to mHistory, persists it (if a store is configured and
-    //! a session is active), and emits messageAdded().
+    /**
+     * Appends \a message to mHistory, persists it (if a store is configured and
+     * a session is active), and emits messageAdded().
+     */
     void recordHistoryMessage( const QgsAiChatMessage &message );
-    //! Ensures there is an active session id. If none, creates a new one using
-    //! \a firstUserText to derive the title.
+
+    /**
+     * Ensures there is an active session id. If none, creates a new one using
+     * \a firstUserText to derive the title.
+     */
     void ensureActiveSession( const QString &firstUserText );
     //! Trims the input to a 50-char single-line title for the session list.
     static QString deriveSessionTitle( const QString &text );
