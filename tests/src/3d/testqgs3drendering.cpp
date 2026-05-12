@@ -377,10 +377,28 @@ void TestQgs3DRendering::testGradientBackground()
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
+  QGSVERIFYIMAGECHECK( "gradient_background", "gradient_background", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // test the background changes with new settings
+  auto *gradientBg2 = new QgsFixedGradientBackgroundSettings();
+  gradientBg2->setTopColor( QColor( 220, 30, 30 ) );
+  gradientBg2->setBottomColor( QColor( 255, 255, 255 ) );
+  map->setBackgroundSettings( gradientBg2 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "gradient_background_2", "gradient_background_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // passing null, the bg settings should clear any bg entity
+  map->setBackgroundSettings( nullptr );
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "buildings_no_background", "buildings_no_background", img3, QString(), 40, QSize( 0, 0 ), 2 );
+
   delete scene;
   delete map;
-
-  QGSVERIFYIMAGECHECK( "gradient_background", "gradient_background", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testDemTerrain()
