@@ -628,7 +628,14 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         mapsettings.setOutputSize(QSize(400, 400))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(layer.crs())
-        mapsettings.setExtent(layer.extent())
+        ext = layer.extent()
+        top_left = QgsRectangle(
+            ext.xMinimum(),
+            (ext.yMinimum() + ext.yMaximum()) / 2,
+            (ext.xMinimum() + ext.xMaximum()) / 2,
+            ext.yMaximum(),
+        )
+        mapsettings.setExtent(top_left)
         mapsettings.setLayers([layer])
 
         self.assertTrue(
