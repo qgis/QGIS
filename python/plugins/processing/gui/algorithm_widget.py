@@ -446,6 +446,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         )
         generated_html_outputs = False
 
+        self._is_running = False
+
         if not in_place and self.iterateParam is None:
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
@@ -465,7 +467,6 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
                 self.resetGui()
                 return
 
-        self._is_running = False
         self.setExecuted(True)
         self.setResults(result)
         self.setInfo(
