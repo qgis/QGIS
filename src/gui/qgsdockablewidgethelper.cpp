@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdockwidget.h"
+#include "qgsguiutils.h"
 
 #include <QAction>
 #include <QLayout>
@@ -35,8 +36,6 @@ const QgsSettingsEntryVariant *QgsDockableWidgetHelper::sSettingsDialogGeometry 
 const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *QgsDockableWidgetHelper::sSettingsDockArea
   = new QgsSettingsEntryEnumFlag<Qt::DockWidgetArea>( u"dock-area"_s, QgsDockableWidgetHelper::sTtreeDockConfigs, Qt::RightDockWidgetArea );
 
-std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction =
-  []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
 std::function<QString()> QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
@@ -456,13 +455,13 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
     const int initialDockSize = fm.horizontalAdvance( '0' ) * 75;
     mDockGeometry = QRect( static_cast<int>( mOwnerWindow->rect().width() * 0.75 ), static_cast<int>( mOwnerWindow->rect().height() * 0.5 ), initialDockSize, initialDockSize );
   }
-  if ( !tabSiblings.isEmpty() )
+  if ( mOwnerWindow && !tabSiblings.isEmpty() )
   {
-    sAddTabifiedDockWidgetFunction( mDockArea, mDock, tabSiblings, false );
+    QgsGuiUtils::addTabifiedDockWidget( mOwnerWindow, mDockArea, mDock, tabSiblings, false );
   }
-  else if ( mOptions.testFlag( Option::RaiseTab ) )
+  else if ( mOwnerWindow && mOptions.testFlag( Option::RaiseTab ) )
   {
-    sAddTabifiedDockWidgetFunction( mDockArea, mDock, mTabifyWith, true );
+    QgsGuiUtils::addTabifiedDockWidget( mOwnerWindow, mDockArea, mDock, mTabifyWith, true );
   }
   else if ( mOwnerWindow )
   {

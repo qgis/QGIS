@@ -154,7 +154,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    static std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> sAddTabifiedDockWidgetFunction;
     static std::function<QString()> sAppStylesheetFunction;
 
     static QMainWindow *sOwnerWindow;
