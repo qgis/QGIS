@@ -112,65 +112,33 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
 {
   const QVector3D lightDirection = light.direction().toVector3D().normalized();
-  QVector3D up( 0.0f, 1.0f, 0.0f );
-  if ( std::abs( QVector3D::dotProduct( lightDirection, up ) ) > 0.99f )
-    up = QVector3D( 0.0f, 0.0f, 1.0f );
+  const QVector3D up = Qgs3DUtils::calculateDirectionalLightUpVector( lightDirection );
 
-  const float nearPlane = mMainCamera->nearPlane();
+  const float mainCameraNearPlane = mMainCamera->nearPlane();
   // cap the far plane to the shadow rendering distance so we don't waste shadow resolution
-  const float farPlane = std::min( mMainCamera->farPlane(), maximumShadowRenderingDistance );
-
-  std::vector<float> cascadeSplits( Qgs3D::NUM_SHADOW_CASCADES + 1 );
+  const float mainCameraFarPlane = std::min( mMainCamera->farPlane(), maximumShadowRenderingDistance );
 
   // "Practical Split Scheme" for cascading shadow maps.
   // using a quite large lambda to account for typical near/far plane distances seen in
   // QGIS 3d maps (0.5 - ~2500)
   // We match Cesium's lambda -- see https://web.archive.org/web/20170710150304/https://cesiumjs.org/presentations/ShadowsAndCesiumImplementation.pdf (slide 38)
   constexpr float PRACTICAL_SPLIT_SCHEME_LAMBDA = 0.9f;
-  for ( int i = 0; i <= Qgs3D::NUM_SHADOW_CASCADES; ++i )
-  {
-    const float p = static_cast<float>( i ) / static_cast<float>( Qgs3D::NUM_SHADOW_CASCADES );
-    const float logSplit = nearPlane * std::pow( farPlane / nearPlane, p );
-    const float uniSplit = nearPlane + ( farPlane - nearPlane ) * p;
-    cascadeSplits[i] = PRACTICAL_SPLIT_SCHEME_LAMBDA * logSplit + ( 1.0f - PRACTICAL_SPLIT_SCHEME_LAMBDA ) * uniSplit;
-  }
+  const std::vector<float> cascadeSplits = Qgs3DUtils::calculateCascadeSplits( Qgs3D::NUM_SHADOW_CASCADES, mainCameraNearPlane, mainCameraFarPlane, PRACTICAL_SPLIT_SCHEME_LAMBDA );
 
   const QMatrix4x4 invertedCameraView = mMainCamera->viewMatrix().inverted();
-  const float fovC = static_cast< float >( std::tan( mMainCamera->fieldOfView() * M_PI / 360.0 ) );
-  const float aspect = mMainCamera->aspectRatio();
+  const float cameraFov = mMainCamera->fieldOfView();
+  const float cameraAspect = mMainCamera->aspectRatio();
 
-  QVariantList csmSplits( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
   QVariantList csmMatrices( Qgs3D::NUM_SHADOW_CASCADES, QVariant() );
   for ( int i = 0; i < Qgs3D::NUM_SHADOW_CASCADES; ++i )
   {
     const float zNear = cascadeSplits[i];
     const float zFar = cascadeSplits[i + 1];
-    csmSplits[i] = zFar;
 
-    // calculate the 8 corners of the camera frustum slice in camera view space
-    const float halfYNear = zNear * fovC;
-    const float halfXNear = halfYNear * aspect;
-    const float halfYFar = zFar * fovC;
-    const float halfXFar = halfYFar * aspect;
-    QVector3D corners[8] = {
-      QVector3D( -halfXNear, -halfYNear, -zNear ),
-      QVector3D( halfXNear, -halfYNear, -zNear ),
-      QVector3D( halfXNear, halfYNear, -zNear ),
-      QVector3D( -halfXNear, halfYNear, -zNear ),
-      QVector3D( -halfXFar, -halfYFar, -zFar ),
-      QVector3D( halfXFar, -halfYFar, -zFar ),
-      QVector3D( halfXFar, halfYFar, -zFar ),
-      QVector3D( -halfXFar, halfYFar, -zFar )
-    };
-
-    // transform corners to world space and find the center
-    QVector3D center( 0, 0, 0 );
-    for ( int j = 0; j < 8; ++j )
-    {
-      corners[j] = invertedCameraView.map( corners[j] );
-      center += corners[j];
-    }
-    center /= 8.0f;
+    // calculate the 8 corners of the camera frustum slice in world space
+    QVector3D corners[8];
+    QVector3D center;
+    Qgs3DUtils::calculateFrustumSliceCorners( zNear, zFar, cameraFov, cameraAspect, invertedCameraView, corners, center );
 
     // create the light view matrix
     QMatrix4x4 lightView;
@@ -182,32 +150,21 @@ void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSet
     mLightCameras[i]->setViewCenter( center );
     mLightCameras[i]->setUpVector( up );
 
-    // transform corners to light space to find the bounding box
-    float minX = std::numeric_limits<float>::max();
-    float maxX = std::numeric_limits<float>::lowest();
-    float minY = std::numeric_limits<float>::max();
-    float maxY = std::numeric_limits<float>::lowest();
-    float minZ = std::numeric_limits<float>::max();
-    float maxZ = std::numeric_limits<float>::lowest();
-    for ( int j = 0; j < 8; ++j )
-    {
-      const QVector3D lightSpaceCorner = lightView.map( corners[j] );
-      minX = std::min( minX, lightSpaceCorner.x() );
-      maxX = std::max( maxX, lightSpaceCorner.x() );
-      minY = std::min( minY, lightSpaceCorner.y() );
-      maxY = std::max( maxY, lightSpaceCorner.y() );
-      const float zDistance = -lightSpaceCorner.z();
-      minZ = std::min( minZ, zDistance );
-      maxZ = std::max( maxZ, zDistance );
-    }
+    float lightCameraLeft = 0;
+    float lightCameraRight = 0;
+    float lightCameraBottom = 0;
+    float lightCameraTop = 0;
+    float lightCameraNearPlane = 0;
+    float lightCameraFarPlane = 0;
+    Qgs3DUtils::calculateViewSpaceOrthographicBounds( corners, lightView, lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // Pull the near plane way back to catch shadows from behind the camera
-    constexpr float nearPlanRetreat = 5000.0f;
-    minZ -= nearPlanRetreat;
+    constexpr float NEAR_PLANE_RETREAT = 5000.0f;
+    lightCameraNearPlane -= NEAR_PLANE_RETREAT;
 
     // apply the corresponding Orthographic projection to the camera
     mLightCameras[i]->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
-    mLightCameras[i]->lens()->setOrthographicProjection( minX, maxX, minY, maxY, minZ, maxZ );
+    mLightCameras[i]->lens()->setOrthographicProjection( lightCameraLeft, lightCameraRight, lightCameraBottom, lightCameraTop, lightCameraNearPlane, lightCameraFarPlane );
 
     // calculate combined light space matrix for the shader
     csmMatrices[i] = QVariant::fromValue( mLightCameras[i]->projectionMatrix() * lightView );

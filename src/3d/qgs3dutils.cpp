@@ -1086,6 +1086,83 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
   return mapPoint;
 }
 
+QVector3D Qgs3DUtils::calculateDirectionalLightUpVector( const QVector3D &lightDirection )
+{
+  QVector3D up( 0.0f, 1.0f, 0.0f );
+  if ( std::abs( QVector3D::dotProduct( lightDirection, up ) ) > 0.99f )
+    up = QVector3D( 0.0f, 0.0f, 1.0f );
+  return up;
+}
+
+std::vector<float> Qgs3DUtils::calculateCascadeSplits( int numberCascades, float nearPlane, float farPlane, float lambda )
+{
+  // prevent division by zero if nearPlane is 0 or negative
+  const float safeNearPlane = std::max( nearPlane, 0.0001f );
+
+  std::vector<float> cascadeSplits( numberCascades + 1 );
+
+  // "Practical Split Scheme" for cascading shadow maps.
+  for ( int i = 0; i <= numberCascades; ++i )
+  {
+    const float p = static_cast<float>( i ) / static_cast<float>( numberCascades );
+    const float logSplit = safeNearPlane * std::pow( farPlane / safeNearPlane, p );
+    const float uniSplit = safeNearPlane + ( farPlane - safeNearPlane ) * p;
+    cascadeSplits[i] = lambda * logSplit + ( 1.0f - lambda ) * uniSplit;
+  }
+  return cascadeSplits;
+}
+
+void Qgs3DUtils::calculateFrustumSliceCorners( float zNear, float zFar, float fov, float aspectRatio, const QMatrix4x4 &invertedCameraView, QVector3D ( &corners )[8], QVector3D &center )
+{
+  const float fovC = static_cast< float >( std::tan( fov * M_PI / 360.0 ) );
+  const float halfYNear = zNear * fovC;
+  const float halfXNear = halfYNear * aspectRatio;
+  const float halfYFar = zFar * fovC;
+  const float halfXFar = halfYFar * aspectRatio;
+
+  // calculate the 8 corners of the camera frustum slice in camera view space, and transform to world space
+  corners[0] = invertedCameraView.map( QVector3D( -halfXNear, -halfYNear, -zNear ) );
+  corners[1] = invertedCameraView.map( QVector3D( halfXNear, -halfYNear, -zNear ) );
+  corners[2] = invertedCameraView.map( QVector3D( halfXNear, halfYNear, -zNear ) );
+  corners[3] = invertedCameraView.map( QVector3D( -halfXNear, halfYNear, -zNear ) );
+  corners[4] = invertedCameraView.map( QVector3D( -halfXFar, -halfYFar, -zFar ) );
+  corners[5] = invertedCameraView.map( QVector3D( halfXFar, -halfYFar, -zFar ) );
+  corners[6] = invertedCameraView.map( QVector3D( halfXFar, halfYFar, -zFar ) );
+  corners[7] = invertedCameraView.map( QVector3D( -halfXFar, halfYFar, -zFar ) );
+
+  // find the center
+  center = QVector3D( 0, 0, 0 );
+  for ( int j = 0; j < 8; ++j )
+  {
+    center += corners[j];
+  }
+  center /= 8.0f;
+}
+
+void Qgs3DUtils::calculateViewSpaceOrthographicBounds(
+  const QVector3D ( &worldCorners )[8], const QMatrix4x4 &viewMatrix, float &left, float &right, float &bottom, float &top, float &nearPlane, float &farPlane
+)
+{
+  // transform corners to find the bounding box
+  left = std::numeric_limits<float>::max();
+  right = std::numeric_limits<float>::lowest();
+  bottom = std::numeric_limits<float>::max();
+  top = std::numeric_limits<float>::lowest();
+  nearPlane = std::numeric_limits<float>::max();
+  farPlane = std::numeric_limits<float>::lowest();
+  for ( int j = 0; j < 8; ++j )
+  {
+    const QVector3D lightSpaceCorner = viewMatrix.map( worldCorners[j] );
+    left = std::min( left, lightSpaceCorner.x() );
+    right = std::max( right, lightSpaceCorner.x() );
+    bottom = std::min( bottom, lightSpaceCorner.y() );
+    top = std::max( top, lightSpaceCorner.y() );
+    const float zDistance = -lightSpaceCorner.z();
+    nearPlane = std::min( nearPlane, zDistance );
+    farPlane = std::max( farPlane, zDistance );
+  }
+}
+
 QList<QVector4D> Qgs3DUtils::lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const double distance, const QgsVector3D &origin )
 {
   // return empty vector if distance is negative
