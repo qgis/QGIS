@@ -15,12 +15,26 @@
 
 #include "qgs3dsymbolutils.h"
 
+#include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsline3dsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsmetalroughtexturedmaterialsettings.h"
+#include "qgsphongmaterialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QColor>
 #include <QPainter>
@@ -260,4 +274,110 @@ bool Qgs3DSymbolUtils::copyVectorSymbolMaterial( const QgsAbstract3DSymbol *from
   }
 
   return copied;
+}
+
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolUtils::create3DSymbolFrom2D( const QgsVectorLayer *vLayer, const QgsSymbol *symbol2D, const QgsRenderContext &context )
+{
+  if ( !symbol2D || !vLayer )
+  {
+    return nullptr;
+  }
+
+  auto symbol3D = std::unique_ptr<QgsAbstract3DSymbol>( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( vLayer->geometryType() ) );
+  symbol3D->setDefaultPropertiesFromLayer( vLayer );
+
+  // set the main color
+  Qgs3DSymbolUtils::setVectorSymbolBaseColor( symbol3D.get(), symbol2D->color() );
+  if ( symbol3D->type() == "line"_L1 )
+  {
+    QgsLine3DSymbol *lineSymbol3D = dynamic_cast<QgsLine3DSymbol *>( symbol3D.get() );
+    // lines geometry type - retrieve its width
+    if ( const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( symbol2D ) )
+    {
+      if ( lineSymbol->symbolLayerCount() > 0 )
+      {
+        const QgsSymbolLayer *symbolLayer = lineSymbol->symbolLayer( 0 );
+        if ( const QgsSimpleLineSymbolLayer *simpleLineLayer = dynamic_cast<const QgsSimpleLineSymbolLayer *>( symbolLayer ) )
+        {
+          const double lineWidthPixels = std::max( 1.0, context.convertToPainterUnits( simpleLineLayer->width(), simpleLineLayer->widthUnit() ) );
+          lineSymbol3D->setWidth( static_cast<float>( lineWidthPixels ) );
+        }
+      }
+    }
+  }
+  else if ( symbol3D->type() == "point"_L1 )
+  {
+    QgsPoint3DSymbol *pointSymbol3D = dynamic_cast<QgsPoint3DSymbol *>( symbol3D.get() );
+    if ( const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( symbol2D ) )
+    {
+      if ( markerSymbol->symbolLayerCount() > 0 )
+      {
+        const QgsSymbolLayer *symbolLayer = markerSymbol->symbolLayer( 0 );
+        if ( const QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = dynamic_cast<const QgsSimpleMarkerSymbolLayer *>( symbolLayer ) )
+        {
+          const double sizePixels = std::max( 1.0, context.convertToPainterUnits( markerSymbol->size(), markerSymbol->sizeUnit() ) );
+
+          switch ( simpleMarkerLayer->shape() )
+          {
+            case Qgis::MarkerShape::Circle:
+            {
+              pointSymbol3D->setShape( Qgis::Point3DShape::Sphere );
+              QVariantMap vmSphere;
+              vmSphere[u"radius"_s] = sizePixels / 2.;
+              pointSymbol3D->setShapeProperties( vmSphere );
+              break;
+            }
+            case Qgis::MarkerShape::Square:
+            {
+              pointSymbol3D->setShape( Qgis::Point3DShape::Cube );
+              QVariantMap vmCube;
+              vmCube[u"size"_s] = sizePixels;
+              pointSymbol3D->setShapeProperties( vmCube );
+              break;
+            }
+
+            case Qgis::MarkerShape::Triangle:
+            case Qgis::MarkerShape::EquilateralTriangle:
+            {
+              QVariantMap vmCone;
+              vmCone[u"length"_s] = sizePixels;
+              vmCone[u"topRadius"_s] = sizePixels / 10.;
+              vmCone[u"bottomRadius"_s] = sizePixels + 2.;
+              pointSymbol3D->setShapeProperties( vmCone );
+              pointSymbol3D->setShape( Qgis::Point3DShape::Cone );
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      }
+    }
+  }
+
+  // handle opacity
+  QgsAbstractMaterialSettings *materialSettings = symbol3D->materialSettings();
+  if ( materialSettings->type() == "phong"_L1 )
+  {
+    QgsPhongMaterialSettings *phongSettings = dynamic_cast<QgsPhongMaterialSettings *>( materialSettings );
+    phongSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "phongtextured"_L1 )
+  {
+    QgsPhongTexturedMaterialSettings *phongTexturedSettings = dynamic_cast<QgsPhongTexturedMaterialSettings *>( materialSettings );
+    phongTexturedSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "metalroughtextured"_L1 )
+  {
+    QgsMetalRoughTexturedMaterialSettings *metalTexturedSettings = dynamic_cast<QgsMetalRoughTexturedMaterialSettings *>( materialSettings );
+    metalTexturedSettings->setOpacity( symbol2D->opacity() );
+  }
+  else if ( materialSettings->type() == "metalrough"_L1 )
+  {
+    QgsMetalRoughMaterialSettings *metalSettings = dynamic_cast<QgsMetalRoughMaterialSettings *>( materialSettings );
+    metalSettings->setOpacity( symbol2D->opacity() );
+  }
+
+  return symbol3D;
 }
