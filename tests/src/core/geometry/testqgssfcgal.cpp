@@ -99,6 +99,7 @@ class TestQgsSfcgal : public QgsTest
     void primitiveBox();
     void primitiveCone();
     void primitiveCube();
+    void primitiveCylinder();
     void toSolid();
     void toPolyhedralSurface();
     void geometryN_data();
@@ -1306,6 +1307,28 @@ void TestQgsSfcgal::primitiveCube()
   param = cube->primitiveParameter( u"size"_s );
   QCOMPARE( param.toDouble(), 8.2 );
 
+#endif
+}
+
+void TestQgsSfcgal::primitiveCylinder()
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> cylinder = QgsSfcgalGeometry::createCylinder( 6, 12, 16 );
+  QCOMPARE( cylinder->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( cylinder->geometryType(), "cylinder" );
+
+  // check clone
+  std::unique_ptr<QgsSfcgalGeometry> cylinder2 = cylinder->clone();
+  QVERIFY( *cylinder == *cylinder2 );
+
+  // check export as SFCGAL geometry
+  std::unique_ptr<QgsSfcgalGeometry> poly = cylinder->primitiveAsPolyhedralSurface();
+  std::unique_ptr<QgsSfcgalGeometry> expectedCylinder = openWktFile( "cylinder.wkt" );
+  QCOMPARE( poly->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );
+  std::unique_ptr<QgsSfcgalGeometry> poly2 = cylinder2->primitiveAsPolyhedralSurface();
+  QCOMPARE( poly2->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );
+#else
+  QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createCylinder( 6, 12, 16 ), QgsNotSupportedException );
 #endif
 }
 

@@ -825,6 +825,22 @@ Create a cube primitive
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
+    static std::unique_ptr<QgsSfcgalGeometry> createCylinder( double radius, double height, unsigned int radial );
+%Docstring
+Create a cylinder primitive
+
+:param radius: The radius of the cylinder
+:param height: The height of the cylinder
+:param radial: The number of radial divisions
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
     QList<std::pair<QString, QString>> primitiveParameters() const;
 %Docstring
 Returns the list of available parameter description for this primitive.
