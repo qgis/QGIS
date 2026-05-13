@@ -386,8 +386,7 @@ def _executeAlgorithm(alg_id):
     if (alg.countVisibleParameters()) > 0:
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
-            widget = AlgorithmWidget(alg, parent=iface.mainWindow())
-        widget.show()
+            widget = AlgorithmWidget(alg)
         widget.exec()
     else:
         feedback = MessageBarProgress()

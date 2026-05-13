@@ -62,7 +62,6 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
             widget = AlgorithmWidget(alg_instance, parent=iface.mainWindow())
 
-        widget.show()
         widget.exec()
 
     def processingContext(self):
