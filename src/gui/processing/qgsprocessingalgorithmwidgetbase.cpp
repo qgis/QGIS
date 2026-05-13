@@ -98,6 +98,7 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase( QWidget *par
   mButtonChangeParameters = mButtonBox->button( QDialogButtonBox::Yes );
   mButtonChangeParameters->setText( tr( "Change Parameters" ) );
 
+  connect( buttonCancel, &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancel );
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
 
@@ -636,7 +637,7 @@ QDialog *QgsProcessingAlgorithmWidgetBase::createProgressDialog()
   dialog->setWindowTitle( windowTitle() );
   dialog->setGeometry( geometry() ); // match size/position to this dialog
   connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
-  connect( dialog->cancelButton(), &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancelRequested );
+  connect( dialog->cancelButton(), &QPushButton::clicked, this, &QgsProcessingAlgorithmWidgetBase::cancel );
   dialog->logTextEdit()->setHtml( txtLog->toHtml() );
   connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]() {
     dialog->logTextEdit()->setHtml( txtLog->toHtml() );
