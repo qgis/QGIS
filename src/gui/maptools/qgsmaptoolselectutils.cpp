@@ -75,7 +75,10 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
 
   if ( !layer )
   {
-    canvas->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    if ( canvas->messageBar() )
+    {
+      canvas->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+    }
   }
   return layer;
 }
@@ -263,7 +266,10 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
-        canvas->pushMessage( QObject::tr( "CRS Exception: Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        if ( canvas->messageBar() )
+        {
+          canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        }
         break;
       }
 
@@ -321,7 +327,10 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
-        canvas->pushMessage( QObject::tr( "CRS Exception: Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        if ( canvas->messageBar() )
+        {
+          canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+        }
         break;
       }
 
@@ -367,7 +376,10 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
   if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
   {
-    canvas->pushMessage( QObject::tr( "CRS Exception: Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+    if ( canvas->messageBar() )
+    {
+      canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+    }
     return newSelectedFeatures;
   }
 
@@ -574,7 +586,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
 
   if ( !transformSelectGeometry( data->selectGeometry, selectGeomTrans, data->ct ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "CRS Exception: Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning, true );
+    QgsMessageLog::logMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning, true );
     return newSelectedFeatures;
   }
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
