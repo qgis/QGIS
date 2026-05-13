@@ -857,6 +857,23 @@ Create a sphere primitive
 .. versionadded:: 4.2
 %End
 
+    static std::unique_ptr<QgsSfcgalGeometry> createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial );
+%Docstring
+Create a torus primitive
+
+:param mainRadius: The main radius of the torus
+:param tubeRadius: The tube radius of the torus
+:param mainRadial: The number of main radial divisions
+:param tubeRadial: The number of tube radial divisions
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
     QList<std::pair<QString, QString>> primitiveParameters() const;
 %Docstring
 Returns the list of available parameter description for this primitive.

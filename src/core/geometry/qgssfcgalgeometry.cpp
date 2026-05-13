@@ -1042,6 +1042,26 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createSphere( double radiu
 #endif
 }
 
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial )
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  sfcgal::shared_prim result = QgsSfcgalEngine::createTorus( mainRadius, tubeRadius, mainRadial, tubeRadial, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, sfcgal::primitiveType::SFCGAL_TYPE_TORUS, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+#else
+  ( void ) mainRadius;
+  ( void ) tubeRadius;
+  ( void ) mainRadial;
+  ( void ) tubeRadial;
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurface() const
 {
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )

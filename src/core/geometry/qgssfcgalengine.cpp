@@ -1174,6 +1174,20 @@ sfcgal::shared_prim QgsSfcgalEngine::createSphere( double radius, unsigned int s
   return sfcgal::make_shared_prim( result );
 }
 
+sfcgal::shared_prim QgsSfcgalEngine::createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_TORUS );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "main_radius", mainRadius );
+  sfcgal_primitive_set_parameter_double( result, "tube_radius", tubeRadius );
+  sfcgal_primitive_set_parameter_int( result, "main_num_radial", mainRadial );
+  sfcgal_primitive_set_parameter_int( result, "tube_num_radial", tubeRadial );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
 sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
