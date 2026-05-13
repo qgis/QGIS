@@ -97,6 +97,7 @@ class TestQgsSfcgal : public QgsTest
     void simplify();
     void approximateMedialAxis();
     void primitiveBox();
+    void primitiveCone();
     void primitiveCube();
     void toSolid();
     void toPolyhedralSurface();
@@ -1164,6 +1165,28 @@ void TestQgsSfcgal::primitiveBox()
   QCOMPARE( poly2->asWkt( 1 ), expectedBox->asWkt( 1 ) );
 #else
   QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createBox( 2, 3, 4 ), QgsNotSupportedException );
+#endif
+}
+
+void TestQgsSfcgal::primitiveCone()
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> cone = QgsSfcgalGeometry::createCone( 6, 10, 0.1, 12 );
+  QCOMPARE( cone->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( cone->geometryType(), "cone" );
+
+  // check clone
+  std::unique_ptr<QgsSfcgalGeometry> cone2 = cone->clone();
+  QVERIFY( *cone == *cone2 );
+
+  // check export as SFCGAL geometry
+  std::unique_ptr<QgsSfcgalGeometry> poly = cone->primitiveAsPolyhedralSurface();
+  std::unique_ptr<QgsSfcgalGeometry> expectedCone = openWktFile( "cone.wkt" );
+  QCOMPARE( poly->asWkt( 1 ), expectedCone->asWkt( 1 ) );
+  std::unique_ptr<QgsSfcgalGeometry> poly2 = cone2->primitiveAsPolyhedralSurface();
+  QCOMPARE( poly2->asWkt( 1 ), expectedCone->asWkt( 1 ) );
+#else
+  QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createCone( 6, 10, 0.1, 12 ), QgsNotSupportedException );
 #endif
 }
 

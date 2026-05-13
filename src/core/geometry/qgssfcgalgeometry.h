@@ -703,6 +703,21 @@ class CORE_EXPORT QgsSfcgalGeometry
     static std::unique_ptr<QgsSfcgalGeometry> createBox( double sizeX, double sizeY, double sizeZ ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
+     * Create a cone primitive
+     *
+     * \param bottomRadius The bottom face radius of the cone
+     * \param height The height of the cone
+     * \param topRadius The top face radius of the cone
+     * \param radial The number of radial divisions
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createCone( double bottomRadius, double height, double topRadius, unsigned int radial ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \throws QgsSfcgalException if an error was encountered during the operation
