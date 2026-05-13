@@ -74,7 +74,9 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         initialState: Qgis.DockableWidgetInitialState = Qgis.DockableWidgetInitialState.RestorePreviousState,
     ):
         super().__init__(
-            parent or iface.mainWindow(), flags=flags, initialState=initialState
+            parent or (iface and iface.mainWindow()),
+            flags=flags,
+            initialState=initialState,
         )
 
         self.feedback_dialog = None
