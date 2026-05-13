@@ -234,6 +234,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessi
 
     QPointer<QgsProcessingAlgorithmWidgetBase> mAlgorithmWidget;
 
+    QVector<QPointer<QgsProcessingAlgorithmWidgetBase>> mAlgorithmWidgetsToCleanUp;
+
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsModelViewToolPan *mPanTool = nullptr;
