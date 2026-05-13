@@ -52,7 +52,14 @@ QString QgsDistanceMatrixAlgorithm::groupId() const
 
 QString QgsDistanceMatrixAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer." );
+  return QObject::tr(
+    "This algorithm creates a table containing a distance matrix, "
+    "with distances between all the points in a points layer.\n\n"
+    "This algorithm uses purely Cartesian calculations for distance, "
+    "and does not consider geodetic or ellipsoid properties when "
+    "determining feature proximity. The measurement and output coordinate "
+    "system is based on the coordinate system of the source layer."
+  );
 }
 
 QString QgsDistanceMatrixAlgorithm::shortDescription() const
@@ -67,20 +74,36 @@ QgsDistanceMatrixAlgorithm *QgsDistanceMatrixAlgorithm::createInstance() const
 
 void QgsDistanceMatrixAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input point layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterField( u"INPUT_FIELD"_s, QObject::tr( "Input unique ID field" ), QVariant(), u"INPUT"_s ) );
-  addParameter( new QgsProcessingParameterFeatureSource( u"TARGET"_s, QObject::tr( "Target point layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterField( u"TARGET_FIELD"_s, QObject::tr( "Target unique ID field" ), QVariant(), u"TARGET"_s ) );
-  addParameter( new QgsProcessingParameterEnum(
+  auto inputParam = std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT"_s, QObject::tr( "Input point layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) );
+  inputParam->setHelp( QObject::tr( "The layer containing the points from which distances will be calculated." ) );
+  addParameter( inputParam.release() );
+  auto inputFieldParam = std::make_unique<QgsProcessingParameterField>( u"INPUT_FIELD"_s, QObject::tr( "Input unique ID field" ), QVariant(), u"INPUT"_s );
+  inputFieldParam->setHelp( QObject::tr( "A field of the input layer with unique values to identify each starting point in the output table." ) );
+  addParameter( inputFieldParam.release() );
+  auto targetParam = std::make_unique<QgsProcessingParameterFeatureSource>( u"TARGET"_s, QObject::tr( "Target point layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) );
+  targetParam->setHelp( QObject::tr( "The layer containing the points to which distances will be measured. If the same as the input layer, distances between points in the same layer are calculated." ) );
+  addParameter( targetParam.release() );
+  auto targetFieldParam = std::make_unique<QgsProcessingParameterField>( u"TARGET_FIELD"_s, QObject::tr( "Target unique ID field" ), QVariant(), u"TARGET"_s );
+  targetFieldParam->setHelp( QObject::tr( "A field of the target layer with unique values to identify each destination point in the output table." ) );
+  addParameter( targetFieldParam.release() );
+  auto matrixTypeParam = std::make_unique<QgsProcessingParameterEnum>(
     u"MATRIX_TYPE"_s,
     QObject::tr( "Output matrix type" ),
     QStringList() << QObject::tr( "Linear (N*k x 3) distance matrix" ) << QObject::tr( "Standard (N x T) distance matrix" ) << QObject::tr( "Summary distance matrix (mean, std. dev., min, max)" ),
     false,
     0
-  ) );
+  );
+  matrixTypeParam->setHelp(
+    QObject::tr(
+      "The format of the output table. Linear for a list of point pairs and their distance; "
+      "standard for one row per input point with columns for each target and distance; "
+      "summary for statistics (mean, min, max, etc.) for each input point."
+    )
+  );
+  addParameter( matrixTypeParam.release() );
   auto pointsParam
     = std::make_unique<QgsProcessingParameterNumber>( u"NEAREST_POINTS"_s, QObject::tr( "Use only the nearest (k) target points" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0 );
-  pointsParam->setHelp( QObject::tr( "The vertical interval (elevation increment) used to group data. A smaller step results in a smoother, more detailed curve." ) );
+  pointsParam->setHelp( QObject::tr( "Limit the calculation to a specific number of the closest target points. If set to 0, distances to all target points will be calculated." ) );
   addParameter( pointsParam.release() );
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Distance matrix" ), Qgis::ProcessingSourceType::VectorPoint, QVariant() ) );
 }
