@@ -234,20 +234,22 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   //  | QViewport | (0,0,1,1)
   //  +-----------+
   //             |
-  //     +------------------------+------------------+------------------+-------------------+
-  //     |                        |                  |                  |                   |
-  //     |                    (optional)             |                  |                   |
-  // +------------------+ +-----------------+ +--------------+ +-----------------+ +-----------------+
-  // | forward passes   | |    MSAA blit    | | shadows pass | |  depth buffer   | | post-processing |
-  // | (solid objects,  | | (color + depth) | |              | | processing pass | |    passes       |
-  // | transparent,     | +-----------------+ +--------------+ +-----------------+ +-----------------+
-  // | highlights,      |
-  // | rubber bands)    |
-  // +------------------+
+  //     +---------------------+---------------+------------------------+-------------------+
+  //     |                     |               |                        |                   |
+  //     |                     |               | (optional)             |                   |
+  // +--------------+ +------------------+ +-----------------+  +-----------------+ +-----------------+
+  // | shadows pass | | forward passes   | |    MSAA blit    |  |  depth buffer   | | post-processing |
+  // |              | | (solid objects,  | | (color + depth) |  | processing pass | |    passes       |
+  // +--------------+ | transparent,     | +-----------------+  +-----------------+ +-----------------+
+  //                  | highlights,      |
+  //                  | rubber bands)    |
+  //                  +------------------+
   //
   // Notes:
   // - (optional) MSAA blits multisampled (4 samples) color and depth textures
   //   so that other passes can sample them
+  // - shadows pass MUST come before other forward passes, as we use the shadow
+  //   information in the material shaders
   // - depth buffer processing pass is used whenever we need depth map information
   //   (for camera navigation) and it converts depth texture to a color texture
   //   so that we can capture it with QRenderCapture - currently it is unable
