@@ -32,16 +32,13 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-QgsPhongMaterial::QgsPhongMaterial( bool instanced, bool hasDDScale, bool hasDDRotation, QNode *parent )
+QgsPhongMaterial::QgsPhongMaterial( QNode *parent )
   : QgsMaterial( parent )
   , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QVariant() ) )
   , mDiffuseParameter( new Qt3DRender::QParameter( u"diffuseColor"_s, QVariant() ) )
   , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QVariant() ) )
   , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 0.0f ) )
   , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
-  , mInstanced( instanced )
-  , mHasDDScale( hasDDScale )
-  , mHasDDRotation( hasDDRotation )
 {
   setAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) );
   setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
@@ -83,6 +80,13 @@ void QgsPhongMaterial::init()
   updateShaders();
 }
 
+void QgsPhongMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
+{
+  mInstanced = enabled;
+  mInstanceFlags = flags;
+  updateShaders();
+}
+
 void QgsPhongMaterial::updateShaders()
 {
   const QByteArray fragCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) );
@@ -90,9 +94,9 @@ void QgsPhongMaterial::updateShaders()
   if ( mInstanced )
   {
     QStringList defines;
-    if ( mHasDDScale )
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
       defines << u"USE_INSTANCE_SCALE"_s;
-    if ( mHasDDRotation )
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
       defines << u"USE_INSTANCE_ROTATION"_s;
     const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
     mShaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );

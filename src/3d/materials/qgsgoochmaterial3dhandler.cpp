@@ -39,9 +39,8 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
   {
     case Qgis::MaterialRenderingTechnique::InstancedPoints:
     {
-      if ( context.isHighlighted() )
-        return new QgsHighlightMaterial( technique );
-      return toInstancedMaterial( settings, context, false, false );
+      Q_ASSERT( false );
+      return nullptr;
     }
 
     case Qgis::MaterialRenderingTechnique::Triangles:
@@ -55,7 +54,18 @@ QgsMaterial *QgsGoochMaterial3DHandler::toMaterial( const QgsAbstractMaterialSet
         return new QgsHighlightMaterial( technique );
       }
 
-      return buildMaterial( settings, context );
+      const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
+      Q_ASSERT( goochSettings );
+      const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
+
+      QgsGoochMaterial *material = new QgsGoochMaterial();
+      material->setObjectName( u"goochMaterial"_s );
+      applySettingsToMaterial( goochSettings, material );
+      if ( context.isSelected() )
+        material->setDiffuse( context.selectionColor() );
+      material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
+
+      return material;
     }
 
     case Qgis::MaterialRenderingTechnique::Lines:
@@ -170,25 +180,17 @@ bool QgsGoochMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *sceneRoot
   return true;
 }
 
-QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const
+QgsMaterial *QgsGoochMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
-  return buildMaterial( settings, context, true, hasDDScale, hasDDRotation );
-}
+  const QgsGoochMaterialSettings *goochSettings = qgis::down_cast< const QgsGoochMaterialSettings * >( settings );
 
-QgsMaterial *QgsGoochMaterial3DHandler::buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool instanced, bool hasDDScale, bool hasDDRotation ) const
-{
-  const QgsGoochMaterialSettings *goochSettings = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
-  Q_ASSERT( goochSettings );
-  const QgsPropertyCollection &dataDefinedProperties = goochSettings->dataDefinedProperties();
+  QgsGoochMaterial *material = new QgsGoochMaterial();
+  material->setInstancingEnabled( true, flags );
 
-  QgsGoochMaterial *material = new QgsGoochMaterial( instanced, hasDDScale, hasDDRotation );
   material->setObjectName( u"goochMaterial"_s );
-
   applySettingsToMaterial( goochSettings, material );
   if ( context.isSelected() )
     material->setDiffuse( context.selectionColor() );
-  if ( !instanced )
-    material->setDataDefinedEnabled( dataDefinedProperties.hasActiveProperties() );
 
   return material;
 }

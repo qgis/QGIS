@@ -40,10 +40,9 @@ QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderConte
   return res;
 }
 
-QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const
+QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const
 {
-  Q_UNUSED( hasDDScale )
-  Q_UNUSED( hasDDRotation )
+  Q_UNUSED( flags )
   return toMaterial( settings, Qgis::MaterialRenderingTechnique::InstancedPoints, context );
 }
 

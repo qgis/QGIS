@@ -4352,6 +4352,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MaterialRenderingTechnique )
 
     /**
+     * Optional per-instance properties of instanced materials.
+     *
+     * \since QGIS 4.2
+     */
+    enum class InstancedMaterialFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DataDefinedScale = 1 << 0,    //!< Per-instance data-defined scale
+      DataDefinedRotation = 1 << 1, //!< Per-instance data-defined rotation
+    };
+    Q_ENUM( InstancedMaterialFlag )
+    Q_DECLARE_FLAGS( InstancedMaterialFlags, InstancedMaterialFlag )
+    Q_FLAG( InstancedMaterialFlags )
+
+    /**
      * Texture filtering qualities.
      *
      * \since QGIS 4.2
@@ -7025,6 +7039,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
