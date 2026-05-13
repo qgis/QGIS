@@ -453,7 +453,7 @@ class ProcessingPlugin(QObject):
             return
 
         if as_batch:
-            dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+            dlg = BatchAlgorithmDialog(alg)
             dlg.exec()
             return
 
