@@ -36,6 +36,8 @@ class QgsProcessingContextOptionsWidget;
 class QgsMessageBar;
 class QgsProcessingAlgRunnerTask;
 class QgsTask;
+class QgsDockableWidgetHelper;
+class QMainWindow;
 
 /**
  * \ingroup gui
@@ -60,7 +62,7 @@ class GUI_EXPORT QgsProcessingFeedbackGenerator
  * \brief Base class for widgets which contain settings for running Processing algorithms.
  * \note This is not considered stable API and may change in future QGIS versions.
  */
-class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsProcessingParametersGenerator, public QgsProcessingContextGenerator, private Ui::QgsProcessingDialogBase
+class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsProcessingParametersGenerator, public QgsProcessingContextGenerator, private Ui::QgsProcessingDialogBase
 {
     Q_OBJECT
 
@@ -89,9 +91,33 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     Q_ENUM( QgsProcessingAlgorithmWidgetBase::WidgetMode )
 
     /**
+     * Flags controlling the widget behavior.
+     *
+     * \since QGIS 4.2
+     */
+    enum class WidgetFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoDocking = 1 << 0 //!< Widget cannot be docked, must be shown as a dialog
+    };
+    Q_ENUM( WidgetFlag )
+
+    /**
+     * Flags controlling the widget behavior.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( WidgetFlags, WidgetFlag )
+    Q_FLAG( WidgetFlags )
+
+    /**
      * Constructor for QgsProcessingAlgorithmWidgetBase.
      */
-    QgsProcessingAlgorithmWidgetBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingAlgorithmWidgetBase::WidgetMode mode = QgsProcessingAlgorithmWidgetBase::WidgetMode::Single );
+    QgsProcessingAlgorithmWidgetBase(
+      QMainWindow *parentWindow SIP_TRANSFERTHIS,
+      QgsProcessingAlgorithmWidgetBase::WidgetMode mode = QgsProcessingAlgorithmWidgetBase::WidgetMode::Single,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    );
     ~QgsProcessingAlgorithmWidgetBase() override;
 
     /**
@@ -202,6 +228,15 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     virtual void setParameters( const QVariantMap &values );
 
   public slots:
+
+    /**
+     * Opens the widget in the top-level dialog mode, and blocks further execution until the dialog is dismissed.
+     *
+     * \warning This does NOT open the dialog as a modal dialog. The user may continue to interact with the QGIS
+     * application while the dialog is open. As per Qt QDialog::exec() documentation, it is recommended to avoid
+     * calling this method.
+     */
+    void exec();
 
     /**
      * Reports an \a error string to the widget's log.
@@ -317,7 +352,7 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      */
     void forceClose();
 
-    void reject() override;
+    void reject();
 
   protected:
     void closeEvent( QCloseEvent *e ) override;
@@ -508,6 +543,8 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      */
     void disconnectCurrentTask();
 
+    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+
     WidgetMode mMode = WidgetMode::Single;
 
     QPushButton *mButtonRun = nullptr;
@@ -646,6 +683,8 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
      */
     Qgis::ProcessingLogLevel logLevel() const;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithmWidgetBase::WidgetFlags )
 
 #endif
 

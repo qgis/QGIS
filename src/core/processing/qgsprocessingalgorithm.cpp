@@ -170,7 +170,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   }
 }
 
-QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
+QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QMainWindow * ) const
 {
   return nullptr;
 }

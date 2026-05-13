@@ -109,10 +109,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
             return False
 
         alg.setProvider(QgsApplication.processingRegistry().providerById("model"))
-        widget = AlgorithmWidget(alg, parent=iface.mainWindow())
-        widget.show()
-        # do NOT remove!!!! if you do then sip forgets the python subclass of AlgorithmDialog and you get a broken
-        # dialog
+        widget = AlgorithmWidget(alg)
         widget.exec()
         return True
 
@@ -457,7 +454,6 @@ class ProcessingPlugin(QObject):
 
         if as_batch:
             dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
-            dlg.show()
             dlg.exec()
             return
 
@@ -486,11 +482,10 @@ class ProcessingPlugin(QObject):
             return
 
         if alg.countVisibleParameters() > 0:
-            widget = alg.createCustomParametersWidget(parent)
+            widget = alg.createCustomParametersWidget(iface.mainWindow())
 
             if not widget:
-                widget = AlgorithmWidget(alg, in_place, iface.mainWindow())
-            widget.show()
+                widget = AlgorithmWidget(alg, in_place)
             widget.exec()
         else:
             feedback = MessageBarProgress(algname=alg.displayName())

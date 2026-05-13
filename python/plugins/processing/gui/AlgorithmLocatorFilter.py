@@ -126,8 +126,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             return
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
-            widget = AlgorithmWidget(alg, parent=iface.mainWindow())
-        widget.show()
+            widget = AlgorithmWidget(alg)
         widget.exec()
 
 
@@ -224,6 +223,5 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
 
         widget = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not widget:
-            widget = AlgorithmWidget(alg, True, parent=iface.mainWindow())
-        widget.show()
+            widget = AlgorithmWidget(alg, True)
         widget.exec()
