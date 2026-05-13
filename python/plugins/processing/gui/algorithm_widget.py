@@ -133,8 +133,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         return panel
 
     def runAsBatch(self):
-        self.close()
-        dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+        self.reject()
+        dlg = BatchAlgorithmDialog(self.algorithm().create())
         dlg.exec()
 
     def resetAdditionalGui(self):
