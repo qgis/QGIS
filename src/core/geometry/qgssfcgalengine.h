@@ -806,6 +806,20 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_prim createCylinder( double radius, double height, unsigned int radial, QString *errorMsg = nullptr );
 
     /**
+     * Create a sphere primitive
+     *
+     * \param radius The radius of the sphere
+     * \param subdivisions The number of icosahedron subdivisions (0=12 vertices, 1=42, 2=162, etc.)
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createSphere( double radius, unsigned int subdivisions, QString *errorMsg = nullptr );
+
+    /**
      * Clones \a prim.
      *
      * \param prim primitive to perform the operation

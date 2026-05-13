@@ -1162,6 +1162,18 @@ sfcgal::shared_prim QgsSfcgalEngine::createCylinder( double radius, double heigh
   return sfcgal::make_shared_prim( result );
 }
 
+sfcgal::shared_prim QgsSfcgalEngine::createSphere( double radius, unsigned int subdivisions, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_SPHERE );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "radius", radius );
+  sfcgal_primitive_set_parameter_int( result, "num_subdivisions", subdivisions );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
 sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
