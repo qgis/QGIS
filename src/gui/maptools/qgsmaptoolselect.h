@@ -32,6 +32,8 @@ class QMouseEvent;
  * \ingroup gui
  * \brief A map tool for selecting features on a map canvas.
  * \see QgsMapTool
+ *
+ * \since QGIS 4.2
  */
 class GUI_EXPORT QgsMapToolSelect : public QgsMapTool
 {

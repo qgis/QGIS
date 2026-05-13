@@ -2868,7 +2868,6 @@
     "QgsMapToolIdentify",
     "QgsMapToolIdentifyFeature",
     "QgsMapToolPan",
-    "QgsMapToolSelect",
     "QgsMapToolZoom",
     "QgsMapUnitScale",
     "QgsMapUnitScaleDialog",
