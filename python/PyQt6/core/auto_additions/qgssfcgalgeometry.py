@@ -6,6 +6,7 @@ try:
     QgsSfcgalGeometry.createCone = staticmethod(QgsSfcgalGeometry.createCone)
     QgsSfcgalGeometry.createCube = staticmethod(QgsSfcgalGeometry.createCube)
     QgsSfcgalGeometry.createCylinder = staticmethod(QgsSfcgalGeometry.createCylinder)
+    QgsSfcgalGeometry.createSphere = staticmethod(QgsSfcgalGeometry.createSphere)
     QgsSfcgalGeometry.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

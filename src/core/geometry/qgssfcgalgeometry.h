@@ -740,6 +740,19 @@ class CORE_EXPORT QgsSfcgalGeometry
     static std::unique_ptr<QgsSfcgalGeometry> createCylinder( double radius, double height, unsigned int radial ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
+     * Create a sphere primitive
+     *
+     * \param radius The radius of the sphere
+     * \param subdivisions The number of icosahedron subdivisions (0=12 vertices, 1=42, 2=162, etc.)
+
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createSphere( double radius, unsigned int subdivisions ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
      * Returns the list of available parameter description for this primitive.
      *
      * Parameter description is a pair of string: name and type. Type can be one of int, double, QgsPoint, QgsVector3D
