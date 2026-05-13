@@ -379,6 +379,22 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
+  if ( mAlgorithmWidget )
+  {
+    delete mAlgorithmWidget;
+  }
+  for ( const QPointer<QgsProcessingAlgorithmWidgetBase> &widget : std::as_const( mAlgorithmWidgetsToCleanUp ) )
+  {
+    // this is a work around for the MESSY ownership issues associated with the python subclass
+    // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+    // to destruction of this window, and we can't be sure that python will have actually
+    // deleted the widget when we asked...
+    if ( widget )
+    {
+      delete widget;
+    }
+  }
+
   QgsSettings settings;
   if ( !mPanelStatus.isEmpty() )
   {
@@ -1144,12 +1160,19 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
         mAlgorithmWidget->forceClose();
 
         //Stop tracking change to the previous dialog in the QPointer
+        if ( mAlgorithmWidget )
+        {
+          // this is a work around for the MESSY ownership issues associated with the python subclass
+          // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+          // to destruction of this window, and we can't be sure that python will have actually
+          // deleted the widget when we asked...
+          mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
+        }
         mAlgorithmWidget.clear();
         break;
       case QMessageBox::StandardButton::Ok:
         mAlgorithmWidget->showWidget();
         return;
-        break;
       default:
         break;
     }
@@ -1158,6 +1181,14 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   {
     // Close and create a new one
     mAlgorithmWidget->close();
+    if ( mAlgorithmWidget )
+    {
+      // this is a work around for the MESSY ownership issues associated with the python subclass
+      // of QgsProcessingAlgorithmWidgetBase. We have to FORCE all widgets to be deleted prior
+      // to destruction of this window, and we can't be sure that python will have actually
+      // deleted the widget when we asked...
+      mAlgorithmWidgetsToCleanUp << mAlgorithmWidget;
+    }
     //Stop tracking change to the previous widget in the QPointer
     mAlgorithmWidget.clear();
   }
@@ -1168,9 +1199,6 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 
     mAlgorithmWidget->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmWidget->setParameters( mModel->designerParameterValues() );
-
-    Qt::WindowFlags flags = Qt::Window;
-    mAlgorithmWidget->setWindowFlags( flags );
 
     connect( mAlgorithmWidget.get(), &QgsProcessingAlgorithmWidgetBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
       if ( !childAlgorithmSubset.empty() )
@@ -1208,7 +1236,6 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       setLastRunResult( context->modelResult() );
     } );
   }
-  mAlgorithmWidget->showWidget();
 }
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )

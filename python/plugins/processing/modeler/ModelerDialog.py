@@ -38,6 +38,7 @@ from qgis.core import (
 from qgis.gui import (
     QgsModelDesignerDialog,
     QgsModelGraphicsScene,
+    QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParametersGenerator,
@@ -116,8 +117,12 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.registerProcessingContextGenerator(self.context_generator)
 
     def createExecutionWidget(self):
-        widget = AlgorithmWidget(self.model().create(), parent=self)
-        widget.registerProcessingFeedbackFactory(self)
+        widget = AlgorithmWidget(
+            self.model().create(),
+            parent=self,
+            initialState=Qgis.DockableWidgetInitialState.ForceDocked,
+        )
+        widget.registerProcessingFeedbackGenerator(self)
         return widget
 
     def saveInProject(self):
