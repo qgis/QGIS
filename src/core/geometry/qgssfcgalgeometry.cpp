@@ -297,7 +297,7 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsil
 
   if ( mIsPrimitive )
   {
-    if ( !mPrimTransform.fuzzyEqual( other.mPrimTransform ) )
+    if ( !mPrimTransform.fuzzyEqual( other.mPrimTransform, epsilon ) )
     {
       return false;
     }
