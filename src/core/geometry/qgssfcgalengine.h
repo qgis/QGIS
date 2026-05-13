@@ -791,6 +791,21 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_prim createCube( double size, QString *errorMsg = nullptr );
 
     /**
+     * Create a cylinder primitive
+     *
+     * \param radius The radius of the cylinder
+     * \param height The height of the cylinder
+     * \param radial The number of radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createCylinder( double radius, double height, unsigned int radial, QString *errorMsg = nullptr );
+
+    /**
      * Clones \a prim.
      *
      * \param prim primitive to perform the operation
