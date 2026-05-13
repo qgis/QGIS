@@ -689,6 +689,20 @@ class CORE_EXPORT QgsSfcgalGeometry
     SIP_SKIP QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type );
 
     /**
+     * Create a box primitive
+     *
+     * \param sizeX the box width
+     * \param sizeY the box depth
+     * \param sizeZ the box height
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createBox( double sizeX, double sizeY, double sizeZ ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \throws QgsSfcgalException if an error was encountered during the operation
