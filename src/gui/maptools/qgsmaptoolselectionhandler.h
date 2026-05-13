@@ -34,7 +34,6 @@ class QgsMapMouseEvent;
 class QgsRubberBand;
 class QgsSnapIndicator;
 class QgsIdentifyMenu;
-class QgsUserInputWidget;
 
 
 /// @cond private
@@ -179,8 +178,6 @@ class GUI_EXPORT QgsMapToolSelectionHandler : public QObject
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
-
-    QgsUserInputWidget *mUserInputDockWidget;
 
     //! the rubberband for selection visualization
     std::unique_ptr<QgsRubberBand> mSelectionRubberBand;

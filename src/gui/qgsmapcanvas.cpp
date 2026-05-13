@@ -2031,7 +2031,6 @@ void QgsMapCanvas::setZRange( const QgsDoubleRange &range )
   autoRefreshTriggered();
 }
 
-
 void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
 {
   // no selected features, only one selected point feature

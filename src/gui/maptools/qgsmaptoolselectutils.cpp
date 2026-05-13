@@ -75,9 +75,9 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
 
   if ( !layer )
   {
-    if ( canvas->messageBar() )
+    if ( QgsMessageBar *messageBar = canvas->messageBar() )
     {
-      canvas->messageBar()->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
+      messageBar->pushMessage( QObject::tr( "No active vector layer" ), QObject::tr( "To select features, choose a vector layer in the layers panel" ), Qgis::MessageLevel::Info );
     }
   }
   return layer;
@@ -266,9 +266,9 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
-        if ( canvas->messageBar() )
+        if ( QgsMessageBar *messageBar = canvas->messageBar() )
         {
-          canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+          messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
         }
         break;
       }
@@ -327,9 +327,9 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
       QgsGeometry selectGeomTrans;
       if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
       {
-        if ( canvas->messageBar() )
+        if ( QgsMessageBar *messageBar = canvas->messageBar() )
         {
-          canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+          messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
         }
         break;
       }
@@ -376,9 +376,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
   if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
   {
-    if ( canvas->messageBar() )
+    if ( QgsMessageBar *messageBar = canvas->messageBar() )
     {
-      canvas->messageBar()->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
+      messageBar->pushMessage( QObject::tr( "Selection extends beyond layer's coordinate system" ), QString(), Qgis::MessageLevel::Warning );
     }
     return newSelectedFeatures;
   }

@@ -423,9 +423,9 @@ void QgsMapToolSelectionHandler::createDistanceWidget()
   deleteDistanceWidget();
 
   mDistanceWidget = new QgsDistanceWidget( tr( "Selection radius:" ) );
-  if ( mCanvas->userInputWidget() )
+  if ( QgsUserInputWidget *userInputWidget = mCanvas->userInputWidget() )
   {
-    mCanvas->userInputWidget()->addUserInputWidget( mDistanceWidget );
+    userInputWidget->addUserInputWidget( mDistanceWidget );
   }
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
