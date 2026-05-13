@@ -16,8 +16,7 @@ void main()
 
     if (renderShadows == 1)
     {
-        int cascadeIndex = calcCascadeIndexMapBased(worldPosition);
-        float visibilityFactor = calcShadowFactor(cascadeIndex, worldPosition);
+        float visibilityFactor = calcVisibilityAfterShadowing(worldPosition);
         fragColor = vec4(fragColor.rgb * mix(0.5, 1.0, visibilityFactor), fragColor.a);
     }
 }
