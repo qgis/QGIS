@@ -475,6 +475,10 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
       {
         // Skip non-published layers
       }
+      catch ( QgsServerApiPermissionDeniedException & )
+      {
+        // Skip layers denied by access control filters and return a partial list
+      }
     }
   }
 

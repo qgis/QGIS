@@ -757,6 +757,34 @@ class QgsServerAPITest(QgsServerAPITestBase):
         ids = [l["id"] for l in jresult["collections"]]
         self.assertNotIn("layer1_with_short_name", ids)
 
+    def test_wfs3_collections_json_partial_access_control(self):
+        """Test WFS3 API collections returns partial list when one layer is denied"""
+
+        request = QgsBufferServerRequest("http://server.qgis.org/wfs3/collections.json")
+        project = QgsProject()
+        project.read(
+            os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
+        )
+
+        server = QgsServer()
+
+        # Access control filter to exclude one published layer
+        acfilter = RestrictedLayerAccessControl(
+            server.serverInterface(),
+            ["testlayer20150528120452665"],
+        )
+        server.serverInterface().registerAccessControl(acfilter, 100)
+
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        self.assertEqual(response.headers()["Content-Type"], "application/json")
+        self.assertEqual(response.statusCode(), 200)
+        result = bytes(response.body()).decode("utf8")
+        jresult = json.loads(result)
+        ids = [l["id"] for l in jresult["collections"]]
+        self.assertNotIn("testlayer èé", ids)
+        self.assertIn("layer1_with_short_name", ids)
+
     def test_wfs3_collections_html(self):
         """Test WFS3 API collections in html format"""
         request = QgsBufferServerRequest("http://server.qgis.org/wfs3/collections.html")
