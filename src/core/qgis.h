@@ -6694,6 +6694,24 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( TriangulationAlgorithm )
 
     /**
+     * Visibility of groups in a WMS context.
+     *
+     * When a group is opaque, WMS treats it as a single opaque layer instead
+     * of a collection of individual layers.
+     * Its child layers are hidden from GetCapabilities requests.
+     * Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
+     * Child layers are rendered whenever a request is made for the group itself.
+     *
+     * \since QGIS 4.2
+    */
+    enum class WmsGroupVisibility : int
+    {
+      Visible, //!< Group and children are visible and requestable
+      Opaque,  //!< Group and children are visible but only the group is requestable (like a single layer)
+    };
+    Q_ENUM( WmsGroupVisibility )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -7432,7 +7450,7 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
   }
   else
   {
-    // if conversion has failed, try with conversion from int value
+    // if conversion has failed, try with conversion from int valueenum class
     if ( tryValueAsKey )
     {
       bool canConvert = false;

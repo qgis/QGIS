@@ -285,27 +285,9 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         Request on a same-named layer should merge
         - but not with a same-named layer in an opaque group
         - but with a same-named opaque group
-        """
 
-        """
-        http://qgis.demo/cgi-bin/qgis_mapserv.fcgi?MAP=/home/dave/dev/qgis/QGIS2/tests/testdata/qgis_server/test_project_opaque.qgz&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap
-        &BBOX=47.51411822721124167,8.76265867349436078,47.51802447721124167,8.76723198210506993
-        &CRS=EPSG:4326
-        &WIDTH=600
-        &HEIGHT=600
-        &LAYERS=street-group
-        &STYLES=
-        &FORMAT=image/png
+        Tests getMap do not divert from requests on normal groups, why we don't compare images (only if valid response or error). Except for layer merging cases.
 
-
-        (header, body, request) = self.wms_request(
-            "GetMap",
-            "&layers=street-group%20%C3%A8%C3%A9&styles=&"
-            + "format=image%2Fpng&transparent=true&"
-            + "width=600&height=600&CRS=EPSG%3A4326&bbox="
-            + "47.51411822721124167,8.76265867349436078,47.51802447721124167,8.76723198210506993&",
-            project=self.project,
-        )
         """
 
         # Request on normal group
@@ -332,9 +314,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_street-group", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
@@ -365,9 +345,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_road-group", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
@@ -405,39 +383,6 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be no server exception for the opaque layer group: way-group",
         )
 
-        # Request on opaque group with a excluded layers
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in list(
-                    {
-                        "MAP": urllib.parse.quote(self.project),
-                        "SERVICE": "WMS",
-                        "VERSION": "1.3.0",
-                        "REQUEST": "GetMap",
-                        "LAYERS": "way-group",
-                        "TRANSPARENT": "true",
-                        "STYLES": "",
-                        "FORMAT": "image/png",
-                        "BBOX": "47.51411822721124167,8.76265867349436078,47.51802447721124167,8.76723198210506993",
-                        "HEIGHT": "600",
-                        "WIDTH": "600",
-                        "CRS": "EPSG:4326",
-                    }.items()
-                )
-            ]
-        )
-
-        r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_way-group", max_size_diff=QSize(1, 1)
-        # )
-        self.assertNotIn(
-            b'<ServiceException code="LayerNotDefined">',
-            r,
-            "there should be no server exception for the opaque layer group: way-group",
-        )
-
         # Request on opaque group with a subgroup
         qs = "?" + "&".join(
             [
@@ -462,9 +407,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_smallway-group", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
@@ -525,9 +468,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         r, h = self._result(self._execute_request(qs))
-        # self._img_diff_error(
-        #     r, h, "WMS_GetMap_OpaqueGroup_streetline", max_size_diff=QSize(1, 1)
-        # )
+
         self.assertNotIn(
             b'<ServiceException code="LayerNotDefined">',
             r,
@@ -594,7 +535,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be a server exception for a layer in a non-opaque group of an opaque layer group: smallwayline",
         )
 
-        # Request on a layer with a same-named layer in an opaque group
+        # Request on a layer with a same-named layer in an opaque group - should only render the non-opaque layer
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
@@ -627,7 +568,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
             "there should be no server exception for a layer with a samenamed layer inside an opaque group: trafficsign",
         )
 
-        # Request on same-named layer as an opaque group
+        # Request on same-named layer as an opaque group - should render both
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
@@ -750,7 +691,7 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         )
 
         # Request on opaque group with a excluded layers
-        # This should return a valid response, but does not. It's a bug https://github.com/qgis/QGIS/issues/65801
+        # This should return all layers of the group except the one excluded, but does not - it brings an error. It's a bug https://github.com/qgis/QGIS/issues/65801
         """
         qs = "?" + "&".join(
             [
@@ -1074,6 +1015,8 @@ class TestQgsServerWMSOpaqueGroups(TestQgsServerWMSTestBase):
         Request on a same-named layer should merge
         - but not with a same-named layer in an opaque group
         - but with a same-named opaque group
+
+        Tests legend graphics do not divert from requests on normal groups, why we don't compare images (only if valid response or error).
         """
 
         # Request on normal group

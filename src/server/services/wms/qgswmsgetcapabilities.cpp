@@ -791,7 +791,7 @@ namespace QgsWms
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
     // when the group is opaque we should not append any child layers
-    if ( !layerTreeGroup->isWmsOpaque() )
+    if ( layerTreeGroup->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque )
       appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings, parentDateRanges );
   }
 
@@ -1189,7 +1189,7 @@ namespace QgsWms
           if ( projectSettings )
           {
             layerElem.setAttribute( u"mutuallyExclusive"_s, treeGroupChild->isMutuallyExclusive() );
-            layerElem.setAttribute( u"opaque"_s, treeGroupChild->isWmsOpaque() );
+            layerElem.setAttribute( u"opaque"_s, ( treeGroupChild->wmsGroupVisibility() == Qgis::WmsGroupVisibility::Opaque ) );
           }
 
           const QString shortName = treeGroupChild->serverProperties()->shortName();
@@ -1235,7 +1235,7 @@ namespace QgsWms
           }
 
           // Check if child layer elements have been added - anyway opaque groups are added even without any children
-          if ( !treeGroupChild->isWmsOpaque() && layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
+          if ( ( treeGroupChild->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque ) && layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
           {
             continue;
           }

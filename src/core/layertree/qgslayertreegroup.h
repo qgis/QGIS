@@ -397,27 +397,27 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     bool hasWmsTimeDimension() const;
 
     /**
-     * Returns whether the group in WMS should be treated as an opaque layer.
-     * If TRUE, the layer group will behave like a single layer, rather
-     * than a collection of individual layers.
-     * Its child layers won't be displayed in GetCapabilities request.
-     * GetMap, GetFeatureInfo etc. requests on child layers will return an error.
-     * But child layers will be rendered when sending a GetMap request on the group.
+     * Returns the visibility of the group.
+     * When it's opaque, WMS treats it as a single opaque layer instead
+     * of a collection of individual layers.
+     * Its child layers are hidden from GetCapabilities requests.
+     * Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
+     * Child layers are rendered whenever a request is made for the group itself.
      *
-     * \see setIsWmsOpaque()
+     * \see setWmsGroupVisibility()
      * \since QGIS 4.2
      */
-    bool isWmsOpaque() const;
+    Qgis::WmsGroupVisibility wmsGroupVisibility() const;
 
     /**
-     * Sets whether the group in WMS should be treated as an opaque layer.
-     * \param isWmsOpaque If TRUE, the layer group will behave like a single layer.
-     * If FALSE, it behaves as a standard group.
+     * Sets the visibility of the group.
+     * \param groupVisibility On Opaque, WMS treats it as a single opaque layer instead
+     * of a collection of individual layers. On Visible it behaves as a standard group.
      *
-     * \see isWmsOpaque()
+     * \see wmsGroupVisibility()
      * \since QGIS 4.2
      */
-    void setIsWmsOpaque( bool isWmsOpaque );
+    void setWmsGroupVisibility( Qgis::WmsGroupVisibility groupVisibility );
 
   protected slots:
 
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     std::unique_ptr< QgsMapLayerServerProperties > mServerProperties;
 
-    bool mWmsIsOpaque = false;
+    Qgis::WmsGroupVisibility mWmsGroupVisibility = Qgis::WmsGroupVisibility::Visible;
 };
 
 

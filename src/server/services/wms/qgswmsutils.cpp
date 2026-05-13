@@ -199,10 +199,10 @@ namespace QgsWms
       requestedParentNames << groupName;
 
     // the group should not be opaque or explicitly requested (by the groupname or by the project name)
-    if ( !group->isWmsOpaque() || groupIsRequested || projectIsRequested )
+    if ( ( group->wmsGroupVisibility() != Qgis::WmsGroupVisibility::Opaque ) || groupIsRequested || projectIsRequested )
     {
       // when the current group is opaque or the previous groups have been opaque it is an opaque child and should not be requestable
-      bool isOpaqueChild = group->isWmsOpaque() || groupIsAnOpaqueChild;
+      bool isOpaqueChild = ( group->wmsGroupVisibility() == Qgis::WmsGroupVisibility::Opaque ) || groupIsAnOpaqueChild;
 
       for ( QgsLayerTreeNode *child : group->children() )
       {

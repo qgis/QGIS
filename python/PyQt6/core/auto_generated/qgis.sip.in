@@ -3750,6 +3750,12 @@ The development version
       Earcut
     };
 
+    enum class WmsGroupVisibility /BaseType=IntEnum/
+    {
+      Visible,
+      Opaque,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

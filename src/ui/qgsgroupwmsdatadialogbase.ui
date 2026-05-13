@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>135</height>
+    <width>566</width>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,8 +34,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>343</width>
-        <height>74</height>
+        <width>548</width>
+        <height>162</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -53,6 +53,24 @@
        </property>
        <item>
         <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="group_visibility_layout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Group visibility mode</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mGroupVisbilityCombo">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;An opaque layer group behaves like a single layer. It is requestable, but its children are not. The children are still rendered in GetMap, GetFeatureInfo, etc. when requesting the opaque layer group.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QCheckBox" name="mOpaque">

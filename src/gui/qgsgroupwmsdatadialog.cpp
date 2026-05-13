@@ -33,6 +33,10 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties 
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  //init widgets
+  mGroupVisbilityCombo->addItem( tr( "Visible" ), QVariant::fromValue( Qgis::WmsGroupVisibility::Visible ) );
+  mGroupVisbilityCombo->addItem( tr( "Opaque" ), QVariant::fromValue( Qgis::WmsGroupVisibility::Opaque ) );
+
   serverProperties.copyTo( mServerProperties.get() );
 
   mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
@@ -101,12 +105,12 @@ void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
   mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
 }
 
-bool QgsGroupWmsDataDialog::isOpaque() const
+Qgis::WmsGroupVisibility QgsGroupWmsDataDialog::groupVisibility() const
 {
-  return mOpaque->checkState() == Qt::Checked;
+  return mGroupVisbilityCombo->currentData().value<Qgis::WmsGroupVisibility>();
 }
 
-void QgsGroupWmsDataDialog::setIsOpaque( bool isOpaque )
+void QgsGroupWmsDataDialog::setGroupVisibility( Qgis::WmsGroupVisibility groupVisibility )
 {
-  mOpaque->setCheckState( isOpaque ? Qt::Checked : Qt::Unchecked );
+  mGroupVisbilityCombo->setCurrentIndex( mGroupVisbilityCombo->findData( QVariant::fromValue( groupVisibility ) ) );
 }
