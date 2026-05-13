@@ -768,6 +768,22 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_prim createBox( double sizeX, double sizeY, double sizeZ, QString *errorMsg = nullptr );
 
     /**
+     * Create a cone primitive
+     *
+     * \param bottomRadius The bottom face radius of the cone
+     * \param height The height of the cone
+     * \param topRadius The top face radius of the cone
+     * \param radial The number of radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createCone( double bottomRadius, double height, double topRadius, unsigned int radial, QString *errorMsg = nullptr );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \param errorMsg Error message returned by SFGCAL
