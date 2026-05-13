@@ -46,7 +46,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         alg,
         parent: Optional[QMainWindow] = None,
     ):
-        super().__init__(parent or iface.mainWindow())
+        super().__init__(parent or (iface and iface.mainWindow()))
 
         self.setAlgorithm(alg)
 
@@ -66,7 +66,9 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         if not widget:
             from processing.gui.algorithm_widget import AlgorithmWidget
 
-            widget = AlgorithmWidget(alg_instance, parent=iface.mainWindow())
+            widget = AlgorithmWidget(
+                alg_instance, parent=(iface and iface.mainWindow())
+            )
 
         widget.exec()
 
