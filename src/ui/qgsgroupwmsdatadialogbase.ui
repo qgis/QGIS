@@ -73,13 +73,6 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="mOpaque">
-         <property name="text">
-          <string>Opaque layer group (behaves like a single layer)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="mComputeTimeDimension">
          <property name="toolTip">
           <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
