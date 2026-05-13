@@ -16,6 +16,7 @@
 #ifndef QGSPHONGMATERIAL_H
 #define QGSPHONGMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -45,11 +46,16 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
   public:
     /**
      * Constructor for QgsPhongMaterial, with the specified \a parent node.
-     * Set \a instanced to TRUE when the material will be used with instanced point rendering.
-     * \a hasDDScale and \a hasDDRotation enable per-instance scale and rotation support,
-     * and are only meaningful when \a instanced is TRUE.
      */
-    explicit QgsPhongMaterial( bool instanced = false, bool hasDDScale = false, bool hasDDRotation = false, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsPhongMaterial( Qt3DCore::QNode *parent = nullptr );
+
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
+
     ~QgsPhongMaterial() override;
 
   public slots:
@@ -81,8 +87,7 @@ class _3D_EXPORT QgsPhongMaterial : public QgsMaterial
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
-    bool mHasDDScale = false;
-    bool mHasDDRotation = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE

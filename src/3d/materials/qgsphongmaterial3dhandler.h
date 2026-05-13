@@ -44,9 +44,7 @@ class _3D_EXPORT QgsPhongMaterial3DHandler : public QgsAbstractMaterial3DHandler
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:
-    //! Constructs a material from shader files
-    QgsMaterial *buildMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool instanced = false, bool hasDDScale = false, bool hasDDRotation = false ) const;
-    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, bool hasDDScale, bool hasDDRotation ) const override SIP_FACTORY;
+    QgsMaterial *toInstancedMaterial( const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags ) const override SIP_FACTORY;
 };
 
 

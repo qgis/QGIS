@@ -320,7 +320,14 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
 
   const QgsAbstractMaterialSettings *settings = symbol->materialSettings();
   if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings ) )
-    return handler->toInstancedMaterial( settings, materialContext, hasDataDefinedScale, hasDataDefinedRotation );
+  {
+    Qgis::InstancedMaterialFlags flags;
+    if ( hasDataDefinedScale )
+      flags |= Qgis::InstancedMaterialFlag::DataDefinedScale;
+    if ( hasDataDefinedRotation )
+      flags |= Qgis::InstancedMaterialFlag::DataDefinedRotation;
+    return handler->toInstancedMaterial( settings, materialContext, flags );
+  }
 
   return nullptr;
 }

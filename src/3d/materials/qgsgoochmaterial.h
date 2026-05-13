@@ -16,6 +16,7 @@
 #ifndef QGSGOOCHMATERIAL_H
 #define QGSGOOCHMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -44,12 +45,16 @@ class _3D_EXPORT QgsGoochMaterial : public QgsMaterial
   public:
     /**
      * Constructor for QgsGoochMaterial, with the specified \a parent node.
-     * Set \a instanced to TRUE when the material will be used with instanced point rendering.
-     * \a hasDDScale and \a hasDDRotation enable per-instance scale and rotation support,
-     * and only take effect when \a instanced is TRUE.
      */
-    explicit QgsGoochMaterial( bool instanced = false, bool hasDDScale = false, bool hasDDRotation = false, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsGoochMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsGoochMaterial() override;
+
+    /**
+     * Enables or disables instanced point rendering mode.
+     * When \a enabled is TRUE the material uses the instanced vertex shader.
+     * \a flags controls which per-instance attributes (scale, rotation) are active.
+     */
+    void setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags );
 
   public slots:
     //! Sets diffuse color component, must be a SRGB color
@@ -85,8 +90,7 @@ class _3D_EXPORT QgsGoochMaterial : public QgsMaterial
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
-    bool mHasDDScale = false;
-    bool mHasDDRotation = false;
+    Qgis::InstancedMaterialFlags mInstanceFlags;
 };
 
 ///@endcond PRIVATE

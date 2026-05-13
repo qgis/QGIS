@@ -7790,6 +7790,22 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.InstancedMaterialFlag.DataDefinedScale.__doc__ = "Per-instance data-defined scale"
+Qgis.InstancedMaterialFlag.DataDefinedRotation.__doc__ = "Per-instance data-defined rotation"
+Qgis.InstancedMaterialFlag.__doc__ = """Optional per-instance properties of instanced materials.
+
+.. versionadded:: 4.2
+
+* ``DataDefinedScale``: Per-instance data-defined scale
+* ``DataDefinedRotation``: Per-instance data-defined rotation
+
+"""
+# --
+Qgis.InstancedMaterialFlag.baseClass = Qgis
+Qgis.InstancedMaterialFlags = lambda flags=0: Qgis.InstancedMaterialFlag(flags)
+Qgis.InstancedMaterialFlags.baseClass = Qgis
+InstancedMaterialFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
 Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
 Qgis.TextureFilterQuality.Anisotropic4x.__doc__ = "Anisotropic filtering (4x)"
