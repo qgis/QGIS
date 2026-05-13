@@ -780,6 +780,22 @@ be of type Solid
 
 
 
+    static std::unique_ptr<QgsSfcgalGeometry> createBox( double sizeX, double sizeY, double sizeZ );
+%Docstring
+Create a box primitive
+
+:param sizeX: the box width
+:param sizeY: the box depth
+:param sizeZ: the box height
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+
+.. versionadded:: 4.2
+%End
+
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
 %Docstring
 Create a cube primitive

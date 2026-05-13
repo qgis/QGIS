@@ -753,6 +753,21 @@ class CORE_EXPORT QgsSfcgalEngine
     static std::unique_ptr< QgsSfcgalGeometry > toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg = nullptr );
 
     /**
+     * Create a box primitive
+     *
+     * \param sizeX the box width
+     * \param sizeY the box depth
+     * \param sizeZ the box height
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createBox( double sizeX, double sizeY, double sizeZ, QString *errorMsg = nullptr );
+
+    /**
      * Create a cube primitive
      * \param size the cube size
      * \param errorMsg Error message returned by SFGCAL

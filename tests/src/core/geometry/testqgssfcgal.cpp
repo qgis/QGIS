@@ -96,6 +96,7 @@ class TestQgsSfcgal : public QgsTest
     void extrude();
     void simplify();
     void approximateMedialAxis();
+    void primitiveBox();
     void primitiveCube();
     void toSolid();
     void toPolyhedralSurface();
@@ -1141,6 +1142,28 @@ void TestQgsSfcgal::approximateMedialAxis()
     "-0.67,-0.73 -0.70),(0.70 1.08,0.71 1.04),(0.71 1.04,0.71 1.04),(0.71 1.04,0.65 0.83),(0.67 0.83,0.65 0.83),(0.65 0.83,0.05 0.19),(0.65 -4.55,-0.52 -0.79,-0.56 -0.63),(-0.77 -0.76,-0.73 "
     "-0.70),(-0.73 -0.70,-0.56 -0.63),(0.05 0.19,-0.21 -0.18),(-0.21 -0.18,-0.45 -0.51),(-0.56 -0.63,-0.50 -0.57),(-0.45 -0.51,-0.50 -0.57))"
   );
+#endif
+}
+
+void TestQgsSfcgal::primitiveBox()
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> box = QgsSfcgalGeometry::createBox( 2, 3, 4 );
+  QCOMPARE( box->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( box->geometryType(), "box" );
+
+  // check clone
+  std::unique_ptr<QgsSfcgalGeometry> box2 = box->clone();
+  QVERIFY( *box == *box2 );
+
+  // check export as SFCGAL geometry
+  std::unique_ptr<QgsSfcgalGeometry> poly = box->primitiveAsPolyhedralSurface();
+  std::unique_ptr<QgsSfcgalGeometry> expectedBox = openWktFile( "box.wkt" );
+  QCOMPARE( poly->asWkt( 1 ), expectedBox->asWkt( 1 ) );
+  std::unique_ptr<QgsSfcgalGeometry> poly2 = box2->primitiveAsPolyhedralSurface();
+  QCOMPARE( poly2->asWkt( 1 ), expectedBox->asWkt( 1 ) );
+#else
+  QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createBox( 2, 3, 4 ), QgsNotSupportedException );
 #endif
 }
 

@@ -1111,6 +1111,19 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::sh
   return std::make_unique<QgsSfcgalGeometry>( prim, type );
 }
 
+sfcgal::shared_prim QgsSfcgalEngine::createBox( double sizeX, double sizeY, double sizeZ, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_BOX );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "x_extent", sizeX );
+  sfcgal_primitive_set_parameter_double( result, "y_extent", sizeY );
+  sfcgal_primitive_set_parameter_double( result, "z_extent", sizeZ );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
 sfcgal::shared_prim QgsSfcgalEngine::createCube( double size, QString *errorMsg )
 {
   sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_CUBE );
