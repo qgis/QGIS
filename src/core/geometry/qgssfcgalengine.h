@@ -820,6 +820,22 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_prim createSphere( double radius, unsigned int subdivisions, QString *errorMsg = nullptr );
 
     /**
+     * Create a torus primitive
+     *
+     * \param mainRadius The main radius of the torus
+     * \param tubeRadius The tube radius of the torus
+     * \param mainRadial The number of main radial divisions
+     * \param tubeRadial The number of tube radial divisions
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     *
+     * \since QGIS 4.2
+     */
+    static sfcgal::shared_prim createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial, QString *errorMsg = nullptr );
+
+    /**
      * Clones \a prim.
      *
      * \param prim primitive to perform the operation

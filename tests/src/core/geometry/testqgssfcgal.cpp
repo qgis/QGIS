@@ -101,6 +101,7 @@ class TestQgsSfcgal : public QgsTest
     void primitiveCube();
     void primitiveCylinder();
     void primitiveSphere();
+    void primitiveTorus();
     void toSolid();
     void toPolyhedralSurface();
     void geometryN_data();
@@ -1352,6 +1353,28 @@ void TestQgsSfcgal::primitiveSphere()
   QCOMPARE( poly2->asWkt( 1 ), expectedSphere->asWkt( 1 ) );
 #else
   QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createSphere( 6, 1 ), QgsNotSupportedException );
+#endif
+}
+
+void TestQgsSfcgal::primitiveTorus()
+{
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> torus = QgsSfcgalGeometry::createTorus( 6, 2, 12, 12 );
+  QCOMPARE( torus->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( torus->geometryType(), "torus" );
+
+  // check clone
+  std::unique_ptr<QgsSfcgalGeometry> torus2 = torus->clone();
+  QVERIFY( *torus == *torus2 );
+
+  // check export as SFCGAL geometry
+  std::unique_ptr<QgsSfcgalGeometry> poly = torus->primitiveAsPolyhedralSurface();
+  std::unique_ptr<QgsSfcgalGeometry> expectedTorus = openWktFile( "torus.wkt" );
+  QCOMPARE( poly->asWkt( 1 ), expectedTorus->asWkt( 1 ) );
+  std::unique_ptr<QgsSfcgalGeometry> poly2 = torus2->primitiveAsPolyhedralSurface();
+  QCOMPARE( poly2->asWkt( 1 ), expectedTorus->asWkt( 1 ) );
+#else
+  QVERIFY_EXCEPTION_THROWN( QgsSfcgalGeometry::createTorus( 6, 2, 12, 12 ), QgsNotSupportedException );
 #endif
 }
 
