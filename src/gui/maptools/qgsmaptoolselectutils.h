@@ -42,7 +42,7 @@ class QgsHighlight;
  * \ingroup gui
  * \namespace QgsMapToolSelectUtils
  * \brief The QgsMapToolSelectUtils namespace containing methods which are useful for the select maptool widgets
- * \note not available in Python bindings, was previously in app
+ * \note not available in Python bindings
  */
 namespace QgsMapToolSelectUtils
 {
