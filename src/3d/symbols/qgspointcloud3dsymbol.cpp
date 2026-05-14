@@ -574,8 +574,6 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 void QgsClassificationPointCloud3DSymbol::fillMaterial( QgsMaterial *mat )
 {
   const QgsColorRampShader mColorRampShader = colorRampShader();
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
   if ( mColorRampShader.colorRampItemList().count() > 0 )
