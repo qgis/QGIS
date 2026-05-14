@@ -257,6 +257,7 @@ void QgsLightsWidget::onRemoveLight()
   const int pointCount = mLightsModel->pointLights().size();
 
   mLightsModel->removeRows( selected.indexes().at( 0 ).row(), 1 );
+  mLightsListView->selectionModel()->clearSelection();
 
   if ( mLightsModel->directionalLights().size() != directionalCount )
     emit directionalLightsCountChanged( mLightsModel->directionalLights().size() );
