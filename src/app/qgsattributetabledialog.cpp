@@ -1023,6 +1023,8 @@ void QgsAttributeTableDialog::removeAttributes( const QList<int> &attributes )
     return;
   }
 
+  mMainView->tableView()->setCurrentIndex( QModelIndex() );
+
   // check whether display expression is a single field
   int fieldIdx = QgsExpression::expressionToLayerFieldIndex( mLayer->displayExpression(), mLayer );
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
